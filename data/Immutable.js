@@ -7,7 +7,7 @@ const HANDLER = {
     defineProperty() {},
 };
 
-export default class Immutable extends Proxy {
+export default class Immutable {
 
     constructor(target) {
         return new Proxy(target, HANDLER);

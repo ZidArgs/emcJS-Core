@@ -1,8 +1,12 @@
+import data_Immutable from "./data/Immutable.js";
+import data_state_AnyState from "./data/state/AnyState.js";
+import data_state_BoolState from "./data/state/BoolState.js";
+import data_state_NumberState from "./data/state/NumberState.js";
+import data_type_AbstractType from "./data/type/AbstractType.js";
+import data_type_TypeString from "./data/type/TypeString.js";
 import mixins_EventBusSubset from "./mixins/EventBusSubset.js";
-import model_type_AbstractType from "./model/type/AbstractType.js";
-import model_type_TypeString from "./model/type/TypeString.js";
 import storage_Cookie from "./storage/Cookie.js";
-import storage_DebouncedState from "./storage/DebouncedState.js";
+import storage_DebouncedStorage from "./storage/DebouncedStorage.js";
 import storage_FileData from "./storage/FileData.js";
 import storage_IDBStorage from "./storage/IDBStorage.js";
 import storage_LocalStorage from "./storage/LocalStorage.js";
@@ -15,6 +19,8 @@ import ui_CustomElement from "./ui/CustomElement.js";
 import ui_dragdrop_DragElement from "./ui/dragdrop/DragElement.js";
 import ui_dragdrop_DropTarget from "./ui/dragdrop/DropTarget.js";
 import ui_FilteredList from "./ui/FilteredList.js";
+import ui_i18n_Label from "./ui/i18n/Label.js";
+import ui_i18n_Tooltip from "./ui/i18n/Tooltip.js";
 import ui_Icon from "./ui/Icon.js";
 import ui_Import from "./ui/Import.js";
 import ui_input_ChoiceSelect from "./ui/input/ChoiceSelect.js";
@@ -23,6 +29,7 @@ import ui_input_form_Button from "./ui/input/form/Button.js";
 import ui_input_form_Number from "./ui/input/form/Number.js";
 import ui_input_form_Select from "./ui/input/form/Select.js";
 import ui_input_form_Text from "./ui/input/form/Text.js";
+import ui_input_ListHeader from "./ui/input/ListHeader.js";
 import ui_input_ListSelect from "./ui/input/ListSelect.js";
 import ui_input_Option from "./ui/input/Option.js";
 import ui_input_SearchSelect from "./ui/input/SearchSelect.js";
@@ -34,9 +41,10 @@ import ui_layout_Layout from "./ui/layout/Layout.js";
 import ui_layout_Panel from "./ui/layout/Panel.js";
 import ui_layout_TabView from "./ui/layout/TabView.js";
 import ui_layout_VBox from "./ui/layout/VBox.js";
-import ui_ListHeader from "./ui/ListHeader.js";
 import ui_LogScreen from "./ui/LogScreen.js";
-import ui_NavBar from "./ui/NavBar.js";
+import ui_navigation_Button from "./ui/navigation/Button.js";
+import ui_navigation_HamburgerButton from "./ui/navigation/HamburgerButton.js";
+import ui_navigation_NavBar from "./ui/navigation/NavBar.js";
 import ui_overlay_ContextMenu from "./ui/overlay/ContextMenu.js";
 import ui_overlay_Dialog from "./ui/overlay/Dialog.js";
 import ui_overlay_PopOver from "./ui/overlay/PopOver.js";
@@ -53,6 +61,7 @@ import util_converter_Properties from "./util/converter/Properties.js";
 import util_converter_XML from "./util/converter/XML.js";
 import util_DateUtil from "./util/DateUtil.js";
 import util_DragDropMemory from "./util/DragDropMemory.js";
+import util_ElementManager from "./util/ElementManager.js";
 import util_events_EventBus from "./util/events/EventBus.js";
 import util_events_EventBusAbstractModule from "./util/events/EventBusAbstractModule.js";
 import util_events_EventBusModuleGeneric from "./util/events/EventBusModuleGeneric.js";
@@ -76,6 +85,8 @@ import util_logic_Processor from "./util/logic/Processor.js";
 import util_Path from "./util/Path.js";
 import util_Request from "./util/Request.js";
 import util_Router from "./util/Router.js";
+import util_search_SearchAnd from "./util/search/SearchAnd.js";
+import util_search_SearchOr from "./util/search/SearchOr.js";
 import util_Sequence from "./util/Sequence.js";
 import util_Template from "./util/Template.js";
 import util_Timer from "./util/Timer.js";
@@ -83,18 +94,24 @@ import util_UniqueGenerator from "./util/UniqueGenerator.js";
 import util_ViewSwitcher from "./util/ViewSwitcher.js";
 
 let index = {
+    "data": {
+        "Immutable": data_Immutable,
+        "state": {
+            "AnyState": data_state_AnyState,
+            "BoolState": data_state_BoolState,
+            "NumberState": data_state_NumberState
+        },
+        "type": {
+            "AbstractType": data_type_AbstractType,
+            "TypeString": data_type_TypeString
+        }
+    },
     "mixins": {
         "EventBusSubset": mixins_EventBusSubset
     },
-    "model": {
-        "type": {
-            "AbstractType": model_type_AbstractType,
-            "TypeString": model_type_TypeString
-        }
-    },
     "storage": {
         "Cookie": storage_Cookie,
-        "DebouncedState": storage_DebouncedState,
+        "DebouncedStorage": storage_DebouncedStorage,
         "FileData": storage_FileData,
         "IDBStorage": storage_IDBStorage,
         "LocalStorage": storage_LocalStorage,
@@ -113,6 +130,10 @@ let index = {
             "DropTarget": ui_dragdrop_DropTarget
         },
         "FilteredList": ui_FilteredList,
+        "i18n": {
+            "Label": ui_i18n_Label,
+            "Tooltip": ui_i18n_Tooltip
+        },
         "Icon": ui_Icon,
         "Import": ui_Import,
         "input": {
@@ -124,6 +145,7 @@ let index = {
                 "Select": ui_input_form_Select,
                 "Text": ui_input_form_Text
             },
+            "ListHeader": ui_input_ListHeader,
             "ListSelect": ui_input_ListSelect,
             "Option": ui_input_Option,
             "SearchSelect": ui_input_SearchSelect,
@@ -138,9 +160,12 @@ let index = {
             "TabView": ui_layout_TabView,
             "VBox": ui_layout_VBox
         },
-        "ListHeader": ui_ListHeader,
         "LogScreen": ui_LogScreen,
-        "NavBar": ui_NavBar,
+        "navigation": {
+            "Button": ui_navigation_Button,
+            "HamburgerButton": ui_navigation_HamburgerButton,
+            "NavBar": ui_navigation_NavBar
+        },
         "overlay": {
             "ContextMenu": ui_overlay_ContextMenu,
             "Dialog": ui_overlay_Dialog,
@@ -163,6 +188,7 @@ let index = {
         },
         "DateUtil": util_DateUtil,
         "DragDropMemory": util_DragDropMemory,
+        "ElementManager": util_ElementManager,
         "events": {
             "EventBus": util_events_EventBus,
             "EventBusAbstractModule": util_events_EventBusAbstractModule,
@@ -192,6 +218,10 @@ let index = {
         "Path": util_Path,
         "Request": util_Request,
         "Router": util_Router,
+        "search": {
+            "SearchAnd": util_search_SearchAnd,
+            "SearchOr": util_search_SearchOr
+        },
         "Sequence": util_Sequence,
         "Template": util_Template,
         "Timer": util_Timer,

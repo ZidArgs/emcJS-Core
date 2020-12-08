@@ -1,45 +1,16 @@
 import Logger from "./Logger.js";
 
-const OBSERVER_CONFIG = {
-    attributes: true,
-    childList: true,
-    subtree: true
-};
-
-const MUTATION_OBSERVER_CALLBACK = function(mutations) {
-    mutations.forEach(function(mutation) {
-        switch(mutation.type) {
-            case "childList":
-                mutation.addedNodes.forEach(el=>{
-                    if (el.nodeType == Node.ELEMENT_NODE) {
-                        if (el.hasAttribute("i18n-content")) {
-                            el.innerHTML = getTranslation(el.getAttribute("i18n-content"));
-                        }
-                        if (el.hasAttribute("i18n-tooltip")) {
-                            el.setAttribute("title", getTranslation(el.getAttribute("i18n-tooltip")));
-                        }
-                    }
-                });
-            break;
-            case "attributes":
-                if (mutation.target.nodeType == Node.ELEMENT_NODE) {
-                    switch(mutation.attributeName) {
-                        case "i18n-content":
-                            mutation.target.innerHTML = getTranslation(mutation.target.getAttribute("i18n-content"));
-                        break;
-                        case "i18n-tooltip":
-                            mutation.target.setAttribute("title", getTranslation(mutation.target.getAttribute("i18n-tooltip")));
-                        break;
-                    }
-                }
-            break;
-        }
-    });
-};
-
-const observers = new Map();
 const languages = new Map();
 let actLang = "";
+
+function hasTranslation(key) {
+    if (!key || typeof key != "string") return false;
+    if (languages.get(actLang).has(key)) {
+        return true;
+    }
+    Logger.warn(`translation for "${key}" missing`, "I18n");
+    return false;
+}
 
 function getTranslation(key) {
     if (!key || typeof key != "string") return "";
@@ -50,34 +21,14 @@ function getTranslation(key) {
     return key;
 }
 
-function applyLanguage() {
-    getAllElements("[i18n-content],[i18n-tooltip]").forEach(el=>{
-        if (el.hasAttribute("i18n-content")) {
-            el.innerHTML = getTranslation(el.getAttribute("i18n-content"));
-        }
-        if (el.hasAttribute("i18n-tooltip")) {
-            el.setAttribute("title", getTranslation(el.getAttribute("i18n-tooltip")));
-        }
-    });
-}
-
-function getAllElements(selector = "*", root = document) {
-    let res = Array.from(root.querySelectorAll(selector));
-    const buf = Array.from(root.querySelectorAll("*"));
-    for (const el of buf) {
-        if (el.shadowRoot != null) {
-            res = res.concat(getAllElements(selector, el.shadowRoot));
-        }
-    }
-    return res;
-}
-
-class I18n {
+class I18n extends EventTarget {
 
     setLanguage(lang) {
         if (actLang != lang && languages.has(lang)) {
             actLang = lang;
-            applyLanguage();
+            const event = new Event("language");
+            event.language = lang;
+            this.dispatchEvent(event);
         }
     }
     
@@ -89,16 +40,24 @@ class I18n {
         if (!actLang) {
             actLang = lang;
         }
+        const changes = {};
         for (const key in values) {
             if (typeof key != "string") continue;
-            if (typeof values[key] != "string") continue;
-            languages.get(lang).set(key, values[key]);
+            const value = values[key];
+            if (typeof value != "string") continue;
+            languages.get(lang).set(key, value);
+            changes[key] = value;
         }
         if (lang == actLang) {
-            applyLanguage();
+            const event = new Event("translation");
+            event.changes = changes;
+            this.dispatchEvent(event);
         }
     }
 
+    /**
+     * @deprecated
+     */
     translate(key) {
         if (!!actLang) {
             return getTranslation(key);
@@ -107,26 +66,20 @@ class I18n {
         return key;
     }
 
-    forceTranslation() {
+    get(key) {
         if (!!actLang) {
-            applyLanguage();
+            return getTranslation(key);
         }
+        Logger.warn(`no translation loaded`, "I18n");
+        return key;
     }
 
-    connect(element = document.documentElement) {
-        if (!observers.has(element)) {
-            const obs = new MutationObserver(MUTATION_OBSERVER_CALLBACK);
-            obs.observe(element, OBSERVER_CONFIG);
-            observers.set(element, obs);
+    has(key) {
+        if (!!actLang) {
+            return hasTranslation(key);
         }
-    }
-
-    disconnect(element = document.documentElement) {
-        if (!!observers.has(element)) {
-            const obs = observers.get(element);
-            obs.disconnect();
-            observers.remove(element);
-        }
+        Logger.warn(`no translation loaded`, "I18n");
+        return false;
     }
 
 }

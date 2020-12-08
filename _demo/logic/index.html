@@ -15,7 +15,6 @@
                 "logic.location.woods.c_warp"
             ];
 
-            emcJS.util.I18n.connect();
             emcJS.util.I18n.setTranslation("en_us", {
                 run: "RUN",
                 run_tooltip: "Run logic"
@@ -106,6 +105,10 @@
         </script>
     </head>
     <body>
-        <button id="runlogic" i18n-content="run" i18n-tooltip="run_tooltip"></button>
+        <emc-i18n-tooltip key="run_tooltip" value="foobar">
+            <button id="runlogic">
+                <emc-i18n-label key="run" value="foobar"></emc-i18n-label>
+            </button>
+        </emc-i18n-tooltip>
     </body>
 </html>
