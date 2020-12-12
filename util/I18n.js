@@ -59,7 +59,7 @@ class I18n extends EventTarget {
      * @deprecated
      */
     translate(key) {
-        if (!!actLang) {
+        if (actLang) {
             return getTranslation(key);
         }
         Logger.warn(`no translation loaded`, "I18n");
@@ -67,7 +67,7 @@ class I18n extends EventTarget {
     }
 
     get(key) {
-        if (!!actLang) {
+        if (actLang) {
             return getTranslation(key);
         }
         Logger.warn(`no translation loaded`, "I18n");
@@ -75,7 +75,7 @@ class I18n extends EventTarget {
     }
 
     has(key) {
-        if (!!actLang) {
+        if (actLang) {
             return hasTranslation(key);
         }
         Logger.warn(`no translation loaded`, "I18n");

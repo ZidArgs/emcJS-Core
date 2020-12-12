@@ -65,7 +65,7 @@ export default class FilteredList extends HTMLElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        let header = this.shadowRoot.getElementById("header");
+        const header = this.shadowRoot.getElementById("header");
         this.shadowRoot.getElementById("container").addEventListener("slotchange", event => {
             // TODO only check new elements
             // TODO reset removed elements
@@ -73,9 +73,9 @@ export default class FilteredList extends HTMLElement {
         });
         /* header */
         header.addEventListener('filter', event => {
-            let all = this.querySelectorAll(`[data-filtervalue]`);
-            let panels = this.querySelectorAll(`emc-collapsepanel`);
-            if (!!event.value) {
+            const all = this.querySelectorAll(`[data-filtervalue]`);
+            const panels = this.querySelectorAll(`emc-collapsepanel`);
+            if (event.value) {
                 const regEx = new SearchAnd(event.value);
                 all.forEach(el => {
                     if (el.dataset.filtervalue.match(regEx)) {
@@ -85,8 +85,8 @@ export default class FilteredList extends HTMLElement {
                     }
                 });
                 panels.forEach(el => {
-                    let children = el.querySelectorAll(`[data-filtervalue]`);
-                    for (let ch of children) {
+                    const children = el.querySelectorAll(`[data-filtervalue]`);
+                    for (const ch of children) {
                         if (ch.style.display == "") {
                             el.style.display = "";
                             return;

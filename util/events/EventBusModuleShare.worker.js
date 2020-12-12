@@ -6,7 +6,7 @@ function handleConnect(event) {
     if (MAIN == null) {
         MAIN = port;
     } else {
-        MAIN.postMessage({name:"new-instance",data:{}});
+        MAIN.postMessage({name:"new-instance", data:{}});
     }
     PORTS.add(port);
     port.addEventListener('message', handleMessage.bind(port));
@@ -14,7 +14,7 @@ function handleConnect(event) {
 }
 
 function handleDisconnect(event) {
-    PORTS.remove(e.ports[0]);
+    PORTS.remove(event.ports[0]);
 }
 
 function handleMessage(event) {

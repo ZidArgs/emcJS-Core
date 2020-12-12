@@ -18,8 +18,8 @@ const STYLE = new GlobalStyle(`
 `);
 
 function dropElement(event) {
-    let els = DragDropMemory.get();
-    if (!!els.length) {
+    const els = DragDropMemory.get();
+    if (els.length) {
         this.append(els);
     }
     DragDropMemory.clear();
@@ -28,7 +28,7 @@ function dropElement(event) {
 }
 
 function allowDrop(event) {
-    let els = DragDropMemory.get();
+    const els = DragDropMemory.get();
     if (!this.group) {
         event.preventDefault();
         event.stopPropagation();
@@ -36,7 +36,6 @@ function allowDrop(event) {
         event.preventDefault();
         event.stopPropagation();
     }
-    
 }
 
 export default class DropTarget extends HTMLElement {

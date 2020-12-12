@@ -45,9 +45,9 @@ export default class TextEditor extends HTMLElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         const text = this.shadowRoot.getElementById("text");
-        const textTimer = null;
+        let textTimer = null;
         text.addEventListener("input", (event) => {
-            if (!!textTimer) {
+            if (textTimer) {
                 clearTimeout(textTimer);
             }
             textTimer = setTimeout(() => {

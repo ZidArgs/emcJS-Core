@@ -121,7 +121,7 @@ export default class TabView extends Panel {
         // apply value
         const choice = this.shadowRoot.getElementById("view-choice");
         const el = choice.querySelector(`[value="${this.active}"]`);
-        if (!!el) {
+        if (el) {
             el.classList.add("active");
         }
     }
@@ -130,7 +130,7 @@ export default class TabView extends Panel {
         // revoke value
         const choice = this.shadowRoot.getElementById("view-choice");
         const current = choice.querySelector(`[value="${this.active}"]`);
-        if (!!current) {
+        if (current) {
             current.classList.remove("active");
         }
     }
@@ -157,11 +157,11 @@ export default class TabView extends Panel {
                         // update choice
                         const choice = this.shadowRoot.getElementById("view-choice");
                         const current = choice.querySelector(`[value="${oldValue}"]`);
-                        if (!!current) {
+                        if (current) {
                             current.classList.remove("active");
                         }
                         const el = choice.querySelector(`[value="${newValue}"]`);
-                        if (!!el) {
+                        if (el) {
                             el.classList.add("active");
                         }
                     }

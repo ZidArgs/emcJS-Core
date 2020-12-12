@@ -34,7 +34,7 @@ const TIME_REP = "$3.$2.$1-$4";
 const output = new Set;
 
 function write(data) {
-    if (!!output.size) {
+    if (output.size) {
         let msg;
         if (data.message instanceof Error) {
             msg = `${data.type} - ${data.time}\n${data.message.message}\n${data.message.stack}`;
@@ -43,7 +43,7 @@ function write(data) {
         }
         Array.from(output).forEach(function(out) {
             if (out instanceof HTMLTextAreaElement) {
-                out.value += msg+"\n";
+                out.value += msg + "\n";
                 out.scrollTop = out.scrollHeight;
             } else if (out instanceof HTMLElement) {
                 const el = document.createElement('span');

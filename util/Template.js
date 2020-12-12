@@ -25,7 +25,7 @@ export default class Template {
 
     static generate(template) {
         if (template instanceof Template) {
-            return template.generate(target);
+            return template.generate();
         }
         if (!(template instanceof HTMLTemplateElement)) {
             template = createTemplate(template);

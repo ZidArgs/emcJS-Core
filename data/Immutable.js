@@ -4,7 +4,7 @@ const HANDLER = {
     },
     set() {},
     deleteProperty() {},
-    defineProperty() {},
+    defineProperty() {}
 };
 
 export default class Immutable {

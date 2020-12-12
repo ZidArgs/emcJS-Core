@@ -13,7 +13,7 @@ class SessionStorage {
     }
 
     has(key) {
-        return sessionStorage.hasOwnProperty(key);
+        return sessionStorage.getItem(key) != null;
     }
 
     delete(key) {

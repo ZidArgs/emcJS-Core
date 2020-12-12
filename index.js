@@ -93,7 +93,7 @@ import util_Timer from "./util/Timer.js";
 import util_UniqueGenerator from "./util/UniqueGenerator.js";
 import util_ViewSwitcher from "./util/ViewSwitcher.js";
 
-let index = {
+export default {
     "data": {
         "Immutable": data_Immutable,
         "state": {
@@ -229,5 +229,3 @@ let index = {
         "ViewSwitcher": util_ViewSwitcher
     }
 };
-
-export default index;

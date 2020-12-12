@@ -8,7 +8,7 @@ export default class EventBusSubset {
     constructor() {
         SUBS.set(this, new Map());
         ALLS.set(this, new Set());
-        EventBus.register((data = {name:"",data:{}}) => {
+        EventBus.register((data = {name:"", data:{}}) => {
             if (SUBS.get(this).has(data.name)) {
                 SUBS.get(this).get(data.name).forEach(function(fn) {
                     fn(data);

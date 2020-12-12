@@ -10,7 +10,7 @@ class EventBusModuleShare extends EventBusAbstractModule {
 
     constructor() {
         super();
-        if (!!WORKER) {
+        if (WORKER) {
             WORKER.onmessage = function(e) {
                 const payload = e.data;
                 this.onModuleEvent(payload);
@@ -24,7 +24,7 @@ class EventBusModuleShare extends EventBusAbstractModule {
     }
 
     async triggerModuleEvent(payload) {
-        if (!!WORKER) {
+        if (WORKER) {
             WORKER.postMessage(payload);
         }
     }

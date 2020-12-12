@@ -79,7 +79,7 @@ export default class DebouncedStorage extends EventTarget {
                 changes[key] = undefined;
             }
         }
-        if (!!changes.size) {
+        if (changes.size) {
             DEBOUNCE_TIMER.set(this, setTimeout(debounceFunction.bind(this), DEBOUNCE_TIME));
         }
         state.clear();
@@ -103,7 +103,7 @@ export default class DebouncedStorage extends EventTarget {
             clearTimeout(DEBOUNCE_TIMER.get(this));
             DEBOUNCE_TIMER.delete(this);
             // set timeout
-            if (!!changes.size) {
+            if (changes.size) {
                 DEBOUNCE_TIMER.set(this, setTimeout(debounceFunction.bind(this), DEBOUNCE_TIME));
             }
         }
@@ -127,7 +127,7 @@ export default class DebouncedStorage extends EventTarget {
             clearTimeout(DEBOUNCE_TIMER.get(this));
             DEBOUNCE_TIMER.delete(this);
         }
-        if (!!changes.size) {
+        if (changes.size) {
             DEBOUNCE_TIMER.set(this, setTimeout(debounceFunction.bind(this), DEBOUNCE_TIME));
         }
     }

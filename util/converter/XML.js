@@ -1,13 +1,14 @@
-import Logger from "../Logger.js";
+// import Logger from "../Logger.js";
 
 const PARSER = new DOMParser();
 
 class XML {
 
     parse(input) {
-      const output = {};
-      const xml = PARSER.parseFromString(input,"text/xml");
+        const output = {};
+        const xml = PARSER.parseFromString(input, "text/xml");
         // TODO match xml to object like shown below
+        output.xml = xml;
         return output;
     }
 

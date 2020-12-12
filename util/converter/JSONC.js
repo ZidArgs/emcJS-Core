@@ -24,7 +24,7 @@ function removeComments(input) {
         line: [],
         lineRes: []
     };
-    while (!!state.lines.length) {
+    while (state.lines.length) {
         const line = state.lines.shift();
         if (line.indexOf("//") < 0 && line.indexOf("/*") < 0) {
             state.linesRes.push(line);
@@ -39,7 +39,7 @@ function removeComments(input) {
 }
 
 function removeCommentsLine(state) {
-    while (!!state.line.length) {
+    while (state.line.length) {
         const act = state.line.shift();
         if (act.startsWith('"')) {
             state.lineRes.push(act);
@@ -71,7 +71,7 @@ function removeCommentsStart(state, act) {
             if (remaining.length > 1) {
                 state.line.unshift(remaining[1]);
             } else {
-                while (!!state.lines.length) {
+                while (state.lines.length) {
                     const line = state.lines.shift();
                     if (line.indexOf("*/") < 0) {
                         state.linesRes.push(line.replace(ALL_BUT_NL, " ") + "  ");
@@ -98,7 +98,7 @@ class JSONC {
             let pos = parseInt(e.message.slice(e.message.lastIndexOf(" ") + 1));
             const ref = input.split(LNBR_SEQ);
             const lines = buffer.split(LNBR_SEQ);
-            for(let i = 0; i < lines.length; ++i) {
+            for (let i = 0; i < lines.length; ++i) {
                 const line = lines[i] + "\n";
                 if (pos < line.length) {
                     const l = ref[i];

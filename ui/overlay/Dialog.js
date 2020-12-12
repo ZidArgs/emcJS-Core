@@ -106,7 +106,7 @@ export default class Dialog extends Window {
         }
 
         const sbm = this.shadowRoot.getElementById('submit');
-        if (!!options.submit) {
+        if (options.submit) {
             if (typeof options.submit === "string") {
                 sbm.innerHTML = options.submit;
                 sbm.setAttribute("title", options.submit);
@@ -117,7 +117,7 @@ export default class Dialog extends Window {
         }
 
         const ccl = this.shadowRoot.getElementById('cancel');
-        if (!!options.cancel) {
+        if (options.cancel) {
             if (typeof options.cancel === "string") {
                 ccl.innerHTML = options.cancel;
                 ccl.setAttribute("title", options.cancel);
@@ -149,7 +149,7 @@ export default class Dialog extends Window {
         a.push(this.shadowRoot.getElementById('submit'));
         a.push(this.shadowRoot.getElementById('cancel'));
         a.unshift(this.shadowRoot.getElementById('close'));
-        a[a.length-1].focus();
+        a[a.length - 1].focus();
     }
     
     static alert(ttl, msg) {
@@ -200,7 +200,7 @@ export default class Dialog extends Window {
                 text: msg,
                 submit: "YES",
                 cancel: "NO"
-            });   
+            });
             const el = document.createElement("input");
             el.style.padding = "5px";
             el.style.backgroundColor = "white";

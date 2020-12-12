@@ -1,8 +1,9 @@
 {
   "name": "emcjs",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "description": "Modular JS API",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "index": "node dist.js",
     "test": "serve . -p 12000"

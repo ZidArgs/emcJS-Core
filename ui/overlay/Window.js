@@ -152,21 +152,21 @@ export default class Window extends HTMLElement {
     }
 
     initialFocus() {
-        let a = Array.from(this.querySelectorAll(Q_TAB));
+        const a = Array.from(this.querySelectorAll(Q_TAB));
         a.push(this.shadowRoot.getElementById('close'));
         a[0].focus();
     }
 
     focusFirst() {
-        let a = Array.from(this.querySelectorAll(Q_TAB));
+        const a = Array.from(this.querySelectorAll(Q_TAB));
         a.unshift(this.shadowRoot.getElementById('close'));
         a[0].focus();
     }
     
     focusLast() {
-        let a = Array.from(this.querySelectorAll(Q_TAB));
+        const a = Array.from(this.querySelectorAll(Q_TAB));
         a.unshift(this.shadowRoot.getElementById('close'));
-        a[a.length-1].focus();
+        a[a.length - 1].focus();
     }
 
 }

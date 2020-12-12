@@ -193,33 +193,32 @@ export default class NavBar extends HTMLElement {
         const content = this.shadowRoot.getElementById("content");
         content.innerHTML = "";
         for (const item of config) {
-            
             if (item.visible == null || !!item.visible) {
                 const el = document.createElement('li');
                 const btn = document.createElement('emc-navbar-button');
                 el.append(btn);
                 // content
-                if (item.hasOwnProperty("i18n-content")) {
+                if (item["i18n-content"] != null) {
                     btn.i18nContent = item["i18n-content"];
                 }
-                if (item.hasOwnProperty("content")) {
+                if (item["content"] != null) {
                     btn.content = item["content"];
                 }
                 // tooltip
-                if (item.hasOwnProperty("i18n-tooltip")) {
+                if (item["i18n-tooltip"] != null) {
                     btn.i18nTooltip = item["i18n-tooltip"];
                 }
-                if (item.hasOwnProperty("tooltip")) {
+                if (item["tooltip"] != null) {
                     btn.tooltip = item["tooltip"];
                 }
                 // action
-                if (item.hasOwnProperty("handler") && typeof item.handler == "function") {
+                if (item["handler"] != null && typeof item.handler == "function") {
                     btn.addEventListener("click", function() {
                         item.handler();
                     });
                 }
                 // submenu
-                if (item.hasOwnProperty("submenu")) {
+                if (item["submenu"] != null) {
                     const subcontent = document.createElement('ul');
                     for (const subitem of item.submenu) {
                         if (subitem.visible == null || !!subitem.visible) {
@@ -227,28 +226,27 @@ export default class NavBar extends HTMLElement {
                             const subbtn = document.createElement('emc-navbar-button');
                             subel.append(subbtn);
                             // content
-                            if (subitem.hasOwnProperty("i18n-content")) {
+                            if (subitem["i18n-content"] != null) {
                                 subbtn.i18nContent = subitem["i18n-content"];
                             }
-                            if (subitem.hasOwnProperty("content")) {
+                            if (subitem["content"] != null) {
                                 subbtn.content = subitem["content"];
                             }
                             // tooltip
-                            if (subitem.hasOwnProperty("i18n-tooltip")) {
+                            if (subitem["i18n-tooltip"] != null) {
                                 subbtn.i18nTooltip = subitem["i18n-tooltip"];
                             }
-                            if (subitem.hasOwnProperty("tooltip")) {
+                            if (subitem["tooltip"] != null) {
                                 subbtn.tooltip = subitem["tooltip"];
                             }
                             // action
-                            if (subitem.hasOwnProperty("handler") && typeof subitem.handler == "function") {
+                            if (subitem["handler"] != null && typeof subitem.handler == "function") {
                                 subbtn.addEventListener("click", function() {
                                     subitem.handler();
                                 });
                             }
                             subcontent.append(subel);
                         }
-                        
                     }
                     el.append(subcontent);
                     btn.expand = "closed";

@@ -36,7 +36,7 @@ class Helper {
         if (!Array.isArray(a) || !Array.isArray(b)) {
             throw new TypeError("only arrays are comparable");
         }
-        return difference(a, b).concat(difference(b, a));
+        return this.arrayDiff(a, b).concat(this.arrayDiff(b, a));
     }
     
     arrayIntersect(a, b) {
@@ -63,7 +63,7 @@ class Helper {
     }
     
     isEqual(a, b) {
-        if (Object.is(a,b)) {
+        if (Object.is(a, b)) {
             return true;
         }
         if (typeof a != "object") {
@@ -85,13 +85,13 @@ class Helper {
             if (c.length != Object.keys(b).length) {
                 return false;
             }
-            return c.every(i => b.hasOwnProperty(i) && this.isEqual(a[i], b[i]));
+            return c.every(i => b[i] != null && this.isEqual(a[i], b[i]));
         }
     }
     
     svg2png(svg) {
         return new Promise(function(resolve, reject) {
-            if (!svg instanceof SVGElement) {
+            if (!(svg instanceof SVGElement)) {
                 reject(new TypeError("only svg elements can be converted to png"));
             }
             CANVAS.setAttribute("width", svg.getAttribute("width"));

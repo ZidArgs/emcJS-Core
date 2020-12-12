@@ -73,7 +73,7 @@ export default class ListHeader extends HTMLElement {
 
         this.shadowRoot.getElementById("selection").addEventListener("change", ev => {
             this.checked = ev.currentTarget.checked;
-            let event = new Event('check');
+            const event = new Event('check');
             event.value = ev.currentTarget.checked;
             this.dispatchEvent(event);
         });

@@ -1,7 +1,7 @@
 const ROUTES = new Map();
 
 function resolveParams(params) {
-    if (!!params.length) {
+    if (params.length) {
         return Object.fromEntries(params.slice(1).split('&').map(v=>v.split("=")));
     } else {
         return {};
@@ -71,11 +71,11 @@ function callRoute(loc) {
 class Router {
 
     // TODO add exact match flag
-    add(uri, callback){
-        if(typeof uri !== "string") throw new TypeError('typeof uri must be a string');
-        if(typeof callback !== "function") throw new TypeError('typeof callback must be a function');
+    add(uri, callback) {
+        if (typeof uri !== "string") throw new TypeError('typeof uri must be a string');
+        if (typeof callback !== "function") throw new TypeError('typeof callback must be a function');
         if (ROUTES.has(uri)) {
-            throw new Error(`the uri ${route.uri} already exists`);
+            throw new Error(`the uri ${uri} already exists`);
         }
         ROUTES.set(uri, callback);
     }
@@ -97,6 +97,7 @@ class Router {
     init() {
         callRoute(location);
     }
+    
 }
 
 export default new Router();

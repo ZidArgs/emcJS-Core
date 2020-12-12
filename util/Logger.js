@@ -62,11 +62,11 @@ function write(data) {
         }
         Array.from(output).forEach(function(out) {
             if (out instanceof HTMLTextAreaElement) {
-                out.value += msg+"\n";
+                out.value += msg + "\n";
                 out.scrollTop = out.scrollHeight;
             } else if (out instanceof HTMLElement) {
                 const el = document.createElement('span');
-                if (HTML_DEFAULT_STYLES.hasOwnProperty(data.type)) {
+                if (HTML_DEFAULT_STYLES[data.type] != null) {
                     for (const i in HTML_DEFAULT_STYLES[data.type]) {
                         el.style[i] = HTML_DEFAULT_STYLES[data.type][i];
                     }
@@ -88,17 +88,17 @@ function write(data) {
 window.addEventListener("error", function(msg, url, line, col, error) {
     if (msg instanceof ErrorEvent) {
         write({
-            target: `${!!msg.filename?msg.filename:"anonymous"} ${msg.lineno}:${msg.colno}`,
+            target: `${msg.filename ? msg.filename : "anonymous"} ${msg.lineno}:${msg.colno}`,
             type: LEVEL.SEVERE,
             time: (new Date).toJSON().replace(TIME_FND, TIME_REP),
-            message: !!msg.error ? msg.error : msg.message
+            message: msg.error ? msg.error : msg.message
         });
     } else {
         write({
-            target: `${url} ${line}${!!col?":"+col:""}`,
+            target: `${url} ${line}${col ? ":" + col : ""}`,
             type: LEVEL.SEVERE,
             time: (new Date).toJSON().replace(TIME_FND, TIME_REP),
-            message: `${msg}${!!error?"\n"+error:""}`
+            message: `${msg}${error ? "\n" + error : ""}`
         });
     }
     return true;

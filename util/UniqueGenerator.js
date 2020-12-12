@@ -18,7 +18,7 @@ class UniqueGenerator {
     appUID(prefix = "unique-id", len = 10) {
         const fill = new Array(len).join("0");
         if (APP_ID_CNT.has(prefix)) {
-            const cnt = APP_ID_CNT.get(prefix)+1;
+            const cnt = APP_ID_CNT.get(prefix) + 1;
             APP_ID_CNT.set(prefix, cnt);
             const str = `${fill}${cnt}`.slice(-len);
             return `${prefix}-${str}`;

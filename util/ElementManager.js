@@ -15,7 +15,7 @@ export default class ElementManager {
             throw new TypeError("composer must be a function");
         }
         COMPOSER.set(this, composer);
-        if (!!mutator) {
+        if (mutator) {
             if (typeof mutator != "function") {
                 throw new TypeError("if mutator is set, mutator must be a function");
             }
@@ -38,14 +38,14 @@ export default class ElementManager {
             const key = params.key || index;
             if (elements.has(key)) {
                 const el = elements.get(key);
-                if (!!mutator) {
+                if (mutator) {
                     mutator(el, key, params);
                 }
                 unused.delete(key);
                 target.append(el);
             } else {
                 const el = composer(key, params);
-                if (!!mutator) {
+                if (mutator) {
                     mutator(el, key, params);
                 }
                 elements.set(key, el);

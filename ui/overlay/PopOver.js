@@ -80,7 +80,7 @@ function removeElement() {
 
 class PopOver {
 
-    show(text = "", time) {
+    show(text = "", time = 5) {
         const el = document.createElement('div');
         el.attachShadow({mode: 'open'});
         el.shadowRoot.append(TPL.generate());

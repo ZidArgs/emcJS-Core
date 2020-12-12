@@ -1,7 +1,7 @@
 const STATE = new WeakMap();
 
 function isEqual(a, b) {
-    if (Object.is(a,b)) {
+    if (Object.is(a, b)) {
         return true;
     }
     if (typeof a != "object") {
@@ -23,7 +23,7 @@ function isEqual(a, b) {
         if (c.length != Object.keys(b).length) {
             return false;
         }
-        return c.every(i => b.hasOwnProperty(i) && isEqual(a[i], b[i]));
+        return c.every(i => b[i] != null && isEqual(a[i], b[i]));
     }
 }
 

@@ -23,6 +23,7 @@ class Node {
 
     remove(node) {
         if (node instanceof Node) {
+            const edges = EDGES.get(this);
             edges.delete(node.getName());
         } else {
             throw new TypeError("Expected type Node");

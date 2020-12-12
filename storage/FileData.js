@@ -1,3 +1,4 @@
+/* eslint-disable no-extra-boolean-cast */
 import FileLoader from "../util/FileLoader.js";
 
 const STORAGE = {};
@@ -35,7 +36,7 @@ class FileData {
             const ref = sp.shift();
             if (!ref) continue;
             if (typeof data == "object") {
-                if (data.hasOwnProperty(ref)) {
+                if (data[ref] != null) {
                     data = data[ref];
                 } else {
                     return value;

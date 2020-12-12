@@ -81,7 +81,7 @@ export default class LogicGraph {
             node.remove(child);
             DIRTY.set(this, true);
         } else {
-            let fn = Compiler.compile(value);
+            const fn = Compiler.compile(value);
             node.append(child, fn);
             DIRTY.set(this, true);
         }
@@ -94,7 +94,6 @@ export default class LogicGraph {
 
     setMixin(name, value) {
         const debug = DEBUG.get(this);
-        const nodeFactory = NODES.get(this);
         const mixins = MIXINS.get(this);
         if (debug) {
             console.group("GRAPH LOGIC BUILD");
@@ -104,11 +103,10 @@ export default class LogicGraph {
             mixins.delete(name);
             DIRTY.set(this, true);
         } else {
-            let fn = Compiler.compile(value);
+            const fn = Compiler.compile(value);
             mixins.set(name, fn);
             DIRTY.set(this, true);
         }
-        sortLogic(logic);
         if (debug) {
             console.timeEnd("build time");
             console.groupEnd("GRAPH LOGIC BUILD");
@@ -187,15 +185,15 @@ export default class LogicGraph {
                 console.time("execution time");
             }
 
-            function valueGetter(key) {
+            const valueGetter = key => {
                 if (allTargets.has(key)) {
                     return +reachableNodes.has(key);
                 } else if (mem_i.has(key)) {
                     return mem_i.get(key);
                 }
-            }
+            };
 
-            function execute(name) {
+            const execute = name => {
                 if (mixins.has(name)) {
                     const fn = mixins.get(name);
                     const res = fn(valueGetter, execute);
@@ -208,7 +206,7 @@ export default class LogicGraph {
                     return res;
                 }
                 return 0;
-            }
+            };
 
             const queue = [];
             for (const ch of start.getTargets()) {
@@ -216,10 +214,10 @@ export default class LogicGraph {
                 queue.push(edge);
             }
             let changed = true;
-            while(!!queue.length && !!changed) {
+            while (!!queue.length && !!changed) {
                 changed = false;
                 let counts = queue.length;
-                while (!!counts--) {
+                while (counts--) {
                     const edge = queue.shift();
                     const condition = edge.getCondition();
                     const cRes = condition(valueGetter, execute);
@@ -238,7 +236,7 @@ export default class LogicGraph {
                         for (const ch of targets) {
                             const chEdge = node.getEdge(ch);
                             const chName = this.getTranslation(chEdge.getSource().getName(), chEdge.getTarget().getName());
-                            if(!reachableNodes.has(chName)) {
+                            if (!reachableNodes.has(chName)) {
                                 queue.push(chEdge);
                             }
                         }
@@ -312,7 +310,7 @@ export default class LogicGraph {
     getAll() {
         const mem_o = MEM_O.get(this);
         const obj = {};
-        mem_o.forEach((v,k) => {obj[k] = v});
+        mem_o.forEach((v, k) => {obj[k] = v});
         return obj;
     }
 

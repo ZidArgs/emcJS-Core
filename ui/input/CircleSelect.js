@@ -71,6 +71,22 @@ slot {
 }
 `);
 
+function getNextElement(all, current) {
+    if (!current.nextElementSibling) {
+        return all[all.length - 1];
+    } else {
+        return current.nextElementSibling;
+    }
+}
+
+function getPrevElement(all, current) {
+    if (!current.previousElementSibling) {
+        return all[all.length - 1];
+    } else {
+        return current.previousElementSibling;
+    }
+}
+
 export default class CircleSelect extends HTMLElement {
 
     constructor() {
@@ -90,8 +106,8 @@ export default class CircleSelect extends HTMLElement {
 
     connectedCallback() {
         if (!this.value) {
-            let all = this.querySelectorAll("[value]");
-            if (!!all.length) {
+            const all = this.querySelectorAll("[value]");
+            if (all.length) {
                 this.value = all[0].value;
             }
         }
@@ -106,7 +122,7 @@ export default class CircleSelect extends HTMLElement {
     }
 
     get readonly() {
-        let val = this.getAttribute('readonly');
+        const val = this.getAttribute('readonly');
         return !!val && val != "false";
     }
 
@@ -122,15 +138,15 @@ export default class CircleSelect extends HTMLElement {
         switch (name) {
             case 'value':
                 if (oldValue != newValue) {
-                    let oe = this.querySelector(`.active`);
-                    if (!!oe) {
+                    const oe = this.querySelector(`.active`);
+                    if (oe) {
                         oe.classList.remove("active");
                     }
-                    let ne = this.querySelector(`[value="${newValue}"]`);
-                    if (!!ne) {
+                    const ne = this.querySelector(`[value="${newValue}"]`);
+                    if (ne) {
                         ne.classList.add("active");
                     }
-                    let event = new Event('change');
+                    const event = new Event('change');
                     event.oldValue = oldValue;
                     event.newValue = newValue;
                     event.value = newValue;
@@ -142,21 +158,15 @@ export default class CircleSelect extends HTMLElement {
 
     next(ev) {
         if (!this.readonly) {
-            let all = this.querySelectorAll("[value]");
-            if (!!all.length) {
-                let opt = this.querySelector(`[value="${this.value}"]`);
-                if (!!opt) {
-                    let next = opt;
-                    while (true) {
-                        if (!next.nextElementSibling) {
-                            next = all[0];
-                        } else {
-                            next = next.nextElementSibling;
-                        }
-                        let da = next.getAttribute("disabled");
-                        if  (!da || da == "false" || next == opt) {
-                            break;
-                        }
+            const all = this.querySelectorAll("[value]");
+            if (all.length) {
+                const opt = this.querySelector(`[value="${this.value}"]`);
+                if (opt) {
+                    let next = getNextElement(all, opt);
+                    let da = next.getAttribute("disabled");
+                    while (!da || da == "false" || next == opt) {
+                        next = getNextElement(all, opt);
+                        da = next.getAttribute("disabled");
                     }
                     this.value = next.getAttribute("value");
                 }
@@ -168,21 +178,15 @@ export default class CircleSelect extends HTMLElement {
 
     prev(ev) {
         if (!this.readonly) {
-            let all = this.querySelectorAll("[value]");
-            if (!!all.length) {
-                let opt = this.querySelector(`[value="${this.value}"]`);
-                if (!!opt) {
-                    let next = opt;
-                    while (true) {
-                        if (!next.previousElementSibling) {
-                            next = all[all.length - 1];
-                        } else {
-                            next = next.previousElementSibling;
-                        }
-                        let da = next.getAttribute("disabled");
-                        if  (!da || da == "false" || next == opt) {
-                            break;
-                        }
+            const all = this.querySelectorAll("[value]");
+            if (all.length) {
+                const opt = this.querySelector(`[value="${this.value}"]`);
+                if (opt) {
+                    let next = getPrevElement(all, opt);
+                    let da = next.getAttribute("disabled");
+                    while (!da || da == "false" || next == opt) {
+                        next = getPrevElement(all, opt);
+                        da = next.getAttribute("disabled");
                     }
                     this.value = next.getAttribute("value");
                 }

@@ -12,8 +12,8 @@ export default class ActionPath {
         const actions = ACTION_LIST.get(this);
         actions[pointer++] = step;
         if (pointer < actions.length) {
-            actions = actions.slice(0, pointer);
-            ACTION_LIST.set(this, actions);
+            const newActions = actions.slice(0, pointer);
+            ACTION_LIST.set(this, newActions);
         }
         POINTER.set(this, pointer);
     }

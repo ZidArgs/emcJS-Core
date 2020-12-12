@@ -121,7 +121,7 @@ export default class ListSelect extends HTMLElement {
         this.shadowRoot.getElementById("container").addEventListener("slotchange", event => {
             const all = this.querySelectorAll(`[value]`);
             all.forEach(el => {
-                if (!!el) {
+                if (el) {
                     el.onclick = clickOption.bind(this);
                 }
             });
@@ -153,7 +153,7 @@ export default class ListSelect extends HTMLElement {
             const all = this.querySelectorAll(`[value]`);
             let checked = false;
             let unchecked = false;
-            if (!!event.value) {
+            if (event.value) {
                 const regEx = new SearchAnd(event.value);
                 all.forEach(el => {
                     if (el.innerText.match(regEx)) {
@@ -197,7 +197,7 @@ export default class ListSelect extends HTMLElement {
             this.value = all[0].value;
         }
         all.forEach(el => {
-            if (!!el) {
+            if (el) {
                 el.onclick = clickOption.bind(this);
             }
         });
@@ -285,7 +285,7 @@ export default class ListSelect extends HTMLElement {
             let checked = false;
             let unchecked = false;
             all.forEach(el => {
-                if (!!el) {
+                if (el) {
                     if (vals.has(el.value)) {
                         el.classList.add("active");
                         if (el.style.display == "") {
@@ -310,7 +310,7 @@ export default class ListSelect extends HTMLElement {
             }
         } else {
             all.forEach(el => {
-                if (!!el) {
+                if (el) {
                     if (this.value == el.value) {
                         el.classList.add("active");
                     } else {

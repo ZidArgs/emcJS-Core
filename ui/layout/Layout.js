@@ -1,7 +1,7 @@
 import Template from "../../util/Template.js";
 import GlobalStyle from "../../util/GlobalStyle.js";
-import"./HBox.js";
-import"./VBox.js";
+import "./HBox.js";
+import "./VBox.js";
 import Panel from "./Panel.js";
 
 const TPL = new Template(`
@@ -27,22 +27,22 @@ const STYLE = new GlobalStyle(`
 `);
 
 function loadLayout(layout) {
-    if (!!layout) {
+    if (layout) {
         if (layout.type == "panel") {
-            let el = document.createElement('div');
+            const el = document.createElement('div');
             el.classList.add("panel");
-            let ch = new (Panel.getReference(layout.name));
-            for (let i in layout.options) {
+            const ch = new (Panel.getReference(layout.name));
+            for (const i in layout.options) {
                 ch.setAttribute(i, layout.options[i]);
             }
             el.append(ch);
             return el;
         } else {
-            let el = document.createElement(`emc-${layout.type}`);
+            const el = document.createElement(`emc-${layout.type}`);
             el.classList.add("stretchlast");
-            for (let item of layout.items) {
-                let ch = loadLayout(item);
-                if (!!item.autosize) {
+            for (const item of layout.items) {
+                const ch = loadLayout(item);
+                if (item.autosize) {
                     ch.classList.add("autosize");
                     el.classList.remove("stretchlast");
                 }

@@ -13,7 +13,7 @@ class LocalStorage {
     }
 
     has(key) {
-        return localStorage.hasOwnProperty(key);
+        return localStorage.getItem(key) != null;
     }
 
     delete(key) {

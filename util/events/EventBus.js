@@ -5,7 +5,7 @@ const SUBS = new Map();
 
 const MODULES = new Map();
 
-function triggerEvent(data = {name:"",data:{}}) {
+function triggerEvent(data = {name:"", data:{}}) {
     if (SUBS.has(data.name)) {
         for (const fn of SUBS.get(data.name)) {
             fn(data);
@@ -62,7 +62,7 @@ class EventBus {
         if (module instanceof EventBusAbstractModule) {
             if (MODULES.has(module)) {
                 MODULES.delete(module);
-                module.onModuleEvent = function(){};
+                module.onModuleEvent = function() {};
             }
         }
     }

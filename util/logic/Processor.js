@@ -210,7 +210,7 @@ export default class Processor {
     getAll() {
         const mem_o = MEM_O.get(this);
         const obj = {};
-        mem_o.forEach((v,k) => {obj[k] = v});
+        mem_o.forEach((v, k) => {obj[k] = v});
         return obj;
     }
 

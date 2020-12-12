@@ -9,13 +9,13 @@ export default class CustomElement extends HTMLElement {
             throw new TypeError("can not construct abstract class");
         }
         this.attachShadow({mode: 'open'});
-        if (!!template) {
+        if (template) {
             if (!(template instanceof Template)) {
                 throw new TypeError("first parameter must be a Template");
             }
             this.shadowRoot.append(template.generate());
         }
-        if (!!style) {
+        if (style) {
             if (!(style instanceof GlobalStyle)) {
                 throw new TypeError("second parameter must be a GlobalStyle");
             }

@@ -156,9 +156,9 @@ export default class SettingsWindow extends Window {
         window.append(els.getElementById('footer'));
 
         ctgrs.onclick = (event) => {
-            const t = event.target.getAttribute('target');
-            if (!!t) {
-                this.active = t;
+            const targetEl = event.target.getAttribute('target');
+            if (targetEl) {
+                this.active = targetEl;
                 event.preventDefault();
                 return false;
             }
@@ -196,28 +196,28 @@ export default class SettingsWindow extends Window {
     
     attributeChangedCallback(name, oldValue, newValue) {
         if (oldValue != newValue) {
-            if (!!oldValue) {
+            if (oldValue) {
                 const ol = this.shadowRoot.getElementById(`panel_${oldValue}`);
-                if (!!ol) {
+                if (ol) {
                     ol.classList.remove("active");
                 }
                 const ob = this.shadowRoot.querySelector(`[target="${oldValue}"]`);
-                if (!!ob) {
+                if (ob) {
                     ob.classList.remove("active");
                 }
             }
             const nl = this.shadowRoot.getElementById(`panel_${newValue}`);
-            if (!!nl) {
+            if (nl) {
                 nl.classList.add("active");
             }
             const nb = this.shadowRoot.querySelector(`[target="${newValue}"]`);
-            if (!!nb) {
+            if (nb) {
                 nb.classList.add("active");
             }
         }
     }
 
-    show(data = {}, category) {
+    show(data = {}, category = "") {
         super.show();
         for (const i in data) {
             const b = this.shadowRoot.getElementById(`panel_${i}`);
@@ -232,11 +232,11 @@ export default class SettingsWindow extends Window {
                 }
             }
         }
-        if (!!category) {
+        if (category) {
             this.active = category;
         } else {
-            let ctg = this.shadowRoot.getElementById('categories').children;
-            if (!!ctg.length) {
+            const ctg = this.shadowRoot.getElementById('categories').children;
+            if (ctg.length) {
                 this.active = ctg[0].getAttribute('target')
             }
         }
@@ -263,7 +263,7 @@ export default class SettingsWindow extends Window {
         a.push(this.shadowRoot.getElementById('submit'));
         a.push(this.shadowRoot.getElementById('cancel'));
         a.unshift(this.shadowRoot.getElementById('close'));
-        a[a.length-1].focus();
+        a[a.length - 1].focus();
     }
 
     addTab(title, id) {
@@ -370,7 +370,7 @@ export default class SettingsWindow extends Window {
         this.shadowRoot.getElementById(`panel_${category}`).append(el);
     }
 
-    addButton(category, label, ref, text = "", callback) {
+    addButton(category, label, ref, text = "", callback = null) {
         const el = generateField(label);
         const input = document.createElement("button");
         input.className = "settings-button";

@@ -8,11 +8,11 @@ class CSV {
             const entries = item.split(split);
             parseEntries:
             while (entries.length) {
-                const act = entries.shift();
+                let act = entries.shift();
                 if (!act.startsWith('"')) {
                     output.push(act);
                 } else {
-                    const buf = [act];
+                    let buf = [act];
                     while (entries.length) {
                         act = entries.shift();
                         buf.push(act);

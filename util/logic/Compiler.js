@@ -14,8 +14,8 @@ const TRANSPILERS = {
     "or":       (logic) => `${multiElementOperation(logic.el, "||")}`,
     "nor":      (logic) => `!${multiElementOperation(logic.el, "||")}`,
     "not":      (logic) => `!(${buildLogic(logic.el)})`,
-    "xor":      (logic) => `${twoElementOperation(logic.el, "^")||1}`,
-    "xnor":     (logic) => `!${twoElementOperation(logic.el, "^")||1}`,
+    "xor":      (logic) => `${twoElementOperation(logic.el, "^") || 1}`,
+    "xnor":     (logic) => `!${twoElementOperation(logic.el, "^") || 1}`,
 
     /* restrictors */
     "min":      (logic) => `(${buildLogic(logic.el)}>=${escape(logic.value, 0)})`,
@@ -38,7 +38,7 @@ const TRANSPILERS = {
     "pow":      (logic) => mathTwoElementOperation(logic.el, "**"),
 
     /* special */
-    "at":       (logic) => !!logic.el ? `((val("${escape(logic.node)}")||0)&&${buildLogic(logic.el)})` : `(val("${escape(logic.node)}")||0)`,
+    "at":       (logic) => logic.el ? `((val("${escape(logic.node)}")||0)&&${buildLogic(logic.el)})` : `(val("${escape(logic.node)}")||0)`,
     "mixin":    (logic) => `(val("${escape(logic.el)}")||0)`
 };
 

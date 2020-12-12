@@ -48,17 +48,17 @@ const STYLE = new GlobalStyle(`
 
 function appendToast(el, timeout) {
     if (parseInt(timeout) === 0) {
-        el.onclick = function() {
+        el.onclick = () => {
             document.body.removeChild(el);
-        }
+        };
     } else {
-        const t = setTimeout(function () {
+        const t = setTimeout(() => {
             document.body.removeChild(el);
         }, parseInt(timeout) || 5000);
-        el.onclick = function() {
+        el.onclick = () => {
             clearTimeout(t);
             document.body.removeChild(el);
-        }
+        };
     }
     document.body.append(el);
 }
@@ -123,6 +123,7 @@ class Toast {
         txt.className = "error";
         appendToast(el, timeout);
     }
+
 }
 
 export default new Toast;

@@ -52,12 +52,12 @@ export default new FileSystem;
 
 function convertData(dataUrl) {
     const pos = dataUrl.indexOf(',') + 1;
-    const mime = dataUrl.slice(5, pos-8);
+    const mime = dataUrl.slice(5, pos - 8);
     let res = dataUrl.slice(pos);
-    switch(mime) {
+    switch (mime) {
         case "application/json":
             res = JSON.parse(atob(res));
-        break;
+            break;
     }
     return {
         mime: mime,

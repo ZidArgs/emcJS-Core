@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 const INDEX = new Map();
 const STYLESHEETS = new WeakMap();
 
@@ -32,7 +33,7 @@ export default class GlobalStyle {
     }
 
     static getStyle(ref) {
-        return INDEX.get(ref); 
+        return INDEX.get(ref);
     }
 
 }
@@ -56,14 +57,13 @@ function cloneStyleElement(element) {
 }
 
 if (!Document.prototype.hasOwnProperty("adoptedStyleSheets")) {
-
     const VALUE = new WeakMap();
 
     Object.defineProperty(Document.prototype, 'adoptedStyleSheets', {
-        get: function () {
+        get: function() {
             return VALUE.get(this) || [];
         },
-        set: function (newValue) {
+        set: function(newValue) {
             const oldValue = VALUE.get(this) || [];
             newValue = newValue.map(value => {
                 if (value instanceof CSSStyleSheet) {
@@ -80,8 +80,8 @@ if (!Document.prototype.hasOwnProperty("adoptedStyleSheets")) {
                     const res = document.createElement("style");
                     res.innerHTML = value;
                     return res;
-                } catch (e) {
-                    throw new TypeError("Failed to set the 'adoptedStyleSheets' property on 'Document': Failed to convert value to 'CSSStyleSheet'.");
+                } catch(err) {
+                    throw new TypeError("Failed to set the 'adoptedStyleSheets' property on 'Document': Failed to convert value to 'CSSStyleSheet'.", err);
                 }
             });
             VALUE.set(this, Object.freeze(newValue));
@@ -97,18 +97,16 @@ if (!Document.prototype.hasOwnProperty("adoptedStyleSheets")) {
             }
         }
     });
-
 }
 
 if (!ShadowRoot.prototype.hasOwnProperty("adoptedStyleSheets")) {
-
     const VALUE = new WeakMap();
 
     Object.defineProperty(ShadowRoot.prototype, 'adoptedStyleSheets', {
-        get: function () {
+        get: function() {
             return VALUE.get(this) || [];
         },
-        set: function (newValue) {
+        set: function(newValue) {
             const oldValue = VALUE.get(this) || [];
             newValue = newValue.map(value => {
                 if (value instanceof CSSStyleSheet) {
@@ -125,8 +123,8 @@ if (!ShadowRoot.prototype.hasOwnProperty("adoptedStyleSheets")) {
                     const res = document.createElement("style");
                     res.innerHTML = value;
                     return res.sheet;
-                } catch (e) {
-                    throw new TypeError("Failed to set the 'adoptedStyleSheets' property on 'ShadowRoot': Failed to convert value to 'CSSStyleSheet'.");
+                } catch(err) {
+                    throw new TypeError("Failed to set the 'adoptedStyleSheets' property on 'ShadowRoot': Failed to convert value to 'CSSStyleSheet'.", err);
                 }
             });
             VALUE.set(this, Object.freeze(newValue));
@@ -142,5 +140,4 @@ if (!ShadowRoot.prototype.hasOwnProperty("adoptedStyleSheets")) {
             }
         }
     });
-
 }

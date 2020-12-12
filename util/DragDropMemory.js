@@ -4,7 +4,7 @@ class DragDropMemory {
 
     add(element) {
         if (Array.isArray(element)) {
-            for(const el of element) {
+            for (const el of element) {
                 this.add(el);
             }
         } else {

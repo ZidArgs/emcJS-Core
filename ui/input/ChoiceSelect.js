@@ -73,7 +73,7 @@ export default class ChoiceSelect extends HTMLElement {
         this.shadowRoot.getElementById("container").addEventListener("slotchange", event => {
             const all = this.querySelectorAll("[value]");
             all.forEach(el => {
-                if (!!el) {
+                if (el) {
                     el.onclick = onClickOption;
                 }
             });
@@ -92,7 +92,7 @@ export default class ChoiceSelect extends HTMLElement {
             this.value = all[0].value;
         }
         all.forEach(el => {
-            if (!!el) {
+            if (el) {
                 el.onclick = onClickOption;
             }
         });
@@ -168,7 +168,7 @@ export default class ChoiceSelect extends HTMLElement {
     calculateItems() {
         const all = this.querySelectorAll("[value]");
         all.forEach(el => {
-            if (!!el) {
+            if (el) {
                 el.classList.remove("active");
             }
         });
@@ -179,7 +179,7 @@ export default class ChoiceSelect extends HTMLElement {
             }
         } else {
             const el = this.querySelector(`[value="${this.value}"]`);
-            if (!!el) {
+            if (el) {
                 el.classList.add("active");
             }
         }

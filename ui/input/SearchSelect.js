@@ -101,9 +101,9 @@ export default class SearchSelect extends HTMLElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.shadowRoot.getElementById("container").addEventListener("slotchange", event => {
-            let all = this.querySelectorAll(`[value]`);
+            const all = this.querySelectorAll(`[value]`);
             all.forEach(el => {
-                if (!!el) {
+                if (el) {
                     el.onclick = clickOption.bind(this);
                     if (el.value == this.value) {
                         this.shadowRoot.getElementById("view").value = el.innerHTML;
@@ -160,7 +160,7 @@ export default class SearchSelect extends HTMLElement {
             this.value = all[0].value;
         }
         all.forEach(el => {
-            if (!!el) {
+            if (el) {
                 el.onclick = clickOption.bind(this);
             }
         });
