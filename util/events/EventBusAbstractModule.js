@@ -7,7 +7,7 @@ class EventBusAbstractModule {
     }
 
     onModuleEvent(payload) {
-        throw new TypeError("can not call abstract method");
+        // will be overwritten by EventBus
     }
 
     triggerModuleEvent(payload) {

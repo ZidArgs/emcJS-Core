@@ -107,6 +107,35 @@ class Helper {
         });
     }
 
+    deepClone(item) {
+        if (item != null && typeof item == "object") {
+            if (item instanceof HTMLElement) {
+                return item.cloneNode(true);
+            }
+            if (item instanceof Date) {
+                return new Date(item);
+            }
+            if (item instanceof Boolean) {
+                return Boolean(item);
+            }
+            if (item instanceof Number) {
+                return Number(item);
+            }
+            if (item instanceof String) {
+                return String(item);
+            }
+            if (Array.isArray(item)) {
+                return item.map(el => this.deepClone(el));
+            }
+            const result = {};
+            for (const i in item) {
+                result[i] = this.deepClone(item[i]);
+            }
+            return result;
+        }
+        return item;
+    }
+
 }
 
 export default new Helper;

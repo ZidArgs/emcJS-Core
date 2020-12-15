@@ -1,4 +1,5 @@
 import EventBusAbstractModule from "./EventBusAbstractModule.js";
+import Helper from "../Helper.js";
 
 const ALLS = new Set();
 const SUBS = new Map();
@@ -8,11 +9,11 @@ const MODULES = new Map();
 function triggerEvent(data = {name:"", data:{}}) {
     if (SUBS.has(data.name)) {
         for (const fn of SUBS.get(data.name)) {
-            fn(data);
+            fn(Helper.deepClone(data));
         }
     }
     for (const fn of ALLS) {
-        fn(data);
+        fn(Helper.deepClone(data));
     }
 }
 
@@ -47,12 +48,17 @@ class EventBus {
         return checkLists(whitelist, blacklist, name);
     }
 
-    addModule(module, options = {}) {
-        if (module instanceof EventBusAbstractModule) {
-            MODULES.set(module, options);
-            module.onModuleEvent = payload => {
+    addModule(newModule, options = {}) {
+        if (newModule instanceof EventBusAbstractModule) {
+            MODULES.set(newModule, options);
+            newModule.onModuleEvent = payload => {
                 if (checkLists(options.whitelist, options.blacklist, payload.name)) {
                     triggerEvent(payload);
+                    MODULES.forEach((options, module) => {
+                        if (newModule != module && checkLists(options.whitelist, options.blacklist, name)) {
+                            module.triggerModuleEvent(payload);
+                        }
+                    });
                 }
             };
         }

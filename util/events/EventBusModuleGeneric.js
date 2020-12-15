@@ -9,10 +9,6 @@ class EventBusModuleGeneric extends EventBusAbstractModule {
         SUBS.set(this, new Set());
     }
 
-    onModuleEvent(payload) {
-        // empty
-    }
-
     async triggerModuleEvent(payload) {
         SUBS.get(this).forEach(function(fn) {
             fn(payload);
