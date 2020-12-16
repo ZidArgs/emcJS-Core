@@ -4,7 +4,7 @@ export default class BoolState extends AnyState {
 
     constructor() {
         super();
-        super.value = false;
+        super.value = "";
     }
 
     set value(value) {
