@@ -8,8 +8,8 @@ export default class BoolState extends AnyState {
     }
 
     set value(value) {
-        if (typeof value != "boolean") {
-            value = !!value;
+        if (typeof value != "string") {
+            value = `${value}`;
         }
         super.value = value;
     }

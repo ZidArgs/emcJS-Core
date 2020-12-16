@@ -4,19 +4,19 @@ const MAX = new WeakMap();
 const MIN = new WeakMap();
 
 function parseNumber(value, def = 0) {
-    const result = parseFloat(value);
+    const result = parseInt(value);
     if (isNaN(result)) {
         return def;
     }
     return result;
 }
 
-export default class NumberState extends AnyState {
+export default class IntegerState extends AnyState {
 
     constructor(min, max) {
         super();
-        MIN.set(this, parseNumber(min, Number.MIN_VALUE));
-        MAX.set(this, parseNumber(max, Number.MAX_VALUE));
+        MIN.set(this, parseNumber(min, Number.MIN_SAFE_INTEGER));
+        MAX.set(this, parseNumber(max, Number.MAX_SAFE_INTEGER));
         super.value = 0;
     }
 
