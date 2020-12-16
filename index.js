@@ -1,13 +1,17 @@
+import data_Enum from "./data/Enum.js";
+import data_FileData from "./data/FileData.js";
 import data_Immutable from "./data/Immutable.js";
+import data_Registry from "./data/Registry.js";
 import data_state_AnyState from "./data/state/AnyState.js";
 import data_state_BoolState from "./data/state/BoolState.js";
+import data_state_IntegerState from "./data/state/IntegerState.js";
 import data_state_NumberState from "./data/state/NumberState.js";
+import data_state_StringState from "./data/state/StringState.js";
 import data_type_AbstractType from "./data/type/AbstractType.js";
 import data_type_TypeString from "./data/type/TypeString.js";
 import mixins_EventBusSubset from "./mixins/EventBusSubset.js";
 import storage_Cookie from "./storage/Cookie.js";
 import storage_DebouncedStorage from "./storage/DebouncedStorage.js";
-import storage_FileData from "./storage/FileData.js";
 import storage_IDBStorage from "./storage/IDBStorage.js";
 import storage_LocalStorage from "./storage/LocalStorage.js";
 import storage_MemoryStorage from "./storage/MemoryStorage.js";
@@ -88,6 +92,7 @@ import util_Router from "./util/Router.js";
 import util_search_SearchAnd from "./util/search/SearchAnd.js";
 import util_search_SearchOr from "./util/search/SearchOr.js";
 import util_Sequence from "./util/Sequence.js";
+import util_SVGUtil from "./util/SVGUtil.js";
 import util_Template from "./util/Template.js";
 import util_Timer from "./util/Timer.js";
 import util_UniqueGenerator from "./util/UniqueGenerator.js";
@@ -95,11 +100,16 @@ import util_ViewSwitcher from "./util/ViewSwitcher.js";
 
 export default {
     "data": {
+        "Enum": data_Enum,
+        "FileData": data_FileData,
         "Immutable": data_Immutable,
+        "Registry": data_Registry,
         "state": {
             "AnyState": data_state_AnyState,
             "BoolState": data_state_BoolState,
-            "NumberState": data_state_NumberState
+            "IntegerState": data_state_IntegerState,
+            "NumberState": data_state_NumberState,
+            "StringState": data_state_StringState
         },
         "type": {
             "AbstractType": data_type_AbstractType,
@@ -112,7 +122,6 @@ export default {
     "storage": {
         "Cookie": storage_Cookie,
         "DebouncedStorage": storage_DebouncedStorage,
-        "FileData": storage_FileData,
         "IDBStorage": storage_IDBStorage,
         "LocalStorage": storage_LocalStorage,
         "MemoryStorage": storage_MemoryStorage,
@@ -223,6 +232,7 @@ export default {
             "SearchOr": util_search_SearchOr
         },
         "Sequence": util_Sequence,
+        "SVGUtil": util_SVGUtil,
         "Template": util_Template,
         "Timer": util_Timer,
         "UniqueGenerator": util_UniqueGenerator,
