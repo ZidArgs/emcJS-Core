@@ -8,10 +8,7 @@ export default class BoolState extends AnyState {
     }
 
     set value(value) {
-        if (typeof value != "string") {
-            value = `${value}`;
-        }
-        super.value = value;
+        super.value = value.toString();
     }
 
     get value() {

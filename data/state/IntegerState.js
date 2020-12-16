@@ -3,10 +3,17 @@ import AnyState from "./AnyState.js";
 const MAX = new WeakMap();
 const MIN = new WeakMap();
 
-function parseNumber(value, def = 0) {
+function parseNumber(value) {
     const result = parseInt(value);
     if (isNaN(result)) {
-        return def;
+        console.warn("value is not a number");
+        return;
+    }
+    if (result > Number.MAX_SAFE_INTEGER) {
+        return Number.MAX_SAFE_INTEGER;
+    }
+    if (result < Number.MIN_SAFE_INTEGER) {
+        return Number.MIN_SAFE_INTEGER;
     }
     return result;
 }
@@ -22,13 +29,15 @@ export default class IntegerState extends AnyState {
 
     set min(value) {
         value = parseNumber(value, Number.MIN_VALUE);
-        const max = MAX.get(this);
-        if (value > max) {
-            value = max;
-        }
-        MIN.set(this, value);
-        if (this.value < value) {
-            super.value = value;
+        if (value != null) {
+            const max = MAX.get(this);
+            if (value > max) {
+                value = max;
+            }
+            MIN.set(this, value);
+            if (this.value < value) {
+                super.value = value;
+            }
         }
     }
 
@@ -38,13 +47,15 @@ export default class IntegerState extends AnyState {
 
     set max(value) {
         value = parseNumber(value, Number.MAX_VALUE);
-        const min = MIN.get(this);
-        if (value < min) {
-            value = min;
-        }
-        MAX.set(this, value);
-        if (this.value > value) {
-            super.value = value;
+        if (value != null) {
+            const min = MIN.get(this);
+            if (value < min) {
+                value = min;
+            }
+            MAX.set(this, value);
+            if (this.value > value) {
+                super.value = value;
+            }
         }
     }
 
@@ -54,14 +65,16 @@ export default class IntegerState extends AnyState {
 
     set value(value) {
         value = parseNumber(value);
-        const max = MAX.get(this);
-        const min = MIN.get(this);
-        if (value > max) {
-            value = max;
-        } else if (value < min) {
-            value = min;
+        if (value != null) {
+            const max = MAX.get(this);
+            const min = MIN.get(this);
+            if (value > max) {
+                value = max;
+            } else if (value < min) {
+                value = min;
+            }
+            super.value = value;
         }
-        super.value = value;
     }
 
     get value() {
