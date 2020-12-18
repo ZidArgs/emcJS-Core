@@ -1,4 +1,4 @@
-import Helper from "../util/Helper.js";
+import Helper from "../../util/Helper.js";
 
 const STATE = new WeakMap();
 

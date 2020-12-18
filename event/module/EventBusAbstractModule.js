@@ -1,4 +1,4 @@
-class EventBusAbstractModule {
+export default class EventBusAbstractModule {
 
     constructor() {
         if (new.target === EventBusAbstractModule) {
@@ -15,5 +15,3 @@ class EventBusAbstractModule {
     }
 
 }
-
-export default EventBusAbstractModule;

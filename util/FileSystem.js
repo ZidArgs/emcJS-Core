@@ -11,6 +11,21 @@ ul.style.display = "none !important";
 ul.style.opacity = "0 !important";
 ul.style.visibility = "hidden !important";
 
+function convertData(dataUrl) {
+    const pos = dataUrl.indexOf(',') + 1;
+    const mime = dataUrl.slice(5, pos - 8);
+    let res = dataUrl.slice(pos);
+    switch (mime) {
+        case "application/json":
+            res = JSON.parse(atob(res));
+            break;
+    }
+    return {
+        mime: mime,
+        data: res
+    };
+}
+
 class FileSystem {
 
     load(extensions) {
@@ -48,19 +63,4 @@ class FileSystem {
 
 }
 
-export default new FileSystem;
-
-function convertData(dataUrl) {
-    const pos = dataUrl.indexOf(',') + 1;
-    const mime = dataUrl.slice(5, pos - 8);
-    let res = dataUrl.slice(pos);
-    switch (mime) {
-        case "application/json":
-            res = JSON.parse(atob(res));
-            break;
-    }
-    return {
-        mime: mime,
-        data: res
-    };
-}
+export default new FileSystem();

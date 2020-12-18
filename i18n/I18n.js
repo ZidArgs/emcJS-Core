@@ -1,4 +1,4 @@
-import Logger from "./Logger.js";
+import Logger from "../util/Logger.js";
 
 const languages = new Map();
 let actLang = "";

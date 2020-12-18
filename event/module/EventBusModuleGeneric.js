@@ -2,7 +2,7 @@ import EventBusAbstractModule from "./EventBusAbstractModule.js";
 
 const SUBS = new WeakMap();
 
-class EventBusModuleGeneric extends EventBusAbstractModule {
+export default class EventBusModuleGeneric extends EventBusAbstractModule {
 
     constructor() {
         super();
@@ -38,5 +38,3 @@ class EventBusModuleGeneric extends EventBusAbstractModule {
     }
 
 }
-
-export default EventBusModuleGeneric;

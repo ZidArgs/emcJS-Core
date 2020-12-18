@@ -1,4 +1,4 @@
-import EventBusSubset from "../util/events/EventBusSubset.js";
+import EventBusSubset from "../EventBusSubset.js";
 
 const ALLS = new WeakMap();
 const SUBS = new WeakMap();

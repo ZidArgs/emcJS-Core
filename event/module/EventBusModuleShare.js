@@ -1,5 +1,5 @@
 import EventBusAbstractModule from "./EventBusAbstractModule.js";
-import Path from "../Path.js";
+import Path from "../../util/Path.js";
 
 let WORKER = null;
 if ("SharedWorker" in window) {

@@ -7,7 +7,10 @@ function resolveFiles(path, imports) {
     });
     for (const file of files) {
         if (file.isDirectory() && file.name != ".git" && file.name != "_demo") {
-            result[file.name] = resolveFiles(`${path}/${file.name}`, imports);
+            const inFiles = resolveFiles(`${path}/${file.name}`, imports);
+            if (Object.keys(inFiles).length) {
+                result[file.name] = inFiles;
+            }
         } else if (path.length > 1 && file.isFile() && file.name != "index.js" && file.name.endsWith(".js") && !file.name.endsWith(".worker.js")) {
             const filename = file.name.slice(0, -3);
             const varname = `${path.slice(2).replace(/\//g, "_")}_${filename}`;

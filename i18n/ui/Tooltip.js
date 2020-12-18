@@ -1,6 +1,6 @@
 import Template from "../../util/Template.js";
 import GlobalStyle from "../../util/GlobalStyle.js";
-import I18n from "../../util/I18n.js";
+import I18n from "../I18n.js";
 
 const TPL = new Template(`
 <slot id="target"></slot>
@@ -16,6 +16,25 @@ const STYLE = new GlobalStyle(`
 }
 `);
 
+function updateLanguage(event) {
+    const el = this.shadowRoot.getElementById("target");
+    if (I18n.has(this.key)) {
+        el.title = I18n.get(this.key);
+    } else {
+        el.title = this.value || this.key;
+    }
+}
+
+function updateTranslation(event) {
+    const el = this.shadowRoot.getElementById("target");
+    if (event.changes[this.key] != null) {
+        el.title = event.changes[this.key] || this.value || this.key;
+    }
+}
+
+const LANGUAGE_HANDLER = new WeakMap();
+const TRANSLATION_HANDLER = new WeakMap();
+
 export default class Tooltip extends HTMLElement {
 
     constructor() {
@@ -24,19 +43,24 @@ export default class Tooltip extends HTMLElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
+        LANGUAGE_HANDLER.set(this, updateLanguage.bind(this));
+        TRANSLATION_HANDLER.set(this, updateTranslation.bind(this));
+    }
+
+    connectedCallback() {
         const el = this.shadowRoot.getElementById("target");
-        I18n.addEventListener("language", event => {
-            if (I18n.has(this.key)) {
-                el.title = I18n.get(this.key);
-            } else {
-                el.title = this.value || this.key;
-            }
-        });
-        I18n.addEventListener("translation", event => {
-            if (event.changes[this.key] != null) {
-                el.title = event.changes[this.key] || this.value || this.key;
-            }
-        });
+        if (I18n.has(this.key)) {
+            el.title = I18n.get(this.key);
+        } else {
+            el.title = this.value || this.key;
+        }
+        I18n.addEventListener("language", LANGUAGE_HANDLER.get(this));
+        I18n.addEventListener("translation", TRANSLATION_HANDLER.get(this));
+    }
+
+    disconnectedCallback() {
+        I18n.removeEventListener("language", LANGUAGE_HANDLER.get(this));
+        I18n.removeEventListener("translation", TRANSLATION_HANDLER.get(this));
     }
 
     get key() {

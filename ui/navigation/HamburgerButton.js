@@ -1,6 +1,6 @@
 import Template from "../../util/Template.js";
 import GlobalStyle from "../../util/GlobalStyle.js";
-import "../i18n/Tooltip.js";
+import "../../i18n/ui/Tooltip.js";
 
 const TPL = new Template(`
 <emc-i18n-tooltip id="tooltip">

@@ -9,7 +9,15 @@ import data_state_NumberState from "./data/state/NumberState.js";
 import data_state_StringState from "./data/state/StringState.js";
 import data_type_AbstractType from "./data/type/AbstractType.js";
 import data_type_TypeString from "./data/type/TypeString.js";
-import mixins_EventBusSubset from "./mixins/EventBusSubset.js";
+import event_EventBus from "./event/EventBus.js";
+import event_EventBusSubset from "./event/EventBusSubset.js";
+import event_module_EventBusAbstractModule from "./event/module/EventBusAbstractModule.js";
+import event_module_EventBusModuleGeneric from "./event/module/EventBusModuleGeneric.js";
+import event_module_EventBusModuleShare from "./event/module/EventBusModuleShare.js";
+import event_ui_EventBusMixin from "./event/ui/EventBusMixin.js";
+import i18n_I18n from "./i18n/I18n.js";
+import i18n_ui_Label from "./i18n/ui/Label.js";
+import i18n_ui_Tooltip from "./i18n/ui/Tooltip.js";
 import storage_Cookie from "./storage/Cookie.js";
 import storage_DebouncedStorage from "./storage/DebouncedStorage.js";
 import storage_IDBStorage from "./storage/IDBStorage.js";
@@ -23,8 +31,6 @@ import ui_CustomElement from "./ui/CustomElement.js";
 import ui_dragdrop_DragElement from "./ui/dragdrop/DragElement.js";
 import ui_dragdrop_DropTarget from "./ui/dragdrop/DropTarget.js";
 import ui_FilteredList from "./ui/FilteredList.js";
-import ui_i18n_Label from "./ui/i18n/Label.js";
-import ui_i18n_Tooltip from "./ui/i18n/Tooltip.js";
 import ui_Icon from "./ui/Icon.js";
 import ui_Import from "./ui/Import.js";
 import ui_input_ChoiceSelect from "./ui/input/ChoiceSelect.js";
@@ -66,11 +72,6 @@ import util_converter_XML from "./util/converter/XML.js";
 import util_DateUtil from "./util/DateUtil.js";
 import util_DragDropMemory from "./util/DragDropMemory.js";
 import util_ElementManager from "./util/ElementManager.js";
-import util_events_EventBus from "./util/events/EventBus.js";
-import util_events_EventBusAbstractModule from "./util/events/EventBusAbstractModule.js";
-import util_events_EventBusModuleGeneric from "./util/events/EventBusModuleGeneric.js";
-import util_events_EventBusModuleShare from "./util/events/EventBusModuleShare.js";
-import util_events_EventBusSubset from "./util/events/EventBusSubset.js";
 import util_FileLoader from "./util/FileLoader.js";
 import util_FileSystem from "./util/FileSystem.js";
 import util_GlobalStyle from "./util/GlobalStyle.js";
@@ -80,7 +81,6 @@ import util_graph_NodeFactory from "./util/graph/NodeFactory.js";
 import util_graph_SimpleGraph from "./util/graph/SimpleGraph.js";
 import util_Helper from "./util/Helper.js";
 import util_HotkeyHandler from "./util/HotkeyHandler.js";
-import util_I18n from "./util/I18n.js";
 import util_Import from "./util/Import.js";
 import util_Logger from "./util/Logger.js";
 import util_LoggerRaw from "./util/LoggerRaw.js";
@@ -116,8 +116,24 @@ export default {
             "TypeString": data_type_TypeString
         }
     },
-    "mixins": {
-        "EventBusSubset": mixins_EventBusSubset
+    "event": {
+        "EventBus": event_EventBus,
+        "EventBusSubset": event_EventBusSubset,
+        "module": {
+            "EventBusAbstractModule": event_module_EventBusAbstractModule,
+            "EventBusModuleGeneric": event_module_EventBusModuleGeneric,
+            "EventBusModuleShare": event_module_EventBusModuleShare
+        },
+        "ui": {
+            "EventBusMixin": event_ui_EventBusMixin
+        }
+    },
+    "i18n": {
+        "I18n": i18n_I18n,
+        "ui": {
+            "Label": i18n_ui_Label,
+            "Tooltip": i18n_ui_Tooltip
+        }
     },
     "storage": {
         "Cookie": storage_Cookie,
@@ -139,10 +155,6 @@ export default {
             "DropTarget": ui_dragdrop_DropTarget
         },
         "FilteredList": ui_FilteredList,
-        "i18n": {
-            "Label": ui_i18n_Label,
-            "Tooltip": ui_i18n_Tooltip
-        },
         "Icon": ui_Icon,
         "Import": ui_Import,
         "input": {
@@ -198,13 +210,6 @@ export default {
         "DateUtil": util_DateUtil,
         "DragDropMemory": util_DragDropMemory,
         "ElementManager": util_ElementManager,
-        "events": {
-            "EventBus": util_events_EventBus,
-            "EventBusAbstractModule": util_events_EventBusAbstractModule,
-            "EventBusModuleGeneric": util_events_EventBusModuleGeneric,
-            "EventBusModuleShare": util_events_EventBusModuleShare,
-            "EventBusSubset": util_events_EventBusSubset
-        },
         "FileLoader": util_FileLoader,
         "FileSystem": util_FileSystem,
         "GlobalStyle": util_GlobalStyle,
@@ -216,7 +221,6 @@ export default {
         },
         "Helper": util_Helper,
         "HotkeyHandler": util_HotkeyHandler,
-        "I18n": util_I18n,
         "Import": util_Import,
         "Logger": util_Logger,
         "LoggerRaw": util_LoggerRaw,
