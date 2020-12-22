@@ -6,14 +6,23 @@ export default class Registry {
         DATA.set(this, new Map());
     }
 
-    set(ref, entry) {
+    set(key, value) {
         const data = DATA.get(this);
-        data.set(ref, entry);
+        data.set(key, value);
     }
 
-    get(ref) {
+    get(key) {
         const data = DATA.get(this);
-        return data.get(ref);
+        return data.get(key);
+    }
+
+    getAll() {
+        const data = DATA.get(this);
+        const res = {};
+        for (const [key, value] of data) {
+            res[key] = value;
+        }
+        return res;
     }
 
 }
