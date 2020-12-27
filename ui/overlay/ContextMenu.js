@@ -122,6 +122,37 @@ export default class ContextMenu extends HTMLElement {
         menu.style.top = `${posY}px`;
     }
 
+    loadItems(config = []) {
+        this.innerHTML = "";
+        if (Array.isArray(config)) {
+            for (const entry of config) {
+                if (entry == "splitter") {
+                    const el = document.createElement("div");
+                    el.classList.add("splitter");
+                    this.append(el);
+                } else if (entry instanceof HTMLElement) {
+                    this.append(entry);
+                } else if (typeof entry == "object" && !Array.isArray(entry)) {
+                    const el = document.createElement("div");
+                    el.classList.add("item");
+                    el.innerHTML = entry.content;
+                    el.addEventListener("click", event => {
+                        if (typeof entry.action == "function") {
+                            entry.action();
+                        }
+                        if (typeof entry.event == "string") {
+                            this.dispatchEvent(new Event(entry.event));
+                        }
+                        /* --- */
+                        event.preventDefault();
+                        return false;
+                    });
+                    this.append(el);
+                }
+            }
+        }
+    }
+
 }
 
 customElements.define('emc-contextmenu', ContextMenu);
