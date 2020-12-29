@@ -21,6 +21,8 @@ function resolveFiles(path, imports) {
     return result;
 }
 
+process.chdir('./src');
+
 function createIndex() {
     const imports = [];
     const result = resolveFiles(".", imports);
