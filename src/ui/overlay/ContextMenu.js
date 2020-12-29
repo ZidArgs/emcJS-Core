@@ -26,10 +26,9 @@ const STYLE = new GlobalStyle(`
 #menu {
     position: relative;
     display: inline-block;
-    overflow-x: hidden;
-    overflow-y: auto;
-    max-width: 50vw;
-    max-height: 50vh;
+    overflow: auto;
+    max-width: calc(100vw - 50px);
+    max-height: calc(100vh - 50px);
     background: var(--contextmenu-background, #ffffff);
     border: solid 2px var(--contextmenu-border, #cccccc);
 }
