@@ -127,29 +127,23 @@ export default class Button extends HTMLElement {
     }
       
     attributeChangedCallback(name, oldValue, newValue) {
-        const tooltip = this.shadowRoot.getElementById("tooltip");
-        const label = this.shadowRoot.getElementById("label");
-        switch (name) {
-            case 'content':
-                if (oldValue != newValue) {
-                    label.value = newValue;
-                }
-                break;
-            case 'i18n-content':
-                if (oldValue != newValue) {
-                    label.key = newValue;
-                }
-                break;
-            case 'tooltip':
-                if (oldValue != newValue) {
-                    tooltip.value = newValue;
-                }
-                break;
-            case 'i18n-tooltip':
-                if (oldValue != newValue) {
-                    tooltip.key = newValue;
-                }
-                break;
+        if (oldValue != newValue) {
+            const tooltip = this.shadowRoot.getElementById("tooltip");
+            const label = this.shadowRoot.getElementById("label");
+            switch (name) {
+                case 'content':
+                    label.i18nValue = newValue;
+                    break;
+                case 'i18n-content':
+                    label.i18nKey = newValue;
+                    break;
+                case 'tooltip':
+                    tooltip.i18nValue = newValue;
+                    break;
+                case 'i18n-tooltip':
+                    tooltip.i18nKey = newValue;
+                    break;
+            }
         }
     }
 

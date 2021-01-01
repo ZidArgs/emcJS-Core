@@ -120,14 +120,13 @@ export default class Window extends HTMLElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.onkeydown = function(event) {
+        this.addEventListener("keydown", (event) => {
             const key = event.which || event.keyCode;
             if (key == 27) {
                 this.close();
             }
             event.stopPropagation();
-        }.bind(this);
-
+        });
         const ttl = this.shadowRoot.getElementById('title');
         if (!!title && typeof title === "string") {
             ttl.innerHTML = title;
@@ -137,8 +136,11 @@ export default class Window extends HTMLElement {
             cls.setAttribute("title", close);
         }
         cls.onclick = this.close.bind(this);
-        this.shadowRoot.getElementById('focus_catcher_top').onfocus = this.focusLast.bind(this);
-        this.shadowRoot.getElementById('focus_catcher_bottom').onfocus = this.focusFirst.bind(this);
+        /* --- */
+        const focusTopEl = this.shadowRoot.getElementById('focus_catcher_top');
+        focusTopEl.onfocus = this.focusLast.bind(this);
+        const focusBottomEl = this.shadowRoot.getElementById('focus_catcher_bottom');
+        focusBottomEl.onfocus = this.focusFirst.bind(this);
     }
 
     show() {

@@ -1,11 +1,15 @@
 import Template from "../../util/Template.js";
 import GlobalStyle from "../../util/GlobalStyle.js";
+import "../../i18n/ui/InputElement.js";
+import "../../i18n/ui/Tooltip.js";
 
 const TPL = new Template(`
 <input type="checkbox" id="selection">
-<div id="filter-wrapper">
-    <input id="filter" placeholder="filter">
-    <div id="filter-reset">⨯</div>
+<div id="search-wrapper">
+    <input id="search" is="emc-i18n-input" i18n-key="search" i18n-value="search">
+    <emc-i18n-tooltip i18n-key="search_reset" i18n-value="Reset search">
+        <div id="search-reset">⨯</div>
+    </emc-i18n-tooltip>
 </div>
 `);
 
@@ -15,12 +19,12 @@ const STYLE = new GlobalStyle(`
     padding: 2px 0;
     background: var(--list-color-border, #f1f1f1);
 }
-#filter-wrapper {
+#search-wrapper {
     display: flex;
     flex: 1;
     background: var(--list-color-back, #ffffff);
 }
-#filter-reset {
+#search-reset {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -31,7 +35,7 @@ const STYLE = new GlobalStyle(`
     font-weight: bold;
     cursor: pointer;
 }
-#filter {
+#search {
     flex: 1;
     height: 28px;
     padding: 0 4px;
@@ -40,6 +44,9 @@ const STYLE = new GlobalStyle(`
     border: none;
     -webkit-appearance: none;
     outline: none;
+}
+#search::placeholder {
+    font-style: italic;
 }
 #selection {
     display: flex;
@@ -70,36 +77,43 @@ export default class ListHeader extends HTMLElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-
-        this.shadowRoot.getElementById("selection").addEventListener("change", ev => {
+        const selectionEl = this.shadowRoot.getElementById("selection");
+        selectionEl.addEventListener("change", ev => {
             this.checked = ev.currentTarget.checked;
             const event = new Event('check');
             event.value = ev.currentTarget.checked;
             this.dispatchEvent(event);
         });
-
-        this.shadowRoot.getElementById("filter").addEventListener("input", ev => {
+        const searchEl = this.shadowRoot.getElementById("search");
+        searchEl.addEventListener("input", ev => {
             this.search = ev.currentTarget.value;
-            const event = new Event('filter');
+            const event = new Event('search');
             event.value = ev.currentTarget.value;
             this.dispatchEvent(event);
         });
-
-        this.shadowRoot.getElementById("filter-reset").addEventListener("click", ev => {
+        const searchResetEl = this.shadowRoot.getElementById("search-reset");
+        searchResetEl.addEventListener("click", ev => {
             this.search = "";
-            const event = new Event('filter');
+            const event = new Event('search');
             event.value = "";
             this.dispatchEvent(event);
         });
     }
 
     connectedCallback() {
+        this.tabIndex = 0;
+        /* --- */
         const selection = this.shadowRoot.getElementById("selection");
         if (!this.multimode) {
             selection.style.display = "none";
         } else {
             selection.style.display = "";
         }
+    }
+
+    focus() {
+        const searchEl = this.shadowRoot.getElementById("search");
+        searchEl.focus();
     }
 
     get checked() {
@@ -131,34 +145,31 @@ export default class ListHeader extends HTMLElement {
     }
       
     attributeChangedCallback(name, oldValue, newValue) {
+        if (oldValue != newValue) {
         switch (name) {
-            case 'checked':
-                if (oldValue != newValue) {
-                    const selection = this.shadowRoot.getElementById("selection");
+                case 'checked': {
+                    const selectionEl = this.shadowRoot.getElementById("selection");
                     if (newValue == "mixed") {
-                        selection.checked = true;
-                        selection.indeterminate = true;
+                        selectionEl.checked = true;
+                        selectionEl.indeterminate = true;
                     } else {
-                        selection.checked = newValue != "false";
-                        selection.indeterminate = false;
+                        selectionEl.checked = newValue != "false";
+                        selectionEl.indeterminate = false;
                     }
-                }
-                break;
-            case 'search':
-                if (oldValue != newValue) {
-                    this.shadowRoot.getElementById("filter").value = newValue;
-                }
-                break;
-            case 'multimode':
-                if (oldValue != newValue) {
-                    const selection = this.shadowRoot.getElementById("selection");
+                } break;
+                case 'search': {
+                    const searchEl = this.shadowRoot.getElementById("search");
+                    searchEl.value = newValue;
+                } break;
+                case 'multimode': {
+                    const selectionEl = this.shadowRoot.getElementById("selection");
                     if (newValue != "true") {
-                        selection.style.display = "none";
+                        selectionEl.style.display = "none";
                     } else {
-                        selection.style.display = "";
+                        selectionEl.style.display = "";
                     }
-                }
-                break;
+                } break;
+            }
         }
     }
 

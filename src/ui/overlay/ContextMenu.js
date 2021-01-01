@@ -2,7 +2,9 @@ import Template from "../../util/Template.js";
 import GlobalStyle from "../../util/GlobalStyle.js";
 
 const TPL = new Template(`
+<div id="focus_catcher_top" tabindex="0"></div>
 <slot id="menu"></slot>
+<div id="focus_catcher_bottom" tabindex="0"></div>
 `);
 
 const STYLE = new GlobalStyle(`
@@ -59,14 +61,14 @@ const STYLE = new GlobalStyle(`
 }
 `);
 
-function closeMenu(ev) {
-    const event = new Event('close');
-    this.dispatchEvent(event);
-    this.active = false;
-    ev.preventDefault();
-    ev.stopPropagation();
-    return false;
-}
+const Q_TAB = [
+    'button:not([tabindex="-1"])',
+    '[href]:not([tabindex="-1"])',
+    'input:not([tabindex="-1"])',
+    'select:not([tabindex="-1"])',
+    'textarea:not([tabindex="-1"])',
+    '[tabindex]:not([tabindex="-1"])'
+].join(',');
 
 const TOP = new WeakMap();
 const LEFT = new WeakMap();
@@ -81,9 +83,38 @@ export default class ContextMenu extends HTMLElement {
         /* --- */
         TOP.set(this, 0);
         LEFT.set(this, 0);
-        this.addEventListener("click", closeMenu.bind(this));
-        this.addEventListener("contextmenu", closeMenu.bind(this));
-        this.shadowRoot.getElementById('menu').addEventListener("click", closeMenu.bind(this));
+        /* --- */
+        const menuEl = this.shadowRoot.getElementById('menu');
+        menuEl.addEventListener("click", event => {
+            this.close();
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        });
+        this.addEventListener("click", event => {
+            this.close();
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        });
+        this.addEventListener("contextmenu", event => {
+            this.close();
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        });
+        this.addEventListener("keydown", (event) => {
+            const key = event.which || event.keyCode;
+            if (key == 27) {
+                this.close();
+            }
+            event.stopPropagation();
+        });
+        /* --- */
+        const focusTopEl = this.shadowRoot.getElementById('focus_catcher_top');
+        focusTopEl.onfocus = this.focusLast.bind(this);
+        const focusBottomEl = this.shadowRoot.getElementById('focus_catcher_bottom');
+        focusBottomEl.onfocus = this.focusFirst.bind(this);
     }
 
     get top() {
@@ -119,6 +150,27 @@ export default class ContextMenu extends HTMLElement {
         }
         menu.style.left = `${posX}px`;
         menu.style.top = `${posY}px`;
+        this.focusFirst();
+    }
+
+    close() {
+        const event = new Event('close');
+        this.dispatchEvent(event);
+        this.active = false;
+    }
+
+    focusFirst() {
+        const a = Array.from(this.querySelectorAll(Q_TAB));
+        if (a.length) {
+            a[0].focus();
+        }
+    }
+    
+    focusLast() {
+        const a = Array.from(this.querySelectorAll(Q_TAB));
+        if (a.length) {
+            a[a.length - 1].focus();
+        }
     }
 
     loadItems(config = []) {

@@ -128,8 +128,8 @@ export default class ListSelect extends HTMLElement {
             this.calculateItems();
         });
         /* header */
-        const header = this.shadowRoot.getElementById("header");
-        header.addEventListener('check', event => {
+        const headerEl = this.shadowRoot.getElementById("header");
+        headerEl.addEventListener('check', event => {
             if (this.multimode) {
                 const all = this.querySelectorAll(`[value]`);
                 const value = [];
@@ -149,7 +149,7 @@ export default class ListSelect extends HTMLElement {
                 this.value = value;
             }
         });
-        header.addEventListener('filter', event => {
+        headerEl.addEventListener('search', event => {
             const all = this.querySelectorAll(`[value]`);
             let checked = false;
             let unchecked = false;
@@ -180,18 +180,20 @@ export default class ListSelect extends HTMLElement {
             if (this.multimode) {
                 if (checked) {
                     if (unchecked) {
-                        header.checked = "mixed";
+                        headerEl.checked = "mixed";
                     } else {
-                        header.checked = true;
+                        headerEl.checked = true;
                     }
                 } else {
-                    header.checked = false;
+                    headerEl.checked = false;
                 }
             }
         });
     }
 
     connectedCallback() {
+        this.tabIndex = 0;
+        /* --- */
         const all = this.querySelectorAll(`[value]`);
         if (!this.value && !!all.length) {
             this.value = all[0].value;
@@ -202,6 +204,11 @@ export default class ListSelect extends HTMLElement {
             }
         });
         this.calculateItems();
+    }
+
+    focus() {
+        const headerEl = this.shadowRoot.getElementById("header");
+        headerEl.focus();
     }
 
     get value() {
