@@ -1,7 +1,7 @@
 const TARGET = new WeakMap();
 const SUBS = new WeakMap();
 
-export default (CLAZZ) => class extends CLAZZ {
+export default (CLAZZ) => class EventTargetMixin extends CLAZZ {
 
     constructor(...args) {
         super(...args);

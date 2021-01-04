@@ -5,7 +5,7 @@ const SUBS = new WeakMap();
 const EVENTS = new WeakMap();
 const APPLIED = new WeakMap();
 
-export default (CLAZZ) => class extends CLAZZ {
+export default (CLAZZ) => class EventBusMixin extends CLAZZ {
 
     constructor(...args) {
         super(...args);
