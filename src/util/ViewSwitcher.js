@@ -1,4 +1,4 @@
-import NavBar from "../ui/NavBar.js";
+import NavBar from "../ui/navigation/NavBar.js";
 import Paging from "../ui/Paging.js";
 
 const NAVBAR = new WeakMap();

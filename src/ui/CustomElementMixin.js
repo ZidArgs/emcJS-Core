@@ -19,11 +19,11 @@ export default (CLAZZ) => class CustomElementMixin extends CLAZZ {
     }
 
     renderTemplate() {
-        return new Template("<div></div>");
+        // nothing
     }
 
     applyStyle() {
-        return new GlobalStyle(":host{display:none;}");
+        // nothing
     }
 
 }

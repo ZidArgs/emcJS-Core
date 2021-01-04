@@ -9,8 +9,9 @@
         <meta name="theme-color" content="#000000">
         <script type="module">
             import emcJS from "../src/index.js";
-            import Template from "../util/Template.js"
-            import GlobalStyle from "../util/GlobalStyle.js"
+            import Template from "../src/util/Template.js";
+            import GlobalStyle from "../src/util/GlobalStyle.js";
+            import MessageLayer from "../src/ui/overlay/message/MessageLayer.js";
 
             const STYLE = new GlobalStyle(`
                 * {
@@ -48,9 +49,34 @@
 
             customElements.define('emc-test', Test);
 
+            
+            /* --- */
+            const MessageLayerEl = new MessageLayer();
+            document.body.append(MessageLayerEl);
+            /* --- */
+            const testEl = document.getElementById("test");
+            testEl.addEventListener("click", () => {
+                MessageLayerEl.createMessage("foobar", () => {
+                    console.log("click success");
+                });
+                MessageLayerEl.createErrorMessage("error", () => {
+                    console.log("click success");
+                });
+                /* --- */
+                MessageLayerEl.createToast("foobar", 5);
+                MessageLayerEl.createInfoToast("info", 5);
+                MessageLayerEl.createSuccessToast("success", 5);
+                MessageLayerEl.createWarnToast("warning", 5);
+                MessageLayerEl.createErrorToast("error", 5);
+                /* --- */
+                MessageLayerEl.createPopOver("foobar", 20, () => {
+                    console.log("click success");
+                });
+            });
+
         </script>
     </head>
     <body>
-        <emc-test></emc-test>
+        <emc-test id="test"></emc-test>
     </body>
 </html>
