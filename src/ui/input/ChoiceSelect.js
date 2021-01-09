@@ -99,39 +99,70 @@ export default class ChoiceSelect extends HTMLElement {
         this.calculateItems();
     }
 
-    get value() {
-        let val = this.getAttribute('value');
-        if (this.multimode) {
-            val = JSON.parse(val);
+    serialize() {
+        const res = {};
+        const all = this.querySelectorAll(`[value]`);
+        for (const el of all) {
+            res[el.value] = el.classList.contains("active");
         }
-        return val;
+        return res;
+    }
+
+    deserialize(values) {
+        const res = [];
+        for (const key in values) {
+            if (values[key]) {
+                res.push(key);
+            }
+        }
+        this.value = res;
     }
 
     set value(val) {
-        if (this.multimode) {
-            if (!Array.isArray(val)) {
-                val = [val];
+        if (val != null) {
+            if (this.multimode) {
+                if (!Array.isArray(val)) {
+                    val = [val];
+                }
+                val = JSON.stringify(val);
+            } else {
+                if (Array.isArray(val)) {
+                    val = val[0];
+                }
             }
-            val = JSON.stringify(val);
+            this.setAttribute('value', val);
+        } else {
+            this.removeAttribute('value');
         }
-        this.setAttribute('value', val);
     }
 
-    get multimode() {
-        return this.getAttribute('multimode') == "true";
+    get value() {
+        let val = this.getAttribute('value');
+        if (this.multimode) {
+            if (val != null) {
+                val = JSON.parse(val);
+            } else {
+                val = [];
+            }
+        }
+        return val;
     }
 
     set multimode(val) {
         this.setAttribute('multimode', val);
     }
 
-    get readonly() {
-        const val = this.getAttribute('readonly');
-        return !!val && val != "false";
+    get multimode() {
+        return this.getAttribute('multimode') == "true";
     }
 
     set readonly(val) {
         this.setAttribute('readonly', val);
+    }
+
+    get readonly() {
+        const val = this.getAttribute('readonly');
+        return !!val && val != "false";
     }
 
     static get observedAttributes() {
@@ -158,7 +189,12 @@ export default class ChoiceSelect extends HTMLElement {
                             this.value = arr[0];
                         }
                     } else {
-                        this.value = [this.getAttribute('value')];
+                        const val = this.getAttribute('value');
+                        if (val != null) {
+                            this.value = [val];
+                        } else {
+                            this.value = [];
+                        }
                     }
                 }
                 break;

@@ -15,17 +15,13 @@ const STYLE = new GlobalStyle(`
     box-sizing: border-box;
 }
 :host {
-    display: block;
-}
-.panel {
-    display: none;
-    word-wrap: break-word;
-    resize: none;
-}
-.panel.active {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
 }
 #categories {
+    flex-shrink: 0;
     padding: 5px;
     overflow-x: auto;
     overflow-y: none;
@@ -50,6 +46,21 @@ const STYLE = new GlobalStyle(`
 .category.active {
     color: black;
     background-color: white;
+}
+#body {
+    flex: 1;
+    overflow: hidden;
+}
+.panel {
+    display: none;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+    word-wrap: break-word;
+    resize: none;
+}
+.panel.active {
+    display: block;
 }
 `);
 

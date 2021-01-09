@@ -116,6 +116,46 @@ class Helper {
         return item;
     }
 
+    flatten(obj, splitter = ".", res = {}) {
+        if (typeof obj != "object") {
+            return obj;
+        }
+        for (const key in obj) {
+            const value = obj[key];
+            if (typeof value == "object") {
+                const flatObj = this.flattenObject(value);
+                for (const flatKey in flatObj) {
+                    res[`${key}${splitter}${flatKey}`] = flatObj[flatKey];
+                }
+            } else {
+                res[key] = value;
+            }
+        }
+        return res;
+    }
+    
+    elevate(obj, splitter = ".", res = {}) {
+        if (typeof obj != "object") {
+            return obj;
+        }
+        for (const key in obj) {
+            const value = obj[key];
+            const path = key.split(splitter);
+            let current = res;
+            while (path.length > 1) {
+                const iKey = path.shift();
+                if (iKey) {
+                    if (current[iKey] == null) {
+                        current[iKey] = {};
+                    }
+                    current = current[iKey];
+                }
+            }
+            current[path.shift()] = value;
+        }
+        return res;
+    }
+
 }
 
 export default new Helper;
