@@ -1,5 +1,5 @@
-import Template from "../../util/Template.js";
-import GlobalStyle from "../../util/GlobalStyle.js";
+import Template from "../../../util/Template.js";
+import GlobalStyle from "../../../util/GlobalStyle.js";
 
 const TPL = new Template(`
 <slot></slot>
@@ -46,4 +46,4 @@ export default class HBox extends HTMLElement {
 
 }
 
-customElements.define('emc-hbox', HBox);
+customElements.define('emc-panel-hbox', HBox);

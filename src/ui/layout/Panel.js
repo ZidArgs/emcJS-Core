@@ -4,12 +4,16 @@ export default class Panel extends HTMLElement {
 
     constructor() {
         super();
+        /* --- */
         if (new.target === Panel) {
             throw new TypeError("can not construct abstract class");
         }
     }
 
     static registerReference(ref, clazz) {
+        if (!(clazz.prototype instanceof Panel)) {
+            throw new TypeError("registered class must extend the Panel class");
+        }
         if (REG.has(ref)) {
             throw new Error(`reference ${ref} already exists`);
         }
@@ -20,7 +24,6 @@ export default class Panel extends HTMLElement {
         if (REG.has(ref)) {
             return REG.get(ref);
         }
-        //return PanelError;
     }
 
 }

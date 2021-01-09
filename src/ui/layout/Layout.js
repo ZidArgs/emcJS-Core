@@ -1,7 +1,8 @@
 import Template from "../../util/Template.js";
 import GlobalStyle from "../../util/GlobalStyle.js";
-import "./HBox.js";
-import "./VBox.js";
+import "./panel/HBox.js";
+import "./panel/VBox.js";
+import "./panel/TabPanel.js";
 import Panel from "./Panel.js";
 
 const TPL = new Template(`
@@ -24,21 +25,34 @@ const STYLE = new GlobalStyle(`
     border-color: var(--page-border-color, #ffffff);
     overflow: hidden;
 }
+::slotted(.error-panel) {
+    padding: 10px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: var(--page-border-color, #ffffff);
+    overflow: hidden;
+}
 `);
 
 function loadLayout(layout) {
     if (layout) {
         if (layout.type == "panel") {
-            const el = document.createElement('div');
-            el.classList.add("panel");
-            const ch = new (Panel.getReference(layout.name));
-            for (const i in layout.options) {
-                ch.setAttribute(i, layout.options[i]);
+            const clazz = Panel.getReference(layout.name);
+            if (clazz != null) {
+                const el = new clazz();
+                el.classList.add("panel");
+                for (const i in layout.options) {
+                    el.setAttribute(i, layout.options[i]);
+                }
+                return el;
+            } else {
+                const el = document.createElement('div');
+                el.classList.add("error-panel");
+                el.innerHTML = `error: panel with reference name "${layout.name}" not found`;
+                return el;
             }
-            el.append(ch);
-            return el;
-        } else {
-            const el = document.createElement(`emc-${layout.type}`);
+        } else if (layout.type == "vbox" || layout.type == "hbox") {
+            const el = document.createElement(`emc-panel-${layout.type}`);
             el.classList.add("stretchlast");
             for (const item of layout.items) {
                 const ch = loadLayout(item);
@@ -49,7 +63,30 @@ function loadLayout(layout) {
                 el.append(ch);
             }
             return el;
+        } else if (layout.type == "tabpanel") {
+            const el = document.createElement("emc-panel-tabpanel");
+            for (const cat of layout.categories) {
+                const cnt = el.addTab(cat.category, cat.name ?? cat.category);
+                for (const item of cat.items) {
+                    const ch = loadLayout(cat);
+                    if (item.autosize) {
+                        ch.classList.add("autosize");
+                    }
+                    cnt.append(ch);
+                }
+            }
+            return el;
+        } else {
+            const el = document.createElement('div');
+            el.classList.add("error-panel");
+            el.innerHTML = `error: panel type "${layout.type}" not found`;
+            return el;
         }
+    } else {
+        const el = document.createElement('div');
+        el.classList.add("error-panel");
+        el.innerHTML = `error: no layout found`;
+        return el;
     }
 }
 

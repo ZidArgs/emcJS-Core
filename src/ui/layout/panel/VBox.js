@@ -1,5 +1,5 @@
-import Template from "../../util/Template.js";
-import GlobalStyle from "../../util/GlobalStyle.js";
+import Template from "../../../util/Template.js";
+import GlobalStyle from "../../../util/GlobalStyle.js";
 
 const TPL = new Template(`
 <slot>
@@ -47,4 +47,4 @@ export default class VBox extends HTMLElement {
 
 }
 
-customElements.define('emc-vbox', VBox);
+customElements.define('emc-panel-vbox', VBox);

@@ -50,11 +50,11 @@ import ui_input_SearchSelect from "./ui/input/SearchSelect.js";
 import ui_input_StateButton from "./ui/input/StateButton.js";
 import ui_input_SwitchButton from "./ui/input/SwitchButton.js";
 import ui_input_TextEditor from "./ui/input/TextEditor.js";
-import ui_layout_HBox from "./ui/layout/HBox.js";
 import ui_layout_Layout from "./ui/layout/Layout.js";
+import ui_layout_panel_HBox from "./ui/layout/panel/HBox.js";
+import ui_layout_panel_TabPanel from "./ui/layout/panel/TabPanel.js";
+import ui_layout_panel_VBox from "./ui/layout/panel/VBox.js";
 import ui_layout_Panel from "./ui/layout/Panel.js";
-import ui_layout_TabView from "./ui/layout/TabView.js";
-import ui_layout_VBox from "./ui/layout/VBox.js";
 import ui_LogScreen from "./ui/LogScreen.js";
 import ui_navigation_Button from "./ui/navigation/Button.js";
 import ui_navigation_HamburgerButton from "./ui/navigation/HamburgerButton.js";
@@ -63,6 +63,7 @@ import ui_overlay_ContextMenu from "./ui/overlay/ContextMenu.js";
 import ui_overlay_Dialog from "./ui/overlay/Dialog.js";
 import ui_overlay_message_alert_DefaultAlert from "./ui/overlay/message/alert/DefaultAlert.js";
 import ui_overlay_message_message_DefaultMessage from "./ui/overlay/message/message/DefaultMessage.js";
+import ui_overlay_message_message_ErrorMessage from "./ui/overlay/message/message/ErrorMessage.js";
 import ui_overlay_message_MessageLayer from "./ui/overlay/message/MessageLayer.js";
 import ui_overlay_message_toast_DefaultToast from "./ui/overlay/message/toast/DefaultToast.js";
 import ui_overlay_message_toast_ErrorToast from "./ui/overlay/message/toast/ErrorToast.js";
@@ -192,11 +193,13 @@ export default {
             "TextEditor": ui_input_TextEditor
         },
         "layout": {
-            "HBox": ui_layout_HBox,
             "Layout": ui_layout_Layout,
-            "Panel": ui_layout_Panel,
-            "TabView": ui_layout_TabView,
-            "VBox": ui_layout_VBox
+            "panel": {
+                "HBox": ui_layout_panel_HBox,
+                "TabPanel": ui_layout_panel_TabPanel,
+                "VBox": ui_layout_panel_VBox
+            },
+            "Panel": ui_layout_Panel
         },
         "LogScreen": ui_LogScreen,
         "navigation": {
@@ -212,7 +215,8 @@ export default {
                     "DefaultAlert": ui_overlay_message_alert_DefaultAlert
                 },
                 "message": {
-                    "DefaultMessage": ui_overlay_message_message_DefaultMessage
+                    "DefaultMessage": ui_overlay_message_message_DefaultMessage,
+                    "ErrorMessage": ui_overlay_message_message_ErrorMessage
                 },
                 "MessageLayer": ui_overlay_message_MessageLayer,
                 "toast": {
