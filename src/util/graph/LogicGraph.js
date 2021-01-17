@@ -121,10 +121,10 @@ export default class LogicGraph {
 
     setTranslation(source, target, reroute) {
         const translationMatrix = TRANSLATION_MATRIX.get(this);
-        if (!reroute) {
+        if (reroute == null) {
             translationMatrix.delete(`${source} => ${target}`);
         } else {
-            translationMatrix.set(`${source} => ${target}`, reroute);
+            translationMatrix.set(`${source} => ${target}`, `${reroute}`);
         }
     }
 
