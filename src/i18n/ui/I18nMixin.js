@@ -1,3 +1,4 @@
+import {registerMixin} from "../../util/Mixin.js";
 import I18n from "../I18n.js";
 
 function updateLanguage(event) {
@@ -21,7 +22,7 @@ function updateTranslation(event) {
 const LANGUAGE_HANDLER = new WeakMap();
 const TRANSLATION_HANDLER = new WeakMap();
 
-export default (CLAZZ) => class extends CLAZZ {
+export default registerMixin((superclass) => class extends superclass {
 
     constructor() {
         super();
@@ -114,4 +115,4 @@ export default (CLAZZ) => class extends CLAZZ {
         }
     }
 
-}
+});

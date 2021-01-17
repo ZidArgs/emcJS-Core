@@ -100,6 +100,7 @@ import util_Logger from "./util/Logger.js";
 import util_LoggerRaw from "./util/LoggerRaw.js";
 import util_logic_Compiler from "./util/logic/Compiler.js";
 import util_logic_Processor from "./util/logic/Processor.js";
+import util_Mixin from "./util/Mixin.js";
 import util_Path from "./util/Path.js";
 import util_Request from "./util/Request.js";
 import util_Router from "./util/Router.js";
@@ -266,6 +267,7 @@ export default {
             "Compiler": util_logic_Compiler,
             "Processor": util_logic_Processor
         },
+        "Mixin": util_Mixin,
         "Path": util_Path,
         "Request": util_Request,
         "Router": util_Router,
