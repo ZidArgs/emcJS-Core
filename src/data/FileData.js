@@ -77,6 +77,13 @@ class FileData {
         await Promise.all(loading);
     }
 
+    inject(files) {
+        for (const name in files) {
+            const data = files[name];
+            STORAGE[name] = buildRecursiveProxy(data);
+        }
+    }
+
     get(key, value = null) {
         return PROXY_HANDLER.get(STORAGE, key) ?? value;
     }
