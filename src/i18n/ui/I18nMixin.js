@@ -22,7 +22,7 @@ function updateTranslation(event) {
 const LANGUAGE_HANDLER = new WeakMap();
 const TRANSLATION_HANDLER = new WeakMap();
 
-export default registerMixin((superclass) => class extends superclass {
+export default registerMixin((superclass) => class I18nMixin extends superclass {
 
     constructor() {
         super();

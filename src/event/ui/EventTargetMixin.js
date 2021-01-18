@@ -1,7 +1,9 @@
+import {registerMixin} from "../../util/Mixin.js";
+
 const TARGET = new WeakMap();
 const SUBS = new WeakMap();
 
-export default (CLAZZ) => class EventTargetMixin extends CLAZZ {
+export default registerMixin((superclass) => class EventTargetMixin extends superclass {
 
     constructor(...args) {
         super(...args);
@@ -88,4 +90,4 @@ export default (CLAZZ) => class EventTargetMixin extends CLAZZ {
         }
     }
 
-}
+});

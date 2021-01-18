@@ -1,3 +1,4 @@
+import {registerMixin} from "../../util/Mixin.js";
 import EventBusSubset from "../EventBusSubset.js";
 
 const ALLS = new WeakMap();
@@ -5,7 +6,7 @@ const SUBS = new WeakMap();
 const EVENTS = new WeakMap();
 const APPLIED = new WeakMap();
 
-export default (CLAZZ) => class EventBusMixin extends CLAZZ {
+export default registerMixin((superclass) => class EventBusMixin extends superclass {
 
     constructor(...args) {
         super(...args);
@@ -85,4 +86,4 @@ export default (CLAZZ) => class EventBusMixin extends CLAZZ {
         EVENTS.get(this).clear();
     }
 
-}
+});

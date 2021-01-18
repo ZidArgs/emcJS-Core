@@ -37,4 +37,8 @@ export default class EventBusModuleGeneric extends EventBusAbstractModule {
         this.onModuleEvent(payload);
     }
 
+    clear() {
+        SUBS.get(this).clear();
+    }
+
 }

@@ -1,6 +1,6 @@
 {
   "name": "emcjs",
-  "version": "0.3.8",
+  "version": "0.3.9",
   "description": "Modular JS API",
   "main": "index.js",
   "type": "module",
@@ -15,8 +15,5 @@
   "author": "Denis Peters (ZidArgs)",
   "license": "MIT",
   "homepage": "https://bitbucket.org/zidargs/emcjs/src",
-  "dependencies": {},
-  "exports": {
-    "./": "./src/"
-  }
+  "dependencies": {}
 }
