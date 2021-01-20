@@ -59,15 +59,22 @@ export default class EventTargetManager {
     }
 
     set(name, fn) {
+        if (typeof fn != "function") {
+            throw new TypeError(`fn parameter must be of type "function" but was "${typeof fn}"`);
+        }
         if (Array.isArray(name)) {
-            name.forEach(n => this.setEventListener(n, fn));
+            name.forEach(n => this.set(n, fn));
         } else {
+            if (typeof name != "string") {
+                throw new TypeError(`name parameter must be of type "string" but was "${typeof name}"`);
+            }
             const subs = SUBS.get(this);
             const active = ACTIVE.get(this);
             const target = TARGET.get(this);
             if (active && target != null) {
                 if (subs.has(name)) {
-                    target.removeEventListener(name, fn);
+                    const oldFn = subs.get(name);
+                    target.removeEventListener(name, oldFn);
                 }
                 target.addEventListener(name, fn);
             }
@@ -77,8 +84,11 @@ export default class EventTargetManager {
 
     delete(name) {
         if (Array.isArray(name)) {
-            name.forEach(n => this.deleteEventListener(n));
+            name.forEach(n => this.delete(n));
         } else {
+            if (typeof name != "string") {
+                throw new TypeError(`name parameter must be of type "string" but was "${typeof name}"`);
+            }
             const subs = SUBS.get(this);
             const target = TARGET.get(this);
             if (target != null) {
