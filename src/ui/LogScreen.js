@@ -52,27 +52,27 @@ export default class LogScreen extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
     }
 
     set title(value) {
-        this.setAttribute('title', value);
+        this.setAttribute("title", value);
     }
 
     get title() {
-        return this.getAttribute('title');
+        return this.getAttribute("title");
     }
 
     static get observedAttributes() {
-        return ['title'];
+        return ["title"];
     }
       
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
-            case 'title':
+            case "title":
                 if (oldValue != newValue) {
                     const title = this.shadowRoot.getElementById("title");
                     title.innerText = newValue;
@@ -84,4 +84,4 @@ export default class LogScreen extends HTMLElement {
 
 }
 
-customElements.define('emc-logscreen', LogScreen);
+customElements.define("emc-logscreen", LogScreen);

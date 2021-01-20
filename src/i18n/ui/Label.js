@@ -20,7 +20,7 @@ export default class Label extends I18nMixin(HTMLElement) {
 
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
     }
@@ -32,4 +32,4 @@ export default class Label extends I18nMixin(HTMLElement) {
 
 }
 
-customElements.define('emc-i18n-label', Label);
+customElements.define("emc-i18n-label", Label);

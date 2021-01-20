@@ -25,7 +25,7 @@ export default class Select extends HTMLSelectElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
@@ -33,4 +33,4 @@ export default class Select extends HTMLSelectElement {
 
 }
 
-customElements.define('emc-select', Select);
+customElements.define("emc-select", Select);

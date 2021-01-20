@@ -66,59 +66,59 @@ function appendToast(el, timeout) {
 class Toast {
 
     show(text, timeout) {
-        const el = document.createElement('div');
-        el.attachShadow({mode: 'open'});
+        const el = document.createElement("div");
+        el.attachShadow({mode: "open"});
         el.shadowRoot.append(TPL.generate());
         STYLE.apply(el.shadowRoot);
         /* --- */
-        const txt = el.shadowRoot.getElementById('text');
+        const txt = el.shadowRoot.getElementById("text");
         txt.innerHTML = text;
         appendToast(el, timeout);
     }
     
     success(text, timeout) {
-        const el = document.createElement('div');
-        el.attachShadow({mode: 'open'});
+        const el = document.createElement("div");
+        el.attachShadow({mode: "open"});
         el.shadowRoot.append(TPL.generate());
         STYLE.apply(el.shadowRoot);
         /* --- */
-        const txt = el.shadowRoot.getElementById('text');
+        const txt = el.shadowRoot.getElementById("text");
         txt.innerHTML = text;
         txt.className = "success";
         appendToast(el, timeout);
     }
     
     info(text, timeout) {
-        const el = document.createElement('div');
-        el.attachShadow({mode: 'open'});
+        const el = document.createElement("div");
+        el.attachShadow({mode: "open"});
         el.shadowRoot.append(TPL.generate());
         STYLE.apply(el.shadowRoot);
         /* --- */
-        const txt = el.shadowRoot.getElementById('text');
+        const txt = el.shadowRoot.getElementById("text");
         txt.innerHTML = text;
         txt.className = "info";
         appendToast(el, timeout);
     }
     
     warn(text, timeout) {
-        const el = document.createElement('div');
-        el.attachShadow({mode: 'open'});
+        const el = document.createElement("div");
+        el.attachShadow({mode: "open"});
         el.shadowRoot.append(TPL.generate());
         STYLE.apply(el.shadowRoot);
         /* --- */
-        const txt = el.shadowRoot.getElementById('text');
+        const txt = el.shadowRoot.getElementById("text");
         txt.innerHTML = text;
         txt.className = "warning";
         appendToast(el, timeout);
     }
     
     error(text, timeout) {
-        const el = document.createElement('div');
-        el.attachShadow({mode: 'open'});
+        const el = document.createElement("div");
+        el.attachShadow({mode: "open"});
         el.shadowRoot.append(TPL.generate());
         STYLE.apply(el.shadowRoot);
         /* --- */
-        const txt = el.shadowRoot.getElementById('text');
+        const txt = el.shadowRoot.getElementById("text");
         txt.innerHTML = text;
         txt.className = "error";
         appendToast(el, timeout);

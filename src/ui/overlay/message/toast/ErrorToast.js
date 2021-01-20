@@ -18,5 +18,5 @@ export default class ErrorToast extends Toast {
 
 }
 
-customElements.define('emc-toast-error', ErrorToast);
+customElements.define("emc-toast-error", ErrorToast);
 

@@ -9,7 +9,7 @@ function handleConnect(event) {
         MAIN.postMessage({name:"new-instance", data:{}});
     }
     PORTS.add(port);
-    port.addEventListener('message', handleMessage.bind(port));
+    port.addEventListener("message", handleMessage.bind(port));
     port.start();
 }
 
@@ -25,5 +25,5 @@ function handleMessage(event) {
     }
 }
 
-self.addEventListener('connect', handleConnect);
-self.addEventListener('disconnect', handleDisconnect);
+self.addEventListener("connect", handleConnect);
+self.addEventListener("disconnect", handleDisconnect);

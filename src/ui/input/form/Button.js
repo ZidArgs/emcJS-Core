@@ -32,7 +32,7 @@ export default class Button extends HTMLButtonElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
@@ -40,4 +40,4 @@ export default class Button extends HTMLButtonElement {
 
 }
 
-customElements.define('emc-button', Button);
+customElements.define("emc-button", Button);

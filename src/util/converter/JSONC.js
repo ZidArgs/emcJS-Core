@@ -41,7 +41,7 @@ function removeComments(input) {
 function removeCommentsLine(state) {
     while (state.line.length) {
         const act = state.line.shift();
-        if (act.startsWith('"')) {
+        if (act.startsWith("\"")) {
             state.lineRes.push(act);
         } else if (act.indexOf("//") < 0 && act.indexOf("/*") < 0) {
             state.lineRes.push(act);

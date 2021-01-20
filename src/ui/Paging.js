@@ -26,27 +26,27 @@ export default class Paging extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
     }
 
     get active() {
-        return this.getAttribute('active');
+        return this.getAttribute("active");
     }
 
     set active(val) {
-        this.setAttribute('active', val);
+        this.setAttribute("active", val);
     }
 
     static get observedAttributes() {
-        return ['active'];
+        return ["active"];
     }
       
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
-            case 'active':
+            case "active":
                 if (oldValue != newValue) {
                     if (typeof newValue == "string") {
                         this.shadowRoot.getElementById("container").name = newValue;
@@ -58,4 +58,4 @@ export default class Paging extends HTMLElement {
 
 }
 
-customElements.define('emc-paging', Paging);
+customElements.define("emc-paging", Paging);

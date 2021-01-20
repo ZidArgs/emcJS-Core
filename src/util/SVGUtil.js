@@ -10,7 +10,7 @@ class SVGUtil {
             }
             CANVAS.setAttribute("width", svg.getAttribute("width"));
             CANVAS.setAttribute("height", svg.getAttribute("height"));
-            const url = 'data:image/svg+xml;base64,' + btoa(SERIALIZER.serializeToString(svg));
+            const url = `data:image/svg+xml;base64,${btoa(SERIALIZER.serializeToString(svg))}`;
             const ctx = CANVAS.getContext("2d");
             const img = new Image();
             img.addEventListener("load", function() {

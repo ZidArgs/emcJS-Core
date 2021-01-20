@@ -5,7 +5,7 @@ export default (CLAZZ) => class CustomElementMixin extends CLAZZ {
 
     constructor(...args) {
         super(...args);
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         /* template */
         const template = this.renderTemplate();
         if (template instanceof Template) {

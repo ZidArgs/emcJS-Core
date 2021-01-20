@@ -72,58 +72,58 @@ export default class Button extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
     }
 
     get expand() {
-        return this.getAttribute('expand');
+        return this.getAttribute("expand");
     }
 
     set expand(val) {
         if (val == "open" || val == "closed") {
-            this.setAttribute('expand', val);
+            this.setAttribute("expand", val);
         } else {
-            this.removeAttribute('expand');
+            this.removeAttribute("expand");
         }
     }
 
     get content() {
-        return this.getAttribute('content');
+        return this.getAttribute("content");
     }
 
     set content(val) {
-        this.setAttribute('content', val);
+        this.setAttribute("content", val);
     }
 
     get i18nContent() {
-        return this.getAttribute('i18n-content');
+        return this.getAttribute("i18n-content");
     }
 
     set i18nContent(val) {
-        this.setAttribute('i18n-content', val);
+        this.setAttribute("i18n-content", val);
     }
 
     get tooltip() {
-        return this.getAttribute('tooltip');
+        return this.getAttribute("tooltip");
     }
 
     set tooltip(val) {
-        this.setAttribute('tooltip', val);
+        this.setAttribute("tooltip", val);
     }
 
     get i18nTooltip() {
-        return this.getAttribute('i18n-tooltip');
+        return this.getAttribute("i18n-tooltip");
     }
 
     set i18nTooltip(val) {
-        this.setAttribute('i18n-tooltip', val);
+        this.setAttribute("i18n-tooltip", val);
     }
 
     static get observedAttributes() {
-        return ['content', 'i18n-content', 'tooltip', 'i18n-tooltip'];
+        return ["content", "i18n-content", "tooltip", "i18n-tooltip"];
     }
       
     attributeChangedCallback(name, oldValue, newValue) {
@@ -131,16 +131,16 @@ export default class Button extends HTMLElement {
             const tooltip = this.shadowRoot.getElementById("tooltip");
             const label = this.shadowRoot.getElementById("label");
             switch (name) {
-                case 'content':
+                case "content":
                     label.i18nValue = newValue;
                     break;
-                case 'i18n-content':
+                case "i18n-content":
                     label.i18nKey = newValue;
                     break;
-                case 'tooltip':
+                case "tooltip":
                     tooltip.i18nValue = newValue;
                     break;
-                case 'i18n-tooltip':
+                case "i18n-tooltip":
                     tooltip.i18nKey = newValue;
                     break;
             }
@@ -149,4 +149,4 @@ export default class Button extends HTMLElement {
 
 }
 
-customElements.define('emc-navbar-button', Button);
+customElements.define("emc-navbar-button", Button);

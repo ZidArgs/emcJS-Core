@@ -59,7 +59,7 @@ function cloneStyleElement(element) {
 if (!Document.prototype.hasOwnProperty("adoptedStyleSheets")) {
     const VALUE = new WeakMap();
 
-    Object.defineProperty(Document.prototype, 'adoptedStyleSheets', {
+    Object.defineProperty(Document.prototype, "adoptedStyleSheets", {
         get: function() {
             return VALUE.get(this) || [];
         },
@@ -102,7 +102,7 @@ if (!Document.prototype.hasOwnProperty("adoptedStyleSheets")) {
 if (!ShadowRoot.prototype.hasOwnProperty("adoptedStyleSheets")) {
     const VALUE = new WeakMap();
 
-    Object.defineProperty(ShadowRoot.prototype, 'adoptedStyleSheets', {
+    Object.defineProperty(ShadowRoot.prototype, "adoptedStyleSheets", {
         get: function() {
             return VALUE.get(this) || [];
         },

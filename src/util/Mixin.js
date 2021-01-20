@@ -17,7 +17,7 @@ class Mixin {
     }
     
     registerMixin(mixin) {
-        const typeTag = Symbol('isa');
+        const typeTag = Symbol("isa");
         const _mixin = (target) => {
             const ext = mixin(target);
             Object.defineProperty(ext.prototype, typeTag, { value: true });

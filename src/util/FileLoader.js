@@ -5,14 +5,14 @@ import Properties from "./converter/Properties.js";
 
 async function getFile(file, contentType) {
     const r = await fetch(new Request(file, {
-        method: 'GET',
+        method: "GET",
         headers: new Headers({
             "Content-Type": contentType,
             "Pragma": "no-cache",
             "Cache-Control": "no-cache"
         }),
-        mode: 'cors',
-        cache: 'default'
+        mode: "cors",
+        cache: "default"
     }));
     if (r.status < 200 || r.status >= 300) {
         throw new Error(`error loading file "${file}" - status: ${r.status}`);

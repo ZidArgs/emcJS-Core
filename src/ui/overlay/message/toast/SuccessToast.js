@@ -18,4 +18,4 @@ export default class SuccessToast extends Toast {
 
 }
 
-customElements.define('emc-toast-success', SuccessToast);
+customElements.define("emc-toast-success", SuccessToast);

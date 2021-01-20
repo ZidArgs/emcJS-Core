@@ -12,7 +12,7 @@ ul.style.opacity = "0 !important";
 ul.style.visibility = "hidden !important";
 
 function convertData(dataUrl) {
-    const pos = dataUrl.indexOf(',') + 1;
+    const pos = dataUrl.indexOf(",") + 1;
     const mime = dataUrl.slice(5, pos - 8);
     let res = dataUrl.slice(pos);
     switch (mime) {

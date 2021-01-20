@@ -109,25 +109,25 @@ emc-listselect {
 `);
 
 const Q_TAB = [
-    'button:not([tabindex="-1"])',
-    '[href]:not([tabindex="-1"])',
-    'input:not([tabindex="-1"])',
-    'select:not([tabindex="-1"])',
-    'textarea:not([tabindex="-1"])',
-    '[tabindex]:not([tabindex="-1"])'
-].join(',');
+    "button:not([tabindex=\"-1\"])",
+    "[href]:not([tabindex=\"-1\"])",
+    "input:not([tabindex=\"-1\"])",
+    "select:not([tabindex=\"-1\"])",
+    "textarea:not([tabindex=\"-1\"])",
+    "[tabindex]:not([tabindex=\"-1\"])"
+].join(",");
 
 function settingsSubmit() {
     const data = {};
-    Array.from(this.shadowRoot.querySelectorAll('.panel[data-ref]')).forEach(i => {
+    Array.from(this.shadowRoot.querySelectorAll(".panel[data-ref]")).forEach(i => {
         data[i.dataset.ref] = data[i.dataset.ref] || {};
-        Array.from(i.querySelectorAll('.settings-input[data-ref]')).forEach(j => {
+        Array.from(i.querySelectorAll(".settings-input[data-ref]")).forEach(j => {
             switch (j.type) {
-                case 'checkbox':
+                case "checkbox":
                     data[i.dataset.ref][j.dataset.ref] = j.checked;
                     break;
-                case 'number':
-                case 'range':
+                case "number":
+                case "range":
                     data[i.dataset.ref][j.dataset.ref] = parseFloat(j.value);
                     break;
                 default:
@@ -136,7 +136,7 @@ function settingsSubmit() {
             }
         });
     });
-    const ev = new Event('submit');
+    const ev = new Event("submit");
     ev.data = data;
     this.dispatchEvent(ev);
     this.close();
@@ -149,14 +149,14 @@ export default class SettingsWindow extends Window {
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const window = this.shadowRoot.getElementById('window');
-        this.shadowRoot.getElementById('body').innerHTML = "";
-        const ctgrs = els.getElementById('categories');
-        window.insertBefore(ctgrs, this.shadowRoot.getElementById('body'));
-        window.append(els.getElementById('footer'));
+        const window = this.shadowRoot.getElementById("window");
+        this.shadowRoot.getElementById("body").innerHTML = "";
+        const ctgrs = els.getElementById("categories");
+        window.insertBefore(ctgrs, this.shadowRoot.getElementById("body"));
+        window.append(els.getElementById("footer"));
 
         ctgrs.onclick = (event) => {
-            const targetEl = event.target.getAttribute('target');
+            const targetEl = event.target.getAttribute("target");
             if (targetEl) {
                 this.active = targetEl;
                 event.preventDefault();
@@ -164,34 +164,34 @@ export default class SettingsWindow extends Window {
             }
         }
 
-        const sbm = this.shadowRoot.getElementById('submit');
+        const sbm = this.shadowRoot.getElementById("submit");
         if (!!options.submit && typeof options.submit === "string") {
             sbm.innerHTML = options.submit;
             sbm.setAttribute("title", options.submit);
         }
         sbm.onclick = settingsSubmit.bind(this);
 
-        const ccl = this.shadowRoot.getElementById('cancel');
+        const ccl = this.shadowRoot.getElementById("cancel");
         if (!!options.cancel && typeof options.cancel === "string") {
             ccl.innerHTML = options.cancel;
             ccl.setAttribute("title", options.cancel);
         }
         ccl.onclick = () => {
-            this.dispatchEvent(new Event('cancel'));
+            this.dispatchEvent(new Event("cancel"));
             this.close();
         }
     }
 
     get active() {
-        return this.getAttribute('active');
+        return this.getAttribute("active");
     }
 
     set active(val) {
-        this.setAttribute('active', val);
+        this.setAttribute("active", val);
     }
 
     static get observedAttributes() {
-        return ['active'];
+        return ["active"];
     }
     
     attributeChangedCallback(name, oldValue, newValue) {
@@ -235,48 +235,48 @@ export default class SettingsWindow extends Window {
         if (category) {
             this.active = category;
         } else {
-            const ctg = this.shadowRoot.getElementById('categories').children;
+            const ctg = this.shadowRoot.getElementById("categories").children;
             if (ctg.length) {
-                this.active = ctg[0].getAttribute('target')
+                this.active = ctg[0].getAttribute("target")
             }
         }
     }
 
     initialFocus() {
         const a = Array.from(this.querySelectorAll(Q_TAB));
-        a.push(this.shadowRoot.getElementById('submit'));
-        a.push(this.shadowRoot.getElementById('cancel'));
-        a.push(this.shadowRoot.getElementById('close'));
+        a.push(this.shadowRoot.getElementById("submit"));
+        a.push(this.shadowRoot.getElementById("cancel"));
+        a.push(this.shadowRoot.getElementById("close"));
         a[0].focus();
     }
 
     focusFirst() {
         const a = Array.from(this.querySelectorAll(Q_TAB));
-        a.push(this.shadowRoot.getElementById('submit'));
-        a.push(this.shadowRoot.getElementById('cancel'));
-        a.unshift(this.shadowRoot.getElementById('close'));
+        a.push(this.shadowRoot.getElementById("submit"));
+        a.push(this.shadowRoot.getElementById("cancel"));
+        a.unshift(this.shadowRoot.getElementById("close"));
         a[0].focus();
     }
     
     focusLast() {
         const a = Array.from(this.querySelectorAll(Q_TAB));
-        a.push(this.shadowRoot.getElementById('submit'));
-        a.push(this.shadowRoot.getElementById('cancel'));
-        a.unshift(this.shadowRoot.getElementById('close'));
+        a.push(this.shadowRoot.getElementById("submit"));
+        a.push(this.shadowRoot.getElementById("cancel"));
+        a.unshift(this.shadowRoot.getElementById("close"));
         a[a.length - 1].focus();
     }
 
     addTab(title, id) {
-        const pnl = document.createElement('div');
+        const pnl = document.createElement("div");
         pnl.className = "panel";
         pnl.id = `panel_${id}`;
         pnl.dataset.ref = id;
-        this.shadowRoot.getElementById('body').append(pnl);
-        const cb = document.createElement('div');
+        this.shadowRoot.getElementById("body").append(pnl);
+        const cb = document.createElement("div");
         cb.className = "category";
-        cb.setAttribute('target', id);
+        cb.setAttribute("target", id);
         cb.innerHTML = title;
-        this.shadowRoot.getElementById('categories').append(cb);
+        this.shadowRoot.getElementById("categories").append(cb);
     }
 
     addStringInput(category, label, ref, def) {
@@ -341,7 +341,7 @@ export default class SettingsWindow extends Window {
         input.className = "settings-input";
         input.setAttribute("type", "input");
         for (const value in values) {
-            const opt = document.createElement('option');
+            const opt = document.createElement("option");
             opt.value = value;
             opt.innerHTML = values[value];
             input.append(opt);
@@ -361,7 +361,7 @@ export default class SettingsWindow extends Window {
         input.value = def;
         input.dataset.ref = ref;
         for (const value in values) {
-            const opt = document.createElement('emc-option');
+            const opt = document.createElement("emc-option");
             opt.value = value;
             opt.innerHTML = values[value];
             input.append(opt);
@@ -390,7 +390,7 @@ export default class SettingsWindow extends Window {
 
 }
 
-customElements.define('emc-settingswindow', SettingsWindow);
+customElements.define("emc-settingswindow", SettingsWindow);
 
 function generateField(label) {
     const el = document.createElement("label");

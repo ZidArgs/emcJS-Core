@@ -96,7 +96,7 @@ export default class SearchSelect extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
@@ -154,7 +154,7 @@ export default class SearchSelect extends HTMLElement {
     }
 
     connectedCallback() {
-        this.setAttribute('tabindex', 0);
+        this.setAttribute("tabindex", 0);
         const all = this.querySelectorAll(`[value]`);
         if (!this.value && !!all.length) {
             this.value = all[0].value;
@@ -167,29 +167,29 @@ export default class SearchSelect extends HTMLElement {
     }
 
     get value() {
-        return this.getAttribute('value');
+        return this.getAttribute("value");
     }
 
     set value(val) {
-        this.setAttribute('value', val);
+        this.setAttribute("value", val);
     }
 
     get readonly() {
-        const val = this.getAttribute('readonly');
+        const val = this.getAttribute("readonly");
         return !!val && val != "false";
     }
 
     set readonly(val) {
-        this.setAttribute('readonly', val);
+        this.setAttribute("readonly", val);
     }
 
     static get observedAttributes() {
-        return ['value', 'readonly'];
+        return ["value", "readonly"];
     }
       
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
-            case 'value':
+            case "value":
                 if (oldValue != newValue) {
                     const el = this.querySelector(`[value="${newValue}"]`);
                     if (el != null) {
@@ -197,14 +197,14 @@ export default class SearchSelect extends HTMLElement {
                     } else {
                         this.shadowRoot.getElementById("view").value = newValue;
                     }
-                    const event = new Event('change');
+                    const event = new Event("change");
                     event.oldValue = oldValue;
                     event.newValue = newValue;
                     event.value = newValue;
                     this.dispatchEvent(event);
                 }
                 break;
-            case 'readonly':
+            case "readonly":
                 if (oldValue != newValue) {
                     this.shadowRoot.getElementById("view").readonly = newValue;
                     if (newValue != null && newValue != "false") {
@@ -219,7 +219,7 @@ export default class SearchSelect extends HTMLElement {
 
 }
 
-customElements.define('emc-searchselect', SearchSelect);
+customElements.define("emc-searchselect", SearchSelect);
 
 function clickOption(event) {
     if (!this.readonly) {

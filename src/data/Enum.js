@@ -7,7 +7,7 @@ export default class Enum {
         const symbolRef = new Map();
         const nameRef = new Map();
         for (const name of names) {
-            if (typeof name !== 'string') {
+            if (typeof name !== "string") {
                 throw new Error(`name ${name} is of type ${typeof name} - expected string`);
             }
             const symbol = Symbol(name);
@@ -39,7 +39,7 @@ export default class Enum {
     }
 
     has(symbol) {
-        if (typeof symbol !== 'symbol') {
+        if (typeof symbol !== "symbol") {
             throw new Error(`name ${symbol} is of type ${typeof symbol} - expected symbol`);
         }
         const symbolRef = SYMBOL_REF.get(this);
@@ -47,7 +47,7 @@ export default class Enum {
     }
 
     getName(symbol) {
-        if (typeof symbol !== 'symbol') {
+        if (typeof symbol !== "symbol") {
             throw new Error(`name ${symbol} is of type ${typeof symbol} - expected symbol`);
         }
         const symbolRef = SYMBOL_REF.get(this);
@@ -58,7 +58,7 @@ export default class Enum {
     }
 
     valueOf(name) {
-        if (typeof name !== 'string') {
+        if (typeof name !== "string") {
             throw new Error(`name ${name} is of type ${typeof name} - expected name`);
         }
         const nameRef = NAME_REF.get(this);

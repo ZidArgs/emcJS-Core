@@ -18,4 +18,4 @@ export default class WarningToast extends Toast {
 
 }
 
-customElements.define('emc-toast-warning', WarningToast);
+customElements.define("emc-toast-warning", WarningToast);

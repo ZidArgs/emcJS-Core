@@ -40,7 +40,7 @@ export default class TextEditor extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
@@ -51,7 +51,7 @@ export default class TextEditor extends HTMLElement {
                 clearTimeout(textTimer);
             }
             textTimer = setTimeout(() => {
-                const event = new Event('change');
+                const event = new Event("change");
                 event.value = text.value;
                 this.dispatchEvent(event);
             }, 1000);
@@ -62,11 +62,11 @@ export default class TextEditor extends HTMLElement {
     }
 
     set title(value) {
-        this.setAttribute('title', value);
+        this.setAttribute("title", value);
     }
 
     get title() {
-        return this.getAttribute('title');
+        return this.getAttribute("title");
     }
 
     set value(value) {
@@ -80,12 +80,12 @@ export default class TextEditor extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ['title'];
+        return ["title"];
     }
       
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
-            case 'title':
+            case "title":
                 if (oldValue != newValue) {
                     const title = this.shadowRoot.getElementById("title");
                     title.innerText = newValue;
@@ -97,4 +97,4 @@ export default class TextEditor extends HTMLElement {
 
 }
 
-customElements.define('emc-texteditor', TextEditor);
+customElements.define("emc-texteditor", TextEditor);

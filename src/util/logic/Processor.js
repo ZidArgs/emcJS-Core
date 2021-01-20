@@ -87,7 +87,7 @@ export default class Processor {
                     mem_o.delete(name);
                 } else {
                     const fn = Compiler.compile(value[name]);
-                    Object.defineProperty(fn, 'name', {value: name});
+                    Object.defineProperty(fn, "name", {value: name});
                     logic.set(name, fn);
                     mem_o.set(name, false);
                 }
@@ -114,7 +114,7 @@ export default class Processor {
             mem_o.delete(name);
         } else {
             const fn = Compiler.compile(value);
-            Object.defineProperty(fn, 'name', {value: name});
+            Object.defineProperty(fn, "name", {value: name});
             logic.set(name, fn);
             mem_o.set(name, false);
         }

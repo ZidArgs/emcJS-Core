@@ -64,7 +64,7 @@ export default class ChoiceSelect extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
@@ -130,14 +130,14 @@ export default class ChoiceSelect extends HTMLElement {
                     val = val[0];
                 }
             }
-            this.setAttribute('value', val);
+            this.setAttribute("value", val);
         } else {
-            this.removeAttribute('value');
+            this.removeAttribute("value");
         }
     }
 
     get value() {
-        let val = this.getAttribute('value');
+        let val = this.getAttribute("value");
         if (this.multimode) {
             if (val != null) {
                 val = JSON.parse(val);
@@ -149,47 +149,47 @@ export default class ChoiceSelect extends HTMLElement {
     }
 
     set multimode(val) {
-        this.setAttribute('multimode', val);
+        this.setAttribute("multimode", val);
     }
 
     get multimode() {
-        return this.getAttribute('multimode') == "true";
+        return this.getAttribute("multimode") == "true";
     }
 
     set readonly(val) {
-        this.setAttribute('readonly', val);
+        this.setAttribute("readonly", val);
     }
 
     get readonly() {
-        const val = this.getAttribute('readonly');
+        const val = this.getAttribute("readonly");
         return !!val && val != "false";
     }
 
     static get observedAttributes() {
-        return ['value', 'multimode'];
+        return ["value", "multimode"];
     }
       
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
-            case 'value':
+            case "value":
                 if (oldValue != newValue) {
                     this.calculateItems();
-                    const event = new Event('change');
+                    const event = new Event("change");
                     event.oldValue = oldValue;
                     event.newValue = newValue;
                     event.value = newValue;
                     this.dispatchEvent(event);
                 }
                 break;
-            case 'multimode':
+            case "multimode":
                 if (oldValue != newValue) {
                     if (newValue != "true") {
-                        const arr = JSON.parse(this.getAttribute('value'));
+                        const arr = JSON.parse(this.getAttribute("value"));
                         if (arr.length > 1) {
                             this.value = arr[0];
                         }
                     } else {
-                        const val = this.getAttribute('value');
+                        const val = this.getAttribute("value");
                         if (val != null) {
                             this.value = [val];
                         } else {
@@ -223,4 +223,4 @@ export default class ChoiceSelect extends HTMLElement {
 
 }
 
-customElements.define('emc-choiceselect', ChoiceSelect);
+customElements.define("emc-choiceselect", ChoiceSelect);

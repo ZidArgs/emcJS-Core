@@ -153,7 +153,7 @@ export default class NavBar extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
@@ -167,7 +167,7 @@ export default class NavBar extends HTMLElement {
                 content.querySelectorAll(".open").forEach(function(el) {
                     el.classList.remove("open");
                 });
-                content.querySelectorAll('[expand="open"]').forEach(function(el) {
+                content.querySelectorAll("[expand=\"open\"]").forEach(function(el) {
                     el.expand = "closed";
                 });
                 hamburger.open = false;
@@ -182,7 +182,7 @@ export default class NavBar extends HTMLElement {
             content.querySelectorAll(".open").forEach(function(el) {
                 el.classList.remove("open");
             });
-            content.querySelectorAll('[expand="open"]').forEach(function(el) {
+            content.querySelectorAll("[expand=\"open\"]").forEach(function(el) {
                 el.expand = "closed";
             });
             hamburger.open = false;
@@ -194,8 +194,8 @@ export default class NavBar extends HTMLElement {
         content.innerHTML = "";
         for (const item of config) {
             if (item.visible == null || !!item.visible) {
-                const el = document.createElement('li');
-                const btn = document.createElement('emc-navbar-button');
+                const el = document.createElement("li");
+                const btn = document.createElement("emc-navbar-button");
                 el.append(btn);
                 // content
                 if (item["i18n-content"] != null) {
@@ -219,11 +219,11 @@ export default class NavBar extends HTMLElement {
                 }
                 // submenu
                 if (item["submenu"] != null) {
-                    const subcontent = document.createElement('ul');
+                    const subcontent = document.createElement("ul");
                     for (const subitem of item.submenu) {
                         if (subitem.visible == null || !!subitem.visible) {
-                            const subel = document.createElement('li');
-                            const subbtn = document.createElement('emc-navbar-button');
+                            const subel = document.createElement("li");
+                            const subbtn = document.createElement("emc-navbar-button");
                             subel.append(subbtn);
                             // content
                             if (subitem["i18n-content"] != null) {
@@ -275,4 +275,4 @@ export default class NavBar extends HTMLElement {
 
 }
 
-customElements.define('emc-navbar', NavBar);
+customElements.define("emc-navbar", NavBar);

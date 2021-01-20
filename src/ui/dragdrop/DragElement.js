@@ -28,7 +28,7 @@ export default class DragElement extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
@@ -38,13 +38,13 @@ export default class DragElement extends HTMLElement {
     }
 
     get group() {
-        return this.getAttribute('group');
+        return this.getAttribute("group");
     }
 
     set group(val) {
-        this.setAttribute('group', val);
+        this.setAttribute("group", val);
     }
 
 }
 
-customElements.define('emc-dragelement', DragElement);
+customElements.define("emc-dragelement", DragElement);

@@ -91,7 +91,7 @@ export default class CircleSelect extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
@@ -114,29 +114,29 @@ export default class CircleSelect extends HTMLElement {
     }
 
     get value() {
-        return this.getAttribute('value');
+        return this.getAttribute("value");
     }
 
     set value(val) {
-        this.setAttribute('value', val);
+        this.setAttribute("value", val);
     }
 
     get readonly() {
-        const val = this.getAttribute('readonly');
+        const val = this.getAttribute("readonly");
         return !!val && val != "false";
     }
 
     set readonly(val) {
-        this.setAttribute('readonly', val);
+        this.setAttribute("readonly", val);
     }
 
     static get observedAttributes() {
-        return ['value'];
+        return ["value"];
     }
       
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
-            case 'value':
+            case "value":
                 if (oldValue != newValue) {
                     const oe = this.querySelector(`.active`);
                     if (oe) {
@@ -146,7 +146,7 @@ export default class CircleSelect extends HTMLElement {
                     if (ne) {
                         ne.classList.add("active");
                     }
-                    const event = new Event('change');
+                    const event = new Event("change");
                     event.oldValue = oldValue;
                     event.newValue = newValue;
                     event.value = newValue;
@@ -198,4 +198,4 @@ export default class CircleSelect extends HTMLElement {
 
 }
 
-customElements.define('emc-circleselect', CircleSelect);
+customElements.define("emc-circleselect", CircleSelect);

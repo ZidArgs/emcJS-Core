@@ -68,11 +68,11 @@ export default class CollapsePanel extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.shadowRoot.getElementById('title').addEventListener("click", function(event) {
+        this.shadowRoot.getElementById("title").addEventListener("click", function(event) {
             if (!!this.expanded && this.expanded != "false") {
                 this.expanded = "false";
             } else {
@@ -82,31 +82,31 @@ export default class CollapsePanel extends HTMLElement {
     }
 
     get expanded() {
-        return this.getAttribute('expanded');
+        return this.getAttribute("expanded");
     }
 
     set expanded(val) {
-        this.setAttribute('expanded', val);
+        this.setAttribute("expanded", val);
     }
 
     get caption() {
-        return this.getAttribute('caption');
+        return this.getAttribute("caption");
     }
 
     set caption(val) {
-        this.setAttribute('caption', val);
+        this.setAttribute("caption", val);
     }
 
     static get observedAttributes() {
-        return ['caption'];
+        return ["caption"];
     }
       
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
-            case 'caption':
+            case "caption":
                 if (oldValue != newValue) {
-                    this.shadowRoot.getElementById('text').innerHTML = newValue;
-                    this.shadowRoot.getElementById('title').title = newValue;
+                    this.shadowRoot.getElementById("text").innerHTML = newValue;
+                    this.shadowRoot.getElementById("title").title = newValue;
                 }
                 break;
         }
@@ -114,4 +114,4 @@ export default class CollapsePanel extends HTMLElement {
 
 }
 
-customElements.define('emc-collapsepanel', CollapsePanel);
+customElements.define("emc-collapsepanel", CollapsePanel);

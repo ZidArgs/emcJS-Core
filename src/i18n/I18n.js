@@ -48,7 +48,7 @@ class I18n extends EventTarget {
             languages.get(lang).set(key, value);
             changes[key] = value;
         }
-        if (lang == actLang) {
+        if (lang == actLang && Object.keys(changes).length) {
             const event = new Event("translation");
             event.changes = changes;
             this.dispatchEvent(event);

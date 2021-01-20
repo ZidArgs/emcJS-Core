@@ -61,7 +61,7 @@ export default class FilteredList extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
@@ -72,7 +72,7 @@ export default class FilteredList extends HTMLElement {
             // header.search
         });
         /* header */
-        header.addEventListener('filter', event => {
+        header.addEventListener("filter", event => {
             const all = this.querySelectorAll(`[data-filtervalue]`);
             const panels = this.querySelectorAll(`emc-collapsepanel`);
             if (event.value) {
@@ -107,4 +107,4 @@ export default class FilteredList extends HTMLElement {
 
 }
 
-customElements.define('emc-filteredlist', FilteredList);
+customElements.define("emc-filteredlist", FilteredList);

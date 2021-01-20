@@ -33,29 +33,29 @@ export default class Icon extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
     }
 
     get src() {
-        return this.getAttribute('src');
+        return this.getAttribute("src");
     }
 
     set src(val) {
-        this.setAttribute('src', val);
+        this.setAttribute("src", val);
     }
 
     static get observedAttributes() {
-        return ['src'];
+        return ["src"];
     }
       
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
-            case 'src':
+            case "src":
                 if (oldValue != newValue) {
-                    this.shadowRoot.querySelector('div').style.backgroundImage = `url("${newValue}")`;
+                    this.shadowRoot.querySelector("div").style.backgroundImage = `url("${newValue}")`;
                 }
                 break;
         }
@@ -63,4 +63,4 @@ export default class Icon extends HTMLElement {
 
 }
 
-customElements.define('emc-icon', Icon);
+customElements.define("emc-icon", Icon);

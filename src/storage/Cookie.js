@@ -7,7 +7,7 @@ class Cookie {
     }
     
     get(name) {
-        const entries = document.cookie.split(';');
+        const entries = document.cookie.split(";");
         for (const entry of entries) {
             const buf = entry.trim().split("=");
             const key = buf.shift().trim();

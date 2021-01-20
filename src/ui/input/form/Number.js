@@ -25,7 +25,7 @@ export default class Number extends HTMLInputElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
@@ -39,14 +39,14 @@ export default class Number extends HTMLInputElement {
     }
 
     static get observedAttributes() {
-        return ['type'];
+        return ["type"];
     }
       
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
-            case 'type':
+            case "type":
                 if (oldValue != newValue) {
-                    this.setAttribute('type', "number");
+                    this.setAttribute("type", "number");
                 }
                 break;
         }
@@ -54,4 +54,4 @@ export default class Number extends HTMLInputElement {
 
 }
 
-customElements.define('emc-number', Number);
+customElements.define("emc-number", Number);

@@ -73,28 +73,28 @@ export default class ListHeader extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
         const selectionEl = this.shadowRoot.getElementById("selection");
         selectionEl.addEventListener("change", ev => {
             this.checked = ev.currentTarget.checked;
-            const event = new Event('check');
+            const event = new Event("check");
             event.value = ev.currentTarget.checked;
             this.dispatchEvent(event);
         });
         const searchEl = this.shadowRoot.getElementById("search");
         searchEl.addEventListener("input", ev => {
             this.search = ev.currentTarget.value;
-            const event = new Event('search');
+            const event = new Event("search");
             event.value = ev.currentTarget.value;
             this.dispatchEvent(event);
         });
         const searchResetEl = this.shadowRoot.getElementById("search-reset");
         searchResetEl.addEventListener("click", ev => {
             this.search = "";
-            const event = new Event('search');
+            const event = new Event("search");
             event.value = "";
             this.dispatchEvent(event);
         });
@@ -117,37 +117,37 @@ export default class ListHeader extends HTMLElement {
     }
 
     get checked() {
-        return this.getAttribute('checked');
+        return this.getAttribute("checked");
     }
 
     set checked(val) {
-        this.setAttribute('checked', val);
+        this.setAttribute("checked", val);
     }
 
     get search() {
-        return this.getAttribute('search');
+        return this.getAttribute("search");
     }
 
     set search(val) {
-        this.setAttribute('search', val);
+        this.setAttribute("search", val);
     }
 
     get multimode() {
-        return this.getAttribute('multimode') == "true";
+        return this.getAttribute("multimode") == "true";
     }
 
     set multimode(val) {
-        this.setAttribute('multimode', val);
+        this.setAttribute("multimode", val);
     }
 
     static get observedAttributes() {
-        return ['checked', 'search', 'multimode'];
+        return ["checked", "search", "multimode"];
     }
       
     attributeChangedCallback(name, oldValue, newValue) {
         if (oldValue != newValue) {
-        switch (name) {
-                case 'checked': {
+            switch (name) {
+                case "checked": {
                     const selectionEl = this.shadowRoot.getElementById("selection");
                     if (newValue == "mixed") {
                         selectionEl.checked = true;
@@ -157,11 +157,11 @@ export default class ListHeader extends HTMLElement {
                         selectionEl.indeterminate = false;
                     }
                 } break;
-                case 'search': {
+                case "search": {
                     const searchEl = this.shadowRoot.getElementById("search");
                     searchEl.value = newValue;
                 } break;
-                case 'multimode': {
+                case "multimode": {
                     const selectionEl = this.shadowRoot.getElementById("selection");
                     if (newValue != "true") {
                         selectionEl.style.display = "none";
@@ -175,4 +175,4 @@ export default class ListHeader extends HTMLElement {
 
 }
 
-customElements.define('emc-listheader', ListHeader);
+customElements.define("emc-listheader", ListHeader);

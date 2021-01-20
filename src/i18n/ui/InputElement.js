@@ -8,4 +8,4 @@ export default class InputElement extends I18nMixin(HTMLInputElement) {
 
 }
 
-customElements.define('emc-i18n-input', InputElement, {extends: 'input'});
+customElements.define("emc-i18n-input", InputElement, {extends: "input"});

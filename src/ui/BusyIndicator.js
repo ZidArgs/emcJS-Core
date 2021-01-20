@@ -42,7 +42,7 @@ const STYLE = new GlobalStyle(`
 
 const EL = document.createElement("DIV");
 EL.className = "busy-indicator";
-EL.attachShadow({mode: 'open'});
+EL.attachShadow({mode: "open"});
 EL.shadowRoot.append(TPL.generate());
 STYLE.apply(EL.shadowRoot);
 document.body.append(EL);

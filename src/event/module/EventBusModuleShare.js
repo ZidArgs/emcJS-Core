@@ -3,7 +3,7 @@ import Path from "../../util/Path.js";
 
 let WORKER = null;
 if ("SharedWorker" in window) {
-    WORKER = (new SharedWorker(Path.getAbsolute(import.meta.url, "./EventBusModuleShare.worker.js"), 'EventWorker')).port;
+    WORKER = (new SharedWorker(Path.getAbsolute(import.meta.url, "./EventBusModuleShare.worker.js"), "EventWorker")).port;
 }
 
 class EventBusModuleShare extends EventBusAbstractModule {

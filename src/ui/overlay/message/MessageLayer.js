@@ -64,7 +64,7 @@ export default class MessageLayer extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
@@ -137,4 +137,4 @@ export default class MessageLayer extends HTMLElement {
 
 }
 
-customElements.define('emc-messagelayer', MessageLayer);
+customElements.define("emc-messagelayer", MessageLayer);

@@ -75,48 +75,48 @@ export default class Button extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
     }
 
     get open() {
-        return this.getAttribute('open');
+        return this.getAttribute("open");
     }
 
     set open(val) {
-        this.setAttribute('open', val);
+        this.setAttribute("open", val);
     }
 
     get tooltip() {
-        return this.getAttribute('tooltip');
+        return this.getAttribute("tooltip");
     }
 
     set tooltip(val) {
-        this.setAttribute('tooltip', val);
+        this.setAttribute("tooltip", val);
     }
 
     get i18nTooltip() {
-        return this.getAttribute('i18n-tooltip');
+        return this.getAttribute("i18n-tooltip");
     }
 
     set i18nTooltip(val) {
-        this.setAttribute('i18n-tooltip', val);
+        this.setAttribute("i18n-tooltip", val);
     }
 
     static get observedAttributes() {
-        return ['tooltip', 'i18n-tooltip'];
+        return ["tooltip", "i18n-tooltip"];
     }
       
     attributeChangedCallback(name, oldValue, newValue) {
         if (oldValue != newValue) {
             const tooltip = this.shadowRoot.getElementById("tooltip");
             switch (name) {
-                case 'tooltip':
+                case "tooltip":
                     tooltip.i18nValue = newValue;
                     break;
-                case 'i18n-tooltip':
+                case "i18n-tooltip":
                     tooltip.i18nKey = newValue;
                     break;
             }
@@ -125,4 +125,4 @@ export default class Button extends HTMLElement {
 
 }
 
-customElements.define('emc-navbar-hamburger', Button);
+customElements.define("emc-navbar-hamburger", Button);

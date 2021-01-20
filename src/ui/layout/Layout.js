@@ -46,7 +46,7 @@ function loadLayout(layout) {
                 }
                 return el;
             } else {
-                const el = document.createElement('div');
+                const el = document.createElement("div");
                 el.classList.add("error-panel");
                 el.innerHTML = `error: panel with reference name "${layout.name}" not found`;
                 return el;
@@ -77,13 +77,13 @@ function loadLayout(layout) {
             }
             return el;
         } else {
-            const el = document.createElement('div');
+            const el = document.createElement("div");
             el.classList.add("error-panel");
             el.innerHTML = `error: panel type "${layout.type}" not found`;
             return el;
         }
     } else {
-        const el = document.createElement('div');
+        const el = document.createElement("div");
         el.classList.add("error-panel");
         el.innerHTML = `error: no layout found`;
         return el;
@@ -94,7 +94,7 @@ export default class Layout extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
@@ -108,4 +108,4 @@ export default class Layout extends HTMLElement {
 
 }
 
-customElements.define('emc-layout', Layout);
+customElements.define("emc-layout", Layout);

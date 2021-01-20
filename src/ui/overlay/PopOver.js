@@ -81,14 +81,14 @@ function removeElement() {
 class PopOver {
 
     show(text = "", time = 5) {
-        const el = document.createElement('div');
-        el.attachShadow({mode: 'open'});
+        const el = document.createElement("div");
+        el.attachShadow({mode: "open"});
         el.shadowRoot.append(TPL.generate());
         STYLE.apply(el.shadowRoot);
         /* --- */
-        const textEl = el.shadowRoot.getElementById('text');
+        const textEl = el.shadowRoot.getElementById("text");
         textEl.innerHTML = text;
-        const autocloseEL = el.shadowRoot.getElementById('autoclose');
+        const autocloseEL = el.shadowRoot.getElementById("autoclose");
         const removeEl = removeElement.bind(el);
         time = parseInt(time);
         if (isNaN(time) || time < 5) {
@@ -100,7 +100,7 @@ class PopOver {
             autocloseEL.removeEventListener("animationend", removeEl);
             document.body.removeChild(el);
         }
-        el.shadowRoot.getElementById('close').onclick = function(ev) {
+        el.shadowRoot.getElementById("close").onclick = function(ev) {
             autocloseEL.removeEventListener("animationend", removeEl);
             document.body.removeChild(el);
             ev.stopPropagation();

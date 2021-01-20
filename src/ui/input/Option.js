@@ -32,23 +32,23 @@ export default class Option extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
     }
 
     get value() {
-        return this.getAttribute('value');
+        return this.getAttribute("value");
     }
 
     set value(val) {
-        this.setAttribute('value', val);
+        this.setAttribute("value", val);
     }
 
     static createOption(value, content = value, style = {}) {
-        const opt = document.createElement('emc-option');
-        opt.setAttribute('value', value);
+        const opt = document.createElement("emc-option");
+        opt.setAttribute("value", value);
         if (content instanceof HTMLElement) {
             opt.append(content);
         } else {
@@ -62,4 +62,4 @@ export default class Option extends HTMLElement {
 
 }
 
-customElements.define('emc-option', Option);
+customElements.define("emc-option", Option);

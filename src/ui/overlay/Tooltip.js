@@ -119,20 +119,20 @@ export default class Tooltip extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
     }
 
     get position() {
-        return this.getAttribute('position');
+        return this.getAttribute("position");
     }
 
     set position(val) {
-        this.setAttribute('position', val);
+        this.setAttribute("position", val);
     }
 
 }
 
-customElements.define('emc-tooltip', Tooltip);
+customElements.define("emc-tooltip", Tooltip);

@@ -81,7 +81,7 @@ export default class Alert extends HTMLElement {
 
     constructor(text = "", time = 5) {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
@@ -91,20 +91,20 @@ export default class Alert extends HTMLElement {
         }
         /* --- */
         const removeEl = removeElement.bind(this);
-        const autocloseEL = this.shadowRoot.getElementById('autoclose');
+        const autocloseEL = this.shadowRoot.getElementById("autoclose");
         autocloseEL.style.animation = `autoclose ${time}s linear 1`;
         autocloseEL.addEventListener("animationend", removeEl);
-        const closeEl = this.shadowRoot.getElementById('close');
+        const closeEl = this.shadowRoot.getElementById("close");
         closeEl.addEventListener("click", event => {
             autocloseEL.removeEventListener("animationend", removeEl);
             this.remove();
             event.stopPropagation();
         });
-        const textEl = this.shadowRoot.getElementById('text');
+        const textEl = this.shadowRoot.getElementById("text");
         textEl.innerHTML = text;
         textEl.addEventListener("click", event => {
             autocloseEL.removeEventListener("animationend", removeEl);
-            this.dispatchEvent(new Event('click'));
+            this.dispatchEvent(new Event("click"));
             this.remove();
             event.stopPropagation();
         });
@@ -112,4 +112,4 @@ export default class Alert extends HTMLElement {
 
 }
 
-customElements.define('emc-alert', Alert);
+customElements.define("emc-alert", Alert);

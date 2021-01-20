@@ -44,12 +44,12 @@ class DateUtil {
         return formatter.replace(FORMATTER_REGEX, function(m) {
             switch (m) {
                 case "Y": return date.getFullYear();
-                case "M": return ("0" + (date.getMonth() + 1)).slice(-2);
-                case "D": return ("0" + date.getDate()).slice(-2);
-                case "h": return ("0" + date.getHours()).slice(-2);
-                case "m": return ("0" + date.getMinutes()).slice(-2);
-                case "s": return ("0" + date.getSeconds()).slice(-2);
-                case "z": return ("00" + date.getMilliseconds()).slice(-2);
+                case "M": return (`0${date.getMonth() + 1}`).slice(-2);
+                case "D": return (`0${date.getDate()}`).slice(-2);
+                case "h": return (`0${date.getHours()}`).slice(-2);
+                case "m": return (`0${date.getMinutes()}`).slice(-2);
+                case "s": return (`0${date.getSeconds()}`).slice(-2);
+                case "z": return (`00${date.getMilliseconds()}`).slice(-2);
             }
         });
     }

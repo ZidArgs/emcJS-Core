@@ -104,19 +104,19 @@ const STYLE = new GlobalStyle(`
 `);
 
 const Q_TAB = [
-    'button:not([tabindex="-1"])',
-    '[href]:not([tabindex="-1"])',
-    'input:not([tabindex="-1"])',
-    'select:not([tabindex="-1"])',
-    'textarea:not([tabindex="-1"])',
-    '[tabindex]:not([tabindex="-1"])'
-].join(',');
+    "button:not([tabindex=\"-1\"])",
+    "[href]:not([tabindex=\"-1\"])",
+    "input:not([tabindex=\"-1\"])",
+    "select:not([tabindex=\"-1\"])",
+    "textarea:not([tabindex=\"-1\"])",
+    "[tabindex]:not([tabindex=\"-1\"])"
+].join(",");
 
 export default class Window extends HTMLElement {
 
     constructor(title = "", close = "close") {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
@@ -127,19 +127,19 @@ export default class Window extends HTMLElement {
             }
             event.stopPropagation();
         });
-        const ttl = this.shadowRoot.getElementById('title');
+        const ttl = this.shadowRoot.getElementById("title");
         if (!!title && typeof title === "string") {
             ttl.innerHTML = title;
         }
-        const cls = this.shadowRoot.getElementById('close');
+        const cls = this.shadowRoot.getElementById("close");
         if (!!close && typeof close === "string") {
             cls.setAttribute("title", close);
         }
         cls.onclick = this.close.bind(this);
         /* --- */
-        const focusTopEl = this.shadowRoot.getElementById('focus_catcher_top');
+        const focusTopEl = this.shadowRoot.getElementById("focus_catcher_top");
         focusTopEl.onfocus = this.focusLast.bind(this);
-        const focusBottomEl = this.shadowRoot.getElementById('focus_catcher_bottom');
+        const focusBottomEl = this.shadowRoot.getElementById("focus_catcher_bottom");
         focusBottomEl.onfocus = this.focusFirst.bind(this);
     }
 
@@ -150,27 +150,27 @@ export default class Window extends HTMLElement {
 
     close() {
         document.body.removeChild(this);
-        this.dispatchEvent(new Event('close'));
+        this.dispatchEvent(new Event("close"));
     }
 
     initialFocus() {
         const a = Array.from(this.querySelectorAll(Q_TAB));
-        a.push(this.shadowRoot.getElementById('close'));
+        a.push(this.shadowRoot.getElementById("close"));
         a[0].focus();
     }
 
     focusFirst() {
         const a = Array.from(this.querySelectorAll(Q_TAB));
-        a.unshift(this.shadowRoot.getElementById('close'));
+        a.unshift(this.shadowRoot.getElementById("close"));
         a[0].focus();
     }
     
     focusLast() {
         const a = Array.from(this.querySelectorAll(Q_TAB));
-        a.unshift(this.shadowRoot.getElementById('close'));
+        a.unshift(this.shadowRoot.getElementById("close"));
         a[a.length - 1].focus();
     }
 
 }
 
-customElements.define('emc-window', Window);
+customElements.define("emc-window", Window);

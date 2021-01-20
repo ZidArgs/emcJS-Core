@@ -68,13 +68,13 @@ export default class TabPanel extends Panel {
     
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const ctgrs = this.shadowRoot.getElementById('categories');
+        const ctgrs = this.shadowRoot.getElementById("categories");
         ctgrs.onclick = (event) => {
-            const targetEl = event.target.getAttribute('target');
+            const targetEl = event.target.getAttribute("target");
             if (targetEl) {
                 this.active = targetEl;
                 event.preventDefault();
@@ -93,15 +93,15 @@ export default class TabPanel extends Panel {
     }
 
     get active() {
-        return this.getAttribute('active');
+        return this.getAttribute("active");
     }
 
     set active(val) {
-        this.setAttribute('active', val);
+        this.setAttribute("active", val);
     }
 
     static get observedAttributes() {
-        return ['active'];
+        return ["active"];
     }
     
     attributeChangedCallback(name, oldValue, newValue) {
@@ -133,18 +133,18 @@ export default class TabPanel extends Panel {
         const former = this.shadowRoot.getElementById(btnId);
         if (former == null) {
             // panel
-            const pnl = document.createElement('div');
+            const pnl = document.createElement("div");
             pnl.id = pnlId;
             pnl.className = "panel";
             pnl.setAttribute("category", category);
-            this.shadowRoot.getElementById('body').append(pnl);
+            this.shadowRoot.getElementById("body").append(pnl);
             // button
-            const cb = document.createElement('div');
+            const cb = document.createElement("div");
             cb.id = btnId;
             cb.className = "category";
             cb.setAttribute("target", category);
             cb.innerHTML = name;
-            this.shadowRoot.getElementById('categories').append(cb);
+            this.shadowRoot.getElementById("categories").append(cb);
             // ---
             return pnl;
         } else {
@@ -162,4 +162,4 @@ export default class TabPanel extends Panel {
 
 }
 
-customElements.define('emc-panel-tabpanel', TabPanel);
+customElements.define("emc-panel-tabpanel", TabPanel);

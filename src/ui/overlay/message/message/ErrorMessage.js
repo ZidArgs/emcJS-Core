@@ -20,5 +20,5 @@ export default class ErrorMessage extends Message {
 
 }
 
-customElements.define('emc-message-error', ErrorMessage);
+customElements.define("emc-message-error", ErrorMessage);
 

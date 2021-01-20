@@ -46,7 +46,7 @@ function write(data) {
                 out.value += msg + "\n";
                 out.scrollTop = out.scrollHeight;
             } else if (out instanceof HTMLElement) {
-                const el = document.createElement('span');
+                const el = document.createElement("span");
                 for (const i in HTML_DEFAULT_STYLES[data.type]) {
                     el.style[i] = HTML_DEFAULT_STYLES[data.type][i];
                 }

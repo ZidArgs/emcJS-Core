@@ -39,7 +39,7 @@ export default class VBox extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
@@ -47,4 +47,4 @@ export default class VBox extends HTMLElement {
 
 }
 
-customElements.define('emc-panel-vbox', VBox);
+customElements.define("emc-panel-vbox", VBox);

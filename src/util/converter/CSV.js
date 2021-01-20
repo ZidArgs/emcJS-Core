@@ -9,15 +9,15 @@ class CSV {
             parseEntries:
             while (entries.length) {
                 let act = entries.shift();
-                if (!act.startsWith('"')) {
+                if (!act.startsWith("\"")) {
                     output.push(act);
                 } else {
                     let buf = [act];
                     while (entries.length) {
                         act = entries.shift();
                         buf.push(act);
-                        if (act.endsWith('"')) {
-                            output.push(buf.join(",").replace(/^"|"$/g, '').replace(/""/g, '"'));
+                        if (act.endsWith("\"")) {
+                            output.push(buf.join(",").replace(/^"|"$/g, "").replace(/""/g, "\""));
                             buf = [];
                             continue parseEntries;
                         }

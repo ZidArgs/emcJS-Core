@@ -62,13 +62,13 @@ const STYLE = new GlobalStyle(`
 `);
 
 const Q_TAB = [
-    'button:not([tabindex="-1"])',
-    '[href]:not([tabindex="-1"])',
-    'input:not([tabindex="-1"])',
-    'select:not([tabindex="-1"])',
-    'textarea:not([tabindex="-1"])',
-    '[tabindex]:not([tabindex="-1"])'
-].join(',');
+    "button:not([tabindex=\"-1\"])",
+    "[href]:not([tabindex=\"-1\"])",
+    "input:not([tabindex=\"-1\"])",
+    "select:not([tabindex=\"-1\"])",
+    "textarea:not([tabindex=\"-1\"])",
+    "[tabindex]:not([tabindex=\"-1\"])"
+].join(",");
 
 const TOP = new WeakMap();
 const LEFT = new WeakMap();
@@ -77,14 +77,14 @@ export default class ContextMenu extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
         TOP.set(this, 0);
         LEFT.set(this, 0);
         /* --- */
-        const menuEl = this.shadowRoot.getElementById('menu');
+        const menuEl = this.shadowRoot.getElementById("menu");
         menuEl.addEventListener("click", event => {
             this.close();
             event.preventDefault();
@@ -111,9 +111,9 @@ export default class ContextMenu extends HTMLElement {
             event.stopPropagation();
         });
         /* --- */
-        const focusTopEl = this.shadowRoot.getElementById('focus_catcher_top');
+        const focusTopEl = this.shadowRoot.getElementById("focus_catcher_top");
         focusTopEl.onfocus = this.focusLast.bind(this);
-        const focusBottomEl = this.shadowRoot.getElementById('focus_catcher_bottom');
+        const focusBottomEl = this.shadowRoot.getElementById("focus_catcher_bottom");
         focusBottomEl.onfocus = this.focusFirst.bind(this);
     }
 
@@ -126,18 +126,18 @@ export default class ContextMenu extends HTMLElement {
     }
 
     get active() {
-        return this.getAttribute('active');
+        return this.getAttribute("active");
     }
 
     set active(val) {
-        this.setAttribute('active', val);
+        this.setAttribute("active", val);
     }
 
     show(posX, posY) {
         LEFT.set(this, posX);
         TOP.set(this, posY);
         this.active = true;
-        const menu = this.shadowRoot.getElementById('menu');
+        const menu = this.shadowRoot.getElementById("menu");
         if (posX < 25) {
             posX = 25;
         } else if (menu.clientWidth + posX > window.innerWidth - 25) {
@@ -154,7 +154,7 @@ export default class ContextMenu extends HTMLElement {
     }
 
     close() {
-        const event = new Event('close');
+        const event = new Event("close");
         this.dispatchEvent(event);
         this.active = false;
     }
@@ -206,4 +206,4 @@ export default class ContextMenu extends HTMLElement {
 
 }
 
-customElements.define('emc-contextmenu', ContextMenu);
+customElements.define("emc-contextmenu", ContextMenu);

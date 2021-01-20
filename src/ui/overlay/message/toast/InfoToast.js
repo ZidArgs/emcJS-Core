@@ -18,4 +18,4 @@ export default class InfoToast extends Toast {
 
 }
 
-customElements.define('emc-toast-info', InfoToast);
+customElements.define("emc-toast-info", InfoToast);

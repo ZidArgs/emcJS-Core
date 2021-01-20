@@ -65,7 +65,7 @@ function write(data) {
                 out.value += msg + "\n";
                 out.scrollTop = out.scrollHeight;
             } else if (out instanceof HTMLElement) {
-                const el = document.createElement('span');
+                const el = document.createElement("span");
                 if (HTML_DEFAULT_STYLES[data.type] != null) {
                     for (const i in HTML_DEFAULT_STYLES[data.type]) {
                         el.style[i] = HTML_DEFAULT_STYLES[data.type][i];
@@ -94,11 +94,13 @@ window.addEventListener("error", function(msg, url, line, col, error) {
             message: msg.error ? msg.error : msg.message
         });
     } else {
+        col = col ? `:${col}` : "";
+        error = error ? `\n${error}` : "";
         write({
-            target: `${url} ${line}${col ? ":" + col : ""}`,
+            target: `${url} ${line}${col}`,
             type: LEVEL.SEVERE,
             time: (new Date).toJSON().replace(TIME_FND, TIME_REP),
-            message: `${msg}${error ? "\n" + error : ""}`
+            message: `${msg}${error}`
         });
     }
     return true;

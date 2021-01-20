@@ -34,7 +34,7 @@ export default class Toast extends HTMLElement {
 
     constructor(text = "", time = 0) {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
@@ -44,7 +44,7 @@ export default class Toast extends HTMLElement {
         }
         TIME.set(this, time);
         /* --- */
-        const textEl = this.shadowRoot.getElementById('text');
+        const textEl = this.shadowRoot.getElementById("text");
         textEl.innerHTML = text;
     }
 
@@ -61,4 +61,4 @@ export default class Toast extends HTMLElement {
 
 }
 
-customElements.define('emc-toast', Toast);
+customElements.define("emc-toast", Toast);

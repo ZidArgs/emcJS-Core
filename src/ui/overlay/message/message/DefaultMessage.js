@@ -56,19 +56,19 @@ export default class Message extends HTMLElement {
 
     constructor(text = "") {
         super();
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const closeEl = this.shadowRoot.getElementById('close');
+        const closeEl = this.shadowRoot.getElementById("close");
         closeEl.addEventListener("click", event => {
             this.remove();
             event.stopPropagation();
         });
-        const textEl = this.shadowRoot.getElementById('text');
+        const textEl = this.shadowRoot.getElementById("text");
         textEl.innerHTML = text;
         textEl.addEventListener("click", event => {
-            this.dispatchEvent(new Event('click'));
+            this.dispatchEvent(new Event("click"));
             this.remove();
             event.stopPropagation();
         });
@@ -76,4 +76,4 @@ export default class Message extends HTMLElement {
 
 }
 
-customElements.define('emc-message', Message);
+customElements.define("emc-message", Message);
