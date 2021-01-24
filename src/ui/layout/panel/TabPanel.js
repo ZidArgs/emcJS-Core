@@ -33,7 +33,9 @@ const STYLE = new GlobalStyle(`
 }
 .category {
     padding: 5px;
-    border: solid 1px white;
+    color: var(--category-color, black);
+    background-color: var(--category-background-color, white);
+    border: solid 1px var(--category-color, black);
     border-radius: 2px;
     align-items: center;
     justify-content: center;
@@ -41,11 +43,11 @@ const STYLE = new GlobalStyle(`
     -webkit-appearance: none;
 }
 .category:hover {
-    background-color: gray;
+    background-color: var(--category-hover-color, lightgray);
 }
 .category.active {
-    color: black;
-    background-color: white;
+    color: var(--category-marked-color, white);
+    background-color: var(--category-marked-background-color, black);
 }
 #body {
     flex: 1;
