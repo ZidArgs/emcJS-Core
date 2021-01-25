@@ -72,7 +72,7 @@ export default class FilteredList extends HTMLElement {
             // header.search
         });
         /* header */
-        header.addEventListener("filter", event => {
+        header.addEventListener("search", event => {
             const all = this.querySelectorAll(`[data-filtervalue]`);
             const panels = this.querySelectorAll(`emc-collapsepanel`);
             if (event.value) {
