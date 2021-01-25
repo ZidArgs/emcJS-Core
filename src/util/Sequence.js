@@ -1,24 +1,17 @@
-const SEQUENCES = new WeakMap();
+const QUEUE = new WeakMap();
 
 export default class Sequence {
 
-    constructor() {
-        SEQUENCES.set(this, []);
+    constructor()  {
+        QUEUE.set(this, Promise.resolve());
     }
 
     next(callback) {
         if (typeof callback == "function") {
-            SEQUENCES.get(this).push(callback);
+            const queue = QUEUE.set(this);
+            QUEUE.set(this, queue.then(callback));
         }
         return this;
-    }
-
-    async run(value) {
-        const sequence = SEQUENCES.get(this);
-        while (sequence.length) {
-            const step = sequence.shift();
-            value = await step(value);
-        }
     }
 
     static next(callback) {
