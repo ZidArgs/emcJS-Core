@@ -1,4 +1,4 @@
-import Import from "../util/Import.js";
+import Import from "../import/Import.js";
 import Template from "../util/Template.js";
 import GlobalStyle from "../util/GlobalStyle.js";
 

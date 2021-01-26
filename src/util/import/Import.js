@@ -8,11 +8,35 @@ async function getFile(url) {
     return r;
 }
 
+function parseHTML(input) {
+    const dom = PARSER.parseFromString(input, "text/html");
+    return dom.body.childNodes;
+}
+
+function extractText(input) {
+    return input.text();
+}
+
+function constructStyle(rules) {
+    const styleSheet = new CSSStyleSheet();
+    styleSheet.replaceSync(rules);
+    return styleSheet;
+}
+
 function getHTML(url) {
     return getFile(url)
-        .then(r => r.text())
-        .then(r => PARSER.parseFromString(r, "text/html"))
-        .then(r => r.body.childNodes);
+        .then(extractText)
+        .then(parseHTML);
+}
+
+function getCSS(url) {
+    return getFile(url)
+        .then(extractText)
+        .then(constructStyle);
+}
+
+function extractModule(obj) {
+    return obj.default;
 }
 
 class Import {
@@ -20,12 +44,14 @@ class Import {
     async module(url) {
         if (Array.isArray(url)) {
             const res = [];
-            for (const i in url) {
-                res.push(import(i).then(e=>e.default).catch(err=>{throw new Error(`Error appending module "${url}" ${err}`)}));
+            for (const i of url) {
+                res.push(import(i).then(extractModule)
+                    .catch(err=>{throw new Error(`Error appending module "${i}" ${err}`)}));
             }
             return await Promise.all(res);
         } else {
-            return await import(url).then(e=>e.default).catch(err=>{throw new Error(`Error appending module "${url}" ${err}`)});
+            return await import(url).then(extractModule)
+                .catch(err=>{throw new Error(`Error appending module "${url}" ${err}`)});
         }
     }
 
@@ -38,6 +64,18 @@ class Import {
             return await Promise.all(res);
         } else {
             return await getHTML(url);
+        }
+    }
+
+    async css(url) {
+        if (Array.isArray(url)) {
+            const res = [];
+            for (const i in url) {
+                res.push(getCSS(i));
+            }
+            return await Promise.all(res);
+        } else {
+            return await getCSS(url);
         }
     }
     

@@ -1,25 +1,27 @@
 <html>
     <head>
         <title>emcJS sandbox</title>
-        <base href="/_demo/">
+        <base href="/_demo/logic/">
         <meta charset="UTF-8">
         <meta name="description" content="Test for emcJS components">
         <meta name="robots" content="none">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
         <meta name="theme-color" content="#000000">
         <script type="module">
-            import emcJS from "../../src/index.js";
+            import I18n from "../../src/i18n/I18n.js";
+            import FileLoader from "../../src/util/FileLoader.js";
+            import LogicGraph from "../../src/util/graph/LogicGraph.js";
 
             const WANT_OUTPUT_LOG = [
                 "logic.location.lake.c_fishing_adult",
                 "logic.location.woods.c_warp"
             ];
 
-            emcJS.i18n.I18n.setTranslation("en_us", {
+            I18n.setTranslation("en_us", {
                 run: "RUN",
                 run_tooltip: "Run logic"
             });
-            emcJS.util.I18n.setTranslation("de_de", {
+            I18n.setTranslation("de_de", {
                 run: "AUSFÜHREN",
                 run_tooltip: "Logik ausführen"
             });
@@ -29,9 +31,9 @@
 
             async function init() {
 
-                let logic = await emcJS.util.FileLoader.json(`logic.json`);
+                let logic = await FileLoader.json(`logic.json`);
 
-                let LogicGraph = new emcJS.util.graph.LogicGraph(true);
+                let LogicGraph = new LogicGraph(true);
                 LogicGraph.load(logic);
 
                 LogicGraph.setAll({
