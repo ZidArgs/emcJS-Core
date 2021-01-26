@@ -2,10 +2,20 @@ const GENERATOR = new WeakMap();
 
 async function extractModule(module) {
     if (module.default instanceof AsyM) {
-        const asyM = await GENERATOR.get(module.default);
-        return [asyM.default, asyM];
+        try {
+            const asyM = await GENERATOR.get(module.default);
+            const {default: def, ...other} = asyM;
+            return [def, other];
+        } catch(err) {
+            throw new Error(`Error extracting async module\n${err}`)
+        }
     }
-    return [module.default, module];
+    try {
+        const {default: def, ...other} = module;
+        return [def, other];
+    } catch(err) {
+        throw new Error(`Error extracting module\n${err}`)
+    }
 }
 
 async function importAsyM(url) {

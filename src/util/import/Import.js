@@ -35,8 +35,13 @@ function getCSS(url) {
         .then(constructStyle);
 }
 
-function extractModule(obj) {
-    return obj.default;
+function extractModule(module) {
+    try {
+        const {default: def, ...other} = module;
+        return [def, other];
+    } catch(err) {
+        throw new Error(`Error extracting module\n${err}`)
+    }
 }
 
 class Import {
