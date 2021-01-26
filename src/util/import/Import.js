@@ -37,11 +37,17 @@ function getCSS(url) {
 
 function extractModule(module) {
     try {
-        const {default: def, ...other} = module;
+        const {default: def, ...other} = module ?? {};
         return [def, other];
     } catch(err) {
         throw new Error(`Error extracting module\n${err}`)
     }
+}
+
+async function importModule(url) {
+    return import(url)
+        .then(extractModule)
+        .catch(err => {throw new Error(`Error appending module "${url}" ${err}`)});
 }
 
 class Import {
@@ -50,13 +56,11 @@ class Import {
         if (Array.isArray(url)) {
             const res = [];
             for (const i of url) {
-                res.push(import(i).then(extractModule)
-                    .catch(err=>{throw new Error(`Error appending module "${i}" ${err}`)}));
+                res.push(importModule(i));
             }
             return await Promise.all(res);
         } else {
-            return await import(url).then(extractModule)
-                .catch(err=>{throw new Error(`Error appending module "${url}" ${err}`)});
+            return await importModule(url);
         }
     }
 

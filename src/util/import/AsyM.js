@@ -4,14 +4,14 @@ async function extractModule(module) {
     if (module.default instanceof AsyM) {
         try {
             const asyM = await GENERATOR.get(module.default);
-            const {default: def, ...other} = asyM;
+            const {default: def, ...other} = asyM ?? {};
             return [def, other];
         } catch(err) {
             throw new Error(`Error extracting async module\n${err}`)
         }
     }
     try {
-        const {default: def, ...other} = module;
+        const {default: def, ...other} = module ?? {};
         return [def, other];
     } catch(err) {
         throw new Error(`Error extracting module\n${err}`)
@@ -19,7 +19,8 @@ async function extractModule(module) {
 }
 
 async function importAsyM(url) {
-    return import(url).then(extractModule)
+    return import(url)
+        .then(extractModule)
         .catch(err => {throw new Error(`Error appending module "${url}" ${err}`)});
 }
 
