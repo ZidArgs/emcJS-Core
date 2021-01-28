@@ -1,19 +1,18 @@
-class Path {
+const BASE = new WeakMap();
 
-    getAbsolute(current, path) {
-        current = current.replace(window.location.origin, "").split("/");
-        current.pop();
-        path = path.split("/");
-        for (const step of path) {
-            if (step == "..") {
-                current.pop();
-            } else if (step != ".") {
-                current.push(step);
-            }
-        }
-        return current.join("/");
+export default class Path {
+
+    constructor(base = window.location.origin) {
+        BASE.set(this, new URL(base));
+    }
+
+    getAbsolute(path) {
+        const base = BASE.get(this);
+        return new URL(path, base);
+    }
+
+    static getAbsolute(base, path) {
+        return new URL(path, base);
     }
 
 }
-
-export default new Path;

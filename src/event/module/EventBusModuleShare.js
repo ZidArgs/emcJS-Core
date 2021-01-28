@@ -1,9 +1,11 @@
 import EventBusAbstractModule from "./EventBusAbstractModule.js";
 import Path from "../../util/Path.js";
 
+const path = new Path(import.meta.url);
+
 let WORKER = null;
 if ("SharedWorker" in window) {
-    WORKER = (new SharedWorker(Path.getAbsolute(import.meta.url, "./EventBusModuleShare.worker.js"), "EventWorker")).port;
+    WORKER = (new SharedWorker(path.getAbsolute("./EventBusModuleShare.worker.js"), "EventWorker")).port;
 }
 
 class EventBusModuleShare extends EventBusAbstractModule {

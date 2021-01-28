@@ -1,8 +1,7 @@
 {
   "name": "emcjs",
-  "version": "0.3.13",
+  "version": "0.3.14",
   "description": "Modular JS API",
-  "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "serve . -p 12000"
