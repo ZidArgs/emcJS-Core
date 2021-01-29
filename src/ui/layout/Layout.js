@@ -35,7 +35,7 @@ const STYLE = new GlobalStyle(`
 `);
 
 function loadLayout(layout) {
-    if (layout) {
+    if (layout != null) {
         if (layout.type == "panel") {
             const clazz = Panel.getReference(layout.name);
             if (clazz != null) {
