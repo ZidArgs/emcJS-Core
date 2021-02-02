@@ -13,17 +13,17 @@ export default registerMixin((superclass) => class I18nMixin extends superclass 
         manager.set("language", event => {
             const key = this.i18nKey;
             if (I18n.has(key)) {
-                this.applyTranslation(I18n.get(key));
+                this.applyI18nTranslation(I18n.get(key));
             } else {
                 const value = this.i18nValue;
-                this.applyTranslation(value || key);
+                this.applyI18nTranslation(value || key);
             }
         });
         manager.set("translation", event => {
             const key = this.i18nKey;
             if (event.changes[key] != null) {
                 const value = this.i18nValue;
-                this.applyTranslation(event.changes[key] || value || key);
+                this.applyI18nTranslation(event.changes[key] || value || key);
             }
         });
         MANAGER.set(this, manager);
