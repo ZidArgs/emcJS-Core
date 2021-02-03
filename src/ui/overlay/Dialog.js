@@ -102,14 +102,20 @@ export default class Dialog extends Window {
         if (!!options.text && typeof options.text === "string") {
             const text = els.getElementById("text");
             this.shadowRoot.getElementById("body").insertBefore(text, this.shadowRoot.getElementById("body").children[0]);
-            text.innerHTML = options.text;
+            if (options.text instanceof HTMLElement) {
+                text.append(options.text);
+            } else if (typeof options.text === "string") {
+                text.innerHTML = options.text;
+            }
         }
 
         const sbm = this.shadowRoot.getElementById("submit");
         if (options.submit) {
-            if (typeof options.submit === "string") {
+            if (options.submit instanceof HTMLElement) {
+                sbm.innerHTML = "";
+                sbm.append(options.submit);
+            } else if (typeof options.submit === "string") {
                 sbm.innerHTML = options.submit;
-                sbm.setAttribute("title", options.submit);
             }
             sbm.onclick = dialogSubmit.bind(this);
         } else {
@@ -118,9 +124,11 @@ export default class Dialog extends Window {
 
         const ccl = this.shadowRoot.getElementById("cancel");
         if (options.cancel) {
-            if (typeof options.cancel === "string") {
+            if (options.cancel instanceof HTMLElement) {
+                ccl.innerHTML = "";
+                ccl.append(options.cancel);
+            } else if (typeof options.cancel === "string") {
                 ccl.innerHTML = options.cancel;
-                ccl.setAttribute("title", options.cancel);
             }
             ccl.onclick = dialogCancel.bind(this);
         } else {

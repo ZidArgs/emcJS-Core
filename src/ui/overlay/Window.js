@@ -128,7 +128,9 @@ export default class Window extends HTMLElement {
             event.stopPropagation();
         });
         const ttl = this.shadowRoot.getElementById("title");
-        if (!!title && typeof title === "string") {
+        if (title instanceof HTMLElement) {
+            ttl.append(title);
+        } else if (typeof title === "string") {
             ttl.innerHTML = title;
         }
         const cls = this.shadowRoot.getElementById("close");

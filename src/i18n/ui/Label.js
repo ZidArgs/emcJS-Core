@@ -13,6 +13,8 @@ const STYLE = new GlobalStyle(`
 }
 :host {
     display: contents;
+    pointer-events: none;
+    user-select: none;
 }
 `);
 

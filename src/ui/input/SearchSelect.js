@@ -9,7 +9,8 @@ import "./Option.js";
  */
 
 const TPL = new Template(`
-<input id="view" placeholder="Search..."></input>
+<div id="view" mode="view"></div>
+<input id="input" placeholder="Search..."></input>
 <div id="scroll-container">
     <slot id="container">
         <div id="empty">no entries</div>
@@ -30,11 +31,29 @@ const STYLE = new GlobalStyle(`
     -moz-user-select: none;
     user-select: none;
 }
-#view {
+#view,
+#input {
     height: 30px;
     padding: 0px 7px;
     font-size: inherit;
     border: solid 1px var(--primary-color-border, #000000);
+}
+#view {
+    display: flex;
+    align-items: center;
+    cursor: text;
+}
+#view:empty:after {
+    content: "...";
+}
+#view[mode="edit"] {
+    display: none;
+}
+#view[mode="view"] + #input {
+    display: none;
+}
+#input:focus {
+    outline: -webkit-focus-ring-color solid 1px;
 }
 #scroll-container {
     position: fixed;
@@ -111,10 +130,12 @@ export default class SearchSelect extends HTMLElement {
                 }
             });
         });
-        const input = this.shadowRoot.getElementById("view");
+        const view = this.shadowRoot.getElementById("view");
+        const input = this.shadowRoot.getElementById("input");
         const container = this.shadowRoot.getElementById("scroll-container");
         this.addEventListener("focus", event => {
             if (!this.readonly) {
+                view.setAttribute("mode", "edit");
                 input.focus();
             }
         });
@@ -192,10 +213,14 @@ export default class SearchSelect extends HTMLElement {
             case "value":
                 if (oldValue != newValue) {
                     const el = this.querySelector(`[value="${newValue}"]`);
+                    const view = this.shadowRoot.getElementById("view");
+                    const input = this.shadowRoot.getElementById("input");
                     if (el != null) {
-                        this.shadowRoot.getElementById("view").value = el.innerHTML;
+                        view.innerHTML = el.innerHTML;
+                        input.value = el.innerText;
                     } else {
-                        this.shadowRoot.getElementById("view").value = newValue;
+                        view.innerHTML = newValue;
+                        input.innerHTML = newValue;
                     }
                     const event = new Event("change");
                     event.oldValue = oldValue;
@@ -222,6 +247,7 @@ export default class SearchSelect extends HTMLElement {
 customElements.define("emc-searchselect", SearchSelect);
 
 function clickOption(event) {
+    const view = this.shadowRoot.getElementById("view");
     if (!this.readonly) {
         this.value = event.currentTarget.getAttribute("value");
         const container = this.shadowRoot.getElementById("scroll-container");
@@ -233,16 +259,20 @@ function clickOption(event) {
             el.style.display = "";
         });
     }
+    view.setAttribute("mode", "view");
 }
 
 function cancelSelection(event) {
     const container = this.shadowRoot.getElementById("scroll-container");
+    const view = this.shadowRoot.getElementById("view");
+    const input = this.shadowRoot.getElementById("input");
     if (container.style.display != "") {
-        const input = this.shadowRoot.getElementById("view");
         const selected = this.querySelector(`[value="${this.value}"]`);
         if (selected != null) {
-            input.value = selected.innerHTML;
+            view.innerHTML = selected.innerHTML;
+            input.value = selected.innerText;
         } else {
+            view.innerHTML = this.value;
             input.value = this.value;
         }
         container.style.display = "";
@@ -253,4 +283,5 @@ function cancelSelection(event) {
             el.style.display = "";
         });
     }
+    view.setAttribute("mode", "view");
 }

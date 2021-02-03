@@ -145,7 +145,11 @@ export default class TabPanel extends Panel {
             cb.id = btnId;
             cb.className = "category";
             cb.setAttribute("target", category);
-            cb.innerHTML = name;
+            if (name instanceof HTMLElement) {
+                cb.append(name);
+            } else if (typeof name === "string") {
+                cb.innerHTML = name;
+            }
             this.shadowRoot.getElementById("categories").append(cb);
             // ---
             return pnl;
