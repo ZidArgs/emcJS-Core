@@ -14,6 +14,7 @@ const STYLE = new GlobalStyle(`
     display: flex;
     justify-content: stretch;
     align-items: stretch;
+    min-height: 100%;
 }
 ::slotted(:not(:first-child)) {
     display: none;

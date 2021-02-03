@@ -5,6 +5,8 @@ import "./HamburgerButton.js";
 
 const TPL = new Template(`
 <div id="container">
+    <div id="cover">
+    </div>
     <ul id="content">
     </ul>
 </div>
@@ -32,6 +34,18 @@ const STYLE = new GlobalStyle(`
     display: block;
     margin: 0;
     z-index: 100;
+}
+#cover {
+    position: fixed;
+    display: none;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+#container.cover #cover,
+#container.open #cover {
+    display: block;
 }
 #hamburger-button {
     position: relative;
@@ -94,6 +108,7 @@ ul li > emc-navbar-button {
     }
     #hamburger-button {
         display: inline-block;
+        z-index: 100;
     }
     ul li {
         width: 100%;
@@ -101,7 +116,7 @@ ul li > emc-navbar-button {
     ul#content {
         flex-direction: column;
         width: 100%;
-        height: 100%;
+        max-height: 100%;
         overflow-y: auto;
     }
     ul#content > li > ul {
@@ -121,11 +136,6 @@ ul li > emc-navbar-button {
     }
 }
 @media (min-width: 501px) {
-    #container.cover {
-        position: absolute;
-        width: 100vw;
-        height: 100vh;
-    }
     ul#content {
         flex-wrap: wrap;
         width: 100%;
@@ -158,6 +168,7 @@ export default class NavBar extends HTMLElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         const container = this.shadowRoot.getElementById("container");
+        const cover = this.shadowRoot.getElementById("cover");
         const content = this.shadowRoot.getElementById("content");
         const hamburger = this.shadowRoot.getElementById("hamburger-button");
         hamburger.onclick = (event) => {
@@ -176,7 +187,7 @@ export default class NavBar extends HTMLElement {
                 hamburger.open = true;
             }
         };
-        container.onclick = (event) => {
+        cover.onclick = (event) => {
             container.classList.remove("open");
             container.classList.remove("cover");
             content.querySelectorAll(".open").forEach(function(el) {
@@ -257,6 +268,9 @@ export default class NavBar extends HTMLElement {
                             el.classList.remove("open");
                             container.classList.remove("cover");
                         } else {
+                            content.querySelectorAll("[expand=\"open\"]").forEach(function(el) {
+                                el.expand = "closed";
+                            });
                             content.querySelectorAll(".open").forEach(function(el) {
                                 el.classList.remove("open");
                             });
