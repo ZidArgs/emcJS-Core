@@ -3,10 +3,25 @@ import GlobalStyle from "../../util/GlobalStyle.js";
 import SearchAnd from "../../util/search/SearchAnd.js";
 import "./Option.js";
 
-/* TODO
- * use same method as contextmenu for overlay
- * maybe even use an additional input for search and not remove value from view input
+/** FIXME
+ * after select the element does not get blurred
+ * ---
+ * idea:
+ * - to open the listselection and show&focus the textinput
+ *     - listen to onclick
+ *     - listen to onkeypress being enter with start value to be the current value but all marked
+ *     - listen to onkeypress being backspace with start value to be empty
+ *     - listen to onkeypress with starting value to be the first character
+ * - hide selection list
+ *     - on value choice
+ *     - onkeypress being escape
+ *     - onscroll
+ *     - onblur
  */
+
+ /** TODO
+  * add arrow movement for selecting a value
+  */
 
 const TPL = new Template(`
 <div id="view" mode="view"></div>
