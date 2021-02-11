@@ -3,7 +3,7 @@ import GlobalStyle from "../../util/GlobalStyle.js";
 import I18nMixin from "./I18nMixin.js";
 
 const TPL = new Template(`
-<span id="target"></span>
+<slot></slot>
 `);
 
 const STYLE = new GlobalStyle(`
@@ -12,7 +12,7 @@ const STYLE = new GlobalStyle(`
     box-sizing: border-box;
 }
 :host {
-    display: contents;
+    display: flex;
     pointer-events: none;
     user-select: none;
 }
@@ -28,9 +28,38 @@ export default class Label extends I18nMixin(HTMLElement) {
     }
 
     applyI18nTranslation(content) {
-        const el = this.shadowRoot.getElementById("target");
-        el.innerHTML = content;
+        super.innerText = content;
     }
+
+    set innerHTML(value) {}
+
+    get innerHTML() {
+        return super.innerHTML;
+    }
+
+    set innerText(value) {}
+
+    get innerText() {
+        return super.innerText;
+    }
+
+    set textContent(value) {}
+
+    get textContent() {
+        return super.textContent;
+    }
+
+    append() {}
+
+    prepend() {}
+
+    appendChild() {}
+
+    removeChild() {}
+
+    replaceChild() {}
+
+    replaceChildren() {}
 
 }
 

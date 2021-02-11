@@ -125,6 +125,11 @@ export default class TabPanel extends Panel {
             const nb = this.shadowRoot.querySelector(`[target="${newValue}"]`);
             if (nb != null) {
                 nb.classList.add("active");
+            } else {
+                const el = this.shadowRoot.querySelector("[target]");
+                if (el != null) {
+                    this.active = el.getAttribute("target");
+                }
             }
         }
     }

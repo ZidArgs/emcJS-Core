@@ -23,7 +23,7 @@ const STYLE = new GlobalStyle(`
     display: flex;
     flex-direction: column;
     min-width: 200px;
-    min-height: 200px;
+    min-height: 100px;
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;

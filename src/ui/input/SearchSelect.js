@@ -3,28 +3,8 @@ import GlobalStyle from "../../util/GlobalStyle.js";
 import SearchAnd from "../../util/search/SearchAnd.js";
 import "./Option.js";
 
-/** FIXME
- * after select the element does not get blurred
- * ---
- * idea:
- * - to open the listselection and show&focus the textinput
- *     - listen to onclick
- *     - listen to onkeypress being enter with start value to be the current value but all marked
- *     - listen to onkeypress being backspace with start value to be empty
- *     - listen to onkeypress with starting value to be the first character
- * - hide selection list
- *     - on value choice
- *     - onkeypress being escape
- *     - onscroll
- *     - onblur
- */
-
- /** TODO
-  * add arrow movement for selecting a value
-  */
-
 const TPL = new Template(`
-<div id="view" mode="view"></div>
+<div id="view" mode="view" tabindex="0"></div>
 <input id="input" placeholder="Search..."></input>
 <div id="button"></div>
 <div id="scroll-container">
@@ -50,6 +30,10 @@ const STYLE = new GlobalStyle(`
 }
 :host(:focus) {
     outline: auto 1px var(--input-focus-color, #4455ff);
+    outline-offset: 2px;
+}
+:focus {
+    outline: none;
 }
 #button {
     display: flex;
@@ -83,13 +67,10 @@ const STYLE = new GlobalStyle(`
     background-color: var(--input-back-color, #ffffff);
     border: none;
 }
-#input:focus {
-    outline: none;
-}
 #view {
     display: flex;
     align-items: center;
-    cursor: text;
+    cursor: pointer;
 }
 #view:empty:after {
     content: "...";
@@ -99,9 +80,6 @@ const STYLE = new GlobalStyle(`
 }
 #view[mode="view"] + #input {
     display: none;
-}
-#input:focus {
-    outline: -webkit-focus-ring-color solid 1px;
 }
 #scroll-container {
     position: fixed;
@@ -133,13 +111,14 @@ slot {
     white-space: normal;
     color: solid var(--input-text-color, #000000);
     background-color: var(--input-back-color, #ffffff);
-    border-bottom: solid 1px #eee;
+    border-bottom: solid 1px var(--input-button-color, #cccccc);
 }
 ::slotted([value][disabled]) {
     display: none;
 }
-::slotted([value]:hover) {
-    background-color: var(--input-back-color, #ffffff);
+::slotted([value]:hover),
+::slotted([value].marked) {
+    background-color: var(--input-button-color, #cccccc);
 }
 :host(:not([readonly])) ::slotted([value]:not(.active)),
 :host([readonly="false"]) ::slotted([value]:not(.active)),
@@ -163,7 +142,7 @@ export default class SearchSelect extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open"}); // , delegatesFocus: true
+        this.attachShadow({mode: "open", delegatesFocus: true});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
@@ -171,7 +150,11 @@ export default class SearchSelect extends HTMLElement {
             const all = this.querySelectorAll(`[value]`);
             all.forEach(el => {
                 if (el) {
-                    el.onclick = clickOption.bind(this);
+                    el.onclick = event => {
+                        this./*#*/__choose(event.currentTarget.getAttribute("value"));
+                        event.stopPropagation();
+                        return false;
+                    };
                     if (el.value == this.value) {
                         this.shadowRoot.getElementById("view").value = el.innerHTML;
                     }
@@ -181,11 +164,62 @@ export default class SearchSelect extends HTMLElement {
         const view = this.shadowRoot.getElementById("view");
         const input = this.shadowRoot.getElementById("input");
         const container = this.shadowRoot.getElementById("scroll-container");
-        this.addEventListener("focus", event => {
+        this.addEventListener("click", event => {
             if (!this.readonly) {
                 view.setAttribute("mode", "edit");
                 input.focus();
             }
+            event.stopPropagation();
+            return false;
+        });
+        this.addEventListener("keyup", event => {
+            if (!this.readonly) {
+                if (view.getAttribute("mode") == "view") {
+                    if (event.key == "Enter" || event.key == " ") {
+                        view.setAttribute("mode", "edit");
+                        input.focus();
+                    }
+                } else {
+                    if (event.key == "Escape") {
+                        this./*#*/__cancelSelection();
+                    } else if (event.key == "Enter" || event.key == " ") {
+                        const marked = this.querySelector(".marked");
+                        if (marked != null) {
+                            this./*#*/__choose(marked.getAttribute("value"));
+                        }
+                    } else if (event.key == "ArrowUp") {
+                        const marked = this.querySelector(".marked");
+                        if (marked != null) {
+                            const el = marked.previousElementSibling;
+                            if (el != null) {
+                                marked.classList.remove("marked");
+                                el.classList.add("marked");
+                            }
+                        } else {
+                            const el = this.querySelector("[value]");
+                            if (el != null) {
+                                el.classList.add("marked");
+                            }
+                        }
+                    } else if (event.key == "ArrowDown") {
+                        const marked = this.querySelector(".marked");
+                        if (marked != null) {
+                            const el = marked.nextElementSibling;
+                            if (el != null) {
+                                marked.classList.remove("marked");
+                                el.classList.add("marked");
+                            }
+                        } else {
+                            const el = this.querySelector("[value]");
+                            if (el != null) {
+                                el.classList.add("marked");
+                            }
+                        }
+                    }
+                }
+            }
+            event.stopPropagation();
+            return false;
         });
         input.addEventListener("focus", event => {
             if (!this.readonly) {
@@ -202,18 +236,24 @@ export default class SearchSelect extends HTMLElement {
             }
         });
         window.addEventListener("wheel", event => {
-            input.blur();
+            this./*#*/__cancelSelection();
+            event.stopPropagation();
+            return false;
         });
         container.addEventListener("wheel", event => {
             event.stopPropagation();
             return false;
         });
-        this.addEventListener("blur", cancelSelection.bind(this));
+        this.addEventListener("blur", event => {
+            this./*#*/__cancelSelection();
+            event.stopPropagation();
+            return false;
+        });
         input.addEventListener("input", event => {
             const all = this.querySelectorAll(`[value]`);
             const regEx = new SearchAnd(input.value);
             all.forEach(el => {
-                if (el.innerText.match(regEx)) {
+                if (el.innerText.trim().match(regEx)) {
                     el.style.display = "";
                 } else {
                     el.style.display = "none";
@@ -223,14 +263,20 @@ export default class SearchSelect extends HTMLElement {
     }
 
     connectedCallback() {
-        this.setAttribute("tabindex", 0);
+        if (!this.hasAttribute("tabindex")) {
+            this.setAttribute("tabindex", 0);
+        }
         const all = this.querySelectorAll(`[value]`);
         if (!this.value && !!all.length) {
             this.value = all[0].value;
         }
         all.forEach(el => {
             if (el) {
-                el.onclick = clickOption.bind(this);
+                el.onclick = event => {
+                    this./*#*/__choose(event.currentTarget.getAttribute("value"));
+                    event.stopPropagation();
+                    return false;
+                };
             }
         });
     }
@@ -290,46 +336,47 @@ export default class SearchSelect extends HTMLElement {
         }
     }
 
+    /*#*/__cancelSelection() {
+        const container = this.shadowRoot.getElementById("scroll-container");
+        const view = this.shadowRoot.getElementById("view");
+        const input = this.shadowRoot.getElementById("input");
+        if (container.style.display != "") {
+            const selected = this.querySelector(`[value="${this.value}"]`);
+            if (selected != null) {
+                view.innerHTML = selected.innerHTML;
+                input.value = selected.innerText;
+            } else {
+                view.innerHTML = this.value;
+                input.value = this.value;
+            }
+            container.style.display = "";
+            container.style.bottom = "";
+            container.style.top = "";
+            const all = this.querySelectorAll(`[value]`);
+            all.forEach(el => {
+                el.style.display = "";
+            });
+        }
+        view.setAttribute("mode", "view");
+    }
+
+    /*#*/__choose(value) {
+        const view = this.shadowRoot.getElementById("view");
+        if (!this.readonly) {
+            this.value = value;
+            const container = this.shadowRoot.getElementById("scroll-container");
+            container.style.display = "";
+            container.style.bottom = "";
+            container.style.top = "";
+            const all = this.querySelectorAll(`[value]`);
+            all.forEach(el => {
+                el.style.display = "";
+            });
+        }
+        view.setAttribute("mode", "view");
+        view.focus();
+    }
+
 }
 
 customElements.define("emc-searchselect", SearchSelect);
-
-function clickOption(event) {
-    const view = this.shadowRoot.getElementById("view");
-    if (!this.readonly) {
-        this.value = event.currentTarget.getAttribute("value");
-        const container = this.shadowRoot.getElementById("scroll-container");
-        container.style.display = "";
-        container.style.bottom = "";
-        container.style.top = "";
-        const all = this.querySelectorAll(`[value]`);
-        all.forEach(el => {
-            el.style.display = "";
-        });
-    }
-    view.setAttribute("mode", "view");
-}
-
-function cancelSelection(event) {
-    const container = this.shadowRoot.getElementById("scroll-container");
-    const view = this.shadowRoot.getElementById("view");
-    const input = this.shadowRoot.getElementById("input");
-    if (container.style.display != "") {
-        const selected = this.querySelector(`[value="${this.value}"]`);
-        if (selected != null) {
-            view.innerHTML = selected.innerHTML;
-            input.value = selected.innerText;
-        } else {
-            view.innerHTML = this.value;
-            input.value = this.value;
-        }
-        container.style.display = "";
-        container.style.bottom = "";
-        container.style.top = "";
-        const all = this.querySelectorAll(`[value]`);
-        all.forEach(el => {
-            el.style.display = "";
-        });
-    }
-    view.setAttribute("mode", "view");
-}
