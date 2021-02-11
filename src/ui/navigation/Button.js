@@ -52,8 +52,9 @@ button:disabled {
 :host([expand="closed"]) button:before,
 :host([expand="open"]) button:before {
     display: block;
-    width: 11px;
-    height: 8px;
+    width: 6px;
+    height: 0px;
+    margin-right: 5px;
     box-sizing: border-box;
     border-top: solid transparent 4px;
     border-left: solid var(--navigation-text-color, #000000) 6px;

@@ -11,6 +11,7 @@ import "./Option.js";
 const TPL = new Template(`
 <div id="view" mode="view"></div>
 <input id="input" placeholder="Search..."></input>
+<div id="button"></div>
 <div id="scroll-container">
     <slot id="container">
         <div id="empty">no entries</div>
@@ -25,18 +26,50 @@ const STYLE = new GlobalStyle(`
 }
 :host {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     min-width: 200px;
+    border: solid 1px var(--input-border-color, #000000);
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
 }
+:host(:focus) {
+    outline: auto 1px var(--input-focus-color, #4455ff);
+}
+#button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    background-color: var(--input-back-color, #ffffff);
+    cursor: pointer;
+}
+#button:after {
+    display: block;
+    width: 0px;
+    height: 6px;
+    box-sizing: border-box;
+    border-top: solid var(--input-text-color, #000000) 6px;
+    border-left: solid transparent 4px;
+    border-bottom: solid transparent 0px;
+    border-right: solid transparent 4px;
+    transition: transform 0.2s ease-in-out;
+    transform-origin: 3px 4px;
+    content: "";
+}
 #view,
 #input {
+    flex: 1;
     height: 30px;
     padding: 0px 7px;
     font-size: inherit;
-    border: solid 1px var(--primary-color-border, #000000);
+    color: solid var(--input-text-color, #000000);
+    background-color: var(--input-back-color, #ffffff);
+    border: none;
+}
+#input:focus {
+    outline: none;
 }
 #view {
     display: flex;
@@ -61,17 +94,17 @@ const STYLE = new GlobalStyle(`
     max-height: 300px;
     overflow-x: hidden;
     overflow-y: auto;
-    background-color: var(--list-color-back, #ffffff);
-    scrollbar-color: var(--list-color-hover, #b8b8b8) var(--list-color-border, #f1f1f1);
-    border: solid 1px var(--primary-color-border, #000000);
+    background-color: var(--input-back-color, #ffffff);
+    scrollbar-color: var(--input-color-hover, #999999) var(--input-button-color, #cccccc);
+    border: solid 1px var(--input-border-color, #000000);
     z-index: 1000;
     box-shadow: black 2px 2px 2px;
 }
 #scroll-container::-webkit-scrollbar-track {
-    background-color: var(--list-color-border, #f1f1f1);
+    background-color: var(--input-button-color, #cccccc);
 }
 #scroll-container::-webkit-scrollbar-thumb {
-    background-color: var(--list-color-hover, #b8b8b8);
+    background-color: var(--input-color-hover, #999999);
 }
 slot {
     display: block;
@@ -83,15 +116,15 @@ slot {
     min-height: 30px;
     padding: 5px 10px;
     white-space: normal;
-    color: var(--list-color-front, #000000);
-    background-color: var(--list-color-back, #ffffff);
+    color: solid var(--input-text-color, #000000);
+    background-color: var(--input-back-color, #ffffff);
     border-bottom: solid 1px #eee;
 }
 ::slotted([value][disabled]) {
     display: none;
 }
 ::slotted([value]:hover) {
-    background-color: var(--list-color-hover, #b8b8b8);
+    background-color: var(--input-back-color, #ffffff);
 }
 :host(:not([readonly])) ::slotted([value]:not(.active)),
 :host([readonly="false"]) ::slotted([value]:not(.active)),
@@ -115,7 +148,7 @@ export default class SearchSelect extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
+        this.attachShadow({mode: "open"}); // , delegatesFocus: true
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
