@@ -4,6 +4,11 @@ import SearchAnd from "../../util/search/SearchAnd.js";
 import "./ListHeader.js";
 import "./Option.js";
 
+/** TODO
+ * add arrow key navigation to select options
+ * enter to activate/deactivate option
+ */
+
 const TPL = new Template(`
 <emc-listheader id="header">
 </emc-listheader>
@@ -28,6 +33,9 @@ const STYLE = new GlobalStyle(`
     -moz-user-select: none;
     user-select: none;
     overflow: hidden;
+}
+:focus {
+    outline: none;
 }
 #scroll-container {
     flex: 1;
@@ -114,7 +122,7 @@ export default class ListSelect extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
+        this.attachShadow({mode: "open", delegatesFocus: true});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */

@@ -78,8 +78,12 @@ const STYLE = new GlobalStyle(`
     overflow: auto;
 }
 :focus {
+    box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
     outline: none;
-    box-shadow: inset black 0 0px 3px 2px;
+}
+:focus:not(:focus-visible) {
+    box-shadow: none;
+    outline: none;
 }
 #close {
     display: flex;
@@ -98,8 +102,12 @@ const STYLE = new GlobalStyle(`
     background-color: red;
 }
 #close:focus {
-    outline: none;
     box-shadow: inset red 0 0px 3px 4px;
+    outline: none;
+}
+#close:focus:not(:focus-visible) {
+    box-shadow: none;
+    outline: none;
 }
 `);
 

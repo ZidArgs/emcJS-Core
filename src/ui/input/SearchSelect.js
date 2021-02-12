@@ -5,7 +5,7 @@ import "./Option.js";
 
 const TPL = new Template(`
 <div id="view" mode="view" tabindex="0"></div>
-<input id="input" placeholder="Search..."></input>
+<input id="input" placeholder="Search..." autocomplete="off"></input>
 <div id="button"></div>
 <div id="scroll-container">
     <slot id="container">
@@ -23,14 +23,21 @@ const STYLE = new GlobalStyle(`
     display: flex;
     flex-direction: row;
     min-width: 200px;
+    color: solid var(--input-text-color, #000000);
+    background-color: var(--input-back-color, #ffffff);
     border: solid 1px var(--input-border-color, #000000);
+    border-radius: 2px;
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
 }
 :host(:focus) {
-    outline: auto 1px var(--input-focus-color, #4455ff);
-    outline-offset: 2px;
+    box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
+    outline: none;
+}
+:host(:focus:not(:focus-visible)) {
+    box-shadow: none;
+    outline: none;
 }
 :focus {
     outline: none;
@@ -41,7 +48,7 @@ const STYLE = new GlobalStyle(`
     justify-content: center;
     width: 30px;
     height: 30px;
-    background-color: var(--input-back-color, #ffffff);
+    background-color: transparent;
     cursor: pointer;
 }
 #button:after {
@@ -63,8 +70,7 @@ const STYLE = new GlobalStyle(`
     height: 30px;
     padding: 0px 7px;
     font-size: inherit;
-    color: solid var(--input-text-color, #000000);
-    background-color: var(--input-back-color, #ffffff);
+    background-color: transparent;
     border: none;
 }
 #view {

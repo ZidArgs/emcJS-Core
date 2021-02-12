@@ -225,6 +225,12 @@ export default class NavBar extends HTMLElement {
                 // action
                 if (item["handler"] != null && typeof item.handler == "function") {
                     btn.addEventListener("click", function() {
+                        content.querySelectorAll("[expand=\"open\"]").forEach(function(el) {
+                            el.expand = "closed";
+                        });
+                        content.querySelectorAll(".open").forEach(function(el) {
+                            el.classList.remove("open");
+                        });
                         item.handler();
                     });
                 }
@@ -253,6 +259,12 @@ export default class NavBar extends HTMLElement {
                             // action
                             if (subitem["handler"] != null && typeof subitem.handler == "function") {
                                 subbtn.addEventListener("click", function() {
+                                    content.querySelectorAll("[expand=\"open\"]").forEach(function(el) {
+                                        el.expand = "closed";
+                                    });
+                                    content.querySelectorAll(".open").forEach(function(el) {
+                                        el.classList.remove("open");
+                                    });
                                     subitem.handler();
                                 });
                             }

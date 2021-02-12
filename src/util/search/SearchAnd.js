@@ -6,7 +6,7 @@ export default class SearchAnd {
 
     constructor(query) {
         query = escapeRegExp(query).split(" ");
-        return new RegExp(`.*${query.join(".*")}.*`, "i");
+        return new RegExp(`${query.join(".*")}`, "i");
     }
 
 }

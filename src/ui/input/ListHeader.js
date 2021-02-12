@@ -6,7 +6,7 @@ import "../../i18n/ui/Tooltip.js";
 const TPL = new Template(`
 <input type="checkbox" id="selection">
 <div id="search-wrapper">
-    <input id="search" is="emc-i18n-input" i18n-key="search" i18n-value="search">
+    <input id="search" is="emc-i18n-input" i18n-key="search" i18n-value="search" autocomplete="off">
     <emc-i18n-tooltip i18n-key="search_reset" i18n-value="Reset search">
         <div id="search-reset">⨯</div>
     </emc-i18n-tooltip>
@@ -18,6 +18,9 @@ const STYLE = new GlobalStyle(`
     display: flex;
     padding: 2px 0;
     background: var(--list-color-border, #f1f1f1);
+}
+:focus {
+    outline: none;
 }
 #search-wrapper {
     display: flex;
@@ -73,7 +76,7 @@ export default class ListHeader extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
+        this.attachShadow({mode: "open", delegatesFocus: true});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
