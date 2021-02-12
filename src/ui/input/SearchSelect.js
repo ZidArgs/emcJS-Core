@@ -67,11 +67,12 @@ const STYLE = new GlobalStyle(`
 #view,
 #input {
     flex: 1;
-    height: 30px;
+    height: 2rem;
     padding: 0px 7px;
     font-size: inherit;
     background-color: transparent;
     border: none;
+    font-size: 1rem;
 }
 #view {
     display: flex;
@@ -112,12 +113,13 @@ slot {
 ::slotted([value]) {
     display: flex;
     align-items: center;
-    min-height: 30px;
+    min-height: 2rem;
     padding: 5px 10px;
     white-space: normal;
     color: solid var(--input-text-color, #000000);
     background-color: var(--input-back-color, #ffffff);
     border-bottom: solid 1px var(--input-button-color, #cccccc);
+    font-size: 1rem;
 }
 ::slotted([value][disabled]) {
     display: none;
@@ -128,8 +130,8 @@ slot {
 }
 :host(:not([readonly])) ::slotted([value]:not(.active)),
 :host([readonly="false"]) ::slotted([value]:not(.active)),
-:host([multimode]:not([multimode="false"]):not([readonly])) ::slotted([value].active),
-:host([readonly="false"][multimode]:not([multimode="false"])) ::slotted([value].active) {
+:host([multiple]:not([multiple="false"]):not([readonly])) ::slotted([value].active),
+:host([readonly="false"][multiple]:not([multiple="false"])) ::slotted([value].active) {
     cursor: pointer;
 }
 #empty {
@@ -137,7 +139,7 @@ slot {
     align-items: center;
     justify-content: center;
     font-style: italic;
-    min-height: 30px;
+    min-height: 2rem;
     padding: 5px;
     margin: 5px 2px;
     white-space: normal;

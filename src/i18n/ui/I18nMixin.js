@@ -59,10 +59,6 @@ export default registerMixin((superclass) => class I18nMixin extends superclass 
         manager.setActive(false);
     }
 
-    get i18nKey() {
-        return this.getAttribute("i18n-key") || "";
-    }
-
     set i18nKey(val) {
         if (val != null) {
             this.setAttribute("i18n-key", val);
@@ -71,8 +67,8 @@ export default registerMixin((superclass) => class I18nMixin extends superclass 
         }
     }
 
-    get i18nValue() {
-        return this.getAttribute("i18n-value") || "";
+    get i18nKey() {
+        return this.getAttribute("i18n-key") || "";
     }
 
     set i18nValue(val) {
@@ -81,6 +77,10 @@ export default registerMixin((superclass) => class I18nMixin extends superclass 
         } else {
             this.removeAttribute("i18n-key");
         }
+    }
+
+    get i18nValue() {
+        return this.getAttribute("i18n-value") || "";
     }
 
     static get observedAttributes() {

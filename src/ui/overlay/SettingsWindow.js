@@ -352,12 +352,12 @@ export default class SettingsWindow extends Window {
         this.shadowRoot.getElementById(`panel_${category}`).append(el);
     }
 
-    addListSelectInput(category, label, ref, def, multimode, values) {
+    addListSelectInput(category, label, ref, def, multiple, values) {
         const el = generateField(label);
         const input = document.createElement("emc-listselect");
         input.className = "settings-input";
         input.setAttribute("type", "list");
-        input.multimode = multimode;
+        input.multiple = multiple;
         input.value = def;
         input.dataset.ref = ref;
         for (const value in values) {

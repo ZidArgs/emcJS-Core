@@ -35,7 +35,7 @@ slot {
 #view-choice emc-option:not(.active) {
     cursor: default;
 }
-#view-choice[multimode]:not([multimode="false"]) emc-option {
+#view-choice[multiple]:not([multiple="false"]) emc-option {
     cursor: pointer;
 }
 `);
@@ -43,7 +43,7 @@ slot {
 function clickOption(event) {
     if (!this.readonly) {
         const value = event.currentTarget.value;
-        if (this.multimode) {
+        if (this.multiple) {
             const arr = this.value;
             const set = new Set(arr);
             if (set.has(value)) {
@@ -120,7 +120,7 @@ export default class ChoiceSelect extends HTMLElement {
 
     set value(val) {
         if (val != null) {
-            if (this.multimode) {
+            if (this.multiple) {
                 if (!Array.isArray(val)) {
                     val = [val];
                 }
@@ -138,7 +138,7 @@ export default class ChoiceSelect extends HTMLElement {
 
     get value() {
         let val = this.getAttribute("value");
-        if (this.multimode) {
+        if (this.multiple) {
             if (val != null) {
                 val = JSON.parse(val);
             } else {
@@ -148,12 +148,12 @@ export default class ChoiceSelect extends HTMLElement {
         return val;
     }
 
-    set multimode(val) {
-        this.setAttribute("multimode", val);
+    set multiple(val) {
+        this.setAttribute("multiple", val);
     }
 
-    get multimode() {
-        return this.getAttribute("multimode") == "true";
+    get multiple() {
+        return this.getAttribute("multiple") == "true";
     }
 
     set readonly(val) {
@@ -166,7 +166,7 @@ export default class ChoiceSelect extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ["value", "multimode"];
+        return ["value", "multiple"];
     }
       
     attributeChangedCallback(name, oldValue, newValue) {
@@ -181,7 +181,7 @@ export default class ChoiceSelect extends HTMLElement {
                     this.dispatchEvent(event);
                 }
                 break;
-            case "multimode":
+            case "multiple":
                 if (oldValue != newValue) {
                     if (newValue != "true") {
                         const arr = JSON.parse(this.getAttribute("value"));
@@ -208,7 +208,7 @@ export default class ChoiceSelect extends HTMLElement {
                 el.classList.remove("active");
             }
         });
-        if (this.multimode) {
+        if (this.multiple) {
             for (const value of this.value) {
                 const el = this.querySelector(`[value="${value}"]`);
                 el.classList.add("active");

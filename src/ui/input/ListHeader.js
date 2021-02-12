@@ -4,7 +4,7 @@ import "../../i18n/ui/InputElement.js";
 import "../../i18n/ui/Tooltip.js";
 
 const TPL = new Template(`
-<input type="checkbox" id="selection">
+<input type="checkbox" id="selection" tabindex="-1">
 <div id="search-wrapper">
     <input id="search" is="emc-i18n-input" i18n-key="search" i18n-value="search" autocomplete="off">
     <emc-i18n-tooltip i18n-key="search_reset" i18n-value="Reset search">
@@ -31,8 +31,8 @@ const STYLE = new GlobalStyle(`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 25px;
-    height: 25px;
+    width: 2rem;
+    height: 2rem;
     color: var(--list-color-front, #000000);
     font-size: 20px;
     font-weight: bold;
@@ -40,11 +40,12 @@ const STYLE = new GlobalStyle(`
 }
 #search {
     flex: 1;
-    height: 28px;
+    height: 2rem;
     padding: 0 4px;
     color: var(--list-color-front, #000000);
     background: var(--list-color-back, #ffffff);
     border: none;
+    font-size: 1rem;
     -webkit-appearance: none;
     outline: none;
 }
@@ -104,19 +105,16 @@ export default class ListHeader extends HTMLElement {
     }
 
     connectedCallback() {
-        this.tabIndex = 0;
+        if (!this.hasAttribute("tabindex")) {
+            this.setAttribute("tabindex", 0);
+        }
         /* --- */
         const selection = this.shadowRoot.getElementById("selection");
-        if (!this.multimode) {
+        if (!this.multiple) {
             selection.style.display = "none";
         } else {
             selection.style.display = "";
         }
-    }
-
-    focus() {
-        const searchEl = this.shadowRoot.getElementById("search");
-        searchEl.focus();
     }
 
     get checked() {
@@ -135,16 +133,16 @@ export default class ListHeader extends HTMLElement {
         this.setAttribute("search", val);
     }
 
-    get multimode() {
-        return this.getAttribute("multimode") == "true";
+    get multiple() {
+        return this.getAttribute("multiple") == "true";
     }
 
-    set multimode(val) {
-        this.setAttribute("multimode", val);
+    set multiple(val) {
+        this.setAttribute("multiple", val);
     }
 
     static get observedAttributes() {
-        return ["checked", "search", "multimode"];
+        return ["checked", "search", "multiple"];
     }
       
     attributeChangedCallback(name, oldValue, newValue) {
@@ -164,7 +162,7 @@ export default class ListHeader extends HTMLElement {
                     const searchEl = this.shadowRoot.getElementById("search");
                     searchEl.value = newValue;
                 } break;
-                case "multimode": {
+                case "multiple": {
                     const selectionEl = this.shadowRoot.getElementById("selection");
                     if (newValue != "true") {
                         selectionEl.style.display = "none";

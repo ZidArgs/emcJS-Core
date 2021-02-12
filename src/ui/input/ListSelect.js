@@ -34,6 +34,14 @@ const STYLE = new GlobalStyle(`
     user-select: none;
     overflow: hidden;
 }
+:host(:focus) {
+    box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
+    outline: none;
+}
+:host(:focus:not(:focus-visible)) {
+    box-shadow: none;
+    outline: none;
+}
 :focus {
     outline: none;
 }
@@ -57,12 +65,13 @@ slot {
 ::slotted([value]) {
     display: flex;
     align-items: center;
-    min-height: 30px;
+    min-height: 2rem;
     padding: 5px;
     white-space: normal;
     color: var(--list-color-front, #000000);
     background-color: var(--list-color-back, #ffffff);
     border-bottom: solid 1px #eee;
+    font-size: 1rem;
 }
 ::slotted([value][disabled]) {
     display: none;
@@ -72,7 +81,8 @@ slot {
 }
 ::slotted([value])::before {
     margin: 0 10px 0 4px;
-    font-size: 18px;
+    font-size: 1.2rem;
+    line-height: 1em;
     content: "☐";
 }
 ::slotted([value].active)::before {
@@ -80,8 +90,8 @@ slot {
 }
 :host(:not([readonly])) ::slotted([value]:not(.active)),
 :host([readonly="false"]) ::slotted([value]:not(.active)),
-:host([multimode]:not([multimode="false"]):not([readonly])) ::slotted([value].active),
-:host([readonly="false"][multimode]:not([multimode="false"])) ::slotted([value].active) {
+:host([multiple]:not([multiple="false"]):not([readonly])) ::slotted([value].active),
+:host([readonly="false"][multiple]:not([multiple="false"])) ::slotted([value].active) {
     cursor: pointer;
 }
 #header {
@@ -93,7 +103,7 @@ slot {
     align-items: center;
     justify-content: center;
     font-style: italic;
-    min-height: 30px;
+    min-height: 2rem;
     padding: 5px;
     margin: 5px 2px;
     white-space: normal;
@@ -103,7 +113,7 @@ slot {
 function clickOption(event) {
     if (!this.readonly) {
         const value = event.currentTarget.getAttribute("value");
-        if (this.multimode) {
+        if (this.multiple) {
             const arr = this.value;
             const set = new Set(arr);
             if (set.has(value)) {
@@ -138,7 +148,7 @@ export default class ListSelect extends HTMLElement {
         /* header */
         const headerEl = this.shadowRoot.getElementById("header");
         headerEl.addEventListener("check", event => {
-            if (this.multimode) {
+            if (this.multiple) {
                 const all = this.querySelectorAll(`[value]`);
                 const value = [];
                 if (event.value) {
@@ -185,7 +195,7 @@ export default class ListSelect extends HTMLElement {
                     }
                 });
             }
-            if (this.multimode) {
+            if (this.multiple) {
                 if (checked) {
                     if (unchecked) {
                         headerEl.checked = "mixed";
@@ -200,7 +210,9 @@ export default class ListSelect extends HTMLElement {
     }
 
     connectedCallback() {
-        this.tabIndex = 0;
+        if (!this.hasAttribute("tabindex")) {
+            this.setAttribute("tabindex", 0);
+        }
         /* --- */
         const all = this.querySelectorAll(`[value]`);
         if (!this.value && !!all.length) {
@@ -212,11 +224,6 @@ export default class ListSelect extends HTMLElement {
             }
         });
         this.calculateItems();
-    }
-
-    focus() {
-        const headerEl = this.shadowRoot.getElementById("header");
-        headerEl.focus();
     }
 
     serialize() {
@@ -240,7 +247,7 @@ export default class ListSelect extends HTMLElement {
 
     set value(val) {
         if (val != null) {
-            if (this.multimode) {
+            if (this.multiple) {
                 if (!Array.isArray(val)) {
                     val = [val];
                 }
@@ -258,7 +265,7 @@ export default class ListSelect extends HTMLElement {
 
     get value() {
         let val = this.getAttribute("value");
-        if (this.multimode) {
+        if (this.multiple) {
             if (val != null) {
                 val = JSON.parse(val);
             } else {
@@ -268,12 +275,12 @@ export default class ListSelect extends HTMLElement {
         return val;
     }
 
-    set multimode(val) {
-        this.setAttribute("multimode", val);
+    set multiple(val) {
+        this.setAttribute("multiple", val);
     }
 
-    get multimode() {
-        return this.getAttribute("multimode") == "true";
+    get multiple() {
+        return this.getAttribute("multiple") == "true";
     }
 
     set readonly(val) {
@@ -286,7 +293,7 @@ export default class ListSelect extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ["value", "multimode"];
+        return ["value", "multiple"];
     }
       
     attributeChangedCallback(name, oldValue, newValue) {
@@ -301,7 +308,7 @@ export default class ListSelect extends HTMLElement {
                     this.dispatchEvent(event);
                 }
                 break;
-            case "multimode":
+            case "multiple":
                 if (oldValue != newValue) {
                     if (newValue != "true") {
                         const arr = JSON.parse(this.getAttribute("value"));
@@ -317,7 +324,7 @@ export default class ListSelect extends HTMLElement {
                         }
                     }
                     const header = this.shadowRoot.getElementById("header");
-                    header.multimode = newValue;
+                    header.multiple = newValue;
                 }
                 break;
         }
@@ -331,7 +338,7 @@ export default class ListSelect extends HTMLElement {
     calculateItems() {
         const header = this.shadowRoot.getElementById("header");
         const all = this.querySelectorAll(`[value]`);
-        if (this.multimode) {
+        if (this.multiple) {
             const vals = new Set(this.value);
             let checked = false;
             let unchecked = false;

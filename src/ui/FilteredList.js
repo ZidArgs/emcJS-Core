@@ -4,7 +4,7 @@ import SearchAnd from "../util/search/SearchAnd.js";
 import "./input/ListHeader.js";
 
 const TPL = new Template(`
-<emc-listheader id="header" multimode="false">
+<emc-listheader id="header" multiple="false">
 </emc-listheader>
 <div id="scroll-container">
     <slot id="container">
