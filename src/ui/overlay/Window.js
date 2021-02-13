@@ -128,9 +128,8 @@ export default class Window extends HTMLElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.addEventListener("keydown", (event) => {
-            const key = event.which || event.keyCode;
-            if (key == 27) {
+        this.addEventListener("keyup", (event) => {
+            if (event.key == "Escape") {
                 this.close();
             }
             event.stopPropagation();

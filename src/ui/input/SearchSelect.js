@@ -180,17 +180,18 @@ export default class SearchSelect extends HTMLElement {
             event.stopPropagation();
             return false;
         });
+        const scrollContainer = this.shadowRoot.getElementById("scroll-container");
         this.addEventListener("keyup", event => {
             if (!this.readonly) {
                 if (view.getAttribute("mode") == "view") {
-                    if (event.key == "Enter" || event.key == " ") {
+                    if (event.key == "Enter") {
                         view.setAttribute("mode", "edit");
                         input.focus();
                     }
                 } else {
                     if (event.key == "Escape") {
                         this./*#*/__cancelSelection();
-                    } else if (event.key == "Enter" || event.key == " ") {
+                    } else if (event.key == "Enter") {
                         const marked = this.querySelector(".marked");
                         if (marked != null) {
                             this./*#*/__choose(marked.getAttribute("value"));
@@ -198,29 +199,51 @@ export default class SearchSelect extends HTMLElement {
                     } else if (event.key == "ArrowUp") {
                         const marked = this.querySelector(".marked");
                         if (marked != null) {
-                            const el = marked.previousElementSibling;
+                            let el = marked.previousElementSibling;
+                            while (el != null && el.style.display == "none") {
+                                el = el.previousElementSibling;
+                            }
                             if (el != null) {
                                 marked.classList.remove("marked");
                                 el.classList.add("marked");
+                                const targetScroll = el.offsetTop - 20;
+                                if (scrollContainer.scrollTop > targetScroll) {
+                                    scrollContainer.scrollTop = targetScroll;
+                                }
                             }
                         } else {
-                            const el = this.querySelector("[value]");
+                            let el = this.querySelector("[value]");
+                            while (el != null && el.style.display == "none") {
+                                el = el.nextElementSibling;
+                            }
                             if (el != null) {
                                 el.classList.add("marked");
+                                scrollContainer.scrollTop = 0;
                             }
                         }
                     } else if (event.key == "ArrowDown") {
                         const marked = this.querySelector(".marked");
                         if (marked != null) {
-                            const el = marked.nextElementSibling;
+                            let el = marked.nextElementSibling;
+                            while (el != null && el.style.display == "none") {
+                                el = el.nextElementSibling;
+                            }
                             if (el != null) {
                                 marked.classList.remove("marked");
                                 el.classList.add("marked");
+                                const targetScroll = el.offsetTop - scrollContainer.clientHeight + el.clientHeight + 20;
+                                if (scrollContainer.scrollTop < targetScroll) {
+                                    scrollContainer.scrollTop = targetScroll;
+                                }
                             }
                         } else {
-                            const el = this.querySelector("[value]");
+                            let el = this.querySelector("[value]");
+                            while (el != null && el.style.display == "none") {
+                                el = el.nextElementSibling;
+                            }
                             if (el != null) {
                                 el.classList.add("marked");
+                                scrollContainer.scrollTop = 0;
                             }
                         }
                     }
@@ -265,6 +288,7 @@ export default class SearchSelect extends HTMLElement {
                     el.style.display = "";
                 } else {
                     el.style.display = "none";
+                    el.classList.remove("marked");
                 }
             });
         }, true);
@@ -364,6 +388,10 @@ export default class SearchSelect extends HTMLElement {
             all.forEach(el => {
                 el.style.display = "";
             });
+            const marked = this.querySelector(".marked");
+            if (marked != null) {
+                marked.classList.remove("marked");
+            }
         }
         view.setAttribute("mode", "view");
     }
@@ -380,6 +408,8 @@ export default class SearchSelect extends HTMLElement {
             all.forEach(el => {
                 el.style.display = "";
             });
+            const marked = this.querySelector(".marked");
+            marked.classList.remove("marked");
         }
         view.setAttribute("mode", "view");
         view.focus();

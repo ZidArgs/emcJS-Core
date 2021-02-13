@@ -146,7 +146,7 @@ export default class TabPanel extends Panel {
             pnl.setAttribute("category", category);
             this.shadowRoot.getElementById("body").append(pnl);
             // button
-            const cb = document.createElement("div");
+            const cb = document.createElement("button");
             cb.id = btnId;
             cb.className = "category";
             cb.setAttribute("target", category);
@@ -155,7 +155,10 @@ export default class TabPanel extends Panel {
             } else if (typeof name === "string") {
                 cb.innerHTML = name;
             }
-            this.shadowRoot.getElementById("categories").append(cb);
+            cb.setAttribute("tabindex", 0);
+            const cb_wrapper = document.createElement("emc-input-wrapper");
+            cb_wrapper.append(cb);
+            this.shadowRoot.getElementById("categories").append(cb_wrapper);
             // ---
             return pnl;
         } else {

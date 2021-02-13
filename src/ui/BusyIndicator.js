@@ -30,6 +30,7 @@ const STYLE = new GlobalStyle(`
     pointer-events: none;
     z-index: 9999999999;
     background: rgba(0,0,0,0.3);
+    transform: translateZ(0);
 }
 #default-animation {
     width: 50vmin;
