@@ -409,7 +409,9 @@ export default class SearchSelect extends HTMLElement {
                 el.style.display = "";
             });
             const marked = this.querySelector(".marked");
-            marked.classList.remove("marked");
+            if (marked != null) {
+                marked.classList.remove("marked");
+            }
         }
         view.setAttribute("mode", "view");
         view.focus();
