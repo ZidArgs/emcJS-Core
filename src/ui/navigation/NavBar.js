@@ -224,7 +224,9 @@ export default class NavBar extends HTMLElement {
                 }
                 // action
                 if (item["handler"] != null && typeof item.handler == "function") {
-                    btn.addEventListener("click", function() {
+                    btn.addEventListener("click", (event) => {
+                        const container = this.shadowRoot.getElementById("container");
+                        container.classList.remove("cover");
                         content.querySelectorAll("[expand=\"open\"]").forEach(function(el) {
                             el.expand = "closed";
                         });
@@ -232,6 +234,8 @@ export default class NavBar extends HTMLElement {
                             el.classList.remove("open");
                         });
                         item.handler();
+                        event.stopPropagation();
+                        return false;
                     });
                 }
                 // submenu
@@ -258,7 +262,9 @@ export default class NavBar extends HTMLElement {
                             }
                             // action
                             if (subitem["handler"] != null && typeof subitem.handler == "function") {
-                                subbtn.addEventListener("click", function() {
+                                subbtn.addEventListener("click", (event) => {
+                                    const container = this.shadowRoot.getElementById("container");
+                                    container.classList.remove("cover");
                                     content.querySelectorAll("[expand=\"open\"]").forEach(function(el) {
                                         el.expand = "closed";
                                     });
@@ -266,6 +272,8 @@ export default class NavBar extends HTMLElement {
                                         el.classList.remove("open");
                                     });
                                     subitem.handler();
+                                    event.stopPropagation();
+                                    return false;
                                 });
                             }
                             subcontent.append(subel);
@@ -275,10 +283,10 @@ export default class NavBar extends HTMLElement {
                     btn.expand = "closed";
                     btn.addEventListener("click", (event) => {
                         const container = this.shadowRoot.getElementById("container");
+                        container.classList.remove("cover");
                         if (btn.expand == "open") {
                             btn.expand = "closed";
                             el.classList.remove("open");
-                            container.classList.remove("cover");
                         } else {
                             content.querySelectorAll("[expand=\"open\"]").forEach(function(el) {
                                 el.expand = "closed";
@@ -288,7 +296,6 @@ export default class NavBar extends HTMLElement {
                             });
                             btn.expand = "open";
                             el.classList.add("open");
-                            container.classList.add("cover");
                         }
                         event.stopPropagation();
                         return false;
