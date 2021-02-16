@@ -77,7 +77,7 @@ export default class TabPanel extends Panel {
         const ctgrs = this.shadowRoot.getElementById("categories");
         ctgrs.onclick = (event) => {
             const targetEl = event.target.getAttribute("target");
-            if (targetEl) {
+            if (targetEl != null) {
                 this.active = targetEl;
                 event.preventDefault();
                 return false;
@@ -108,28 +108,32 @@ export default class TabPanel extends Panel {
     
     attributeChangedCallback(name, oldValue, newValue) {
         if (oldValue != newValue) {
-            if (oldValue) {
-                const ol = this.shadowRoot.getElementById(`panel_${oldValue}`);
-                if (ol != null) {
-                    ol.classList.remove("active");
-                }
-                const ob = this.shadowRoot.querySelector(`[target="${oldValue}"]`);
-                if (ob != null) {
-                    ob.classList.remove("active");
-                }
-            }
-            const nl = this.shadowRoot.getElementById(`panel_${newValue}`);
-            if (nl != null) {
-                nl.classList.add("active");
-            }
-            const nb = this.shadowRoot.querySelector(`[target="${newValue}"]`);
-            if (nb != null) {
-                nb.classList.add("active");
-            } else {
-                const el = this.shadowRoot.querySelector("[target]");
-                if (el != null) {
-                    this.active = el.getAttribute("target");
-                }
+            switch (name) {
+                case "active": {
+                    if (oldValue) {
+                        const ol = this.shadowRoot.getElementById(`panel_${oldValue}`);
+                        if (ol != null) {
+                            ol.classList.remove("active");
+                        }
+                        const ob = this.shadowRoot.querySelector(`[target="${oldValue}"]`);
+                        if (ob != null) {
+                            ob.classList.remove("active");
+                        }
+                    }
+                    const nl = this.shadowRoot.getElementById(`panel_${newValue}`);
+                    if (nl != null) {
+                        nl.classList.add("active");
+                    }
+                    const nb = this.shadowRoot.querySelector(`[target="${newValue}"]`);
+                    if (nb != null) {
+                        nb.classList.add("active");
+                    } else {
+                        const el = this.shadowRoot.querySelector("[target]");
+                        if (el != null) {
+                            this.active = el.getAttribute("target");
+                        }
+                    }
+                } break;
             }
         }
     }
@@ -155,7 +159,6 @@ export default class TabPanel extends Panel {
             } else if (typeof name === "string") {
                 cb.innerHTML = name;
             }
-            cb.setAttribute("tabindex", 0);
             const cb_wrapper = document.createElement("emc-input-wrapper");
             cb_wrapper.append(cb);
             this.shadowRoot.getElementById("categories").append(cb_wrapper);

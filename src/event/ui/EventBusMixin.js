@@ -1,4 +1,4 @@
-import {registerMixin} from "../../util/Mixin.js";
+import {createMixin} from "../../util/Mixin.js";
 import EventBusSubset from "../EventBusSubset.js";
 
 const ALLS = new WeakMap();
@@ -6,7 +6,7 @@ const SUBS = new WeakMap();
 const EVENTS = new WeakMap();
 const APPLIED = new WeakMap();
 
-export default registerMixin((superclass) => class EventBusMixin extends superclass {
+export default createMixin((superclass) => class EventBusMixin extends superclass {
 
     constructor(...args) {
         super(...args);

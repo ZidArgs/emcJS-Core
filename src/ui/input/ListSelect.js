@@ -215,11 +215,15 @@ export default class ListSelect extends HTMLElement {
             if (!this.readonly) {
                 if (event.key == "Escape") {
                     this./*#*/__cancelSelection();
+                    event.stopPropagation();
+                    return false;
                 } else if (event.key == "Enter") {
                     const marked = this.querySelector(".marked");
                     if (marked != null) {
                         this./*#*/__choose(marked.getAttribute("value"));
                     }
+                    event.stopPropagation();
+                    return false;
                 } else if (event.key == "ArrowUp") {
                     const marked = this.querySelector(".marked");
                     if (marked != null) {
@@ -245,6 +249,8 @@ export default class ListSelect extends HTMLElement {
                             scrollContainer.scrollTop = 0;
                         }
                     }
+                    event.stopPropagation();
+                    return false;
                 } else if (event.key == "ArrowDown") {
                     const marked = this.querySelector(".marked");
                     if (marked != null) {
@@ -270,10 +276,10 @@ export default class ListSelect extends HTMLElement {
                             scrollContainer.scrollTop = 0;
                         }
                     }
+                    event.stopPropagation();
+                    return false;
                 }
             }
-            event.stopPropagation();
-            return false;
         });
     }
 

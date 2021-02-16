@@ -1,10 +1,10 @@
-import {registerMixin} from "../../util/Mixin.js";
+import {createMixin} from "../../util/Mixin.js";
 import I18n from "../I18n.js";
 import EventTargetManager from "../../event/EventTargetManager.js";
 
 const MANAGER = new WeakMap();
 
-export default registerMixin((superclass) => class I18nMixin extends superclass {
+export default createMixin((superclass) => class I18nMixin extends superclass {
 
     constructor() {
         super();

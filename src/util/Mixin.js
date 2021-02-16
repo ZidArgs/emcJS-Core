@@ -10,30 +10,24 @@ class MixinBuilder {
 
 }
 
-class Mixin {
-
-    mix(superclass) {
-        return new MixinBuilder(superclass);
-    }
-    
-    registerMixin(mixin) {
-        const typeTag = Symbol("isa");
-        const _mixin = (target) => {
-            const ext = mixin(target);
-            Object.defineProperty(ext.prototype, typeTag, { value: true });
-            return ext;
-        };
-        Object.defineProperty(_mixin, Symbol.hasInstance, {
-            value: (i) => !!i[typeTag]
-        });
-        return _mixin;
-    }
-
+export function mix(superclass) {
+    return new MixinBuilder(superclass);
 }
 
-const MixinInstance = new Mixin();
+export function createMixin(mixin) {
+    const typeTag = Symbol("isa");
+    const _mixin = (target) => {
+        const ext = mixin(target);
+        Object.defineProperty(ext.prototype, typeTag, { value: true });
+        return ext;
+    };
+    Object.defineProperty(_mixin, Symbol.hasInstance, {
+        value: (i) => !!i[typeTag]
+    });
+    return _mixin;
+}
 
-export default MixinInstance;
-
-export const mix = MixinInstance.mix;
-export const registerMixin = MixinInstance.registerMixin;
+export default {
+    mix,
+    createMixin
+};

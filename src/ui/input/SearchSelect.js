@@ -187,15 +187,21 @@ export default class SearchSelect extends HTMLElement {
                     if (event.key == "Enter") {
                         view.setAttribute("mode", "edit");
                         input.focus();
+                        event.stopPropagation();
+                        return false;
                     }
                 } else {
                     if (event.key == "Escape") {
                         this./*#*/__cancelSelection();
+                        event.stopPropagation();
+                        return false;
                     } else if (event.key == "Enter") {
                         const marked = this.querySelector(".marked");
                         if (marked != null) {
                             this./*#*/__choose(marked.getAttribute("value"));
                         }
+                        event.stopPropagation();
+                        return false;
                     } else if (event.key == "ArrowUp") {
                         const marked = this.querySelector(".marked");
                         if (marked != null) {
@@ -221,6 +227,8 @@ export default class SearchSelect extends HTMLElement {
                                 scrollContainer.scrollTop = 0;
                             }
                         }
+                        event.stopPropagation();
+                        return false;
                     } else if (event.key == "ArrowDown") {
                         const marked = this.querySelector(".marked");
                         if (marked != null) {
@@ -246,11 +254,11 @@ export default class SearchSelect extends HTMLElement {
                                 scrollContainer.scrollTop = 0;
                             }
                         }
+                        event.stopPropagation();
+                        return false;
                     }
                 }
             }
-            event.stopPropagation();
-            return false;
         });
         input.addEventListener("focus", event => {
             if (!this.readonly) {
@@ -267,9 +275,20 @@ export default class SearchSelect extends HTMLElement {
             }
         });
         window.addEventListener("wheel", event => {
-            this./*#*/__cancelSelection();
-            event.stopPropagation();
-            return false;
+            if (view.getAttribute("mode") != "view") {
+                this./*#*/__cancelSelection();
+                event.preventDefault();
+                event.stopPropagation();
+                return false;
+            }
+        });
+        window.addEventListener("mousedown", event => {
+            if (view.getAttribute("mode") != "view") {
+                this./*#*/__cancelSelection();
+                event.preventDefault();
+                event.stopPropagation();
+                return false;
+            }
         });
         container.addEventListener("wheel", event => {
             event.stopPropagation();
