@@ -294,6 +294,10 @@ export default class SearchSelect extends HTMLElement {
             event.stopPropagation();
             return false;
         });
+        this.addEventListener("mousedown", event => {
+            event.stopPropagation();
+            return false;
+        });
         this.addEventListener("blur", event => {
             this./*#*/__cancelSelection();
             event.stopPropagation();
