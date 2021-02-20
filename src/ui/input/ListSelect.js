@@ -1,12 +1,11 @@
 import Template from "../../util/Template.js";
 import GlobalStyle from "../../util/GlobalStyle.js";
 import SearchAnd from "../../util/search/SearchAnd.js";
-import "./ListHeader.js";
+import "../header/SelectionHeader.js";
 import "./Option.js";
 
 const TPL = new Template(`
-<emc-listheader id="header">
-</emc-listheader>
+<emc-header-selection id="header"></emc-header-selection>
 <div id="scroll-container">
     <slot id="container">
         <div id="empty">no entries</div>
@@ -59,9 +58,11 @@ slot {
 }
 ::slotted([value]) {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
     min-height: 2rem;
-    padding: 5px;
+    padding: 5px 5px 5px 35px;
     white-space: normal;
     color: var(--list-color-front, #000000);
     background-color: var(--list-color-back, #ffffff);
@@ -76,7 +77,9 @@ slot {
     background-color: var(--input-button-color, #cccccc);
 }
 ::slotted([value])::before {
-    margin: 0 10px 0 4px;
+    position: absolute;
+    left: 0;
+    margin: 0px 10px 0px 9px;
     font-size: 1.2rem;
     line-height: 1em;
     content: "☐";

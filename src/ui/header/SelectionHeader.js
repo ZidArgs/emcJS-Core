@@ -1,19 +1,19 @@
 import Template from "../../util/Template.js";
 import GlobalStyle from "../../util/GlobalStyle.js";
+import "../input/SearchField.js";
 import "../../i18n/ui/InputElement.js";
 import "../../i18n/ui/Tooltip.js";
 
 const TPL = new Template(`
 <input type="checkbox" id="selection" tabindex="-1">
-<div id="search-wrapper">
-    <input id="search" is="emc-i18n-input" i18n-key="search" i18n-value="search" autocomplete="off">
-    <emc-i18n-tooltip i18n-key="search_reset" i18n-value="Reset search">
-        <div id="search-reset">⨯</div>
-    </emc-i18n-tooltip>
-</div>
+<emc-input-search id="search"></emc-input-search>
 `);
 
 const STYLE = new GlobalStyle(`
+* {
+    position: relative;
+    box-sizing: border-box;
+}
 :host {
     display: flex;
     padding: 2px 0;
@@ -22,35 +22,8 @@ const STYLE = new GlobalStyle(`
 :focus {
     outline: none;
 }
-#search-wrapper {
-    display: flex;
-    flex: 1;
-    background: var(--list-color-back, #ffffff);
-}
-#search-reset {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    color: var(--list-color-front, #000000);
-    font-size: 20px;
-    font-weight: bold;
-    cursor: pointer;
-}
 #search {
-    flex: 1;
-    height: 2rem;
-    padding: 0 4px;
-    color: var(--list-color-front, #000000);
     background: var(--list-color-back, #ffffff);
-    border: none;
-    font-size: 1rem;
-    -webkit-appearance: none;
-    outline: none;
-}
-#search::placeholder {
-    font-style: italic;
 }
 #selection {
     display: flex;
@@ -66,14 +39,19 @@ const STYLE = new GlobalStyle(`
     content: "\u2610";
 }
 #selection:indeterminate::before {
-    content: "\u2612";
+    content: "\u2BBD";
 }
 #selection:checked::before {
     content: "\u2611";
 }
+:host(:not([multiple])) #selection,
+:host([multiple="false"]) #selection {
+    opacity: 0.1;
+    pointer-events: none;
+}
 `);
 
-export default class ListHeader extends HTMLElement {
+export default class SelectionHeader extends HTMLElement {
 
     constructor() {
         super();
@@ -89,17 +67,10 @@ export default class ListHeader extends HTMLElement {
             this.dispatchEvent(event);
         });
         const searchEl = this.shadowRoot.getElementById("search");
-        searchEl.addEventListener("input", ev => {
+        searchEl.addEventListener("change", ev => {
             this.search = ev.currentTarget.value;
             const event = new Event("search");
             event.value = ev.currentTarget.value;
-            this.dispatchEvent(event);
-        });
-        const searchResetEl = this.shadowRoot.getElementById("search-reset");
-        searchResetEl.addEventListener("click", ev => {
-            this.search = "";
-            const event = new Event("search");
-            event.value = "";
             this.dispatchEvent(event);
         });
     }
@@ -107,13 +78,6 @@ export default class ListHeader extends HTMLElement {
     connectedCallback() {
         if (!this.hasAttribute("tabindex")) {
             this.setAttribute("tabindex", 0);
-        }
-        /* --- */
-        const selection = this.shadowRoot.getElementById("selection");
-        if (!this.multiple) {
-            selection.style.display = "none";
-        } else {
-            selection.style.display = "";
         }
     }
 
@@ -142,7 +106,7 @@ export default class ListHeader extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ["checked", "search", "multiple"];
+        return ["checked", "search"];
     }
       
     attributeChangedCallback(name, oldValue, newValue) {
@@ -162,18 +126,10 @@ export default class ListHeader extends HTMLElement {
                     const searchEl = this.shadowRoot.getElementById("search");
                     searchEl.value = newValue;
                 } break;
-                case "multiple": {
-                    const selectionEl = this.shadowRoot.getElementById("selection");
-                    if (newValue != "true") {
-                        selectionEl.style.display = "none";
-                    } else {
-                        selectionEl.style.display = "";
-                    }
-                } break;
             }
         }
     }
 
 }
 
-customElements.define("emc-listheader", ListHeader);
+customElements.define("emc-header-selection", SelectionHeader);

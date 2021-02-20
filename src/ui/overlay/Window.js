@@ -1,12 +1,15 @@
 import Template from "../../util/Template.js";
 import GlobalStyle from "../../util/GlobalStyle.js";
+import "../symbols/CloseSymbol.js";
 
 const TPL = new Template(`
 <div id="focus_catcher_top" tabindex="0"></div>
 <div id="window" role="dialog" aria-modal="true" aria-labelledby="title" aria-describedby="title">
     <div id="header">
         <div id="title"></div>
-        <button id="close" title="close">✖</button>
+        <button id="close" title="close">
+            <emc-symbol-close></emc-symbol-close>
+        </button>
     </div>
     <div id="body">
         <slot></slot>

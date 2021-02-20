@@ -1,11 +1,14 @@
 import Template from "../../../../util/Template.js";
 import GlobalStyle from "../../../../util/GlobalStyle.js";
+import "../../../symbols/CloseSymbol.js";
 
 // TODO needs popin/popout animation
 
 const TPL = new Template(`
 <span id="text"></span>
-<button id="close" title="close">✖</button>
+<button id="close" title="close">
+    <emc-symbol-close></emc-symbol-close>
+</button>
 `);
 
 const STYLE = new GlobalStyle(`

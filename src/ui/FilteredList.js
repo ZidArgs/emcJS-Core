@@ -1,11 +1,10 @@
 import Template from "../util/Template.js";
 import GlobalStyle from "../util/GlobalStyle.js";
 import SearchAnd from "../util/search/SearchAnd.js";
-import "./input/ListHeader.js";
+import "./header/SearchHeader.js";
 
 const TPL = new Template(`
-<emc-listheader id="header" multiple="false">
-</emc-listheader>
+<emc-header-search id="header" multiple="false"></emc-header-search>
 <div id="scroll-container">
     <slot id="container">
         <div id="empty">no entries</div>
@@ -27,6 +26,9 @@ const STYLE = new GlobalStyle(`
     -moz-user-select: none;
     user-select: none;
     overflow: hidden;
+}
+:focus {
+    outline: none;
 }
 #scroll-container {
     flex: 1;

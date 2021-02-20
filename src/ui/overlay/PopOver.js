@@ -1,5 +1,6 @@
 import Template from "../../util/Template.js";
 import GlobalStyle from "../../util/GlobalStyle.js";
+import "../symbols/CloseSymbol.js";
 
 // TODO should be self destructing html element
 // TODO static popover creation
@@ -7,7 +8,9 @@ import GlobalStyle from "../../util/GlobalStyle.js";
 
 const TPL = new Template(`
 <span id="text"></span>
-<button id="close" title="close">✖</button>
+<button id="close" title="close">
+    <emc-symbol-close></emc-symbol-close>
+</button>
 <div id="autoclose"></div>
 `);
 
