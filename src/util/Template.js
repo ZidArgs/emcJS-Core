@@ -19,18 +19,26 @@ export default class Template {
         TEMPLATE.set(this, createTemplate(template));
     }
 
-    generate() {
-        return document.importNode(TEMPLATE.get(this).content, true);
+    generate(child) {
+        const doc = document.importNode(TEMPLATE.get(this).content, true);
+        if (child != null) {
+            return doc.children[child];
+        }
+        return doc;
     }
 
-    static generate(template) {
+    static generate(template, child) {
         if (template instanceof Template) {
-            return template.generate();
+            return template.generate(child);
         }
         if (!(template instanceof HTMLTemplateElement)) {
-            template = createTemplate(template);
+            template = createTemplate(template, child);
         }
-        return document.importNode(template.content, true);
+        const doc = document.importNode(template.content, true);
+        if (child != null) {
+            return doc.children[child];
+        }
+        return doc;
     }
 
 }
