@@ -27,7 +27,7 @@ export default class LogicGraph {
         MEM_O.set(this, new Map());
         TRANSLATION_MATRIX.set(this, new Map());
         DIRTY.set(this, false);
-        DEBUG.set(this, !!debug);
+        DEBUG.set(this, debug);
     }
 
     clearGraph() {
@@ -183,6 +183,9 @@ export default class LogicGraph {
                 console.log("translations", mapToObj(translationMatrix));
                 console.log("traverse nodes...");
                 console.time("execution time");
+                if (debug == "extended") {
+                    console.groupCollapsed("traversion graph");
+                }
             }
 
             const valueGetter = key => {
@@ -197,12 +200,12 @@ export default class LogicGraph {
                 if (mixins.has(name)) {
                     const fn = mixins.get(name);
                     const res = fn(valueGetter, execute);
-                    /*if (debug) {
-                        console.groupCollapsed(`execute mixin [${name}]`);
+                    if (debug == "extended") {
+                        console.groupCollapsed(`execute mixin { ${name} }`);
                         console.log(fn.toString());
                         console.log(`result: ${res}`);
-                        console.groupEnd(`execute mixin [${name}]`);
-                    }*/
+                        console.groupEnd(`execute mixin { ${name} }`);
+                    }
                     return res;
                 }
                 return 0;
@@ -220,16 +223,19 @@ export default class LogicGraph {
                 while (counts--) {
                     const edge = queue.shift();
                     const condition = edge.getCondition();
-                    const cRes = condition(valueGetter, execute);
-                    /*if (debug) {
+                    if (debug == "extended") {
                         console.groupCollapsed(`traverse edge [${edge}]`);
                         console.log(condition.toString());
-                        console.log(`result: ${cRes}`);
-                        console.groupEnd(`traverse edge [${edge}]`);
-                    }*/
+                    }
+                    const cRes = condition(valueGetter, execute);
                     if (cRes) {
                         changed = true;
                         const name = this.getTranslation(edge.getSource().getName(), edge.getTarget().getName());
+                        if (debug == "extended") {
+                            if (name != edge.getTarget().getName()) {
+                                console.log(`translating edge { ${edge} } to point to { ${name} }`);
+                            }
+                        }
                         const node = nodeFactory.get(name);
                         reachableNodes.add(name);
                         const targets = node.getTargets();
@@ -243,6 +249,11 @@ export default class LogicGraph {
                     } else {
                         queue.push(edge);
                     }
+                    if (debug == "extended") {
+                        console.log(`result: ${cRes}`);
+                        console.groupEnd(`traverse edge { ${edge} }`);
+                        console.log("all reachable nodes as of now:", Array.from(reachableNodes));
+                    }
                 }
             }
             DIRTY.set(this, false);
@@ -254,6 +265,9 @@ export default class LogicGraph {
                 }
             }
             if (debug) {
+                if (debug == "extended") {
+                    console.groupEnd("traversion graph");
+                }
                 console.log("success");
                 console.timeEnd("execution time");
                 console.log("output", mapToObj(mem_o));
