@@ -30,6 +30,14 @@ export default class LogicGraph {
         DEBUG.set(this, debug);
     }
 
+    set debug(value) {
+        DEBUG.set(this, value);
+    }
+
+    get debug() {
+        return DEBUG.get(this);
+    }
+
     clearGraph() {
         const nodeFactory = NODES.get(this);
         nodeFactory.reset();
@@ -168,6 +176,7 @@ export default class LogicGraph {
     traverse(startNode) {
         const nodeFactory = NODES.get(this);
         const allTargets = this.getTargetNodes();
+        let reachableCount = 0;
         const reachableNodes = new Set();
         const changes = {};
         const mixins = MIXINS.get(this);
@@ -224,7 +233,7 @@ export default class LogicGraph {
                     const edge = queue.shift();
                     const condition = edge.getCondition();
                     if (debug == "extended") {
-                        console.groupCollapsed(`traverse edge [${edge}]`);
+                        console.groupCollapsed(`traverse edge { ${edge} }`);
                         console.log(condition.toString());
                     }
                     const cRes = condition(valueGetter, execute);
@@ -236,14 +245,16 @@ export default class LogicGraph {
                                 console.log(`translating edge { ${edge} } to point to { ${name} }`);
                             }
                         }
-                        const node = nodeFactory.get(name);
-                        reachableNodes.add(name);
-                        const targets = node.getTargets();
-                        for (const ch of targets) {
-                            const chEdge = node.getEdge(ch);
-                            const chName = this.getTranslation(chEdge.getSource().getName(), chEdge.getTarget().getName());
-                            if (!reachableNodes.has(chName)) {
-                                queue.push(chEdge);
+                        if (name != "") {
+                            const node = nodeFactory.get(name);
+                            reachableNodes.add(name);
+                            const targets = node.getTargets();
+                            for (const ch of targets) {
+                                const chEdge = node.getEdge(ch);
+                                const chName = this.getTranslation(chEdge.getSource().getName(), chEdge.getTarget().getName());
+                                if (!reachableNodes.has(chName)) {
+                                    queue.push(chEdge);
+                                }
                             }
                         }
                     } else {
@@ -252,8 +263,11 @@ export default class LogicGraph {
                     if (debug == "extended") {
                         console.log(`result: ${cRes}`);
                         console.groupEnd(`traverse edge { ${edge} }`);
-                        console.log("all reachable nodes as of now:", Array.from(reachableNodes));
+                        if (reachableCount != reachableNodes.size) {
+                            console.log("reachable changed", Array.from(reachableNodes));
+                        }
                     }
+                    reachableCount = reachableNodes.size;
                 }
             }
             DIRTY.set(this, false);
@@ -270,6 +284,7 @@ export default class LogicGraph {
                 }
                 console.log("success");
                 console.timeEnd("execution time");
+                console.log("reachable", Array.from(reachableNodes));
                 console.log("output", mapToObj(mem_o));
                 console.log("changes", changes);
                 console.groupEnd("GRAPH LOGIC EXECUTION");
