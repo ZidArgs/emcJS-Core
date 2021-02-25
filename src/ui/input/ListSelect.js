@@ -44,13 +44,6 @@ const STYLE = new GlobalStyle(`
     overflow-x: hidden;
     overflow-y: auto;
     background-color: var(--list-color-back, #ffffff);
-    scrollbar-color: var(--list-color-hover, #b8b8b8) var(--list-color-border, #f1f1f1);
-}
-#scroll-container::-webkit-scrollbar-track {
-    background-color: var(--list-color-border, #f1f1f1);
-}
-#scroll-container::-webkit-scrollbar-thumb {
-    background-color: var(--list-color-hover, #b8b8b8);
 }
 slot {
     display: block;
@@ -109,24 +102,6 @@ slot {
 }
 `);
 
-function clickOption(event) {
-    if (!this.readonly) {
-        const value = event.currentTarget.getAttribute("value");
-        if (this.multiple) {
-            const arr = this.value;
-            const set = new Set(arr);
-            if (set.has(value)) {
-                set.delete(value);
-            } else {
-                set.add(value);
-            }
-            this.value = Array.from(set);
-        } else {
-            this.value = value;
-        }
-    }
-}
-
 export default class ListSelect extends HTMLElement {
 
     constructor() {
@@ -139,7 +114,9 @@ export default class ListSelect extends HTMLElement {
             const all = this.querySelectorAll(`[value]`);
             all.forEach(el => {
                 if (el) {
-                    el.onclick = clickOption.bind(this);
+                    el.onclick = () => {
+                        this./*#*/__choose(el.getAttribute("value"));
+                    };
                 }
             });
             this.calculateItems();
@@ -172,6 +149,9 @@ export default class ListSelect extends HTMLElement {
             let unchecked = false;
             if (event.value) {
                 const regEx = new SearchAnd(event.value);
+                if (this.style.height == "") {
+                    this.style.height = `${this.getBoundingClientRect().height}px`;
+                }
                 all.forEach(el => {
                     if (el.innerText.match(regEx)) {
                         el.style.display = "";
@@ -194,6 +174,7 @@ export default class ListSelect extends HTMLElement {
                         unchecked = true;
                     }
                 });
+                this.style.height = "";
             }
             if (this.multiple) {
                 if (checked) {

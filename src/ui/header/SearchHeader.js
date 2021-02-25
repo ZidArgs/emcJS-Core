@@ -18,11 +18,22 @@ const STYLE = new GlobalStyle(`
     padding: 2px 0;
     background: var(--list-color-border, #f1f1f1);
 }
+:host(:focus) {
+    box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
+    outline: none;
+}
+:host(:focus:not(:focus-visible)) {
+    box-shadow: none;
+    outline: none;
+}
 :focus {
+    box-shadow: none;
     outline: none;
 }
 #search {
     background: var(--list-color-back, #ffffff);
+    border: none;
+    border-radius: 0;
 }
 `);
 

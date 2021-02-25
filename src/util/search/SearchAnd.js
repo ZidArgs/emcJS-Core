@@ -4,7 +4,10 @@ function escapeRegExp(string) {
 
 export default class SearchAnd {
 
-    constructor(query) {
+    constructor(query = "") {
+        if (typeof query != "string") {
+            throw new TypeError(`query parameter must be of type "string" but was "${typeof query}"`);
+        }
         query = escapeRegExp(query).split(" ");
         return new RegExp(`${query.join(".*")}`, "i");
     }

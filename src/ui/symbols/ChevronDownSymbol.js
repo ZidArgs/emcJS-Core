@@ -13,7 +13,7 @@ const STYLE = new GlobalStyle(`
     justify-content: center;
     width: 1em;
     height: 1em;
-    font-size: 1.2em;
+    font-size: 0.5em;
     line-height: 1em;
     font-weight: bold;
     font-family: sans-serif;
@@ -26,11 +26,11 @@ export default class Symbol extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({mode: "open", delegatesFocus: true});
-        this.shadowRoot.innerHTML = "⮾";
+        this.shadowRoot.innerHTML = "▼";
         STYLE.apply(this.shadowRoot);
         /* --- */
     }
 
 }
 
-customElements.define("emc-symbol-clear", Symbol);
+customElements.define("emc-symbol-chevron-down", Symbol);

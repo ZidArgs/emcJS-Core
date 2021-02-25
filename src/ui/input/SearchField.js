@@ -7,7 +7,7 @@ import "../../i18n/ui/Tooltip.js";
 const TPL = new Template(`
 <input id="search" is="emc-i18n-input" i18n-key="search" i18n-value="search" autocomplete="off">
 <emc-i18n-tooltip i18n-key="search_reset" i18n-value="Reset search">
-    <div id="search-reset">
+    <div id="search-reset" class="button">
         <emc-symbol-clear></emc-symbol-clear>
     </div>
 </emc-i18n-tooltip>
@@ -21,18 +21,33 @@ const STYLE = new GlobalStyle(`
 :host {
     display: flex;
     flex: 1;
-    background: var(--list-color-back, #ffffff);
+    color: var(--input-text-color, #000000);
+    background-color: var(--input-back-color, #ffffff);
+    border: solid 1px var(--input-border-color, #000000);
+    border-radius: 2px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+:host(:focus) {
+    box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
+    outline: none;
+}
+:host(:focus:not(:focus-visible)) {
+    box-shadow: none;
+    outline: none;
 }
 :focus {
     outline: none;
 }
-#search-reset {
+.button {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 2rem;
     height: 2rem;
-    color: var(--list-color-front, #000000);
+    color: var(--input-text-color, #000000);
+    background-color: transparent;
     font-size: 1.5rem;
     cursor: pointer;
 }
@@ -40,8 +55,8 @@ const STYLE = new GlobalStyle(`
     flex: 1;
     height: 2rem;
     padding: 0 4px;
-    color: var(--list-color-front, #000000);
-    background: var(--list-color-back, #ffffff);
+    color: var(--input-text-color, #000000);
+    background-color: var(--input-back-color, #ffffff);
     border: none;
     font-size: 1rem;
     -webkit-appearance: none;
@@ -77,7 +92,7 @@ export default class SearchField extends HTMLElement {
     }
 
     get value() {
-        return this.getAttribute("value");
+        return this.getAttribute("value") ?? "";
     }
 
     set value(val) {

@@ -21,7 +21,7 @@ const STYLE = new GlobalStyle(`
 }
 `);
 
-export default class CloseSymbol extends HTMLElement {
+export default class Symbol extends HTMLElement {
 
     constructor() {
         super();
@@ -33,4 +33,4 @@ export default class CloseSymbol extends HTMLElement {
 
 }
 
-customElements.define("emc-symbol-close", CloseSymbol);
+customElements.define("emc-symbol-close", Symbol);

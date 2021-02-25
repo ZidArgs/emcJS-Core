@@ -9,25 +9,16 @@ const STYLE = new GlobalStyle(`
 :host {
     display: contents;
 }
-::slotted(input),
-::slotted(select),
-::slotted(textarea),
-::slotted(button),
-::slotted(a),
-::slotted(emc-listselect),
-::slotted(emc-searchselect) {
+::slotted(*) {
     position: relative;
     box-sizing: border-box;
     margin: 5px;
-    color: solid var(--input-text-color, #000000);
+    color: var(--input-text-color, #000000);
     background-color: var(--input-back-color, #ffffff);
     border: solid 1px var(--input-border-color, #000000);
     border-radius: 2px;
     font-size: 1rem;
     font-family: Arial;
-}
-::slotted(emc-listselect) {
-    background-color: red;
 }
 ::slotted(textarea) {
     padding: 7px;
