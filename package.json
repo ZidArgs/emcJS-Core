@@ -1,6 +1,6 @@
 {
   "name": "emcjs",
-  "version": "0.3.28",
+  "version": "0.3.29",
   "description": "Modular JS API",
   "type": "module",
   "scripts": {
