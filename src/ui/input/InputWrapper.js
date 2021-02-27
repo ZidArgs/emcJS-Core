@@ -94,6 +94,7 @@ const STYLE = new GlobalStyle(`
     content: "\uD83D\uDD17\uFE0E";
 }
 ::slotted(input[type="checkbox"]) {
+    flex-shrink: 0;
     width: 3rem;
     height: 1.5rem;
     background-color: var(--input-back-color, #ffffff);
@@ -123,6 +124,7 @@ const STYLE = new GlobalStyle(`
     left: 50%;
 }
 ::slotted(input[type="radio"]) {
+    flex-shrink: 0;
     width: 1.5rem;
     height: 1.5rem;
     background-color: var(--input-back-color, #ffffff);
