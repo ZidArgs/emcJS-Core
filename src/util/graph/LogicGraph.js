@@ -49,7 +49,7 @@ export default class LogicGraph {
         const mixins = MIXINS.get(this);
         const mem_o = MEM_O.get(this);
         if (debug) {
-            console.group("GRAPH LOGIC BUILD");
+            console.groupCollapsed("GRAPH LOGIC BUILD");
             console.time("build time");
         }
         for (const name in config.edges) {
@@ -80,7 +80,7 @@ export default class LogicGraph {
         const debug = DEBUG.get(this);
         const nodeFactory = NODES.get(this);
         if (debug) {
-            console.group("GRAPH LOGIC BUILD");
+            console.groupCollapsed("GRAPH LOGIC BUILD");
             console.time("build time");
         }
         const node = nodeFactory.get(source);
@@ -104,7 +104,7 @@ export default class LogicGraph {
         const debug = DEBUG.get(this);
         const mixins = MIXINS.get(this);
         if (debug) {
-            console.group("GRAPH LOGIC BUILD");
+            console.groupCollapsed("GRAPH LOGIC BUILD");
             console.time("build time");
         }
         if (typeof value == "undefined" || value == null) {
@@ -123,16 +123,47 @@ export default class LogicGraph {
     }
 
     clearTranslations() {
+        const debug = DEBUG.get(this);
+        if (debug == "extended") {
+            console.log("GRAPH LOGIC TRANSLATION RESET");
+        }
         const translationMatrix = TRANSLATION_MATRIX.get(this);
         translationMatrix.clear();
     }
 
     setTranslation(source, target, reroute) {
+        const debug = DEBUG.get(this);
+        if (debug == "extended") {
+            console.groupCollapsed("GRAPH LOGIC TRANSLATION CHANGE");
+            console.log(`${source} => ${target}`, reroute);
+            console.groupEnd("GRAPH LOGIC TRANSLATION CHANGE");
+        }
         const translationMatrix = TRANSLATION_MATRIX.get(this);
         if (reroute == null) {
             translationMatrix.delete(`${source} => ${target}`);
         } else {
             translationMatrix.set(`${source} => ${target}`, `${reroute}`);
+        }
+    }
+
+    setAllTranslations(translations) {
+        const debug = DEBUG.get(this);
+        if (debug == "extended") {
+            console.groupCollapsed("GRAPH LOGIC TRANSLATION CHANGE");
+        }
+        const translationMatrix = TRANSLATION_MATRIX.get(this);
+        for (const {source, target, reroute} of translations) {
+            if (debug == "extended") {
+                console.log(`${source} => ${target}`, reroute);
+            }
+            if (reroute == null) {
+                translationMatrix.delete(`${source} => ${target}`);
+            } else {
+                translationMatrix.set(`${source} => ${target}`, `${reroute}`);
+            }
+        }
+        if (debug == "extended") {
+            console.groupEnd("GRAPH LOGIC TRANSLATION CHANGE");
         }
     }
 
@@ -187,7 +218,7 @@ export default class LogicGraph {
         if (start != null) {
             if (debug) {
                 const translationMatrix = TRANSLATION_MATRIX.get(this);
-                console.group("GRAPH LOGIC EXECUTION");
+                console.groupCollapsed("GRAPH LOGIC EXECUTION");
                 console.log("input", mapToObj(mem_i));
                 console.log("translations", mapToObj(translationMatrix));
                 console.log("traverse nodes...");
@@ -296,36 +327,41 @@ export default class LogicGraph {
     set(key, value) {
         const debug = DEBUG.get(this);
         if (debug) {
-            console.group("GRAPH LOGIC MEMORY CHANGE");
-            console.log("change", `${key} => ${value}`);
+            console.groupCollapsed("GRAPH LOGIC MEMORY CHANGE");
+            console.log(key, value);
+            console.groupEnd("GRAPH LOGIC MEMORY CHANGE");
         }
         const mem_i = MEM_I.get(this);
         mem_i.set(key, value);
-        if (debug) {
-            console.groupEnd("GRAPH LOGIC MEMORY CHANGE");
-        }
         DIRTY.set(this, true);
     }
 
     setAll(values) {
         const debug = DEBUG.get(this);
         if (debug) {
-            console.group("GRAPH LOGIC MEMORY CHANGE");
-            console.log("changes", values);
+            console.groupCollapsed("GRAPH LOGIC MEMORY CHANGE");
         }
         const mem_i = MEM_I.get(this);
         if (values instanceof Map) {
-            values.forEach((v, k) => mem_i.set(k, v));
+            for (const [k, v] of values) {
+                if (debug) {
+                    console.log(k, v);
+                }
+                mem_i.set(k, v);
+            }
         } else if (typeof values == "object" && !Array.isArray(values)) {
             for (const k in values) {
                 const v = values[k];
+                if (debug) {
+                    console.log(k, v);
+                }
                 mem_i.set(k, v);
             }
         }
+        DIRTY.set(this, true);
         if (debug) {
             console.groupEnd("GRAPH LOGIC MEMORY CHANGE");
         }
-        DIRTY.set(this, true);
     }
 
     get(ref) {
@@ -352,6 +388,10 @@ export default class LogicGraph {
     }
 
     reset() {
+        const debug = DEBUG.get(this);
+        if (debug) {
+            console.log("GRAPH LOGIC MEMORY RESET");
+        }
         const mem_i = MEM_I.get(this);
         const mem_o = MEM_O.get(this);
         mem_i.clear();
