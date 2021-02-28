@@ -6,8 +6,8 @@ const MANAGER = new WeakMap();
 
 export default createMixin((superclass) => class I18nMixin extends superclass {
 
-    constructor() {
-        super();
+    constructor(...args) {
+        super(...args);
         /* --- */
         const manager = new EventTargetManager(I18n);
         manager.set("language", event => {
