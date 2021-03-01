@@ -135,7 +135,7 @@ export default class LogicGraph {
         const debug = DEBUG.get(this);
         if (debug == "extended") {
             console.groupCollapsed("GRAPH LOGIC TRANSLATION CHANGE");
-            console.log(`${source} => ${target}`, reroute);
+            console.log({[`${source} => ${target}`]: reroute});
             console.groupEnd("GRAPH LOGIC TRANSLATION CHANGE");
         }
         const translationMatrix = TRANSLATION_MATRIX.get(this);
@@ -154,7 +154,7 @@ export default class LogicGraph {
         const translationMatrix = TRANSLATION_MATRIX.get(this);
         for (const {source, target, reroute} of translations) {
             if (debug == "extended") {
-                console.log(`${source} => ${target}`, reroute);
+                console.log({[`${source} => ${target}`]: reroute});
             }
             if (reroute == null) {
                 translationMatrix.delete(`${source} => ${target}`);
@@ -328,7 +328,7 @@ export default class LogicGraph {
         const debug = DEBUG.get(this);
         if (debug) {
             console.groupCollapsed("GRAPH LOGIC MEMORY CHANGE");
-            console.log(key, value);
+            console.log({[key]: value});
             console.groupEnd("GRAPH LOGIC MEMORY CHANGE");
         }
         const mem_i = MEM_I.get(this);
@@ -345,7 +345,7 @@ export default class LogicGraph {
         if (values instanceof Map) {
             for (const [k, v] of values) {
                 if (debug) {
-                    console.log(k, v);
+                    console.log({[k]: v});
                 }
                 mem_i.set(k, v);
             }
@@ -353,7 +353,7 @@ export default class LogicGraph {
             for (const k in values) {
                 const v = values[k];
                 if (debug) {
-                    console.log(k, v);
+                    console.log({[k]: v});
                 }
                 mem_i.set(k, v);
             }
