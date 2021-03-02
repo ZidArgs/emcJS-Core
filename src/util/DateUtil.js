@@ -26,6 +26,16 @@ class DateUtil {
         }
     }
 
+    convertLocal(formatter) {
+        if (typeof formatter == "string") {
+            return DateUtil.convertLocal(DATE.get(this), formatter);
+        } else if (typeof formatter == "undefined") {
+            return DateUtil.convertLocal(DATE.get(this));
+        } else {
+            throw new TypeError("format string expected");
+        }
+    }
+
     static convert(date, formatter) {
         if (date instanceof Date) {
             if (isNaN(date)) {
@@ -38,7 +48,35 @@ class DateUtil {
             formatter = date;
             date = new Date();
         } else {
-            date = new Date;
+            date = new Date();
+            formatter = "D.M.Y h:m:s";
+        }
+        return formatter.replace(FORMATTER_REGEX, function(m) {
+            switch (m) {
+                case "Y": return date.getUTCFullYear();
+                case "M": return (`0${date.getUTCMonth() + 1}`).slice(-2);
+                case "D": return (`0${date.getUTCDate()}`).slice(-2);
+                case "h": return (`0${date.getUTCHours()}`).slice(-2);
+                case "m": return (`0${date.getUTCMinutes()}`).slice(-2);
+                case "s": return (`0${date.getUTCSeconds()}`).slice(-2);
+                case "z": return (`00${date.getUTCMilliseconds()}`).slice(-2);
+            }
+        });
+    }
+
+    static convertLocal(date, formatter) {
+        if (date instanceof Date) {
+            if (isNaN(date)) {
+                throw new TypeError("date is invalid");
+            }
+            if (typeof formatter == "undefined") {
+                formatter = "D.M.Y h:m:s";
+            }
+        } else if (typeof date == "string") {
+            formatter = date;
+            date = new Date();
+        } else {
+            date = new Date();
             formatter = "D.M.Y h:m:s";
         }
         return formatter.replace(FORMATTER_REGEX, function(m) {
