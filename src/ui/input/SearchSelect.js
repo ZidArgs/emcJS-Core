@@ -160,24 +160,24 @@ export default class SearchSelect extends HTMLElement {
                 }
             });
         });
-        const view = this.shadowRoot.getElementById("view");
-        const input = this.shadowRoot.getElementById("input");
-        const container = this.shadowRoot.getElementById("scroll-container");
+        const viewEl = this.shadowRoot.getElementById("view");
+        const inputEl = this.shadowRoot.getElementById("input");
+        const containerEl = this.shadowRoot.getElementById("scroll-container");
         this.addEventListener("click", event => {
             if (!this.readonly) {
-                view.setAttribute("mode", "edit");
-                input.focus();
+                viewEl.setAttribute("mode", "edit");
+                inputEl.focus();
             }
             event.stopPropagation();
             return false;
         });
-        const scrollContainer = this.shadowRoot.getElementById("scroll-container");
+        const scrollContainerEl = this.shadowRoot.getElementById("scroll-container");
         this.addEventListener("keyup", event => {
             if (!this.readonly) {
-                if (view.getAttribute("mode") == "view") {
+                if (viewEl.getAttribute("mode") == "view") {
                     if (event.key == "Enter") {
-                        view.setAttribute("mode", "edit");
-                        input.focus();
+                        viewEl.setAttribute("mode", "edit");
+                        inputEl.focus();
                         event.stopPropagation();
                         return false;
                     }
@@ -204,8 +204,8 @@ export default class SearchSelect extends HTMLElement {
                                 marked.classList.remove("marked");
                                 el.classList.add("marked");
                                 const targetScroll = el.offsetTop - 20;
-                                if (scrollContainer.scrollTop > targetScroll) {
-                                    scrollContainer.scrollTop = targetScroll;
+                                if (scrollContainerEl.scrollTop > targetScroll) {
+                                    scrollContainerEl.scrollTop = targetScroll;
                                 }
                             }
                         } else {
@@ -215,7 +215,7 @@ export default class SearchSelect extends HTMLElement {
                             }
                             if (el != null) {
                                 el.classList.add("marked");
-                                scrollContainer.scrollTop = 0;
+                                scrollContainerEl.scrollTop = 0;
                             }
                         }
                         event.stopPropagation();
@@ -230,9 +230,9 @@ export default class SearchSelect extends HTMLElement {
                             if (el != null) {
                                 marked.classList.remove("marked");
                                 el.classList.add("marked");
-                                const targetScroll = el.offsetTop - scrollContainer.clientHeight + el.clientHeight + 20;
-                                if (scrollContainer.scrollTop < targetScroll) {
-                                    scrollContainer.scrollTop = targetScroll;
+                                const targetScroll = el.offsetTop - scrollContainerEl.clientHeight + el.clientHeight + 20;
+                                if (scrollContainerEl.scrollTop < targetScroll) {
+                                    scrollContainerEl.scrollTop = targetScroll;
                                 }
                             }
                         } else {
@@ -242,7 +242,7 @@ export default class SearchSelect extends HTMLElement {
                             }
                             if (el != null) {
                                 el.classList.add("marked");
-                                scrollContainer.scrollTop = 0;
+                                scrollContainerEl.scrollTop = 0;
                             }
                         }
                         event.stopPropagation();
@@ -251,35 +251,35 @@ export default class SearchSelect extends HTMLElement {
                 }
             }
         });
-        input.addEventListener("focus", event => {
+        inputEl.addEventListener("focus", event => {
             if (!this.readonly) {
-                input.value = "";
+                inputEl.value = "";
                 const thisRect = this.getBoundingClientRect();
-                container.style.display = "block";
-                container.style.left = `${thisRect.left}px`;
-                container.style.width = `${thisRect.width}px`;
-                const containerRect = container.getBoundingClientRect();
+                containerEl.style.display = "block";
+                containerEl.style.left = `${thisRect.left}px`;
+                containerEl.style.width = `${thisRect.width}px`;
+                const containerRect = containerEl.getBoundingClientRect();
                 if (thisRect.bottom + containerRect.height > window.innerHeight - 25) {
-                    container.style.bottom = `${window.innerHeight - thisRect.top}px`;
+                    containerEl.style.bottom = `${window.innerHeight - thisRect.top}px`;
                 } else {
-                    container.style.top = `${thisRect.bottom}px`;
+                    containerEl.style.top = `${thisRect.bottom}px`;
                 }
             }
         });
         window.addEventListener("wheel", event => {
-            if (view.getAttribute("mode") != "view") {
+            if (viewEl.getAttribute("mode") != "view") {
                 this./*#*/__cancelSelection();
             }
         });
         window.addEventListener("mousedown", event => {
-            if (view.getAttribute("mode") != "view") {
+            if (viewEl.getAttribute("mode") != "view") {
                 this./*#*/__cancelSelection();
                 event.preventDefault();
                 event.stopPropagation();
                 return false;
             }
         });
-        container.addEventListener("wheel", event => {
+        containerEl.addEventListener("wheel", event => {
             event.stopPropagation();
             return false;
         });
@@ -292,9 +292,9 @@ export default class SearchSelect extends HTMLElement {
             event.stopPropagation();
             return false;
         });
-        input.addEventListener("input", event => {
+        inputEl.addEventListener("input", event => {
             const all = this.querySelectorAll(`[value]`);
-            const regEx = new SearchAnd(input.value);
+            const regEx = new SearchAnd(inputEl.value);
             all.forEach(el => {
                 if (el.innerText.trim().match(regEx)) {
                     el.style.display = "";

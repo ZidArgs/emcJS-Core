@@ -267,6 +267,13 @@ export default class ListSelect extends HTMLElement {
         });
     }
 
+    focus() {
+        const headerEl = this.shadowRoot.getElementById("header");
+        if (headerEl != null) {
+            headerEl.focus();
+        }
+    }
+
     connectedCallback() {
         if (!this.hasAttribute("tabindex")) {
             this.setAttribute("tabindex", 0);
