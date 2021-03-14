@@ -1,15 +1,15 @@
-const REGISTER = new WeakMap();
+const REGISTRY = new WeakMap();
 const DEFAULT = new WeakMap();
 
-export default class ClassRegister {
+export default class ClassRegistry {
 
     constructor(DefClass) {
-        REGISTER.set(this, new Map());
+        REGISTRY.set(this, new Map());
         DEFAULT.set(this, DefClass);
     }
 
     register(ref, RegClass) {
-        const register = REGISTER.get(this);
+        const register = REGISTRY.get(this);
         if (register.has(ref)) {
             const DefClass = DEFAULT.get(this);
             throw new Error(`type "${ref}" already exists in ${DefClass.name}`);
@@ -18,7 +18,7 @@ export default class ClassRegister {
     }
 
     create(ref, ...params) {
-        const register = REGISTER.get(this);
+        const register = REGISTRY.get(this);
         if (register.has(ref)) {
             const TypeClass = register.get(ref);
             return new TypeClass(...params);
