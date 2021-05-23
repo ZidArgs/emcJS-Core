@@ -46,6 +46,9 @@ button:hover {
 button:active {
     box-shadow: inset 0px 0px 4px 3px;
 }
+button:focus-visible {
+    box-shadow: 0px 0px 4px 3px;
+}
 button:disabled {
     opacity: 0.3;
 }

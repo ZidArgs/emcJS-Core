@@ -12,7 +12,7 @@ const STYLE = new GlobalStyle(`
     box-sizing: border-box;
 }
 :host {
-    display: flex;
+    display: inline-flex;
     pointer-events: none;
     user-select: none;
 }
