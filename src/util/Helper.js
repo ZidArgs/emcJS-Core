@@ -60,6 +60,14 @@ class Helper {
         }
         return c;
     }
+
+    objectRenameKeys(src = {}, prefix = "", postfix = "") {
+        const res = {};
+        for (const [key, value] of Object.entries(src)) {
+            res[`${prefix}${key}${postfix}`] = value;
+        }
+        return res;
+    }
     
     isEqual(a, b) {
         if (Object.is(a, b)) {

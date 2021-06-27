@@ -3,7 +3,7 @@ import GlobalStyle from "../../util/GlobalStyle.js";
 import I18nMixin from "./I18nMixin.js";
 
 const TPL = new Template(`
-<slot></slot>
+<span><slot></slot></span>
 `);
 
 const STYLE = new GlobalStyle(`
@@ -15,6 +15,8 @@ const STYLE = new GlobalStyle(`
     display: inline-flex;
     pointer-events: none;
     user-select: none;
+    align-items: center;
+    justify-content: center;
 }
 `);
 

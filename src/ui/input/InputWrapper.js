@@ -18,7 +18,6 @@ const STYLE = new GlobalStyle(`
     border: solid 1px var(--input-border-color, #000000);
     border-radius: 2px;
     font-size: 1rem;
-    font-family: Arial;
 }
 ::slotted(textarea) {
     padding: 7px;

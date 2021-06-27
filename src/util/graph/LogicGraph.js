@@ -1,10 +1,18 @@
 import NodeFactory from "./NodeFactory.js";
 import Compiler from "./EdgeLogicCompiler.js";
 
-function mapToObj(map) {
+function mapToObj(src) {
     const res = {};
-    map.forEach((v, k) => {
+    src.forEach((v, k) => {
         res[k] = v;
+    });
+    return res;
+}
+
+function setToArray(src) {
+    const res = [];
+    src.forEach(v => {
+        res.push(v);
     });
     return res;
 }
@@ -16,7 +24,8 @@ const MEM_O = new WeakMap();
 const DEBUG = new WeakMap();
 const NODES = new WeakMap();
 
-const TRANSLATION_MATRIX = new WeakMap();
+const REDIRECT_MATRIX = new WeakMap();
+const FORCED_REACHABLE = new WeakMap();
 
 export default class LogicGraph {
 
@@ -25,7 +34,8 @@ export default class LogicGraph {
         MIXINS.set(this, new Map());
         MEM_I.set(this, new Map());
         MEM_O.set(this, new Map());
-        TRANSLATION_MATRIX.set(this, new Map());
+        REDIRECT_MATRIX.set(this, new Map());
+        FORCED_REACHABLE.set(this, new Set());
         DIRTY.set(this, false);
         DEBUG.set(this, debug);
     }
@@ -122,55 +132,55 @@ export default class LogicGraph {
         DIRTY.set(this, true);
     }
 
-    clearTranslations() {
+    clearRedirects() {
         const debug = DEBUG.get(this);
         if (debug == "extended") {
-            console.log("GRAPH LOGIC TRANSLATION RESET");
+            console.log("GRAPH LOGIC REDIRECT RESET");
         }
-        const translationMatrix = TRANSLATION_MATRIX.get(this);
-        translationMatrix.clear();
+        const redirectMatrix = REDIRECT_MATRIX.get(this);
+        redirectMatrix.clear();
     }
 
-    setTranslation(source, target, reroute) {
+    setRedirect(source, target, reroute) {
         const debug = DEBUG.get(this);
         if (debug == "extended") {
-            console.groupCollapsed("GRAPH LOGIC TRANSLATION CHANGE");
+            console.groupCollapsed("GRAPH LOGIC REDIRECT CHANGE");
             console.log({[`${source} => ${target}`]: reroute});
-            console.groupEnd("GRAPH LOGIC TRANSLATION CHANGE");
+            console.groupEnd("GRAPH LOGIC REDIRECT CHANGE");
         }
-        const translationMatrix = TRANSLATION_MATRIX.get(this);
+        const redirectMatrix = REDIRECT_MATRIX.get(this);
         if (reroute == null) {
-            translationMatrix.delete(`${source} => ${target}`);
+            redirectMatrix.delete(`${source} => ${target}`);
         } else {
-            translationMatrix.set(`${source} => ${target}`, `${reroute}`);
+            redirectMatrix.set(`${source} => ${target}`, `${reroute}`);
         }
     }
 
-    setAllTranslations(translations) {
+    setAllRedirects(redirects) {
         const debug = DEBUG.get(this);
         if (debug == "extended") {
-            console.groupCollapsed("GRAPH LOGIC TRANSLATION CHANGE");
+            console.groupCollapsed("GRAPH LOGIC REDIRECT CHANGE");
         }
-        const translationMatrix = TRANSLATION_MATRIX.get(this);
-        for (const {source, target, reroute} of translations) {
+        const redirectMatrix = REDIRECT_MATRIX.get(this);
+        for (const {source, target, reroute} of redirects) {
             if (debug == "extended") {
                 console.log({[`${source} => ${target}`]: reroute});
             }
             if (reroute == null) {
-                translationMatrix.delete(`${source} => ${target}`);
+                redirectMatrix.delete(`${source} => ${target}`);
             } else {
-                translationMatrix.set(`${source} => ${target}`, `${reroute}`);
+                redirectMatrix.set(`${source} => ${target}`, `${reroute}`);
             }
         }
         if (debug == "extended") {
-            console.groupEnd("GRAPH LOGIC TRANSLATION CHANGE");
+            console.groupEnd("GRAPH LOGIC REDIRECT CHANGE");
         }
     }
 
-    getTranslation(source, target) {
-        const translationMatrix = TRANSLATION_MATRIX.get(this);
-        if (translationMatrix.has(`${source} => ${target}`)) {
-            return translationMatrix.get(`${source} => ${target}`);
+    getRedirect(source, target) {
+        const redirectMatrix = REDIRECT_MATRIX.get(this);
+        if (redirectMatrix.has(`${source} => ${target}`)) {
+            return redirectMatrix.get(`${source} => ${target}`);
         }
         return target;
     }
@@ -203,6 +213,21 @@ export default class LogicGraph {
         return res;
     }
 
+    addReachable(target) {
+        const forcedReachable = FORCED_REACHABLE.get(this);
+        forcedReachable.add(target);
+    }
+
+    deleteReachable(target) {
+        const forcedReachable = FORCED_REACHABLE.get(this);
+        forcedReachable.delete(target);
+    }
+
+    clearReachables() {
+        const forcedReachable = FORCED_REACHABLE.get(this);
+        forcedReachable.clear();
+    }
+
     /* broad search */
     traverse(startNode) {
         const nodeFactory = NODES.get(this);
@@ -216,11 +241,13 @@ export default class LogicGraph {
         const debug = DEBUG.get(this);
         const start = nodeFactory.get(startNode);
         if (start != null) {
+            const forcedReachable = FORCED_REACHABLE.get(this);
             if (debug) {
-                const translationMatrix = TRANSLATION_MATRIX.get(this);
+                const redirectMatrix = REDIRECT_MATRIX.get(this);
                 console.groupCollapsed("GRAPH LOGIC EXECUTION");
                 console.log("input", mapToObj(mem_i));
-                console.log("translations", mapToObj(translationMatrix));
+                console.log("redirects", mapToObj(redirectMatrix));
+                console.log("forced", setToArray(forcedReachable));
                 console.log("traverse nodes...");
                 console.time("execution time");
                 if (debug == "extended") {
@@ -228,12 +255,17 @@ export default class LogicGraph {
                 }
             }
 
+            for (const name of forcedReachable) {
+                reachableNodes.add(name);
+            }
+
             const valueGetter = key => {
-                if (allTargets.has(key)) {
-                    return +reachableNodes.has(key);
+                if (allTargets.has(key) && reachableNodes.has(key)) {
+                    return 1;
                 } else if (mem_i.has(key)) {
                     return mem_i.get(key);
                 }
+                return 0;
             };
 
             const execute = name => {
@@ -251,6 +283,7 @@ export default class LogicGraph {
                 return 0;
             };
 
+            /* start traversion */
             const queue = [];
             for (const ch of start.getTargets()) {
                 const edge = start.getEdge(ch);
@@ -270,10 +303,10 @@ export default class LogicGraph {
                     const cRes = condition(valueGetter, execute);
                     if (cRes) {
                         changed = true;
-                        const name = this.getTranslation(edge.getSource().getName(), edge.getTarget().getName());
+                        const name = this.getRedirect(edge.getSource().getName(), edge.getTarget().getName());
                         if (debug == "extended") {
                             if (name != edge.getTarget().getName()) {
-                                console.log(`translating edge { ${edge} } to point to { ${name} }`);
+                                console.log(`redirecting edge { ${edge} } to point to { ${name} }`);
                             }
                         }
                         if (name != "") {
@@ -282,7 +315,7 @@ export default class LogicGraph {
                             const targets = node.getTargets();
                             for (const ch of targets) {
                                 const chEdge = node.getEdge(ch);
-                                const chName = this.getTranslation(chEdge.getSource().getName(), chEdge.getTarget().getName());
+                                const chName = this.getRedirect(chEdge.getSource().getName(), chEdge.getTarget().getName());
                                 if (!reachableNodes.has(chName)) {
                                     queue.push(chEdge);
                                 }
@@ -301,6 +334,8 @@ export default class LogicGraph {
                     reachableCount = reachableNodes.size;
                 }
             }
+            /* end traversion */
+
             DIRTY.set(this, false);
             for (const ch of allTargets) {
                 const v = reachableNodes.has(ch);
