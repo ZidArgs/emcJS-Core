@@ -36,15 +36,19 @@ class FileSystem {
             if (Array.isArray(extensions)) {
                 ul.setAttribute("accept", extensions.join(","));
             }
-            ul.onchange = function(event) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    resolve(convertData(e.target.result));
-                };
-                reader.onabort = resolve;
-                reader.onerror = reject;
-                reader.readAsDataURL(event.target.files[0]);
-                ul.removeAttribute("accept");
+            ul.onchange = function() {
+                if (ul.files.length > 0) {
+                    const fileData = ul.files[0];
+                    ul.value = null;
+                    const reader = new FileReader();
+                    reader.onload = function() {
+                        resolve(convertData(reader.result));
+                    };
+                    reader.onabort = resolve;
+                    reader.onerror = reject;
+                    reader.readAsDataURL(fileData);
+                    ul.removeAttribute("accept");
+                }
             };
             ul.onerror = reject;
             ul.click();
