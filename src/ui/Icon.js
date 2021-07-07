@@ -2,7 +2,8 @@ import Template from "../util/Template.js";
 import GlobalStyle from "../util/GlobalStyle.js";
 
 const TPL = new Template(`
-<div></div>
+<div id="value">
+</div>
 `);
 
 const STYLE = new GlobalStyle(`
@@ -18,7 +19,7 @@ const STYLE = new GlobalStyle(`
     -moz-user-select: none;
     user-select: none;
 }
-div {
+#value {
     width: 100%;
     height: 100%;
     background-repeat: no-repeat;
@@ -55,7 +56,7 @@ export default class Icon extends HTMLElement {
         switch (name) {
             case "src":
                 if (oldValue != newValue) {
-                    this.shadowRoot.querySelector("div").style.backgroundImage = `url("${newValue}")`;
+                    this.shadowRoot.getElementById("value").style.backgroundImage = `url("${newValue}")`;
                 }
                 break;
         }
