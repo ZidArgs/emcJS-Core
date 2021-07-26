@@ -34,7 +34,8 @@ const STYLE = new GlobalStyle(`
     background: var(--contextmenu-background, #ffffff);
     border: solid 2px var(--contextmenu-border, #cccccc);
 }
-::slotted(.item) {
+::slotted(.item),
+::slotted([menu-action]) {
     display: flex;
     align-items: center;
     min-width: 150px;
@@ -46,7 +47,8 @@ const STYLE = new GlobalStyle(`
     user-select: none;
     box-sizing: border-box;
 }
-::slotted(.item:hover) {
+::slotted(.item:hover),
+::slotted([menu-action]:hover) {
     background: var(--contextmenu-background-hover, var(--contextmenu-border, #cccccc));
     color: var(--contextmenu-text-hover, var(--contextmenu-text, #000000));
 }
@@ -117,6 +119,21 @@ export default class ContextMenu extends HTMLElement {
         focusBottomEl.onfocus = this.focusFirst.bind(this);
     }
 
+    connectedCallback() {
+        const itemEls = this.querySelectorAll("[menu-action]");
+        for (const itemEl of Array.from(itemEls)) {
+            const attr = itemEl.getAttribute("menu-action");
+            if (attr) {
+                itemEl.addEventListener("click", event => {
+                    const ev = new Event(attr);
+                    this.dispatchEvent(ev);
+                    event.preventDefault();
+                    return false;
+                });
+            }
+        }
+    }
+
     get top() {
         return TOP.get(this);
     }
@@ -183,21 +200,40 @@ export default class ContextMenu extends HTMLElement {
                     this.append(el);
                 } else if (entry instanceof HTMLElement) {
                     this.append(entry);
+                    const attr = entry.getAttribute("menu-action");
+                    if (attr) {
+                        entry.addEventListener("click", event => {
+                            const ev = new Event(attr);
+                            this.dispatchEvent(ev);
+                            /* --- */
+                            event.preventDefault();
+                            return false;
+                        });
+                    }
                 } else if (typeof entry == "object" && !Array.isArray(entry)) {
                     const el = document.createElement("div");
                     el.classList.add("item");
                     el.innerHTML = entry.content;
-                    el.addEventListener("click", event => {
-                        if (typeof entry.action == "function") {
+                    /* --- */
+                    if (typeof entry.action == "function") {
+                        el.addEventListener("click", event => {
                             entry.action();
-                        }
-                        if (typeof entry.event == "string") {
-                            this.dispatchEvent(new Event(entry.event));
-                        }
-                        /* --- */
-                        event.preventDefault();
-                        return false;
-                    });
+                            /* --- */
+                            event.preventDefault();
+                            return false;
+                        });
+                    }
+                    /* --- */
+                    if (typeof entry.menuAction == "string") {
+                        el.setAttribute("menu-action", entry.menuAction);
+                        el.addEventListener("click", event => {
+                            const ev = new Event(entry.menuAction);
+                            this.dispatchEvent(ev);
+                            /* --- */
+                            event.preventDefault();
+                            return false;
+                        });
+                    }
                     this.append(el);
                 }
             }
