@@ -85,7 +85,7 @@ export default createMixin((superclass) => class I18nMixin extends superclass {
 
     static get observedAttributes() {
         if (super.observedAttributes) {
-            return [...super.observedAttributes(), "i18n-key", "i18n-value"];
+            return [...super.observedAttributes, "i18n-key", "i18n-value"];
         }
         return ["i18n-key", "i18n-value"];
     }
