@@ -51,9 +51,8 @@ slot {
 }
 ::slotted([value]) {
     display: flex;
-    flex-direction: column;
-    align-items: start;
-    justify-content: center;
+    align-items: center;
+    justify-content: flex-start;
     min-height: 2rem;
     padding: 5px 5px 5px 35px;
     white-space: normal;
