@@ -47,7 +47,7 @@ const STYLE = new GlobalStyle(`
     width: 2rem;
     height: 2rem;
     color: var(--input-text-color, #000000);
-    background-color: transparent;
+    background-color: var(--input-back-color, #ffffff);
     font-size: 1.5rem;
     cursor: pointer;
 }
