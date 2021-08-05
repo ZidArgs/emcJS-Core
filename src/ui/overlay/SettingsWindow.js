@@ -234,10 +234,10 @@ export default class SettingsWindow extends Window {
         }
         if (category) {
             this.active = category;
-        } else {
+        } else if (!this.active) {
             const ctg = this.shadowRoot.getElementById("categories").children;
             if (ctg.length) {
-                this.active = ctg[0].getAttribute("target")
+                this.active = ctg[0].getAttribute("target");
             }
         }
     }
