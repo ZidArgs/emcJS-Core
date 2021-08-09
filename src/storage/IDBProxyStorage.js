@@ -28,7 +28,7 @@ export default class IDBProxyStorage extends EventTarget {
             if (BUFFER.has(this)) {
                 resolve(this);
             } else {
-                function handler() {
+                const handler = () => {
                     resolve(this);
                     this.removeEventListener("load", handler);
                     this.removeEventListener("error", handler);
