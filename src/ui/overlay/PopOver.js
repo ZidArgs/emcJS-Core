@@ -77,10 +77,6 @@ const STYLE = new GlobalStyle(`
 }
 `);
 
-function removeElement() {
-    document.body.removeChild(this);
-}
-
 class PopOver {
 
     show(text = "", time = 5) {
@@ -92,22 +88,22 @@ class PopOver {
         const textEl = el.shadowRoot.getElementById("text");
         textEl.innerHTML = text;
         const autocloseEL = el.shadowRoot.getElementById("autoclose");
-        const removeEl = removeElement.bind(el);
+        const closeEl = el.shadowRoot.getElementById("close");
         time = parseInt(time);
         if (isNaN(time) || time < 5) {
             time = 5;
         }
         autocloseEL.style.animation = `autoclose ${time}s linear 1`;
-        autocloseEL.addEventListener("animationend", removeEl);
-        textEl.onclick = function(ev) {
-            autocloseEL.removeEventListener("animationend", removeEl);
-            document.body.removeChild(el);
-        }
-        el.shadowRoot.getElementById("close").onclick = function(ev) {
-            autocloseEL.removeEventListener("animationend", removeEl);
-            document.body.removeChild(el);
+        autocloseEL.addEventListener("animationend", () => {
+            el.remove();
+        });
+        textEl.addEventListener("click", () => {
+            el.remove();
+        });
+        closeEl.addEventListener("click", (ev) => {
             ev.stopPropagation();
-        }
+            el.remove();
+        });
         document.body.append(el);
         return el;
     }

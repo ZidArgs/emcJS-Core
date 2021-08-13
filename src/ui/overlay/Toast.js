@@ -49,15 +49,15 @@ const STYLE = new GlobalStyle(`
 function appendToast(el, timeout) {
     if (parseInt(timeout) === 0) {
         el.onclick = () => {
-            document.body.removeChild(el);
+            el.remove();
         };
     } else {
         const t = setTimeout(() => {
-            document.body.removeChild(el);
+            el.remove();
         }, parseInt(timeout) || 5000);
         el.onclick = () => {
             clearTimeout(t);
-            document.body.removeChild(el);
+            el.remove();
         };
     }
     document.body.append(el);

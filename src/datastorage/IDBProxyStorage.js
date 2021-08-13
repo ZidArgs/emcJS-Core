@@ -18,8 +18,16 @@ export default class IDBProxyStorage extends DataStorage {
             const ev = new Event("error");
             this.dispatchEvent(ev);
         });
-        this.addEventListener("change", (event) => {
-            storage.setAll(event.changed);
+        this.addEventListener("change", async (event) => {
+            await storage.setAll(event.data);
+        });
+        this.addEventListener("load", async (event) => {
+            await storage.clear();
+            await storage.setAll(event.data);
+        });
+        this.addEventListener("clear", async (event) => {
+            await storage.clear();
+            await storage.setAll(event.data);
         });
     }
 

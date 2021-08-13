@@ -15,9 +15,7 @@ export default class DataStorage extends EventTarget {
         if (oldValue != value) {
             buffer.set(key, value);
             const ev = new Event("change");
-            ev.changes = {[key]: {oldValue, newValue: value}};
-            ev.changed = {[key]: value};
-            ev.data = this.getAll();
+            ev.data = {[key]: value};
             this.dispatchEvent(ev);
         }
     }
@@ -25,22 +23,18 @@ export default class DataStorage extends EventTarget {
     setAll(values) {
         const buffer = BUFFER.get(this);
         const changes = {};
-        const changed = {};
         for (const key in values) {
             const newValue = values[key];
             const oldValue = this.get(key);
             if (oldValue != newValue) {
                 buffer.set(key, newValue);
-                changes[key] = {oldValue, newValue};
-                changed[key] = newValue;
+                changes[key] = newValue;
             }
         }
         // change event
         if (Object.keys(changes).length) {
             const ev = new Event("change");
-            ev.changes = changes;
-            ev.changed = changed;
-            ev.data = this.getAll();
+            ev.data = changes;
             this.dispatchEvent(ev);
         }
     }
@@ -62,13 +56,10 @@ export default class DataStorage extends EventTarget {
     delete(key) {
         const buffer = BUFFER.get(this);
         const oldValue = buffer.get(key);
-        buffer.delete(key);
-        // change event
         if (typeof oldValue != "undefined") {
+            buffer.delete(key);
             const ev = new Event("change");
-            ev.changes = {[key]: {oldValue, newValue: undefined}};
-            ev.changed = {[key]: undefined};
-            ev.data = this.getAll();
+            ev.data = {[key]: undefined};
             this.dispatchEvent(ev);
         }
     }
@@ -85,22 +76,10 @@ export default class DataStorage extends EventTarget {
 
     clear() {
         const buffer = BUFFER.get(this);
-        const changes = {};
-        const changed = {};
-        for (const [key, oldValue] of buffer) {
-            changes[key] = {oldValue, newValue: undefined};
-            changed[key] = undefined;
-        }
         buffer.clear();
-        this.dispatchEvent(new Event("clear"));
-        // change event
-        if (Object.keys(changes).length) {
-            const ev = new Event("change");
-            ev.changes = changes;
-            ev.changed = changed;
-            ev.data = this.getAll();
-            this.dispatchEvent(ev);
-        }
+        const ev = new Event("clear");
+        ev.data = this.getAll();
+        this.dispatchEvent(ev);
     }
     
     serialize() {
@@ -109,59 +88,38 @@ export default class DataStorage extends EventTarget {
 
     deserialize(data = {}) {
         const buffer = BUFFER.get(this);
-        const changes = {};
-        const changed = {};
-        for (const [key, oldValue] of buffer) {
-            changes[key] = {oldValue, newValue: undefined};
-            changed[key] = undefined;
-        }
         buffer.clear();
         for (const key in data) {
             const newValue = data[key];
             if (newValue != null) {
-                changes[key] = {oldValue: changes[key]?.oldValue, newValue};
-                changed[key] = newValue;
                 buffer.set(key, newValue);
             }
         }
         const ev = new Event("load");
         ev.data = this.getAll();
         this.dispatchEvent(ev);
-        // change event
-        if (Object.keys(changes).length) {
-            const ev = new Event("change");
-            ev.changes = changes;
-            ev.changed = changed;
-            ev.data = this.getAll();
-            this.dispatchEvent(ev);
-        }
     }
 
     overwrite(data = {}) {
         const buffer = BUFFER.get(this);
         const changes = {};
-        const changed = {};
         for (const key in data) {
             const newValue = data[key];
             const oldValue = this.get(key);
             if (oldValue != newValue) {
                 if (newValue == null) {
                     buffer.delete(key);
-                    changes[key] = {oldValue, newValue: undefined};
-                    changed[key] = undefined;
+                    changes[key] = this.get(key);
                 } else {
                     buffer.set(key, newValue);
-                    changes[key] = {oldValue, newValue};
-                    changed[key] = newValue;
+                    changes[key] = newValue;
                 }
             }
         }
         // change event
         if (Object.keys(changes).length) {
             const ev = new Event("change");
-            ev.changes = changes;
-            ev.changed = changed;
-            ev.data = this.getAll();
+            ev.data = changes;
             this.dispatchEvent(ev);
         }
     }

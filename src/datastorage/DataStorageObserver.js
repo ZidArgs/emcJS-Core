@@ -40,25 +40,23 @@ export default class DataStorageObserver extends EventTarget {
         STORAGE.set(this, storage);
         storage.addEventListener("change", event => {
             const key = KEY.get(this);
-            if (event.changes[key] != null) {
+            if (event.data[key] != null) {
                 const ev = new Event("change");
                 ev.data = event.data[key];
-                ev.change = event.changes[key];
                 this.dispatchEvent(ev);
             }
         });
         storage.addEventListener("clear", event => {
-            const ev = new Event("clear");
-            ev.data = null;
+            const key = KEY.get(this);
+            const ev = new Event("change");
+            ev.data = event.data[key];
             this.dispatchEvent(ev);
         });
         storage.addEventListener("load", event => {
             const key = KEY.get(this);
-            if (event.data[key] != null) {
-                const ev = new Event("load");
-                ev.data = event.data[key];
-                this.dispatchEvent(ev);
-            }
+            const ev = new Event("change");
+            ev.data = event.data[key];
+            this.dispatchEvent(ev);
         });
         setInstance(storage, key, this);
     }
@@ -71,6 +69,12 @@ export default class DataStorageObserver extends EventTarget {
         const storage = STORAGE.get(this);
         const key = KEY.get(this);
         return storage.get(key);
+    }
+
+    set value(value) {
+        const storage = STORAGE.get(this);
+        const key = KEY.get(this);
+        storage.set(key, value);
     }
 
 }

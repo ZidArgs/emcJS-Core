@@ -62,7 +62,7 @@ class FileSystem {
         document.body.append(dl);
         dl.click();
         window.URL.revokeObjectURL(url);
-        document.body.removeChild(dl);
+        dl.remove();
     }
 
 }

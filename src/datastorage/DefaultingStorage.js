@@ -18,7 +18,6 @@ export default class DefaultingStorage extends DataStorage {
             defaults.set(key, value);
             if (!super.has(key)) {
                 const ev = new Event("change");
-                ev.changes = {[key]: {oldValue: this.get(key), newValue: value}};
                 ev.data = {[key]: value};
                 this.dispatchEvent(ev);
             }

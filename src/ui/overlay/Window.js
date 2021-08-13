@@ -161,7 +161,7 @@ export default class Window extends HTMLElement {
     }
 
     close() {
-        document.body.removeChild(this);
+        this.remove();
         this.dispatchEvent(new Event("close"));
     }
 

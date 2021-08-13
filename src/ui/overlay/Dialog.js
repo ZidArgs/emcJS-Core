@@ -78,16 +78,6 @@ const Q_TAB = [
     "[tabindex]:not([tabindex=\"-1\"])"
 ].join(",");
 
-function dialogSubmit() {
-    this.dispatchEvent(new Event("submit"));
-    document.body.removeChild(this);
-}
-
-function dialogCancel() {
-    this.dispatchEvent(new Event("cancel"));
-    document.body.removeChild(this);
-}
-
 export default class Dialog extends Window {
 
     constructor(options = {}) {
@@ -117,9 +107,12 @@ export default class Dialog extends Window {
             } else if (typeof options.submit === "string") {
                 sbm.innerHTML = options.submit;
             }
-            sbm.onclick = dialogSubmit.bind(this);
+            sbm.onclick = () => {
+                this.dispatchEvent(new Event("submit"));
+                this.remove();
+            };
         } else {
-            footer.removeChild(sbm);
+            sbm.remove();
         }
 
         const ccl = this.shadowRoot.getElementById("cancel");
@@ -130,9 +123,12 @@ export default class Dialog extends Window {
             } else if (typeof options.cancel === "string") {
                 ccl.innerHTML = options.cancel;
             }
-            ccl.onclick = dialogCancel.bind(this);
+            ccl.onclick = () => {
+                this.dispatchEvent(new Event("cancel"));
+                this.remove();
+            };
         } else {
-            footer.removeChild(ccl);
+            ccl.remove();
         }
     }
 
