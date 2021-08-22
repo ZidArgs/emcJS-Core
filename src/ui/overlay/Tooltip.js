@@ -14,7 +14,7 @@ const STYLE = new GlobalStyle(`
     border-radius: 4px;
     box-shadow: 0 0 0 2px white;
     pointer-events: none;
-    z-index: 100;
+    z-index: 900200;
 }
 :host([position="topleft"]) {
     right: 100%;

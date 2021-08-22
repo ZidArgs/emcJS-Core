@@ -1,5 +1,5 @@
-import Template from "../../util/Template.js";
-import GlobalStyle from "../../util/GlobalStyle.js";
+import Template from "../../../util/Template.js";
+import GlobalStyle from "../../../util/GlobalStyle.js";
 
 const TPL = new Template(`
 <div id="focus_catcher_top" tabindex="0"></div>
@@ -19,7 +19,7 @@ const STYLE = new GlobalStyle(`
     right: 0;
     top: 0;
     bottom: 0;
-    z-index: 99999;
+    z-index: 900900;
     cursor: default;
 }
 :host([active]:not([active="false"])) {
@@ -71,7 +71,7 @@ const Q_TAB = [
     "textarea:not([tabindex=\"-1\"])",
     "[tabindex]:not([tabindex=\"-1\"])"
 ].join(",");
-
+const CTX_MARGIN = 5;
 const TOP = new WeakMap();
 const LEFT = new WeakMap();
 
@@ -87,6 +87,8 @@ export default class ContextMenu extends HTMLElement {
         LEFT.set(this, 0);
         /* --- */
         const menuEl = this.shadowRoot.getElementById("menu");
+        menuEl.style.left = `${CTX_MARGIN}px`;
+        menuEl.style.top = `${CTX_MARGIN}px`;
         menuEl.addEventListener("click", event => {
             this.close();
             event.preventDefault();
@@ -143,7 +145,8 @@ export default class ContextMenu extends HTMLElement {
     }
 
     get active() {
-        return this.getAttribute("active");
+        const val = this.getAttribute("active");
+        return !!val && val != "false";
     }
 
     set active(val) {
@@ -151,29 +154,45 @@ export default class ContextMenu extends HTMLElement {
     }
 
     show(posX, posY) {
+        if (!this.active) {
+            this.dispatchEvent(new Event("show"));
+            this.active = true;
+        }
+        /* --- */
+        const pRect = this.parentElement.parentElement.getBoundingClientRect();
         LEFT.set(this, posX);
         TOP.set(this, posY);
-        this.active = true;
-        const menu = this.shadowRoot.getElementById("menu");
-        if (posX < 25) {
-            posX = 25;
-        } else if (menu.clientWidth + posX > window.innerWidth - 25) {
-            posX = window.innerWidth - menu.clientWidth - 25;
+        const menuEl = this.shadowRoot.getElementById("menu");
+        if (posX < pRect.x + CTX_MARGIN) {
+            posX = pRect.x + CTX_MARGIN;
+        } else {
+            const bWidth = Math.min(pRect.width + pRect.x, window.innerWidth);
+            if (menuEl.offsetWidth + posX > bWidth - CTX_MARGIN) {
+                posX = bWidth - menuEl.offsetWidth - CTX_MARGIN;
+            }
         }
-        if (posY < 25) {
-            posY = 25;
-        } else if (menu.clientHeight + posY > window.innerHeight - 25) {
-            posY = window.innerHeight - menu.clientHeight - 25;
+        if (posY < pRect.y + CTX_MARGIN) {
+            posY = pRect.y + CTX_MARGIN;
+        } else {
+            const bHeight = Math.min(pRect.height + pRect.y, window.innerHeight);
+            if (menuEl.offsetHeight + posY > bHeight - CTX_MARGIN) {
+                posY = bHeight - menuEl.offsetHeight - CTX_MARGIN;
+            }
         }
-        menu.style.left = `${posX}px`;
-        menu.style.top = `${posY}px`;
+        menuEl.style.left = `${posX}px`;
+        menuEl.style.top = `${posY}px`;
         this.focusFirst();
     }
 
     close() {
-        const event = new Event("close");
-        this.dispatchEvent(event);
-        this.active = false;
+        if (this.active) {
+            this.dispatchEvent(new Event("close"));
+            this.active = false;
+        }
+        /* --- */
+        const menuEl = this.shadowRoot.getElementById("menu");
+        menuEl.style.left = `${CTX_MARGIN}px`;
+        menuEl.style.top = `${CTX_MARGIN}px`;
     }
 
     focusFirst() {

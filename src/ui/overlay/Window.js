@@ -41,7 +41,7 @@ const STYLE = new GlobalStyle(`
     justify-content: center;
     backdrop-filter: blur(2px);
     -webkit-backdrop-filter: blur(2px);
-    z-index: 1000000;
+    z-index: 900400;
 }
 #window {
     display: flex;

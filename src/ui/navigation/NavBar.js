@@ -25,7 +25,7 @@ const STYLE = new GlobalStyle(`
     color: var(--navigation-text-color, #000000);
     flex-grow: 0;
     flex-shrink: 0;
-    z-index: 1000;
+    z-index: 900800;
 }
 :host * {
     box-sizing: border-box;
@@ -225,8 +225,11 @@ export default class NavBar extends HTMLElement {
                 // action
                 if (item["handler"] != null && typeof item.handler == "function") {
                     btn.addEventListener("click", (event) => {
+                        const hamburger = this.shadowRoot.getElementById("hamburger-button");
+                        hamburger.open = false;
                         const container = this.shadowRoot.getElementById("container");
                         container.classList.remove("cover");
+                        container.classList.remove("open");
                         content.querySelectorAll("[expand=\"open\"]").forEach(function(el) {
                             el.expand = "closed";
                         });
@@ -263,8 +266,11 @@ export default class NavBar extends HTMLElement {
                             // action
                             if (subitem["handler"] != null && typeof subitem.handler == "function") {
                                 subbtn.addEventListener("click", (event) => {
+                                    const hamburger = this.shadowRoot.getElementById("hamburger-button");
+                                    hamburger.open = false;
                                     const container = this.shadowRoot.getElementById("container");
                                     container.classList.remove("cover");
+                                    container.classList.remove("open");
                                     content.querySelectorAll("[expand=\"open\"]").forEach(function(el) {
                                         el.expand = "closed";
                                     });
@@ -283,10 +289,10 @@ export default class NavBar extends HTMLElement {
                     btn.expand = "closed";
                     btn.addEventListener("click", (event) => {
                         const container = this.shadowRoot.getElementById("container");
-                        container.classList.remove("cover");
                         if (btn.expand == "open") {
                             btn.expand = "closed";
                             el.classList.remove("open");
+                            container.classList.remove("cover");
                         } else {
                             content.querySelectorAll("[expand=\"open\"]").forEach(function(el) {
                                 el.expand = "closed";
@@ -296,6 +302,7 @@ export default class NavBar extends HTMLElement {
                             });
                             btn.expand = "open";
                             el.classList.add("open");
+                            container.classList.add("cover");
                         }
                         event.stopPropagation();
                         return false;
