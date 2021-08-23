@@ -1,6 +1,6 @@
 import Window from "./Window.js";
-import Template from "../../util/Template.js";
-import GlobalStyle from "../../util/GlobalStyle.js";
+import Template from "../../util/html/Template.js";
+import GlobalStyle from "../../util/html/GlobalStyle.js";
 import "../input/ListSelect.js";
 
 const TPL = new Template(`

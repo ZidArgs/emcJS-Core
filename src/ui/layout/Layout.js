@@ -1,5 +1,5 @@
-import Template from "../../util/Template.js";
-import GlobalStyle from "../../util/GlobalStyle.js";
+import Template from "../../util/html/Template.js";
+import GlobalStyle from "../../util/html/GlobalStyle.js";
 import "./panel/HBox.js";
 import "./panel/VBox.js";
 import "./panel/TabPanel.js";

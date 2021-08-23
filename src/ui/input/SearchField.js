@@ -1,5 +1,5 @@
-import Template from "../../util/Template.js";
-import GlobalStyle from "../../util/GlobalStyle.js";
+import Template from "../../util/html/Template.js";
+import GlobalStyle from "../../util/html/GlobalStyle.js";
 import "../symbols/ClearSymbol.js";
 import "../../i18n/ui/InputElement.js";
 import "../../i18n/ui/Tooltip.js";

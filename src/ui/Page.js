@@ -1,5 +1,5 @@
-import Template from "../util/Template.js";
-import GlobalStyle from "../util/GlobalStyle.js";
+import Template from "../util/html/Template.js";
+import GlobalStyle from "../util/html/GlobalStyle.js";
 import "./overlay/message/MessageLayer.js";
 import "./overlay/ctxmenu/CtxMenuLayer.js";
 

@@ -58,3 +58,18 @@ count=50
 
 ?query=pet&columns=index,lastname,firstname&filter=index:notnull,index:gt:20,firstname:contains:den&sort=lastname:asc,firstname:asc&start=0&count=50
 ```
+
+- string templating
+    - https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Template_literals#tagged_template-strings
+    - generate from simple string like below but make it return a function or instance
+        ```js
+            function generateText(template, values) {
+                return template.replace(/\$\{([^}]*)\}/g, function(_, p1) {
+                    let res = values[p1];
+                    if (typeof res == "undefined") {
+                        res = "";
+                    }
+                    return res;
+                });
+            }
+        ```

@@ -1,4 +1,4 @@
-import GlobalStyle from "../../util/GlobalStyle.js";
+import GlobalStyle from "../../util/html/GlobalStyle.js";
 
 const STYLE = new GlobalStyle(`
 * {

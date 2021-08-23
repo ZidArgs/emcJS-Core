@@ -32,7 +32,7 @@ export default class Template {
             return template.generate(child);
         }
         if (!(template instanceof HTMLTemplateElement)) {
-            template = createTemplate(template, child);
+            template = createTemplate(template);
         }
         const doc = document.importNode(template.content, true);
         if (child != null) {

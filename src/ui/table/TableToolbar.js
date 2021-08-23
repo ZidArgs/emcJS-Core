@@ -1,5 +1,5 @@
-import Template from "../../util/Template.js";
-import GlobalStyle from "../../util/GlobalStyle.js";
+import Template from "../../util/html/Template.js";
+import GlobalStyle from "../../util/html/GlobalStyle.js";
 //import SearchAnd from "../../util/search/SearchAnd.js";
 //import SearchOr from "../../util/search/SearchOr.js";
 

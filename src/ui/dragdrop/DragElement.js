@@ -1,7 +1,7 @@
 import DragDropMemory from "../../util/DragDropMemory.js";
 import UniqueGenerator from "../../util/UniqueGenerator.js";
-import Template from "../../util/Template.js";
-import GlobalStyle from "../../util/GlobalStyle.js";
+import Template from "../../util/html/Template.js";
+import GlobalStyle from "../../util/html/GlobalStyle.js";
 
 const TPL = new Template(`
 <slot></slot>
