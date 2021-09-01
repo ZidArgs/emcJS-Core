@@ -1,7 +1,7 @@
+import Template from "../../../util/html/Template.js";
+import GlobalStyle from "../../../util/html/GlobalStyle.js";
 import Window from "./Window.js";
-import Template from "../../util/html/Template.js";
-import GlobalStyle from "../../util/html/GlobalStyle.js";
-import "../input/ListSelect.js";
+import "../../input/ListSelect.js";
 
 const TPL = new Template(`
 <div id="categories">
@@ -107,15 +107,6 @@ emc-listselect {
     user-select: none;
 }
 `);
-
-const Q_TAB = [
-    "button:not([tabindex=\"-1\"])",
-    "[href]:not([tabindex=\"-1\"])",
-    "input:not([tabindex=\"-1\"])",
-    "select:not([tabindex=\"-1\"])",
-    "textarea:not([tabindex=\"-1\"])",
-    "[tabindex]:not([tabindex=\"-1\"])"
-].join(",");
 
 function settingsSubmit() {
     const data = {};
@@ -240,30 +231,6 @@ export default class SettingsWindow extends Window {
                 this.active = ctg[0].getAttribute("target");
             }
         }
-    }
-
-    initialFocus() {
-        const a = Array.from(this.querySelectorAll(Q_TAB));
-        a.push(this.shadowRoot.getElementById("submit"));
-        a.push(this.shadowRoot.getElementById("cancel"));
-        a.push(this.shadowRoot.getElementById("close"));
-        a[0].focus();
-    }
-
-    focusFirst() {
-        const a = Array.from(this.querySelectorAll(Q_TAB));
-        a.push(this.shadowRoot.getElementById("submit"));
-        a.push(this.shadowRoot.getElementById("cancel"));
-        a.unshift(this.shadowRoot.getElementById("close"));
-        a[0].focus();
-    }
-    
-    focusLast() {
-        const a = Array.from(this.querySelectorAll(Q_TAB));
-        a.push(this.shadowRoot.getElementById("submit"));
-        a.push(this.shadowRoot.getElementById("cancel"));
-        a.unshift(this.shadowRoot.getElementById("close"));
-        a[a.length - 1].focus();
     }
 
     addTab(title, id) {

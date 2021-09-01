@@ -12,6 +12,7 @@ const STYLE = new GlobalStyle(`
 }
 :host {
     display: contents;
+    z-index: 900900;
 }
 `);
 
@@ -23,6 +24,22 @@ export default class CtxMenuLayer extends HTMLElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
+    }
+
+    static findNextLayer(source) {
+        if (source instanceof CtxMenuLayer || source == document.body) {
+            return source;
+        }
+        if (source.assignedSlot != null) {
+            return CtxMenuLayer.findNextLayer(source.assignedSlot);
+        }
+        if (source.parentElement != null) {
+            return CtxMenuLayer.findNextLayer(source.parentElement);
+        }
+        if (source.getRootNode()?.host != null) {
+            return CtxMenuLayer.findNextLayer(source.getRootNode().host);
+        }
+        return document.body;
     }
 
 }

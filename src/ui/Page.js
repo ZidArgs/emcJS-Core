@@ -1,5 +1,6 @@
 import Template from "../util/html/Template.js";
 import GlobalStyle from "../util/html/GlobalStyle.js";
+import "./overlay/window/WindowLayer.js";
 import "./overlay/message/MessageLayer.js";
 import "./overlay/ctxmenu/CtxMenuLayer.js";
 
@@ -8,6 +9,8 @@ const TPL = new Template(`
     <slot></slot>
 </emc-ctxmenulayer>
 <emc-messagelayer name="main"></emc-messagelayer>
+<emc-windowlayer name="main"></emc-windowlayer>
+<emc-windowlayer name="dialogs"></emc-windowlayer>
 `);
 
 const STYLE = new GlobalStyle(`

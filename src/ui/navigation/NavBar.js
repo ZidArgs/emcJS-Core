@@ -25,7 +25,7 @@ const STYLE = new GlobalStyle(`
     color: var(--navigation-text-color, #000000);
     flex-grow: 0;
     flex-shrink: 0;
-    z-index: 900800;
+    z-index: 900700;
 }
 :host * {
     box-sizing: border-box;

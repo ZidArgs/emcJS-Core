@@ -1,20 +1,23 @@
-import Template from "../../util/html/Template.js";
-import GlobalStyle from "../../util/html/GlobalStyle.js";
-import "../symbols/CloseSymbol.js";
+import Template from "../../../util/html/Template.js";
+import GlobalStyle from "../../../util/html/GlobalStyle.js";
+import WindowLayer from "./WindowLayer.js";
+import "../../symbols/CloseSymbol.js";
 
 const TPL = new Template(`
 <div id="focus_catcher_top" tabindex="0"></div>
-<div id="window" role="dialog" aria-modal="true" aria-labelledby="title" aria-describedby="title">
-    <div id="header">
-        <div id="title"></div>
-        <button id="close" title="close">
-            <emc-symbol-close></emc-symbol-close>
-        </button>
+<emc-ctxmenulayer>
+    <div id="window" role="dialog" aria-modal="true" aria-labelledby="title" aria-describedby="title">
+        <div id="header">
+            <div id="title"></div>
+            <button id="close" title="close">
+                <emc-symbol-close></emc-symbol-close>
+            </button>
+        </div>
+        <div id="body">
+            <slot></slot>
+        </div>
     </div>
-    <div id="body">
-        <slot></slot>
-    </div>
-</div>
+</emc-ctxmenulayer>
 <div id="focus_catcher_bottom" tabindex="0"></div>
 `);
 
@@ -31,17 +34,14 @@ const STYLE = new GlobalStyle(`
     display: flex;
 }
 :host {
-    position: absolute !important;
+    position: fixed !important;
+    align-items: flex-start;
+    justify-content: center;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.3);
-    align-items: flex-start;
-    justify-content: center;
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    z-index: 900400;
+    pointer-events: none;
 }
 #window {
     display: flex;
@@ -54,6 +54,7 @@ const STYLE = new GlobalStyle(`
     border: solid 2px #cccccc;
     border-radius: 4px;
     resize: both;
+    pointer-events: all;
 }
 #header {
     display: flex;
@@ -156,7 +157,7 @@ export default class Window extends HTMLElement {
     }
 
     show() {
-        document.body.append(this);
+        WindowLayer.append(this);
         this.initialFocus();
     }
 
@@ -166,21 +167,38 @@ export default class Window extends HTMLElement {
     }
 
     initialFocus() {
-        const a = Array.from(this.querySelectorAll(Q_TAB));
-        a.push(this.shadowRoot.getElementById("close"));
-        a[0].focus();
+        const bodyEls = Array.from(this.querySelectorAll(Q_TAB));
+        if (bodyEls.length) {
+            bodyEls[0].focus();
+        } else {
+            const windowEls = Array.from(this.shadowRoot.querySelectorAll(Q_TAB));
+            if (windowEls.length) {
+                windowEls[0].focus();
+            } else {
+                const closeEl = this.shadowRoot.getElementById("close");
+                closeEl.focus();
+            }
+        }
     }
 
     focusFirst() {
-        const a = Array.from(this.querySelectorAll(Q_TAB));
-        a.unshift(this.shadowRoot.getElementById("close"));
-        a[0].focus();
+        const closeEl = this.shadowRoot.getElementById("close");
+        closeEl.focus();
     }
     
     focusLast() {
-        const a = Array.from(this.querySelectorAll(Q_TAB));
-        a.unshift(this.shadowRoot.getElementById("close"));
-        a[a.length - 1].focus();
+        const windowEls = Array.from(this.shadowRoot.querySelectorAll(Q_TAB));
+        if (windowEls.length) {
+            windowEls[windowEls.length - 1].focus();
+        } else {
+            const bodyEls = Array.from(this.querySelectorAll(Q_TAB));
+            if (bodyEls.length) {
+                bodyEls[bodyEls.length - 1].focus();
+            } else {
+                const closeEl = this.shadowRoot.getElementById("close");
+                closeEl.focus();
+            }
+        }
     }
 
 }

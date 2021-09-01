@@ -1,6 +1,7 @@
+import Template from "../../../util/html/Template.js";
+import GlobalStyle from "../../../util/html/GlobalStyle.js";
+import WindowLayer from "./WindowLayer.js";
 import Window from "./Window.js";
-import Template from "../../util/html/Template.js";
-import GlobalStyle from "../../util/html/GlobalStyle.js";
 
 const TPL = new Template(`
 <div id="text">
@@ -20,6 +21,10 @@ const STYLE = new GlobalStyle(`
 * {
     position: relative;
     box-sizing: border-box;
+}
+:host {
+    z-index: 900900;
+    pointer-events: all;
 }
 #footer,
 #submit,
@@ -68,15 +73,6 @@ const STYLE = new GlobalStyle(`
     min-width: 20vw;
 }
 `);
-
-const Q_TAB = [
-    "button:not([tabindex=\"-1\"])",
-    "[href]:not([tabindex=\"-1\"])",
-    "input:not([tabindex=\"-1\"])",
-    "select:not([tabindex=\"-1\"])",
-    "textarea:not([tabindex=\"-1\"])",
-    "[tabindex]:not([tabindex=\"-1\"])"
-].join(",");
 
 export default class Dialog extends Window {
 
@@ -132,28 +128,9 @@ export default class Dialog extends Window {
         }
     }
 
-    initialFocus() {
-        const a = Array.from(this.querySelectorAll(Q_TAB));
-        a.push(this.shadowRoot.getElementById("submit"));
-        a.push(this.shadowRoot.getElementById("cancel"));
-        a.push(this.shadowRoot.getElementById("close"));
-        a[0].focus();
-    }
-
-    focusFirst() {
-        const a = Array.from(this.querySelectorAll(Q_TAB));
-        a.push(this.shadowRoot.getElementById("submit"));
-        a.push(this.shadowRoot.getElementById("cancel"));
-        a.unshift(this.shadowRoot.getElementById("close"));
-        a[0].focus();
-    }
-    
-    focusLast() {
-        const a = Array.from(this.querySelectorAll(Q_TAB));
-        a.push(this.shadowRoot.getElementById("submit"));
-        a.push(this.shadowRoot.getElementById("cancel"));
-        a.unshift(this.shadowRoot.getElementById("close"));
-        a[a.length - 1].focus();
+    show() {
+        WindowLayer.append(this, "dialogs");
+        this.initialFocus();
     }
     
     static alert(ttl, msg) {
