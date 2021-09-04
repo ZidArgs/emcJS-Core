@@ -26,12 +26,11 @@ const STYLE = new GlobalStyle(`
     overflow-x: auto;
     overflow-y: none;
     border-bottom: solid 2px #cccccc;
+    user-select: none;
 }
 .category {
     display: inline-flex;
     margin: 0 2px;
-}
-.category {
     padding: 5px;
     color: var(--category-color, black);
     background-color: var(--category-background-color, white);
@@ -40,6 +39,7 @@ const STYLE = new GlobalStyle(`
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    user-select: none;
     -webkit-appearance: none;
 }
 .category:hover {

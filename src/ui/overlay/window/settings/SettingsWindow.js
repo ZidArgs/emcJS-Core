@@ -52,6 +52,7 @@ const STYLE = new GlobalStyle(`
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    user-select: none;
     -webkit-appearance: none;
 }
 #submit:hover,
@@ -139,6 +140,7 @@ export default class SettingsWindow extends Window {
             const tab = categories.setTab(category, label);
             const container = document.createElement("emc-window-settings-tab");
             container.className = "container";
+            container.id = `settings_${category}`;
             tab.append(container);
             return container;
         }

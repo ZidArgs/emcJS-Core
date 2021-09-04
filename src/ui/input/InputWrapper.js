@@ -69,6 +69,7 @@ const STYLE = new GlobalStyle(`
 ::slotted(button),
 ::slotted(a) {
     cursor: pointer;
+    user-select: none;
 }
 ::slotted(input[type="button"]:hover),
 ::slotted(input[type="reset"]:hover),

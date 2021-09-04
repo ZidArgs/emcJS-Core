@@ -29,8 +29,6 @@ const STYLE = new GlobalStyle(`
 #footer,
 #submit,
 #cancel {
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
 }
 #text {
@@ -43,9 +41,7 @@ const STYLE = new GlobalStyle(`
     height: 50px;
     margin-top: 20px;
     padding: 10px 30px 10px;
-    -webkit-box-pack: end;
-        -ms-flex-pack: end;
-            justify-content: flex-end;
+    justify-content: flex-end;
     border-top: solid 2px #cccccc;
 }
 #submit,
@@ -54,13 +50,10 @@ const STYLE = new GlobalStyle(`
     padding: 5px;
     border: solid 1px black;
     border-radius: 2px;
-    -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
-    -webkit-box-pack: center;
-        -ms-flex-pack: center;
-            justify-content: center;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
+    user-select: none;
     -webkit-appearance: none;
 }
 #submit:hover,

@@ -22,46 +22,110 @@ const STYLE = new GlobalStyle(`
     overflow-wrap: break-word;
     resize: none;
 }
-label.settings-option {
+.settings-option {
     display: flex;
-    padding: 10px;
     align-items: center;
     justify-content: flex-start;
+    min-height: 40px;
 }
-label.settings-option:hover {
+.settings-option:hover {
     background-color: lightgray;
 }
-label.settings-option input[type="checkbox"] {
+.settings-option input[type="checkbox"] {
     margin-right: 10px;
 }
-label.settings-option emc-listselect {
+.settings-option emc-listselect {
     max-height: 300px;
 }
-label.settings-option .settings-input:not([type="checkbox"]) {
+.settings-option .settings-input:not([type="checkbox"]) {
     flex: 1;
 }
-label.settings-option .settings-input:focus {
+.settings-option .settings-input:focus {
     box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
     outline: none;
 }
-label.settings-option .settings-input:focus:not(:focus-visible) {
+.settings-option .settings-input:focus:not(:focus-visible) {
     box-shadow: none;
     outline: none;
 }
-label.settings-option .option-text {
-    display: inline-block;
+.settings-option .option-text {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
     flex-basis: 500px;
     flex-shrink: 1;
-    margin-right: 10px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
+    padding: 10px;
+    cursor: pointer;
     user-select: none;
 }
-label.settings-option .option-reset {
-    display: inline-block;
+.settings-option .option-reset button {
     margin-left: auto;
 }
+.settings-option .align-top {
+    align-self: flex-start;
+}
 `);
+
+function generateField(label, input, storage, visible) {
+    const fieldEl = document.createElement("div");
+    fieldEl.className = "settings-option";
+    // label
+    const labelEl = document.createElement("label");
+    labelEl.className = "option-text";
+    labelEl.setAttribute("for", input.id);
+    if (label instanceof HTMLElement) {
+        labelEl.append(label);
+    } else {
+        labelEl.innerHTML = label;
+    }
+    fieldEl.append(labelEl);
+    // input
+    const wrapperEl = document.createElement("emc-input-wrapper");
+    wrapperEl.append(input);
+    fieldEl.append(wrapperEl);
+    // visibility
+    if (visible != null) {
+        if (typeof visible == "object") {
+            const logicFn = LogicCompiler.compile(visible);
+            const value = !!logicFn(ref => storage.get(ref));
+            if (!value) {
+                fieldEl.style.display = "none";
+            }
+            // event
+            storage.addEventListener("change", () => {
+                const value = !!logicFn(ref => storage.get(ref));
+                fieldEl.style.display = value ? "" : "none";
+            });
+        } else if (!visible) {
+            fieldEl.style.display = "none";
+        }
+    }
+    // ---
+    return fieldEl;
+}
+
+function createResetButton(storage, ref) {
+    const resetEl = document.createElement("button");
+    resetEl.innerHTML = "↺";
+    resetEl.addEventListener("click", () => {
+        storage.resetValue(ref);
+    });
+    const wrapperEl = document.createElement("emc-input-wrapper");
+    wrapperEl.className = "option-reset";
+    wrapperEl.append(resetEl);
+    return wrapperEl;
+}
+
+function generateEmcOption(value, label) {
+    const el = document.createElement("emc-option");
+    el.value = value;
+    if (label instanceof HTMLElement) {
+        el.append(label);
+    } else {
+        el.innerHTML = label;
+    }
+    return el;
+}
 
 export default class SettingsTabContent extends HTMLElement {
 
@@ -75,6 +139,7 @@ export default class SettingsTabContent extends HTMLElement {
 
     addStringInput(storage, label, ref, visible, resettable) {
         const inputEl = document.createElement("input");
+        inputEl.id = `${this.id}_${ref}`;
         inputEl.className = "settings-input";
         inputEl.setAttribute("type", "text");
         inputEl.value = storage.get(ref);
@@ -92,19 +157,13 @@ export default class SettingsTabContent extends HTMLElement {
                 inputEl.value = event.data[ref];
             }
         });
-        inputEl.addEventListener("change", event => {
+        inputEl.addEventListener("change", () => {
             storage.set(ref, inputEl.value);
         });
         // reset
         if (resettable) {
-            const resetEl = document.createElement("button");
-            resetEl.innerHTML = "↺";
-            resetEl.addEventListener("click", event => {
-                storage.resetValue(ref);
-            });
-            const wrapperEl = document.createElement("emc-input-wrapper");
-            wrapperEl.append(resetEl);
-            labelEl.append(wrapperEl);
+            const resetEl = createResetButton(storage, ref);
+            labelEl.append(resetEl);
         }
         // add element
         const containerEl = this.shadowRoot.getElementById("container");
@@ -113,6 +172,7 @@ export default class SettingsTabContent extends HTMLElement {
 
     addNumberInput(storage, label, ref, visible, resettable, min, max) {
         const inputEl = document.createElement("input");
+        inputEl.id = `${this.id}_${ref}`;
         inputEl.className = "settings-input";
         inputEl.setAttribute("type", "number");
         inputEl.value = storage.get(ref);
@@ -136,19 +196,13 @@ export default class SettingsTabContent extends HTMLElement {
                 inputEl.value = parseFloat(event.data[ref]) || 0;
             }
         });
-        inputEl.addEventListener("change", event => {
+        inputEl.addEventListener("change", () => {
             storage.set(ref, parseFloat(inputEl.value));
         });
         // reset
         if (resettable) {
-            const resetEl = document.createElement("button");
-            resetEl.innerHTML = "↺";
-            resetEl.addEventListener("click", event => {
-                storage.resetValue(ref);
-            });
-            const wrapperEl = document.createElement("emc-input-wrapper");
-            wrapperEl.append(resetEl);
-            labelEl.append(wrapperEl);
+            const resetEl = createResetButton(storage, ref);
+            labelEl.append(resetEl);
         }
         // add element
         const containerEl = this.shadowRoot.getElementById("container");
@@ -157,6 +211,7 @@ export default class SettingsTabContent extends HTMLElement {
 
     addRangeInput(storage, label, ref, visible, resettable, min, max) {
         const inputEl = document.createElement("input");
+        inputEl.id = `${this.id}_${ref}`;
         inputEl.className = "settings-input";
         inputEl.setAttribute("type", "range");
         inputEl.value = storage.get(ref);
@@ -180,19 +235,13 @@ export default class SettingsTabContent extends HTMLElement {
                 inputEl.value = parseFloat(event.data[ref]) || 0;
             }
         });
-        inputEl.addEventListener("change", event => {
+        inputEl.addEventListener("change", () => {
             storage.set(ref, parseFloat(inputEl.value));
         });
         // reset
         if (resettable) {
-            const resetEl = document.createElement("button");
-            resetEl.innerHTML = "↺";
-            resetEl.addEventListener("click", event => {
-                storage.resetValue(ref);
-            });
-            const wrapperEl = document.createElement("emc-input-wrapper");
-            wrapperEl.append(resetEl);
-            labelEl.append(wrapperEl);
+            const resetEl = createResetButton(storage, ref)
+            labelEl.append(resetEl);
         }
         // add element
         const containerEl = this.shadowRoot.getElementById("container");
@@ -201,6 +250,7 @@ export default class SettingsTabContent extends HTMLElement {
 
     addCheckInput(storage, label, ref, visible, resettable) {
         const inputEl = document.createElement("input");
+        inputEl.id = `${this.id}_${ref}`;
         inputEl.className = "settings-input";
         inputEl.setAttribute("type", "checkbox");
         inputEl.checked = !!storage.get(ref);
@@ -218,19 +268,13 @@ export default class SettingsTabContent extends HTMLElement {
                 inputEl.checked = !!event.data[ref];
             }
         });
-        inputEl.addEventListener("change", event => {
+        inputEl.addEventListener("change", () => {
             storage.set(ref, !!inputEl.checked);
         });
         // reset
         if (resettable) {
-            const resetEl = document.createElement("button");
-            resetEl.innerHTML = "↺";
-            resetEl.addEventListener("click", event => {
-                storage.resetValue(ref);
-            });
-            const wrapperEl = document.createElement("emc-input-wrapper");
-            wrapperEl.append(resetEl);
-            labelEl.append(wrapperEl);
+            const resetEl = createResetButton(storage, ref);
+            labelEl.append(resetEl);
         }
         // add element
         const containerEl = this.shadowRoot.getElementById("container");
@@ -239,6 +283,7 @@ export default class SettingsTabContent extends HTMLElement {
 
     addColorInput(storage, label, ref, visible, resettable) {
         const inputEl = document.createElement("input");
+        inputEl.id = `${this.id}_${ref}`;
         inputEl.className = "settings-input";
         inputEl.setAttribute("type", "color");
         inputEl.value = storage.get(ref);
@@ -256,19 +301,13 @@ export default class SettingsTabContent extends HTMLElement {
                 inputEl.value = event.data[ref];
             }
         });
-        inputEl.addEventListener("change", event => {
+        inputEl.addEventListener("change", () => {
             storage.set(ref, inputEl.value);
         });
         // reset
         if (resettable) {
-            const resetEl = document.createElement("button");
-            resetEl.innerHTML = "↺";
-            resetEl.addEventListener("click", event => {
-                storage.resetValue(ref);
-            });
-            const wrapperEl = document.createElement("emc-input-wrapper");
-            wrapperEl.append(resetEl);
-            labelEl.append(wrapperEl);
+            const resetEl = createResetButton(storage, ref);
+            labelEl.append(resetEl);
         }
         // add element
         const containerEl = this.shadowRoot.getElementById("container");
@@ -277,6 +316,7 @@ export default class SettingsTabContent extends HTMLElement {
 
     addChoiceInput(storage, label, ref, visible, resettable, values = {}) {
         const inputEl = document.createElement("emc-searchselect");
+        inputEl.id = `${this.id}_${ref}`;
         inputEl.className = "settings-input";
         inputEl.setAttribute("type", "input");
         for (const value in values) {
@@ -297,19 +337,13 @@ export default class SettingsTabContent extends HTMLElement {
                 inputEl.value = event.data[ref];
             }
         });
-        inputEl.addEventListener("change", event => {
+        inputEl.addEventListener("change", () => {
             storage.set(ref, inputEl.value);
         });
         // reset
         if (resettable) {
-            const resetEl = document.createElement("button");
-            resetEl.innerHTML = "↺";
-            resetEl.addEventListener("click", event => {
-                storage.resetValue(ref);
-            });
-            const wrapperEl = document.createElement("emc-input-wrapper");
-            wrapperEl.append(resetEl);
-            labelEl.append(wrapperEl);
+            const resetEl = createResetButton(storage, ref);
+            labelEl.append(resetEl);
         }
         // add element
         const containerEl = this.shadowRoot.getElementById("container");
@@ -318,6 +352,7 @@ export default class SettingsTabContent extends HTMLElement {
 
     addListSelectInput(storage, label, ref, visible, resettable, multiple = true, values = {}) {
         const inputEl = document.createElement("emc-listselect");
+        inputEl.id = `${this.id}_${ref}`;
         inputEl.className = "settings-input";
         inputEl.setAttribute("type", "list");
         inputEl.multiple = multiple;
@@ -364,7 +399,7 @@ export default class SettingsTabContent extends HTMLElement {
             }
             inputEl.value = Array.from(valueCache);
         });
-        inputEl.addEventListener("change", event => {
+        inputEl.addEventListener("change", () => {
             const data = new Set(inputEl.value);
             const res = {};
             for (const value in values) {
@@ -373,92 +408,43 @@ export default class SettingsTabContent extends HTMLElement {
             storage.setAll(res);
         });
         // reset
-        if (resettable) {
-            const resetEl = document.createElement("button");
-            resetEl.innerHTML = "↺";
-            resetEl.addEventListener("click", event => {
-                storage.resetValue(ref);
-            });
-            const wrapperEl = document.createElement("emc-input-wrapper");
-            wrapperEl.append(resetEl);
-            labelEl.append(wrapperEl);
-        }
+        // TODO implement reset functionality
+        // if (resettable) {
+        //     const resetEl = createResetButton(storage, ref);
+        //     resetEl.classList.add("align-top");
+        //     labelEl.append(resetEl);
+        // }
         // add element
         const containerEl = this.shadowRoot.getElementById("container");
         containerEl.append(labelEl);
     }
 
     addButton(storage, label, ref, visible, text = "", callback = null) {
-        const input = document.createElement("button");
-        input.className = "settings-button";
-        input.setAttribute("type", "button");
-        input.dataset.ref = ref;
+        const inputEl = document.createElement("button");
+        inputEl.id = `${this.id}_${ref}`;
+        inputEl.className = "settings-button";
+        inputEl.setAttribute("type", "button");
+        inputEl.dataset.ref = ref;
         if (text instanceof HTMLElement) {
-            input.append(text);
+            inputEl.append(text);
         } else {
-            input.innerHTML = text;
+            inputEl.innerHTML = text;
         }
         if (typeof callback == "function") {
-            input.onclick = callback;
+            inputEl.addEventListener("click", callback);
         }
-        const el = generateField(label, input, storage, visible);
+        const labelEl = generateField(label, inputEl, storage, visible);
         // add element
-        const container = this.shadowRoot.getElementById("container");
-        container.append(el);
+        const containerEl = this.shadowRoot.getElementById("container");
+        containerEl.append(labelEl);
     }
 
     addElements(content) {
         // add element
-        const container = this.shadowRoot.getElementById("container");
-        container.append(content);
+        const containerEl = this.shadowRoot.getElementById("container");
+        containerEl.append(content);
     }
 
 }
 
 customElements.define("emc-window-settings-tab", SettingsTabContent);
-
-function generateField(label, input, storage, visible) {
-    const labelEl = document.createElement("label");
-    labelEl.className = "settings-option";
-    const textEl = document.createElement("span");
-    if (label instanceof HTMLElement) {
-        textEl.append(label);
-    } else {
-        textEl.innerHTML = label;
-    }
-    textEl.className = "option-text";
-    labelEl.append(textEl);
-    const wrapperEl = document.createElement("emc-input-wrapper");
-    wrapperEl.append(input);
-    labelEl.append(wrapperEl);
-    // visibility
-    if (visible != null) {
-        if (typeof visible == "object") {
-            const logicFn = LogicCompiler.compile(visible);
-            const value = !!logicFn(ref => storage.get(ref));
-            if (!value) {
-                labelEl.style.display = "none";
-            }
-            // event
-            storage.addEventListener("change", event => {
-                const value = !!logicFn(ref => storage.get(ref));
-                labelEl.style.display = value ? "" : "none";
-            });
-        } else if (!visible) {
-            labelEl.style.display = "none";
-        }
-    }
-    // ---
-    return labelEl;
-}
-
-function generateEmcOption(value, label) {
-    const el = document.createElement("emc-option");
-    el.value = value;
-    if (label instanceof HTMLElement) {
-        el.append(label);
-    } else {
-        el.innerHTML = label;
-    }
-    return el;
-}
