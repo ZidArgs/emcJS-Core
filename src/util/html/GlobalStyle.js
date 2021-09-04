@@ -5,7 +5,7 @@ const STYLESHEETS = new WeakMap();
 export default class GlobalStyle {
 
     constructor(rules) {
-        if (CSSStyleSheet.prototype.hasOwnProperty("replace")) {
+        if ("replaceSync" in CSSStyleSheet.prototype) {
             const styleSheet = new CSSStyleSheet();
             styleSheet.replaceSync(rules);
             STYLESHEETS.set(this, styleSheet);

@@ -157,7 +157,8 @@ export default class IDBStorage {
             const all = [];
             for (const key in values) {
                 all.push(new Promise(function(res, rej) {
-                    const request = transaction.put(values[key], key);
+                    const value = values[key];
+                    const request = value == null ? transaction.delete(key) : transaction.put(value, key);
                     request.onsuccess = function(e) {
                         res();
                     };

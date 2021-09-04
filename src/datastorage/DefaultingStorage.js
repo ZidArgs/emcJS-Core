@@ -24,6 +24,17 @@ export default class DefaultingStorage extends DataStorage {
         }
     }
 
+    getDefault(key) {
+        const defaults = DEFAULTS.get(this);
+        return defaults.get(key);
+    }
+
+    resetValue(key) {
+        const defaults = DEFAULTS.get(this);
+        const value = defaults.get(key);
+        super.set(key, value);
+    }
+
     set(key, value) {
         const defaults = DEFAULTS.get(this);
         if (defaults.has(key)) {

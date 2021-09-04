@@ -1,30 +1,22 @@
 import Logger from "../util/Logger.js";
 
-const languages = new Map();
+const LANGUAGES = new Map();
+const MISSING = new Map();
 let actLang = "";
-
-function hasTranslation(key) {
-    if (!key || typeof key != "string") return false;
-    if (languages.get(actLang).has(key)) {
-        return true;
-    }
-    Logger.warn(`translation for "${key}" missing`, "I18n");
-    return false;
-}
-
-function getTranslation(key) {
-    if (!key || typeof key != "string") return "";
-    if (languages.get(actLang).has(key)) {
-        return languages.get(actLang).get(key).trim();
-    }
-    Logger.warn(`translation for "${key}" missing`, "I18n");
-    return key;
-}
 
 class I18n extends EventTarget {
 
+    setDefaultLanguage(lang) {
+        if (actLang != lang && LANGUAGES.has(lang)) {
+            actLang = lang;
+            const event = new Event("language");
+            event.language = lang;
+            this.dispatchEvent(event);
+        }
+    }
+
     setLanguage(lang) {
-        if (actLang != lang && languages.has(lang)) {
+        if (actLang != lang && LANGUAGES.has(lang)) {
             actLang = lang;
             const event = new Event("language");
             event.language = lang;
@@ -34,8 +26,11 @@ class I18n extends EventTarget {
     
     setTranslation(lang, values = {}) {
         if (typeof lang != "string") return;
-        if (!languages.has(lang)) {
-            languages.set(lang, new Map());
+        if (!LANGUAGES.has(lang)) {
+            LANGUAGES.set(lang, new Map());
+        }
+        if (!MISSING.has(lang)) {
+            MISSING.set(lang, new Set());
         }
         if (!actLang) {
             actLang = lang;
@@ -45,7 +40,7 @@ class I18n extends EventTarget {
             if (typeof key != "string") continue;
             const value = values[key];
             if (typeof value != "string") continue;
-            languages.get(lang).set(key, value);
+            LANGUAGES.get(lang).set(key, value);
             changes[key] = value;
         }
         if (lang == actLang && Object.keys(changes).length) {
@@ -55,33 +50,84 @@ class I18n extends EventTarget {
         }
     }
 
+    getKeys(lang) {
+        const keys = new Set();
+        if (lang != null) {
+            const language = LANGUAGES.get(lang);
+            for (const [key] of language) {
+                keys.add(key);
+            }
+            const missing = MISSING.get(lang);
+            for (const key of missing) {
+                keys.add(key);
+            }
+        } else {
+            for (const [, language] of LANGUAGES) {
+                for (const [key] of language) {
+                    keys.add(key);
+                }
+            }
+            for (const [, missing] of MISSING) {
+                for (const key of missing) {
+                    keys.add(key);
+                }
+            }
+        }
+        return Array.from(keys);
+    }
+
+    getMissing(lang) {
+        const keys = new Set();
+        if (lang != null) {
+            const missing = MISSING.get(lang);
+            for (const key of missing) {
+                keys.add(key);
+            }
+        } else {
+            for (const [, missing] of MISSING) {
+                for (const key of missing) {
+                    keys.add(key);
+                }
+            }
+        }
+        return Array.from(keys);
+    }
+
     /**
      * @deprecated
      */
     translate(key) {
-        if (actLang) {
-            return getTranslation(key);
-        }
-        Logger.warn(`no translation loaded`, "I18n");
-        return key;
+        return this.get(key);
     }
 
     get(key) {
         if (actLang) {
-            return getTranslation(key);
+            if (!key || typeof key != "string") return "";
+            if (LANGUAGES.get(actLang).has(key)) {
+                return LANGUAGES.get(actLang).get(key).trim();
+            }
+            MISSING.get(actLang).add(key);
+            Logger.warn(`translation for "${key}" missing`, "I18n");
+            return key;
         }
-        Logger.warn(`no translation loaded`, "I18n");
         return key;
     }
 
     has(key) {
         if (actLang) {
-            return hasTranslation(key);
+            if (!key || typeof key != "string") return false;
+            if (LANGUAGES.get(actLang).has(key)) {
+                return true;
+            }
+            MISSING.get(actLang).add(key);
+            Logger.warn(`translation for "${key}" missing`, "I18n");
+            return false;
         }
-        Logger.warn(`no translation loaded`, "I18n");
         return false;
     }
 
 }
 
-export default new I18n();
+const i18n = new I18n();
+window.i18n = i18n;
+export default i18n;

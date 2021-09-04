@@ -138,43 +138,53 @@ export default class TabPanel extends Panel {
         }
     }
 
-    addTab(category, name = category) {
-        const pnlId = `panel_${category}`;
-        const btnId = `button_${category}`;
-        const former = this.shadowRoot.getElementById(btnId);
-        if (former == null) {
+    setTab(category, name = category) {
+        const panelId = `panel_${category}`;
+        const buttonId = `button_${category}`;
+        const buttonEl = this.shadowRoot.getElementById(buttonId);
+        if (buttonEl == null) {
             // panel
-            const pnl = document.createElement("div");
-            pnl.id = pnlId;
-            pnl.className = "panel";
-            pnl.setAttribute("category", category);
-            this.shadowRoot.getElementById("body").append(pnl);
+            const panelEl = document.createElement("div");
+            panelEl.id = panelId;
+            panelEl.className = "panel";
+            panelEl.setAttribute("category", category);
+            this.shadowRoot.getElementById("body").append(panelEl);
             // button
-            const cb = document.createElement("button");
-            cb.id = btnId;
-            cb.className = "category";
-            cb.setAttribute("target", category);
+            const buttonEl = document.createElement("button");
+            buttonEl.id = buttonId;
+            buttonEl.className = "category";
+            buttonEl.setAttribute("target", category);
             if (name instanceof HTMLElement) {
-                cb.append(name);
+                buttonEl.append(name);
             } else if (typeof name === "string") {
-                cb.innerHTML = name;
+                buttonEl.innerHTML = name;
             }
-            const cb_wrapper = document.createElement("emc-input-wrapper");
-            cb_wrapper.append(cb);
-            this.shadowRoot.getElementById("categories").append(cb_wrapper);
+            const buttonWrapperEl = document.createElement("emc-input-wrapper");
+            buttonWrapperEl.append(buttonEl);
+            this.shadowRoot.getElementById("categories").append(buttonWrapperEl);
             // ---
-            return pnl;
+            return panelEl;
         } else {
-            throw new Error(`categoty "${category}" already exists`);
+            if (name instanceof HTMLElement) {
+                buttonEl.append(name);
+            } else if (typeof name === "string") {
+                buttonEl.innerHTML = name;
+            }
         }
     }
 
     getTab(category) {
-        const pnlId = `panel_${category}`;
-        const panel = this.shadowRoot.getElementById(pnlId);
-        if (panel != null) {
-            return panel;
+        const panelId = `panel_${category}`;
+        const panelEl = this.shadowRoot.getElementById(panelId);
+        if (panelEl != null) {
+            return panelEl;
         }
+    }
+
+    hasTab(category) {
+        const panelId = `panel_${category}`;
+        const panelEl = this.shadowRoot.getElementById(panelId);
+        return panelEl != null;
     }
 
 }
