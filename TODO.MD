@@ -1,3 +1,17 @@
+- test custom build-in elements
+    - https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry/define#customized_built-in_element
+
+    ```js
+        class MyInput extends HTMLInputElement {
+            // do stuff
+        }
+        customElements.define("my-input", MyInput, {extends: "input"});
+
+        const inputEl = document.createElement("input");
+        inputEl.setAttribute("is", "my-input");
+    ```
+
+
 - REST interface
     - at least GET/POST
         - better also PATCH/DELETE

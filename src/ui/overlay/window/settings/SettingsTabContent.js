@@ -61,7 +61,7 @@ const STYLE = new GlobalStyle(`
 .settings-option .option-reset button {
     margin-left: auto;
 }
-.settings-option .align-top {
+.settings-option .option-reset.align-top button {
     align-self: flex-start;
 }
 `);
@@ -107,9 +107,14 @@ function generateField(label, input, storage, visible) {
 function createResetButton(storage, ref) {
     const resetEl = document.createElement("button");
     resetEl.innerHTML = "↺";
-    resetEl.addEventListener("click", () => {
-        storage.resetValue(ref);
-    });
+    resetEl.setAttribute("title", "reset");
+    if (typeof storage == "function") {
+        resetEl.addEventListener("click", storage);
+    } else {
+        resetEl.addEventListener("click", () => {
+            storage.resetValue(ref);
+        });
+    }
     const wrapperEl = document.createElement("emc-input-wrapper");
     wrapperEl.className = "option-reset";
     wrapperEl.append(resetEl);
@@ -409,11 +414,13 @@ export default class SettingsTabContent extends HTMLElement {
         });
         // reset
         // TODO implement reset functionality
-        // if (resettable) {
-        //     const resetEl = createResetButton(storage, ref);
-        //     resetEl.classList.add("align-top");
-        //     labelEl.append(resetEl);
-        // }
+        if (resettable) {
+            const resetEl = createResetButton(() => {
+                storage.resetAll(Object.keys(values));
+            });
+            resetEl.classList.add("align-top");
+            labelEl.append(resetEl);
+        }
         // add element
         const containerEl = this.shadowRoot.getElementById("container");
         containerEl.append(labelEl);
