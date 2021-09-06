@@ -1,0 +1,37 @@
+import I18nMixin from "../I18nMixin.js";
+
+/**
+ * usage:
+ * ```html
+ * <input is="emc-i18n-input" type="text" i18nValue="translation.placeholder.key">
+ * ```
+ */
+export default class InputElement extends I18nMixin(HTMLInputElement) {
+
+    set i18nValue(val) {
+        if (val != null) {
+            this.setAttribute("i18n-value", val);
+        } else {
+            this.removeAttribute("i18n-value");
+        }
+    }
+
+    get i18nValue() {
+        return this.getAttribute("i18n-value") || "";
+    }
+
+    static get observedI18n() {
+        return ["i18n-value"];
+    }
+
+    applyI18n(key, value) {
+        switch (key) {
+            case "i18n-value": {
+                this.placeholder = value;
+            } break;
+        }
+    }
+
+}
+
+customElements.define("emc-i18n-input", InputElement, {extends: "input"});

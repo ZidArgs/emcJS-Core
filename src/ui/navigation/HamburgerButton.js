@@ -1,6 +1,6 @@
 import Template from "../../util/html/Template.js";
 import GlobalStyle from "../../util/html/GlobalStyle.js";
-import "../../i18n/ui/Tooltip.js";
+import "../../i18n/ui/I18nTooltip.js";
 
 const TPL = new Template(`
 <emc-i18n-tooltip id="tooltip">
@@ -97,16 +97,8 @@ export default class Button extends HTMLElement {
         this.setAttribute("tooltip", val);
     }
 
-    get i18nTooltip() {
-        return this.getAttribute("i18n-tooltip");
-    }
-
-    set i18nTooltip(val) {
-        this.setAttribute("i18n-tooltip", val);
-    }
-
     static get observedAttributes() {
-        return ["tooltip", "i18n-tooltip"];
+        return ["tooltip"];
     }
       
     attributeChangedCallback(name, oldValue, newValue) {
@@ -114,10 +106,7 @@ export default class Button extends HTMLElement {
             const tooltip = this.shadowRoot.getElementById("tooltip");
             switch (name) {
                 case "tooltip":
-                    tooltip.i18nValue = newValue;
-                    break;
-                case "i18n-tooltip":
-                    tooltip.i18nKey = newValue;
+                    tooltip.i18nTooltip = newValue;
                     break;
             }
         }

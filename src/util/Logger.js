@@ -66,6 +66,7 @@ function write(data) {
                 out.scrollTop = out.scrollHeight;
             } else if (out instanceof HTMLElement) {
                 const el = document.createElement("span");
+                el.setAttribute("log-type", data.type);
                 if (HTML_DEFAULT_STYLES[data.type] != null) {
                     for (const i in HTML_DEFAULT_STYLES[data.type]) {
                         el.style[i] = HTML_DEFAULT_STYLES[data.type][i];

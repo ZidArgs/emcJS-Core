@@ -1,7 +1,7 @@
 import Template from "../../util/html/Template.js";
 import GlobalStyle from "../../util/html/GlobalStyle.js";
-import "../../i18n/ui/Label.js";
-import "../../i18n/ui/Tooltip.js";
+import "../../i18n/ui/I18nLabel.js";
+import "../../i18n/ui/I18nTooltip.js";
 
 const TPL = new Template(`
 <emc-i18n-tooltip id="tooltip">
@@ -102,14 +102,6 @@ export default class Button extends HTMLElement {
         this.setAttribute("content", val);
     }
 
-    get i18nContent() {
-        return this.getAttribute("i18n-content");
-    }
-
-    set i18nContent(val) {
-        this.setAttribute("i18n-content", val);
-    }
-
     get tooltip() {
         return this.getAttribute("tooltip");
     }
@@ -118,16 +110,8 @@ export default class Button extends HTMLElement {
         this.setAttribute("tooltip", val);
     }
 
-    get i18nTooltip() {
-        return this.getAttribute("i18n-tooltip");
-    }
-
-    set i18nTooltip(val) {
-        this.setAttribute("i18n-tooltip", val);
-    }
-
     static get observedAttributes() {
-        return ["content", "i18n-content", "tooltip", "i18n-tooltip"];
+        return ["content", "tooltip"];
     }
       
     attributeChangedCallback(name, oldValue, newValue) {
@@ -138,14 +122,8 @@ export default class Button extends HTMLElement {
                 case "content":
                     label.i18nValue = newValue;
                     break;
-                case "i18n-content":
-                    label.i18nKey = newValue;
-                    break;
                 case "tooltip":
-                    tooltip.i18nValue = newValue;
-                    break;
-                case "i18n-tooltip":
-                    tooltip.i18nKey = newValue;
+                    tooltip.i18nTooltip = newValue;
                     break;
             }
         }

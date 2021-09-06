@@ -37,9 +37,9 @@ class I18n extends EventTarget {
         }
         const changes = {};
         for (const key in values) {
-            if (typeof key != "string") continue;
+            if (!key || typeof key != "string") continue;
             const value = values[key];
-            if (typeof value != "string") continue;
+            if (!value || typeof value != "string") continue;
             LANGUAGES.get(lang).set(key, value);
             changes[key] = value;
         }
@@ -101,26 +101,40 @@ class I18n extends EventTarget {
     }
 
     get(key) {
-        if (actLang) {
-            if (!key || typeof key != "string") return "";
-            if (LANGUAGES.get(actLang).has(key)) {
-                return LANGUAGES.get(actLang).get(key).trim();
-            }
-            MISSING.get(actLang).add(key);
-            Logger.warn(`translation for "${key}" missing`, "I18n");
+        if (key == null) {
+            return "";
+        }
+        if (typeof key == "number" || !isNaN(parseFloat(key))) {
             return key;
         }
-        return key;
+        if (typeof key == "string") {
+            if (actLang) {
+                if (key == "") {
+                    return "";
+                }
+                if (LANGUAGES.get(actLang).has(key)) {
+                    return LANGUAGES.get(actLang).get(key).trim();
+                }
+                if (!MISSING.get(actLang).has(key)) {
+                    MISSING.get(actLang).add(key);
+                    Logger.warn(`translation for "${key}" missing`, "I18n");
+                    console.warn(`translation for "${key}" missing`);
+                }
+                return key;
+            }
+            return key;
+        }
+        return "";
     }
 
     has(key) {
+        if (typeof key != "string" || !key) {
+            return false;
+        }
         if (actLang) {
-            if (!key || typeof key != "string") return false;
             if (LANGUAGES.get(actLang).has(key)) {
                 return true;
             }
-            MISSING.get(actLang).add(key);
-            Logger.warn(`translation for "${key}" missing`, "I18n");
             return false;
         }
         return false;

@@ -3,33 +3,36 @@ import I18n from "../I18n.js";
 import EventTargetManager from "../../event/EventTargetManager.js";
 
 const MANAGER = new WeakMap();
+const ATTR = new WeakMap();
 
 export default createMixin((superclass) => class I18nMixin extends superclass {
 
     constructor(...args) {
         super(...args);
         /* --- */
+        const i18nAttr = new.target.observedI18n;
+        ATTR.set(this, i18nAttr);
         const manager = new EventTargetManager(I18n);
-        manager.set("language", event => {
-            const key = this.i18nKey;
-            if (I18n.has(key)) {
-                this.applyI18nTranslation(I18n.get(key));
-            } else {
-                const value = this.i18nValue;
-                this.applyI18nTranslation(value || key);
+        manager.set("language", () => {
+            for (const attr of i18nAttr) {
+                const key = this.getAttribute(attr);
+                if (key) {
+                    this.applyI18n(attr, I18n.get(key));
+                }
             }
         });
         manager.set("translation", event => {
-            const key = this.i18nKey;
-            if (event.changes[key] != null) {
-                const value = this.i18nValue;
-                this.applyI18nTranslation(event.changes[key] || value || key);
+            for (const attr of i18nAttr) {
+                const key = this.getAttribute(attr);
+                if (key && event.changes[key] != null) {
+                    this.applyI18n(attr, event.changes[key]);
+                }
             }
         });
         MANAGER.set(this, manager);
     }
 
-    applyI18nTranslation(content) {
+    applyI18n(key, value) {
         // empty
     }
 
@@ -41,12 +44,14 @@ export default createMixin((superclass) => class I18nMixin extends superclass {
         const manager = MANAGER.get(this);
         manager.setActive(true);
         /* --- */
-        const key = this.i18nKey;
-        if (I18n.has(key)) {
-            this.applyI18nTranslation(I18n.get(key));
-        } else {
-            const value = this.i18nValue;
-            this.applyI18nTranslation(value || key);
+        const i18nAttr = ATTR.get(this);
+        for (const attr of i18nAttr) {
+            const key = this.getAttribute(attr);
+            if (key) {
+                this.applyI18n(attr, I18n.get(key));
+            } else {
+                this.applyI18n(attr, "");
+            }
         }
     }
 
@@ -59,59 +64,27 @@ export default createMixin((superclass) => class I18nMixin extends superclass {
         manager.setActive(false);
     }
 
-    set i18nKey(val) {
-        if (val != null) {
-            this.setAttribute("i18n-key", val);
-        } else {
-            this.removeAttribute("i18n-key");
-        }
-    }
-
-    get i18nKey() {
-        return this.getAttribute("i18n-key") || "";
-    }
-
-    set i18nValue(val) {
-        if (val != null) {
-            this.setAttribute("i18n-value", val);
-        } else {
-            this.removeAttribute("i18n-key");
-        }
-    }
-
-    get i18nValue() {
-        return this.getAttribute("i18n-value") || "";
+    static get observedI18n() {
+        return [];
     }
 
     static get observedAttributes() {
         if (super.observedAttributes) {
-            return [...super.observedAttributes, "i18n-key", "i18n-value"];
+            return [...super.observedAttributes, ...this.observedI18n];
         }
-        return ["i18n-key", "i18n-value"];
+        return this.observedI18n;
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         if (super.attributeChangedCallback) {
             super.attributeChangedCallback(name, oldValue, newValue);
         }
-        if (oldValue != newValue) {
-            switch (name) {
-                case "i18n-key": {
-                    const key = this.i18nKey;
-                    if (I18n.has(key)) {
-                        this.applyI18nTranslation(I18n.get(key));
-                    } else {
-                        const value = this.i18nValue;
-                        this.applyI18nTranslation(value || key);
-                    }
-                } break;
-                case "i18n-value": {
-                    const key = this.i18nKey;
-                    if (!I18n.has(key)) {
-                        const value = this.i18nValue;
-                        this.applyI18nTranslation(value || key);
-                    }
-                } break;
+        const i18nAttr = ATTR.get(this);
+        if (oldValue != newValue && i18nAttr.includes(name)) {
+            if (newValue) {
+                this.applyI18n(name, I18n.get(newValue));
+            } else {
+                this.applyI18n(name, "");
             }
         }
     }

@@ -209,15 +209,8 @@ export default class NavBar extends HTMLElement {
                 const btn = document.createElement("emc-navbar-button");
                 el.append(btn);
                 // content
-                if (item["i18n-content"] != null) {
-                    btn.i18nContent = item["i18n-content"];
-                }
                 if (item["content"] != null) {
                     btn.content = item["content"];
-                }
-                // tooltip
-                if (item["i18n-tooltip"] != null) {
-                    btn.i18nTooltip = item["i18n-tooltip"];
                 }
                 if (item["tooltip"] != null) {
                     btn.tooltip = item["tooltip"];
@@ -250,16 +243,10 @@ export default class NavBar extends HTMLElement {
                             const subbtn = document.createElement("emc-navbar-button");
                             subel.append(subbtn);
                             // content
-                            if (subitem["i18n-content"] != null) {
-                                subbtn.i18nContent = subitem["i18n-content"];
-                            }
                             if (subitem["content"] != null) {
                                 subbtn.content = subitem["content"];
                             }
                             // tooltip
-                            if (subitem["i18n-tooltip"] != null) {
-                                subbtn.i18nTooltip = subitem["i18n-tooltip"];
-                            }
                             if (subitem["tooltip"] != null) {
                                 subbtn.tooltip = subitem["tooltip"];
                             }

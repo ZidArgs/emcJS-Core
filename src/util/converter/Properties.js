@@ -2,12 +2,12 @@ const LNBR_SEQ = /(?:\r\n|\n|\r)/g;
 const COMMENT = /^(?:!|#).*$/;
 
 function processLine(line) {
-    return line.trim()
+    const escaped = line.trim()
         .replace(/\\ /g, "\\u0020")
         .replace(/\\=/g, "\\u003D")
-        .replace(/\\:/g, "\\u003A")
-        .replace(/"/g, "\\u0022")
-        .split(/(=|:| )/);
+        .replace(/\\:/g, "\\u003A");
+    const [, key = "", value = ""] = escaped.match(/(.*?)(?:=|:)(.*)/) ?? escaped.match(/(.*?)(?: )(.*)/) ?? [];
+    return [key.trim(), value.trim()];
 }
 
 class Properties {
@@ -20,16 +20,14 @@ class Properties {
             if (!line.length || COMMENT.test(line)) {
                 continue;
             }
-            let [key, , ...value] = processLine(line);
-            key = JSON.parse(`"${key}"`);
-            value = JSON.parse(`"${value.join("")}"`);
+            const [key, value] = processLine(line);
             if (key) {
                 if (typeof output[key] === "string") {
                     throw new SyntaxError(`Duplicate key in Properties at line ${i + 1}:\n${line}`);
                 }
                 output[key] = value;
                 while (output[key].endsWith("\\")) {
-                    output[key] += JSON.parse(`"${lines[++i].trim()}"`);
+                    output[key] = output[key].slice(0, -1).trim() + `\r\n${(lines[++i] ?? "").trim()}`;
                 }
                 continue;
             }

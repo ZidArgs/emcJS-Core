@@ -2,14 +2,16 @@ import Template from "../../util/html/Template.js";
 import GlobalStyle from "../../util/html/GlobalStyle.js";
 import SearchAnd from "../../util/search/SearchAnd.js";
 import ElementManager from "../../util/html/ElementManager.js";
-import "../../i18n/ui/Label.js";
+import "../../i18n/ui/form/InputElement.js";
+import "../../i18n/ui/I18nLabel.js";
+import "../../i18n/ui/I18nTooltip.js";
 import "./Option.js";
 import "../symbols/ChevronDownSymbol.js";
 
 const TPL = new Template(`
 <div id="view" mode="view" tabindex="0"></div>
-<input id="input" placeholder="Search..." autocomplete="off"></input>
-<emc-i18n-tooltip i18n-key="search_reset" i18n-value="Reset search">
+<input id="input" is="emc-i18n-input" i18n-value="search..." autocomplete="off">
+<emc-i18n-tooltip i18n-tooltip="Reset search">
     <div id="search-reset" class="button">
         <emc-symbol-clear></emc-symbol-clear>
     </div>
@@ -76,6 +78,9 @@ const STYLE = new GlobalStyle(`
 }
 #input {
     height: 2rem;
+}
+#input::placeholder {
+    font-style: italic;
 }
 #view {
     display: inline;
@@ -188,7 +193,7 @@ function composer(key, params) {
     const el = document.createElement("div");
     el.className = "token";
     const label = document.createElement("emc-i18n-label");
-    label.i18nKey = key;
+    label.i18nValue = key;
     el.setAttribute("value", params.value);
     el.addEventListener("click", params.onClick);
     el.append(label);

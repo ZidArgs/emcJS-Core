@@ -1,6 +1,7 @@
 import Template from "../../../util/html/Template.js";
 import GlobalStyle from "../../../util/html/GlobalStyle.js";
 import WindowLayer from "./WindowLayer.js";
+import I18nLabel from "../../../i18n/ui/I18nLabel.js";
 import "../../symbols/CloseSymbol.js";
 
 const TPL = new Template(`
@@ -139,11 +140,7 @@ export default class Window extends HTMLElement {
             event.stopPropagation();
         });
         const ttl = this.shadowRoot.getElementById("title");
-        if (title instanceof HTMLElement) {
-            ttl.append(title);
-        } else if (typeof title === "string") {
-            ttl.innerHTML = title;
-        }
+        ttl.append(I18nLabel.getLabel(title));
         const cls = this.shadowRoot.getElementById("close");
         if (!!close && typeof close === "string") {
             cls.setAttribute("title", close);

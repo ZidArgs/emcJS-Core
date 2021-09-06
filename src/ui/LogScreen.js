@@ -46,6 +46,24 @@ const STYLE = new GlobalStyle(`
 ::slotted(:first-child) {
     border-top: solid 1px rgba(255,255,255,0.1);
 }
+:host([log-types]:not([log-types=""])) ::slotted(*) {
+    display: none;
+}
+:host([log-types~="severe" i]) ::slotted([log-type="severe" i]) {
+    display: block;
+}
+:host([log-types~="error" i]) ::slotted([log-type="error" i]) {
+    display: block;
+}
+:host([log-types~="warn" i]) ::slotted([log-type="warn" i]) {
+    display: block;
+}
+:host([log-types~="info" i]) ::slotted([log-type="info" i]) {
+    display: block;
+}
+:host([log-types~="log" i]) ::slotted([log-type="log" i]) {
+    display: block;
+}
 `);
 
 export default class LogScreen extends HTMLElement {

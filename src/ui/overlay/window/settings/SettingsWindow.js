@@ -2,6 +2,7 @@ import DefaultingStorage from "../../../../datastorage/DefaultingStorage.js";
 import Template from "../../../../util/html/Template.js";
 import GlobalStyle from "../../../../util/html/GlobalStyle.js";
 import Window from "../Window.js";
+import I18nLabel from "../../../../i18n/ui/I18nLabel.js";
 import "../../../layout/panel/TabPanel.js";
 import "../../../input/ListSelect.js";
 import "./SettingsTabContent.js";
@@ -137,7 +138,7 @@ export default class SettingsWindow extends Window {
             const container = tab.querySelector(".container");
             return container;
         } else {
-            const tab = categories.setTab(category, label);
+            const tab = categories.setTab(category, I18nLabel.getLabel(label));
             const container = document.createElement("emc-window-settings-tab");
             container.className = "container";
             container.id = `settings_${category}`;
@@ -146,76 +147,76 @@ export default class SettingsWindow extends Window {
         }
     }
 
-    addStringInput(category, label, ref, def, visible, resettable) {
+    addStringInput(category, ref, label, desc, def, visible, resettable) {
         const panel = this.getTab(category);
         if (panel != null) {
             const storage = STORAGE.get(this);
             storage.setDefault(ref, def);
-            panel.addStringInput(storage, label, ref, visible, resettable);
+            panel.addStringInput(storage, ref, label, desc, visible, resettable);
         }
     }
 
-    addNumberInput(category, label, ref, def, visible, resettable, min, max) {
+    addNumberInput(category, ref, label, desc, def, visible, resettable, min, max) {
         const panel = this.getTab(category);
         if (panel != null) {
             const storage = STORAGE.get(this);
             storage.setDefault(ref, def);
-            panel.addNumberInput(storage, label, ref, visible, resettable, min, max);
+            panel.addNumberInput(storage, ref, label, desc, visible, resettable, min, max);
         }
     }
 
-    addRangeInput(category, label, ref, def, visible, resettable, min, max) {
+    addRangeInput(category, ref, label, desc, def, visible, resettable, min, max) {
         const panel = this.getTab(category);
         if (panel != null) {
             const storage = STORAGE.get(this);
             storage.setDefault(ref, def);
-            panel.addRangeInput(storage, label, ref, visible, resettable, min, max);
+            panel.addRangeInput(storage, ref, label, desc, visible, resettable, min, max);
         }
     }
 
-    addCheckInput(category, label, ref, def, visible, resettable) {
+    addCheckInput(category, ref, label, desc, def, visible, resettable) {
         const panel = this.getTab(category);
         if (panel != null) {
             const storage = STORAGE.get(this);
             storage.setDefault(ref, !!def);
-            panel.addCheckInput(storage, label, ref, visible, resettable);
+            panel.addCheckInput(storage, ref, label, desc, visible, resettable);
         }
     }
 
-    addColorInput(category, label, ref, def, visible, resettable) {
+    addColorInput(category, ref, label, desc, def, visible, resettable) {
         const panel = this.getTab(category);
         if (panel != null) {
             const storage = STORAGE.get(this);
             storage.setDefault(ref, def);
-            panel.addColorInput(storage, label, ref, visible, resettable);
+            panel.addColorInput(storage, ref, label, desc, visible, resettable);
         }
     }
 
-    addButton(category, label, ref, visible, text = "", callback = null) {
+    addButton(category, ref, label, desc, visible, text = "", callback = null) {
         const panel = this.getTab(category);
         if (panel != null) {
             const storage = STORAGE.get(this);
-            panel.addButton(storage, label, ref, visible, text, callback = null);
+            panel.addButton(storage, ref, label, desc, visible, text, callback = null);
         }
     }
 
-    addChoiceInput(category, label, ref, def, visible, resettable, values) {
+    addChoiceInput(category, ref, label, desc, def, visible, resettable, values) {
         const panel = this.getTab(category);
         if (panel != null) {
             const storage = STORAGE.get(this);
             storage.setDefault(ref, def);
-            panel.addChoiceInput(storage, label, ref, visible, resettable, values);
+            panel.addChoiceInput(storage, ref, label, desc, visible, resettable, values);
         }
     }
 
-    addListSelectInput(category, label, ref, def, visible, resettable, multiple, values) {
+    addListSelectInput(category, ref, label, desc, def, visible, resettable, multiple, values) {
         const panel = this.getTab(category);
         if (panel != null) {
             const storage = STORAGE.get(this);
             for (const value in values) {
                 storage.setDefault(value, def.includes(value));
             }
-            panel.addListSelectInput(storage, label, ref, visible, resettable, multiple, values);
+            panel.addListSelectInput(storage, ref, label, desc, visible, resettable, multiple, values);
         }
     }
 
