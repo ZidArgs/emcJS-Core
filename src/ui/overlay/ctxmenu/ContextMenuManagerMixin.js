@@ -77,6 +77,10 @@ export default createMixin((superclass) => class ContextMenuManagerMixin extends
         return this.getContextMenu(DEFAULT_MENU_ID);
     }
 
+    showDefaultContextMenu(event) {
+        this.showContextMenu(DEFAULT_MENU_ID, event);
+    }
+
     addDefaultContextMenuHandler(event, handler) {
         this.addContextMenuHandler(DEFAULT_MENU_ID, event, handler);
     }
@@ -118,6 +122,13 @@ export default createMixin((superclass) => class ContextMenuManagerMixin extends
         }
         /* --- */
         return ctxMnu;
+    }
+
+    showContextMenu(name, event) {
+        const mnu_ctx = this.getContextMenu(name);
+        if (mnu_ctx != null) {
+            mnu_ctx.show(event.clientX, event.clientY);
+        }
     }
 
     addContextMenuHandler(name, event, handler) {

@@ -1,8 +1,10 @@
 import Template from "../../../util/html/Template.js";
 import GlobalStyle from "../../../util/html/GlobalStyle.js";
+import CtxMenuLayer from "./CtxMenuLayer.js";
 
 const TPL = new Template(`
 <div id="focus_catcher_top" tabindex="0"></div>
+<div id="init_focus"></div>
 <slot id="menu"></slot>
 <div id="focus_catcher_bottom" tabindex="0"></div>
 `);
@@ -51,6 +53,16 @@ const STYLE = new GlobalStyle(`
     background: var(--contextmenu-background-hover, var(--contextmenu-border, #cccccc));
     color: var(--contextmenu-text-hover, var(--contextmenu-text, #000000));
 }
+::slotted(.item:focus),
+::slotted([menu-action]:focus) {
+    box-shadow: inset 0 0 2px 2px var(--input-focus-color, #06b5ff);
+    outline: none;
+}
+::slotted(.item:focus:not(:focus-visible)),
+::slotted([menu-action]:focus:not(:focus-visible)) {
+    box-shadow: none;
+    outline: none;
+}
 ::slotted(.splitter) {
     display: block;
     margin: 10px 5px;
@@ -73,6 +85,18 @@ const Q_TAB = [
 const CTX_MARGIN = 5;
 const TOP = new WeakMap();
 const LEFT = new WeakMap();
+
+function getBounds(source) {
+    const slot = source.assignedSlot;
+    if (slot != null) {
+        const host = slot.getRootNode().host;
+        if (host instanceof CtxMenuLayer) {
+            return slot.getBoundingClientRect();
+            // const contRect = host.parentElement.getBoundingClientRect();
+        }
+    }
+    return document.body.getBoundingClientRect();
+}
 
 export default class ContextMenu extends HTMLElement {
 
@@ -106,32 +130,39 @@ export default class ContextMenu extends HTMLElement {
             event.stopPropagation();
             return false;
         });
-        this.addEventListener("keydown", (event) => {
-            const key = event.which || event.keyCode;
-            if (key == 27) {
+        this.addEventListener("keyup", event => {
+            if (event.key == "Enter" || event.key == "Escape") {
                 this.close();
+                /* --- */
+                event.preventDefault();
+                return false;
             }
-            event.stopPropagation();
         });
         /* --- */
         const focusTopEl = this.shadowRoot.getElementById("focus_catcher_top");
         focusTopEl.onfocus = this.focusLast.bind(this);
         const focusBottomEl = this.shadowRoot.getElementById("focus_catcher_bottom");
         focusBottomEl.onfocus = this.focusFirst.bind(this);
+        const focusEl = this.shadowRoot.getElementById("init_focus");
+        focusEl.onblur = () => {
+            focusEl.setAttribute("tabindex", "");
+        }
     }
 
     connectedCallback() {
-        const itemEls = this.querySelectorAll("[menu-action]");
-        for (const itemEl of Array.from(itemEls)) {
-            const attr = itemEl.getAttribute("menu-action");
-            if (attr) {
-                itemEl.addEventListener("click", event => {
-                    const ev = new Event(attr);
-                    this.dispatchEvent(ev);
-                    event.preventDefault();
-                    return false;
-                });
-            }
+        if (!this.hasAttribute("slot")) {
+            this.setAttribute("slot", "ctxmnu");
+        }
+        this.initItems();
+    }
+
+    static get observedAttributes() {
+        return ["slot"];
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (name == "slot" && newValue != "ctxmnu") {
+            this.setAttribute("slot", "ctxmnu");
         }
     }
 
@@ -158,11 +189,11 @@ export default class ContextMenu extends HTMLElement {
             this.active = true;
         }
         /* --- */
-        const pRect = this.parentElement.parentElement.getBoundingClientRect();
+        const pRect = getBounds(this);
         LEFT.set(this, posX);
         TOP.set(this, posY);
         const menuEl = this.shadowRoot.getElementById("menu");
-        if (posX < pRect.x + CTX_MARGIN) {
+        if (pRect.x >= 0 && posX < pRect.x + CTX_MARGIN) {
             posX = pRect.x + CTX_MARGIN;
         } else {
             const bWidth = Math.min(pRect.width + pRect.x, window.innerWidth);
@@ -170,7 +201,7 @@ export default class ContextMenu extends HTMLElement {
                 posX = bWidth - menuEl.offsetWidth - CTX_MARGIN;
             }
         }
-        if (posY < pRect.y + CTX_MARGIN) {
+        if (pRect.y >= 0 && posY < pRect.y + CTX_MARGIN) {
             posY = pRect.y + CTX_MARGIN;
         } else {
             const bHeight = Math.min(pRect.height + pRect.y, window.innerHeight);
@@ -180,7 +211,7 @@ export default class ContextMenu extends HTMLElement {
         }
         menuEl.style.left = `${posX}px`;
         menuEl.style.top = `${posY}px`;
-        this.focusFirst();
+        this.initFocus();
     }
 
     close() {
@@ -194,6 +225,12 @@ export default class ContextMenu extends HTMLElement {
         menuEl.style.top = `${CTX_MARGIN}px`;
     }
 
+    initFocus() {
+        const focusEl = this.shadowRoot.getElementById("init_focus");
+        focusEl.setAttribute("tabindex", "0");
+        focusEl.focus();
+    }
+
     focusFirst() {
         const a = Array.from(this.querySelectorAll(Q_TAB));
         if (a.length) {
@@ -205,6 +242,31 @@ export default class ContextMenu extends HTMLElement {
         const a = Array.from(this.querySelectorAll(Q_TAB));
         if (a.length) {
             a[a.length - 1].focus();
+        }
+    }
+
+    initItems() {
+        const itemEls = this.querySelectorAll("[menu-action]");
+        for (const itemEl of Array.from(itemEls)) {
+            const attr = itemEl.getAttribute("menu-action");
+            if (attr) {
+                itemEl.addEventListener("click", event => {
+                    const ev = new Event(attr);
+                    this.dispatchEvent(ev);
+                    /* --- */
+                    event.preventDefault();
+                    return false;
+                });
+                itemEl.addEventListener("keyup", event => {
+                    if (event.key == "Enter") {
+                        const ev = new Event(attr);
+                        this.dispatchEvent(ev);
+                        /* --- */
+                        event.preventDefault();
+                        return false;
+                    }
+                });
+            }
         }
     }
 
@@ -227,10 +289,20 @@ export default class ContextMenu extends HTMLElement {
                             event.preventDefault();
                             return false;
                         });
+                        entry.addEventListener("keyup", event => {
+                            if (event.key == "Enter") {
+                                const ev = new Event(attr);
+                                this.dispatchEvent(ev);
+                                /* --- */
+                                event.preventDefault();
+                                return false;
+                            }
+                        });
                     }
                 } else if (typeof entry == "object" && !Array.isArray(entry)) {
                     const el = document.createElement("div");
                     el.classList.add("item");
+                    el.setAttribute("tabindex", "0");
                     el.innerHTML = entry.content;
                     /* --- */
                     if (typeof entry.action == "function") {
@@ -239,6 +311,14 @@ export default class ContextMenu extends HTMLElement {
                             /* --- */
                             event.preventDefault();
                             return false;
+                        });
+                        el.addEventListener("keyup", event => {
+                            if (event.key == "Enter") {
+                                entry.action();
+                                /* --- */
+                                event.preventDefault();
+                                return false;
+                            }
                         });
                     }
                     /* --- */
@@ -250,6 +330,15 @@ export default class ContextMenu extends HTMLElement {
                             /* --- */
                             event.preventDefault();
                             return false;
+                        });
+                        el.addEventListener("keyup", event => {
+                            if (event.key == "Enter") {
+                                const ev = new Event(entry.menuAction);
+                                this.dispatchEvent(ev);
+                                /* --- */
+                                event.preventDefault();
+                                return false;
+                            }
                         });
                     }
                     this.append(el);

@@ -2,7 +2,8 @@ import Template from "../../../util/html/Template.js";
 import GlobalStyle from "../../../util/html/GlobalStyle.js";
 
 const TPL = new Template(`
-<slot></slot>
+<slot id="slot"></slot>
+<slot id="ctxmnu" name="ctxmnu"></slot>
 `);
 
 const STYLE = new GlobalStyle(`
@@ -12,7 +13,23 @@ const STYLE = new GlobalStyle(`
 }
 :host {
     display: contents;
+}
+#ctxmnu {
+    position: fixed;
+    display: block;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    cursor: default;
+    overflow: hidden;
+    pointer-events: none;
     z-index: 900900;
+}
+::slotted([slot="ctxmnu"]) {
+    pointer-events: all;
 }
 `);
 
