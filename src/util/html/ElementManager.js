@@ -45,11 +45,13 @@ export default class ElementManager {
                 target.append(el);
             } else {
                 const el = composer(key, params);
-                if (mutator) {
-                    mutator(el, key, params);
+                if (el != null) {
+                    if (mutator) {
+                        mutator(el, key, params);
+                    }
+                    elements.set(key, el);
+                    target.append(el);
                 }
-                elements.set(key, el);
-                target.append(el);
             }
         }
         unused.forEach(key => {

@@ -14,9 +14,6 @@ export default class Panel extends HTMLElement {
         if (!(clazz.prototype instanceof Panel)) {
             throw new TypeError("registered class must extend the Panel class");
         }
-        if (REG.has(ref)) {
-            throw new Error(`reference ${ref} already exists`);
-        }
         REG.set(ref, clazz);
     }
 

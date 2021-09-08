@@ -18,10 +18,24 @@ export default class ClassRegistry {
     }
 
     create(ref, ...params) {
-        const register = REGISTRY.get(this);
-        if (register.has(ref)) {
-            const TypeClass = register.get(ref);
-            return new TypeClass(...params);
+        if (typeof ref == "string" && ref) {
+            const register = REGISTRY.get(this);
+            if (register.has(ref)) {
+                const TypeClass = register.get(ref);
+                return new TypeClass(...params);
+            }
+            ref = `${ref}*`;
+            while (ref.length - 1) {
+                if (register.has(ref)) {
+                    const TypeClass = register.get(ref);
+                    return new TypeClass(...params);
+                }
+                ref = `${ref.slice(0, -2)}*`;
+            }
+            if (register.has("*")) {
+                const TypeClass = register.get("*");
+                return new TypeClass(...params);
+            }
         }
         const DefClass = DEFAULT.get(this);
         return new DefClass(...params);
