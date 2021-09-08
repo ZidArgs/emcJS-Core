@@ -1,5 +1,6 @@
 import Template from "../../../util/html/Template.js";
 import GlobalStyle from "../../../util/html/GlobalStyle.js";
+import CustomElement from "../../CustomElement.js";
 
 const TPL = new Template(`
 <slot>
@@ -7,10 +8,6 @@ const TPL = new Template(`
 `);
 
 const STYLE = new GlobalStyle(`
-* {
-    position: relative;
-    box-sizing: border-box;
-}
 :host {
     display: flex;
     flex-direction: column;
@@ -35,11 +32,10 @@ const STYLE = new GlobalStyle(`
 }
 `);
 
-export default class VBox extends HTMLElement {
+export default class VBox extends CustomElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */

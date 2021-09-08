@@ -1,5 +1,6 @@
 import Template from "../../util/html/Template.js";
 import GlobalStyle from "../../util/html/GlobalStyle.js";
+import CustomElement from "../CustomElement.js";
 import "./Option.js";
 
 const TPL = new Template(`
@@ -7,7 +8,9 @@ const TPL = new Template(`
 `);
 
 const STYLE = new GlobalStyle(`
-* {
+:host {
+    position: relative;
+    box-sizing: border-box;
     position: relative;
     box-sizing: border-box;
 }
@@ -60,11 +63,10 @@ function getPrevElement(all, current) {
     }
 }
 
-export default class SwitchButton extends HTMLElement {
+export default class SwitchButton extends CustomElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */

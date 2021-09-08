@@ -1,5 +1,6 @@
 import Template from "../../util/html/Template.js";
 import GlobalStyle from "../../util/html/GlobalStyle.js";
+import CustomElement from "../CustomElement.js";
 import "./Option.js";
 
 const TPL = new Template(`
@@ -7,13 +8,7 @@ const TPL = new Template(`
 `);
 
 const STYLE = new GlobalStyle(`
-* {
-    position: relative;
-    box-sizing: border-box;
-}
 :host {
-    -webkit-user-select: none;
-    -moz-user-select: none;
     user-select: none;
 }
 slot {
@@ -60,11 +55,10 @@ function clickOption(event) {
 
 const CLICK_HANDLER = new WeakMap();
 
-export default class ChoiceSelect extends HTMLElement {
+export default class ChoiceSelect extends CustomElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */

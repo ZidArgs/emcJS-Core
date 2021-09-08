@@ -1,5 +1,6 @@
 import Template from "../../util/html/Template.js";
 import GlobalStyle from "../../util/html/GlobalStyle.js";
+import CustomDelegatingElement from "../CustomDelegatingElement.js";
 import SearchAnd from "../../util/search/SearchAnd.js";
 import "./Option.js";
 import "../symbols/ChevronDownSymbol.js";
@@ -18,10 +19,6 @@ const TPL = new Template(`
 `);
 
 const STYLE = new GlobalStyle(`
-* {
-    position: relative;
-    box-sizing: border-box;
-}
 :host {
     display: flex;
     flex-direction: row;
@@ -137,11 +134,10 @@ slot {
 }
 `);
 
-export default class SearchSelect extends HTMLElement {
+export default class SearchSelect extends CustomDelegatingElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open", delegatesFocus: true});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */

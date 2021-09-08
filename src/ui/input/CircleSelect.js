@@ -1,5 +1,6 @@
 import Template from "../../util/html/Template.js";
 import GlobalStyle from "../../util/html/GlobalStyle.js";
+import CustomElement from "../CustomElement.js";
 import "./Option.js";
 
 const TPL = new Template(`
@@ -9,15 +10,9 @@ const TPL = new Template(`
 `);
 
 const STYLE = new GlobalStyle(`
-* {
-    position: relative;
-    box-sizing: border-box;
-}
 :host {
     display: inline-flex;
     width: 80px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
     user-select: none;
 }
 :host(:not([readonly])),
@@ -87,11 +82,10 @@ function getPrevElement(all, current) {
     }
 }
 
-export default class CircleSelect extends HTMLElement {
+export default class CircleSelect extends CustomElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */

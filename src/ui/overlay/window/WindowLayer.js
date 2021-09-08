@@ -1,15 +1,12 @@
 import Template from "../../../util/html/Template.js";
 import GlobalStyle from "../../../util/html/GlobalStyle.js";
+import CustomElement from "../../CustomElement.js";
 
 const TPL = new Template(`
 <slot></slot>
 `);
 
 const STYLE = new GlobalStyle(`
-* {
-    position: relative;
-    box-sizing: border-box;
-}
 :host {
     position: fixed;
     display: block;
@@ -34,11 +31,10 @@ const STYLE = new GlobalStyle(`
 const LAYER = new Map();
 let DEFAULT = null;
 
-export default class WindowLayer extends HTMLElement {
+export default class WindowLayer extends CustomElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */

@@ -1,5 +1,6 @@
 import Template from "../../../util/html/Template.js";
 import GlobalStyle from "../../../util/html/GlobalStyle.js";
+import CustomElement from "../../CustomElement.js";
 import MessageLayer from "./MessageLayer.js";
 
 const TPL = new Template(`
@@ -8,7 +9,6 @@ const TPL = new Template(`
 
 const STYLE = new GlobalStyle(`
 :host {
-    position: relative;
     display: flex;
     justify-content: center;
     margin: 5px;
@@ -51,11 +51,10 @@ const ALLOWED_SLOTS = [
     "bottom-left", "bottom-center", "bottom-right"
 ];
 
-export default class AbstractMessage extends HTMLElement {
+export default class AbstractMessage extends CustomElement {
 
     constructor({text = "[text missing]"} = {}) {
         super();
-        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */

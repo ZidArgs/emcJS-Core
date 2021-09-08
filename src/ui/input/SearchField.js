@@ -1,5 +1,6 @@
 import Template from "../../util/html/Template.js";
 import GlobalStyle from "../../util/html/GlobalStyle.js";
+import CustomDelegatingElement from "../CustomDelegatingElement.js";
 import "../symbols/ClearSymbol.js";
 import "../../i18n/ui/form/InputElement.js";
 import "../../i18n/ui/I18nTooltip.js";
@@ -14,10 +15,6 @@ const TPL = new Template(`
 `);
 
 const STYLE = new GlobalStyle(`
-* {
-    position: relative;
-    box-sizing: border-box;
-}
 :host {
     display: flex;
     flex: 1;
@@ -67,11 +64,10 @@ const STYLE = new GlobalStyle(`
 }
 `);
 
-export default class SearchField extends HTMLElement {
+export default class SearchField extends CustomDelegatingElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open", delegatesFocus: true});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */

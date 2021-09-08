@@ -1,16 +1,13 @@
 import DragDropMemory from "../../util/DragDropMemory.js";
 import Template from "../../util/html/Template.js";
 import GlobalStyle from "../../util/html/GlobalStyle.js";
+import CustomElement from "../CustomElement.js";
 
 const TPL = new Template(`
 <slot></slot>
 `);
 
 const STYLE = new GlobalStyle(`
-* {
-    position: relative;
-    box-sizing: border-box;
-}
 :host {
     display: block;
     height: 100%;
@@ -38,11 +35,10 @@ function allowDrop(event) {
     }
 }
 
-export default class DropTarget extends HTMLElement {
+export default class DropTarget extends CustomElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */

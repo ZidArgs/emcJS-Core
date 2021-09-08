@@ -1,5 +1,6 @@
 import Template from "../../../util/html/Template.js";
 import GlobalStyle from "../../../util/html/GlobalStyle.js";
+import CustomElement from "../../CustomElement.js";
 import WindowLayer from "./WindowLayer.js";
 import I18nLabel from "../../../i18n/ui/I18nLabel.js";
 import "../../symbols/CloseSymbol.js";
@@ -23,19 +24,13 @@ const TPL = new Template(`
 `);
 
 const STYLE = new GlobalStyle(`
-* {
-    position: relative;
-    box-sizing: border-box;
-}
 :host,
 .footer,
 .button {
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
 }
 :host {
-    position: fixed !important;
+    position: fixed;
     align-items: flex-start;
     justify-content: center;
     top: 0;
@@ -125,11 +120,10 @@ const Q_TAB = [
     "[tabindex]:not([tabindex=\"-1\"])"
 ].join(",");
 
-export default class Window extends HTMLElement {
+export default class Window extends CustomElement {
 
     constructor(title = "", close = "close") {
         super();
-        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */

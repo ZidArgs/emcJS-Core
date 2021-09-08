@@ -1,5 +1,6 @@
 import Template from "../util/html/Template.js";
 import GlobalStyle from "../util/html/GlobalStyle.js";
+import CustomElement from "./CustomElement.js";
 
 const TPL = new Template(`
 <div id="title">Title</div>
@@ -7,10 +8,6 @@ const TPL = new Template(`
 `);
 
 const STYLE = new GlobalStyle(`
-* {
-    position: relative;
-    box-sizing: border-box;
-}
 :host {
     display: flex;
     flex-direction: column;
@@ -66,11 +63,10 @@ const STYLE = new GlobalStyle(`
 }
 `);
 
-export default class LogScreen extends HTMLElement {
+export default class LogScreen extends CustomElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */

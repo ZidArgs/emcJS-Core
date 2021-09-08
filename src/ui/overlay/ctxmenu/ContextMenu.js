@@ -1,5 +1,6 @@
 import Template from "../../../util/html/Template.js";
 import GlobalStyle from "../../../util/html/GlobalStyle.js";
+import CustomElement from "../../CustomElement.js";
 import CtxMenuLayer from "./CtxMenuLayer.js";
 
 const TPL = new Template(`
@@ -10,12 +11,8 @@ const TPL = new Template(`
 `);
 
 const STYLE = new GlobalStyle(`
-* {
-    position: relative;
-    box-sizing: border-box;
-}
 :host {
-    position: fixed !important;
+    position: fixed;
     display: none;
     left: 0;
     right: 0;
@@ -98,11 +95,10 @@ function getBounds(source) {
     return document.body.getBoundingClientRect();
 }
 
-export default class ContextMenu extends HTMLElement {
+export default class ContextMenu extends CustomElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */

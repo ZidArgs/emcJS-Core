@@ -1,5 +1,6 @@
 import Template from "../util/html/Template.js";
 import GlobalStyle from "../util/html/GlobalStyle.js";
+import CustomElement from "./CustomElement.js";
 
 const TPL = new Template(`
 <div id="value">
@@ -7,10 +8,6 @@ const TPL = new Template(`
 `);
 
 const STYLE = new GlobalStyle(`
-* {
-    position: relative;
-    box-sizing: border-box;
-}
 :host {
     display: inline-block;
     width: 20px;
@@ -30,11 +27,10 @@ const STYLE = new GlobalStyle(`
 }
 `);
 
-export default class Icon extends HTMLElement {
+export default class Icon extends CustomElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */

@@ -1,5 +1,6 @@
 import Template from "../../util/html/Template.js";
 import GlobalStyle from "../../util/html/GlobalStyle.js";
+import CustomElement from "../CustomElement.js";
 import "./panel/HBox.js";
 import "./panel/VBox.js";
 import "./panel/TabPanel.js";
@@ -91,11 +92,10 @@ function loadLayout(layout) {
     }
 }
 
-export default class Layout extends HTMLElement {
+export default class Layout extends CustomElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */

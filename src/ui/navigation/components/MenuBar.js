@@ -1,5 +1,6 @@
 import Template from "../../util/html/Template.js";
 import GlobalStyle from "../../util/html/GlobalStyle.js";
+import CustomElement from "../../CustomElement.js";
 import "./Button.js";
 import "./HamburgerButton.js";
 
@@ -22,9 +23,6 @@ const STYLE = new GlobalStyle(`
     flex-grow: 0;
     flex-shrink: 0;
     z-index: 1000;
-}
-:host * {
-    box-sizing: border-box;
 }
 #container {
     display: block;
@@ -155,11 +153,10 @@ ul li > emc-navbar-button {
 }
 `);
 
-export default class MenuBar extends HTMLElement {
+export default class MenuBar extends CustomElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */

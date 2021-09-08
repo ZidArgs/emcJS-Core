@@ -1,5 +1,6 @@
 import Template from "../../../../util/html/Template.js";
 import GlobalStyle from "../../../../util/html/GlobalStyle.js";
+import CustomElement from "../../../CustomElement.js";
 import LogicCompiler from "../../../../util/logic/Compiler.js";
 import I18nLabel from "../../../../i18n/ui/I18nLabel.js";
 import "../../../../i18n/ui/I18nTextbox.js";
@@ -13,11 +14,7 @@ const TPL = new Template(`
 `);
 
 const STYLE = new GlobalStyle(`
-* {
-    position: relative;
-    box-sizing: border-box;
-}
-:host() {
+:host {
     display: block;
     overflow-wrap: break-word;
     resize: none;
@@ -200,11 +197,10 @@ function convertValueList(values = {}) {
     return opt;
 }
 
-export default class SettingsTabContent extends HTMLElement {
+export default class SettingsTabContent extends CustomElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */

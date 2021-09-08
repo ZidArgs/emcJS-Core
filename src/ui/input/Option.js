@@ -1,5 +1,6 @@
 import Template from "../../util/html/Template.js";
 import GlobalStyle from "../../util/html/GlobalStyle.js";
+import CustomElement from "../CustomElement.js";
 
 const TPL = new Template(`
 <slot></slot>
@@ -7,8 +8,6 @@ const TPL = new Template(`
 
 const STYLE = new GlobalStyle(`
 :host {
-    position: relative;
-    box-sizing: border-box;
     display: inline-block;
     background-size: contain;
     background-repeat: no-repeat;
@@ -28,11 +27,10 @@ const STYLE = new GlobalStyle(`
 }
 `);
 
-export default class Option extends HTMLElement {
+export default class Option extends CustomElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */

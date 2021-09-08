@@ -1,5 +1,6 @@
 import Template from "../util/html/Template.js";
 import GlobalStyle from "../util/html/GlobalStyle.js";
+import CustomElement from "./CustomElement.js";
 import SearchAnd from "../util/search/SearchAnd.js";
 import "./header/SearchHeader.js";
 
@@ -13,10 +14,6 @@ const TPL = new Template(`
 `);
 
 const STYLE = new GlobalStyle(`
-* {
-    position: relative;
-    box-sizing: border-box;
-}
 :host {
     display: flex;
     flex-direction: column;
@@ -59,11 +56,10 @@ slot {
 }
 `);
 
-export default class FilteredList extends HTMLElement {
+export default class FilteredList extends CustomElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */

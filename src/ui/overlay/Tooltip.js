@@ -1,5 +1,6 @@
 import Template from "../../util/html/Template.js";
 import GlobalStyle from "../../util/html/GlobalStyle.js";
+import CustomElement from "../CustomElement.js";
 
 const TPL = new Template(`
 <slot></slot>
@@ -115,11 +116,10 @@ const STYLE = new GlobalStyle(`
 }
 `);
 
-export default class Tooltip extends HTMLElement {
+export default class Tooltip extends CustomElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */

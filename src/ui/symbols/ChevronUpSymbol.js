@@ -1,10 +1,7 @@
 import GlobalStyle from "../../util/html/GlobalStyle.js";
+import CustomDelegatingElement from "../CustomDelegatingElement.js";
 
 const STYLE = new GlobalStyle(`
-* {
-    position: relative;
-    box-sizing: border-box;
-}
 :host {
     display: flex;
     flex-direction: column;
@@ -21,11 +18,10 @@ const STYLE = new GlobalStyle(`
 }
 `);
 
-export default class Symbol extends HTMLElement {
+export default class Symbol extends CustomDelegatingElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open", delegatesFocus: true});
         this.shadowRoot.innerHTML = "▲";
         STYLE.apply(this.shadowRoot);
         /* --- */

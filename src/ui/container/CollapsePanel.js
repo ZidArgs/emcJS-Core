@@ -1,5 +1,6 @@
 import Template from "../../util/html/Template.js";
 import GlobalStyle from "../../util/html/GlobalStyle.js";
+import CustomElement from "../CustomElement.js";
 
 const TPL = new Template(`
 <div id="title">
@@ -9,11 +10,7 @@ const TPL = new Template(`
 `);
 
 const STYLE = new GlobalStyle(`
-* {
-    box-sizing: border-box;
-}
 :host {
-    position: relative;
     display: flex;
     flex-direction: column;
     margin: 5px;
@@ -64,11 +61,10 @@ const STYLE = new GlobalStyle(`
 }
 `);
 
-export default class CollapsePanel extends HTMLElement {
+export default class CollapsePanel extends CustomElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */

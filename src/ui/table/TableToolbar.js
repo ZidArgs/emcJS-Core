@@ -1,31 +1,13 @@
-import Template from "../../util/html/Template.js";
-import GlobalStyle from "../../util/html/GlobalStyle.js";
+import CustomDelegatingElement from "../CustomDelegatingElement.js";
 //import SearchAnd from "../../util/search/SearchAnd.js";
 //import SearchOr from "../../util/search/SearchOr.js";
 
-const TPL = new Template(`
-
-`);
-
-const STYLE = new GlobalStyle(`
-* {
-    position: relative;
-    box-sizing: border-box;
-}
-:host {
-
-}
-`);
-
 const SEARCH_MODE_OR = new WeakMap();
 
-export default class TableToolbar extends HTMLElement {
+export default class TableToolbar extends CustomDelegatingElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
-        this.shadowRoot.append(TPL.generate());
-        STYLE.apply(this.shadowRoot);
         /* --- */
         SEARCH_MODE_OR.set(this, false);
     }

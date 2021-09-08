@@ -1,6 +1,7 @@
 import Import from "../import/Import.js";
 import Template from "../util/html/Template.js";
 import GlobalStyle from "../util/html/GlobalStyle.js";
+import CustomElement from "./CustomElement.js";
 
 const TPL = new Template(`
 <slot></slot>
@@ -18,11 +19,10 @@ function appendHTML(r) {
     }
 }
 
-export default class HTMLImport extends HTMLElement {
+export default class HTMLImport extends CustomElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */

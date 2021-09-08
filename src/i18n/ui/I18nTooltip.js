@@ -1,5 +1,6 @@
 import Template from "../../util/html/Template.js";
 import GlobalStyle from "../../util/html/GlobalStyle.js";
+import CustomElement from "../../ui/CustomElement.js";
 import I18nMixin from "./I18nMixin.js";
 
 const TPL = new Template(`
@@ -7,20 +8,15 @@ const TPL = new Template(`
 `);
 
 const STYLE = new GlobalStyle(`
-* {
-    position: relative;
-    box-sizing: border-box;
-}
 :host {
     display: contents;
 }
 `);
 
-export default class I18nTooltip extends I18nMixin(HTMLElement) {
+export default class I18nTooltip extends I18nMixin(CustomElement) {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
     }

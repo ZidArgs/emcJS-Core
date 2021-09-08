@@ -1,6 +1,8 @@
+import CustomElement from "../CustomElement.js";
+
 const REG = new Map();
 
-export default class Panel extends HTMLElement {
+export default class Panel extends CustomElement {
 
     constructor() {
         super();

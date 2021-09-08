@@ -1,5 +1,6 @@
 import Template from "../util/html/Template.js";
 import GlobalStyle from "../util/html/GlobalStyle.js";
+import CustomElement from "./CustomElement.js";
 import "./overlay/window/WindowLayer.js";
 import "./overlay/message/MessageLayer.js";
 import "./overlay/ctxmenu/CtxMenuLayer.js";
@@ -14,11 +15,7 @@ const TPL = new Template(`
 `);
 
 const STYLE = new GlobalStyle(`
-* {
-    box-sizing: border-box;
-}
 :host {
-    position: relative;
     width: 100%;
     height: 100%;
     overflow: auto;
@@ -28,11 +25,10 @@ emc-messagelayer {
 }
 `);
 
-export default class Page extends HTMLElement {
+export default class Page extends CustomElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */

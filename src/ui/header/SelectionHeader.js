@@ -1,5 +1,6 @@
 import Template from "../../util/html/Template.js";
 import GlobalStyle from "../../util/html/GlobalStyle.js";
+import CustomDelegatingElement from "../CustomDelegatingElement.js";
 import "../input/SearchField.js";
 import "../../i18n/ui/I18nTooltip.js";
 
@@ -9,10 +10,6 @@ const TPL = new Template(`
 `);
 
 const STYLE = new GlobalStyle(`
-* {
-    position: relative;
-    box-sizing: border-box;
-}
 :host {
     display: flex;
     padding: 2px 0;
@@ -61,11 +58,10 @@ const STYLE = new GlobalStyle(`
 }
 `);
 
-export default class SelectionHeader extends HTMLElement {
+export default class SelectionHeader extends CustomDelegatingElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open", delegatesFocus: true});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */

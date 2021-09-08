@@ -1,5 +1,6 @@
 import Template from "../../util/html/Template.js";
 import GlobalStyle from "../../util/html/GlobalStyle.js";
+import CustomElement from "../CustomElement.js";
 
 const TPL = new Template(`
 <div id="title"></div>
@@ -7,11 +8,7 @@ const TPL = new Template(`
 `);
 
 const STYLE = new GlobalStyle(`
-* {
-    box-sizing: border-box;
-}
 :host {
-    position: relative;
     display: flex;
     flex-direction: column;
     background-color: #000;
@@ -37,11 +34,10 @@ const STYLE = new GlobalStyle(`
 }
 `);
 
-export default class CaptionPanel extends HTMLElement {
+export default class CaptionPanel extends CustomElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
