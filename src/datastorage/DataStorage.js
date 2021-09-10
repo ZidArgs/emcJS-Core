@@ -16,25 +16,29 @@ export default class DataStorage extends EventTarget {
             buffer.set(key, value);
             const ev = new Event("change");
             ev.data = {[key]: value};
+            ev.changes = {[key]: {oldValue, newValue: value}};
             this.dispatchEvent(ev);
         }
     }
 
-    setAll(values) {
+    setAll(data) {
         const buffer = BUFFER.get(this);
+        const values = {};
         const changes = {};
-        for (const key in values) {
-            const newValue = values[key];
+        for (const key in data) {
+            const newValue = data[key];
             const oldValue = this.get(key);
             if (oldValue != newValue) {
                 buffer.set(key, newValue);
-                changes[key] = newValue;
+                values[key] = newValue;
+                changes[key] = {oldValue, newValue};
             }
         }
         // change event
-        if (Object.keys(changes).length) {
+        if (Object.keys(values).length) {
             const ev = new Event("change");
-            ev.data = changes;
+            ev.data = values;
+            ev.changes = changes;
             this.dispatchEvent(ev);
         }
     }
@@ -58,8 +62,10 @@ export default class DataStorage extends EventTarget {
         const oldValue = buffer.get(key);
         if (typeof oldValue != "undefined") {
             buffer.delete(key);
+            const defValue = this.get(key);
             const ev = new Event("change");
-            ev.data = {[key]: undefined};
+            ev.data = {[key]: defValue};
+            ev.changes = {[key]: {oldValue, newValue: defValue}};
             this.dispatchEvent(ev);
         }
     }
@@ -102,6 +108,7 @@ export default class DataStorage extends EventTarget {
 
     overwrite(data = {}) {
         const buffer = BUFFER.get(this);
+        const values = {};
         const changes = {};
         for (const key in data) {
             const newValue = data[key];
@@ -109,17 +116,21 @@ export default class DataStorage extends EventTarget {
             if (oldValue != newValue) {
                 if (newValue == null) {
                     buffer.delete(key);
-                    changes[key] = this.get(key);
+                    const defValue = this.get(key);
+                    values[key] = defValue;
+                    changes[key] = {oldValue, newValue: defValue};
                 } else {
                     buffer.set(key, newValue);
-                    changes[key] = newValue;
+                    values[key] = newValue;
+                    changes[key] = {oldValue, newValue};
                 }
             }
         }
         // change event
-        if (Object.keys(changes).length) {
+        if (Object.keys(values).length) {
             const ev = new Event("change");
-            ev.data = changes;
+            ev.data = values;
+            ev.changes = changes;
             this.dispatchEvent(ev);
         }
     }
