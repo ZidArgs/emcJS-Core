@@ -67,6 +67,26 @@ const STYLE = new GlobalStyle(`
 
 const STORAGE = new WeakMap();
 
+function convertValueList(values = {}) {
+    const opt = {};
+    if (typeof values == "object") {
+        if (Array.isArray(values)) {
+            for (const key of values) {
+                opt[key] = key;
+            }
+        } else {
+            for (const key in values) {
+                if (values[key] != null) {
+                    opt[key] = values[key];
+                } else {
+                    opt[key] = key;
+                }
+            }
+        }
+    }
+    return opt;
+}
+
 export default class SettingsWindow extends Window {
 
     constructor(title = "Settings", options = {}) {
@@ -194,14 +214,6 @@ export default class SettingsWindow extends Window {
         }
     }
 
-    addButton(category, ref, label, desc, visible, text = "", callback = null) {
-        const panel = this.getTab(category);
-        if (panel != null) {
-            const storage = STORAGE.get(this);
-            panel.addButton(storage, ref, label, desc, visible, text, callback = null);
-        }
-    }
-
     addChoiceInput(category, ref, label, desc, def, visible, resettable, values) {
         const panel = this.getTab(category);
         if (panel != null) {
@@ -212,13 +224,22 @@ export default class SettingsWindow extends Window {
     }
 
     addListSelectInput(category, ref, label, desc, def, visible, resettable, multiple, values) {
+        const convertedValues = convertValueList(values);
         const panel = this.getTab(category);
         if (panel != null) {
             const storage = STORAGE.get(this);
-            for (const value in values) {
+            for (const value in convertedValues) {
                 storage.setDefault(value, def.includes(value));
             }
-            panel.addListSelectInput(storage, ref, label, desc, visible, resettable, multiple, values);
+            panel.addListSelectInput(storage, ref, label, desc, visible, resettable, multiple, convertedValues);
+        }
+    }
+
+    addButton(category, ref, label, desc, visible, text = "", callback = null) {
+        const panel = this.getTab(category);
+        if (panel != null) {
+            const storage = STORAGE.get(this);
+            panel.addButton(storage, ref, label, desc, visible, text, callback = null);
         }
     }
 

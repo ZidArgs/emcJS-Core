@@ -1,5 +1,5 @@
 
-import Helper from "../util/Helper.js";
+import Helper from "../util/helper/Helper.js";
 
 const CATEGORY = new WeakMap();
 const STATE = new WeakMap();

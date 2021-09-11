@@ -1,5 +1,5 @@
 import EventBusAbstractModule from "./module/EventBusAbstractModule.js";
-import Helper from "../util/Helper.js";
+import Helper from "../util/helper/Helper.js";
 
 const ALLS = new Set();
 const SUBS = new Map();

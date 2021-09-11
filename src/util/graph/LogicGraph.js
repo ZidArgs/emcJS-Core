@@ -1,5 +1,5 @@
 import NodeFactory from "./NodeFactory.js";
-import Compiler from "./EdgeLogicCompiler.js";
+import EdgeLogicCompiler from "./EdgeLogicCompiler.js";
 
 function mapToObj(src) {
     const res = {};
@@ -67,7 +67,7 @@ export default class LogicGraph {
             const node = nodeFactory.get(name);
             for (const child in children) {
                 const logic = children[child];
-                const fn = Compiler.compile(logic);
+                const fn = EdgeLogicCompiler.compile(logic);
                 node.append(nodeFactory.get(child), fn);
                 if (!mem_o.has(child)) {
                     mem_o.set(child, false);
@@ -76,7 +76,7 @@ export default class LogicGraph {
         }
         for (const name in config.logic) {
             const logic = config.logic[name];
-            const fn = Compiler.compile(logic);
+            const fn = EdgeLogicCompiler.compile(logic);
             mixins.set(name, fn);
         }
         if (debug) {
@@ -99,7 +99,7 @@ export default class LogicGraph {
             node.remove(child);
             DIRTY.set(this, true);
         } else {
-            const fn = Compiler.compile(value);
+            const fn = EdgeLogicCompiler.compile(value);
             node.append(child, fn);
             DIRTY.set(this, true);
         }
@@ -121,7 +121,7 @@ export default class LogicGraph {
             mixins.delete(name);
             DIRTY.set(this, true);
         } else {
-            const fn = Compiler.compile(value);
+            const fn = EdgeLogicCompiler.compile(value);
             mixins.set(name, fn);
             DIRTY.set(this, true);
         }

@@ -1,74 +1,76 @@
 import DataStorage from "./DataStorage.js";
 
-const INSTANCES = new Map();
 const STORAGE = new WeakMap();
+const DEF = new WeakMap();
 const KEY = new WeakMap();
-
-function getInstance(storage, key) {
-    const sInts = INSTANCES.get(storage);
-    if (sInts != null) {
-        return sInts.get(key);
-    }
-}
-
-function setInstance(storage, key, inst) {
-    const sInts = INSTANCES.get(storage);
-    if (sInts != null) {
-        sInts.set(key, inst);
-    } else {
-        const insts = new Map();
-        insts.set(key, inst);
-        INSTANCES.set(storage, insts);
-    }
-}
 
 export default class DataStorageObserver extends EventTarget {
 
-    constructor(storage, key) {
+    constructor(storage, key, def) {
         if (!(storage instanceof DataStorage)) {
-            throw new TypeError("Wrong 1. parameter Type for DataStorageObserver, expected DataStorage");
+            throw new TypeError("wrong type on parameter 1, expected DataStorage");
         }
-        if (typeof key != "string") {
-            throw new TypeError("Wrong 2. parameter Type for DataStorageObserver, expected string");
-        }
-        const inst = getInstance(storage, key);
-        if (inst != null) {
-            return inst;
+        if (key != null && typeof key != "string") {
+            throw new TypeError("wrong type on parameter 2, expected string");
         }
         super();
+        /* --- */
         KEY.set(this, key);
+        DEF.set(this, def);
         STORAGE.set(this, storage);
-        storage.addEventListener("change", event => {
+        storage.addEventListener("change", (event) => {
             const key = KEY.get(this);
-            if (event.data[key] != null) {
+            if (key != null && event.changes[key] != null) {
                 const ev = new Event("change");
-                ev.data = event.data[key];
+                ev.data = event.changes[key].newValue ?? def;
                 this.dispatchEvent(ev);
             }
         });
         storage.addEventListener("clear", event => {
             const key = KEY.get(this);
-            const ev = new Event("change");
-            ev.data = event.data[key];
-            this.dispatchEvent(ev);
+            if (key != null) {
+                const ev = new Event("change");
+                ev.data = event.data[key] ?? def;
+                this.dispatchEvent(ev);
+            }
         });
-        storage.addEventListener("load", event => {
+        storage.addEventListener("load", (event) => {
             const key = KEY.get(this);
-            const ev = new Event("change");
-            ev.data = event.data[key];
-            this.dispatchEvent(ev);
+            if (key != null) {
+                const ev = new Event("change");
+                ev.data = event.data[key] ?? def;
+                this.dispatchEvent(ev);
+            }
         });
-        setInstance(storage, key, this);
     }
 
     get key() {
         return KEY.get(this);
     }
 
+    set key(value) {
+        if (typeof key == "string") {
+            const oldKey = KEY.get(this);
+            if (oldKey != value) {
+                KEY.set(this, value);
+                /* event */
+                const storage = STORAGE.get(this);
+                const oldValue = storage.get(oldKey);
+                const newValue = storage.get(value);
+                if (oldValue != newValue) {
+                    const ev = new Event("change");
+                    ev.data = newValue;
+                    this.dispatchEvent(ev);
+                }
+            }
+        }
+    }
+
     get value() {
         const storage = STORAGE.get(this);
         const key = KEY.get(this);
-        return storage.get(key);
+        const def = DEF.get(this);
+        return storage.get(key, def);
     }
 
     set value(value) {

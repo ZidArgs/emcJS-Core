@@ -42,7 +42,7 @@ const TRANSPILERS = {
     "mixin":    (logic) => `(val("${escape(logic.el)}")||0)`
 };
 
-let dependencies = null;
+const dependencies = new Set();
 
 /* STRINGS */
 function escape(str, def = "") {
@@ -117,7 +117,7 @@ function buildLogic(logic) {
 class Compiler {
 
     compile(logic) {
-        dependencies = new Set();
+        dependencies.clear();
         const buf = buildLogic(logic);
         const fn = new Function("val", `return ${buf}`);
         Object.defineProperty(fn, "requires", {value: dependencies});
@@ -126,4 +126,4 @@ class Compiler {
 
 }
 
-export default new Compiler;
+export default new Compiler();

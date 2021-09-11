@@ -114,16 +114,16 @@ function buildLogic(logic) {
     return 0;
 }
 
-class Compiler {
+class EdgeLogicCompiler {
 
     compile(logic) {
+        dependencies.clear();
         const buf = buildLogic(logic);
         const fn = new Function("val", "execute", `return ${buf}`);
         Object.defineProperty(fn, "requires", {value: dependencies});
-        dependencies.clear();
         return fn;
     }
 
 }
 
-export default new Compiler;
+export default new EdgeLogicCompiler();

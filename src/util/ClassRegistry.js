@@ -15,6 +15,7 @@ export default class ClassRegistry {
             throw new Error(`type "${ref}" already exists in ${DefClass.name}`);
         }
         register.set(ref, RegClass);
+        return this;
     }
 
     create(ref, ...params) {
