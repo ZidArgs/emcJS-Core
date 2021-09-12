@@ -27,6 +27,12 @@ export default class Template {
         return doc;
     }
 
+    apply(target) {
+        if (target instanceof Document || target instanceof ShadowRoot || target instanceof HTMLElement) {
+            target.append(this.generate());
+        }
+    }
+
     static generate(template, child) {
         if (template instanceof Template) {
             return template.generate(child);
