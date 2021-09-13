@@ -25,4 +25,9 @@ export default class Registry {
         return res;
     }
 
+    [Symbol.iterator]() {
+        const data = DATA.get(this);
+        return data[Symbol.iterator]()
+    }
+
 }

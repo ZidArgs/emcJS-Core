@@ -135,4 +135,9 @@ export default class DataStorage extends EventTarget {
         }
     }
 
+    [Symbol.iterator]() {
+        const buffer = BUFFER.get(this);
+        return buffer[Symbol.iterator]()
+    }
+
 }
