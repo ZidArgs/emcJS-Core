@@ -266,6 +266,24 @@ export default class NavBar extends CustomElement {
                                     return false;
                                 });
                             }
+                            subbtn.addEventListener("blur", (event) => {
+                                if (!subcontent.contains(event.relatedTarget)) {
+                                    const container = this.shadowRoot.getElementById("container");
+                                    btn.expand = "closed";
+                                    el.classList.remove("open");
+                                    container.classList.remove("cover");
+                                    event.preventDefault();
+                                }
+                            });
+                            subbtn.addEventListener("focus", (event) => {
+                                if (!subcontent.contains(event.relatedTarget)) {
+                                    const container = this.shadowRoot.getElementById("container");
+                                    btn.expand = "open";
+                                    el.classList.add("open");
+                                    container.classList.add("cover");
+                                    event.preventDefault();
+                                }
+                            });
                             subcontent.append(subel);
                         }
                     }

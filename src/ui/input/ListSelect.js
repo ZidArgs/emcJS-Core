@@ -82,10 +82,6 @@ slot {
 :host([readonly="false"][multiple]:not([multiple="false"])) ::slotted([value].active) {
     cursor: pointer;
 }
-#header {
-    padding-right: 2px;
-    padding-left: 2px;
-}
 #empty {
     display: flex;
     align-items: center;

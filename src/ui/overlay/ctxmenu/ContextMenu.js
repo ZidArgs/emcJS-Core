@@ -207,7 +207,9 @@ export default class ContextMenu extends CustomElement {
         }
         menuEl.style.left = `${posX}px`;
         menuEl.style.top = `${posY}px`;
-        this.initFocus();
+        setTimeout(() => {
+            this.initFocus();
+        }, 0);
     }
 
     close() {

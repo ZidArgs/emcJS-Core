@@ -11,15 +11,10 @@ const TPL = new Template(`
 const STYLE = new GlobalStyle(`
 :host {
     display: flex;
-    padding: 2px 0;
+    padding: 3px;
     background: var(--list-color-border, #f1f1f1);
 }
 :host(:focus) {
-    box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
-    outline: none;
-}
-:host(:focus:not(:focus-visible)) {
-    box-shadow: none;
     outline: none;
 }
 :focus {
@@ -30,6 +25,14 @@ const STYLE = new GlobalStyle(`
     background: var(--list-color-back, #ffffff);
     border: none;
     border-radius: 0;
+}
+#search:focus {
+    box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
+    outline: none;
+}
+#search:focus:not(:focus-visible)  {
+    box-shadow: none;
+    outline: none;
 }
 `);
 
