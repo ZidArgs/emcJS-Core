@@ -47,7 +47,7 @@ export default class EventTargetManager {
             });
         }
         TARGET.set(this, target);
-        if (active) {
+        if (active && target != null) {
             subs.forEach(function(fn, name) {
                 target.addEventListener(name, fn);
             });

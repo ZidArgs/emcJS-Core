@@ -127,7 +127,11 @@ export default createMixin((superclass) => class ContextMenuManagerMixin extends
     showContextMenu(name, event, ...props) {
         const mnu_ctx = this.getContextMenu(name);
         if (mnu_ctx != null) {
-            mnu_ctx.show(event.clientX, event.clientY, ...props);
+            if (event instanceof MouseEvent) {
+                mnu_ctx.show(event.clientX, event.clientY, ...props);
+            } else {
+                mnu_ctx.show(event?.left ?? 0, event?.top ?? 0, ...props);
+            }
         }
     }
 
