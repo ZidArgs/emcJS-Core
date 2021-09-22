@@ -10,20 +10,24 @@ const VARIABLES = new Map();
 
 function extractAllRules(sheet) {
     if (sheet.href === null || sheet.href.startsWith(window.location.origin)) {
-        const rules = sheet.cssRules;
-        for (const rule of Array.from(rules)) {
-            if (rule instanceof CSSImportRule) {
-                extractAllRules(rule.styleSheet);
-            } else if (rule instanceof CSSStyleRule) {
-                if (rule.selectorText === ":root") {
-                    const style = rule.style;
-                    for (const name of Array.from(style)) {
-                        if (name.startsWith("--")) {
-                            DEFAULT_VARIABLES.set(name.slice(2), style.getPropertyValue(name).trim());
+        try {
+            const rules = sheet.cssRules;
+            for (const rule of Array.from(rules)) {
+                if (rule instanceof CSSImportRule) {
+                    extractAllRules(rule.styleSheet);
+                } else if (rule instanceof CSSStyleRule) {
+                    if (rule.selectorText === ":root") {
+                        const style = rule.style;
+                        for (const name of Array.from(style)) {
+                            if (name.startsWith("--")) {
+                                DEFAULT_VARIABLES.set(name.slice(2), style.getPropertyValue(name).trim());
+                            }
                         }
                     }
                 }
             }
+        } catch(err) {
+            console.warn(`extracting global variables failed for style "${sheet.href}" - ${err}`);
         }
     }
 }
