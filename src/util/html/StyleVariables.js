@@ -1,10 +1,15 @@
-const styleEl = document.createElement("style");
-styleEl.innerHTML = ":root {}"
-document.head.appendChild(styleEl);
-const styleSheet = styleEl.sheet;
+import "../../polyfills/adoptedStyleSheet.polyfill.js";
 
-const DEFAULT_VARIABLES = new Map();
-const VARIABLES = new Map();
+function createStyleSheet() {
+    const styleEl = document.createElement("style");
+    styleEl.innerHTML = ":root {}"
+    document.head.appendChild(styleEl);
+    return styleEl.sheet;
+}
+
+const STATIC_STYLESHEET = createStyleSheet();
+const STATIC_DEFAULT_VARIABLES = new Map();
+const STATIC_VARIABLES = new Map();
 
 // extract default variables
 
@@ -20,7 +25,7 @@ function extractAllRules(sheet) {
                         const style = rule.style;
                         for (const name of Array.from(style)) {
                             if (name.startsWith("--")) {
-                                DEFAULT_VARIABLES.set(name.slice(2), style.getPropertyValue(name).trim());
+                                STATIC_DEFAULT_VARIABLES.set(name.slice(2), style.getPropertyValue(name).trim());
                             }
                         }
                     }
@@ -37,55 +42,96 @@ for (const sheet of Array.from(document.styleSheets)) {
 
 // add dynamic variable handler
 
-function updateStyle() {
+function updateStyle(sheet, variables) {
     const vars = [];
-    for (const [key, value] of VARIABLES) {
+    for (const [key, value] of variables) {
         if (value != null) {
             vars.push(`--${key}: ${value}`);
         }
     }
     const rule = `:root{${vars.join(";")}}`;
     if ("replace" in CSSStyleSheet.prototype) {
-        styleSheet.insertRule(rule, 1);
-        styleSheet.deleteRule(0);
+        sheet.insertRule(rule, 1);
+        sheet.deleteRule(0);
     }
 }
 
-class StyleVariables {
+// -----------------
+const STYLESHEETS = new WeakMap();
+const VARIABLES = new WeakMap();
+
+export default class StyleVariables {
+
+    constructor() {
+        STYLESHEETS.set(this, createStyleSheet());
+        VARIABLES.set(this, new Map());
+    }
 
     set(name, value) {
-        const current = VARIABLES.get(name);
+        const variables = VARIABLES.get(this);
+        const current = variables.get(name);
         if (current != value) {
-            VARIABLES.set(name, value);
-            updateStyle();
+            variables.set(name, value);
+            updateStyle(STYLESHEETS.get(this), variables);
         }
     }
 
-    steAll(values = {}) {
+    setAll(values = {}) {
+        const variables = VARIABLES.get(this);
         let changed = false;
         for (const name in values) {
             const value = values[name];
-            const current = VARIABLES.get(name);
+            const current = variables.get(name);
             if (current != value) {
-                VARIABLES.set(name, value);
+                variables.set(name, value);
                 changed = true;
             }
         }
         if (changed) {
-            updateStyle();
+            updateStyle(STYLESHEETS.get(this), variables);
         }
     }
 
     get(name) {
-        return VARIABLES.get(name) ?? DEFAULT_VARIABLES.get(name);
+        const variables = VARIABLES.get(this);
+        return variables.get(name);
     }
 
-    getDefault(name) {
-        return DEFAULT_VARIABLES.get(name);
+    apply(target) {
+        if (target instanceof Document || target instanceof ShadowRoot) {
+            target.adoptedStyleSheets = [...target.adoptedStyleSheets, STYLESHEETS.get(this)];
+        }
+    }
+
+    static set(name, value) {
+        const current = STATIC_VARIABLES.get(name);
+        if (current != value) {
+            STATIC_VARIABLES.set(name, value);
+            updateStyle(STATIC_STYLESHEET, STATIC_VARIABLES);
+        }
+    }
+
+    static setAll(values = {}) {
+        let changed = false;
+        for (const name in values) {
+            const value = values[name];
+            const current = STATIC_VARIABLES.get(name);
+            if (current != value) {
+                STATIC_VARIABLES.set(name, value);
+                changed = true;
+            }
+        }
+        if (changed) {
+            updateStyle(STATIC_STYLESHEET, STATIC_VARIABLES);
+        }
+    }
+
+    static get(name) {
+        return STATIC_VARIABLES.get(name) ?? STATIC_DEFAULT_VARIABLES.get(name);
+    }
+
+    static getDefault(name) {
+        return STATIC_DEFAULT_VARIABLES.get(name);
     }
 
 }
-
-const styleVariables = new StyleVariables();
-window.styleVariables = styleVariables;
-export default styleVariables;
