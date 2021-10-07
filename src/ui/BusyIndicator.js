@@ -1,9 +1,8 @@
 import Template from "../util/html/Template.js";
 import GlobalStyle from "../util/html/GlobalStyle.js";
+import ActiveCounter from "../util/ActiveCounter.js";
 
 // TODO should be self managed html element
-// TODO track html elements for static OP
-// TODO static busy/unbusy
 
 const TPL = new Template(`
 <slot>
@@ -32,6 +31,9 @@ const STYLE = new GlobalStyle(`
     background: rgba(0,0,0,0.3);
     transform: translateZ(0);
 }
+:host(.active) {
+    display: flex;
+}
 #default-animation {
     width: 50vmin;
     height: 50vmin;
@@ -48,30 +50,23 @@ EL.shadowRoot.append(TPL.generate());
 STYLE.apply(EL.shadowRoot);
 document.body.append(EL);
 
-let COUNT = 0;
+const activeCounter = new ActiveCounter();
+activeCounter.addEventListener("active", (event) => {
+    if (event.data) {
+        EL.classList.add("active");
+    } else {
+        EL.classList.remove("active");
+    }
+});
 
 class BusyIndicator {
 
-    busy() {
-        return new Promise(function(resolve) {
-            if (COUNT++ == 0) {
-                EL.style.display = "flex";
-                setTimeout(resolve, 0);
-            } else {
-                resolve();
-            }
-        });
+    async busy() {
+        activeCounter.add();
     }
 
-    unbusy() {
-        return new Promise(function(resolve) {
-            if (COUNT > 0 && --COUNT == 0) {
-                EL.style.display = null;
-                setTimeout(resolve, 0);
-            } else {
-                resolve();
-            }
-        });
+    async unbusy() {
+        activeCounter.remove();
     }
 
     setIndicator(element) {

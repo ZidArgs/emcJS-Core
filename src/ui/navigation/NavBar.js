@@ -157,6 +157,8 @@ ul li > emc-navbar-button {
 }
 `);
 
+const MIXINS = new Map();
+
 export default class NavBar extends CustomElement {
 
     constructor() {
@@ -164,11 +166,13 @@ export default class NavBar extends CustomElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
+
+        // layout
         const container = this.shadowRoot.getElementById("container");
         const cover = this.shadowRoot.getElementById("cover");
         const content = this.shadowRoot.getElementById("content");
         const hamburger = this.shadowRoot.getElementById("hamburger-button");
-        hamburger.onclick = (event) => {
+        hamburger.addEventListener("click", () => {
             if (container.classList.contains("open")) {
                 container.classList.remove("open");
                 container.classList.remove("cover");
@@ -183,8 +187,8 @@ export default class NavBar extends CustomElement {
                 container.classList.add("open");
                 hamburger.open = true;
             }
-        };
-        cover.onclick = (event) => {
+        });
+        cover.addEventListener("click", () => {
             container.classList.remove("open");
             container.classList.remove("cover");
             content.querySelectorAll(".open").forEach(function(el) {
@@ -194,125 +198,121 @@ export default class NavBar extends CustomElement {
                 el.expand = "closed";
             });
             hamburger.open = false;
-        };
+        });
     }
 
     loadNavigation(config) {
-        const content = this.shadowRoot.getElementById("content");
-        content.innerHTML = "";
+        const contentEl = this.shadowRoot.getElementById("content");
+        contentEl.innerHTML = "";
         for (const item of config) {
-            if (item.visible == null || !!item.visible) {
-                const el = document.createElement("li");
-                const btn = document.createElement("emc-navbar-button");
-                el.append(btn);
-                // content
-                if (item["content"] != null) {
-                    btn.content = item["content"];
+            this./*#*/__generateElement(contentEl, item);
+        }
+    }
+
+    /*#*/__generateElement(contentEl, config) {
+        const containerEl = this.shadowRoot.getElementById("container");
+        const IS_MAIN_NAV = contentEl.id == "content";
+        if (config["visible"] == null || !!config["visible"]) {
+            if (config["mixin"]) {
+                const mixinConfig = MIXINS.get(config["mixin"]);
+                if (mixinConfig != null) {
+                    for (const item of mixinConfig) {
+                        this./*#*/__generateElement(contentEl, item);
+                    }
                 }
-                if (item["tooltip"] != null) {
-                    btn.tooltip = item["tooltip"];
+            } else {
+                const listEl = document.createElement("li");
+                const btnEl = document.createElement("emc-navbar-button");
+                listEl.append(btnEl);
+                // content
+                if (config["content"] != null) {
+                    btnEl.content = config["content"];
+                }
+                if (config["tooltip"] != null) {
+                    btnEl.tooltip = config["tooltip"];
                 }
                 // action
-                if (item["handler"] != null && typeof item.handler == "function") {
-                    btn.addEventListener("click", (event) => {
+                if (config["handler"] != null && typeof config.handler == "function") {
+                    btnEl.addEventListener("click", (event) => {
                         const hamburger = this.shadowRoot.getElementById("hamburger-button");
                         hamburger.open = false;
-                        const container = this.shadowRoot.getElementById("container");
-                        container.classList.remove("cover");
-                        container.classList.remove("open");
-                        content.querySelectorAll("[expand=\"open\"]").forEach(function(el) {
+                        containerEl.classList.remove("cover");
+                        containerEl.classList.remove("open");
+                        contentEl.querySelectorAll("[expand=\"open\"]").forEach(function(el) {
                             el.expand = "closed";
                         });
-                        content.querySelectorAll(".open").forEach(function(el) {
+                        contentEl.querySelectorAll(".open").forEach(function(el) {
                             el.classList.remove("open");
                         });
-                        item.handler();
+                        config.handler();
                         event.stopPropagation();
                         return false;
+                    });
+                }
+                // submenu events
+                if (!IS_MAIN_NAV) {
+                    btnEl.addEventListener("blur", (event) => {
+                        if (!contentEl.contains(event.relatedTarget)) {
+                            const pListEl = contentEl.parentElement;
+                            const pBtnEl = pListEl.children[0];
+                            pBtnEl.expand = "closed";
+                            pListEl.classList.remove("open");
+                            containerEl.classList.remove("cover");
+                            event.preventDefault();
+                        }
+                    });
+                    btnEl.addEventListener("focus", (event) => {
+                        if (!contentEl.contains(event.relatedTarget)) {
+                            const pListEl = contentEl.parentElement;
+                            const pBtnEl = pListEl.children[0];
+                            pBtnEl.expand = "open";
+                            pListEl.classList.add("open");
+                            containerEl.classList.add("cover");
+                            event.preventDefault();
+                        }
                     });
                 }
                 // submenu
-                if (item["submenu"] != null) {
+                if (config["submenu"] != null) {
                     const subcontent = document.createElement("ul");
-                    for (const subitem of item.submenu) {
-                        if (subitem.visible == null || !!subitem.visible) {
-                            const subel = document.createElement("li");
-                            const subbtn = document.createElement("emc-navbar-button");
-                            subel.append(subbtn);
-                            // content
-                            if (subitem["content"] != null) {
-                                subbtn.content = subitem["content"];
-                            }
-                            // tooltip
-                            if (subitem["tooltip"] != null) {
-                                subbtn.tooltip = subitem["tooltip"];
-                            }
-                            // action
-                            if (subitem["handler"] != null && typeof subitem.handler == "function") {
-                                subbtn.addEventListener("click", (event) => {
-                                    const hamburger = this.shadowRoot.getElementById("hamburger-button");
-                                    hamburger.open = false;
-                                    const container = this.shadowRoot.getElementById("container");
-                                    container.classList.remove("cover");
-                                    container.classList.remove("open");
-                                    content.querySelectorAll("[expand=\"open\"]").forEach(function(el) {
-                                        el.expand = "closed";
-                                    });
-                                    content.querySelectorAll(".open").forEach(function(el) {
-                                        el.classList.remove("open");
-                                    });
-                                    subitem.handler();
-                                    event.stopPropagation();
-                                    return false;
-                                });
-                            }
-                            subbtn.addEventListener("blur", (event) => {
-                                if (!subcontent.contains(event.relatedTarget)) {
-                                    const container = this.shadowRoot.getElementById("container");
-                                    btn.expand = "closed";
-                                    el.classList.remove("open");
-                                    container.classList.remove("cover");
-                                    event.preventDefault();
-                                }
-                            });
-                            subbtn.addEventListener("focus", (event) => {
-                                if (!subcontent.contains(event.relatedTarget)) {
-                                    const container = this.shadowRoot.getElementById("container");
-                                    btn.expand = "open";
-                                    el.classList.add("open");
-                                    container.classList.add("cover");
-                                    event.preventDefault();
-                                }
-                            });
-                            subcontent.append(subel);
-                        }
+                    for (const item of config["submenu"]) {
+                        this./*#*/__generateElement(subcontent, item);
                     }
-                    el.append(subcontent);
-                    btn.expand = "closed";
-                    btn.addEventListener("click", (event) => {
-                        const container = this.shadowRoot.getElementById("container");
-                        if (btn.expand == "open") {
-                            btn.expand = "closed";
-                            el.classList.remove("open");
-                            container.classList.remove("cover");
+                    listEl.append(subcontent);
+                    // submenu button events
+                    btnEl.expand = "closed";
+                    btnEl.addEventListener("click", (event) => {
+                        if (btnEl.expand == "open") {
+                            btnEl.expand = "closed";
+                            if (IS_MAIN_NAV) {
+                                listEl.classList.remove("open");
+                                containerEl.classList.remove("cover");
+                            }
                         } else {
-                            content.querySelectorAll("[expand=\"open\"]").forEach(function(el) {
-                                el.expand = "closed";
-                            });
-                            content.querySelectorAll(".open").forEach(function(el) {
-                                el.classList.remove("open");
-                            });
-                            btn.expand = "open";
-                            el.classList.add("open");
-                            container.classList.add("cover");
+                            if (IS_MAIN_NAV) {
+                                contentEl.querySelectorAll("[expand=\"open\"]").forEach(function(el) {
+                                    el.expand = "closed";
+                                });
+                                contentEl.querySelectorAll(".open").forEach(function(el) {
+                                    el.classList.remove("open");
+                                });
+                                listEl.classList.add("open");
+                                containerEl.classList.add("cover");
+                            }
+                            btnEl.expand = "open";
                         }
                         event.stopPropagation();
                         return false;
                     });
                 }
-                content.append(el);
+                // add element
+                contentEl.append(listEl);
             }
         }
+    }
+
+    static addMixin(name, config) {
+        MIXINS.set(name, config);
     }
 
 }
