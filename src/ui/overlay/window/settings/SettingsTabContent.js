@@ -314,10 +314,10 @@ export default class SettingsTabContent extends CustomElement {
         inputEl.dataset.ref = ref;
         // events
         storage.addEventListener("clear", event => {
-            inputEl.value = !!event.data[ref];
+            inputEl.checked = !!event.data[ref];
         });
         storage.addEventListener("load", event => {
-            inputEl.value = !!event.data[ref];
+            inputEl.checked = !!event.data[ref];
         });
         storage.addEventListener("change", event => {
             if (event.data[ref] != null) {
