@@ -127,24 +127,28 @@ export default class Window extends CustomElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.addEventListener("keyup", (event) => {
+        this.addEventListener("keypress", (event) => {
             if (event.key == "Escape") {
                 this.close();
             }
             event.stopPropagation();
         });
-        const ttl = this.shadowRoot.getElementById("title");
-        ttl.append(I18nLabel.getLabel(title));
-        const cls = this.shadowRoot.getElementById("close");
+        const titleEl = this.shadowRoot.getElementById("title");
+        titleEl.append(I18nLabel.getLabel(title));
+        const closeEl = this.shadowRoot.getElementById("close");
         if (!!close && typeof close === "string") {
-            cls.setAttribute("title", close);
+            closeEl.setAttribute("title", close);
         }
-        cls.onclick = this.close.bind(this);
+        closeEl.addEventListener("click", () => this.close());
         /* --- */
         const focusTopEl = this.shadowRoot.getElementById("focus_catcher_top");
-        focusTopEl.onfocus = this.focusLast.bind(this);
+        focusTopEl.addEventListener("focus", () => {
+            this.focusLast();
+        });
         const focusBottomEl = this.shadowRoot.getElementById("focus_catcher_bottom");
-        focusBottomEl.onfocus = this.focusFirst.bind(this);
+        focusBottomEl.addEventListener("focus", () => {
+            this.focusFirst();
+        });
     }
 
     show() {
@@ -157,12 +161,21 @@ export default class Window extends CustomElement {
         this.dispatchEvent(new Event("close"));
     }
 
+    /*#*/__getAllFocusable() {
+        const els = Array.from(this.shadowRoot.querySelectorAll(Q_TAB));
+        return els.slice(1, -1);
+    }
+
+    /*#*/__getBodyFocusable() {
+        return Array.from(this.querySelectorAll(Q_TAB));
+    }
+
     initialFocus() {
-        const bodyEls = Array.from(this.querySelectorAll(Q_TAB));
+        const bodyEls = this./*#*/__getBodyFocusable();
         if (bodyEls.length) {
             bodyEls[0].focus();
         } else {
-            const windowEls = Array.from(this.shadowRoot.querySelectorAll(Q_TAB));
+            const windowEls = this./*#*/__getAllFocusable();
             if (windowEls.length) {
                 windowEls[0].focus();
             } else {
@@ -173,16 +186,26 @@ export default class Window extends CustomElement {
     }
 
     focusFirst() {
-        const closeEl = this.shadowRoot.getElementById("close");
-        closeEl.focus();
+        const windowEls = this./*#*/__getAllFocusable();
+        if (windowEls.length) {
+            windowEls[0].focus();
+        } else {
+            const bodyEls = this./*#*/__getBodyFocusable();
+            if (bodyEls.length) {
+                bodyEls[0].focus();
+            } else {
+                const closeEl = this.shadowRoot.getElementById("close");
+                closeEl.focus();
+            }
+        }
     }
     
     focusLast() {
-        const windowEls = Array.from(this.shadowRoot.querySelectorAll(Q_TAB));
+        const windowEls = this./*#*/__getAllFocusable();
         if (windowEls.length) {
             windowEls[windowEls.length - 1].focus();
         } else {
-            const bodyEls = Array.from(this.querySelectorAll(Q_TAB));
+            const bodyEls = this./*#*/__getBodyFocusable();
             if (bodyEls.length) {
                 bodyEls[bodyEls.length - 1].focus();
             } else {

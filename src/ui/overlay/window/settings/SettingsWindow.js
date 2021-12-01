@@ -95,14 +95,14 @@ export default class SettingsWindow extends Window {
         STYLE.apply(this.shadowRoot);
         /* --- */
         STORAGE.set(this, new DefaultingStorage());
-        const window = this.shadowRoot.getElementById("window");
-        const body = this.shadowRoot.getElementById("body");
-        body.innerHTML = "";
-        const ctgrs = els.getElementById("categories");
-        body.append(ctgrs);
-        window.append(els.getElementById("footer"));
+        const windowEl = this.shadowRoot.getElementById("window");
+        const bodyEl = this.shadowRoot.getElementById("body");
+        bodyEl.innerHTML = "";
+        const categoriesEl = els.getElementById("categories");
+        bodyEl.append(categoriesEl);
+        windowEl.append(els.getElementById("footer"));
 
-        ctgrs.onclick = (event) => {
+        categoriesEl.onclick = (event) => {
             const targetEl = event.target.getAttribute("target");
             if (targetEl) {
                 this.active = targetEl;
@@ -111,41 +111,45 @@ export default class SettingsWindow extends Window {
             }
         }
 
-        const sbm = this.shadowRoot.getElementById("submit");
+        const submitEl = this.shadowRoot.getElementById("submit");
         if (!!options.submit && typeof options.submit === "string") {
-            sbm.innerHTML = options.submit;
-            sbm.setAttribute("title", options.submit);
+            submitEl.innerHTML = options.submit;
+            submitEl.setAttribute("title", options.submit);
         }
-        sbm.addEventListener("click", event => {
-            const storage = STORAGE.get(this);
-            const data = storage.getAll();
-            const ev = new Event("submit");
-            ev.data = data;
-            this.dispatchEvent(ev);
-            this.close();
-        });
+        submitEl.addEventListener("click", () => this.submit());
 
-        const ccl = this.shadowRoot.getElementById("cancel");
+        const cancelEl = this.shadowRoot.getElementById("cancel");
         if (!!options.cancel && typeof options.cancel === "string") {
-            ccl.innerHTML = options.cancel;
-            ccl.setAttribute("title", options.cancel);
+            cancelEl.innerHTML = options.cancel;
+            cancelEl.setAttribute("title", options.cancel);
         }
-        ccl.onclick = () => {
-            this.dispatchEvent(new Event("cancel"));
-            this.close();
-        }
+        cancelEl.addEventListener("click", () => this.cancel());
     }
 
     show(data = {}, category = "") {
-        const categories = this.shadowRoot.getElementById("categories");
+        const categoriesEl = this.shadowRoot.getElementById("categories");
         if (category) {
-            categories.active = category;
+            categoriesEl.active = category;
         } else {
-            categories.active = "";
+            categoriesEl.active = "";
         }
         const storage = STORAGE.get(this);
         storage.setAll(data);
         super.show();
+    }
+
+    submit() {
+        const storage = STORAGE.get(this);
+        const data = storage.getAll();
+        const ev = new Event("submit");
+        ev.data = data;
+        this.dispatchEvent(ev);
+        this.remove();
+    }
+
+    cancel() {
+        this.dispatchEvent(new Event("cancel"));
+        this.remove();
     }
 
     overwriteValues(data) {
@@ -154,99 +158,99 @@ export default class SettingsWindow extends Window {
     }
 
     getTab(category, label = category) {
-        const categories = this.shadowRoot.getElementById("categories");
-        const tab = categories.getTab(category);
-        if (tab != null) {
-            const container = tab.querySelector(".container");
-            return container;
+        const categoriesEl = this.shadowRoot.getElementById("categories");
+        const tabEl = categoriesEl.getTab(category);
+        if (tabEl != null) {
+            const containerEl = tabEl.querySelector(".container");
+            return containerEl;
         } else {
-            const tab = categories.setTab(category, I18nLabel.getLabel(label));
-            const container = document.createElement("emc-window-settings-tab");
-            container.className = "container";
-            container.id = `settings_${category}`;
-            tab.append(container);
-            return container;
+            const tabEl = categoriesEl.setTab(category, I18nLabel.getLabel(label));
+            const containerEl = document.createElement("emc-window-settings-tab");
+            containerEl.className = "container";
+            containerEl.id = `settings_${category}`;
+            tabEl.append(containerEl);
+            return containerEl;
         }
     }
 
     addStringInput(category, ref, label, desc, def, visible, resettable) {
-        const panel = this.getTab(category);
-        if (panel != null) {
+        const tabEl = this.getTab(category);
+        if (tabEl != null) {
             const storage = STORAGE.get(this);
             storage.setDefault(ref, def);
-            panel.addStringInput(storage, ref, label, desc, visible, resettable);
+            tabEl.addStringInput(storage, ref, label, desc, visible, resettable);
         }
     }
 
     addNumberInput(category, ref, label, desc, def, visible, resettable, min, max) {
-        const panel = this.getTab(category);
-        if (panel != null) {
+        const tabEl = this.getTab(category);
+        if (tabEl != null) {
             const storage = STORAGE.get(this);
             storage.setDefault(ref, def);
-            panel.addNumberInput(storage, ref, label, desc, visible, resettable, min, max);
+            tabEl.addNumberInput(storage, ref, label, desc, visible, resettable, min, max);
         }
     }
 
     addRangeInput(category, ref, label, desc, def, visible, resettable, min, max) {
-        const panel = this.getTab(category);
-        if (panel != null) {
+        const tabEl = this.getTab(category);
+        if (tabEl != null) {
             const storage = STORAGE.get(this);
             storage.setDefault(ref, def);
-            panel.addRangeInput(storage, ref, label, desc, visible, resettable, min, max);
+            tabEl.addRangeInput(storage, ref, label, desc, visible, resettable, min, max);
         }
     }
 
     addCheckInput(category, ref, label, desc, def, visible, resettable) {
-        const panel = this.getTab(category);
-        if (panel != null) {
+        const tabEl = this.getTab(category);
+        if (tabEl != null) {
             const storage = STORAGE.get(this);
             storage.setDefault(ref, !!def);
-            panel.addCheckInput(storage, ref, label, desc, visible, resettable);
+            tabEl.addCheckInput(storage, ref, label, desc, visible, resettable);
         }
     }
 
     addColorInput(category, ref, label, desc, def, visible, resettable) {
-        const panel = this.getTab(category);
-        if (panel != null) {
+        const tabEl = this.getTab(category);
+        if (tabEl != null) {
             const storage = STORAGE.get(this);
             storage.setDefault(ref, def);
-            panel.addColorInput(storage, ref, label, desc, visible, resettable);
+            tabEl.addColorInput(storage, ref, label, desc, visible, resettable);
         }
     }
 
     addChoiceInput(category, ref, label, desc, def, visible, resettable, values) {
-        const panel = this.getTab(category);
-        if (panel != null) {
+        const tabEl = this.getTab(category);
+        if (tabEl != null) {
             const storage = STORAGE.get(this);
             storage.setDefault(ref, def);
-            panel.addChoiceInput(storage, ref, label, desc, visible, resettable, values);
+            tabEl.addChoiceInput(storage, ref, label, desc, visible, resettable, values);
         }
     }
 
     addListSelectInput(category, ref, label, desc, def, visible, resettable, multiple, values) {
         const convertedValues = convertValueList(values);
-        const panel = this.getTab(category);
-        if (panel != null) {
+        const tabEl = this.getTab(category);
+        if (tabEl != null) {
             const storage = STORAGE.get(this);
             for (const value in convertedValues) {
                 storage.setDefault(value, def.includes(value));
             }
-            panel.addListSelectInput(storage, ref, label, desc, visible, resettable, multiple, convertedValues);
+            tabEl.addListSelectInput(storage, ref, label, desc, visible, resettable, multiple, convertedValues);
         }
     }
 
     addButton(category, ref, label, desc, visible, text = "", callback = null) {
-        const panel = this.getTab(category);
-        if (panel != null) {
+        const tabEl = this.getTab(category);
+        if (tabEl != null) {
             const storage = STORAGE.get(this);
-            panel.addButton(storage, ref, label, desc, visible, text, callback = null);
+            tabEl.addButton(storage, ref, label, desc, visible, text, callback = null);
         }
     }
 
     addElements(category, content) {
-        const panel = this.getTab(category);
-        if (panel != null) {
-            panel.addElements(content);
+        const tabEl = this.getTab(category);
+        if (tabEl != null) {
+            tabEl.addElements(content);
         }
     }
 

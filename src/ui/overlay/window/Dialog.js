@@ -48,12 +48,13 @@ const STYLE = new GlobalStyle(`
 }
 #submit,
 #cancel {
+    align-items: center;
+    justify-content: center;
     margin-left: 10px;
     padding: 5px;
     border: solid 1px black;
     border-radius: 2px;
-    align-items: center;
-    justify-content: center;
+    text-transform: uppercase;
     cursor: pointer;
     user-select: none;
     -webkit-appearance: none;
@@ -76,50 +77,44 @@ export default class Dialog extends Window {
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const window = this.shadowRoot.getElementById("window");
-        const footer = els.getElementById("footer");
-        window.append(footer);
+        const windowEl = this.shadowRoot.getElementById("window");
+        const footerEl = els.getElementById("footer");
+        windowEl.append(footerEl);
 
         if (!!options.text && typeof options.text === "string") {
-            const text = els.getElementById("text");
-            this.shadowRoot.getElementById("body").insertBefore(text, this.shadowRoot.getElementById("body").children[0]);
+            const textEl = els.getElementById("text");
+            this.shadowRoot.getElementById("body").insertBefore(textEl, this.shadowRoot.getElementById("body").children[0]);
             if (options.text instanceof HTMLElement) {
-                text.append(options.text);
+                textEl.append(options.text);
             } else if (typeof options.text === "string") {
-                text.innerHTML = options.text;
+                textEl.innerHTML = options.text;
             }
         }
 
-        const sbm = this.shadowRoot.getElementById("submit");
+        const submitEl = this.shadowRoot.getElementById("submit");
         if (options.submit) {
             if (options.submit instanceof HTMLElement) {
-                sbm.innerHTML = "";
-                sbm.append(options.submit);
+                submitEl.innerHTML = "";
+                submitEl.append(options.submit);
             } else if (typeof options.submit === "string") {
-                sbm.innerHTML = options.submit;
+                submitEl.innerHTML = options.submit;
             }
-            sbm.onclick = () => {
-                this.dispatchEvent(new Event("submit"));
-                this.remove();
-            };
+            submitEl.addEventListener("click", () => this.submit());
         } else {
-            sbm.remove();
+            submitEl.remove();
         }
 
-        const ccl = this.shadowRoot.getElementById("cancel");
+        const cancelEl = this.shadowRoot.getElementById("cancel");
         if (options.cancel) {
             if (options.cancel instanceof HTMLElement) {
-                ccl.innerHTML = "";
-                ccl.append(options.cancel);
+                cancelEl.innerHTML = "";
+                cancelEl.append(options.cancel);
             } else if (typeof options.cancel === "string") {
-                ccl.innerHTML = options.cancel;
+                cancelEl.innerHTML = options.cancel;
             }
-            ccl.onclick = () => {
-                this.dispatchEvent(new Event("cancel"));
-                this.remove();
-            };
+            cancelEl.addEventListener("click", () => this.cancel());
         } else {
-            ccl.remove();
+            cancelEl.remove();
         }
     }
 
@@ -127,75 +122,91 @@ export default class Dialog extends Window {
         WindowLayer.append(this, "dialogs");
         this.initialFocus();
     }
+
+    submit() {
+        this.dispatchEvent(new Event("submit"));
+        this.remove();
+    }
+
+    cancel() {
+        this.dispatchEvent(new Event("cancel"));
+        this.remove();
+    }
     
     static alert(ttl, msg) {
         return new Promise(function(resolve) {
-            const d = new Dialog({
+            const dialogEl = new Dialog({
                 title: ttl,
                 text: msg,
-                submit: "OK"
+                submit: "ok"
             });
-            d.onsubmit = function() {
+            dialogEl.onsubmit = function() {
                 resolve(true);
             }
-            d.oncancel = function() {
+            dialogEl.oncancel = function() {
                 resolve(false);
             }
-            d.onclose = function() {
+            dialogEl.onclose = function() {
                 resolve();
             }
-            d.show();
+            dialogEl.show();
         });
     }
     
     static confirm(ttl, msg) {
         return new Promise(function(resolve) {
-            const d = new Dialog({
+            const dialogEl = new Dialog({
                 title: ttl,
                 text: msg,
-                submit: "YES",
-                cancel: "NO"
+                submit: "yes",
+                cancel: "no"
             });
-            d.onsubmit = function() {
+            dialogEl.onsubmit = function() {
                 resolve(true);
             }
-            d.oncancel = function() {
+            dialogEl.oncancel = function() {
                 resolve(false);
             }
-            d.onclose = function() {
+            dialogEl.onclose = function() {
                 resolve();
             }
-            d.show();
+            dialogEl.show();
         });
     }
     
     static prompt(ttl, msg, def) {
         return new Promise(function(resolve) {
-            const d = new Dialog({
+            const dialogEl = new Dialog({
                 title: ttl,
                 text: msg,
-                submit: "YES",
-                cancel: "NO"
+                submit: true,
+                cancel: true
             });
-            const el = document.createElement("input");
-            el.style.padding = "5px";
-            el.style.backgroundColor = "white";
-            el.style.border = "solid 1px black";
-            el.style.color = "black";
+            const inputEl = document.createElement("input");
+            inputEl.style.padding = "5px";
+            inputEl.style.backgroundColor = "white";
+            inputEl.style.border = "solid 1px black";
+            inputEl.style.color = "black";
             if (typeof def == "string") {
-                el.value = def;
+                inputEl.value = def;
             }
-            d.append(el);
-            d.onsubmit = function() {
-                resolve(el.value);
+            inputEl.addEventListener("keypress", (event) => {
+                if (event.key == "Enter") {
+                    dialogEl.submit();
+                }
+                event.stopPropagation();
+            });
+            dialogEl.append(inputEl);
+            dialogEl.onsubmit = function() {
+                resolve(inputEl.value);
             }
-            d.oncancel = function() {
+            dialogEl.oncancel = function() {
                 resolve(false);
             }
-            d.onclose = function() {
+            dialogEl.onclose = function() {
                 resolve();
             }
-            d.show();
+            dialogEl.show();
         });
     }
 

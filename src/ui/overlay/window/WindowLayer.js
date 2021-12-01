@@ -21,7 +21,7 @@ const STYLE = new GlobalStyle(`
     background-color: rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(2px);
     -webkit-backdrop-filter: blur(2px);
-    z-index: 900800;
+    z-index: 900400;
 }
 :host(:empty) {
     display: none;
