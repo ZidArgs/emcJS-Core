@@ -37,6 +37,7 @@ const STYLE = new GlobalStyle(`
     display: block;
     margin: 8px 0px;
     word-wrap: break-word;
+    white-space: pre-wrap;
     resize: none;
 }
 #footer {
@@ -140,6 +141,7 @@ export default class Dialog extends Window {
                 text: msg,
                 submit: "ok"
             });
+            // ---
             dialogEl.onsubmit = function() {
                 resolve(true);
             }
@@ -161,6 +163,7 @@ export default class Dialog extends Window {
                 submit: "yes",
                 cancel: "no"
             });
+            // ---
             dialogEl.onsubmit = function() {
                 resolve(true);
             }
@@ -182,11 +185,12 @@ export default class Dialog extends Window {
                 submit: true,
                 cancel: true
             });
+            // ---
             const inputEl = document.createElement("input");
             inputEl.style.padding = "5px";
+            inputEl.style.color = "black";
             inputEl.style.backgroundColor = "white";
             inputEl.style.border = "solid 1px black";
-            inputEl.style.color = "black";
             if (typeof def == "string") {
                 inputEl.value = def;
             }
@@ -197,8 +201,44 @@ export default class Dialog extends Window {
                 event.stopPropagation();
             });
             dialogEl.append(inputEl);
+            // ---
             dialogEl.onsubmit = function() {
                 resolve(inputEl.value);
+            }
+            dialogEl.oncancel = function() {
+                resolve(false);
+            }
+            dialogEl.onclose = function() {
+                resolve();
+            }
+            dialogEl.show();
+        });
+    }
+
+    static error(ttl = "Error", msg = "An error occured", errors = []) {
+        return new Promise(function(resolve) {
+            const dialogEl = new Dialog({
+                title: ttl,
+                text: msg,
+                submit: "ok"
+            });
+            // ---
+            const inputEl = document.createElement("textarea");
+            inputEl.style.width = "100%";
+            inputEl.style.maxWidth = "100%";
+            inputEl.style.maxHeight = "300px";
+            inputEl.style.padding = "5px";
+            inputEl.style.color = "black";
+            inputEl.style.backgroundColor = "white";
+            inputEl.style.border = "solid 1px black";
+            inputEl.style.overflow = "scroll";
+            inputEl.style.whiteSpace = "pre";
+            inputEl.readOnly = true;
+            inputEl.value = Array.isArray(errors) ? errors.join("\n") : errors.toString();
+            dialogEl.append(inputEl);
+            // ---
+            dialogEl.onsubmit = function() {
+                resolve(true);
             }
             dialogEl.oncancel = function() {
                 resolve(false);
