@@ -1,5 +1,6 @@
 {
     "extends": "eslint:recommended",
+    "parser": "@babel/eslint-parser",
     "parserOptions": {
         "ecmaVersion": 2021,
         "sourceType": "module",
@@ -9,9 +10,9 @@
         }
     },
     "env": {
-        "es2021": true,
+        "es2020": true,
         "browser": true,
-        "node": false
+        "node": true
     },
     "rules": {
         "indent": [
@@ -58,6 +59,10 @@
                 }
             }
         ],
+        "function-call-argument-newline": [
+            "error",
+            "consistent"
+        ],
         "space-before-function-paren": [
             "error",
             {
@@ -98,6 +103,18 @@
         "nonblock-statement-body-position": [
             "error",
             "beside"
+        ],
+        "object-property-newline": [
+            "error",
+            {
+                "allowAllPropertiesOnSameLine": false
+            }
+        ],
+        "object-curly-newline": [
+            "error",
+            {
+                "minProperties": 1
+            }
         ],
         "lines-between-class-members": [
             "error",
