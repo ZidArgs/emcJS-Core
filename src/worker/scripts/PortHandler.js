@@ -30,14 +30,14 @@ const PortHandler = (function() {
             if (port instanceof MessagePort) {
                 port.postMessage(msg);
             }
-            self.postMessage(msg);
+            self.postMessage?.(msg);
         }
 
         sendAll(msg) {
             for (const p of PORTS) {
                 p.postMessage(msg);
             }
-            self.postMessage(msg);
+            self.postMessage?.(msg);
         }
         
         sendAllButOne(port, msg) {
