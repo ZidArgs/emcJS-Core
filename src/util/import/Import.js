@@ -39,7 +39,7 @@ function extractModule(module) {
     try {
         const {default: def, ...other} = module ?? {};
         return [def, other];
-    } catch(err) {
+    } catch (err) {
         throw new Error(`Error extracting module\n${err}`)
     }
 }

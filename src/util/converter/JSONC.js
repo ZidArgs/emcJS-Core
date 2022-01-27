@@ -93,7 +93,7 @@ class JSONC {
         const buffer = removeComments(input);
         try {
             return JSON.parse(buffer);
-        } catch(e) {
+        } catch (e) {
             console.log(buffer);
             let pos = parseInt(e.message.slice(e.message.lastIndexOf(" ") + 1));
             const ref = input.split(LNBR_SEQ);

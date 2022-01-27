@@ -37,7 +37,7 @@ if (!Document.prototype.hasOwnProperty("adoptedStyleSheets")) {
                     const res = document.createElement("style");
                     res.innerHTML = value;
                     return res;
-                } catch(err) {
+                } catch (err) {
                     throw new TypeError("Failed to set the 'adoptedStyleSheets' property on 'Document': Failed to convert value to 'CSSStyleSheet'.", err);
                 }
             });
@@ -80,7 +80,7 @@ if (!ShadowRoot.prototype.hasOwnProperty("adoptedStyleSheets")) {
                     const res = document.createElement("style");
                     res.innerHTML = value;
                     return res.sheet;
-                } catch(err) {
+                } catch (err) {
                     throw new TypeError("Failed to set the 'adoptedStyleSheets' property on 'ShadowRoot': Failed to convert value to 'CSSStyleSheet'.", err);
                 }
             });

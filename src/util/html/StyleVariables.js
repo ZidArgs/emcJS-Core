@@ -31,7 +31,7 @@ function extractAllRules(sheet) {
                     }
                 }
             }
-        } catch(err) {
+        } catch (err) {
             console.warn(`extracting global variables failed for style "${sheet.href}" - ${err}`);
         }
     }
