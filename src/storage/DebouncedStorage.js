@@ -35,8 +35,12 @@ export default class DebouncedStorage extends EventTarget {
 
     static set debounceTime(value) {
         value = parseInt(value);
-        if (isNaN(value)) throw new TypeError("value must be a number");
-        if (value < 0 || value > 60000) throw new RangeError("value must be between 0 and 60000");
+        if (isNaN(value)) {
+            throw new TypeError("value must be a number");
+        }
+        if (value < 0 || value > 60000) {
+            throw new RangeError("value must be between 0 and 60000");
+        }
         DEBOUNCE_TIME = value;
     }
 
@@ -205,19 +209,17 @@ export default class DebouncedStorage extends EventTarget {
                     DEBOUNCE_TIMER.delete(this);
                 }
             }
-        } else {
-            if (!state.has(key) || !Helper.isEqual(state.get(key), change)) {
-                const changed = {};
-                changed[key] = {
-                    oldValue: state.get(key),
-                    newValue: change
-                };
-                state.set(key, change);
-                const event = new Event("change");
-                event.category = CATEGORY.get(this);
-                event.data = changed;
-                this.dispatchEvent(event);
-            }
+        } else if (!state.has(key) || !Helper.isEqual(state.get(key), change)) {
+            const changed = {};
+            changed[key] = {
+                oldValue: state.get(key),
+                newValue: change
+            };
+            state.set(key, change);
+            const event = new Event("change");
+            event.category = CATEGORY.get(this);
+            event.data = changed;
+            this.dispatchEvent(event);
         }
     }
 

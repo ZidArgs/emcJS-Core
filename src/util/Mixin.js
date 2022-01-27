@@ -18,12 +18,10 @@ export function createMixin(mixin) {
     const typeTag = Symbol("isa");
     const _mixin = (target) => {
         const ext = mixin(target);
-        Object.defineProperty(ext.prototype, typeTag, { value: true });
+        Object.defineProperty(ext.prototype, typeTag, {value: true});
         return ext;
     };
-    Object.defineProperty(_mixin, Symbol.hasInstance, {
-        value: (i) => !!i[typeTag]
-    });
+    Object.defineProperty(_mixin, Symbol.hasInstance, {value: (i) => !!i[typeTag]});
     return _mixin;
 }
 

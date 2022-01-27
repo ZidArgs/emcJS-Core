@@ -165,12 +165,10 @@ export default class TabPanel extends Panel {
             this.shadowRoot.getElementById("categories").append(buttonWrapperEl);
             // ---
             return panelEl;
-        } else {
-            if (name instanceof HTMLElement) {
-                buttonEl.append(name);
-            } else if (typeof name === "string") {
-                buttonEl.innerHTML = name;
-            }
+        } else if (name instanceof HTMLElement) {
+            buttonEl.append(name);
+        } else if (typeof name === "string") {
+            buttonEl.innerHTML = name;
         }
     }
 

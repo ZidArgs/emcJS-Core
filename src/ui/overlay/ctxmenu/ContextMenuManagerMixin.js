@@ -1,6 +1,8 @@
 // frameworks
 import EventTargetManager from "../../../event/EventTargetManager.js";
-import {createMixin} from "../../../util/Mixin.js";
+import {
+    createMixin
+} from "../../../util/Mixin.js";
 import CtxMenuLayer from "./CtxMenuLayer.js";
 
 const CTX_COUNTER = new WeakMap();

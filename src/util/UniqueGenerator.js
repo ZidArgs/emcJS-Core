@@ -11,7 +11,9 @@ class UniqueGenerator {
     uniqueKey(len = 32) {
         let res = "";
         const rnd = crypto.getRandomValues(new Uint8Array(len));
-        rnd.forEach(v => {res += v.toString(36).slice(-1)});
+        rnd.forEach(v => {
+            res += v.toString(36).slice(-1)
+        });
         return res;
     }
 

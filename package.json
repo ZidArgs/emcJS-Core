@@ -1,10 +1,11 @@
 {
   "name": "emcjs",
-  "version": "0.4.27",
+  "version": "0.4.28",
   "description": "Modular JS API",
   "type": "module",
   "scripts": {
-    "test": "serve . -p 12000"
+    "test": "serve . -p 12000",
+    "lint": "yarn eslint ./src"
   },
   "repository": {
     "type": "git",
@@ -13,5 +14,11 @@
   "author": "Denis Peters (ZidArgs)",
   "license": "MIT",
   "homepage": "https://bitbucket.org/zidargs/emcjs/src",
-  "dependencies": {}
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/core": "^7.16.10",
+    "@babel/eslint-parser": "^7.16.5",
+    "@babel/plugin-syntax-top-level-await": "^7.14.5",
+		"eslint": "^8.0.0"
+  }
 }

@@ -2,6 +2,7 @@ import Template from "../../../util/html/Template.js";
 import GlobalStyle from "../../../util/html/GlobalStyle.js";
 import CustomElement from "../../CustomElement.js";
 import CtxMenuLayer from "./CtxMenuLayer.js";
+import "./ContextMenuItem.js";
 
 const TPL = new Template(`
 <div id="focus_catcher_top" tabindex="0"></div>
@@ -292,10 +293,12 @@ export default class ContextMenu extends CustomElement {
                         });
                     }
                 } else if (typeof entry == "object" && !Array.isArray(entry)) {
-                    const el = document.createElement("div");
+                    const el = document.createElement("emc-contextmenuitem");
                     el.classList.add("item");
                     el.setAttribute("tabindex", "0");
                     el.innerHTML = entry.content;
+                    el.info = entry.info;
+
                     /* --- */
                     if (typeof entry.action == "function") {
                         el.addEventListener("click", (event) => {

@@ -47,7 +47,9 @@ function extractModule(module) {
 async function importModule(url) {
     return import(url)
         .then(extractModule)
-        .catch(err => {throw new Error(`Error appending module "${url}" ${err}`)});
+        .catch(err => {
+            throw new Error(`Error appending module "${url}" ${err}`)
+        });
 }
 
 class Import {

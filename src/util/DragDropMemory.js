@@ -7,10 +7,8 @@ class DragDropMemory {
             for (const el of element) {
                 this.add(el);
             }
-        } else {
-            if (element instanceof HTMLElement) {
-                DRAGGED.add(element);
-            }
+        } else if (element instanceof HTMLElement) {
+            DRAGGED.add(element);
         }
     }
 

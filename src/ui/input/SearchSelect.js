@@ -177,73 +177,71 @@ export default class SearchSelect extends CustomDelegatingElement {
                         event.stopPropagation();
                         return false;
                     }
-                } else {
-                    if (event.key == "Escape") {
-                        this./*#*/__cancelSelection();
-                        event.stopPropagation();
-                        return false;
-                    } else if (event.key == "Enter") {
-                        const marked = this.querySelector(".marked");
-                        if (marked != null) {
-                            this./*#*/__choose(marked.getAttribute("value"));
-                        }
-                        event.stopPropagation();
-                        return false;
-                    } else if (event.key == "ArrowUp") {
-                        const marked = this.querySelector(".marked");
-                        if (marked != null) {
-                            let el = marked.previousElementSibling;
-                            while (el != null && el.style.display == "none") {
-                                el = el.previousElementSibling;
-                            }
-                            if (el != null) {
-                                marked.classList.remove("marked");
-                                el.classList.add("marked");
-                                const targetScroll = el.offsetTop - 20;
-                                if (scrollContainerEl.scrollTop > targetScroll) {
-                                    scrollContainerEl.scrollTop = targetScroll;
-                                }
-                            }
-                        } else {
-                            let el = this.querySelector("[value]");
-                            while (el != null && el.style.display == "none") {
-                                el = el.nextElementSibling;
-                            }
-                            if (el != null) {
-                                el.classList.add("marked");
-                                scrollContainerEl.scrollTop = 0;
-                            }
-                        }
-                        event.stopPropagation();
-                        return false;
-                    } else if (event.key == "ArrowDown") {
-                        const marked = this.querySelector(".marked");
-                        if (marked != null) {
-                            let el = marked.nextElementSibling;
-                            while (el != null && el.style.display == "none") {
-                                el = el.nextElementSibling;
-                            }
-                            if (el != null) {
-                                marked.classList.remove("marked");
-                                el.classList.add("marked");
-                                const targetScroll = el.offsetTop - scrollContainerEl.clientHeight + el.clientHeight + 20;
-                                if (scrollContainerEl.scrollTop < targetScroll) {
-                                    scrollContainerEl.scrollTop = targetScroll;
-                                }
-                            }
-                        } else {
-                            let el = this.querySelector("[value]");
-                            while (el != null && el.style.display == "none") {
-                                el = el.nextElementSibling;
-                            }
-                            if (el != null) {
-                                el.classList.add("marked");
-                                scrollContainerEl.scrollTop = 0;
-                            }
-                        }
-                        event.stopPropagation();
-                        return false;
+                } else if (event.key == "Escape") {
+                    this./*#*/__cancelSelection();
+                    event.stopPropagation();
+                    return false;
+                } else if (event.key == "Enter") {
+                    const marked = this.querySelector(".marked");
+                    if (marked != null) {
+                        this./*#*/__choose(marked.getAttribute("value"));
                     }
+                    event.stopPropagation();
+                    return false;
+                } else if (event.key == "ArrowUp") {
+                    const marked = this.querySelector(".marked");
+                    if (marked != null) {
+                        let el = marked.previousElementSibling;
+                        while (el != null && el.style.display == "none") {
+                            el = el.previousElementSibling;
+                        }
+                        if (el != null) {
+                            marked.classList.remove("marked");
+                            el.classList.add("marked");
+                            const targetScroll = el.offsetTop - 20;
+                            if (scrollContainerEl.scrollTop > targetScroll) {
+                                scrollContainerEl.scrollTop = targetScroll;
+                            }
+                        }
+                    } else {
+                        let el = this.querySelector("[value]");
+                        while (el != null && el.style.display == "none") {
+                            el = el.nextElementSibling;
+                        }
+                        if (el != null) {
+                            el.classList.add("marked");
+                            scrollContainerEl.scrollTop = 0;
+                        }
+                    }
+                    event.stopPropagation();
+                    return false;
+                } else if (event.key == "ArrowDown") {
+                    const marked = this.querySelector(".marked");
+                    if (marked != null) {
+                        let el = marked.nextElementSibling;
+                        while (el != null && el.style.display == "none") {
+                            el = el.nextElementSibling;
+                        }
+                        if (el != null) {
+                            marked.classList.remove("marked");
+                            el.classList.add("marked");
+                            const targetScroll = el.offsetTop - scrollContainerEl.clientHeight + el.clientHeight + 20;
+                            if (scrollContainerEl.scrollTop < targetScroll) {
+                                scrollContainerEl.scrollTop = targetScroll;
+                            }
+                        }
+                    } else {
+                        let el = this.querySelector("[value]");
+                        while (el != null && el.style.display == "none") {
+                            el = el.nextElementSibling;
+                        }
+                        if (el != null) {
+                            el.classList.add("marked");
+                            scrollContainerEl.scrollTop = 0;
+                        }
+                    }
+                    event.stopPropagation();
+                    return false;
                 }
             }
         });

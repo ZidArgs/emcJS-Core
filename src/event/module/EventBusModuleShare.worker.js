@@ -20,7 +20,9 @@ function handleDisconnect(event) {
 function handleMessage(event) {
     const msg = event.data;
     for (const port of PORTS) {
-        if (port == this) continue;
+        if (port == this) {
+            continue;
+        }
         port.postMessage(msg);
     }
 }

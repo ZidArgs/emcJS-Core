@@ -1,4 +1,6 @@
-import {createMixin} from "../../util/Mixin.js";
+import {
+    createMixin
+} from "../../util/Mixin.js";
 import EventBusSubset from "../EventBusSubset.js";
 
 const ALLS = new WeakMap();
@@ -26,20 +28,18 @@ export default createMixin((superclass) => class EventBusMixin extends superclas
             if (this.isConnected) {
                 EVENTS.get(this).register(fn);
             }
+        } else if (Array.isArray(name)) {
+            name.forEach(n => this.registerGlobal(n, fn));
         } else {
-            if (Array.isArray(name)) {
-                name.forEach(n => this.registerGlobal(n, fn));
+            if (!SUBS.get(this).has(name)) {
+                const subs = new Set;
+                subs.add(fn);
+                SUBS.get(this).set(name, subs);
             } else {
-                if (!SUBS.get(this).has(name)) {
-                    const subs = new Set;
-                    subs.add(fn);
-                    SUBS.get(this).set(name, subs);
-                } else {
-                    SUBS.get(this).get(name).add(fn);
-                }
-                if (this.isConnected) {
-                    EVENTS.get(this).register(name, fn);
-                }
+                SUBS.get(this).get(name).add(fn);
+            }
+            if (this.isConnected) {
+                EVENTS.get(this).register(name, fn);
             }
         }
     }
@@ -50,16 +50,12 @@ export default createMixin((superclass) => class EventBusMixin extends superclas
             if (this.isConnected) {
                 EVENTS.get(this).unregister(fn);
             }
-        } else {
-            if (Array.isArray(name)) {
-                name.forEach(n => this.unregisterGlobal(n, fn));
-            } else {
-                if (SUBS.get(this).has(name)) {
-                    SUBS.get(this).get(name).delete(fn);
-                    if (this.isConnected) {
-                        EVENTS.get(this).unregister(name, fn);
-                    }
-                }
+        } else if (Array.isArray(name)) {
+            name.forEach(n => this.unregisterGlobal(n, fn));
+        } else if (SUBS.get(this).has(name)) {
+            SUBS.get(this).get(name).delete(fn);
+            if (this.isConnected) {
+                EVENTS.get(this).unregister(name, fn);
             }
         }
     }

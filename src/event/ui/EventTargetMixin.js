@@ -1,4 +1,6 @@
-import {createMixin} from "../../util/Mixin.js";
+import {
+    createMixin
+} from "../../util/Mixin.js";
 import EventTargetManager from "../EventTargetManager.js";
 
 const MANAGERS = new WeakMap();

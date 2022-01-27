@@ -103,7 +103,9 @@ export default class Layout extends CustomElement {
 
     loadLayout(layout) {
         this.innerHTML = "";
-        if (!layout) return;
+        if (!layout) {
+            return;
+        }
         this.appendChild(loadLayout(layout));
     }
 

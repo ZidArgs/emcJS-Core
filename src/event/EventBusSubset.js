@@ -27,32 +27,24 @@ export default class EventBusSubset {
     register(name, fn) {
         if (typeof name == "function") {
             ALLS.get(this).add(name);
+        } else if (Array.isArray(name)) {
+            name.forEach(n => this.register(n, fn));
+        } else if (!SUBS.get(this).has(name)) {
+            const subs = new Set;
+            subs.add(fn);
+            SUBS.get(this).set(name, subs);
         } else {
-            if (Array.isArray(name)) {
-                name.forEach(n => this.register(n, fn));
-            } else {
-                if (!SUBS.get(this).has(name)) {
-                    const subs = new Set;
-                    subs.add(fn);
-                    SUBS.get(this).set(name, subs);
-                } else {
-                    SUBS.get(this).get(name).add(fn);
-                }
-            }
+            SUBS.get(this).get(name).add(fn);
         }
     }
 
     unregister(name, fn) {
         if (typeof name == "function") {
             ALLS.get(this).delete(name);
-        } else {
-            if (Array.isArray(name)) {
-                name.forEach(n => this.unregister(n, fn));
-            } else {
-                if (SUBS.get(this).has(name)) {
-                    SUBS.get(this).get(name).delete(fn);
-                }
-            }
+        } else if (Array.isArray(name)) {
+            name.forEach(n => this.unregister(n, fn));
+        } else if (SUBS.get(this).has(name)) {
+            SUBS.get(this).get(name).delete(fn);
         }
     }
 

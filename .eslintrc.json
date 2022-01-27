@@ -1,5 +1,6 @@
 {
     "extends": "eslint:recommended",
+    "parser": "@babel/eslint-parser",
     "parserOptions": {
         "ecmaVersion": 2021,
         "sourceType": "module",
@@ -11,9 +12,11 @@
     "env": {
         "es2020": true,
         "browser": true,
-        "node": false
+        "node": true
     },
     "rules": {
+        "no-unused-expressions": "error",
+        "no-var": "error",
         "indent": [
             "error",
             4,
@@ -21,6 +24,9 @@
                 "SwitchCase": 1
             }
         ],
+        "curly": "error",
+        "no-case-declarations": "error",
+        "default-case-last": "error",
         "no-trailing-spaces": [
             "error",
             {
@@ -35,7 +41,7 @@
             "error",
             "1tbs",
             {
-                "allowSingleLine": true
+                "allowSingleLine": false
             }
         ],
         "no-unused-vars": [
@@ -78,6 +84,15 @@
             "error",
             "never"
         ],
+        "object-curly-spacing": [
+            "error",
+            "never"
+        ],
+        "array-bracket-spacing": ["error", "never"],
+        "computed-property-spacing": [
+            "error",
+            "never"
+        ],
         "comma-spacing": [
             "error",
             {
@@ -103,16 +118,17 @@
             "error",
             "beside"
         ],
-        "object-property-newline": [
-            "error",
-            {
-                "allowAllPropertiesOnSameLine": false
-            }
-        ],
         "object-curly-newline": [
             "error",
             {
-                "minProperties": 1
+                "ObjectExpression": {
+                    "multiline": true
+                },
+                "ObjectPattern": {
+                    "multiline": true
+                },
+                "ImportDeclaration": "always",
+                "ExportDeclaration": "always"
             }
         ],
         "lines-between-class-members": [
@@ -133,6 +149,20 @@
             "double",
             {
                 "allowTemplateLiterals": true
+            }
+        ],
+        "no-dupe-else-if": "error",
+        "no-duplicate-case": "error",
+        "no-lonely-if": "error",
+        "no-extra-parens": [
+            "error",
+            "all",
+            {
+                "returnAssign": false,
+                "nestedBinaryExpressions": false,
+                "enforceForArrowConditionals": false,
+                "enforceForSequenceExpressions": false,
+                "enforceForNewInMemberExpressions": false
             }
         ]
     }

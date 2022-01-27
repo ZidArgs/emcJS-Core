@@ -25,7 +25,9 @@ class I18n extends EventTarget {
     }
     
     setTranslation(lang, values = {}) {
-        if (typeof lang != "string") return;
+        if (typeof lang != "string") {
+            return;
+        }
         if (!LANGUAGES.has(lang)) {
             LANGUAGES.set(lang, new Map());
         }
@@ -37,9 +39,13 @@ class I18n extends EventTarget {
         }
         const changes = {};
         for (const key in values) {
-            if (!key || typeof key != "string") continue;
+            if (!key || typeof key != "string") {
+                continue;
+            }
             const value = values[key];
-            if (!value || typeof value != "string") continue;
+            if (!value || typeof value != "string") {
+                continue;
+            }
             LANGUAGES.get(lang).set(key, value);
             changes[key] = value;
         }

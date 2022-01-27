@@ -137,12 +137,10 @@ export default class IDBStorage {
                 if (el) {
                     res[el.key] = el.value;
                     el.continue();
+                } else if (typeof filter == "string") {
+                    resolve(res.filter(key => key.startsWith(filter)));
                 } else {
-                    if (typeof filter == "string") {
-                        resolve(res.filter(key => key.startsWith(filter)));
-                    } else {
-                        resolve(res);
-                    }
+                    resolve(res);
                 }
             };
             request.onerror = function(e) {

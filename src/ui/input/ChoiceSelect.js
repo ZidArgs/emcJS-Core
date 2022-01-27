@@ -119,10 +119,8 @@ export default class ChoiceSelect extends CustomElement {
                     val = [val];
                 }
                 val = JSON.stringify(val);
-            } else {
-                if (Array.isArray(val)) {
-                    val = val[0];
-                }
+            } else if (Array.isArray(val)) {
+                val = val[0];
             }
             this.setAttribute("value", val);
         } else {

@@ -1,4 +1,6 @@
-import {createMixin} from "../../util/Mixin.js";
+import {
+    createMixin
+} from "../../util/Mixin.js";
 import I18n from "../I18n.js";
 import EventTargetManager from "../../event/EventTargetManager.js";
 
