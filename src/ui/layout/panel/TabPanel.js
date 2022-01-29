@@ -69,7 +69,7 @@ const STYLE = new GlobalStyle(`
 `);
 
 export default class TabPanel extends Panel {
-    
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
@@ -106,7 +106,7 @@ export default class TabPanel extends Panel {
     static get observedAttributes() {
         return ["active"];
     }
-    
+
     attributeChangedCallback(name, oldValue, newValue) {
         if (oldValue != newValue) {
             switch (name) {

@@ -199,7 +199,7 @@ export default class Window extends CustomElement {
             }
         }
     }
-    
+
     focusLast() {
         const windowEls = this./*#*/__getAllFocusable();
         if (windowEls.length) {

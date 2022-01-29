@@ -98,7 +98,7 @@ export default class SearchField extends CustomDelegatingElement {
     static get observedAttributes() {
         return ["value"];
     }
-      
+
     attributeChangedCallback(name, oldValue, newValue) {
         if (oldValue != newValue) {
             switch (name) {

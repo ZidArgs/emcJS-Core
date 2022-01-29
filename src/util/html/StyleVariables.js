@@ -36,6 +36,7 @@ function extractAllRules(sheet) {
         }
     }
 }
+
 for (const sheet of Array.from(document.styleSheets)) {
     extractAllRules(sheet);
 }

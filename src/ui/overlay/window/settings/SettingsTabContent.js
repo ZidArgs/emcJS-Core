@@ -102,17 +102,17 @@ function generateField(label, desc, inputEl, storage, visible, resetEl) {
         { // input
             const fieldEl = document.createElement("div");
             fieldEl.className = "option-input";
-    
+
             { // input wrapper
                 const wrapperEl = document.createElement("emc-input-wrapper");
                 wrapperEl.append(inputEl);
                 fieldEl.append(wrapperEl);
             }
-    
+
             if (resetEl) {
                 fieldEl.append(resetEl);
             }
-    
+
             containerEl.append(fieldEl);
         }
 

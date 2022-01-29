@@ -47,7 +47,7 @@ export default class Icon extends CustomElement {
     static get observedAttributes() {
         return ["src"];
     }
-      
+
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
             case "src":

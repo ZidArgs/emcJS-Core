@@ -40,7 +40,7 @@ class HotkeyHandler {
     getConfig(name) {
         return Object.assign({}, CONFIG.get(name));
     }
-    
+
     callHotkey(key, ctrlKey = false, altKey = false, shiftKey = false) {
         let called = false;
         for (const [name, value] of CONFIG) {

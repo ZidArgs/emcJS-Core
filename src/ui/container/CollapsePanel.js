@@ -96,7 +96,7 @@ export default class CollapsePanel extends CustomElement {
     static get observedAttributes() {
         return ["caption"];
     }
-      
+
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
             case "caption":

@@ -43,7 +43,7 @@ class Node {
     toString() {
         return this.getName();
     }
-    
+
 }
 
 const SOURCE = new WeakMap();

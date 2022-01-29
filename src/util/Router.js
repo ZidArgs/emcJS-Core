@@ -101,7 +101,7 @@ class Router {
     init() {
         callRoute(location);
     }
-    
+
 }
 
 export default new Router();

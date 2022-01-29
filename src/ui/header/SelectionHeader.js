@@ -124,7 +124,7 @@ export default class SelectionHeader extends CustomDelegatingElement {
     static get observedAttributes() {
         return ["checked", "search"];
     }
-      
+
     attributeChangedCallback(name, oldValue, newValue) {
         if (oldValue != newValue) {
             switch (name) {

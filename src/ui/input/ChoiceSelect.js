@@ -160,7 +160,7 @@ export default class ChoiceSelect extends CustomElement {
     static get observedAttributes() {
         return ["value", "multiple"];
     }
-      
+
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
             case "value":
@@ -192,7 +192,7 @@ export default class ChoiceSelect extends CustomElement {
                 break;
         }
     }
-    
+
     calculateItems() {
         const all = this.querySelectorAll("[value]");
         all.forEach(el => {

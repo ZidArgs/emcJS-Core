@@ -87,7 +87,7 @@ export default class DataStorage extends EventTarget {
         ev.data = this.getAll();
         this.dispatchEvent(ev);
     }
-    
+
     serialize() {
         return this.getAll();
     }

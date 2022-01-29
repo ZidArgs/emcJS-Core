@@ -99,7 +99,7 @@ export default class LabeledIcon extends CustomElement {
     static get observedAttributes() {
         return ["src", "text", "halign", "valign"];
     }
-    
+
     attributeChangedCallback(name, oldValue, newValue) {
         if (oldValue != newValue) {
             switch (name) {

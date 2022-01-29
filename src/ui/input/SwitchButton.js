@@ -103,7 +103,7 @@ export default class SwitchButton extends CustomElement {
     static get observedAttributes() {
         return ["value"];
     }
-      
+
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
             case "value":

@@ -96,7 +96,7 @@ export default class Button extends CustomElement {
     static get observedAttributes() {
         return ["tooltip"];
     }
-      
+
     attributeChangedCallback(name, oldValue, newValue) {
         if (oldValue != newValue) {
             const tooltip = this.shadowRoot.getElementById("tooltip");

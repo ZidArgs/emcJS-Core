@@ -69,7 +69,7 @@ export default class SearchHeader extends CustomDelegatingElement {
     static get observedAttributes() {
         return ["search"];
     }
-      
+
     attributeChangedCallback(name, oldValue, newValue) {
         if (oldValue != newValue) {
             switch (name) {

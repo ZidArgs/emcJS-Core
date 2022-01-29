@@ -13,12 +13,12 @@ export default class MapLocker {
         const inst = INST.get(this);
         return inst.size;
     }
-    
+
     has(key) {
         const inst = INST.get(this);
         return inst.has(key);
     }
-    
+
     get(key) {
         const inst = INST.get(this);
         return inst.get(key);

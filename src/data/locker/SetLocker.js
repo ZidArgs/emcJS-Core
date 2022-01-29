@@ -13,7 +13,7 @@ export default class CollectionLocker {
         const inst = INST.get(this);
         return inst.size;
     }
-    
+
     has(key) {
         const inst = INST.get(this);
         return inst.has(key);

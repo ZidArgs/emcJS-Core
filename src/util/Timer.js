@@ -19,7 +19,7 @@ export default class Timer {
             time_started.set(this, new Date);
         }
     }
-	
+
     getTime() {
         const t = time_stored.get(this);
         if (time_started.has(this)) {
@@ -29,14 +29,14 @@ export default class Timer {
         }
         return [t.getHours(), t.getMinutes(), t.getSeconds(), t.getMilliseconds()];
     }
-	
+
     setMilliseconds(value) {
         time_stored.set(this, new Date(value - TIME_MS_DIFF));
         if (time_started.has(this)) {
             time_started.set(this, new Date);
         }
     }
-	
+
     getMilliseconds() {
         const t = time_stored.get(this);
         if (time_started.has(this)) {
@@ -46,17 +46,17 @@ export default class Timer {
         }
         return t.getTime() + TIME_MS_DIFF;
     }
-	
+
     isRunning() {
         return time_started.has(this);
     }
-	
+
     start() {
         if (!time_started.has(this)) {
             time_started.set(this, new Date);
         }
     }
-	
+
     stop() {
         if (time_started.has(this)) {
             const t = time_stored.get(this);
@@ -65,7 +65,7 @@ export default class Timer {
             time_started.delete(this);
         }
     }
-	
+
     toggle() {
         if (time_started.has(this)) {
             const t = time_stored.get(this);
@@ -78,7 +78,7 @@ export default class Timer {
             return true;
         }
     }
-	
+
     reset() {
         time_stored.set(this, new Date(-TIME_MS_DIFF));
         if (time_started.has(this)) {

@@ -234,7 +234,7 @@ export default class ContextMenu extends CustomElement {
             a[0].focus();
         }
     }
-    
+
     focusLast() {
         const a = Array.from(this.querySelectorAll(Q_TAB));
         if (a.length) {

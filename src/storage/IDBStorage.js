@@ -38,7 +38,7 @@ export default class IDBStorage {
     constructor(name) {
         NAME.set(this, name);
     }
-    
+
     set(key, value) {
         return new Promise(async function(resolve, reject) {
             const transaction = await getStoreWritable(this);
@@ -148,7 +148,7 @@ export default class IDBStorage {
             }
         }.bind(this));
     }
-    
+
     setAll(values) {
         return new Promise(async function(resolve, reject) {
             const transaction = await getStoreWritable(this);

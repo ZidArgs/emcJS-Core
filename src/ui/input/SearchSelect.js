@@ -339,7 +339,7 @@ export default class SearchSelect extends CustomDelegatingElement {
     static get observedAttributes() {
         return ["value", "readonly"];
     }
-      
+
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
             case "value":

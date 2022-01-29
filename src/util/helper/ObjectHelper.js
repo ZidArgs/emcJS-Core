@@ -1,5 +1,5 @@
 class ObjectHelper {
-    
+
     sort(src, fn = () => true) {
         if (typeof src != "object") {
             throw new TypeError("only objects are sortable");
@@ -51,7 +51,7 @@ class ObjectHelper {
         }
         return res;
     }
-    
+
     elevate(obj, splitter = ".", res = {}) {
         if (typeof obj != "object") {
             return obj;

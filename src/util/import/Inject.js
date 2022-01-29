@@ -7,7 +7,7 @@ async function getFile(url) {
 }
 
 class Inject {
-    
+
     css(url) {
         return new Promise((res, rej) => {
             const t = document.createElement("link");
@@ -27,7 +27,7 @@ class Inject {
             document.head.append(t);
         });
     }
-    
+
     script(url) {
         return new Promise((res, rej) => {
             const t = document.createElement("script");
@@ -46,7 +46,7 @@ class Inject {
             document.head.append(t);
         });
     }
-    
+
     module(url) {
         return new Promise((res, rej) => {
             const t = document.createElement("script");

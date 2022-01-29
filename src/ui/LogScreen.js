@@ -83,7 +83,7 @@ export default class LogScreen extends CustomElement {
     static get observedAttributes() {
         return ["title"];
     }
-      
+
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
             case "title":
@@ -94,7 +94,7 @@ export default class LogScreen extends CustomElement {
                 break;
         }
     }
-    
+
 
 }
 

@@ -71,7 +71,7 @@ export default class Processor {
         MEM_O.set(this, new Map());
         DEBUG.set(this, !!debug);
     }
-    
+
     loadLogic(value) {
         if (typeof value == "object" && !Array.isArray(value)) {
             const debug = DEBUG.get(this);

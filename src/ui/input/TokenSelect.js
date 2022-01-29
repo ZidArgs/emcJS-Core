@@ -439,7 +439,7 @@ export default class TokenSelect extends CustomDelegatingElement {
     static get observedAttributes() {
         return ["value", "readonly"];
     }
-      
+
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
             case "value":
@@ -464,7 +464,7 @@ export default class TokenSelect extends CustomDelegatingElement {
                 break;
         }
     }
-    
+
     calculateItems() {
         const all = this.querySelectorAll(`[value]`);
         const vals = new Set(this.value);

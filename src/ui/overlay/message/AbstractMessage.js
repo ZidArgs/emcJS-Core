@@ -107,7 +107,7 @@ export default class AbstractMessage extends CustomElement {
             return new this(params);
         }
     }
-    
+
     static success(params) {
         if (typeof params == "object") {
             if (!Array.isArray(params)) {
@@ -119,7 +119,7 @@ export default class AbstractMessage extends CustomElement {
             return this.show({text: params, type: "success"});
         }
     }
-    
+
     static info(params) {
         if (typeof params == "object") {
             if (!Array.isArray(params)) {
@@ -131,7 +131,7 @@ export default class AbstractMessage extends CustomElement {
             return this.show({text: params, type: "info"});
         }
     }
-    
+
     static warn(params) {
         if (typeof params == "object") {
             if (!Array.isArray(params)) {
@@ -143,7 +143,7 @@ export default class AbstractMessage extends CustomElement {
             return this.show({text: params, type: "warning"});
         }
     }
-    
+
     static error(params) {
         if (typeof params == "object") {
             if (!Array.isArray(params)) {

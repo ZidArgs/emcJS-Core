@@ -23,7 +23,7 @@ class I18n extends EventTarget {
             this.dispatchEvent(event);
         }
     }
-    
+
     setTranslation(lang, values = {}) {
         if (typeof lang != "string") {
             return;
@@ -150,4 +150,5 @@ class I18n extends EventTarget {
 
 const i18n = new I18n();
 window.i18n = i18n;
+
 export default i18n;

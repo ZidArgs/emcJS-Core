@@ -133,7 +133,7 @@ export default class Dialog extends Window {
         this.dispatchEvent(new Event("cancel"));
         this.remove();
     }
-    
+
     static alert(ttl, msg) {
         return new Promise(function(resolve) {
             const dialogEl = new Dialog({
@@ -154,7 +154,7 @@ export default class Dialog extends Window {
             dialogEl.show();
         });
     }
-    
+
     static confirm(ttl, msg) {
         return new Promise(function(resolve) {
             const dialogEl = new Dialog({
@@ -176,7 +176,7 @@ export default class Dialog extends Window {
             dialogEl.show();
         });
     }
-    
+
     static prompt(ttl, msg, def) {
         return new Promise(function(resolve) {
             const dialogEl = new Dialog({

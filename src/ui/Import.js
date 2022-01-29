@@ -55,7 +55,7 @@ export default class HTMLImport extends CustomElement {
     static get observedAttributes() {
         return ["style", "html", "module"];
     }
-      
+
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
             case "style":

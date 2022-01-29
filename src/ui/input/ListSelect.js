@@ -351,7 +351,7 @@ export default class ListSelect extends CustomDelegatingElement {
     static get observedAttributes() {
         return ["value", "multiple"];
     }
-      
+
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
             case "value":
@@ -390,7 +390,7 @@ export default class ListSelect extends CustomDelegatingElement {
         const header = this.shadowRoot.getElementById("header");
         header.search = "";
     }
-    
+
     calculateItems() {
         const header = this.shadowRoot.getElementById("header");
         const all = this.querySelectorAll(`[value]`);
