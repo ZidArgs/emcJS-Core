@@ -1,7 +1,12 @@
+import StringHelper from "./StringHelper.js";
 import ArrayHelper from "./ArrayHelper.js";
 import ObjectHelper from "./ObjectHelper.js";
 
 class Helper {
+
+    get String() {
+        return StringHelper;
+    }
 
     get Array() {
         return ArrayHelper;
