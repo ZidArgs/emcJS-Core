@@ -1,8 +1,13 @@
+import NumberHelper from "./NumberHelper.js";
 import StringHelper from "./StringHelper.js";
 import ArrayHelper from "./ArrayHelper.js";
 import ObjectHelper from "./ObjectHelper.js";
 
 class Helper {
+
+    get Number() {
+        return NumberHelper;
+    }
 
     get String() {
         return StringHelper;

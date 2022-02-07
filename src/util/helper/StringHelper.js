@@ -1,4 +1,3 @@
-
 const TEMPLATE_PLACEHOLDER = /\$\{(.*?)\}/;
 
 class StringHelper {
