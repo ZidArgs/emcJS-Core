@@ -2,9 +2,8 @@ import AnyState from "./AnyState.js";
 
 export default class BoolState extends AnyState {
 
-    constructor() {
-        super();
-        super.value = "";
+    constructor(value) {
+        super(value.toString());
     }
 
     set value(value) {

@@ -1,29 +1,21 @@
-const DATA = new WeakMap();
-
 export default class Context {
 
-    constructor() {
-        DATA.set(this, new Map());
-    }
+    #data = new Map();
 
     set(key, value) {
-        const data = DATA.get(this);
-        data.set(key, value);
+        this.#data.set(key, value);
     }
 
     get(key) {
-        const data = DATA.get(this);
-        return data.get(key);
+        return this.#data.get(key);
     }
 
     has(key) {
-        const data = DATA.get(this);
-        return data.has(key);
+        return this.#data.has(key);
     }
 
     delete(key) {
-        const data = DATA.get(this);
-        data.delete(key);
+        this.#data.delete(key);
     }
 
 }

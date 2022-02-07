@@ -1,32 +1,28 @@
-const INST = new WeakMap();
-
 export default class CollectionLocker {
+
+    #inst;
 
     constructor(inst) {
         if (!(inst instanceof Set)) {
             throw new TypeError("Set expected");
         }
-        INST.set(this, inst);
+        this.#inst = inst;
     }
 
     get size() {
-        const inst = INST.get(this);
-        return inst.size;
+        return this.#inst.size;
     }
 
     has(key) {
-        const inst = INST.get(this);
-        return inst.has(key);
+        return this.#inst.has(key);
     }
 
     values() {
-        const inst = INST.get(this);
-        return inst.values();
+        return this.#inst.values();
     }
 
     [Symbol.iterator]() {
-        const inst = INST.get(this);
-        return inst[Symbol.iterator]();
+        return this.#inst[Symbol.iterator]();
     }
 
 }

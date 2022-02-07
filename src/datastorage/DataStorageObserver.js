@@ -1,10 +1,12 @@
 import DataStorage from "./DataStorage.js";
 
-const STORAGE = new WeakMap();
-const DEF = new WeakMap();
-const KEY = new WeakMap();
-
 export default class DataStorageObserver extends EventTarget {
+
+    #storage;
+
+    #key;
+
+    #def;
 
     constructor(storage, key, def) {
         if (!(storage instanceof DataStorage)) {
@@ -15,48 +17,45 @@ export default class DataStorageObserver extends EventTarget {
         }
         super();
         /* --- */
-        KEY.set(this, key);
-        DEF.set(this, def);
-        STORAGE.set(this, storage);
+        this.#storage = storage;
+        this.#key = key;
+        this.#def = def;
+        /* --- */
         storage.addEventListener("change", (event) => {
-            const key = KEY.get(this);
-            if (key != null && event.changes[key] != null) {
+            if (this.#key != null && event.changes[this.#key] != null) {
                 const ev = new Event("change");
-                ev.data = event.changes[key].newValue ?? def;
+                ev.data = event.changes[this.#key].newValue ?? def;
                 this.dispatchEvent(ev);
             }
         });
         storage.addEventListener("clear", event => {
-            const key = KEY.get(this);
-            if (key != null) {
+            if (this.#key != null) {
                 const ev = new Event("change");
-                ev.data = event.data[key] ?? def;
+                ev.data = event.data[this.#key] ?? def;
                 this.dispatchEvent(ev);
             }
         });
         storage.addEventListener("load", (event) => {
-            const key = KEY.get(this);
-            if (key != null) {
+            if (this.#key != null) {
                 const ev = new Event("change");
-                ev.data = event.data[key] ?? def;
+                ev.data = event.data[this.#key] ?? def;
                 this.dispatchEvent(ev);
             }
         });
     }
 
     get key() {
-        return KEY.get(this);
+        return this.#key;
     }
 
     set key(value) {
-        if (typeof key == "string") {
-            const oldKey = KEY.get(this);
+        if (typeof value == "string") {
+            const oldKey = this.#key;
             if (oldKey != value) {
-                KEY.set(this, value);
+                this.#key = value;
                 /* event */
-                const storage = STORAGE.get(this);
-                const oldValue = storage.get(oldKey);
-                const newValue = storage.get(value);
+                const oldValue = this.#storage.get(oldKey);
+                const newValue = this.#storage.get(value);
                 if (oldValue != newValue) {
                     const ev = new Event("change");
                     ev.data = newValue;
@@ -67,16 +66,11 @@ export default class DataStorageObserver extends EventTarget {
     }
 
     get value() {
-        const storage = STORAGE.get(this);
-        const key = KEY.get(this);
-        const def = DEF.get(this);
-        return storage.get(key, def);
+        return this.#storage.get(this.#key, this.#def);
     }
 
     set value(value) {
-        const storage = STORAGE.get(this);
-        const key = KEY.get(this);
-        storage.set(key, value);
+        this.#storage.set(this.#key, value);
     }
 
 }

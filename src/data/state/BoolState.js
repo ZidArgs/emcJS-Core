@@ -2,9 +2,11 @@ import AnyState from "./AnyState.js";
 
 export default class BoolState extends AnyState {
 
-    constructor() {
-        super();
-        super.value = false;
+    constructor(value) {
+        if (typeof value != "boolean") {
+            value = !!value;
+        }
+        super(value);
     }
 
     set value(value) {

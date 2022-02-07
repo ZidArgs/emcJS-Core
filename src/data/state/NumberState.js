@@ -1,12 +1,10 @@
+import NumberHelper from "../../util/helper/NumberHelper.js";
 import AnyState from "./AnyState.js";
-
-const MAX = new WeakMap();
-const MIN = new WeakMap();
 
 function parseNumber(value) {
     const result = parseFloat(value);
     if (isNaN(result)) {
-        console.warn("value is not a number");
+        console.warn(`value "${value}" is not a number`);
         return;
     }
     return result;
@@ -14,21 +12,26 @@ function parseNumber(value) {
 
 export default class NumberState extends AnyState {
 
-    constructor(min, max) {
-        super();
-        MIN.set(this, parseNumber(min) ?? Number.MIN_VALUE);
-        MAX.set(this, parseNumber(max) ?? Number.MAX_VALUE);
-        super.value = 0;
+    #min = 0;
+
+    #max = 0;
+
+    constructor(value, min, max) {
+        value = parseNumber(value) ?? 0;
+        min = parseNumber(min) ?? Number.MIN_VALUE;
+        max = parseNumber(max) ?? Number.MAX_VALUE;
+        super(NumberHelper.getInBoundary(value, min, max));
+        this.#min = min;
+        this.#max = max;
     }
 
     set min(value) {
         value = parseNumber(value);
         if (value != null) {
-            const max = MAX.get(this);
-            if (value > max) {
-                value = max;
+            if (value > this.#max) {
+                value = this.#max;
             }
-            MIN.set(this, value);
+            this.#min = value;
             if (this.value < value) {
                 super.value = value;
             }
@@ -36,17 +39,16 @@ export default class NumberState extends AnyState {
     }
 
     get min() {
-        return MIN.get(this);
+        return this.#min;
     }
 
     set max(value) {
         value = parseNumber(value);
         if (value != null) {
-            const min = MIN.get(this);
-            if (value < min) {
-                value = min;
+            if (value < this.#min) {
+                value = this.#min;
             }
-            MAX.set(this, value);
+            this.#max = value;
             if (this.value > value) {
                 super.value = value;
             }
@@ -54,20 +56,13 @@ export default class NumberState extends AnyState {
     }
 
     get max() {
-        return MAX.get(this);
+        return this.#max;
     }
 
     set value(value) {
         value = parseNumber(value);
         if (value != null) {
-            const max = MAX.get(this);
-            const min = MIN.get(this);
-            if (value > max) {
-                value = max;
-            } else if (value < min) {
-                value = min;
-            }
-            super.value = value;
+            super.value = NumberHelper.getInBoundary(value, this.#min, this.#max);
         }
     }
 

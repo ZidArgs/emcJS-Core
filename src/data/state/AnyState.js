@@ -1,17 +1,17 @@
 import Helper from "../../util/helper/Helper.js";
 
-const STATE = new WeakMap();
-
 export default class AnyState extends EventTarget {
 
-    constructor() {
+    #state;
+
+    constructor(value) {
         super();
+        this.#state = value;
     }
 
     set value(value) {
-        const state = STATE.get(this);
-        if (!Helper.isEqual(state, value)) {
-            STATE.set(this, value);
+        if (!Helper.isEqual(this.#state, value)) {
+            this.#state = value;
             const event = new Event("value");
             event.data = value;
             this.dispatchEvent(event);
@@ -19,7 +19,7 @@ export default class AnyState extends EventTarget {
     }
 
     get value() {
-        return STATE.get(this);
+        return this.#state;
     }
 
 }

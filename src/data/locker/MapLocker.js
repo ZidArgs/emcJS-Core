@@ -1,47 +1,40 @@
-const INST = new WeakMap();
-
 export default class MapLocker {
+
+    #inst;
 
     constructor(inst) {
         if (!(inst instanceof Map)) {
             throw new TypeError("Map expected");
         }
-        INST.set(this, inst);
+        this.#inst = inst;
     }
 
     get size() {
-        const inst = INST.get(this);
-        return inst.size;
+        return this.#inst.size;
     }
 
     has(key) {
-        const inst = INST.get(this);
-        return inst.has(key);
+        return this.#inst.has(key);
     }
 
     get(key) {
-        const inst = INST.get(this);
-        return inst.get(key);
+        return this.#inst.get(key);
     }
 
     values() {
-        const inst = INST.get(this);
-        return inst.values();
+        return this.#inst.values();
     }
 
     keys() {
-        const inst = INST.get(this);
-        return inst.keys();
+        return this.#inst.keys();
     }
 
     entries() {
-        const inst = INST.get(this);
-        return inst.entries();
+        return this.#inst.entries();
     }
 
     [Symbol.iterator]() {
-        const inst = INST.get(this);
-        return inst[Symbol.iterator]();
+        return this.#inst[Symbol.iterator]();
     }
 
 }

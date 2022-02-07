@@ -1,19 +1,12 @@
-const BUFFER = new WeakMap();
-
 export default class DataStorage extends EventTarget {
 
-    constructor() {
-        super();
-        const buffer = new Map();
-        BUFFER.set(this, buffer);
-    }
+    #buffer = new Map();
 
     set(key, value) {
-        const buffer = BUFFER.get(this);
         const oldValue = this.get(key);
         // change event
         if (oldValue != value) {
-            buffer.set(key, value);
+            this.#buffer.set(key, value);
             const ev = new Event("change");
             ev.data = {[key]: value};
             ev.changes = {[key]: {oldValue, newValue: value}};
@@ -22,14 +15,13 @@ export default class DataStorage extends EventTarget {
     }
 
     setAll(data) {
-        const buffer = BUFFER.get(this);
         const values = {};
         const changes = {};
         for (const key in data) {
             const newValue = data[key];
             const oldValue = this.get(key);
             if (oldValue != newValue) {
-                buffer.set(key, newValue);
+                this.#buffer.set(key, newValue);
                 values[key] = newValue;
                 changes[key] = {oldValue, newValue};
             }
@@ -44,24 +36,21 @@ export default class DataStorage extends EventTarget {
     }
 
     get(key, value) {
-        const buffer = BUFFER.get(this);
-        return buffer.get(key) ?? value;
+        return this.#buffer.get(key) ?? value;
     }
 
     getAll() {
-        const buffer = BUFFER.get(this);
         const res = {};
-        for (const [key, value] of buffer) {
+        for (const [key, value] of this.#buffer) {
             res[key] = value;
         }
         return res;
     }
 
     delete(key) {
-        const buffer = BUFFER.get(this);
-        const oldValue = buffer.get(key);
+        const oldValue = this.#buffer.get(key);
         if (typeof oldValue != "undefined") {
-            buffer.delete(key);
+            this.#buffer.delete(key);
             const defValue = this.get(key);
             const ev = new Event("change");
             ev.data = {[key]: defValue};
@@ -71,18 +60,15 @@ export default class DataStorage extends EventTarget {
     }
 
     has(key) {
-        const buffer = BUFFER.get(this);
-        return buffer.has(key);
+        return this.#buffer.has(key);
     }
 
     keys() {
-        const buffer = BUFFER.get(this);
-        return buffer.keys();
+        return this.#buffer.keys();
     }
 
     clear() {
-        const buffer = BUFFER.get(this);
-        buffer.clear();
+        this.#buffer.clear();
         const ev = new Event("clear");
         ev.data = this.getAll();
         this.dispatchEvent(ev);
@@ -93,12 +79,11 @@ export default class DataStorage extends EventTarget {
     }
 
     deserialize(data = {}) {
-        const buffer = BUFFER.get(this);
-        buffer.clear();
+        this.#buffer.clear();
         for (const key in data) {
             const newValue = data[key];
             if (newValue != null) {
-                buffer.set(key, newValue);
+                this.#buffer.set(key, newValue);
             }
         }
         const ev = new Event("load");
@@ -107,7 +92,6 @@ export default class DataStorage extends EventTarget {
     }
 
     overwrite(data = {}) {
-        const buffer = BUFFER.get(this);
         const values = {};
         const changes = {};
         for (const key in data) {
@@ -115,12 +99,12 @@ export default class DataStorage extends EventTarget {
             const oldValue = this.get(key);
             if (oldValue != newValue) {
                 if (newValue == null) {
-                    buffer.delete(key);
+                    this.#buffer.delete(key);
                     const defValue = this.get(key);
                     values[key] = defValue;
                     changes[key] = {oldValue, newValue: defValue};
                 } else {
-                    buffer.set(key, newValue);
+                    this.#buffer.set(key, newValue);
                     values[key] = newValue;
                     changes[key] = {oldValue, newValue};
                 }
@@ -136,8 +120,7 @@ export default class DataStorage extends EventTarget {
     }
 
     [Symbol.iterator]() {
-        const buffer = BUFFER.get(this);
-        return buffer[Symbol.iterator]()
+        return this.#buffer[Symbol.iterator]()
     }
 
 }
