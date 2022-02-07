@@ -95,7 +95,6 @@ export default class LogScreen extends CustomElement {
         }
     }
 
-
 }
 
 customElements.define("emc-logscreen", LogScreen);

@@ -16,7 +16,6 @@ class XML {
 
 export default new XML();
 
-
 /*
 
 <bookstore test="arg" class="super rot" id="haha">
