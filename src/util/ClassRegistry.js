@@ -1,45 +1,41 @@
-const REGISTRY = new WeakMap();
-const DEFAULT = new WeakMap();
-
 export default class ClassRegistry {
 
+    #registry = new Map();
+
+    #defaultClass;
+
     constructor(DefClass) {
-        REGISTRY.set(this, new Map());
-        DEFAULT.set(this, DefClass);
+        this.#defaultClass = DefClass;
     }
 
     register(ref, RegClass) {
-        const register = REGISTRY.get(this);
-        if (register.has(ref)) {
-            const DefClass = DEFAULT.get(this);
-            throw new Error(`type "${ref}" already exists in ${DefClass.name}`);
+        if (this.#registry.has(ref)) {
+            throw new Error(`type "${ref}" already exists in ${this.#defaultClass.name}`);
         }
-        register.set(ref, RegClass);
+        this.#registry.set(ref, RegClass);
         return this;
     }
 
     create(ref, ...params) {
         if (typeof ref == "string" && ref) {
-            const register = REGISTRY.get(this);
-            if (register.has(ref)) {
-                const TypeClass = register.get(ref);
+            if (this.#registry.has(ref)) {
+                const TypeClass = this.#registry.get(ref);
                 return new TypeClass(...params);
             }
             ref = `${ref}*`;
             while (ref.length - 1) {
-                if (register.has(ref)) {
-                    const TypeClass = register.get(ref);
+                if (this.#registry.has(ref)) {
+                    const TypeClass = this.#registry.get(ref);
                     return new TypeClass(...params);
                 }
                 ref = `${ref.slice(0, -2)}*`;
             }
-            if (register.has("*")) {
-                const TypeClass = register.get("*");
+            if (this.#registry.has("*")) {
+                const TypeClass = this.#registry.get("*");
                 return new TypeClass(...params);
             }
         }
-        const DefClass = DEFAULT.get(this);
-        return new DefClass(...params);
+        return new this.#defaultClass(...params);
     }
 
 }

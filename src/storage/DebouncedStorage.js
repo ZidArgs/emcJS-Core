@@ -1,36 +1,20 @@
 
 import Helper from "../util/helper/Helper.js";
 
-const CATEGORY = new WeakMap();
-const STATE = new WeakMap();
-const CHANGES = new WeakMap();
-const DEBOUNCE_TIMER = new WeakMap();
-
-let DEBOUNCE_TIME = 500;
-
-function debounceFunction() {
-    DEBOUNCE_TIMER.delete(this);
-    const state = STATE.get(this);
-    const changes = CHANGES.get(this);
-    const changed = {};
-    for (const [key, value] of changes) {
-        changed[key] = {
-            oldValue: state.get(key),
-            newValue: value
-        };
-        state.set(key, value);
-    }
-    changes.clear();
-    const event = new Event("change");
-    event.category = CATEGORY.get(this);
-    event.data = changed;
-    this.dispatchEvent(event);
-}
-
 export default class DebouncedStorage extends EventTarget {
 
+    static #debounceTime = 500;
+
+    #debounceTimer;
+
+    #category;
+
+    #state = new Map();
+
+    #changes = new Map();
+
     static get debounceTime() {
-        return DEBOUNCE_TIME;
+        return this.#debounceTime;
     }
 
     static set debounceTime(value) {
@@ -41,128 +25,137 @@ export default class DebouncedStorage extends EventTarget {
         if (value < 0 || value > 60000) {
             throw new RangeError("value must be between 0 and 60000");
         }
-        DEBOUNCE_TIME = value;
+        this.#debounceTime = value;
     }
 
     constructor(category) {
         super();
-        CATEGORY.set(this, category);
-        CHANGES.set(this, new Map());
-        STATE.set(this, new Map());
+        this.#category = category;
+    }
+
+    #debounceChangeEvent() {
+        this.#debounceTimer = undefined;
+        const changed = {};
+        for (const [key, value] of this.#changes) {
+            changed[key] = {
+                oldValue: this.#state.get(key),
+                newValue: value
+            };
+            this.#state.set(key, value);
+        }
+        this.#changes.clear();
+        const event = new Event("change");
+        event.category = this.#category;
+        event.data = changed;
+        this.dispatchEvent(event);
     }
 
     overwrite(data) {
-        const state = STATE.get(this);
-        const changes = CHANGES.get(this);
-        if (DEBOUNCE_TIMER.has(this)) {
-            clearTimeout(DEBOUNCE_TIMER.get(this));
-            DEBOUNCE_TIMER.delete(this);
+        if (this.#debounceTimer != null) {
+            clearTimeout(this.#debounceTimer);
+            this.#debounceTimer = undefined;
         }
-        state.clear();
-        changes.clear();
+        this.#state.clear();
+        this.#changes.clear();
         for (const key in data) {
             const value = data[key];
-            state.set(key, value);
+            this.#state.set(key, value);
         }
     }
 
     clear() {
-        const state = STATE.get(this);
-        const changes = CHANGES.get(this);
-        if (DEBOUNCE_TIMER.has(this)) {
-            clearTimeout(DEBOUNCE_TIMER.get(this));
-            DEBOUNCE_TIMER.delete(this);
+        if (this.#debounceTimer != null) {
+            clearTimeout(this.#debounceTimer);
+            this.#debounceTimer = undefined;
         }
-        for (const [key, value] of state) {
+        for (const [key, value] of this.#state) {
             if (value != null) {
-                changes[key] = undefined;
+                this.#changes[key] = undefined;
             }
         }
-        for (const [key, value] of changes) {
+        for (const [key, value] of this.#changes) {
             if (value != null) {
-                changes[key] = undefined;
+                this.#changes[key] = undefined;
             }
         }
-        if (changes.size) {
-            DEBOUNCE_TIMER.set(this, setTimeout(debounceFunction.bind(this), DEBOUNCE_TIME));
+        if (this.#changes.size) {
+            this.#debounceTimer = setTimeout(() => {
+                this.#debounceChangeEvent();
+            }, DebouncedStorage.debounceTime);
         }
-        state.clear();
+        this.#state.clear();
     }
 
     set(key, value) {
-        const state = STATE.get(this);
-        const changes = CHANGES.get(this);
-        if (!state.has(key) || !Helper.isEqual(state.get(key), value)) {
-            changes.set(key, value);
+        if (!this.#state.has(key) || !Helper.isEqual(this.#state.get(key), value)) {
+            this.#changes.set(key, value);
             // clear timeout
-            if (DEBOUNCE_TIMER.has(this)) {
-                clearTimeout(DEBOUNCE_TIMER.get(this));
-                DEBOUNCE_TIMER.delete(this);
+            if (this.#debounceTimer != null) {
+                clearTimeout(this.#debounceTimer);
+                this.#debounceTimer = undefined;
             }
             // set timeout
-            DEBOUNCE_TIMER.set(this, setTimeout(debounceFunction.bind(this), DEBOUNCE_TIME));
-        } else if (changes.has(key)) {
-            changes.delete(key);
+            this.#debounceTimer = setTimeout(() => {
+                this.#debounceChangeEvent();
+            }, DebouncedStorage.debounceTime);
+        } else if (this.#changes.has(key)) {
+            this.#changes.delete(key);
             // clear timeout
-            clearTimeout(DEBOUNCE_TIMER.get(this));
-            DEBOUNCE_TIMER.delete(this);
+            clearTimeout(this.#debounceTimer);
+            this.#debounceTimer = undefined;
             // set timeout
-            if (changes.size) {
-                DEBOUNCE_TIMER.set(this, setTimeout(debounceFunction.bind(this), DEBOUNCE_TIME));
+            if (this.#changes.size) {
+                this.#debounceTimer = setTimeout(() => {
+                    this.#debounceChangeEvent();
+                }, DebouncedStorage.debounceTime);
             }
         }
     }
 
     setAll(data) {
-        const state = STATE.get(this);
-        const changes = CHANGES.get(this);
         let changed = false;
         for (const key in data) {
             const value = data[key];
-            if (!state.has(key) || !Helper.isEqual(state.get(key), value)) {
-                changes.set(key, value);
+            if (!this.#state.has(key) || !Helper.isEqual(this.#state.get(key), value)) {
+                this.#changes.set(key, value);
                 changed = true;
-            } else if (changes.has(key)) {
-                changes.delete(key);
+            } else if (this.#changes.has(key)) {
+                this.#changes.delete(key);
                 changed = true;
             }
         }
-        if (changed && DEBOUNCE_TIMER.has(this)) {
-            clearTimeout(DEBOUNCE_TIMER.get(this));
-            DEBOUNCE_TIMER.delete(this);
+        if (changed && this.#debounceTimer != null) {
+            clearTimeout(this.#debounceTimer);
+            this.#debounceTimer = undefined;
         }
-        if (changes.size) {
-            DEBOUNCE_TIMER.set(this, setTimeout(debounceFunction.bind(this), DEBOUNCE_TIME));
+        if (this.#changes.size) {
+            this.#debounceTimer = setTimeout(() => {
+                this.#debounceChangeEvent();
+            }, DebouncedStorage.debounceTime);
         }
     }
 
     get(key) {
-        const state = STATE.get(this);
-        const changes = CHANGES.get(this);
-        if (changes.has(key)) {
-            return changes.get(key);
+        if (this.#changes.has(key)) {
+            return this.#changes.get(key);
         } else {
-            return state.get(key);
+            return this.#state.get(key);
         }
     }
 
     getAll() {
-        const state = STATE.get(this);
-        const changes = CHANGES.get(this);
         const data = {};
-        for (const [key, value] of state) {
+        for (const [key, value] of this.#state) {
             data[key] = value;
         }
-        for (const [key, value] of changes) {
+        for (const [key, value] of this.#changes) {
             data[key] = value;
         }
         return data;
     }
 
     has(key) {
-        const state = STATE.get(this);
-        const changes = CHANGES.get(this);
-        if (changes.has(key) || state.has(key)) {
+        if (this.#changes.has(key) || this.#state.has(key)) {
             return true;
         } else {
             return false;
@@ -170,96 +163,89 @@ export default class DebouncedStorage extends EventTarget {
     }
 
     clearImmediate() {
-        const state = STATE.get(this);
-        const changes = CHANGES.get(this);
         const changed = {};
-        for (const [key, value] of state) {
+        for (const [key, value] of this.#state) {
             if (value != null) {
                 changed[key] = {
-                    oldValue: state.get(key),
+                    oldValue: this.#state.get(key),
                     newValue: value
                 };
             }
         }
-        state.clear();
-        changes.clear();
-        if (DEBOUNCE_TIMER.has(this)) {
-            clearTimeout(DEBOUNCE_TIMER.get(this));
-            DEBOUNCE_TIMER.delete(this);
+        this.#state.clear();
+        this.#changes.clear();
+        if (this.#debounceTimer != null) {
+            clearTimeout(this.#debounceTimer);
+            this.#debounceTimer = undefined;
         }
         if (Object.keys(changed).length) {
             const event = new Event("change");
-            event.category = CATEGORY.get(this);
+            event.category = this.#category;
             event.data = changed;
             this.dispatchEvent(event);
         }
     }
 
     setImmediate(key, current, change) {
-        const state = STATE.get(this);
-        const changes = CHANGES.get(this);
-        if (DEBOUNCE_TIMER.has(this)) {
-            state.set(key, current);
+        if (this.#debounceTimer != null) {
+            this.#state.set(key, current);
             if (!Helper.isEqual(current, change)) {
-                changes.set(key, change);
-            } else if (changes.has(key)) {
-                changes.delete(key);
-                if (!changes.size) {
-                    clearTimeout(DEBOUNCE_TIMER.get(this));
-                    DEBOUNCE_TIMER.delete(this);
+                this.#changes.set(key, change);
+            } else if (this.#changes.has(key)) {
+                this.#changes.delete(key);
+                if (!this.#changes.size) {
+                    clearTimeout(this.#debounceTimer);
+                    this.#debounceTimer = undefined;
                 }
             }
-        } else if (!state.has(key) || !Helper.isEqual(state.get(key), change)) {
+        } else if (!this.#state.has(key) || !Helper.isEqual(this.#state.get(key), change)) {
             const changed = {};
             changed[key] = {
-                oldValue: state.get(key),
+                oldValue: this.#state.get(key),
                 newValue: change
             };
-            state.set(key, change);
+            this.#state.set(key, change);
             const event = new Event("change");
-            event.category = CATEGORY.get(this);
+            event.category = this.#category;
             event.data = changed;
             this.dispatchEvent(event);
         }
     }
 
     getImmediate(key) {
-        const state = STATE.get(this);
-        return state.get(key);
+        return this.#state.get(key);
     }
 
     setImmediateAll(data) {
-        const state = STATE.get(this);
-        const changes = CHANGES.get(this);
-        if (DEBOUNCE_TIMER.has(this)) {
+        if (this.#debounceTimer != null) {
             for (const key in data) {
                 const {current, change} = data[key];
-                state.set(key, current);
+                this.#state.set(key, current);
                 if (!Helper.isEqual(current, change)) {
-                    changes.set(key, change);
-                } else if (changes.has(key)) {
-                    changes.delete(key);
+                    this.#changes.set(key, change);
+                } else if (this.#changes.has(key)) {
+                    this.#changes.delete(key);
                 }
             }
-            if (!changes.size) {
-                clearTimeout(DEBOUNCE_TIMER.get(this));
-                DEBOUNCE_TIMER.delete(this);
+            if (!this.#changes.size) {
+                clearTimeout(this.#debounceTimer);
+                this.#debounceTimer = undefined;
             }
         } else {
             const changed = {};
             for (const key in data) {
                 const {change} = data[key];
-                if (!state.has(key) || !Helper.isEqual(state.get(key), change)) {
+                if (!this.#state.has(key) || !Helper.isEqual(this.#state.get(key), change)) {
                     changed[key] = {
-                        oldValue: state.get(key),
+                        oldValue: this.#state.get(key),
                         newValue: change
                     };
-                    state.set(key, change);
+                    this.#state.set(key, change);
                 }
             }
             if (Object.keys(changed).length) {
                 const event = new Event("change");
-                event.category = CATEGORY.get(this);
+                event.category = this.#category;
                 event.data = changed;
                 this.dispatchEvent(event);
             }

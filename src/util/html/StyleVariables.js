@@ -58,49 +58,42 @@ function updateStyle(sheet, variables) {
 }
 
 // -----------------
-const STYLESHEETS = new WeakMap();
-const VARIABLES = new WeakMap();
-
 export default class StyleVariables {
 
-    constructor() {
-        STYLESHEETS.set(this, createStyleSheet());
-        VARIABLES.set(this, new Map());
-    }
+    #stylesheet = createStyleSheet();
+
+    #variables = new Map();
 
     set(name, value) {
-        const variables = VARIABLES.get(this);
-        const current = variables.get(name);
+        const current = this.#variables.get(name);
         if (current != value) {
-            variables.set(name, value);
-            updateStyle(STYLESHEETS.get(this), variables);
+            this.#variables.set(name, value);
+            updateStyle(this.#stylesheet, this.#variables);
         }
     }
 
     setAll(values = {}) {
-        const variables = VARIABLES.get(this);
         let changed = false;
         for (const name in values) {
             const value = values[name];
-            const current = variables.get(name);
+            const current = this.#variables.get(name);
             if (current != value) {
-                variables.set(name, value);
+                this.#variables.set(name, value);
                 changed = true;
             }
         }
         if (changed) {
-            updateStyle(STYLESHEETS.get(this), variables);
+            updateStyle(this.#stylesheet, this.#variables);
         }
     }
 
     get(name) {
-        const variables = VARIABLES.get(this);
-        return variables.get(name);
+        return this.#variables.get(name);
     }
 
     apply(target) {
         if (target instanceof Document || target instanceof ShadowRoot) {
-            target.adoptedStyleSheets = [...target.adoptedStyleSheets, STYLESHEETS.get(this)];
+            target.adoptedStyleSheets = [...target.adoptedStyleSheets, this.#stylesheet];
         }
     }
 

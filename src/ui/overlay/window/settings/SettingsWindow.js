@@ -65,8 +65,6 @@ const STYLE = new GlobalStyle(`
 }
 `);
 
-const STORAGE = new WeakMap();
-
 function convertValueList(values = {}) {
     const opt = {};
     if (typeof values == "object") {
@@ -89,12 +87,13 @@ function convertValueList(values = {}) {
 
 export default class SettingsWindow extends Window {
 
+    #storage = new DefaultingStorage();
+
     constructor(title = "Settings", options = {}) {
         super(title, options.close);
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
-        STORAGE.set(this, new DefaultingStorage());
         const windowEl = this.shadowRoot.getElementById("window");
         const bodyEl = this.shadowRoot.getElementById("body");
         bodyEl.innerHTML = "";
@@ -133,14 +132,12 @@ export default class SettingsWindow extends Window {
         } else {
             categoriesEl.active = "";
         }
-        const storage = STORAGE.get(this);
-        storage.setAll(data);
+        this.#storage.setAll(data);
         super.show();
     }
 
     submit() {
-        const storage = STORAGE.get(this);
-        const data = storage.getAll();
+        const data = this.#storage.getAll();
         const ev = new Event("submit");
         ev.data = data;
         this.dispatchEvent(ev);
@@ -153,8 +150,7 @@ export default class SettingsWindow extends Window {
     }
 
     overwriteValues(data) {
-        const storage = STORAGE.get(this);
-        storage.deserialize(data);
+        this.#storage.deserialize(data);
     }
 
     getTab(category, label = category) {
@@ -176,54 +172,48 @@ export default class SettingsWindow extends Window {
     addStringInput(category, ref, label, desc, def, visible, resettable) {
         const tabEl = this.getTab(category);
         if (tabEl != null) {
-            const storage = STORAGE.get(this);
-            storage.setDefault(ref, def);
-            tabEl.addStringInput(storage, ref, label, desc, visible, resettable);
+            this.#storage.setDefault(ref, def);
+            tabEl.addStringInput(this.#storage, ref, label, desc, visible, resettable);
         }
     }
 
     addNumberInput(category, ref, label, desc, def, visible, resettable, min, max) {
         const tabEl = this.getTab(category);
         if (tabEl != null) {
-            const storage = STORAGE.get(this);
-            storage.setDefault(ref, def);
-            tabEl.addNumberInput(storage, ref, label, desc, visible, resettable, min, max);
+            this.#storage.setDefault(ref, def);
+            tabEl.addNumberInput(this.#storage, ref, label, desc, visible, resettable, min, max);
         }
     }
 
     addRangeInput(category, ref, label, desc, def, visible, resettable, min, max) {
         const tabEl = this.getTab(category);
         if (tabEl != null) {
-            const storage = STORAGE.get(this);
-            storage.setDefault(ref, def);
-            tabEl.addRangeInput(storage, ref, label, desc, visible, resettable, min, max);
+            this.#storage.setDefault(ref, def);
+            tabEl.addRangeInput(this.#storage, ref, label, desc, visible, resettable, min, max);
         }
     }
 
     addCheckInput(category, ref, label, desc, def, visible, resettable) {
         const tabEl = this.getTab(category);
         if (tabEl != null) {
-            const storage = STORAGE.get(this);
-            storage.setDefault(ref, !!def);
-            tabEl.addCheckInput(storage, ref, label, desc, visible, resettable);
+            this.#storage.setDefault(ref, !!def);
+            tabEl.addCheckInput(this.#storage, ref, label, desc, visible, resettable);
         }
     }
 
     addColorInput(category, ref, label, desc, def, visible, resettable) {
         const tabEl = this.getTab(category);
         if (tabEl != null) {
-            const storage = STORAGE.get(this);
-            storage.setDefault(ref, def);
-            tabEl.addColorInput(storage, ref, label, desc, visible, resettable);
+            this.#storage.setDefault(ref, def);
+            tabEl.addColorInput(this.#storage, ref, label, desc, visible, resettable);
         }
     }
 
     addChoiceInput(category, ref, label, desc, def, visible, resettable, values) {
         const tabEl = this.getTab(category);
         if (tabEl != null) {
-            const storage = STORAGE.get(this);
-            storage.setDefault(ref, def);
-            tabEl.addChoiceInput(storage, ref, label, desc, visible, resettable, values);
+            this.#storage.setDefault(ref, def);
+            tabEl.addChoiceInput(this.#storage, ref, label, desc, visible, resettable, values);
         }
     }
 
@@ -231,19 +221,17 @@ export default class SettingsWindow extends Window {
         const convertedValues = convertValueList(values);
         const tabEl = this.getTab(category);
         if (tabEl != null) {
-            const storage = STORAGE.get(this);
             for (const value in convertedValues) {
-                storage.setDefault(value, def.includes(value));
+                this.#storage.setDefault(value, def.includes(value));
             }
-            tabEl.addListSelectInput(storage, ref, label, desc, visible, resettable, multiple, convertedValues);
+            tabEl.addListSelectInput(this.#storage, ref, label, desc, visible, resettable, multiple, convertedValues);
         }
     }
 
     addButton(category, ref, label, desc, visible, text = "", callback = null) {
         const tabEl = this.getTab(category);
         if (tabEl != null) {
-            const storage = STORAGE.get(this);
-            tabEl.addButton(storage, ref, label, desc, visible, text, callback = null);
+            tabEl.addButton(this.#storage, ref, label, desc, visible, text, callback = null);
         }
     }
 

@@ -3,54 +3,44 @@ import {
 } from "../../util/Mixin.js";
 import EventTargetManager from "../EventTargetManager.js";
 
-const MANAGERS = new WeakMap();
-
 export default createMixin((superclass) => class EventTargetMixin extends superclass {
 
-    constructor(...args) {
-        super(...args);
-        MANAGERS.set(this, new Map());
-    }
+    #manager = new Map();
 
     switchTarget(id, newTarget) {
-        const managers = MANAGERS.get(this);
-        if (managers.has(id)) {
-            const targetManager = managers.get(id);
+        if (this.#manager.has(id)) {
+            const targetManager = this.#manager.get(id);
             targetManager.switchTarget(newTarget);
         } else {
-            managers.set(id, new EventTargetManager(newTarget));
+            this.#manager.set(id, new EventTargetManager(newTarget));
         }
     }
 
     getTarget(id) {
-        const managers = MANAGERS.get(this);
-        return managers.get(id);
+        return this.#manager.get(id);
     }
 
     setTargetEventListener(id, name, fn) {
-        const managers = MANAGERS.get(this);
-        if (managers.has(id)) {
-            const targetManager = managers.get(id);
+        if (this.#manager.has(id)) {
+            const targetManager = this.#manager.get(id);
             targetManager.set(name, fn);
         } else {
             const targetManager = new EventTargetManager();
             targetManager.set(name, fn);
-            managers.set(id, targetManager);
+            this.#manager.set(id, targetManager);
         }
     }
 
     deleteTargetEventListener(id, name) {
-        const managers = MANAGERS.get(this);
-        if (managers.has(id)) {
-            const targetManager = managers.get(id);
+        if (this.#manager.has(id)) {
+            const targetManager = this.#manager.get(id);
             targetManager.delete(name);
         }
     }
 
     clearTargetEventListener(id) {
-        const managers = MANAGERS.get(this);
-        if (managers.has(id)) {
-            const targetManager = managers.get(id);
+        if (this.#manager.has(id)) {
+            const targetManager = this.#manager.get(id);
             targetManager.clear();
         }
     }
@@ -59,8 +49,7 @@ export default createMixin((superclass) => class EventTargetMixin extends superc
         if (super.connectedCallback) {
             super.connectedCallback();
         }
-        const managers = MANAGERS.get(this);
-        for (const [, targetManager] of managers) {
+        for (const [, targetManager] of this.#manager) {
             targetManager.setActive(true);
         }
     }
@@ -69,8 +58,7 @@ export default createMixin((superclass) => class EventTargetMixin extends superc
         if (super.disconnectedCallback) {
             super.disconnectedCallback();
         }
-        const managers = MANAGERS.get(this);
-        for (const [, targetManager] of managers) {
+        for (const [, targetManager] of this.#manager) {
             targetManager.setActive(false);
         }
     }

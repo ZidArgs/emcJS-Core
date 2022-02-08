@@ -4,34 +4,33 @@ import {
 import I18n from "../I18n.js";
 import EventTargetManager from "../../event/EventTargetManager.js";
 
-const MANAGER = new WeakMap();
-const ATTR = new WeakMap();
-
 export default createMixin((superclass) => class I18nMixin extends superclass {
+
+    #manager = new EventTargetManager(I18n);
+
+    #observedI18nAttr;
 
     constructor(...args) {
         super(...args);
         /* --- */
-        const i18nAttr = new.target.observedI18n;
-        ATTR.set(this, i18nAttr);
-        const manager = new EventTargetManager(I18n);
-        manager.set("language", () => {
-            for (const attr of i18nAttr) {
+        this.#observedI18nAttr = new.target.observedI18n;
+        this.#manager = new EventTargetManager(I18n);
+        this.#manager.set("language", () => {
+            for (const attr of this.#observedI18nAttr) {
                 const key = this.getAttribute(attr);
                 if (key) {
                     this.applyI18n(attr, I18n.get(key));
                 }
             }
         });
-        manager.set("translation", event => {
-            for (const attr of i18nAttr) {
+        this.#manager.set("translation", event => {
+            for (const attr of this.#observedI18nAttr) {
                 const key = this.getAttribute(attr);
                 if (key && event.changes[key] != null) {
                     this.applyI18n(attr, event.changes[key]);
                 }
             }
         });
-        MANAGER.set(this, manager);
     }
 
     applyI18n(key, value) {
@@ -43,11 +42,9 @@ export default createMixin((superclass) => class I18nMixin extends superclass {
             super.connectedCallback();
         }
         /* --- */
-        const manager = MANAGER.get(this);
-        manager.setActive(true);
+        this.#manager.setActive(true);
         /* --- */
-        const i18nAttr = ATTR.get(this);
-        for (const attr of i18nAttr) {
+        for (const attr of this.#observedI18nAttr) {
             const key = this.getAttribute(attr);
             if (key) {
                 this.applyI18n(attr, I18n.get(key));
@@ -62,8 +59,7 @@ export default createMixin((superclass) => class I18nMixin extends superclass {
             super.disconnectedCallback();
         }
         /* --- */
-        const manager = MANAGER.get(this);
-        manager.setActive(false);
+        this.#manager.setActive(false);
     }
 
     static get observedI18n() {
@@ -81,8 +77,7 @@ export default createMixin((superclass) => class I18nMixin extends superclass {
         if (super.attributeChangedCallback) {
             super.attributeChangedCallback(name, oldValue, newValue);
         }
-        const i18nAttr = ATTR.get(this);
-        if (oldValue != newValue && i18nAttr.includes(name)) {
+        if (oldValue != newValue && this.#observedI18nAttr.includes(name)) {
             if (newValue) {
                 this.applyI18n(name, I18n.get(newValue));
             } else {

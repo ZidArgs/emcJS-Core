@@ -1,20 +1,19 @@
 import EventBus from "./EventBus.js";
 
-const ALLS = new WeakMap();
-const SUBS = new WeakMap();
-
 export default class EventBusSubset {
 
+    #alls = new Set();
+
+    #subs = new Map();
+
     constructor() {
-        SUBS.set(this, new Map());
-        ALLS.set(this, new Set());
         EventBus.register((data = {name:"", data:{}}) => {
-            if (SUBS.get(this).has(data.name)) {
-                SUBS.get(this).get(data.name).forEach(function(fn) {
+            if (this.#subs.has(data.name)) {
+                this.#subs.get(data.name).forEach(function(fn) {
                     fn(data);
                 });
             }
-            ALLS.get(this).forEach(function(fn) {
+            this.#alls.forEach(function(fn) {
                 fn(data);
             });
         });
@@ -26,31 +25,31 @@ export default class EventBusSubset {
 
     register(name, fn) {
         if (typeof name == "function") {
-            ALLS.get(this).add(name);
+            this.#alls.add(name);
         } else if (Array.isArray(name)) {
             name.forEach(n => this.register(n, fn));
-        } else if (!SUBS.get(this).has(name)) {
+        } else if (!this.#subs.has(name)) {
             const subs = new Set;
             subs.add(fn);
-            SUBS.get(this).set(name, subs);
+            this.#subs.set(name, subs);
         } else {
-            SUBS.get(this).get(name).add(fn);
+            this.#subs.get(name).add(fn);
         }
     }
 
     unregister(name, fn) {
         if (typeof name == "function") {
-            ALLS.get(this).delete(name);
+            this.#alls.delete(name);
         } else if (Array.isArray(name)) {
             name.forEach(n => this.unregister(n, fn));
-        } else if (SUBS.get(this).has(name)) {
-            SUBS.get(this).get(name).delete(fn);
+        } else if (this.#subs.has(name)) {
+            this.#subs.get(name).delete(fn);
         }
     }
 
     clear() {
-        ALLS.get(this).clear();
-        SUBS.get(this).clear();
+        this.#alls.clear();
+        this.#subs.clear();
     }
 
 }

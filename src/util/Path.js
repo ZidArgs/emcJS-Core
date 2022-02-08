@@ -1,14 +1,17 @@
-const BASE = new WeakMap();
-
 export default class Path {
 
+    #base;
+
     constructor(base = window.location.origin) {
-        BASE.set(this, new URL(base));
+        this.#base = new URL(base);
     }
 
     getAbsolute(path) {
-        const base = BASE.get(this);
-        return new URL(path, base);
+        return new URL(path, this.#base);
+    }
+
+    traverse(path) {
+        return new Path(new URL(path, this.#base));
     }
 
     static getAbsolute(base, path) {

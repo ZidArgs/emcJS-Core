@@ -3,59 +3,52 @@ import {
 } from "../../util/Mixin.js";
 import EventBusSubset from "../EventBusSubset.js";
 
-const ALLS = new WeakMap();
-const SUBS = new WeakMap();
-const EVENTS = new WeakMap();
-const APPLIED = new WeakMap();
-
 export default createMixin((superclass) => class EventBusMixin extends superclass {
 
-    constructor(...args) {
-        super(...args);
-        SUBS.set(this, new Map());
-        ALLS.set(this, new Set());
-        EVENTS.set(this, new EventBusSubset());
-        APPLIED.set(this, false);
-    }
+    #alls = new Set();
+
+    #subs = new Map();
+
+    #events = new EventBusSubset();
 
     triggerGlobal(name, data) {
-        EVENTS.get(this).trigger(name, data);
+        this.#events.trigger(name, data);
     }
 
     registerGlobal(name, fn) {
         if (typeof name == "function") {
-            ALLS.get(this).add(name);
+            this.#alls.add(name);
             if (this.isConnected) {
-                EVENTS.get(this).register(fn);
+                this.#events.register(fn);
             }
         } else if (Array.isArray(name)) {
             name.forEach(n => this.registerGlobal(n, fn));
         } else {
-            if (!SUBS.get(this).has(name)) {
+            if (!this.#subs.has(name)) {
                 const subs = new Set;
                 subs.add(fn);
-                SUBS.get(this).set(name, subs);
+                this.#subs.set(name, subs);
             } else {
-                SUBS.get(this).get(name).add(fn);
+                this.#subs.get(name).add(fn);
             }
             if (this.isConnected) {
-                EVENTS.get(this).register(name, fn);
+                this.#events.register(name, fn);
             }
         }
     }
 
     unregisterGlobal(name, fn) {
         if (typeof name == "function") {
-            ALLS.get(this).delete(name);
+            this.#alls.delete(name);
             if (this.isConnected) {
-                EVENTS.get(this).unregister(fn);
+                this.#events.unregister(fn);
             }
         } else if (Array.isArray(name)) {
             name.forEach(n => this.unregisterGlobal(n, fn));
-        } else if (SUBS.get(this).has(name)) {
-            SUBS.get(this).get(name).delete(fn);
+        } else if (this.#subs.has(name)) {
+            this.#subs.get(name).delete(fn);
             if (this.isConnected) {
-                EVENTS.get(this).unregister(name, fn);
+                this.#events.unregister(name, fn);
             }
         }
     }
@@ -64,13 +57,13 @@ export default createMixin((superclass) => class EventBusMixin extends superclas
         if (super.connectedCallback) {
             super.connectedCallback();
         }
-        const events = EVENTS.get(this);
-        SUBS.get(this).forEach(function(subs, name) {
+        const events = this.#events;
+        this.#subs.forEach(function(subs, name) {
             subs.forEach(function(fn) {
                 events.register(name, fn);
             });
         });
-        ALLS.get(this).forEach(function(fn) {
+        this.#alls.forEach(function(fn) {
             events.register(fn);
         });
     }
@@ -79,7 +72,7 @@ export default createMixin((superclass) => class EventBusMixin extends superclas
         if (super.disconnectedCallback) {
             super.disconnectedCallback();
         }
-        EVENTS.get(this).clear();
+        this.#events.clear();
     }
 
 });

@@ -1,5 +1,3 @@
-const TEMPLATE = new WeakMap;
-
 function createTemplate(src) {
     if (src instanceof HTMLTemplateElement) {
         return src;
@@ -15,12 +13,14 @@ function createTemplate(src) {
 
 export default class Template {
 
+    #template;
+
     constructor(template) {
-        TEMPLATE.set(this, createTemplate(template));
+        this.#template = createTemplate(template);
     }
 
     generate(child) {
-        const doc = document.importNode(TEMPLATE.get(this).content, true);
+        const doc = document.importNode(this.#template.content, true);
         if (child != null) {
             return doc.children[child];
         }

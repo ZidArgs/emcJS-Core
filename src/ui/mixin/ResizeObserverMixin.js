@@ -25,7 +25,7 @@ export default createMixin((superclass) => class ResizeObserverMixin extends sup
         RESIZE_OBSERVER.unobserve(this);
     }
 
-    handleResize() {
+    resizeCallback() {
         const ev = new Event("resize");
         ev.outerWidth = this.offsetWidth;
         ev.outerHeight = this.offsetHeight;

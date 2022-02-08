@@ -1,23 +1,32 @@
 import IDBStorage from "../storage/IDBStorage.js";
 import DataStorage from "./DataStorage.js";
 
-const STORAGE = new WeakMap();
-
 export default class IDBProxyStorage extends DataStorage {
+
+    #storage;
+
+    static async create(name) {
+        const inst = new IDBProxyStorage(name);
+        return await inst.awaitLoaded();
+    }
 
     constructor(name) {
         super();
+        this.#createStorage(name);
+    }
+
+    async #createStorage(name) {
         const storage = new IDBStorage(name);
-        // ---
-        storage.getAll().then(data => {
-            STORAGE.set(this, storage);
+        try {
+            const data = await storage.getAll();
             this.deserialize(data);
-        }).catch(err => {
-            STORAGE.set(this, storage);
+            const ev = new Event("error");
+            this.dispatchEvent(ev);
+        } catch (err) {
             console.error(err);
             const ev = new Event("error");
             this.dispatchEvent(ev);
-        });
+        }
         this.addEventListener("change", async (event) => {
             await storage.setAll(event.data);
         });
@@ -29,11 +38,12 @@ export default class IDBProxyStorage extends DataStorage {
             await storage.clear();
             await storage.setAll(event.data);
         });
+        this.#storage = storage;
     }
 
     awaitLoaded() {
         return new Promise((resolve) => {
-            if (STORAGE.has(this)) {
+            if (this.#storage != null) {
                 resolve(this);
             } else {
                 const handler = () => {

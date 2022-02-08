@@ -1,15 +1,14 @@
-const QUEUE = new WeakMap();
-
 export default class Sequence {
 
+    #queue;
+
     constructor()  {
-        QUEUE.set(this, Promise.resolve());
+        this.#queue = Promise.resolve();
     }
 
     next(callback) {
         if (typeof callback == "function") {
-            const queue = QUEUE.set(this);
-            QUEUE.set(this, queue.then(callback));
+            this.#queue.then(callback);
         }
         return this;
     }

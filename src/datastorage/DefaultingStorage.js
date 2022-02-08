@@ -1,21 +1,14 @@
 
 import DataStorage from "./DataStorage.js";
 
-const DEFAULTS = new WeakMap();
-
 export default class DefaultingStorage extends DataStorage {
 
-    constructor() {
-        super();
-        const defaults = new Map();
-        DEFAULTS.set(this, defaults);
-    }
+    #defaults = new Map();
 
     setDefault(key, value) {
-        const defaults = DEFAULTS.get(this);
-        const old = defaults.get(key);
+        const old = this.#defaults.get(key);
         if (old != value) {
-            defaults.set(key, value);
+            this.#defaults.set(key, value);
             if (!super.has(key)) {
                 const ev = new Event("change");
                 ev.data = {[key]: value};
@@ -25,38 +18,33 @@ export default class DefaultingStorage extends DataStorage {
     }
 
     getDefault(key) {
-        const defaults = DEFAULTS.get(this);
-        return defaults.get(key);
+        return this.#defaults.get(key);
     }
 
     resetValue(key) {
-        const defaults = DEFAULTS.get(this);
-        const value = defaults.get(key);
+        const value = this.#defaults.get(key);
         super.set(key, value);
     }
 
     resetAll(keys) {
-        const defaults = DEFAULTS.get(this);
         const values = {};
         for (const key of keys) {
-            values[key] = defaults.get(key);
+            values[key] = this.#defaults.get(key);
         }
         super.setAll(values);
     }
 
     set(key, value) {
-        const defaults = DEFAULTS.get(this);
-        if (defaults.has(key)) {
+        if (this.#defaults.has(key)) {
             super.set(key, value);
         }
     }
 
     setAll(values) {
-        const defaults = DEFAULTS.get(this);
         const res = {};
         for (const key in values) {
             const value = values[key];
-            if (defaults.has(key)) {
+            if (this.#defaults.has(key)) {
                 res[key] = value;
             }
         }
@@ -64,35 +52,30 @@ export default class DefaultingStorage extends DataStorage {
     }
 
     get(key) {
-        const defaults = DEFAULTS.get(this);
-        if (defaults.has(key)) {
-            return super.get(key, defaults.get(key));
+        if (this.#defaults.has(key)) {
+            return super.get(key, this.#defaults.get(key));
         }
     }
 
     getAll() {
-        const defaults = DEFAULTS.get(this);
         const res = {};
-        for (const [key, value] of defaults) {
+        for (const [key, value] of this.#defaults) {
             res[key] = super.get(key, value);
         }
         return res;
     }
 
     has(key) {
-        const defaults = DEFAULTS.get(this);
-        return defaults.has(key);
+        return this.#defaults.has(key);
     }
 
     keys() {
-        const defaults = DEFAULTS.get(this);
-        return defaults.keys();
+        return this.#defaults.keys();
     }
 
     deserialize(data = {}) {
-        const defaults = DEFAULTS.get(this);
         const res = {};
-        for (const [key] of defaults) {
+        for (const [key] of this.#defaults) {
             const newValue = data[key];
             if (newValue != null) {
                 res[key] = newValue;
@@ -102,9 +85,8 @@ export default class DefaultingStorage extends DataStorage {
     }
 
     overwrite(data = {}) {
-        const defaults = DEFAULTS.get(this);
         const res = {};
-        for (const [key] of defaults) {
+        for (const [key] of this.#defaults) {
             const newValue = data[key];
             res[key] = newValue;
         }

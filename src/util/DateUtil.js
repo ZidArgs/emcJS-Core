@@ -1,16 +1,17 @@
 const FORMATTER_REGEX = /[YMDhmsz]/g;
-const DATE = new WeakMap();
 
 class DateUtil {
+
+    #date;
 
     constructor(date) {
         if (date instanceof Date) {
             if (isNaN(date)) {
                 throw new TypeError("date is invalid");
             }
-            DATE.set(this, date);
+            this.#date = date;
         } else if (typeof date == "undefined") {
-            DATE.set(this, new Date);
+            this.#date = new Date();
         } else {
             throw new TypeError("date expected");
         }
@@ -18,9 +19,9 @@ class DateUtil {
 
     convert(formatter) {
         if (typeof formatter == "string") {
-            return DateUtil.convert(DATE.get(this), formatter);
+            return DateUtil.#convert(this.#date, formatter);
         } else if (typeof formatter == "undefined") {
-            return DateUtil.convert(DATE.get(this));
+            return DateUtil.#convert(this.#date);
         } else {
             throw new TypeError("format string expected");
         }
@@ -28,29 +29,15 @@ class DateUtil {
 
     convertLocal(formatter) {
         if (typeof formatter == "string") {
-            return DateUtil.convertLocal(DATE.get(this), formatter);
+            return DateUtil.#convertLocal(this.#date, formatter);
         } else if (typeof formatter == "undefined") {
-            return DateUtil.convertLocal(DATE.get(this));
+            return DateUtil.#convertLocal(this.#date);
         } else {
             throw new TypeError("format string expected");
         }
     }
 
-    static convert(date, formatter) {
-        if (date instanceof Date) {
-            if (isNaN(date)) {
-                throw new TypeError("date is invalid");
-            }
-            if (typeof formatter == "undefined") {
-                formatter = "D.M.Y h:m:s";
-            }
-        } else if (typeof date == "string") {
-            formatter = date;
-            date = new Date();
-        } else {
-            date = new Date();
-            formatter = "D.M.Y h:m:s";
-        }
+    static #convert(date, formatter) {
         return formatter.replace(FORMATTER_REGEX, function(m) {
             switch (m) {
                 case "Y": return date.getUTCFullYear();
@@ -64,21 +51,7 @@ class DateUtil {
         });
     }
 
-    static convertLocal(date, formatter) {
-        if (date instanceof Date) {
-            if (isNaN(date)) {
-                throw new TypeError("date is invalid");
-            }
-            if (typeof formatter == "undefined") {
-                formatter = "D.M.Y h:m:s";
-            }
-        } else if (typeof date == "string") {
-            formatter = date;
-            date = new Date();
-        } else {
-            date = new Date();
-            formatter = "D.M.Y h:m:s";
-        }
+    static #convertLocal(date, formatter) {
         return formatter.replace(FORMATTER_REGEX, function(m) {
             switch (m) {
                 case "Y": return date.getFullYear();
@@ -90,6 +63,32 @@ class DateUtil {
                 case "z": return `00${date.getMilliseconds()}`.slice(-2);
             }
         });
+    }
+
+    static convert(date, formatter) {
+        if (date instanceof Date) {
+            if (isNaN(date)) {
+                throw new TypeError("date is invalid");
+            }
+            if (formatter != null && typeof formatter != "string") {
+                throw new TypeError("formatter is invalid");
+            }
+            return this.#convert(date, formatter ?? "D.M.Y h:m:s");
+        }
+        throw new TypeError("date is invalid");
+    }
+
+    static convertLocal(date, formatter) {
+        if (date instanceof Date) {
+            if (isNaN(date)) {
+                throw new TypeError("date is invalid");
+            }
+            if (formatter != null && typeof formatter != "string") {
+                throw new TypeError("formatter is invalid");
+            }
+            return this.#convertLocal(date, formatter);
+        }
+        throw new TypeError("date is invalid");
     }
 
 }

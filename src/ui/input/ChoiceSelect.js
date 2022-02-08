@@ -1,6 +1,8 @@
 import Template from "../../util/html/Template.js";
 import GlobalStyle from "../../util/html/GlobalStyle.js";
+import EventMultiTargetManager from "../../event/EventMultiTargetManager.js";
 import CustomElement from "../CustomElement.js";
+import ChildlistMutationObserverMixin from "../mixin/ChildlistMutationObserverMixin.js";
 import "./Option.js";
 
 const TPL = new Template(`
@@ -35,69 +37,73 @@ slot {
 }
 `);
 
-function clickOption(event) {
-    if (!this.readonly) {
-        const value = event.currentTarget.value;
-        if (this.multiple) {
-            const arr = this.value;
-            const set = new Set(arr);
-            if (set.has(value)) {
-                set.delete(value);
-            } else {
-                set.add(value);
-            }
-            this.value = Array.from(set);
-        } else {
-            this.value = value;
-        }
-    }
-}
+export default class ChoiceSelect extends ChildlistMutationObserverMixin(CustomElement) {
 
-const CLICK_HANDLER = new WeakMap();
-
-export default class ChoiceSelect extends CustomElement {
+    #eventManager = new EventMultiTargetManager();
 
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const onClickOption = clickOption.bind(this);
-        CLICK_HANDLER.set(this, onClickOption);
-        this.shadowRoot.getElementById("container").addEventListener("slotchange", event => {
-            const all = this.querySelectorAll("[value]");
-            all.forEach(el => {
-                if (el) {
-                    el.onclick = onClickOption;
+        this.#eventManager.set("click", (event) => {
+            this.#clickOption(event);
+        })
+    }
+
+    #clickOption(event) {
+        if (!this.readonly) {
+            const value = event.currentTarget.value;
+            if (this.multiple) {
+                const arr = this.value;
+                const set = new Set(arr);
+                if (set.has(value)) {
+                    set.delete(value);
+                } else {
+                    set.add(value);
                 }
-            });
-            if (!this.value && !!all.length) {
-                this.value = all[0].value;
+                this.value = Array.from(set);
             } else {
-                this.calculateItems();
+                this.value = value;
             }
-        });
+        }
     }
 
     connectedCallback() {
-        const onClickOption = CLICK_HANDLER.get(this);
         const all = this.querySelectorAll("[value]");
         if (!this.value && !!all.length) {
             this.value = all[0].value;
         }
-        all.forEach(el => {
-            if (el) {
-                el.onclick = onClickOption;
+        for (const element of all) {
+            if (element.getAttribute("value") != null) {
+                this.#eventManager.addTarget(element);
             }
-        });
+        }
         this.calculateItems();
+    }
+
+    disconnectedCallback() {
+        this.#eventManager.clearTargets();
+    }
+
+    nodeAddedCallback(element) {
+        if (element.getAttribute("value") != null) {
+            this.#eventManager.addTarget(element);
+        }
+    }
+
+    nodeRemovedCallback(element) {
+        this.#eventManager.removeTarget(element);
     }
 
     serialize() {
         const res = {};
         const all = this.querySelectorAll(`[value]`);
-        for (const el of all) {
-            res[el.value] = el.classList.contains("active");
+        for (const element of all) {
+            const value = element.getAttribute("value");
+            if (value != null) {
+                res[value] = element.classList.contains("active");
+            }
         }
         return res;
     }
@@ -195,11 +201,9 @@ export default class ChoiceSelect extends CustomElement {
 
     calculateItems() {
         const all = this.querySelectorAll("[value]");
-        all.forEach(el => {
-            if (el) {
-                el.classList.remove("active");
-            }
-        });
+        for (const element of all) {
+            element.classList.remove("active");
+        }
         if (this.multiple) {
             for (const value of this.value) {
                 const el = this.querySelector(`[value="${value}"]`);

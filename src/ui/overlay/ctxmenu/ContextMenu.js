@@ -81,8 +81,6 @@ const Q_TAB = [
     "[tabindex]:not([tabindex=\"-1\"])"
 ].join(",");
 const CTX_MARGIN = 5;
-const TOP = new WeakMap();
-const LEFT = new WeakMap();
 
 function getBounds(source) {
     const slot = source.assignedSlot;
@@ -98,13 +96,14 @@ function getBounds(source) {
 
 export default class ContextMenu extends CustomElement {
 
+    #top = 0;
+
+    #left = 0;
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
-        /* --- */
-        TOP.set(this, 0);
-        LEFT.set(this, 0);
         /* --- */
         const menuEl = this.shadowRoot.getElementById("menu");
         menuEl.style.left = `${CTX_MARGIN}px`;
@@ -164,11 +163,11 @@ export default class ContextMenu extends CustomElement {
     }
 
     get top() {
-        return TOP.get(this);
+        return this.#top;
     }
 
     get left() {
-        return LEFT.get(this);
+        return this.#left;
     }
 
     get active() {
@@ -186,8 +185,8 @@ export default class ContextMenu extends CustomElement {
         }
         /* --- */
         const pRect = getBounds(this);
-        LEFT.set(this, posX);
-        TOP.set(this, posY);
+        this.#top = posY;
+        this.#left = posX;
         const menuEl = this.shadowRoot.getElementById("menu");
         if (pRect.x >= 0 && posX < pRect.x + CTX_MARGIN) {
             posX = pRect.x + CTX_MARGIN;
