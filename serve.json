@@ -1,0 +1,26 @@
+{
+    "public": "./",
+    "cleanUrls": false,
+    "rewrites": [
+        {
+            "source": "/src/**",
+            "destination": "/src/"
+        },
+        {
+            "source": "/",
+            "destination": "/documentation/index.html"
+        },
+        {
+            "source": "/:file",
+            "destination": "/documentation/:file"
+        },
+        {
+            "source": "/docs/:name/:file",
+            "destination": "/documentation/docs/:name/:file"
+        },
+        {
+            "source": "/home/:file",
+            "destination": "/documentation/home/:file"
+        }
+    ]
+}

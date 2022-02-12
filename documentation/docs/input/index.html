@@ -1,0 +1,70 @@
+<html>
+
+<head>
+    <title>emcJS sandbox</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Test for emcJS components">
+    <meta name="robots" content="none">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <script type="module">
+        import "/src/ui/input/InputWrapper.js";
+        import "/src/ui/input/SearchSelect.js";
+        import "/src/ui/input/ListSelect.js";
+        import "/src/ui/input/Option.js";
+
+        document.getElementById("indeterminate").indeterminate = true;
+    </script>
+</head>
+
+<body style="display: flex; flex-direction: column;">
+    <emc-input-wrapper>
+        <input>
+        <label>
+            Test
+            <input>
+        </label>
+        <hr>
+        <input type="text">
+        <input type="password">
+        <input type="search">
+        <input type="url">
+        <input type="email">
+        <input type="tel">
+        <input type="time">
+        <input type="date">
+        <input type="week">
+        <input type="month">
+        <input type="datetime-local">
+        <hr>
+        <input type="button">
+        <input type="submit">
+        <input type="reset">
+        <input type="color">
+        <hr>
+        <input type="checkbox">
+        <input type="checkbox" checked>
+        <input type="checkbox" checked id="indeterminate">
+        <input type="radio" name="test">
+        <input type="radio" name="test" checked>
+        <hr>
+        <input type="number">
+        <hr>
+        <select>
+            <option value="foobar">foobar</option>
+            <option value="barfoo">barfoo</option>
+        </select>
+        <textarea></textarea>
+        <hr>
+        <emc-searchselect>
+            <emc-option value="foobar">foobar</emc-option>
+            <emc-option value="barfoo">barfoo</emc-option>
+        </emc-searchselect>
+        <emc-listselect>
+            <emc-option value="foobar">foobar</emc-option>
+            <emc-option value="barfoo">barfoo</emc-option>
+        </emc-listselect>
+    </emc-input-wrapper>
+</body>
+
+</html>

@@ -15,11 +15,13 @@
     "@babel/core": "^7.16.10",
     "@babel/eslint-parser": "^7.16.5",
     "@babel/plugin-syntax-top-level-await": "^7.14.5",
-    "eslint": "^8.0.0"
+    "eslint": "^8.0.0",
+    "mocha": "^9.2.0"
   },
   "scripts": {
     "lint": "yarn eslint .",
     "lintfix": "yarn eslint --fix .",
-    "test": "serve . -p 12000"
+    "test": "mocha \"./test/**/*.js\"",
+    "docs": "serve . -p 12000"
   }
 }
