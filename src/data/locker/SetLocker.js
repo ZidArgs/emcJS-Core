@@ -21,6 +21,10 @@ export default class CollectionLocker {
         return this.#inst.values();
     }
 
+    entries() {
+        return this.#inst.entries();
+    }
+
     [Symbol.iterator]() {
         return this.#inst[Symbol.iterator]();
     }

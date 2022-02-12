@@ -1,35 +1,33 @@
 import DataStorageObserver from "./DataStorageObserver.js";
 
-const INSTANCES = new WeakMap();
-
-function getInstance(storage, key) {
-    const insts = INSTANCES.get(storage);
-    if (insts != null) {
-        return insts.get(key);
-    }
-}
-
-function setInstance(storage, key, inst) {
-    if (INSTANCES.has(storage)) {
-        const insts = INSTANCES.get(storage);
-        insts.set(key, inst);
-    } else {
-        const insts = new Map();
-        insts.set(key, inst);
-        INSTANCES.set(storage, insts);
-    }
-}
-
 export default class DataStorageValueObserver extends DataStorageObserver {
 
+    static #instances = new Map();
+
+    static #setInstance(storage, key, inst) {
+        if (this.#instances.has(storage)) {
+            const insts = this.#instances.get(storage);
+            insts.set(key, inst);
+        } else {
+            const insts = new Map();
+            insts.set(key, inst);
+            this.#instances.set(storage, insts);
+        }
+    }
+
+    static getInstance(storage, key) {
+        const insts = this.#instances.get(storage);
+        return insts?.get(key);
+    }
+
     constructor(storage, key, def) {
-        const inst = getInstance(storage, key);
+        const inst = DataStorageValueObserver.getInstance(storage, key);
         if (inst != null) {
             return inst;
         }
         super(storage, key, def);
         /* --- */
-        setInstance(storage, key, this);
+        DataStorageValueObserver.#setInstance(storage, key, this);
     }
 
     get key() {

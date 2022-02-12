@@ -8,6 +8,7 @@ export default class ActiveCounter extends EventTarget {
             event.data = true;
             this.dispatchEvent(event);
         }
+        return this.#count;
     }
 
     remove() {
@@ -16,6 +17,7 @@ export default class ActiveCounter extends EventTarget {
             event.data = false;
             this.dispatchEvent(event);
         }
+        return this.#count;
     }
 
 }

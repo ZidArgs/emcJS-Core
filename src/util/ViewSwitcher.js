@@ -1,11 +1,13 @@
 import NavBar from "../ui/navigation/NavBar.js";
 import Paging from "../ui/Paging.js";
 
-const NAVBAR = new WeakMap();
-const PAGING = new WeakMap();
-const NAVIGATION = new Map();
-
 export default class ViewSwitcher {
+
+    static #configs = new Map();
+
+    #navbar;
+
+    #paging;
 
     constructor(navbar, paging) {
         if (!(navbar instanceof NavBar)) {
@@ -14,22 +16,20 @@ export default class ViewSwitcher {
         if (!(paging instanceof Paging)) {
             throw new TypeError("parameter 2 expected to be of type Paging");
         }
-        NAVBAR.set(this, navbar);
-        PAGING.set(this, paging);
+        this.#navbar = navbar;
+        this.#paging = paging;
     }
 
     static register(name, config) {
-        NAVIGATION.set(name, config);
+        ViewSwitcher.#configs.set(name, config);
     }
 
     switch(name) {
-        const navbar = NAVBAR.get(this);
-        const paging = PAGING.get(this);
-        paging.active = name;
-        if (NAVIGATION.has(name)) {
-            navbar.loadNavigation(NAVIGATION.get(name));
+        this.#paging.active = name;
+        if (ViewSwitcher.#configs.has(name)) {
+            this.#navbar.loadNavigation(ViewSwitcher.#configs.get(name));
         } else {
-            navbar.loadNavigation([]);
+            this.#navbar.loadNavigation([]);
         }
     }
 

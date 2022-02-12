@@ -205,11 +205,11 @@ export default class NavBar extends CustomElement {
         const contentEl = this.shadowRoot.getElementById("content");
         contentEl.innerHTML = "";
         for (const item of config) {
-            this./*#*/__generateElement(contentEl, item);
+            this.#generateElement(contentEl, item);
         }
     }
 
-    /*#*/__generateElement(contentEl, config) {
+    #generateElement(contentEl, config) {
         const containerEl = this.shadowRoot.getElementById("container");
         const IS_MAIN_NAV = contentEl.id == "content";
         if (config["visible"] == null || !!config["visible"]) {
@@ -217,7 +217,7 @@ export default class NavBar extends CustomElement {
                 const mixinConfig = MIXINS.get(config["mixin"]);
                 if (mixinConfig != null) {
                     for (const item of mixinConfig) {
-                        this./*#*/__generateElement(contentEl, item);
+                        this.#generateElement(contentEl, item);
                     }
                 }
             } else {
@@ -276,7 +276,7 @@ export default class NavBar extends CustomElement {
                 if (config["submenu"] != null) {
                     const subcontent = document.createElement("ul");
                     for (const item of config["submenu"]) {
-                        this./*#*/__generateElement(subcontent, item);
+                        this.#generateElement(subcontent, item);
                     }
                     listEl.append(subcontent);
                     // submenu button events

@@ -247,14 +247,14 @@ export default class ContextMenu extends CustomElement {
             const attr = itemEl.getAttribute("menu-action");
             if (attr) {
                 itemEl.addEventListener("click", (event) => {
-                    this./*#*/__onElementChoice(attr);
+                    this.#onElementChoice(attr);
                     /* --- */
                     event.preventDefault();
                     return false;
                 });
                 itemEl.addEventListener("keyup", (event) => {
                     if (event.key == "Enter") {
-                        this./*#*/__onElementChoice(attr);
+                        this.#onElementChoice(attr);
                         /* --- */
                         event.preventDefault();
                         return false;
@@ -277,14 +277,14 @@ export default class ContextMenu extends CustomElement {
                     const attr = entry.getAttribute("menu-action");
                     if (attr) {
                         entry.addEventListener("click", (event) => {
-                            this./*#*/__onElementChoice(attr);
+                            this.#onElementChoice(attr);
                             /* --- */
                             event.preventDefault();
                             return false;
                         });
                         entry.addEventListener("keyup", (event) => {
                             if (event.key == "Enter") {
-                                this./*#*/__onElementChoice(attr);
+                                this.#onElementChoice(attr);
                                 /* --- */
                                 event.preventDefault();
                                 return false;
@@ -319,14 +319,14 @@ export default class ContextMenu extends CustomElement {
                     if (typeof entry.menuAction == "string") {
                         el.setAttribute("menu-action", entry.menuAction);
                         el.addEventListener("click", (event) => {
-                            this./*#*/__onElementChoice(entry.menuAction);
+                            this.#onElementChoice(entry.menuAction);
                             /* --- */
                             event.preventDefault();
                             return false;
                         });
                         el.addEventListener("keyup", (event) => {
                             if (event.key == "Enter") {
-                                this./*#*/__onElementChoice(entry.menuAction);
+                                this.#onElementChoice(entry.menuAction);
                                 /* --- */
                                 event.preventDefault();
                                 return false;
@@ -339,7 +339,7 @@ export default class ContextMenu extends CustomElement {
         }
     }
 
-    /*#*/__onElementChoice(name) {
+    #onElementChoice(name) {
         const ev = new Event(name);
         ev.left = this.left;
         ev.top = this.top;

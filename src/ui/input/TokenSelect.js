@@ -168,47 +168,47 @@ slot {
 }
 `);
 
-const EL_MANAGER = new WeakMap();
-const ON_CLICK = new WeakMap();
-
-function onOptionClick(event) {
-    const el = event.currentTarget;
-    if (!this.readonly) {
-        const valueBuffer = new Set(this.value);
-        const value = el.getAttribute("value");
-        if (valueBuffer.has(value)) {
-            valueBuffer.delete(value);
-            this.value = Array.from(valueBuffer);
-            this./*#*/__applyValue(this.value);
-        }
-    }
-    event.stopPropagation();
-    return false;
-}
-
-function composer(key, params) {
-    const el = document.createElement("div");
-    el.className = "token";
-    const label = document.createElement("emc-i18n-label");
-    label.i18nValue = key;
-    el.setAttribute("value", params.value);
-    el.addEventListener("click", params.onClick);
-    el.append(label);
-    return el;
-}
-
 export default class TokenSelect extends CustomDelegatingElement {
+
+    #elManager;
+
+    #composer(key, params) {
+        const el = document.createElement("div");
+        el.className = "token";
+        const label = document.createElement("emc-i18n-label");
+        label.i18nValue = key;
+        el.setAttribute("value", params.value);
+        el.addEventListener("click", (event) => {
+            params.onClick(event);
+        });
+        el.append(label);
+        return el;
+    }
+
+    #onOptionClick(event) {
+        const el = event.currentTarget;
+        if (!this.readonly) {
+            const valueBuffer = new Set(this.value);
+            const value = el.getAttribute("value");
+            if (valueBuffer.has(value)) {
+                valueBuffer.delete(value);
+                this.value = Array.from(valueBuffer);
+                this.#applyValue(this.value);
+            }
+        }
+        event.stopPropagation();
+        return false;
+    }
 
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        ON_CLICK.set(this, onOptionClick.bind(this));
         const searchResetEl = this.shadowRoot.getElementById("search-reset");
         searchResetEl.addEventListener("click", ev => {
             this.value = [];
-            this./*#*/__applyValue([]);
+            this.#applyValue([]);
         });
         /* --- */
         this.shadowRoot.getElementById("container").addEventListener("slotchange", event => {
@@ -216,11 +216,11 @@ export default class TokenSelect extends CustomDelegatingElement {
             all.forEach(el => {
                 if (el) {
                     el.onclick = event => {
-                        this./*#*/__choose(event.currentTarget.getAttribute("value"));
+                        this.#choose(event.currentTarget.getAttribute("value"));
                         event.stopPropagation();
                         return false;
                     };
-                    this./*#*/__applyValue(this.value);
+                    this.#applyValue(this.value);
                 }
             });
         });
@@ -246,13 +246,13 @@ export default class TokenSelect extends CustomDelegatingElement {
                         return false;
                     }
                 } else if (event.key == "Escape") {
-                    this./*#*/__cancelSelection();
+                    this.#cancelSelection();
                     event.stopPropagation();
                     return false;
                 } else if (event.key == "Enter") {
                     const marked = this.querySelector(".marked");
                     if (marked != null) {
-                        this./*#*/__choose(marked.getAttribute("value"));
+                        this.#choose(marked.getAttribute("value"));
                     }
                     event.stopPropagation();
                     return false;
@@ -330,7 +330,7 @@ export default class TokenSelect extends CustomDelegatingElement {
         });
         window.addEventListener("wheel", event => {
             if (view.getAttribute("mode") != "view") {
-                this./*#*/__cancelSelection();
+                this.#cancelSelection();
                 event.preventDefault();
                 event.stopPropagation();
                 return false;
@@ -338,7 +338,7 @@ export default class TokenSelect extends CustomDelegatingElement {
         });
         window.addEventListener("mousedown", event => {
             if (view.getAttribute("mode") != "view") {
-                this./*#*/__cancelSelection();
+                this.#cancelSelection();
             }
         });
         container.addEventListener("wheel", event => {
@@ -350,7 +350,7 @@ export default class TokenSelect extends CustomDelegatingElement {
             return false;
         });
         this.addEventListener("blur", event => {
-            this./*#*/__cancelSelection();
+            this.#cancelSelection();
             event.stopPropagation();
             return false;
         });
@@ -367,7 +367,7 @@ export default class TokenSelect extends CustomDelegatingElement {
             });
         }, true);
         /* --- */
-        EL_MANAGER.set(this, new ElementManager(view, composer));
+        this.#elManager = new ElementManager(view, this.#composer);
     }
 
     connectedCallback() {
@@ -378,7 +378,7 @@ export default class TokenSelect extends CustomDelegatingElement {
         all.forEach(el => {
             if (el) {
                 el.onclick = event => {
-                    this./*#*/__choose(event.currentTarget.getAttribute("value"));
+                    this.#choose(event.currentTarget.getAttribute("value"));
                     event.stopPropagation();
                     return false;
                 };
@@ -479,13 +479,13 @@ export default class TokenSelect extends CustomDelegatingElement {
         });
     }
 
-    /*#*/__cancelSelection() {
+    #cancelSelection() {
         const container = this.shadowRoot.getElementById("scroll-container");
         const view = this.shadowRoot.getElementById("view");
         if (container.style.display != "") {
             const input = this.shadowRoot.getElementById("input");
             input.value = "";
-            this./*#*/__applyValue(this.value);
+            this.#applyValue(this.value);
             container.style.display = "";
             container.style.bottom = "";
             container.style.top = "";
@@ -501,7 +501,7 @@ export default class TokenSelect extends CustomDelegatingElement {
         view.setAttribute("mode", "view");
     }
 
-    /*#*/__choose(value) {
+    #choose(value) {
         if (!this.readonly) {
             const valueBuffer = new Set(this.value);
             if (valueBuffer.has(value)) {
@@ -513,18 +513,16 @@ export default class TokenSelect extends CustomDelegatingElement {
         }
     }
 
-    /*#*/__applyValue(value) {
-        const elManager = EL_MANAGER.get(this);
-        const onClick = ON_CLICK.get(this);
+    #applyValue(value) {
         const data = [];
         value.forEach((val) => {
             data.push({
                 key: val,
                 value: val,
-                onClick
+                onClick: this.#onOptionClick
             });
         });
-        elManager.manage(data);
+        this.#elManager.manage(data);
     }
 
 }

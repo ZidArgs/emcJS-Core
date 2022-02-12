@@ -146,7 +146,7 @@ export default class SearchSelect extends CustomDelegatingElement {
             all.forEach(el => {
                 if (el) {
                     el.onclick = event => {
-                        this./*#*/__choose(event.currentTarget.getAttribute("value"));
+                        this.#choose(event.currentTarget.getAttribute("value"));
                         event.stopPropagation();
                         return false;
                     };
@@ -178,13 +178,13 @@ export default class SearchSelect extends CustomDelegatingElement {
                         return false;
                     }
                 } else if (event.key == "Escape") {
-                    this./*#*/__cancelSelection();
+                    this.#cancelSelection();
                     event.stopPropagation();
                     return false;
                 } else if (event.key == "Enter") {
                     const marked = this.querySelector(".marked");
                     if (marked != null) {
-                        this./*#*/__choose(marked.getAttribute("value"));
+                        this.#choose(marked.getAttribute("value"));
                     }
                     event.stopPropagation();
                     return false;
@@ -262,12 +262,12 @@ export default class SearchSelect extends CustomDelegatingElement {
         });
         window.addEventListener("wheel", event => {
             if (viewEl.getAttribute("mode") != "view") {
-                this./*#*/__cancelSelection();
+                this.#cancelSelection();
             }
         });
         window.addEventListener("mousedown", event => {
             if (viewEl.getAttribute("mode") != "view") {
-                this./*#*/__cancelSelection();
+                this.#cancelSelection();
                 event.preventDefault();
                 event.stopPropagation();
                 return false;
@@ -282,7 +282,7 @@ export default class SearchSelect extends CustomDelegatingElement {
             return false;
         });
         this.addEventListener("blur", event => {
-            this./*#*/__cancelSelection();
+            this.#cancelSelection();
             event.stopPropagation();
             return false;
         });
@@ -311,7 +311,7 @@ export default class SearchSelect extends CustomDelegatingElement {
         all.forEach(el => {
             if (el) {
                 el.onclick = event => {
-                    this./*#*/__choose(event.currentTarget.getAttribute("value"));
+                    this.#choose(event.currentTarget.getAttribute("value"));
                     event.stopPropagation();
                     return false;
                 };
@@ -344,7 +344,7 @@ export default class SearchSelect extends CustomDelegatingElement {
         switch (name) {
             case "value":
                 if (oldValue != newValue) {
-                    this./*#*/__applyValue(this.value);
+                    this.#applyValue(this.value);
                     const event = new Event("change");
                     event.oldValue = oldValue;
                     event.newValue = newValue;
@@ -365,13 +365,13 @@ export default class SearchSelect extends CustomDelegatingElement {
         }
     }
 
-    /*#*/__cancelSelection() {
+    #cancelSelection() {
         const container = this.shadowRoot.getElementById("scroll-container");
         const view = this.shadowRoot.getElementById("view");
         if (container.style.display != "") {
             const input = this.shadowRoot.getElementById("input");
             input.value = "";
-            this./*#*/__applyValue(this.value);
+            this.#applyValue(this.value);
             container.style.display = "";
             container.style.bottom = "";
             container.style.top = "";
@@ -387,7 +387,7 @@ export default class SearchSelect extends CustomDelegatingElement {
         view.setAttribute("mode", "view");
     }
 
-    /*#*/__choose(value) {
+    #choose(value) {
         const view = this.shadowRoot.getElementById("view");
         if (!this.readonly) {
             this.value = value;
@@ -408,7 +408,7 @@ export default class SearchSelect extends CustomDelegatingElement {
         view.focus();
     }
 
-    /*#*/__applyValue(value) {
+    #applyValue(value) {
         const view = this.shadowRoot.getElementById("view");
         const el = this.querySelector(`[value="${value}"]`);
         if (el != null) {

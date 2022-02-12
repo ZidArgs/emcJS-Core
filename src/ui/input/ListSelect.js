@@ -106,7 +106,7 @@ export default class ListSelect extends CustomDelegatingElement {
             all.forEach(el => {
                 if (el) {
                     el.onclick = () => {
-                        this./*#*/__choose(el.getAttribute("value"));
+                        this.#choose(el.getAttribute("value"));
                     };
                 }
             });
@@ -181,7 +181,7 @@ export default class ListSelect extends CustomDelegatingElement {
         });
         /* --- */
         this.addEventListener("blur", event => {
-            this./*#*/__cancelSelection();
+            this.#cancelSelection();
             event.stopPropagation();
             return false;
         });
@@ -189,13 +189,13 @@ export default class ListSelect extends CustomDelegatingElement {
         this.addEventListener("keyup", event => {
             if (!this.readonly) {
                 if (event.key == "Escape") {
-                    this./*#*/__cancelSelection();
+                    this.#cancelSelection();
                     event.stopPropagation();
                     return false;
                 } else if (event.key == "Enter") {
                     const marked = this.querySelector(".marked");
                     if (marked != null) {
-                        this./*#*/__choose(marked.getAttribute("value"));
+                        this.#choose(marked.getAttribute("value"));
                     }
                     event.stopPropagation();
                     return false;
@@ -277,7 +277,7 @@ export default class ListSelect extends CustomDelegatingElement {
         all.forEach(el => {
             if (el) {
                 el.onclick = () => {
-                    this./*#*/__choose(el.getAttribute("value"));
+                    this.#choose(el.getAttribute("value"));
                 };
             }
         });
@@ -435,14 +435,14 @@ export default class ListSelect extends CustomDelegatingElement {
         }
     }
 
-    /*#*/__cancelSelection() {
+    #cancelSelection() {
         const marked = this.querySelector(".marked");
         if (marked != null) {
             marked.classList.remove("marked");
         }
     }
 
-    /*#*/__choose(value) {
+    #choose(value) {
         if (!this.readonly) {
             if (this.multiple) {
                 const arr = this.value;
