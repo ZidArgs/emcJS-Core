@@ -1,6 +1,6 @@
 export default class IDBStorage {
 
-    #dbInstance;
+    #iDBInstance;
 
     #name;
 
@@ -26,19 +26,21 @@ export default class IDBStorage {
         });
     }
 
-    async #getDBInstance() {
-        if (this.#dbInstance == null) {
-            this.#dbInstance = await IDBStorage.#openDB(this.#name);
+    async #getIDBInstance() {
+        if (this.#iDBInstance == null) {
+            this.#iDBInstance = await IDBStorage.#openDB(this.#name);
         }
-        return this.#dbInstance;
+        return this.#iDBInstance;
     }
 
     async #getStoreWritable() {
-        return this.#getDBInstance().transaction("data", "readwrite").objectStore("data");
+        const iDBinst = await this.#getIDBInstance();
+        return iDBinst.transaction("data", "readwrite").objectStore("data");
     }
 
     async #getStoreReadonly() {
-        return this.#getDBInstance().transaction("data", "readonly").objectStore("data");
+        const iDBinst = await this.#getIDBInstance();
+        return iDBinst.transaction("data", "readonly").objectStore("data");
     }
 
     set(key, value) {

@@ -99,7 +99,7 @@ export default createMixin((superclass) => class ContextMenuManagerMixin extends
     setContextMenu(name, MenuClass) {
         this.#menuClasses.set(name, MenuClass);
         const oldMenu = this.#menus.get(name);
-        if (!(oldMenu instanceof MenuClass)) {
+        if (oldMenu != null && !(oldMenu instanceof MenuClass)) {
             const internalManager = this.#getInternalEventManager(this, name);
             const manager = this.#getEventManager(this, name);
             internalManager.switchTarget(null);

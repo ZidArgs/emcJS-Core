@@ -185,7 +185,7 @@ export default class TokenSelect extends CustomDelegatingElement {
         return el;
     }
 
-    #onOptionClick(event) {
+    #onOptionClick = (event) => {
         const el = event.currentTarget;
         if (!this.readonly) {
             const valueBuffer = new Set(this.value);
