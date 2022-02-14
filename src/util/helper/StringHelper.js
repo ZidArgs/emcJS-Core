@@ -11,6 +11,10 @@ class StringHelper {
         return text;
     }
 
+    unicodeSlice(text, start, end) {
+        return [...text].slice(start, end).join("");
+    }
+
 }
 
 export default new StringHelper;
