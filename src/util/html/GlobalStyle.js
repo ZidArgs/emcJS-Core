@@ -7,7 +7,9 @@ export default class GlobalStyle {
     #stylesheets;
 
     constructor(rules) {
-        if ("replaceSync" in CSSStyleSheet.prototype) {
+        if (rules instanceof CSSStyleSheet) {
+            this.#stylesheets = rules;
+        } else if ("replaceSync" in CSSStyleSheet.prototype) {
             const styleSheet = new CSSStyleSheet();
             styleSheet.replaceSync(rules);
             this.#stylesheets = styleSheet;

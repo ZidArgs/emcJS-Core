@@ -3,8 +3,12 @@ function createTemplate(src) {
         return src;
     }
     const buf = document.createElement("template");
-    if (src instanceof HTMLElement) {
-        buf.append(src);
+    if (src instanceof NodeList) {
+        for (const node of src) {
+            buf.content.append(node);
+        }
+    } else if (src instanceof HTMLElement || src instanceof Node) {
+        buf.content.append(src);
     } else if (typeof src === "string") {
         buf.innerHTML = src;
     }
