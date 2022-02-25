@@ -2,16 +2,10 @@ import NumberHelper from "../../util/helper/NumberHelper.js";
 import AnyState from "./AnyState.js";
 
 function parseNumber(value) {
-    const result = parseInt(value);
+    const result = NumberHelper.parseInteger(value);
     if (isNaN(result)) {
         console.warn(`value "${value}" is not a number`);
         return;
-    }
-    if (result > Number.MAX_SAFE_INTEGER) {
-        return Number.MAX_SAFE_INTEGER;
-    }
-    if (result < Number.MIN_SAFE_INTEGER) {
-        return Number.MIN_SAFE_INTEGER;
     }
     return result;
 }
@@ -26,7 +20,7 @@ export default class IntegerState extends AnyState {
         value = parseNumber(value) ?? 0;
         min = parseNumber(min) ?? Number.MIN_SAFE_INTEGER;
         max = parseNumber(max) ?? Number.MAX_SAFE_INTEGER;
-        super(NumberHelper.getInBoundary(0, min, max));
+        super(NumberHelper.delimitInteger(0, min, max));
         this.#min = min;
         this.#max = max;
     }
@@ -68,7 +62,7 @@ export default class IntegerState extends AnyState {
     set value(value) {
         value = parseNumber(value);
         if (value != null) {
-            super.value = NumberHelper.getInBoundary(value, this.#min, this.#max);
+            super.value = NumberHelper.delimitInteger(value, this.#min, this.#max);
         }
     }
 

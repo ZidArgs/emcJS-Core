@@ -20,7 +20,7 @@ export default class NumberState extends AnyState {
         value = parseNumber(value) ?? 0;
         min = parseNumber(min) ?? Number.MIN_VALUE;
         max = parseNumber(max) ?? Number.MAX_VALUE;
-        super(NumberHelper.getInBoundary(value, min, max));
+        super(NumberHelper.delimit(value, min, max));
         this.#min = min;
         this.#max = max;
     }
@@ -62,7 +62,7 @@ export default class NumberState extends AnyState {
     set value(value) {
         value = parseNumber(value);
         if (value != null) {
-            super.value = NumberHelper.getInBoundary(value, this.#min, this.#max);
+            super.value = NumberHelper.delimit(value, this.#min, this.#max);
         }
     }
 

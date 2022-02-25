@@ -26,6 +26,10 @@ class ObjectHelper {
         return result;
     }
 
+    getKeysByValue(obj, value) {
+        return Object.keys(obj).filter(key => obj[key] === value);
+    }
+
     renameKeys(src = {}, prefix = "", postfix = "") {
         const res = {};
         for (const [key, value] of Object.entries(src)) {

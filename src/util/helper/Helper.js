@@ -3,6 +3,14 @@ import StringHelper from "./StringHelper.js";
 import ArrayHelper from "./ArrayHelper.js";
 import ObjectHelper from "./ObjectHelper.js";
 
+const STRUCTURED_CLONE_CLASSES = [
+    Boolean, Number, String, RegExp, Date, Blob, File, FileList,
+    ArrayBuffer, Int8Array, Uint8Array, Uint8ClampedArray,
+    Int16Array, Uint16Array, Int32Array, Uint32Array,
+    Float32Array, Float64Array, BigInt64Array, BigUint64Array,
+    DataView, ImageBitmap, ImageData
+];
+
 class Helper {
 
     get Number() {
@@ -21,9 +29,28 @@ class Helper {
         return ObjectHelper;
     }
 
-    randomInt(min = 0, max = Number.MAX_SAFE_INTEGER) {
-        max -= min;
-        return parseInt(Math.random() * (max + 1)) + min;
+    instanceOfOne(obj, ...classList) {
+        if (Array.isArray(classList[0])) {
+            classList = classList[0];
+        }
+        for (const clazz of classList) {
+            if (obj instanceof clazz) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    allInstanceOf(clazz = Object, ...objList) {
+        if (objList.length == 1 && Array.isArray(objList[0])) {
+            objList = objList[0];
+        }
+        for (const obj of objList) {
+            if (!(obj instanceof clazz)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     compareVersions(a = "", b = "", s = ".") {
@@ -68,32 +95,73 @@ class Helper {
     }
 
     deepClone(item) {
-        if (item != null && typeof item == "object") {
-            if (item instanceof HTMLElement) {
-                return item.cloneNode(true);
-            }
-            if (item instanceof Date) {
-                return new Date(item);
-            }
-            if (item instanceof Boolean) {
+        return this.#deepClone(item);
+    }
+
+    #deepClone(item, refs = new WeakMap()) {
+        if (item != null) {
+            if (typeof item === "object") {
+                if (refs.has(item)) {
+                    return refs.get(item);
+                }
+                return this.#deepCloneObject(item, refs);
+            } else if (typeof item === "boolean") {
                 return Boolean(item);
-            }
-            if (item instanceof Number) {
+            } else if (typeof item === "number") {
                 return Number(item);
-            }
-            if (item instanceof String) {
+            } else if (typeof item === "string") {
                 return String(item);
             }
-            if (Array.isArray(item)) {
-                return item.map(el => this.deepClone(el));
+        }
+        return item;
+    }
+
+    #deepCloneObject(item, refs) {
+        if (item instanceof Node) {
+            const result = item.cloneNode(true);
+            refs.set(item, result);
+            return result;
+        } else if (typeof item.clone === "function") {
+            const result = item.clone();
+            refs.set(item, result);
+            return result;
+        } else if (item instanceof Map) {
+            const result = new Map();
+            refs.set(item, result);
+            for (const [key, value] of item) {
+                result.set(key, this.#deepClone(value, refs));
             }
-            const result = {};
+            return result;
+        } else if (item instanceof Set) {
+            const result = new Set();
+            refs.set(item, result);
+            for (const value of item) {
+                result.add(this.#deepClone(value, refs));
+            }
+            return result;
+        } else if (this.instanceOfOne(item, WeakMap, WeakSet)) {
+            console.warn("WeakMap and WeakSet cloning is not possible due to their non iterable nature. ", item);
+            return null;
+        } else if (this.instanceOfOne(item, STRUCTURED_CLONE_CLASSES)) {
+            const result = structuredClone(item);
+            refs.set(item, result);
+            return result;
+        } else if (Array.isArray(item)) {
+            const result = [];
+            refs.set(item, result);
             for (const i in item) {
-                result[i] = this.deepClone(item[i]);
+                const el = item[i];
+                result.push(this.#deepClone(el, refs));
             }
             return result;
         }
-        return item;
+        const result = {};
+        refs.set(item, result);
+        for (const i in item) {
+            const el = item[i];
+            result[i] = this.#deepClone(el, refs);
+        }
+        return result;
     }
 
 }
