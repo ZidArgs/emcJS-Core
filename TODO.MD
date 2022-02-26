@@ -11,6 +11,9 @@
         inputEl.setAttribute("is", "my-input");
     ```
 
+- ease method for using MediaDevices
+    - https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia
+    - https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackSupportedConstraints
 
 - REST interface
     - at least GET/POST
@@ -65,12 +68,12 @@
 
 query=pet
 columns=index,lastname,firstname
-filter=index:notnull,index:gt:20,firstname:contains:den
+filter=index:notnull,index:gt(20),firstname:contains(den)
 sort=lastname:asc,firstname:asc
 start=0
 count=50
 
-?query=pet&columns=index,lastname,firstname&filter=index:notnull,index:gt:20,firstname:contains:den&sort=lastname:asc,firstname:asc&start=0&count=50
+?query=pet&columns=index,lastname,firstname&filter=index:notnull,index:gt(20),firstname:contains(den)&sort=lastname:asc,firstname:asc&start=0&count=50
 ```
 
 - string templating
