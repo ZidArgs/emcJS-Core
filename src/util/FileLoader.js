@@ -30,8 +30,8 @@ function getJSON(input) {
 
 class FileLoader {
 
-    text(file) {
-        return getFile(file, "text/plain").then(getText);
+    ini(file) {
+        return this.text(file).then(INI.parse);
     }
 
     json(file) {
@@ -42,16 +42,16 @@ class FileLoader {
         return this.text(file).then(JSONC.parse);
     }
 
-    xml(file) {
-        return this.text(file).then(XML.parse);
-    }
-
-    ini(file) {
-        return this.text(file).then(INI.parse);
-    }
-
     properties(file) {
         return this.text(file).then(Properties.parse);
+    }
+
+    text(file) {
+        return getFile(file, "text/plain").then(getText);
+    }
+
+    xml(file) {
+        return this.text(file).then(XML.parse);
     }
 
 }
