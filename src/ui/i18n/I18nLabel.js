@@ -1,7 +1,7 @@
 import Template from "../../util/html/Template.js";
 import GlobalStyle from "../../util/html/GlobalStyle.js";
-import CustomElement from "../../ui/CustomElement.js";
-import I18nMixin from "./I18nMixin.js";
+import CustomElement from "../CustomElement.js";
+import I18nMixin from "../mixin/I18nMixin.js";
 
 const TPL = new Template(`
 <span id="target"><slot></slot></span>

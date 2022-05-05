@@ -1,39 +1,24 @@
 import Template from "../../util/html/Template.js";
 import GlobalStyle from "../../util/html/GlobalStyle.js";
-import CustomElement from "../../ui/CustomElement.js";
-import I18nMixin from "./I18nMixin.js";
+import CustomElement from "../CustomElement.js";
+import I18nMixin from "../mixin/I18nMixin.js";
 
 const TPL = new Template(`
-<span id="target"><slot></slot></span>
+<slot id="target"></slot>
 `);
 
 const STYLE = new GlobalStyle(`
 :host {
-    display: inline;
-}
-:host(:empty) {
-    display: none;
+    display: contents;
 }
 `);
 
-export default class I18nTextbox extends I18nMixin(CustomElement) {
+export default class I18nTooltip extends I18nMixin(CustomElement) {
 
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
-    }
-
-    set i18nContent(val) {
-        if (val != null) {
-            this.setAttribute("i18n-content", val);
-        } else {
-            this.removeAttribute("i18n-content");
-        }
-    }
-
-    get i18nContent() {
-        return this.getAttribute("i18n-content") || "";
     }
 
     set i18nTooltip(val) {
@@ -49,14 +34,11 @@ export default class I18nTextbox extends I18nMixin(CustomElement) {
     }
 
     static get observedI18n() {
-        return ["i18n-content", "i18n-tooltip"];
+        return ["i18n-tooltip"];
     }
 
     applyI18n(key, value) {
         switch (key) {
-            case "i18n-content": {
-                this.innerText = value;
-            } break;
             case "i18n-tooltip": {
                 const el = this.shadowRoot.getElementById("target");
                 el.title = value;
@@ -66,4 +48,4 @@ export default class I18nTextbox extends I18nMixin(CustomElement) {
 
 }
 
-customElements.define("emc-i18n-textbox", I18nTextbox);
+customElements.define("emc-i18n-tooltip", I18nTooltip);

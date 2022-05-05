@@ -2,11 +2,11 @@ import Template from "../../util/html/Template.js";
 import GlobalStyle from "../../util/html/GlobalStyle.js";
 import CustomDelegatingElement from "../CustomDelegatingElement.js";
 import "../symbols/ClearSymbol.js";
-import "../../i18n/ui/form/InputElement.js";
-import "../../i18n/ui/I18nTooltip.js";
+import "./InputElement.js";
+import "../i18n/I18nTooltip.js";
 
 const TPL = new Template(`
-<input id="search" is="emc-i18n-input" i18n-value="search..." autocomplete="off">
+<input id="search" is="emc-input" i18n-value="search..." autocomplete="off">
 <emc-i18n-tooltip i18n-tooltip="Reset search">
     <div id="search-reset" class="button">
         <emc-symbol-clear></emc-symbol-clear>

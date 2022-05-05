@@ -1,8 +1,8 @@
 import {
     createMixin
 } from "../../util/Mixin.js";
-import I18n from "../I18n.js";
-import EventTargetManager from "../../event/EventTargetManager.js";
+import I18n from "../../util/I18n.js";
+import EventTargetManager from "../../util/event/EventTargetManager.js";
 
 export default createMixin((superclass) => class I18nMixin extends superclass {
 

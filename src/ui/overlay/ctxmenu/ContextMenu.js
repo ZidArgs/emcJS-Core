@@ -80,15 +80,14 @@ const Q_TAB = [
     "textarea:not([tabindex=\"-1\"])",
     "[tabindex]:not([tabindex=\"-1\"])"
 ].join(",");
-const CTX_MARGIN = 5;
+const LAYER_MARGIN = 5;
 
-function getBounds(source) {
+function getLayerBounds(source) {
     const slot = source.assignedSlot;
     if (slot != null) {
         const host = slot.getRootNode().host;
         if (host instanceof CtxMenuLayer) {
             return slot.getBoundingClientRect();
-            // const contRect = host.parentElement.getBoundingClientRect();
         }
     }
     return document.body.getBoundingClientRect();
@@ -106,8 +105,8 @@ export default class ContextMenu extends CustomElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         const menuEl = this.shadowRoot.getElementById("menu");
-        menuEl.style.left = `${CTX_MARGIN}px`;
-        menuEl.style.top = `${CTX_MARGIN}px`;
+        menuEl.style.left = `${LAYER_MARGIN}px`;
+        menuEl.style.top = `${LAYER_MARGIN}px`;
         menuEl.addEventListener("click", event => {
             this.close();
             event.preventDefault();
@@ -184,24 +183,24 @@ export default class ContextMenu extends CustomElement {
             this.active = true;
         }
         /* --- */
-        const pRect = getBounds(this);
+        const pRect = getLayerBounds(this);
         this.#top = posY;
         this.#left = posX;
         const menuEl = this.shadowRoot.getElementById("menu");
-        if (pRect.x >= 0 && posX < pRect.x + CTX_MARGIN) {
-            posX = pRect.x + CTX_MARGIN;
+        if (pRect.x >= 0 && posX < pRect.x + LAYER_MARGIN) {
+            posX = pRect.x + LAYER_MARGIN;
         } else {
             const bWidth = Math.min(pRect.width + pRect.x, window.innerWidth);
-            if (menuEl.offsetWidth + posX > bWidth - CTX_MARGIN) {
-                posX = bWidth - menuEl.offsetWidth - CTX_MARGIN;
+            if (menuEl.offsetWidth + posX > bWidth - LAYER_MARGIN) {
+                posX = bWidth - menuEl.offsetWidth - LAYER_MARGIN;
             }
         }
-        if (pRect.y >= 0 && posY < pRect.y + CTX_MARGIN) {
-            posY = pRect.y + CTX_MARGIN;
+        if (pRect.y >= 0 && posY < pRect.y + LAYER_MARGIN) {
+            posY = pRect.y + LAYER_MARGIN;
         } else {
             const bHeight = Math.min(pRect.height + pRect.y, window.innerHeight);
-            if (menuEl.offsetHeight + posY > bHeight - CTX_MARGIN) {
-                posY = bHeight - menuEl.offsetHeight - CTX_MARGIN;
+            if (menuEl.offsetHeight + posY > bHeight - LAYER_MARGIN) {
+                posY = bHeight - menuEl.offsetHeight - LAYER_MARGIN;
             }
         }
         menuEl.style.left = `${posX}px`;
@@ -217,8 +216,8 @@ export default class ContextMenu extends CustomElement {
         }
         /* --- */
         const menuEl = this.shadowRoot.getElementById("menu");
-        menuEl.style.left = `${CTX_MARGIN}px`;
-        menuEl.style.top = `${CTX_MARGIN}px`;
+        menuEl.style.left = `${LAYER_MARGIN}px`;
+        menuEl.style.top = `${LAYER_MARGIN}px`;
     }
 
     initFocus() {

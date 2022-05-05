@@ -1,4 +1,4 @@
-import Logger from "../util/Logger.js";
+import Logger from "./Logger.js";
 
 const LANGUAGES = new Map();
 const MISSING = new Map();

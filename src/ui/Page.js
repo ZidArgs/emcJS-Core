@@ -7,7 +7,9 @@ import "./overlay/ctxmenu/CtxMenuLayer.js";
 
 const TPL = new Template(`
 <emc-ctxmenulayer>
-    <slot></slot>
+    <emc-tooltiplayer>
+        <slot></slot>
+    </emc-tooltiplayer>
 </emc-ctxmenulayer>
 <emc-messagelayer name="main"></emc-messagelayer>
 <emc-windowlayer name="main"></emc-windowlayer>

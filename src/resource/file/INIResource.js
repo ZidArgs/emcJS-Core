@@ -1,37 +1,13 @@
 import FileLoader from "../../util/FileLoader.js";
-import FileResource from "../abstract/FileResource.js";
-import {
-    buildResourceProxy
-} from "../util/ResourceProxy.js";
-
-const EMPTY_DATA = buildResourceProxy({});
+import FileResource from "../FileResource.js";
 
 export default class INIResource extends FileResource {
 
-    #data = EMPTY_DATA;
-
     constructor(src) {
-        super(src);
-        // ---
-        FileLoader.ini(src).then(data => {
-            const proxyData = buildResourceProxy(data);
-            this.#data = proxyData;
-            const ev = new Event("load");
-            ev.data = proxyData;
-            this.dispatchEvent(ev);
-        }).catch(err => {
-            console.warn(err);
-            const ev = new Event("error");
-            this.dispatchEvent(ev);
-        });
-    }
-
-    get(path) {
-        if (typeof path == "string" && !!path) {
-            return this.#data[path];
-        } else {
-            return this.#data;
+        if (src == null) {
+            throw new Error("resource must have a path associated with it");
         }
+        super(src, FileLoader.ini(src));
     }
 
 }

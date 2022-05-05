@@ -3,9 +3,9 @@ import GlobalStyle from "../../util/html/GlobalStyle.js";
 import CustomDelegatingElement from "../CustomDelegatingElement.js";
 import SearchAnd from "../../util/search/SearchAnd.js";
 import ElementManager from "../../util/html/ElementManager.js";
-import "../../i18n/ui/form/InputElement.js";
-import "../../i18n/ui/I18nLabel.js";
-import "../../i18n/ui/I18nTooltip.js";
+import "./InputElement.js";
+import "../i18n/I18nLabel.js";
+import "../i18n/I18nTooltip.js";
 import "./Option.js";
 import "../symbols/ChevronDownSymbol.js";
 

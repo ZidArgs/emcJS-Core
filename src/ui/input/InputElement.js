@@ -1,9 +1,9 @@
-import I18nMixin from "../I18nMixin.js";
+import I18nMixin from "../mixin/I18nMixin.js";
 
 /**
  * usage:
  * ```html
- * <input is="emc-i18n-input" type="text" i18nValue="translation.placeholder.key">
+ * <input is="emc-input" type="text" i18nValue="translation.placeholder.key">
  * ```
  */
 export default class InputElement extends I18nMixin(HTMLInputElement) {
@@ -34,4 +34,4 @@ export default class InputElement extends I18nMixin(HTMLInputElement) {
 
 }
 
-customElements.define("emc-i18n-input", InputElement, {extends: "input"});
+customElements.define("emc-input", InputElement, {extends: "input"});
