@@ -1,6 +1,6 @@
 import Template from "../../util/html/Template.js";
 import GlobalStyle from "../../util/html/GlobalStyle.js";
-import EventMultiTargetManager from "../../event/EventMultiTargetManager.js";
+import EventMultiTargetManager from "../../util/event/EventMultiTargetManager.js";
 import CustomElement from "../CustomElement.js";
 import ChildlistMutationObserverMixin from "../mixin/ChildlistMutationObserverMixin.js";
 import "./Option.js";

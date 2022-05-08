@@ -36,7 +36,7 @@ const STYLE = new GlobalStyle(`
 }
 `);
 
-function loadLayout(layout) {
+function renderLayout(layout) {
     if (layout != null) {
         if (layout.type == "panel") {
             const clazz = Panel.getReference(layout.name);
@@ -57,7 +57,7 @@ function loadLayout(layout) {
             const el = document.createElement(`emc-panel-${layout.type}`);
             el.classList.add("stretchlast");
             for (const item of layout.items) {
-                const ch = loadLayout(item);
+                const ch = renderLayout(item);
                 if (item.autosize) {
                     ch.classList.add("autosize");
                     el.classList.remove("stretchlast");
@@ -70,7 +70,7 @@ function loadLayout(layout) {
             for (const cat of layout.categories) {
                 const cnt = el.addTab(cat.category, cat.name ?? cat.category);
                 for (const item of cat.items) {
-                    const ch = loadLayout(cat);
+                    const ch = renderLayout(cat);
                     if (item.autosize) {
                         ch.classList.add("autosize");
                     }
@@ -106,7 +106,8 @@ export default class Layout extends CustomElement {
         if (!layout) {
             return;
         }
-        this.appendChild(loadLayout(layout));
+        const rendered = renderLayout(layout)
+        this.appendChild(rendered);
     }
 
 }

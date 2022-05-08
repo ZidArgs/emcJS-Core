@@ -2,7 +2,7 @@ import Template from "../../util/html/Template.js";
 import GlobalStyle from "../../util/html/GlobalStyle.js";
 import CustomDelegatingElement from "../CustomDelegatingElement.js";
 import "../input/SearchField.js";
-import "../../i18n/ui/I18nTooltip.js";
+import "../i18n/I18nTooltip.js";
 
 const TPL = new Template(`
 <input type="checkbox" id="selection" tabindex="-1">

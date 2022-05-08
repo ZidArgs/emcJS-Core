@@ -2,7 +2,7 @@ import Template from "../../../util/html/Template.js";
 import GlobalStyle from "../../../util/html/GlobalStyle.js";
 import CustomElement from "../../CustomElement.js";
 import WindowLayer from "./WindowLayer.js";
-import I18nLabel from "../../../i18n/ui/I18nLabel.js";
+import I18nLabel from "../../i18n/I18nLabel.js";
 import "../../symbols/CloseSymbol.js";
 
 const TPL = new Template(`

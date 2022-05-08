@@ -1,5 +1,5 @@
 // frameworks
-import EventTargetManager from "../../../event/EventTargetManager.js";
+import EventTargetManager from "../../../util/event/EventTargetManager.js";
 import {
     createMixin
 } from "../../../util/Mixin.js";

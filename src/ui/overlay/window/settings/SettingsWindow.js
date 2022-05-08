@@ -2,7 +2,7 @@ import DefaultingStorage from "../../../../datastorage/DefaultingStorage.js";
 import Template from "../../../../util/html/Template.js";
 import GlobalStyle from "../../../../util/html/GlobalStyle.js";
 import Window from "../Window.js";
-import I18nLabel from "../../../../i18n/ui/I18nLabel.js";
+import I18nLabel from "../../../i18n/I18nLabel.js";
 import "../../../layout/panel/TabPanel.js";
 import "../../../input/ListSelect.js";
 import "./SettingsTabContent.js";

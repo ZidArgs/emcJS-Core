@@ -3,6 +3,7 @@ import GlobalStyle from "../../../util/html/GlobalStyle.js";
 import CustomElement from "../../CustomElement.js";
 
 const TPL = new Template(`
+<slot id="slot"></slot>
 <slot id="ctxmnu" name="ctxmnu"></slot>
 `);
 

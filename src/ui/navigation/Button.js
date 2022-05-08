@@ -1,8 +1,8 @@
 import Template from "../../util/html/Template.js";
 import GlobalStyle from "../../util/html/GlobalStyle.js";
 import CustomElement from "../CustomElement.js";
-import "../../i18n/ui/I18nLabel.js";
-import "../../i18n/ui/I18nTooltip.js";
+import "../i18n/I18nLabel.js";
+import "../i18n/I18nTooltip.js";
 
 const TPL = new Template(`
 <emc-i18n-tooltip id="tooltip">
