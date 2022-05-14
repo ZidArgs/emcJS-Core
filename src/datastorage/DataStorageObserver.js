@@ -24,14 +24,14 @@ export default class DataStorageObserver extends EventTarget {
         storage.addEventListener("change", (event) => {
             if (this.#key != null && event.changes[this.#key] != null) {
                 const ev = new Event("change");
-                ev.data = event.changes[this.#key].newValue ?? def;
+                ev.value = event.changes[this.#key].newValue ?? def;
                 this.dispatchEvent(ev);
             }
         });
         storage.addEventListener("clear", event => {
             if (this.#key != null) {
                 const ev = new Event("change");
-                ev.data = event.data[this.#key] ?? def;
+                ev.value = event.data[this.#key] ?? def;
                 this.dispatchEvent(ev);
             }
         });

@@ -1,7 +1,7 @@
 import Template from "../../../../util/html/Template.js";
 import GlobalStyle from "../../../../util/html/GlobalStyle.js";
 import CustomElement from "../../../CustomElement.js";
-import LogicCompiler from "../../../../util/logic/Compiler.js";
+import LogicHandler from "../../../../util/logic/LogicHandler.js";
 import I18nLabel from "../../../i18n/I18nLabel.js";
 import "../../../i18n/I18nTextbox.js";
 import "../../../input/ListSelect.js";
@@ -128,18 +128,11 @@ function generateField(label, desc, inputEl, storage, visible, resetEl) {
 
     // visibility
     if (visible != null) {
-        if (typeof visible == "object") {
-            const logicFn = LogicCompiler.compile(visible);
-            const value = !!logicFn(ref => storage.get(ref));
-            if (!value) {
-                optionEl.style.display = "none";
-            }
-            // event
-            storage.addEventListener("change", () => {
-                const value = !!logicFn(ref => storage.get(ref));
-                optionEl.style.display = value ? "" : "none";
-            });
-        } else if (!visible) {
+        const logicHandler = new LogicHandler(storage, visible);
+        logicHandler.addEventListener("change", (event) => {
+            optionEl.style.display = event.value ? "" : "none";
+        });
+        if (!logicHandler.value) {
             optionEl.style.display = "none";
         }
     }
