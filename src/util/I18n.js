@@ -48,10 +48,12 @@ class I18n extends EventTarget {
                 const data = languages[key];
                 langLabels[key] = data["label"];
             }
+            const loading = [];
             for (const key in languages) {
                 const data = languages[key];
-                this.#loadTranslation(basePath, key, data);
+                loading.push(this.#loadTranslation(basePath, key, data));
             }
+            await Promise.all(loading);
         } catch (err) {
             console.error(err);
             Logger.error(new Error(`could not load language names`), "I18n");
