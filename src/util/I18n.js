@@ -51,7 +51,7 @@ class I18n extends EventTarget {
             const loading = [];
             for (const key in languages) {
                 const data = languages[key];
-                loading.push(this.#loadTranslation(basePath, key, data));
+                loading.push(this.#loadTranslation(basePath, key, data, langLabels));
             }
             await Promise.all(loading);
         } catch (err) {
@@ -60,7 +60,7 @@ class I18n extends EventTarget {
         }
     }
 
-    async #loadTranslation(basePath, key, data) {
+    async #loadTranslation(basePath, key, data, langLabels) {
         try {
             this.setBase(key, data["base"]);
             // fetch all translation files
@@ -75,6 +75,7 @@ class I18n extends EventTarget {
             for (const trans of translations) {
                 translation = Object.assign(translation, trans);
             }
+            translation = Object.assign(translation, langLabels);
             this.setTranslation(key, translation);
         } catch (err) {
             console.error(err);
@@ -215,13 +216,24 @@ class I18n extends EventTarget {
                 if (key == "") {
                     return "";
                 }
+                if (!this.#languages.has(lang)) {
+                    Logger.warn(`language "${lang}" is not loaded`, "I18n");
+                    console.warn(`language "${lang}" is not loaded`);
+                    return key;
+                }
                 if (this.#languages.get(lang).has(key)) {
                     return this.#languages.get(lang).get(key);
                 }
                 let base = lang;
                 while (this.#base.has(base)) {
-                    base = this.#base.get(base)
-                    if (this.#languages.get(base).has(key)) {
+                    const oldBase = base;
+                    base = this.#base.get(base);
+                    if (!this.#languages.has(base)) {
+                        Logger.warn(`language "${base}" requested as base from "${oldBase}" is not loaded`, "I18n");
+                        console.warn(`language "${base}" requested as base from "${oldBase}" is not loaded`);
+                        return key;
+                    }
+                    if (this.#languages.get(base)?.has(key)) {
                         return this.#languages.get(base).get(key);
                     }
                 }
@@ -261,7 +273,7 @@ class I18n extends EventTarget {
     // extras
 
     getLanguages() {
-        return this.#languages.keys();
+        return Array.from(this.#languages.keys());
     }
 
     getKeys(lang) {
