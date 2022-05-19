@@ -50,25 +50,33 @@ class I18n extends EventTarget {
             }
             for (const key in languages) {
                 const data = languages[key];
-                try {
-                    const translationFile = await FileLoader.properties(`${basePath}/${key}.lang`);
-                    let translation = {};
-                    for (const {type, name} of data["fragments"]) {
-                        const importTranslation = await importFragment(basePath, type, name);
-                        translation = Object.assign(translation, importTranslation);
-                    }
-                    translation = Object.assign(translation, translationFile);
-                    translation = Object.assign(translation, langLabels);
-                    this.setBase(key, data["base"]);
-                    this.setTranslation(key, translation);
-                } catch (err) {
-                    console.error(err);
-                    Logger.error(new Error(`could not load lang ${key}`), "I18n");
-                }
+                this.#loadTranslation(basePath, key, data);
             }
         } catch (err) {
             console.error(err);
             Logger.error(new Error(`could not load language names`), "I18n");
+        }
+    }
+
+    async #loadTranslation(basePath, key, data) {
+        try {
+            this.setBase(key, data["base"]);
+            // fetch all translation files
+            const transProm = [];
+            for (const {type, name} of data["fragments"]) {
+                transProm.push(importFragment(basePath, type, name));
+            }
+            transProm.push(FileLoader.properties(`${basePath}/${key}.lang`));
+            // build resulting translation
+            let translation = {};
+            const translations = await Promise.all(transProm);
+            for (const trans of translations) {
+                translation = Object.assign(translation, trans);
+            }
+            this.setTranslation(key, translation);
+        } catch (err) {
+            console.error(err);
+            Logger.error(new Error(`could not load lang ${key}`), "I18n");
         }
     }
 
@@ -190,7 +198,7 @@ class I18n extends EventTarget {
     }
 
     get(key) {
-        return this.#getTranslation(this.language, key);
+        return this.#getTranslation(this.language, key).trim();
     }
 
     #getTranslation(lang, key) {
@@ -206,12 +214,13 @@ class I18n extends EventTarget {
                     return "";
                 }
                 if (this.#languages.get(lang).has(key)) {
-                    return this.#languages.get(lang).get(key).trim();
+                    return this.#languages.get(lang).get(key);
                 }
-                if (this.#base.has(lang)) {
-                    const base = this.#base.has(lang)
+                let base = lang;
+                while (this.#base.has(base)) {
+                    base = this.#base.get(base)
                     if (this.#languages.get(base).has(key)) {
-                        return this.#languages.get(base).get(key).trim();
+                        return this.#languages.get(base).get(key);
                     }
                 }
                 if (!this.#missing.get(lang).has(key)) {
