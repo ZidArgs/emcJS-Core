@@ -335,7 +335,7 @@ export default class TokenSelect extends CustomDelegatingElement {
                 event.stopPropagation();
                 return false;
             }
-        });
+        }, {passive: true});
         window.addEventListener("mousedown", event => {
             if (view.getAttribute("mode") != "view") {
                 this.#cancelSelection();
@@ -344,7 +344,7 @@ export default class TokenSelect extends CustomDelegatingElement {
         container.addEventListener("wheel", event => {
             event.stopPropagation();
             return false;
-        });
+        }, {passive: true});
         this.addEventListener("mousedown", event => {
             event.stopPropagation();
             return false;
