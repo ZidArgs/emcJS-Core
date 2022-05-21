@@ -1,4 +1,4 @@
-import FileLoader from "../../util/FileLoader.js";
+import FileLoader from "../../util/file/FileLoader.js";
 import FileResource from "../FileResource.js";
 
 export default class PropertiesResource extends FileResource {

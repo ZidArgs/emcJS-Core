@@ -1,5 +1,5 @@
 import EventBusAbstractModule from "./EventBusAbstractModule.js";
-import Path from "../../util/Path.js";
+import Path from "../../util/file/Path.js";
 import SharedWorkerRegistry from "../../worker/SharedWorkerRegistry.js";
 
 const path = new Path(import.meta.url);

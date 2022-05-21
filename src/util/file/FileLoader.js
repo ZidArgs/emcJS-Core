@@ -1,7 +1,7 @@
-import JSONC from "./converter/JSONC.js";
-import XML from "./converter/XML.js";
-import INI from "./converter/INI.js";
-import Properties from "./converter/Properties.js";
+import JSONC from "../converter/JSONC.js";
+import XML from "../converter/XML.js";
+import INI from "../converter/INI.js";
+import Properties from "../converter/Properties.js";
 
 async function getFile(file, contentType) {
     const r = await fetch(new Request(file, {

@@ -1,4 +1,4 @@
-import FileLoader from "/src/util/FileLoader.js";
+import FileLoader from "/src/util/file/FileLoader.js";
 
 const config = await FileLoader.json("./index.json");
 

@@ -164,6 +164,22 @@ class Helper {
         return result;
     }
 
+    isClass(obj) {
+        if (obj == null) {
+            return false;
+        }
+        const isClass = this.#isClassDefinition(obj);
+        if (obj.prototype == null) {
+            return isClass;
+        }
+        const isProtoClass = this.#isClassDefinition(obj.prototype);
+        return isClass || isProtoClass;
+    }
+
+    #isClassDefinition(obj) {
+        return obj.constructor?.toString().slice(0, 5) === "class";
+    }
+
 }
 
 export default new Helper;

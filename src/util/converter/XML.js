@@ -1,4 +1,4 @@
-// import Logger from "../Logger.js";
+// import Logger from "../log/Logger.js";
 
 const PARSER = new DOMParser();
 
