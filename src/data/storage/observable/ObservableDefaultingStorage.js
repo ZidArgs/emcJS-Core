@@ -1,7 +1,7 @@
 
-import DataStorage from "./DataStorage.js";
+import ObservableStorage from "./ObservableStorage.js";
 
-export default class DefaultingStorage extends DataStorage {
+export default class ObservableDefaultingStorage extends ObservableStorage {
 
     #defaults = new Map();
 
@@ -53,16 +53,22 @@ export default class DefaultingStorage extends DataStorage {
 
     get(key) {
         if (this.#defaults.has(key)) {
-            return super.get(key, this.#defaults.get(key));
+            return super.get(key) ?? this.#defaults.get(key);
         }
     }
 
     getAll() {
         const res = {};
         for (const [key, value] of this.#defaults) {
-            res[key] = super.get(key, value);
+            res[key] = super.get(key) ?? value;
         }
         return res;
+    }
+
+    delete(key) {
+        if (this.#defaults.has(key)) {
+            super.delete(key);
+        }
     }
 
     has(key) {

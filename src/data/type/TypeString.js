@@ -1,5 +1,8 @@
 import AbstractType from "./AbstractType.js";
 
+/**
+ * String type enforcer and converter.
+ */
 export default class TypeString extends AbstractType {
 
     static format(value) {
@@ -19,6 +22,10 @@ export default class TypeString extends AbstractType {
             default:
                 return "";
         }
+    }
+
+    [Symbol.iterator]() {
+        return this.value[Symbol.iterator]();
     }
 
 }

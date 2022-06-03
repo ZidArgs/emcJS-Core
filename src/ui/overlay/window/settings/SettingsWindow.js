@@ -1,4 +1,4 @@
-import DefaultingStorage from "../../../../datastorage/DefaultingStorage.js";
+import ObservableDefaultingStorage from "../../../../data/storage/observable/ObservableDefaultingStorage.js";
 import Template from "../../../../util/html/Template.js";
 import GlobalStyle from "../../../../util/html/GlobalStyle.js";
 import Window from "../Window.js";
@@ -87,7 +87,7 @@ function convertValueList(values = {}) {
 
 export default class SettingsWindow extends Window {
 
-    #storage = new DefaultingStorage();
+    #storage = new ObservableDefaultingStorage();
 
     constructor(title = "Settings", options = {}) {
         super(title, options.close);

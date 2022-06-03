@@ -69,6 +69,20 @@ class BusyIndicator {
         activeCounter.remove();
     }
 
+    async watch(promise) {
+        if (promise instanceof Promise) {
+            try {
+                await this.busy();
+                const result = promise();
+                await this.unbusy();
+                return result;
+            } catch (err) {
+                await this.unbusy();
+                throw err;
+            }
+        }
+    }
+
     setIndicator(element) {
         if (element instanceof HTMLElement) {
             EL.append(element);

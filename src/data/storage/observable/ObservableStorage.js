@@ -1,4 +1,4 @@
-export default class DataStorage extends EventTarget {
+export default class ObservableStorage extends EventTarget {
 
     #buffer = new Map();
 
@@ -35,8 +35,8 @@ export default class DataStorage extends EventTarget {
         }
     }
 
-    get(key, value) {
-        return this.#buffer.get(key) ?? value;
+    get(key) {
+        return this.#buffer.get(key);
     }
 
     getAll() {

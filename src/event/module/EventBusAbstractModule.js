@@ -2,7 +2,7 @@ export default class EventBusAbstractModule {
 
     constructor() {
         if (new.target === EventBusAbstractModule) {
-            throw new TypeError("can not construct abstract class");
+            throw new Error("can not construct abstract class");
         }
     }
 
@@ -11,7 +11,7 @@ export default class EventBusAbstractModule {
     }
 
     triggerModuleEvent(payload) {
-        throw new TypeError("can not call abstract method");
+        throw new Error("can not call abstract method");
     }
 
 }

@@ -1,12 +1,12 @@
+import Helper from "../../util/helper/Helper.js";
 import {
-    immuteRecursive
-} from "../data/Immutable.js";
+    immute
+} from "../Immutable.js";
+import AbstractResource from "./AbstractResource.js";
 
 const RESOURCES = new Map();
 
-let PATH_SEPARATOR = "/";
-
-export default class FileResource extends EventTarget {
+export default class FileResource extends AbstractResource {
 
     #loaded = false;
 
@@ -25,7 +25,7 @@ export default class FileResource extends EventTarget {
         if (content instanceof Promise) {
             content.then(data => {
                 this.#loaded = true;
-                const proxyData = immuteRecursive(data);
+                const proxyData = immute(data);
                 this.#data = proxyData;
                 // ---
                 const ev = new Event("load");
@@ -40,7 +40,7 @@ export default class FileResource extends EventTarget {
             });
         } else {
             this.#loaded = true;
-            const proxyData = immuteRecursive(content);
+            const proxyData = immute(content);
             this.#data = proxyData;
             // ---
             const ev = new Event("load");
@@ -64,25 +64,21 @@ export default class FileResource extends EventTarget {
         });
     }
 
-    #getFromPathArray(path) {
-        path = Array.from(path);
-        let current = this.#data;
-        while (current != null && path.length) {
-            current = current[path.shift()];
-        }
-        return current;
-    }
-
     get(path) {
         if (this.#data != null && path != null) {
             if (Array.isArray(path)) {
-                return this.#getFromPathArray(Array.from(path));
+                return Helper.getFromPath(this.#data, path);
             }
-            if (!!PATH_SEPARATOR && typeof path === "string" && path.includes(PATH_SEPARATOR)) {
-                return this.#getFromPathArray(path.split(PATH_SEPARATOR));
+            if (!!AbstractResource.pathSeparator && typeof path === "string" && path.includes(AbstractResource.pathSeparator)) {
+                path = path.split(AbstractResource.pathSeparator);
+                return Helper.getFromPath(this.#data, path);
             }
             return this.#data[path];
         }
+        return this.#data;
+    }
+
+    get data() {
         return this.#data;
     }
 
@@ -100,18 +96,6 @@ export default class FileResource extends EventTarget {
                 reject(err);
             }
         });
-    }
-
-    static set pathSeparator(value) {
-        if (typeof value === "string") {
-            PATH_SEPARATOR = value;
-        } else {
-            throw new TypeError(`expected type "string" but was "${typeof value}"`);
-        }
-    }
-
-    static get pathSeparator() {
-        return PATH_SEPARATOR;
     }
 
 }

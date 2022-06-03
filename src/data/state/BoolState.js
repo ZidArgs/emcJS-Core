@@ -1,5 +1,9 @@
 import AnyState from "./AnyState.js";
 
+/**
+ * A state containing a boolean value.
+ * If the value gets updated, it fires a change event.
+ */
 export default class BoolState extends AnyState {
 
     constructor(value) {

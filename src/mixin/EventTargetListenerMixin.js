@@ -1,13 +1,13 @@
 import {
     createMixin
-} from "../../util/Mixin.js";
-import EventTargetManager from "../../util/event/EventTargetManager.js";
+} from "../util/Mixin.js";
+import EventTargetManager from "../util/event/EventTargetManager.js";
 
-export default createMixin((superclass) => class EventTargetMixin extends superclass {
+export default createMixin((superclass) => class EventTargetListenerMixin extends superclass {
 
     #manager = new Map();
 
-    switchTarget(id, newTarget) {
+    switchEventTarget(id, newTarget) {
         if (this.#manager.has(id)) {
             const targetManager = this.#manager.get(id);
             targetManager.switchTarget(newTarget);
@@ -16,11 +16,11 @@ export default createMixin((superclass) => class EventTargetMixin extends superc
         }
     }
 
-    getTarget(id) {
+    getEventTarget(id) {
         return this.#manager.get(id);
     }
 
-    setTargetEventListener(id, name, fn) {
+    setEventTargetListener(id, name, fn) {
         if (this.#manager.has(id)) {
             const targetManager = this.#manager.get(id);
             targetManager.set(name, fn);
@@ -31,35 +31,26 @@ export default createMixin((superclass) => class EventTargetMixin extends superc
         }
     }
 
-    deleteTargetEventListener(id, name) {
+    deleteEventTargetListener(id, name) {
         if (this.#manager.has(id)) {
             const targetManager = this.#manager.get(id);
             targetManager.delete(name);
         }
     }
 
-    clearTargetEventListener(id) {
+    clearEventTargetListener(id) {
         if (this.#manager.has(id)) {
             const targetManager = this.#manager.get(id);
             targetManager.clear();
         }
     }
 
-    connectedCallback() {
+    setEventTargetListenerActive(value) {
         if (super.connectedCallback) {
             super.connectedCallback();
         }
         for (const [, targetManager] of this.#manager) {
-            targetManager.setActive(true);
-        }
-    }
-
-    disconnectedCallback() {
-        if (super.disconnectedCallback) {
-            super.disconnectedCallback();
-        }
-        for (const [, targetManager] of this.#manager) {
-            targetManager.setActive(false);
+            targetManager.setActive(value);
         }
     }
 

@@ -10,6 +10,10 @@ function parseNumber(value) {
     return result;
 }
 
+/**
+ * A state containing an integer value.
+ * If the value gets updated, it fires a change event.
+ */
 export default class IntegerState extends AnyState {
 
     #min = 0;

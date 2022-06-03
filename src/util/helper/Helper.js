@@ -180,6 +180,20 @@ class Helper {
         return obj.constructor?.toString().slice(0, 5) === "class";
     }
 
+    getFromPath(obj, path) {
+        if (typeof obj !== "object") {
+            throw new TypeError("first parameter must be an object");
+        }
+        if (!Array.isArray(path)) {
+            throw new TypeError("second parameter must be an array");
+        }
+        path = Array.from(path);
+        while (obj != null && path.length) {
+            obj = obj[path.shift()];
+        }
+        return obj;
+    }
+
 }
 
 export default new Helper;

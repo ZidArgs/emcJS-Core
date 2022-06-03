@@ -18,7 +18,7 @@ DEFAULT_STYLES[LogLevel.LOG] = {"color": "#83EB9E"};
 const DEFAULT_UNSET_STYLE = {"color": "#B8B8B8"};
 
 const TIME_FND = /(....)-(..)-(..)T(..:..:..\....)Z/;
-const TIME_REP = "$3.$2.$1-$4";
+const TIME_REP = "$3.$2.$1 - $4";
 
 const writeTargets = new Set;
 const writeLevel = new Set(["ERROR", "WARN", "INFO", "LOG"]);

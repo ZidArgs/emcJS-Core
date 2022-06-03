@@ -10,6 +10,10 @@ function parseNumber(value) {
     return result;
 }
 
+/**
+ * A state containing a number value.
+ * If the value gets updated, it fires a change event.
+ */
 export default class NumberState extends AnyState {
 
     #min = 0;

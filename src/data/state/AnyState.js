@@ -1,5 +1,9 @@
 import Helper from "../../util/helper/Helper.js";
 
+/**
+ * A state containing a value of any kind.
+ * If the value gets updated, it fires a change event.
+ */
 export default class AnyState extends EventTarget {
 
     #state;

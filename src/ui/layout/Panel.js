@@ -8,13 +8,13 @@ export default class Panel extends CustomElement {
         super();
         /* --- */
         if (new.target === Panel) {
-            throw new TypeError("can not construct abstract class");
+            throw new Error("can not construct abstract class");
         }
     }
 
     static registerReference(ref, clazz) {
         if (!(clazz.prototype instanceof Panel)) {
-            throw new TypeError("registered class must extend the Panel class");
+            throw new Error("registered class must extend the Panel class");
         }
         REG.set(ref, clazz);
     }

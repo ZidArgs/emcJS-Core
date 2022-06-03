@@ -1,12 +1,12 @@
-import IDBStorage from "../storage/IDBStorage.js";
-import DataStorage from "./DataStorage.js";
+import IDBStorage from "../IDBStorage.js";
+import ObservableStorage from "./ObservableStorage.js";
 
-export default class IDBProxyStorage extends DataStorage {
+export default class ObservableIDBProxyStorage extends ObservableStorage {
 
     #storage;
 
     static async create(name) {
-        const inst = new IDBProxyStorage(name);
+        const inst = new ObservableIDBProxyStorage(name);
         return await inst.awaitLoaded();
     }
 

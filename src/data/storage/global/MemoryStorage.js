@@ -34,11 +34,18 @@ class MemoryStorage {
         return keys;
     }
 
+    setAll(values) {
+        for (const key in values) {
+            const value = values[key];
+            this.set(key, value);
+        }
+    }
+
     getAll(filter) {
         const res = {};
-        const k = this.keys(filter);
-        for (const i of k) {
-            res[i] = JSON.parse(STORAGE.get(i));
+        const keys = this.keys(filter);
+        for (const key of keys) {
+            res[key] = this.get(key);
         }
         return res;
     }
