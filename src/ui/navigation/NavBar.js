@@ -26,7 +26,7 @@ const STYLE = new GlobalStyle(`
     color: var(--navigation-text-color, #000000);
     flex-grow: 0;
     flex-shrink: 0;
-    z-index: 900700;
+    z-index: 900500;
 }
 #container {
     display: block;

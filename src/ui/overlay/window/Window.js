@@ -24,11 +24,6 @@ const TPL = new Template(`
 `);
 
 const STYLE = new GlobalStyle(`
-:host,
-.footer,
-.button {
-    display: flex;
-}
 :host {
     position: fixed;
     align-items: flex-start;
@@ -38,6 +33,15 @@ const STYLE = new GlobalStyle(`
     right: 0;
     bottom: 0;
     pointer-events: none;
+}
+:host(.inactive) {
+    filter: blur(2px);
+    pointer-events: none;
+}
+:host,
+.footer,
+.button {
+    display: flex;
 }
 #window {
     display: flex;
@@ -149,6 +153,10 @@ export default class Window extends CustomElement {
         focusBottomEl.addEventListener("focus", () => {
             this.focusFirst();
         });
+    }
+
+    disconnectedCallback() {
+        this.classList.remove("inactive");
     }
 
     show() {

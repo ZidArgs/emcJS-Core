@@ -27,7 +27,7 @@ const STYLE = new GlobalStyle(`
     width: 100%;
     height: 100%;
     padding: 5px;
-    z-index: 900600;
+    z-index: 900800;
     cursor: default;
     pointer-events: none;
     overflow: hidden;

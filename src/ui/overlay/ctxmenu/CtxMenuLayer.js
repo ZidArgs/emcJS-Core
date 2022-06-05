@@ -23,7 +23,7 @@ const STYLE = new GlobalStyle(`
     cursor: default;
     overflow: hidden;
     pointer-events: none;
-    z-index: 900800;
+    z-index: 900600;
 }
 ::slotted([slot="ctxmnu"]) {
     pointer-events: all;

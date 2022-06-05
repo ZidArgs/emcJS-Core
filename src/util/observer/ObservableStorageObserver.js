@@ -24,6 +24,8 @@ export default class ObservableStorageObserver extends EventTarget {
 
     #key;
 
+    #value;
+
     constructor(storage, key) {
         if (!(storage instanceof ObservableStorage)) {
             throw new TypeError("wrong type on parameter 1, expected ObservableStorage");
@@ -40,25 +42,41 @@ export default class ObservableStorageObserver extends EventTarget {
         /* --- */
         this.#storage = storage;
         this.#key = key;
+        this.#value = storage.get(key);
         /* --- */
         storage.addEventListener("change", (event) => {
             if (this.#key != null && event.changes[this.#key] != null) {
+                const oldValue = this.#value;
+                const newValue = event.changes[this.#key].newValue;
+                this.#value = newValue;
+                // ---
                 const ev = new Event("change");
-                ev.value = event.changes[this.#key].newValue;
+                ev.value = newValue;
+                ev.oldValue = oldValue;
                 this.dispatchEvent(ev);
             }
         });
         storage.addEventListener("clear", event => {
             if (this.#key != null) {
+                const oldValue = this.#value;
+                const newValue = event.data[this.#key];
+                this.#value = newValue;
+                // ---
                 const ev = new Event("change");
-                ev.value = event.data[this.#key];
+                ev.value = newValue;
+                ev.oldValue = oldValue;
                 this.dispatchEvent(ev);
             }
         });
         storage.addEventListener("load", (event) => {
             if (this.#key != null) {
+                const oldValue = this.#value;
+                const newValue = event.data[this.#key];
+                this.#value = newValue;
+                // ---
                 const ev = new Event("change");
-                ev.value = event.data[this.#key];
+                ev.value = newValue;
+                ev.oldValue = oldValue;
                 this.dispatchEvent(ev);
             }
         });

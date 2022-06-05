@@ -20,6 +20,7 @@ const DEFAULT_UNSET_STYLE = {"color": "#B8B8B8"};
 const TIME_FND = /(....)-(..)-(..)T(..:..:..\....)Z/;
 const TIME_REP = "$3.$2.$1 - $4";
 
+let reportWindowErrorEvents = false;
 const writeTargets = new Set;
 const writeLevel = new Set(["ERROR", "WARN", "INFO", "LOG"]);
 let reportTarget = null;
@@ -206,16 +207,22 @@ export default class Logger {
         }
     }
 
+    static logWindowErrorEvents(value) {
+        reportWindowErrorEvents = !!value;
+    }
+
 }
 
 window.Logger = Logger;
 
 window.addEventListener("error", function(msg, url, line, col, error) {
     if (msg instanceof ErrorEvent) {
-        Logger.error(
-            msg.error ? msg.error : msg.message,
-            `${msg.filename ? msg.filename : "anonymous"} ${msg.lineno}:${msg.colno}`
-        );
+        if (reportWindowErrorEvents) {
+            Logger.error(
+                msg.error ? msg.error : msg.message,
+                `${msg.filename ? msg.filename : "anonymous"} ${msg.lineno}:${msg.colno}`
+            );
+        }
     } else {
         col = col ? `:${col}` : "";
         error = error ? `\n${error}` : "";

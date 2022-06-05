@@ -13,6 +13,9 @@ const HANDLER = {
     },
     preventExtensions() {
         return false;
+    },
+    setPrototypeOf() {
+        return false;
     }
 };
 
