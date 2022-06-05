@@ -157,7 +157,7 @@ export default class SettingsWindow extends Window {
             const containerEl = tabEl.querySelector(".container");
             return containerEl;
         } else {
-            const tabEl = categoriesEl.setTab(category, I18nLabel.getLabel(label));
+            const tabEl = categoriesEl.setTab(category, I18nLabel.getLabel(this.constructor.getTabLabel(label)));
             const containerEl = document.createElement("emc-window-settings-tab");
             containerEl.className = "container";
             containerEl.id = `settings_${category}`;
@@ -170,7 +170,7 @@ export default class SettingsWindow extends Window {
         const tabEl = this.getTab(category);
         if (tabEl != null) {
             this.#storage.setDefault(ref, def);
-            tabEl.addStringInput(this.#storage, ref, label, desc, visible, resettable);
+            tabEl.addStringInput(this.#storage, ref, this.constructor.getLabel(label), desc, visible, resettable);
         }
     }
 
@@ -178,7 +178,7 @@ export default class SettingsWindow extends Window {
         const tabEl = this.getTab(category);
         if (tabEl != null) {
             this.#storage.setDefault(ref, def);
-            tabEl.addNumberInput(this.#storage, ref, label, desc, visible, resettable, min, max);
+            tabEl.addNumberInput(this.#storage, ref, this.constructor.getLabel(label), desc, visible, resettable, min, max);
         }
     }
 
@@ -186,7 +186,7 @@ export default class SettingsWindow extends Window {
         const tabEl = this.getTab(category);
         if (tabEl != null) {
             this.#storage.setDefault(ref, def);
-            tabEl.addRangeInput(this.#storage, ref, label, desc, visible, resettable, min, max);
+            tabEl.addRangeInput(this.#storage, ref, this.constructor.getLabel(label), desc, visible, resettable, min, max);
         }
     }
 
@@ -194,7 +194,7 @@ export default class SettingsWindow extends Window {
         const tabEl = this.getTab(category);
         if (tabEl != null) {
             this.#storage.setDefault(ref, !!def);
-            tabEl.addCheckInput(this.#storage, ref, label, desc, visible, resettable);
+            tabEl.addCheckInput(this.#storage, ref, this.constructor.getLabel(label), desc, visible, resettable);
         }
     }
 
@@ -202,7 +202,7 @@ export default class SettingsWindow extends Window {
         const tabEl = this.getTab(category);
         if (tabEl != null) {
             this.#storage.setDefault(ref, def);
-            tabEl.addColorInput(this.#storage, ref, label, desc, visible, resettable);
+            tabEl.addColorInput(this.#storage, ref, this.constructor.getLabel(label), desc, visible, resettable);
         }
     }
 
@@ -210,7 +210,7 @@ export default class SettingsWindow extends Window {
         const tabEl = this.getTab(category);
         if (tabEl != null) {
             this.#storage.setDefault(ref, def);
-            tabEl.addChoiceInput(this.#storage, ref, label, desc, visible, resettable, values);
+            tabEl.addChoiceInput(this.#storage, ref, this.constructor.getLabel(label), desc, visible, resettable, values);
         }
     }
 
@@ -221,14 +221,14 @@ export default class SettingsWindow extends Window {
             for (const value in convertedValues) {
                 this.#storage.setDefault(value, def.includes(value));
             }
-            tabEl.addListSelectInput(this.#storage, ref, label, desc, visible, resettable, multiple, convertedValues);
+            tabEl.addListSelectInput(this.#storage, ref, this.constructor.getLabel(label), desc, visible, resettable, multiple, convertedValues);
         }
     }
 
     addButton(category, ref, label, desc, visible, text = "", callback = null) {
         const tabEl = this.getTab(category);
         if (tabEl != null) {
-            tabEl.addButton(this.#storage, ref, label, desc, visible, text, callback = null);
+            tabEl.addButton(this.#storage, ref, this.constructor.getLabel(label), desc, visible, text, callback = null);
         }
     }
 
@@ -237,6 +237,14 @@ export default class SettingsWindow extends Window {
         if (tabEl != null) {
             tabEl.addElements(content);
         }
+    }
+
+    static getTabLabel(label) {
+        return label;
+    }
+
+    static getLabel(label) {
+        return label;
     }
 
 }
