@@ -13,12 +13,6 @@ const STYLE = new GlobalStyle(`
 }
 `);
 
-function appendHTML(r) {
-    while (r.length > 0) {
-        this.append(r[0]);
-    }
-}
-
 export default class HTMLImport extends CustomElement {
 
     constructor() {
@@ -65,7 +59,11 @@ export default class HTMLImport extends CustomElement {
                 break;
             case "html":
                 if (oldValue != newValue) {
-                    Import.html(newValue).then(appendHTML.bind(this));
+                    Import.html(newValue).then((result) => {
+                        while (result.length > 0) {
+                            this.append(result[0]);
+                        }
+                    });
                 }
                 break;
             case "module":

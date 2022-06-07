@@ -11,10 +11,10 @@ class EventBusModuleShare extends EventBusAbstractModule {
     constructor() {
         super();
         if (WORKER) {
-            WORKER.onmessage = function(e) {
+            WORKER.onmessage = (e) => {
                 const payload = e.data;
                 this.onModuleEvent(payload);
-            }.bind(this);
+            };
             WORKER.start();
         }
     }

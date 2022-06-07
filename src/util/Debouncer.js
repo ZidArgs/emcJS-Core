@@ -10,10 +10,9 @@ export function debounce(func, wait = 0) {
     }
     let timeout;
     return function(...args) {
-        const context = this;
         clearTimeout(timeout);
         timeout = setTimeout(() => {
-            func.apply(context, args);
+            func(...args);
         }, wait);
     };
 }
@@ -32,10 +31,9 @@ export function debounceCacheData(func, wait = 0) {
     let cache = [];
     return function(data) {
         cache.push(data);
-        const context = this;
         clearTimeout(timeout);
         timeout = setTimeout(() => {
-            func.call(context, cache);
+            func(cache);
             cache = [];
         }, wait);
     };

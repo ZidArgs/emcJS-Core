@@ -14,27 +14,6 @@ const STYLE = new GlobalStyle(`
 }
 `);
 
-function dropElement(event) {
-    const els = DragDropMemory.get();
-    if (els.length) {
-        this.append(els);
-    }
-    DragDropMemory.clear();
-    event.preventDefault();
-    event.stopPropagation();
-}
-
-function allowDrop(event) {
-    const els = DragDropMemory.get();
-    if (!this.group) {
-        event.preventDefault();
-        event.stopPropagation();
-    } else if (els.every((e) => e.group == this.group)) {
-        event.preventDefault();
-        event.stopPropagation();
-    }
-}
-
 export default class DropTarget extends CustomElement {
 
     constructor() {
@@ -42,8 +21,25 @@ export default class DropTarget extends CustomElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.ondrop = dropElement.bind(this);
-        this.ondragover = allowDrop.bind(this);
+        this.ondrop = (event) => {
+            const els = DragDropMemory.get();
+            if (els.length) {
+                this.append(els);
+            }
+            DragDropMemory.clear();
+            event.preventDefault();
+            event.stopPropagation();
+        };
+        this.ondragover = (event) => {
+            const els = DragDropMemory.get();
+            if (!this.group) {
+                event.preventDefault();
+                event.stopPropagation();
+            } else if (els.every((e) => e.group == this.group)) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        };
     }
 
     get group() {

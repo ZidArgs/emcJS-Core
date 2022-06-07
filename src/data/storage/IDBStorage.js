@@ -1,16 +1,16 @@
 function requestToPromise(request) {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
         request.onsuccess = function(e) {
             resolve(e.target.result);
         };
         request.onerror = function(e) {
             reject(e);
         }
-    }.bind(this));
+    });
 }
 
 function cursorToPromise(cursor, fn) {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
         const res = {};
         cursor.onsuccess = function(e) {
             const el = e.target.result;
@@ -26,7 +26,7 @@ function cursorToPromise(cursor, fn) {
         cursor.onerror = function(e) {
             reject(e);
         }
-    }.bind(this));
+    });
 }
 
 export default class IDBStorage {

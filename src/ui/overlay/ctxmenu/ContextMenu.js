@@ -135,9 +135,13 @@ export default class ContextMenu extends CustomElement {
         });
         /* --- */
         const focusTopEl = this.shadowRoot.getElementById("focus_catcher_top");
-        focusTopEl.onfocus = this.focusLast.bind(this);
+        focusTopEl.onfocus = () => {
+            this.focusLast();
+        };
         const focusBottomEl = this.shadowRoot.getElementById("focus_catcher_bottom");
-        focusBottomEl.onfocus = this.focusFirst.bind(this);
+        focusBottomEl.onfocus = () => {
+            this.focusFirst();
+        };
         const focusEl = this.shadowRoot.getElementById("init_focus");
         focusEl.onblur = () => {
             focusEl.setAttribute("tabindex", "");

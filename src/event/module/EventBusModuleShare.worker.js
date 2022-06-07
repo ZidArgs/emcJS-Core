@@ -9,7 +9,9 @@ function handleConnect(event) {
         MAIN.postMessage({name:"new-instance", data:{}});
     }
     PORTS.add(port);
-    port.addEventListener("message", handleMessage.bind(port));
+    port.addEventListener("message", (event) => {
+        handleMessage(port, event);
+    });
     port.start();
 }
 
@@ -17,10 +19,10 @@ function handleDisconnect(event) {
     PORTS.remove(event.ports[0]);
 }
 
-function handleMessage(event) {
+function handleMessage(p, event) {
     const msg = event.data;
     for (const port of PORTS) {
-        if (port == this) {
+        if (port == p) {
             continue;
         }
         port.postMessage(msg);

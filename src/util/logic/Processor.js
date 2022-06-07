@@ -50,12 +50,6 @@ function mapToObj(map) {
     return res;
 }
 
-function valueGetter(mem, key) {
-    if (mem.has(key)) {
-        return mem.get(key);
-    }
-}
-
 const DIRTY = new WeakMap();
 const LOGIC = new WeakMap();
 const MEM_I = new WeakMap();
@@ -144,7 +138,11 @@ export default class Processor {
             console.log("executing logic...");
             console.time("execution time");
         }
-        const val = valueGetter.bind(this, mem_i);
+        const val = (key) => {
+            if (mem_i.has(key)) {
+                return mem_i.get(key);
+            }
+        };
         logic.forEach((v, k) => {
             const r = !!v(val);
             mem_i.set(k, r);

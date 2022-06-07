@@ -31,7 +31,7 @@ const HANDLER = {
     },
     get(target, property) {
         if (typeof property === "symbol" || BYPASS_PROPERTIES.includes(property)) {
-            return target[property]?.bind(target);
+            return target[property];
         }
         return target.get(property);
     },
