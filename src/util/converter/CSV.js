@@ -3,7 +3,7 @@ const LNBR_SEQ = /(?:\r\n|\n|\r)/g;
 class CSV {
 
     parse(input, split = ",") {
-        return input.split(LNBR_SEQ).map(item => {
+        return input.split(LNBR_SEQ).map((item) => {
             const output = [];
             const entries = item.split(split);
             parseEntries:

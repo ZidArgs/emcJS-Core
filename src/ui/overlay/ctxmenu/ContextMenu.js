@@ -107,25 +107,25 @@ export default class ContextMenu extends CustomElement {
         const menuEl = this.shadowRoot.getElementById("menu");
         menuEl.style.left = `${LAYER_MARGIN}px`;
         menuEl.style.top = `${LAYER_MARGIN}px`;
-        menuEl.addEventListener("click", event => {
+        menuEl.addEventListener("click", (event) => {
             this.close();
             event.preventDefault();
             event.stopPropagation();
             return false;
         });
-        this.addEventListener("click", event => {
+        this.addEventListener("click", (event) => {
             this.close();
             event.preventDefault();
             event.stopPropagation();
             return false;
         });
-        this.addEventListener("contextmenu", event => {
+        this.addEventListener("contextmenu", (event) => {
             this.close();
             event.preventDefault();
             event.stopPropagation();
             return false;
         });
-        this.addEventListener("keyup", event => {
+        this.addEventListener("keyup", (event) => {
             if (event.key == "Enter" || event.key == "Escape") {
                 this.close();
                 /* --- */

@@ -42,18 +42,18 @@ export default class IDBStorage {
     static #openDB(name) {
         return new Promise(function(resolve, reject) {
             const request = indexedDB.open(name);
-            request.onupgradeneeded = function(event) {
+            request.onupgradeneeded = () => {
                 const db = request.result;
                 if (!db.objectStoreNames.contains("data")) {
                     db.createObjectStore("data");
                 }
             };
-            request.onsuccess = function() {
+            request.onsuccess = () => {
                 resolve(request.result);
             };
-            request.onerror = function(e) {
-                reject(e);
-            }
+            request.onerror = (error) => {
+                reject(error);
+            };
         });
     }
 
@@ -111,7 +111,7 @@ export default class IDBStorage {
         const request = transaction.getAllKeys();
         const result = await requestToPromise(request);
         if (typeof filter == "string") {
-            return result.filter(key => key.startsWith(filter));
+            return result.filter((key) => key.startsWith(filter));
         }
         return result;
     }

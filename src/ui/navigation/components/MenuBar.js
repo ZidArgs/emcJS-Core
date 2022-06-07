@@ -164,7 +164,7 @@ export default class MenuBar extends CustomElement {
         const cover = this.shadowRoot.getElementById("cover");
         const content = this.shadowRoot.getElementById("content");
         const hamburger = this.shadowRoot.getElementById("hamburger-button");
-        hamburger.onclick = (event) => {
+        hamburger.onclick = () => {
             if (container.classList.contains("open")) {
                 container.classList.remove("open");
                 container.classList.remove("cover");
@@ -180,7 +180,7 @@ export default class MenuBar extends CustomElement {
                 hamburger.open = true;
             }
         };
-        cover.onclick = (event) => {
+        cover.onclick = () => {
             container.classList.remove("open");
             container.classList.remove("cover");
             content.querySelectorAll(".open").forEach(function(el) {

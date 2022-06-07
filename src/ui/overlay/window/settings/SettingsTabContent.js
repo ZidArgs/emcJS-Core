@@ -207,13 +207,13 @@ export default class SettingsTabContent extends CustomElement {
         inputEl.value = storage.get(ref);
         inputEl.dataset.ref = ref;
         // events
-        storage.addEventListener("clear", event => {
+        storage.addEventListener("clear", (event) => {
             inputEl.value = event.data[ref];
         });
-        storage.addEventListener("load", event => {
+        storage.addEventListener("load", (event) => {
             inputEl.value = event.data[ref];
         });
-        storage.addEventListener("change", event => {
+        storage.addEventListener("change", (event) => {
             if (event.data[ref] != null) {
                 inputEl.value = event.data[ref];
             }
@@ -242,13 +242,13 @@ export default class SettingsTabContent extends CustomElement {
         }
         inputEl.dataset.ref = ref;
         // events
-        storage.addEventListener("clear", event => {
+        storage.addEventListener("clear", (event) => {
             inputEl.value = parseFloat(event.data[ref]) || 0;
         });
-        storage.addEventListener("load", event => {
+        storage.addEventListener("load", (event) => {
             inputEl.value = parseFloat(event.data[ref]) || 0;
         });
-        storage.addEventListener("change", event => {
+        storage.addEventListener("change", (event) => {
             if (event.data[ref] != null) {
                 inputEl.value = parseFloat(event.data[ref]) || 0;
             }
@@ -277,13 +277,13 @@ export default class SettingsTabContent extends CustomElement {
         }
         inputEl.dataset.ref = ref;
         // events
-        storage.addEventListener("clear", event => {
+        storage.addEventListener("clear", (event) => {
             inputEl.value = parseFloat(event.data[ref]) || 0;
         });
-        storage.addEventListener("load", event => {
+        storage.addEventListener("load", (event) => {
             inputEl.value = parseFloat(event.data[ref]) || 0;
         });
-        storage.addEventListener("change", event => {
+        storage.addEventListener("change", (event) => {
             if (event.data[ref] != null) {
                 inputEl.value = parseFloat(event.data[ref]) || 0;
             }
@@ -306,13 +306,13 @@ export default class SettingsTabContent extends CustomElement {
         inputEl.checked = !!storage.get(ref);
         inputEl.dataset.ref = ref;
         // events
-        storage.addEventListener("clear", event => {
+        storage.addEventListener("clear", (event) => {
             inputEl.checked = !!event.data[ref];
         });
-        storage.addEventListener("load", event => {
+        storage.addEventListener("load", (event) => {
             inputEl.checked = !!event.data[ref];
         });
-        storage.addEventListener("change", event => {
+        storage.addEventListener("change", (event) => {
             if (event.data[ref] != null) {
                 inputEl.checked = !!event.data[ref];
             }
@@ -335,13 +335,13 @@ export default class SettingsTabContent extends CustomElement {
         inputEl.value = storage.get(ref);
         inputEl.dataset.ref = ref;
         // events
-        storage.addEventListener("clear", event => {
+        storage.addEventListener("clear", (event) => {
             inputEl.value = event.data[ref];
         });
-        storage.addEventListener("load", event => {
+        storage.addEventListener("load", (event) => {
             inputEl.value = event.data[ref];
         });
-        storage.addEventListener("change", event => {
+        storage.addEventListener("change", (event) => {
             if (event.data[ref] != null) {
                 inputEl.value = event.data[ref];
             }
@@ -368,13 +368,13 @@ export default class SettingsTabContent extends CustomElement {
         inputEl.value = storage.get(ref);
         inputEl.dataset.ref = ref;
         // events
-        storage.addEventListener("clear", event => {
+        storage.addEventListener("clear", (event) => {
             inputEl.value = event.data[ref];
         });
-        storage.addEventListener("load", event => {
+        storage.addEventListener("load", (event) => {
             inputEl.value = event.data[ref];
         });
-        storage.addEventListener("change", event => {
+        storage.addEventListener("change", (event) => {
             if (event.data[ref] != null) {
                 inputEl.value = event.data[ref];
             }
@@ -404,7 +404,7 @@ export default class SettingsTabContent extends CustomElement {
                 valueCache.add(value);
             }
             // events
-            storage.addEventListener("change", event => {
+            storage.addEventListener("change", (event) => {
                 const evValue = event.data[value];
                 if (evValue != null) {
                     if (evValue) {
@@ -418,7 +418,7 @@ export default class SettingsTabContent extends CustomElement {
         }
         inputEl.value = Array.from(valueCache);
         // events
-        storage.addEventListener("clear", event => {
+        storage.addEventListener("clear", (event) => {
             valueCache.clear();
             for (const value in convertedValues) {
                 const evValue = event.data[value];
@@ -428,7 +428,7 @@ export default class SettingsTabContent extends CustomElement {
             }
             inputEl.value = Array.from(valueCache);
         });
-        storage.addEventListener("load", event => {
+        storage.addEventListener("load", (event) => {
             valueCache.clear();
             for (const value in convertedValues) {
                 const evValue = event.data[value];

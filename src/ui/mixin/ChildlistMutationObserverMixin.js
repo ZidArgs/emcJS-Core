@@ -24,11 +24,11 @@ export default createMixin((superclass) => class ChildlistMutationObserverMixin 
         });
     }
 
-    nodeAddedCallback(element, target) {
+    nodeAddedCallback(/* element, target */) {
         // nothing
     }
 
-    nodeRemovedCallback(element, target) {
+    nodeRemovedCallback(/* element, target */) {
         // nothing
     }
 

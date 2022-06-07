@@ -22,7 +22,7 @@ export default class Enum {
     }
 
     static toString() {
-        const names = Object.keys(this).filter(v => this[v] instanceof this);
+        const names = Object.keys(this).filter((v) => this[v] instanceof this);
         return `Enum(${names.join(", ")})`;
     }
 

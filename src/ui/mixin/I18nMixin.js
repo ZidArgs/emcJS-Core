@@ -23,7 +23,7 @@ export default createMixin((superclass) => class I18nMixin extends superclass {
                 }
             }
         });
-        this.#manager.set("translation", event => {
+        this.#manager.set("translation", (event) => {
             for (const attr of this.#observedI18nAttr) {
                 const key = this.getAttribute(attr);
                 if (key && event.changes[key] != null) {
@@ -33,7 +33,7 @@ export default createMixin((superclass) => class I18nMixin extends superclass {
         });
     }
 
-    applyI18n(key, value) {
+    applyI18n(/* key, value */) {
         // empty
     }
 

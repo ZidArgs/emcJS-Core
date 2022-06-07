@@ -23,7 +23,7 @@ export default class FileResource extends AbstractResource {
         RESOURCES.set(src, this);
         // ---
         if (content instanceof Promise) {
-            content.then(data => {
+            content.then((data) => {
                 this.#loaded = true;
                 const proxyData = immute(data);
                 this.#data = proxyData;
@@ -31,7 +31,7 @@ export default class FileResource extends AbstractResource {
                 const ev = new Event("load");
                 ev.data = proxyData;
                 this.dispatchEvent(ev);
-            }).catch(err => {
+            }).catch((err) => {
                 this.#loaded = true;
                 // ---
                 console.warn(err);
@@ -50,7 +50,7 @@ export default class FileResource extends AbstractResource {
     }
 
     awaitReady() {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             if (this.#loaded) {
                 resolve(this);
             } else {

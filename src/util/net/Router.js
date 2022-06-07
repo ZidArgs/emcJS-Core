@@ -2,7 +2,7 @@ const ROUTES = new Map();
 
 function resolveParams(params) {
     if (params.length) {
-        return Object.fromEntries(params.slice(1).split("&").map(v=>v.split("=")));
+        return Object.fromEntries(params.slice(1).split("&").map((v)=>v.split("=")));
     } else {
         return {};
     }

@@ -141,11 +141,11 @@ export default class SearchSelect extends CustomDelegatingElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.shadowRoot.getElementById("container").addEventListener("slotchange", event => {
+        this.shadowRoot.getElementById("container").addEventListener("slotchange", () => {
             const all = this.querySelectorAll(`[value]`);
-            all.forEach(el => {
+            all.forEach((el) => {
                 if (el) {
-                    el.onclick = event => {
+                    el.onclick = (event) => {
                         this.#choose(event.currentTarget.getAttribute("value"));
                         event.stopPropagation();
                         return false;
@@ -159,7 +159,7 @@ export default class SearchSelect extends CustomDelegatingElement {
         const viewEl = this.shadowRoot.getElementById("view");
         const inputEl = this.shadowRoot.getElementById("input");
         const containerEl = this.shadowRoot.getElementById("scroll-container");
-        this.addEventListener("click", event => {
+        this.addEventListener("click", (event) => {
             if (!this.readonly) {
                 viewEl.setAttribute("mode", "edit");
                 inputEl.focus();
@@ -168,7 +168,7 @@ export default class SearchSelect extends CustomDelegatingElement {
             return false;
         });
         const scrollContainerEl = this.shadowRoot.getElementById("scroll-container");
-        this.addEventListener("keyup", event => {
+        this.addEventListener("keyup", (event) => {
             if (!this.readonly) {
                 if (viewEl.getAttribute("mode") == "view") {
                     if (event.key == "Enter") {
@@ -245,7 +245,7 @@ export default class SearchSelect extends CustomDelegatingElement {
                 }
             }
         });
-        inputEl.addEventListener("focus", event => {
+        inputEl.addEventListener("focus", () => {
             if (!this.readonly) {
                 inputEl.value = "";
                 const thisRect = this.getBoundingClientRect();
@@ -260,12 +260,12 @@ export default class SearchSelect extends CustomDelegatingElement {
                 }
             }
         });
-        window.addEventListener("wheel", event => {
+        window.addEventListener("wheel", () => {
             if (viewEl.getAttribute("mode") != "view") {
                 this.#cancelSelection();
             }
         }, {passive: true});
-        window.addEventListener("mousedown", event => {
+        window.addEventListener("mousedown", (event) => {
             if (viewEl.getAttribute("mode") != "view") {
                 this.#cancelSelection();
                 event.preventDefault();
@@ -273,23 +273,23 @@ export default class SearchSelect extends CustomDelegatingElement {
                 return false;
             }
         });
-        containerEl.addEventListener("wheel", event => {
+        containerEl.addEventListener("wheel", (event) => {
             event.stopPropagation();
             return false;
         }, {passive: true});
-        this.addEventListener("mousedown", event => {
+        this.addEventListener("mousedown", (event) => {
             event.stopPropagation();
             return false;
         });
-        this.addEventListener("blur", event => {
+        this.addEventListener("blur", (event) => {
             this.#cancelSelection();
             event.stopPropagation();
             return false;
         });
-        inputEl.addEventListener("input", event => {
+        inputEl.addEventListener("input", () => {
             const all = this.querySelectorAll(`[value]`);
             const regEx = new SearchAnd(inputEl.value);
-            all.forEach(el => {
+            all.forEach((el) => {
                 if (el.innerText.trim().match(regEx)) {
                     el.style.display = "";
                 } else {
@@ -308,9 +308,9 @@ export default class SearchSelect extends CustomDelegatingElement {
         if (!this.value && !!all.length) {
             this.value = all[0].value;
         }
-        all.forEach(el => {
+        all.forEach((el) => {
             if (el) {
-                el.onclick = event => {
+                el.onclick = (event) => {
                     this.#choose(event.currentTarget.getAttribute("value"));
                     event.stopPropagation();
                     return false;
@@ -376,7 +376,7 @@ export default class SearchSelect extends CustomDelegatingElement {
             container.style.bottom = "";
             container.style.top = "";
             const all = this.querySelectorAll(`[value]`);
-            all.forEach(el => {
+            all.forEach((el) => {
                 el.style.display = "";
             });
             const marked = this.querySelector(".marked");
@@ -396,7 +396,7 @@ export default class SearchSelect extends CustomDelegatingElement {
             container.style.bottom = "";
             container.style.top = "";
             const all = this.querySelectorAll(`[value]`);
-            all.forEach(el => {
+            all.forEach((el) => {
                 el.style.display = "";
             });
             const marked = this.querySelector(".marked");

@@ -4,10 +4,10 @@ class PortHandler extends EventTarget {
 
     constructor() {
         super();
-        self.addEventListener("connect", event => {
+        self.addEventListener("connect", (event) => {
             const port = event.ports[0];
             this.#ports.add(port);
-            port.addEventListener("message", event => {
+            port.addEventListener("message", (event) => {
                 const ev = new Event("message");
                 ev.port = port;
                 ev.data = event.data;
@@ -15,10 +15,10 @@ class PortHandler extends EventTarget {
             });
             port.start();
         });
-        self.addEventListener("disconnect", event => {
+        self.addEventListener("disconnect", (event) => {
             this.#ports.remove(event.ports[0]);
         });
-        self.addEventListener("message", event => {
+        self.addEventListener("message", (event) => {
             const ev = new Event("message");
             ev.data = event.data;
             this.dispatchEvent(ev);

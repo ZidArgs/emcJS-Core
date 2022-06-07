@@ -90,10 +90,10 @@ export default class CircleSelect extends CustomElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         // button events
-        this.shadowRoot.getElementById("next").addEventListener("click", event => {
+        this.shadowRoot.getElementById("next").addEventListener("click", (event) => {
             this.next(event);
         });
-        this.shadowRoot.getElementById("prev").addEventListener("click", event => {
+        this.shadowRoot.getElementById("prev").addEventListener("click", (event) => {
             this.prev(event);
         });
     }

@@ -27,7 +27,7 @@ export default class EventBusSubset {
         if (typeof name == "function") {
             this.#alls.add(name);
         } else if (Array.isArray(name)) {
-            name.forEach(n => this.register(n, fn));
+            name.forEach((n) => this.register(n, fn));
         } else if (!this.#subs.has(name)) {
             const subs = new Set;
             subs.add(fn);
@@ -41,7 +41,7 @@ export default class EventBusSubset {
         if (typeof name == "function") {
             this.#alls.delete(name);
         } else if (Array.isArray(name)) {
-            name.forEach(n => this.unregister(n, fn));
+            name.forEach((n) => this.unregister(n, fn));
         } else if (this.#subs.has(name)) {
             this.#subs.get(name).delete(fn);
         }

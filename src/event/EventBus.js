@@ -53,7 +53,7 @@ class EventBus {
     addModule(newModule, options = {}) {
         if (newModule instanceof EventBusAbstractModule) {
             MODULES.set(newModule, options);
-            newModule.onModuleEvent = payload => {
+            newModule.onModuleEvent = (payload) => {
                 if (checkLists(options.whitelist, options.blacklist, payload.name)) {
                     triggerEvent(payload);
                     MODULES.forEach((options, module) => {
@@ -79,7 +79,7 @@ class EventBus {
         if (typeof name == "function") {
             ALLS.add(name);
         } else if (Array.isArray(name)) {
-            name.forEach(n => this.register(n, fn));
+            name.forEach((n) => this.register(n, fn));
         } else if (!SUBS.has(name)) {
             const subs = new Set;
             subs.add(fn);
@@ -93,7 +93,7 @@ class EventBus {
         if (typeof name == "function") {
             ALLS.delete(name);
         } else if (Array.isArray(name)) {
-            name.forEach(n => this.unregister(n, fn));
+            name.forEach((n) => this.unregister(n, fn));
         } else if (SUBS.has(name)) {
             SUBS.get(name).delete(fn);
         }

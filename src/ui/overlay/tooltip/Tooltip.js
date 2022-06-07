@@ -178,7 +178,7 @@ export default class Tooltip extends CustomElement {
         this.setAttribute("active", val);
     }
 
-    show(target) {
+    show(/* target */) {
         if (!this.active) {
             this.active = true;
         }

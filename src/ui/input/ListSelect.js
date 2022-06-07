@@ -101,9 +101,9 @@ export default class ListSelect extends CustomDelegatingElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.shadowRoot.getElementById("container").addEventListener("slotchange", event => {
+        this.shadowRoot.getElementById("container").addEventListener("slotchange", () => {
             const all = this.querySelectorAll(`[value]`);
-            all.forEach(el => {
+            all.forEach((el) => {
                 if (el) {
                     el.onclick = () => {
                         this.#choose(el.getAttribute("value"));
@@ -114,18 +114,18 @@ export default class ListSelect extends CustomDelegatingElement {
         });
         /* header */
         const headerEl = this.shadowRoot.getElementById("header");
-        headerEl.addEventListener("check", event => {
+        headerEl.addEventListener("check", (event) => {
             if (this.multiple) {
                 const all = this.querySelectorAll(`[value]`);
                 const value = [];
                 if (event.value) {
-                    all.forEach(el => {
+                    all.forEach((el) => {
                         if (!!el && el.style.display == "" || el.classList.contains("active")) {
                             value.push(el.value);
                         }
                     });
                 } else {
-                    all.forEach(el => {
+                    all.forEach((el) => {
                         if (!!el && el.style.display == "none" && el.classList.contains("active")) {
                             value.push(el.value);
                         }
@@ -134,7 +134,7 @@ export default class ListSelect extends CustomDelegatingElement {
                 this.value = value;
             }
         });
-        headerEl.addEventListener("search", event => {
+        headerEl.addEventListener("search", (event) => {
             const all = this.querySelectorAll(`[value]`);
             let checked = false;
             let unchecked = false;
@@ -143,7 +143,7 @@ export default class ListSelect extends CustomDelegatingElement {
                 if (this.style.height == "") {
                     this.style.height = `${this.getBoundingClientRect().height}px`;
                 }
-                all.forEach(el => {
+                all.forEach((el) => {
                     if (el.innerText.match(regEx)) {
                         el.style.display = "";
                         if (el.classList.contains("active")) {
@@ -157,7 +157,7 @@ export default class ListSelect extends CustomDelegatingElement {
                     }
                 });
             } else {
-                all.forEach(el => {
+                all.forEach((el) => {
                     el.style.display = "";
                     if (el.classList.contains("active")) {
                         checked = true;
@@ -180,13 +180,13 @@ export default class ListSelect extends CustomDelegatingElement {
             }
         });
         /* --- */
-        this.addEventListener("blur", event => {
+        this.addEventListener("blur", (event) => {
             this.#cancelSelection();
             event.stopPropagation();
             return false;
         });
         const scrollContainer = this.shadowRoot.getElementById("scroll-container");
-        this.addEventListener("keyup", event => {
+        this.addEventListener("keyup", (event) => {
             if (!this.readonly) {
                 if (event.key == "Escape") {
                     this.#cancelSelection();
@@ -274,7 +274,7 @@ export default class ListSelect extends CustomDelegatingElement {
         if (!this.value && !!all.length) {
             this.value = all[0].value;
         }
-        all.forEach(el => {
+        all.forEach((el) => {
             if (el) {
                 el.onclick = () => {
                     this.#choose(el.getAttribute("value"));
@@ -398,7 +398,7 @@ export default class ListSelect extends CustomDelegatingElement {
             const vals = new Set(this.value);
             let checked = false;
             let unchecked = false;
-            all.forEach(el => {
+            all.forEach((el) => {
                 if (el) {
                     if (vals.has(el.value)) {
                         el.classList.add("active");
@@ -423,7 +423,7 @@ export default class ListSelect extends CustomDelegatingElement {
                 header.checked = false;
             }
         } else {
-            all.forEach(el => {
+            all.forEach((el) => {
                 if (el) {
                     if (this.value == el.value) {
                         el.classList.add("active");

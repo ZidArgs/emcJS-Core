@@ -27,7 +27,7 @@ class SessionStorage {
     keys(filter) {
         const keys = Object.keys(sessionStorage);
         if (typeof filter == "string") {
-            return keys.filter(key => key.startsWith(filter));
+            return keys.filter((key) => key.startsWith(filter));
         }
         return keys;
     }

@@ -4,7 +4,7 @@ import CustomDelegatingElement from "../CustomDelegatingElement.js";
 
 export default class TableToolbar extends CustomDelegatingElement {
 
-    #searchModeOr = false;
+    // #searchModeOr = false;
 
     constructor() {
         super();

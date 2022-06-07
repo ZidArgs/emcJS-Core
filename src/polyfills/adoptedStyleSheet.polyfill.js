@@ -22,7 +22,7 @@ if (!Document.prototype.hasOwnProperty("adoptedStyleSheets")) {
         },
         set: function(newValue) {
             const oldValue = VALUE.get(this) || [];
-            newValue = newValue.map(value => {
+            newValue = newValue.map((value) => {
                 if (value instanceof CSSStyleSheet) {
                     return cloneCSSStyleSheet(value);
                 }
@@ -65,7 +65,7 @@ if (!ShadowRoot.prototype.hasOwnProperty("adoptedStyleSheets")) {
         },
         set: function(newValue) {
             const oldValue = VALUE.get(this) || [];
-            newValue = newValue.map(value => {
+            newValue = newValue.map((value) => {
                 if (value instanceof CSSStyleSheet) {
                     return cloneCSSStyleSheet(value);
                 }

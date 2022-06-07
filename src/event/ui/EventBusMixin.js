@@ -22,7 +22,7 @@ export default createMixin((superclass) => class EventBusMixin extends superclas
                 this.#events.register(fn);
             }
         } else if (Array.isArray(name)) {
-            name.forEach(n => this.registerGlobal(n, fn));
+            name.forEach((n) => this.registerGlobal(n, fn));
         } else {
             if (!this.#subs.has(name)) {
                 const subs = new Set;
@@ -44,7 +44,7 @@ export default createMixin((superclass) => class EventBusMixin extends superclas
                 this.#events.unregister(fn);
             }
         } else if (Array.isArray(name)) {
-            name.forEach(n => this.unregisterGlobal(n, fn));
+            name.forEach((n) => this.unregisterGlobal(n, fn));
         } else if (this.#subs.has(name)) {
             this.#subs.get(name).delete(fn);
             if (this.isConnected) {

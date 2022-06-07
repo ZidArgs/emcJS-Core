@@ -44,7 +44,7 @@ export default class SearchHeader extends CustomDelegatingElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         const searchEl = this.shadowRoot.getElementById("search");
-        searchEl.addEventListener("change", ev => {
+        searchEl.addEventListener("change", (ev) => {
             this.search = ev.currentTarget.value;
             const event = new Event("search");
             event.value = ev.currentTarget.value;

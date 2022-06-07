@@ -47,7 +47,7 @@ function extractModule(module) {
 async function importModule(url) {
     return import(url)
         .then(extractModule)
-        .catch(err => {
+        .catch((err) => {
             throw new Error(`Error loading module "${url}"`, {cause: err})
         });
 }

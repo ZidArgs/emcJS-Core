@@ -11,7 +11,7 @@ function mapToObj(src) {
 
 function setToArray(src) {
     const res = [];
-    src.forEach(v => {
+    src.forEach((v) => {
         res.push(v);
     });
     return res;
@@ -259,7 +259,7 @@ export default class LogicGraph {
                 reachableNodes.add(name);
             }
 
-            const valueGetter = key => {
+            const valueGetter = (key) => {
                 if (allTargets.has(key) && reachableNodes.has(key)) {
                     return 1;
                 } else if (mem_i.has(key)) {
@@ -268,7 +268,7 @@ export default class LogicGraph {
                 return 0;
             };
 
-            const execute = name => {
+            const execute = (name) => {
                 if (mixins.has(name)) {
                     const fn = mixins.get(name);
                     const res = fn(valueGetter, execute);

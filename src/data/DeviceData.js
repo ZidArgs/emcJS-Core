@@ -5,7 +5,7 @@ import {
 const REQUEST_OS_DATA = ["platform", "platformVersion"];
 
 function getOSData() {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         navigator.userAgentData.getHighEntropyValues(REQUEST_OS_DATA).then(resolve);
     });
 }

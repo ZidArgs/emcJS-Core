@@ -29,7 +29,7 @@ function allowDrop(event) {
     if (!this.group) {
         event.preventDefault();
         event.stopPropagation();
-    } else if (els.every(e => e.group == this.group)) {
+    } else if (els.every((e) => e.group == this.group)) {
         event.preventDefault();
         event.stopPropagation();
     }

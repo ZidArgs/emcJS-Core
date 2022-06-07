@@ -5,7 +5,7 @@ class ArrayHelper {
             throw new TypeError("only arrays are comparable");
         }
         const c = new Set(b);
-        return a.filter(d => !c.has(d));
+        return a.filter((d) => !c.has(d));
     }
 
     symDiff(a, b) {
@@ -20,7 +20,7 @@ class ArrayHelper {
             throw new TypeError("only arrays are comparable");
         }
         const c = new Set(b);
-        return a.filter(d => c.has(d));
+        return a.filter((d) => c.has(d));
     }
 
 }

@@ -228,7 +228,7 @@ export default class SettingsWindow extends Window {
     addButton(category, ref, label, desc, visible, text = "", callback = null) {
         const tabEl = this.getTab(category);
         if (tabEl != null) {
-            tabEl.addButton(this.#storage, ref, this.constructor.getLabel(label), desc, visible, text, callback = null);
+            tabEl.addButton(this.#storage, ref, this.constructor.getLabel(label), desc, visible, text, callback);
         }
     }
 

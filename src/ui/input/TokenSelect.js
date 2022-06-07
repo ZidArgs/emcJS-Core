@@ -206,16 +206,16 @@ export default class TokenSelect extends CustomDelegatingElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         const searchResetEl = this.shadowRoot.getElementById("search-reset");
-        searchResetEl.addEventListener("click", ev => {
+        searchResetEl.addEventListener("click", () => {
             this.value = [];
             this.#applyValue([]);
         });
         /* --- */
-        this.shadowRoot.getElementById("container").addEventListener("slotchange", event => {
+        this.shadowRoot.getElementById("container").addEventListener("slotchange", () => {
             const all = this.querySelectorAll(`[value]`);
-            all.forEach(el => {
+            all.forEach((el) => {
                 if (el) {
-                    el.onclick = event => {
+                    el.onclick = (event) => {
                         this.#choose(event.currentTarget.getAttribute("value"));
                         event.stopPropagation();
                         return false;
@@ -227,7 +227,7 @@ export default class TokenSelect extends CustomDelegatingElement {
         const view = this.shadowRoot.getElementById("view");
         const input = this.shadowRoot.getElementById("input");
         const container = this.shadowRoot.getElementById("scroll-container");
-        this.addEventListener("click", event => {
+        this.addEventListener("click", (event) => {
             if (!this.readonly) {
                 view.setAttribute("mode", "edit");
                 input.focus();
@@ -236,7 +236,7 @@ export default class TokenSelect extends CustomDelegatingElement {
             return false;
         });
         const scrollContainer = this.shadowRoot.getElementById("scroll-container");
-        this.addEventListener("keyup", event => {
+        this.addEventListener("keyup", (event) => {
             if (!this.readonly) {
                 if (view.getAttribute("mode") == "view") {
                     if (event.key == "Enter") {
@@ -313,7 +313,7 @@ export default class TokenSelect extends CustomDelegatingElement {
                 }
             }
         });
-        input.addEventListener("focus", event => {
+        input.addEventListener("focus", () => {
             if (!this.readonly) {
                 input.value = "";
                 const thisRect = this.getBoundingClientRect();
@@ -328,7 +328,7 @@ export default class TokenSelect extends CustomDelegatingElement {
                 }
             }
         });
-        window.addEventListener("wheel", event => {
+        window.addEventListener("wheel", (event) => {
             if (view.getAttribute("mode") != "view") {
                 this.#cancelSelection();
                 event.preventDefault();
@@ -336,28 +336,28 @@ export default class TokenSelect extends CustomDelegatingElement {
                 return false;
             }
         }, {passive: true});
-        window.addEventListener("mousedown", event => {
+        window.addEventListener("mousedown", () => {
             if (view.getAttribute("mode") != "view") {
                 this.#cancelSelection();
             }
         });
-        container.addEventListener("wheel", event => {
+        container.addEventListener("wheel", (event) => {
             event.stopPropagation();
             return false;
         }, {passive: true});
-        this.addEventListener("mousedown", event => {
+        this.addEventListener("mousedown", (event) => {
             event.stopPropagation();
             return false;
         });
-        this.addEventListener("blur", event => {
+        this.addEventListener("blur", (event) => {
             this.#cancelSelection();
             event.stopPropagation();
             return false;
         });
-        input.addEventListener("input", event => {
+        input.addEventListener("input", () => {
             const all = this.querySelectorAll(`[value]`);
             const regEx = new SearchAnd(input.value);
-            all.forEach(el => {
+            all.forEach((el) => {
                 if (el.innerText.trim().match(regEx)) {
                     el.style.display = "";
                 } else {
@@ -375,9 +375,9 @@ export default class TokenSelect extends CustomDelegatingElement {
             this.setAttribute("tabindex", 0);
         }
         const all = this.querySelectorAll(`[value]`);
-        all.forEach(el => {
+        all.forEach((el) => {
             if (el) {
-                el.onclick = event => {
+                el.onclick = (event) => {
                     this.#choose(event.currentTarget.getAttribute("value"));
                     event.stopPropagation();
                     return false;
@@ -468,7 +468,7 @@ export default class TokenSelect extends CustomDelegatingElement {
     calculateItems() {
         const all = this.querySelectorAll(`[value]`);
         const vals = new Set(this.value);
-        all.forEach(el => {
+        all.forEach((el) => {
             if (el) {
                 if (vals.has(el.value)) {
                     el.classList.add("active");
@@ -490,7 +490,7 @@ export default class TokenSelect extends CustomDelegatingElement {
             container.style.bottom = "";
             container.style.top = "";
             const all = this.querySelectorAll(`[value]`);
-            all.forEach(el => {
+            all.forEach((el) => {
                 el.style.display = "";
             });
             const marked = this.querySelector(".marked");

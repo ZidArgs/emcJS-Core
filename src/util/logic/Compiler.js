@@ -1,7 +1,7 @@
 const TRANSPILERS = {
     /* literals */
-    "true":     (logic) => "1",
-    "false":    (logic) => "0",
+    "true":     () => "1",
+    "false":    () => "0",
     "string":   (logic) => escape(logic.el),
     "number":   (logic) => toNumber(logic.el),
     "value":    (logic) => `(val("${escape(logic.el)}")||0)`,

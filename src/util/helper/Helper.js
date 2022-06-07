@@ -91,7 +91,7 @@ class Helper {
         if (c.length != Object.keys(b).length) {
             return false;
         }
-        return c.every(i => b[i] != null && this.isEqual(a[i], b[i]));
+        return c.every((i) => b[i] != null && this.isEqual(a[i], b[i]));
     }
 
     deepClone(item) {

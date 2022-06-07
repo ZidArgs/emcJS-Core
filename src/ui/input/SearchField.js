@@ -72,11 +72,11 @@ export default class SearchField extends CustomDelegatingElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         const searchEl = this.shadowRoot.getElementById("search");
-        searchEl.addEventListener("input", ev => {
+        searchEl.addEventListener("input", (ev) => {
             this.value = ev.currentTarget.value;
         });
         const searchResetEl = this.shadowRoot.getElementById("search-reset");
-        searchResetEl.addEventListener("click", ev => {
+        searchResetEl.addEventListener("click", () => {
             this.value = "";
         });
     }

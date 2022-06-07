@@ -56,7 +56,7 @@ function analyzeFile(ref, file) {
 
 class LanguageManager {
 
-    register(src = "/", dest = "/", sourcemaps = false) {
+    register(/* src = "/", dest = "/", sourcemaps = false */) {
         const files = [];
         return through(function(file) {
             const ref = path.basename(file.path, ".lang");

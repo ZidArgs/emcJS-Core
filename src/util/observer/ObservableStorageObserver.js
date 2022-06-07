@@ -56,7 +56,7 @@ export default class ObservableStorageObserver extends EventTarget {
                 this.dispatchEvent(ev);
             }
         });
-        storage.addEventListener("clear", event => {
+        storage.addEventListener("clear", (event) => {
             if (this.#key != null) {
                 const oldValue = this.#value;
                 const newValue = event.data[this.#key];

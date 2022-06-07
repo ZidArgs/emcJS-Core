@@ -68,13 +68,13 @@ export default class CollapsePanel extends CustomElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.shadowRoot.getElementById("title").addEventListener("click", function(event) {
+        this.shadowRoot.getElementById("title").addEventListener("click", () => {
             if (!!this.expanded && this.expanded != "false") {
                 this.expanded = "false";
             } else {
                 this.expanded = "true";
             }
-        }.bind(this));
+        });
     }
 
     get expanded() {

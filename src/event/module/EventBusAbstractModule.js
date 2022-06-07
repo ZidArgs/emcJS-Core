@@ -6,11 +6,11 @@ export default class EventBusAbstractModule {
         }
     }
 
-    onModuleEvent(payload) {
+    onModuleEvent(/* payload */) {
         // will be overwritten by EventBus
     }
 
-    triggerModuleEvent(payload) {
+    triggerModuleEvent(/* payload */) {
         throw new Error("can not call abstract method");
     }
 

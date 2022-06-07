@@ -69,14 +69,14 @@ export default class SelectionHeader extends CustomDelegatingElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         const selectionEl = this.shadowRoot.getElementById("selection");
-        selectionEl.addEventListener("change", ev => {
+        selectionEl.addEventListener("change", (ev) => {
             this.checked = ev.currentTarget.checked;
             const event = new Event("check");
             event.value = ev.currentTarget.checked;
             this.dispatchEvent(event);
         });
         const searchEl = this.shadowRoot.getElementById("search");
-        searchEl.addEventListener("change", ev => {
+        searchEl.addEventListener("change", (ev) => {
             this.search = ev.currentTarget.value;
             const event = new Event("search");
             event.value = ev.currentTarget.value;
