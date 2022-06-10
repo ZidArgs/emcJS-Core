@@ -4,17 +4,14 @@ import {
     Transform
 } from "stream";
 
-const __dirname = path.resolve();
-const __project = path.resolve(__dirname, "node_modules/emcjs");
-
-const HTMLTemplatePath = path.resolve(__project, "src/util/html/Template.js");
-const HTMLGlobalStylePath = path.resolve(__project, "src/util/html/GlobalStyle.js");
+const HTMLTemplatePath = "util/html/Template.js";
+const HTMLGlobalStylePath = "util/html/GlobalStyle.js";
 
 const LNBR_SEQ = /(?:\r\n|\n|\r)/g;
 const IMPORT_SCRIPT = /^\s*import(?:\s+([a-zA-Z0-9_$]+)\s+from)?\s+"([^"]+)"\s*;?$/;
 const IMPORT_ASSERT = /^\s*import\s+([a-zA-Z0-9_$]+)\s+from\s+"([^"]+)"\s+assert\s+\{\s*type:\s*"([^"]+)"\s*\}\s*;?$/;
 
-function augmentFile(sourcePath, fileContent) {
+function augmentFile(emcJSPrefix, sourcePath, fileContent) {
     const sourceDir = path.dirname(sourcePath);
     // lists
     const importedHTML = [];
@@ -70,7 +67,7 @@ function augmentFile(sourcePath, fileContent) {
         // HTML
         if (importedHTML.length) {
             // import Template module
-            const modulePath = path.relative(sourceDir, HTMLTemplatePath).replace(/\\/g, "/");
+            const modulePath = `${emcJSPrefix}/${HTMLTemplatePath}`.replace(/\\/g, "/");
             result += `import Template from "${modulePath}";\n`;
             // include files
             for (const {name, filePath} of importedHTML) {
@@ -87,7 +84,7 @@ function augmentFile(sourcePath, fileContent) {
         // CSS
         if (importedCSS.length) {
             // import GlobalStyle module
-            const modulePath = path.relative(sourceDir, HTMLGlobalStylePath).replace(/\\/g, "/");
+            const modulePath = `${emcJSPrefix}/${HTMLGlobalStylePath}`.replace(/\\/g, "/");
             result += `import GlobalStyle from "${modulePath}";\n`;
             // include files
             for (const {name, filePath} of importedCSS) {
@@ -120,11 +117,11 @@ function augmentFile(sourcePath, fileContent) {
     return result + script;
 }
 
-export default function sourceImport() {
+export default function sourceImport(emcJSPrefix = "/emcJS") {
     // augment
     const transformStream = new Transform({objectMode: true});
     transformStream._transform = function(file, encoding, callback) {
-        const contents = augmentFile(file.path, String(file.contents));
+        const contents = augmentFile(emcJSPrefix, file.path, String(file.contents));
         if (file.isBuffer() === true) {
             file.contents = Buffer.from(contents);
         } else {
