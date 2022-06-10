@@ -1,6 +1,6 @@
 import Template from "../../util/html/Template.js";
 import GlobalStyle from "../../util/html/GlobalStyle.js";
-import CustomElement from "../../CustomElement.js";
+import CustomElement from "../../element/CustomElement.js";
 import "./Button.js";
 import "./HamburgerButton.js";
 

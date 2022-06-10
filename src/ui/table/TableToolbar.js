@@ -1,4 +1,4 @@
-import CustomDelegatingElement from "../CustomDelegatingElement.js";
+import CustomDelegatingElement from "../CustomElement/CustomDelegatingElement.js";
 //import SearchAnd from "../../util/search/SearchAnd.js";
 //import SearchOr from "../../util/search/SearchOr.js";
 

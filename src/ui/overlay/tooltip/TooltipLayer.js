@@ -1,34 +1,6 @@
-import Template from "../../../util/html/Template.js";
-import GlobalStyle from "../../../util/html/GlobalStyle.js";
-import CustomElement from "../../CustomElement.js";
-
-const TPL = new Template(`
-<slot id="slot"></slot>
-<slot id="tooltip" name="tooltip"></slot>
-`);
-
-const STYLE = new GlobalStyle(`
-:host {
-    display: contents;
-}
-#tooltip {
-    position: fixed;
-    display: block;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    cursor: default;
-    overflow: hidden;
-    pointer-events: none;
-    z-index: 900900;
-}
-::slotted([slot="tooltip"]) {
-    pointer-events: all;
-}
-`);
+import CustomElement from "../../element/CustomElement.js";
+import TPL from "./TooltipLayer.html" assert {type: "html"};
+import STYLE from "./TooltipLayer.css" assert {type: "css"};
 
 export default class TooltipLayer extends CustomElement {
 

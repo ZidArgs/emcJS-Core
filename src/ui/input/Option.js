@@ -1,31 +1,6 @@
-import Template from "../../util/html/Template.js";
-import GlobalStyle from "../../util/html/GlobalStyle.js";
-import CustomElement from "../CustomElement.js";
-
-const TPL = new Template(`
-<slot></slot>
-`);
-
-const STYLE = new GlobalStyle(`
-:host {
-    display: inline-block;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-origin: content-box;
-    flex-grow: 0;
-    flex-shrink: 0;
-    min-height: auto;
-    white-space: normal;
-    padding: 0;
-    user-select: none;
-    cursor: pointer;
-}
-:host(:not([value])),
-:host([value][disabled]) {
-    display: none;
-}
-`);
+import CustomElement from "../element/CustomElement.js";
+import TPL from "./Option.html" assert {type: "html"};
+import STYLE from "./Option.css" assert {type: "css"};
 
 export default class Option extends CustomElement {
 

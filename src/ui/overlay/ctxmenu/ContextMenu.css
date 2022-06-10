@@ -1,0 +1,58 @@
+:host {
+    position: fixed;
+    display: none;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    cursor: default;
+}
+:host([active]:not([active="false"])) {
+    display: block;
+}
+#menu {
+    position: relative;
+    display: inline-block;
+    overflow: auto;
+    max-width: calc(100vw - 50px);
+    max-height: calc(100vh - 50px);
+    background: var(--contextmenu-background, #ffffff);
+    border: solid 2px var(--contextmenu-border, #cccccc);
+}
+::slotted(.item),
+::slotted([menu-action]) {
+    display: flex;
+    align-items: center;
+    min-width: 150px;
+    min-height: 40px;
+    padding: 5px;
+    color: var(--contextmenu-text, #000000);
+    background: var(--contextmenu-background, #ffffff);
+    cursor: pointer;
+    user-select: none;
+    box-sizing: border-box;
+}
+::slotted(.item:hover),
+::slotted([menu-action]:hover) {
+    background: var(--contextmenu-background-hover, var(--contextmenu-border, #cccccc));
+    color: var(--contextmenu-text-hover, var(--contextmenu-text, #000000));
+}
+::slotted(.item:focus),
+::slotted([menu-action]:focus) {
+    box-shadow: inset 0 0 2px 2px var(--input-focus-color, #06b5ff);
+    outline: none;
+}
+::slotted(.item:focus:not(:focus-visible)),
+::slotted([menu-action]:focus:not(:focus-visible)) {
+    box-shadow: none;
+    outline: none;
+}
+::slotted(.splitter) {
+    display: block;
+    margin: 10px 5px;
+    height: 2px;
+    background: var(--contextmenu-text, #000000);
+    cursor: default;
+    user-select: none;
+    box-sizing: border-box;
+}

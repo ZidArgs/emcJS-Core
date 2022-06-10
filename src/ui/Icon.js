@@ -1,31 +1,6 @@
-import Template from "../util/html/Template.js";
-import GlobalStyle from "../util/html/GlobalStyle.js";
-import CustomElement from "./CustomElement.js";
-
-const TPL = new Template(`
-<div id="value">
-</div>
-`);
-
-const STYLE = new GlobalStyle(`
-:host {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    user-select: none;
-}
-#value {
-    width: 100%;
-    height: 100%;
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
-    background-origin: content-box;
-    pointer-events: none;
-}
-`);
+import CustomElement from "./element/CustomElement.js";
+import TPL from "./Icon.html" assert {type: "html"};
+import STYLE from "./Icon.css" assert {type: "css"};
 
 export default class Icon extends CustomElement {
 

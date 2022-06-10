@@ -1,23 +1,6 @@
-import Template from "../util/html/Template.js";
-import GlobalStyle from "../util/html/GlobalStyle.js";
-import CustomElement from "./CustomElement.js";
-
-const TPL = new Template(`
-<slot id="container"></slot>
-`);
-
-const STYLE = new GlobalStyle(`
-:host {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-}
-:slotted:not(.active),
-:slotted:not(emc-page) {
-    display: none;
-}
-`);
+import CustomElement from "./element/CustomElement.js";
+import TPL from "./Paging.html" assert {type: "html"};
+import STYLE from "./Paging.css" assert {type: "css"};
 
 export default class Paging extends CustomElement {
 

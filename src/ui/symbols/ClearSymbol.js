@@ -1,22 +1,6 @@
-import GlobalStyle from "../../util/html/GlobalStyle.js";
-import CustomDelegatingElement from "../CustomDelegatingElement.js";
-
-const STYLE = new GlobalStyle(`
-:host {
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-    align-items: center;
-    justify-content: center;
-    width: 1em;
-    height: 1em;
-    font-size: 0.8em;
-    line-height: 1em;
-    font-weight: bold;
-    font-family: sans-serif;
-    pointer-events: none;
-}
-`);
+import CustomDelegatingElement from "../element/CustomDelegatingElement.js";
+// import TPL from "./ClearSymbol.html" assert {type: "html"};
+import STYLE from "./ClearSymbol.css" assert {type: "css"};
 
 export default class Symbol extends CustomDelegatingElement {
 

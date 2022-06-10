@@ -1,4 +1,4 @@
-import CustomElement from "../CustomElement.js";
+import CustomElement from "../element/CustomElement.js";
 
 const REG = new Map();
 

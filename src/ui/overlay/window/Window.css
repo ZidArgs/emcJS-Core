@@ -1,0 +1,89 @@
+:host {
+    position: fixed;
+    align-items: flex-start;
+    justify-content: center;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+:host(.inactive) {
+    filter: blur(2px);
+    pointer-events: none;
+}
+:host,
+.footer,
+.button {
+    display: flex;
+}
+#window {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1000px;
+    margin-top: 100px;
+    color: black;
+    background-color: white;
+    border: solid 2px #cccccc;
+    border-radius: 4px;
+    resize: both;
+    pointer-events: all;
+}
+#header {
+    display: flex;
+    border-bottom: solid 2px #cccccc;
+}
+#title {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    height: 30px;
+    padding: 0 10px;
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 1em;
+    line-height: 1em;
+}
+#body {
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    min-height: 10vh;
+    max-height: 50vh;
+    overflow: auto;
+}
+:focus {
+    box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
+    outline: none;
+}
+:focus:not(:focus-visible) {
+    box-shadow: none;
+    outline: none;
+}
+#close {
+    display: flex;
+    width: 40px;
+    height: 30px;
+    border: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    -webkit-appearance: none;
+    font-size: 1.2em;
+    line-height: 1em;
+}
+#close:hover {
+    color: white;
+    background-color: red;
+}
+#close:focus {
+    box-shadow: inset red 0 0px 3px 4px;
+    outline: none;
+}
+#close:focus:not(:focus-visible) {
+    box-shadow: none;
+    outline: none;
+}

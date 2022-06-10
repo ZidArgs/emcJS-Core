@@ -1,51 +1,7 @@
-import Template from "../../util/html/Template.js";
-import GlobalStyle from "../../util/html/GlobalStyle.js";
-import CustomElement from "../CustomElement.js";
+import CustomElement from "../element/CustomElement.js";
 import "./Option.js";
-
-const TPL = new Template(`
-<slot></slot>
-`);
-
-const STYLE = new GlobalStyle(`
-:host {
-    position: relative;
-    box-sizing: border-box;
-    position: relative;
-    box-sizing: border-box;
-}
-:host {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    user-select: none;
-}
-:host(:not([readonly])),
-:host([readonly="false"]) {
-    cursor: pointer;
-}
-slot {
-    width: 100%;
-    height: 100%;
-}
-::slotted(:not([value])),
-::slotted([value]:not(.active)) {
-    display: none !important;
-}
-::slotted([value]) {
-    width: 100%;
-    height: 100%;
-    min-height: auto;
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
-    background-origin: content-box;
-}
-`);
+import TPL from "./SwitchButton.html" assert {type: "html"};
+import STYLE from "./SwitchButton.css" assert {type: "css"};
 
 function getNextElement(all, current) {
     if (!current.nextElementSibling) {

@@ -1,0 +1,23 @@
+:host {
+    display: flex;
+    justify-content: stretch;
+    align-items: stretch;
+    min-height: 100%;
+}
+::slotted(:not(:first-child)) {
+    display: none;
+}
+::slotted(.panel) {
+    padding: 5px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: var(--page-border-color, #ffffff);
+    overflow: hidden;
+}
+::slotted(.error-panel) {
+    padding: 10px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: var(--page-border-color, #ffffff);
+    overflow: hidden;
+}

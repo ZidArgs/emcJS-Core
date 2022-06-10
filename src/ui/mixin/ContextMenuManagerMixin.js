@@ -1,10 +1,10 @@
 // frameworks
-import EventTargetManager from "../../../util/event/EventTargetManager.js";
+import EventTargetManager from "../../util/event/EventTargetManager.js";
 import {
     createMixin
-} from "../../../util/Mixin.js";
-import ActiveCounter from "../../../util/ActiveCounter.js";
-import CtxMenuLayer from "./CtxMenuLayer.js";
+} from "../../util/Mixin.js";
+import ActiveCounter from "../../util/ActiveCounter.js";
+import CtxMenuLayer from "../overlay/ctxmenu/CtxMenuLayer.js";
 
 const DEFAULT_MENU_ID = "main";
 

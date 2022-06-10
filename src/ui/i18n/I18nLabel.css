@@ -1,0 +1,10 @@
+:host {
+    display: inline-flex;
+    pointer-events: none;
+    user-select: none;
+    align-items: center;
+    justify-content: center;
+}
+#target {
+    display: inline-flex;
+}

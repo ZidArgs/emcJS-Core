@@ -1,40 +1,8 @@
-import Template from "../../../util/html/Template.js";
-import GlobalStyle from "../../../util/html/GlobalStyle.js";
 import IndexedSet from "../../../data/collection/IndexedSet.js";
-import CustomElement from "../../CustomElement.js";
+import CustomElement from "../../element/CustomElement.js";
 import ChildlistMutationObserverMixin from "../../mixin/ChildlistMutationObserverMixin.js";
-
-const TPL = new Template(`
-<slot></slot>
-`);
-
-const STYLE = new GlobalStyle(`
-:host {
-    position: fixed;
-    display: block;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    cursor: default;
-    overflow: hidden;
-    background-color: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    z-index: 900700;
-}
-:host(:empty) {
-    display: none;
-}
-:host(.inactive) {
-    background-color: transparent;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    z-index: 900699;
-}
-`);
+import TPL from "./WindowLayer.html" assert {type: "html"};
+import STYLE from "./WindowLayer.css" assert {type: "css"};
 
 const LAYER = new Map();
 let DEFAULT = null;

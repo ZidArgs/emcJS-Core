@@ -1,0 +1,52 @@
+:host {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    padding: 0px;
+}
+button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 0;
+    background-color: var(--navigation-background-color, #ffffff);
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+}
+button:hover {
+    box-shadow: inset 0px 0px 2px 1px;
+}
+button:active {
+    box-shadow: inset 0px 0px 4px 3px;
+}
+div {
+    position: absolute;
+    width: 30px;
+    height: 4px;
+    top: 18px;
+    left: 5px;
+    background-color: var(--navigation-text-color, #000000);
+    transition: transform 0.2s ease-in-out;
+}
+#bar1 {
+    transform: translateY(-8px);
+}
+#bar2 {
+    transform-origin: left;
+}
+#bar3 {
+    transform: translateY(8px);
+}
+:host([open]:not([open="false"])) #bar1 {
+    transform: rotate(45deg);
+}
+:host([open]:not([open="false"])) #bar2 {
+    transform: scaleX(0);
+}
+:host([open]:not([open="false"])) #bar3 {
+    transform: rotate(-45deg);
+}

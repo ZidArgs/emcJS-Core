@@ -1,4 +1,4 @@
-import I18nMixin from "../mixin/I18nMixin.js";
+import I18nMixin from "../../mixin/I18nMixin.js";
 
 /**
  * usage:

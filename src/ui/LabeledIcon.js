@@ -1,48 +1,6 @@
-import Template from "../util/html/Template.js";
-import GlobalStyle from "../util/html/GlobalStyle.js";
-import CustomElement from "./CustomElement.js";
-
-const TPL = new Template(`
-<div id="value">
-</div>
-`);
-
-const STYLE = new GlobalStyle(`
-:host {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    user-select: none;
-}
-:host(:hover) {
-    background-size: 100%;
-}
-#value {
-    width: 100%;
-    height: 100%;
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
-    background-origin: content-box;
-    pointer-events: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2px;
-    color: white;
-    font-size: 0.8em;
-    text-shadow: -1px 0 1px black, 0 1px 1px black, 1px 0 1px black, 0 -1px 1px black;
-    flex-grow: 0;
-    flex-shrink: 0;
-    min-height: 0;
-    white-space: normal;
-    line-height: 0.7em;
-    font-weight: bold;
-    word-break: normal;
-}
-`);
+import CustomElement from "./element/CustomElement.js";
+import TPL from "./LabeledIcon.html" assert {type: "html"};
+import STYLE from "./LabeledIcon.css" assert {type: "css"};
 
 function getAlign(value) {
     switch (value) {

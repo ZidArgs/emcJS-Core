@@ -1,0 +1,40 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+    min-height: 200px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    overflow: hidden;
+}
+:focus {
+    outline: none;
+}
+#scroll-container {
+    flex: 1;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    background-color: var(--list-color-back, #ffffff);
+    scrollbar-color: var(--list-color-hover, #b8b8b8) var(--list-color-border, #f1f1f1);
+}
+#scroll-container::-webkit-scrollbar-track {
+    background-color: var(--list-color-border, #f1f1f1);
+}
+#scroll-container::-webkit-scrollbar-thumb {
+    background-color: var(--list-color-hover, #b8b8b8);
+}
+slot {
+    display: block;
+    width: 100%;
+}
+#empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-style: italic;
+    min-height: 30px;
+    padding: 5px;
+    margin: 5px 2px;
+    white-space: normal;
+}

@@ -1,11 +1,6 @@
-import GlobalStyle from "../../../util/html/GlobalStyle.js";
 import Message from "./Message.js";
-
-const STYLE = new GlobalStyle(`
-:host {
-    cursor: pointer;
-}
-`);
+// import TPL from "./ActionMessage.html" assert {type: "html"};
+import STYLE from "./ActionMessage.css" assert {type: "css"};
 
 export default class ActionMessage extends Message {
 

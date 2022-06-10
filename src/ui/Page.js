@@ -1,31 +1,9 @@
-import Template from "../util/html/Template.js";
-import GlobalStyle from "../util/html/GlobalStyle.js";
-import CustomElement from "./CustomElement.js";
+import CustomElement from "./element/CustomElement.js";
 import "./overlay/window/WindowLayer.js";
 import "./overlay/message/MessageLayer.js";
 import "./overlay/ctxmenu/CtxMenuLayer.js";
-
-const TPL = new Template(`
-<emc-ctxmenulayer>
-    <emc-tooltiplayer>
-        <slot></slot>
-    </emc-tooltiplayer>
-</emc-ctxmenulayer>
-<emc-messagelayer name="main"></emc-messagelayer>
-<emc-windowlayer name="main"></emc-windowlayer>
-<emc-windowlayer name="dialogs"></emc-windowlayer>
-`);
-
-const STYLE = new GlobalStyle(`
-:host {
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-}
-emc-messagelayer {
-    position: absolute;
-}
-`);
+import TPL from "./Page.html" assert {type: "html"};
+import STYLE from "./Page.css" assert {type: "css"};
 
 export default class Page extends CustomElement {
 

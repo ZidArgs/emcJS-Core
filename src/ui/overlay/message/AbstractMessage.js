@@ -1,50 +1,7 @@
-import Template from "../../../util/html/Template.js";
-import GlobalStyle from "../../../util/html/GlobalStyle.js";
-import CustomElement from "../../CustomElement.js";
+import CustomElement from "../../element/CustomElement.js";
 import MessageLayer from "./MessageLayer.js";
-
-const TPL = new Template(`
-<span id="text"></span>
-`);
-
-const STYLE = new GlobalStyle(`
-:host {
-    display: flex;
-    justify-content: center;
-    margin: 5px;
-    color: var(--color, #000000);
-    background-color: var(--background-color, #ffffff);
-    box-shadow: #00000080 5px 5px 4px 2px;
-    user-select: none;
-    --color: #000000;
-    --background-color: #ffffff;
-}
-#text {
-    position: relative;
-    box-sizing: border-box;
-    display: inline-block;
-    min-width: 200px;
-    padding: 20px;
-    white-space: pre;
-    font-weight: bold;
-}
-:host([type="error"]) {
-    --color: #d8000c;
-    --background-color: #ffd2d2;
-}
-:host([type="info"]) {
-    --color: #00529b;
-    --background-color: #bde5f8;
-}
-:host([type="success"]) {
-    --color: #427800;
-    --background-color: #bdf8ca;
-}
-:host([type="warning"]) {
-    --color: #9f6000;
-    --background-color: #feefb3;
-}
-`);
+import TPL from "./AbstractMessage.html" assert {type: "html"};
+import STYLE from "./AbstractMessage.css" assert {type: "css"};
 
 const ALLOWED_SLOTS = [
     "top-left", "top-center", "top-right",

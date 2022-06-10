@@ -1,6 +1,4 @@
-import Template from "../../../../util/html/Template.js";
-import GlobalStyle from "../../../../util/html/GlobalStyle.js";
-import CustomElement from "../../../CustomElement.js";
+import CustomElement from "../../../element/CustomElement.js";
 import LogicHandler from "../../../../util/logic/LogicHandler.js";
 import I18nLabel from "../../../i18n/I18nLabel.js";
 import "../../../i18n/I18nTextbox.js";
@@ -8,80 +6,8 @@ import "../../../input/ListSelect.js";
 import "../../../input/SearchSelect.js";
 import "../../../input/Option.js";
 import "../../../input/InputWrapper.js";
-
-const TPL = new Template(`
-<div id="container"></div>
-`);
-
-const STYLE = new GlobalStyle(`
-:host {
-    display: block;
-    overflow-wrap: break-word;
-    resize: none;
-}
-.settings-option {
-    display: flex;
-    align-items: stretch;
-    justify-content: flex-start;
-    flex-direction: column;
-}
-.settings-option:hover {
-    background-color: lightgray;
-}
-.settings-option .option-container {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    min-height: 40px;
-}
-.settings-option .option-container .option-text {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    flex-basis: 500px;
-    flex-shrink: 1;
-    padding: 10px;
-    cursor: pointer;
-    user-select: none;
-}
-.settings-option .option-container .option-input {
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-    flex: 1;
-}
-.settings-option .option-container .option-input .settings-input:focus {
-    box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
-    outline: none;
-}
-.settings-option .option-container .option-input .settings-input:focus:not(:focus-visible) {
-    box-shadow: none;
-    outline: none;
-}
-.settings-option .option-container .option-input .settings-input[type="checkbox"] {
-    margin-right: 10px;
-}
-.settings-option .option-container .option-input .settings-input:not([type="checkbox"]) {
-    flex: 1;
-}
-.settings-option .option-container .option-input emc-listselect.settings-input {
-    max-height: 300px;
-}
-.settings-option .option-container .option-input .option-reset button {
-    position: sticky;
-    top: 0px;
-    bottom: 0px;
-    margin-left: auto;
-}
-.settings-option .option-desc {
-    display: block;
-    flex-shrink: 0;
-    padding: 0 10px 10px;
-    font-size: 0.9em;
-    font-style: italic;
-    opacity: 0.6;
-}
-`);
+import TPL from "./SettingsTabContent.html" assert {type: "html"};
+import STYLE from "./SettingsTabContent.css" assert {type: "css"};
 
 function generateField(label, desc, inputEl, storage, visible, resetEl) {
     const optionEl = document.createElement("div");

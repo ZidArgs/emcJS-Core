@@ -1,23 +1,6 @@
-import Template from "../../../util/html/Template.js";
-import GlobalStyle from "../../../util/html/GlobalStyle.js";
-import CustomElement from "../../CustomElement.js";
-
-const TPL = new Template(`
-<slot id="content"></slot>
-<div id="info"></div>
-`);
-
-const STYLE = new GlobalStyle(`
-#info {
-    color: var(--contextmenu-info, #999999);
-    font-size: 0.5em;
-    margin-left: 1em;
-    font-style: italic;
-}
-#info:empty {
-    display: none;
-}
-`);
+import CustomElement from "../../element/CustomElement.js";
+import TPL from "./ContextMenuItem.html" assert {type: "html"};
+import STYLE from "./ContextMenuItem.css" assert {type: "css"};
 
 export default class ContextMenuItem extends CustomElement {
 

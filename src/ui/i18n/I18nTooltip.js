@@ -1,17 +1,7 @@
-import Template from "../../util/html/Template.js";
-import GlobalStyle from "../../util/html/GlobalStyle.js";
-import CustomElement from "../CustomElement.js";
+import CustomElement from "../element/CustomElement.js";
 import I18nMixin from "../mixin/I18nMixin.js";
-
-const TPL = new Template(`
-<slot id="target"></slot>
-`);
-
-const STYLE = new GlobalStyle(`
-:host {
-    display: contents;
-}
-`);
+import TPL from "./I18nTooltip.html" assert {type: "html"};
+import STYLE from "./I18nTooltip.css" assert {type: "css"};
 
 export default class I18nTooltip extends I18nMixin(CustomElement) {
 

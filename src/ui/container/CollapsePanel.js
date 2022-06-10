@@ -1,65 +1,6 @@
-import Template from "../../util/html/Template.js";
-import GlobalStyle from "../../util/html/GlobalStyle.js";
-import CustomElement from "../CustomElement.js";
-
-const TPL = new Template(`
-<div id="title">
-    <div id="text"></div>
-</div>
-<slot id="body"></slot>
-`);
-
-const STYLE = new GlobalStyle(`
-:host {
-    display: flex;
-    flex-direction: column;
-    margin: 5px;
-    border: solid 2px #777;
-    overflow: hidden;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    user-select: none;
-}
-#title {
-    display: flex;
-    align-items: center;
-    top: 0;
-    padding: 8px;
-    background-color: #777;
-    color: #fff;
-    overflow: hidden;
-}
-#title:before {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    flex-shrink: 0;
-    margin-right: 8px;
-    font-weight: bold;
-    text-align: center;
-    content: "+"
-}
-:host([expanded]:not([expanded="false"])) #title:before {
-    content:"-"
-}
-#text {
-    line-height: 1.4em;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-#body {
-    position: relative;
-    display: none;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-:host([expanded]:not([expanded="false"])) #body {
-    display: block;
-}
-`);
+import CustomElement from "../element/CustomElement.js";
+import TPL from "./CollapsePanel.html" assert {type: "html"};
+import STYLE from "./CollapsePanel.css" assert {type: "css"};
 
 export default class CollapsePanel extends CustomElement {
 

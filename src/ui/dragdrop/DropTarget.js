@@ -1,18 +1,7 @@
 import DragDropMemory from "../../util/DragDropMemory.js";
-import Template from "../../util/html/Template.js";
-import GlobalStyle from "../../util/html/GlobalStyle.js";
-import CustomElement from "../CustomElement.js";
-
-const TPL = new Template(`
-<slot></slot>
-`);
-
-const STYLE = new GlobalStyle(`
-:host {
-    display: block;
-    height: 100%;
-}
-`);
+import CustomElement from "../element/CustomElement.js";
+import TPL from "./DropTarget.html" assert {type: "html"};
+import STYLE from "./DropTarget.css" assert {type: "css"};
 
 export default class DropTarget extends CustomElement {
 

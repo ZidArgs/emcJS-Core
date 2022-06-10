@@ -1,66 +1,11 @@
 import ObservableDefaultingStorage from "../../../../data/storage/observable/ObservableDefaultingStorage.js";
-import Template from "../../../../util/html/Template.js";
-import GlobalStyle from "../../../../util/html/GlobalStyle.js";
 import Window from "../Window.js";
 import I18nLabel from "../../../i18n/I18nLabel.js";
 import "../../../layout/panel/TabPanel.js";
 import "../../../input/ListSelect.js";
 import "./SettingsTabContent.js";
-
-const TPL = new Template(`
-<emc-panel-tabpanel id="categories">
-</emc-panel-tabpanel>
-<div id="footer">
-    <button id="submit" title="submit">
-        submit
-    </button>
-    <button id="cancel" title="cancel">
-        cancel
-    </button>
-</div>
-`);
-
-const STYLE = new GlobalStyle(`
-:host {
-    box-sizing: border-box;
-}
-#body {
-    height: 50vh;
-}
-#footer,
-#submit,
-#cancel {
-    display: flex;
-}
-#categories {
-    padding: 5px;
-    overflow-x: auto;
-    overflow-y: none;
-}
-#footer {
-    height: 50px;
-    padding: 10px 30px 10px;
-    justify-content: flex-end;
-    border-top: solid 2px #cccccc;
-}
-#submit,
-#cancel {
-    margin-left: 10px;
-    padding: 5px;
-    border: solid 1px black;
-    border-radius: 2px;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    user-select: none;
-    -webkit-appearance: none;
-}
-#submit:hover,
-#cancel:hover {
-    color: white;
-    background-color: black;
-}
-`);
+import TPL from "./SettingsWindow.html" assert {type: "html"};
+import STYLE from "./SettingsWindow.css" assert {type: "css"};
 
 function convertValueList(values = {}) {
     const opt = {};

@@ -1,40 +1,10 @@
-import Template from "../../util/html/Template.js";
-import GlobalStyle from "../../util/html/GlobalStyle.js";
-import CustomElement from "../CustomElement.js";
+import CustomElement from "../element/CustomElement.js";
 import "./panel/HBox.js";
 import "./panel/VBox.js";
 import "./panel/TabPanel.js";
 import Panel from "./Panel.js";
-
-const TPL = new Template(`
-<slot></slot>
-`);
-
-const STYLE = new GlobalStyle(`
-:host {
-    display: flex;
-    justify-content: stretch;
-    align-items: stretch;
-    min-height: 100%;
-}
-::slotted(:not(:first-child)) {
-    display: none;
-}
-::slotted(.panel) {
-    padding: 5px;
-    border-style: solid;
-    border-width: 2px;
-    border-color: var(--page-border-color, #ffffff);
-    overflow: hidden;
-}
-::slotted(.error-panel) {
-    padding: 10px;
-    border-style: solid;
-    border-width: 2px;
-    border-color: var(--page-border-color, #ffffff);
-    overflow: hidden;
-}
-`);
+import TPL from "./Layout.html" assert {type: "html"};
+import STYLE from "./Layout.css" assert {type: "css"};
 
 function renderLayout(layout) {
     if (layout != null) {

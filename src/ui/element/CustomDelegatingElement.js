@@ -1,14 +1,5 @@
-import GlobalStyle from "../util/html/GlobalStyle.js";
-
-const STYLE = new GlobalStyle(`
-* {
-    box-sizing: border-box;
-}
-:host {
-    position: relative;
-    box-sizing: border-box;
-}
-`);
+// import TPL from "./CustomElement.html" assert {type: "html"};
+import STYLE from "./CustomElement.css" assert {type: "css"};
 
 export default class CustomDelegatingElement extends HTMLElement {
 

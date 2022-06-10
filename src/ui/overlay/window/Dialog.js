@@ -1,70 +1,7 @@
-import Template from "../../../util/html/Template.js";
-import GlobalStyle from "../../../util/html/GlobalStyle.js";
 import WindowLayer from "./WindowLayer.js";
 import Window from "./Window.js";
-
-const TPL = new Template(`
-<div id="text">
-    [text]
-</div>
-<div id="footer">
-    <button id="submit" title="submit">
-        submit
-    </button>
-    <button id="cancel" title="cancel">
-        cancel
-    </button>
-</div>
-`);
-
-const STYLE = new GlobalStyle(`
-:host {
-    box-sizing: border-box;
-    z-index: 900900;
-    pointer-events: all;
-}
-#footer,
-#submit,
-#cancel {
-    display: flex;
-}
-#text {
-    display: block;
-    margin: 8px 0px;
-    word-wrap: break-word;
-    white-space: pre-wrap;
-    resize: none;
-}
-#footer {
-    height: 50px;
-    margin-top: 20px;
-    padding: 10px 30px 10px;
-    justify-content: flex-end;
-    border-top: solid 2px #cccccc;
-}
-#submit,
-#cancel {
-    align-items: center;
-    justify-content: center;
-    margin-left: 10px;
-    padding: 5px;
-    border: solid 1px black;
-    border-radius: 2px;
-    text-transform: uppercase;
-    cursor: pointer;
-    user-select: none;
-    -webkit-appearance: none;
-}
-#submit:hover,
-#cancel:hover {
-    color: white;
-    background-color: black;
-}
-#window {
-    width: auto;
-    min-width: 20vw;
-}
-`);
+import TPL from "./Dialog.html" assert {type: "html"};
+import STYLE from "./Dialog.css" assert {type: "css"};
 
 export default class Dialog extends Window {
 

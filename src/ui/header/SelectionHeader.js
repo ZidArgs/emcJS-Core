@@ -1,65 +1,8 @@
-import Template from "../../util/html/Template.js";
-import GlobalStyle from "../../util/html/GlobalStyle.js";
-import CustomDelegatingElement from "../CustomDelegatingElement.js";
+import CustomDelegatingElement from "../element/CustomDelegatingElement.js";
 import "../input/SearchField.js";
 import "../i18n/I18nTooltip.js";
-
-const TPL = new Template(`
-<input type="checkbox" id="selection" tabindex="-1">
-<emc-input-search id="search"></emc-input-search>
-`);
-
-const STYLE = new GlobalStyle(`
-:host {
-    display: flex;
-    padding: 3px;
-    background: var(--list-color-border, #f1f1f1);
-}
-:host(:focus) {
-    outline: none;
-}
-:focus {
-    box-shadow: none;
-    outline: none;
-}
-#search {
-    background: var(--list-color-back, #ffffff);
-    border: none;
-    border-radius: 0;
-}
-#search:focus {
-    box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
-    outline: none;
-}
-#search:focus:not(:focus-visible)  {
-    box-shadow: none;
-    outline: none;
-}
-#selection {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 6px;
-    cursor: pointer;
-    -webkit-appearance: none;
-    outline: none;
-}
-#selection::before {
-    font-size: 18px;
-    content: "\u2610";
-}
-#selection:indeterminate::before {
-    content: "\u2BBD";
-}
-#selection:checked::before {
-    content: "\u2611";
-}
-:host(:not([multiple])) #selection,
-:host([multiple="false"]) #selection {
-    opacity: 0.1;
-    pointer-events: none;
-}
-`);
+import TPL from "./SelectionHeader.html" assert {type: "html"};
+import STYLE from "./SelectionHeader.css" assert {type: "css"};
 
 export default class SelectionHeader extends CustomDelegatingElement {
 

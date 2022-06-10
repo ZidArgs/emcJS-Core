@@ -1,38 +1,6 @@
-import Template from "../../util/html/Template.js";
-import GlobalStyle from "../../util/html/GlobalStyle.js";
-import CustomElement from "../CustomElement.js";
-
-const TPL = new Template(`
-<div id="title"></div>
-<slot id="body"></slot>
-`);
-
-const STYLE = new GlobalStyle(`
-:host {
-    display: flex;
-    flex-direction: column;
-    background-color: #000;
-    border: solid 2px #777;
-    overflow: hidden;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    user-select: none;
-}
-#title {
-    display: flex;
-    top: 0;
-    padding: 8px;
-    background-color: #777;
-    color: #fff;
-}
-#body {
-    position: relative;
-    display: block;
-    flex: 1;
-    overflow-x: auto;
-    overflow-y: auto;
-}
-`);
+import CustomElement from "../element/CustomElement.js";
+import TPL from "./CaptionPanel.html" assert {type: "html"};
+import STYLE from "./CaptionPanel.css" assert {type: "css"};
 
 export default class CaptionPanel extends CustomElement {
 

@@ -1,70 +1,7 @@
-import Template from "../../util/html/Template.js";
-import GlobalStyle from "../../util/html/GlobalStyle.js";
-import CustomElement from "../CustomElement.js";
+import CustomElement from "../element/CustomElement.js";
 import "./Option.js";
-
-const TPL = new Template(`
-<button id="prev">◀</button>
-<slot></slot>
-<button id="next">▶</button>
-`);
-
-const STYLE = new GlobalStyle(`
-:host {
-    display: inline-flex;
-    width: 80px;
-    user-select: none;
-}
-:host(:not([readonly])),
-:host([readonly="false"]) {
-    cursor: pointer;
-}
-button {
-    display: block;
-    width: 40px;
-    margin: 0;
-    padding: 10px;
-    flex-shrink: 0;
-    border: none;
-    background: none;
-    color: inherit;
-    cursor: pointer;
-    opacity: 0.5;
-    -webkit-appearance: none;
-}
-button:hover {
-    opacity: 1;
-}
-button::after {
-    display: block;
-    border-top: solid 10px transparent;
-    border-bottom: solid 10px transparent;
-    content: "";
-}
-button#prev::after {
-    border-right: solid 20px white;
-}
-button#next::after {
-    border-left: solid 20px white;
-}
-slot {
-    flex: 1;
-    height: 100%;
-}
-::slotted(:not([value])),
-::slotted([value]:not(.active)) {
-    display: none !important;
-}
-::slotted([value]) {
-    width: 100%;
-    height: 100%;
-    min-height: auto;
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
-    background-origin: content-box;
-}
-`);
+import TPL from "./CircleSelect.html" assert {type: "html"};
+import STYLE from "./CircleSelect.css" assert {type: "css"};
 
 function getNextElement(all, current) {
     if (!current.nextElementSibling) {

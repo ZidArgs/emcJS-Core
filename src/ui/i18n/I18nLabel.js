@@ -1,21 +1,7 @@
-import Template from "../../util/html/Template.js";
-import GlobalStyle from "../../util/html/GlobalStyle.js";
-import CustomElement from "../CustomElement.js";
+import CustomElement from "../element/CustomElement.js";
 import I18nMixin from "../mixin/I18nMixin.js";
-
-const TPL = new Template(`
-<span id="target"><slot></slot></span>
-`);
-
-const STYLE = new GlobalStyle(`
-:host {
-    display: inline-flex;
-    pointer-events: none;
-    user-select: none;
-    align-items: center;
-    justify-content: center;
-}
-`);
+import TPL from "./I18nLabel.html" assert {type: "html"};
+import STYLE from "./I18nLabel.css" assert {type: "css"};
 
 export default class I18nLabel extends I18nMixin(CustomElement) {
 

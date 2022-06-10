@@ -1,41 +1,9 @@
-import Template from "../../util/html/Template.js";
-import GlobalStyle from "../../util/html/GlobalStyle.js";
 import EventMultiTargetManager from "../../util/event/EventMultiTargetManager.js";
-import CustomElement from "../CustomElement.js";
+import CustomElement from "../element/CustomElement.js";
 import ChildlistMutationObserverMixin from "../mixin/ChildlistMutationObserverMixin.js";
 import "./Option.js";
-
-const TPL = new Template(`
-<slot id="container"></slot>
-`);
-
-const STYLE = new GlobalStyle(`
-:host {
-    user-select: none;
-}
-slot {
-    width: 100%;
-    height: 100%;
-}
-::slotted(:not([value])),
-::slotted([value][disabled]) {
-    display: none;
-}
-::slotted([value]) {
-    display: inline-block;
-    min-height: auto;
-}
-::slotted([value]:not(.active)) {
-    opacity: 0.5;
-}
-#view-choice[readonly]:not([readonly="false"]) emc-option,
-#view-choice emc-option:not(.active) {
-    cursor: default;
-}
-#view-choice[multiple]:not([multiple="false"]) emc-option {
-    cursor: pointer;
-}
-`);
+import TPL from "./ChoiceSelect.html" assert {type: "html"};
+import STYLE from "./ChoiceSelect.css" assert {type: "css"};
 
 export default class ChoiceSelect extends ChildlistMutationObserverMixin(CustomElement) {
 
