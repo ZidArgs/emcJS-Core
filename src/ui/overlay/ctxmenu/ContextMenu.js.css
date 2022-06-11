@@ -56,3 +56,6 @@
     user-select: none;
     box-sizing: border-box;
 }
+::slotted(.hidden) {
+    display: none !important;
+}

@@ -20,6 +20,10 @@ export default createMixin((superclass) => class ContextMenuManagerMixin extends
 
     #menus = new Map();
 
+    #additionalItems = new Map();
+
+    #inactiveGroups = new Map();
+
     #showCtxMenu() {
         if (this.#counter.add() > 0) {
             this.classList.add("ctx-marked");
@@ -63,8 +67,18 @@ export default createMixin((superclass) => class ContextMenuManagerMixin extends
         const ctxMnu = new MenuClass();
         this.#menus.set(name, ctxMnu);
         /* --- */
-        const internalManager = this.#getInternalEventManager(this, name);
-        const manager = this.#getEventManager(this, name);
+        const addedItems = this.#additionalItems.get(name);
+        ctxMnu.setAddedItems(addedItems);
+        /* --- */
+        if (this.#inactiveGroups.has(name)) {
+            const inactiveGroups = this.#inactiveGroups.get(name);
+            for (const group of inactiveGroups) {
+                ctxMnu.toggleGroupActive(group, false);
+            }
+        }
+        /* --- */
+        const internalManager = this.#getInternalEventManager(name);
+        const manager = this.#getEventManager(name);
         internalManager.switchTarget(ctxMnu);
         manager.switchTarget(ctxMnu);
         /* --- */
@@ -96,12 +110,20 @@ export default createMixin((superclass) => class ContextMenuManagerMixin extends
         this.addContextMenuHandler(DEFAULT_MENU_ID, event, handler);
     }
 
+    setAddedDefaultContextMenuItems(items) {
+        this.setAddedContextMenuItems(DEFAULT_MENU_ID, items);
+    }
+
+    toggleDefaultContextMenuGroupActive(group, value) {
+        this.toggleContextMenuGroupActive(DEFAULT_MENU_ID, group, value);
+    }
+
     setContextMenu(name, MenuClass) {
         this.#menuClasses.set(name, MenuClass);
         const oldMenu = this.#menus.get(name);
         if (oldMenu != null && !(oldMenu instanceof MenuClass)) {
-            const internalManager = this.#getInternalEventManager(this, name);
-            const manager = this.#getEventManager(this, name);
+            const internalManager = this.#getInternalEventManager(name);
+            const manager = this.#getEventManager(name);
             internalManager.switchTarget(null);
             manager.switchTarget(null);
             oldMenu.remove();
@@ -124,8 +146,38 @@ export default createMixin((superclass) => class ContextMenuManagerMixin extends
     }
 
     addContextMenuHandler(name, event, handler) {
-        const manager = this.#getEventManager(this, name);
+        const manager = this.#getEventManager(name);
         manager.set(event, handler);
+    }
+
+    setAddedContextMenuItems(name, items) {
+        this.#additionalItems.set(name, items);
+        const ctxMnu = this.#menus.get(name);
+        if (ctxMnu != null) {
+            ctxMnu.setAddedItems(items);
+        }
+    }
+
+    toggleContextMenuGroupActive(name, group, value) {
+        if (this.#inactiveGroups.has(name)) {
+            const inactiveGroups = this.#inactiveGroups.get(name);
+            if (value) {
+                inactiveGroups.delete(group);
+                if (!inactiveGroups.size) {
+                    this.#inactiveGroups.delete(name);
+                }
+            } else {
+                inactiveGroups.add(group);
+            }
+        } else if (!value) {
+            const inactiveGroups = new Set();
+            inactiveGroups.add(group);
+            this.#inactiveGroups.set(name, inactiveGroups);
+        }
+        const ctxMnu = this.#menus.get(name);
+        if (ctxMnu != null) {
+            ctxMnu.toggleGroupActive(group, value);
+        }
     }
 
     connectedCallback() {

@@ -1,3 +1,6 @@
+import {
+    debounce
+} from "../../../util/Debouncer.js";
 import CustomElement from "../../element/CustomElement.js";
 import CtxMenuLayer from "./CtxMenuLayer.js";
 import "./ContextMenuItem.js";
@@ -30,6 +33,12 @@ export default class ContextMenu extends CustomElement {
     #top = 0;
 
     #left = 0;
+
+    #items = [];
+
+    #addedItems = [];
+
+    #inactiveGroups = new Set();
 
     constructor() {
         super();
@@ -177,17 +186,80 @@ export default class ContextMenu extends CustomElement {
     }
 
     initItems() {
-        const itemEls = this.querySelectorAll("[menu-action]");
+        const config = [];
+        const itemEls = this.querySelectorAll("div.splitter, [menu-action]");
         for (const itemEl of Array.from(itemEls)) {
             const attr = itemEl.getAttribute("menu-action");
+            if (attr != null) {
+                config.push({menuAction: attr, content: itemEl.innerHTML});
+            } else {
+                config.push("splitter");
+            }
+        }
+        this.setItems(config);
+    }
+
+    setItems(config = []) {
+        if (Array.isArray(config)) {
+            this.#items = config;
+            this.#renderItems();
+        }
+    }
+
+    setAddedItems(config = []) {
+        if (Array.isArray(config)) {
+            this.#addedItems = config;
+            this.#renderItems();
+        }
+    }
+
+    toggleGroupActive(name, value) {
+        if (value) {
+            this.#inactiveGroups.delete(name);
+        } else {
+            this.#inactiveGroups.add(name);
+        }
+        const itemEls = this.querySelectorAll(`[menu-group="${name}"]`);
+        for (const itemEl of Array.from(itemEls)) {
+            itemEl.classList.toggle("hidden", !value);
+        }
+    }
+
+    #renderItems = debounce(() => {
+        this.innerHTML = "";
+        if (Array.isArray(this.#items)) {
+            for (const entry of this.#items) {
+                this.#addItem(entry);
+            }
+        }
+        if (Array.isArray(this.#addedItems)) {
+            for (const entry of this.#addedItems) {
+                this.#addItem(entry);
+            }
+        }
+        if (this.active) {
+            const posY = this.#top;
+            const posX = this.#left;
+            this.show(posX, posY);
+        }
+    });
+
+    #addItem(entry) {
+        if (entry == "splitter") {
+            const el = document.createElement("div");
+            el.classList.add("splitter");
+            this.append(el);
+        } else if (entry instanceof HTMLElement) {
+            this.append(entry);
+            const attr = entry.getAttribute("menu-action");
             if (attr) {
-                itemEl.addEventListener("click", (event) => {
+                entry.addEventListener("click", (event) => {
                     this.#onElementChoice(attr);
                     /* --- */
                     event.preventDefault();
                     return false;
                 });
-                itemEl.addEventListener("keyup", (event) => {
+                entry.addEventListener("keyup", (event) => {
                     if (event.key == "Enter") {
                         this.#onElementChoice(attr);
                         /* --- */
@@ -196,154 +268,66 @@ export default class ContextMenu extends CustomElement {
                     }
                 });
             }
-        }
-    }
-
-    loadItems(config = []) {
-        this.innerHTML = "";
-        if (Array.isArray(config)) {
-            for (const entry of config) {
-                if (entry == "splitter") {
-                    const el = document.createElement("div");
-                    el.classList.add("splitter");
-                    this.append(el);
-                } else if (entry instanceof HTMLElement) {
-                    this.append(entry);
-                    const attr = entry.getAttribute("menu-action");
-                    if (attr) {
-                        entry.addEventListener("click", (event) => {
-                            this.#onElementChoice(attr);
-                            /* --- */
-                            event.preventDefault();
-                            return false;
-                        });
-                        entry.addEventListener("keyup", (event) => {
-                            if (event.key == "Enter") {
-                                this.#onElementChoice(attr);
-                                /* --- */
-                                event.preventDefault();
-                                return false;
-                            }
-                        });
+        } else if (typeof entry == "object" && !Array.isArray(entry)) {
+            if (entry.type == "splitter") {
+                const el = document.createElement("div");
+                el.classList.add("splitter");
+                if (entry.group) {
+                    el.setAttribute("menu-group", entry.group);
+                    if (this.#inactiveGroups.has(entry.group)) {
+                        el.classList.add("hidden");
                     }
-                } else if (typeof entry == "object" && !Array.isArray(entry)) {
-                    const el = document.createElement("emc-contextmenuitem");
-                    el.classList.add("item");
-                    el.setAttribute("tabindex", "0");
-                    el.innerHTML = entry.content;
-                    el.info = entry.info;
+                }
+                this.append(el);
+            } else if (!entry.type || entry.type == "item") {
+                const el = document.createElement("emc-contextmenuitem");
+                el.classList.add("item");
+                if (entry.group) {
+                    el.setAttribute("menu-group", entry.group);
+                    if (this.#inactiveGroups.has(entry.group)) {
+                        el.classList.add("hidden");
+                    }
+                }
+                el.setAttribute("tabindex", "0");
+                el.innerHTML = entry.content;
+                el.info = entry.info;
 
-                    /* --- */
-                    if (typeof entry.action == "function") {
-                        el.addEventListener("click", (event) => {
+                /* --- */
+                if (typeof entry.action == "function") {
+                    el.addEventListener("click", (event) => {
+                        entry.action();
+                        /* --- */
+                        event.preventDefault();
+                        return false;
+                    });
+                    el.addEventListener("keyup", (event) => {
+                        if (event.key == "Enter") {
                             entry.action();
                             /* --- */
                             event.preventDefault();
                             return false;
-                        });
-                        el.addEventListener("keyup", (event) => {
-                            if (event.key == "Enter") {
-                                entry.action();
-                                /* --- */
-                                event.preventDefault();
-                                return false;
-                            }
-                        });
-                    }
-                    /* --- */
-                    if (typeof entry.menuAction == "string") {
-                        el.setAttribute("menu-action", entry.menuAction);
-                        el.addEventListener("click", (event) => {
+                        }
+                    });
+                }
+                /* --- */
+                if (typeof entry.menuAction == "string") {
+                    el.setAttribute("menu-action", entry.menuAction);
+                    el.addEventListener("click", (event) => {
+                        this.#onElementChoice(entry.menuAction);
+                        /* --- */
+                        event.preventDefault();
+                        return false;
+                    });
+                    el.addEventListener("keyup", (event) => {
+                        if (event.key == "Enter") {
                             this.#onElementChoice(entry.menuAction);
                             /* --- */
                             event.preventDefault();
                             return false;
-                        });
-                        el.addEventListener("keyup", (event) => {
-                            if (event.key == "Enter") {
-                                this.#onElementChoice(entry.menuAction);
-                                /* --- */
-                                event.preventDefault();
-                                return false;
-                            }
-                        });
-                    }
-                    this.append(el);
+                        }
+                    });
                 }
-            }
-        }
-    }
-
-    addItems(config = []) {
-        if (Array.isArray(config)) {
-            for (const entry of config) {
-                if (entry == "splitter") {
-                    const el = document.createElement("div");
-                    el.classList.add("splitter");
-                    this.append(el);
-                } else if (entry instanceof HTMLElement) {
-                    this.append(entry);
-                    const attr = entry.getAttribute("menu-action");
-                    if (attr) {
-                        entry.addEventListener("click", (event) => {
-                            this.#onElementChoice(attr);
-                            /* --- */
-                            event.preventDefault();
-                            return false;
-                        });
-                        entry.addEventListener("keyup", (event) => {
-                            if (event.key == "Enter") {
-                                this.#onElementChoice(attr);
-                                /* --- */
-                                event.preventDefault();
-                                return false;
-                            }
-                        });
-                    }
-                } else if (typeof entry == "object" && !Array.isArray(entry)) {
-                    const el = document.createElement("emc-contextmenuitem");
-                    el.classList.add("item");
-                    el.setAttribute("tabindex", "0");
-                    el.innerHTML = entry.content;
-                    el.info = entry.info;
-
-                    /* --- */
-                    if (typeof entry.action == "function") {
-                        el.addEventListener("click", (event) => {
-                            entry.action();
-                            /* --- */
-                            event.preventDefault();
-                            return false;
-                        });
-                        el.addEventListener("keyup", (event) => {
-                            if (event.key == "Enter") {
-                                entry.action();
-                                /* --- */
-                                event.preventDefault();
-                                return false;
-                            }
-                        });
-                    }
-                    /* --- */
-                    if (typeof entry.menuAction == "string") {
-                        el.setAttribute("menu-action", entry.menuAction);
-                        el.addEventListener("click", (event) => {
-                            this.#onElementChoice(entry.menuAction);
-                            /* --- */
-                            event.preventDefault();
-                            return false;
-                        });
-                        el.addEventListener("keyup", (event) => {
-                            if (event.key == "Enter") {
-                                this.#onElementChoice(entry.menuAction);
-                                /* --- */
-                                event.preventDefault();
-                                return false;
-                            }
-                        });
-                    }
-                    this.append(el);
-                }
+                this.append(el);
             }
         }
     }
