@@ -1,7 +1,7 @@
 import CustomElement from "../../element/CustomElement.js";
 import MessageLayer from "./MessageLayer.js";
-import TPL from "./AbstractMessage.html" assert {type: "html"};
-import STYLE from "./AbstractMessage.css" assert {type: "css"};
+import TPL from "./AbstractMessage.js.html" assert {type: "html"};
+import STYLE from "./AbstractMessage.js.css" assert {type: "css"};
 
 const ALLOWED_SLOTS = [
     "top-left", "top-center", "top-right",

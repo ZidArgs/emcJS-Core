@@ -1,6 +1,6 @@
 import CustomElement from "../element/CustomElement.js";
-import TPL from "./Tooltip.html" assert {type: "html"};
-import STYLE from "./Tooltip.css" assert {type: "css"};
+import TPL from "./Tooltip.js.html" assert {type: "html"};
+import STYLE from "./Tooltip.js.css" assert {type: "css"};
 
 export default class Tooltip extends CustomElement {
 

@@ -1,8 +1,8 @@
 import DragDropMemory from "../../util/DragDropMemory.js";
 import UniqueGenerator from "../../util/UniqueGenerator.js";
 import CustomElement from "../element/CustomElement.js";
-import TPL from "./DragElement.html" assert {type: "html"};
-import STYLE from "./DragElement.css" assert {type: "css"};
+import TPL from "./DragElement.js.html" assert {type: "html"};
+import STYLE from "./DragElement.js.css" assert {type: "css"};
 
 function dragElement(event) {
     DragDropMemory.clear();

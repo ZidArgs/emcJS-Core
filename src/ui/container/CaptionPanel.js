@@ -1,6 +1,6 @@
 import CustomElement from "../element/CustomElement.js";
-import TPL from "./CaptionPanel.html" assert {type: "html"};
-import STYLE from "./CaptionPanel.css" assert {type: "css"};
+import TPL from "./CaptionPanel.js.html" assert {type: "html"};
+import STYLE from "./CaptionPanel.js.css" assert {type: "css"};
 
 export default class CaptionPanel extends CustomElement {
 

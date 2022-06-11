@@ -1,6 +1,6 @@
 import CustomElement from "./element/CustomElement.js";
-import TPL from "./Paging.html" assert {type: "html"};
-import STYLE from "./Paging.css" assert {type: "css"};
+import TPL from "./Paging.js.html" assert {type: "html"};
+import STYLE from "./Paging.js.css" assert {type: "css"};
 
 export default class Paging extends CustomElement {
 

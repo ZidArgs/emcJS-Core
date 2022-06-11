@@ -1,6 +1,6 @@
 import CustomElement from "./element/CustomElement.js";
-import TPL from "./Icon.html" assert {type: "html"};
-import STYLE from "./Icon.css" assert {type: "css"};
+import TPL from "./Icon.js.html" assert {type: "html"};
+import STYLE from "./Icon.js.css" assert {type: "css"};
 
 export default class Icon extends CustomElement {
 

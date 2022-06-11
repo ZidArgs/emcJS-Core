@@ -1,6 +1,6 @@
 import CustomElement from "../../element/CustomElement.js";
-import TPL from "./HBox.html" assert {type: "html"};
-import STYLE from "./HBox.css" assert {type: "css"};
+import TPL from "./HBox.js.html" assert {type: "html"};
+import STYLE from "./HBox.js.css" assert {type: "css"};
 
 export default class HBox extends CustomElement {
 

@@ -1,7 +1,7 @@
 import DragDropMemory from "../../util/DragDropMemory.js";
 import CustomElement from "../element/CustomElement.js";
-import TPL from "./DropTarget.html" assert {type: "html"};
-import STYLE from "./DropTarget.css" assert {type: "css"};
+import TPL from "./DropTarget.js.html" assert {type: "html"};
+import STYLE from "./DropTarget.js.css" assert {type: "css"};
 
 export default class DropTarget extends CustomElement {
 

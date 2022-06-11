@@ -1,10 +1,10 @@
-import CustomDelegatingElement from "../element/CustomDelegatingElement.js";
+import CustomElementDelegating from "../element/CustomElementDelegating.js";
 import "../input/SearchField.js";
 import "../i18n/I18nTooltip.js";
-import TPL from "./SelectionHeader.html" assert {type: "html"};
-import STYLE from "./SelectionHeader.css" assert {type: "css"};
+import TPL from "./SelectionHeader.js.html" assert {type: "html"};
+import STYLE from "./SelectionHeader.js.css" assert {type: "css"};
 
-export default class SelectionHeader extends CustomDelegatingElement {
+export default class SelectionHeader extends CustomElementDelegating {
 
     constructor() {
         super();

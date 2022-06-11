@@ -1,6 +1,6 @@
 import CustomElement from "../../element/CustomElement.js";
-import TPL from "./TooltipLayer.html" assert {type: "html"};
-import STYLE from "./TooltipLayer.css" assert {type: "css"};
+import TPL from "./TooltipLayer.js.html" assert {type: "html"};
+import STYLE from "./TooltipLayer.js.css" assert {type: "css"};
 
 export default class TooltipLayer extends CustomElement {
 

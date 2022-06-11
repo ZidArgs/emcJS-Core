@@ -1,4 +1,4 @@
-import CustomDelegatingElement from "../element/CustomDelegatingElement.js";
+import CustomElementDelegating from "../element/CustomElementDelegating.js";
 import SearchAnd from "../../util/search/SearchAnd.js";
 import ElementManager from "../../util/html/ElementManager.js";
 import "./components/InputElement.js";
@@ -6,10 +6,10 @@ import "../i18n/I18nLabel.js";
 import "../i18n/I18nTooltip.js";
 import "./Option.js";
 import "../symbols/ChevronDownSymbol.js";
-import TPL from "./TokenSelect.html" assert {type: "html"};
-import STYLE from "./TokenSelect.css" assert {type: "css"};
+import TPL from "./TokenSelect.js.html" assert {type: "html"};
+import STYLE from "./TokenSelect.js.css" assert {type: "css"};
 
-export default class TokenSelect extends CustomDelegatingElement {
+export default class TokenSelect extends CustomElementDelegating {
 
     #elManager;
 

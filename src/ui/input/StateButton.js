@@ -1,7 +1,7 @@
 import CustomElement from "../element/CustomElement.js";
 import "./Option.js";
-import TPL from "./StateButton.html" assert {type: "html"};
-import STYLE from "./StateButton.css" assert {type: "css"};
+import TPL from "./StateButton.js.html" assert {type: "html"};
+import STYLE from "./StateButton.js.css" assert {type: "css"};
 
 function getNextElement(all, current) {
     if (!current.nextElementSibling) {

@@ -1,7 +1,7 @@
 import CustomElement from "../element/CustomElement.js";
 import TooltipLayer from "./TooltipLayer.js";
-import TPL from "./Tooltip.html" assert {type: "html"};
-import STYLE from "./Tooltip.css" assert {type: "css"};
+import TPL from "./Tooltip.js.html" assert {type: "html"};
+import STYLE from "./Tooltip.js.css" assert {type: "css"};
 
 const LAYER_MARGIN = 5;
 const TOOLTIP_MARGIN = 5;

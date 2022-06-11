@@ -1,6 +1,6 @@
 import AbstractMessage from "./AbstractMessage.js";
-// import TPL from "./Toast.html" assert {type: "html"};
-import STYLE from "./Toast.css" assert {type: "css"};
+// import TPL from "./Toast.js.html" assert {type: "html"};
+import STYLE from "./Toast.js.css" assert {type: "css"};
 
 // TODO needs popin/popout animation
 

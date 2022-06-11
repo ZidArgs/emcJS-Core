@@ -1,8 +1,8 @@
-import CustomDelegatingElement from "../element/CustomDelegatingElement.js";
-// import TPL from "./ClearSymbol.html" assert {type: "html"};
-import STYLE from "./ClearSymbol.css" assert {type: "css"};
+import CustomElementDelegating from "../element/CustomElementDelegating.js";
+// import TPL from "./ClearSymbol.js.html" assert {type: "html"};
+import STYLE from "./ClearSymbol.js.css" assert {type: "css"};
 
-export default class Symbol extends CustomDelegatingElement {
+export default class Symbol extends CustomElementDelegating {
 
     constructor() {
         super();

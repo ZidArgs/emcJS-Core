@@ -1,6 +1,6 @@
 import CustomElement from "../element/CustomElement.js";
-import TPL from "./CollapsePanel.html" assert {type: "html"};
-import STYLE from "./CollapsePanel.css" assert {type: "css"};
+import TPL from "./CollapsePanel.js.html" assert {type: "html"};
+import STYLE from "./CollapsePanel.js.css" assert {type: "css"};
 
 export default class CollapsePanel extends CustomElement {
 

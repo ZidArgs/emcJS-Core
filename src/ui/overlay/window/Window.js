@@ -2,8 +2,8 @@ import CustomElement from "../../element/CustomElement.js";
 import WindowLayer from "./WindowLayer.js";
 import I18nLabel from "../../i18n/I18nLabel.js";
 import "../../symbols/CloseSymbol.js";
-import TPL from "./Window.html" assert {type: "html"};
-import STYLE from "./Window.css" assert {type: "css"};
+import TPL from "./Window.js.html" assert {type: "html"};
+import STYLE from "./Window.js.css" assert {type: "css"};
 
 const Q_TAB = [
     "button:not([tabindex=\"-1\"])",

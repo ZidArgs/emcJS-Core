@@ -1,7 +1,7 @@
 import CustomElement from "../element/CustomElement.js";
 import "./Option.js";
-import TPL from "./CircleSelect.html" assert {type: "html"};
-import STYLE from "./CircleSelect.css" assert {type: "css"};
+import TPL from "./CircleSelect.js.html" assert {type: "html"};
+import STYLE from "./CircleSelect.js.css" assert {type: "css"};
 
 function getNextElement(all, current) {
     if (!current.nextElementSibling) {

@@ -1,8 +1,8 @@
 import CustomElement from "../element/CustomElement.js";
 import "./components/Button.js";
 import "./components/HamburgerButton.js";
-import TPL from "./NavBar.html" assert {type: "html"};
-import STYLE from "./NavBar.css" assert {type: "css"};
+import TPL from "./NavBar.js.html" assert {type: "html"};
+import STYLE from "./NavBar.js.css" assert {type: "css"};
 
 const MIXINS = new Map();
 

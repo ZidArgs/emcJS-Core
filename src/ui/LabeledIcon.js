@@ -1,6 +1,6 @@
 import CustomElement from "./element/CustomElement.js";
-import TPL from "./LabeledIcon.html" assert {type: "html"};
-import STYLE from "./LabeledIcon.css" assert {type: "css"};
+import TPL from "./LabeledIcon.js.html" assert {type: "html"};
+import STYLE from "./LabeledIcon.js.css" assert {type: "css"};
 
 function getAlign(value) {
     switch (value) {

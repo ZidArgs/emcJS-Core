@@ -1,6 +1,6 @@
 import CustomElement from "../../element/CustomElement.js";
-import TPL from "./CtxMenuLayer.html" assert {type: "html"};
-import STYLE from "./CtxMenuLayer.css" assert {type: "css"};
+import TPL from "./CtxMenuLayer.js.html" assert {type: "html"};
+import STYLE from "./CtxMenuLayer.js.css" assert {type: "css"};
 
 export default class CtxMenuLayer extends CustomElement {
 

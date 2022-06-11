@@ -1,6 +1,8 @@
 :host {
+    position: relative;
+    box-sizing: border-box;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     flex-grow: 1;
     min-height: min-content;
     min-width: min-content;

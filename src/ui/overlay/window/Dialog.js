@@ -1,7 +1,7 @@
 import WindowLayer from "./WindowLayer.js";
 import Window from "./Window.js";
-import TPL from "./Dialog.html" assert {type: "html"};
-import STYLE from "./Dialog.css" assert {type: "css"};
+import TPL from "./Dialog.js.html" assert {type: "html"};
+import STYLE from "./Dialog.js.css" assert {type: "css"};
 
 export default class Dialog extends Window {
 

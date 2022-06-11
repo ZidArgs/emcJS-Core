@@ -4,8 +4,8 @@ import I18nLabel from "../../../i18n/I18nLabel.js";
 import "../../../layout/panel/TabPanel.js";
 import "../../../input/ListSelect.js";
 import "./SettingsTabContent.js";
-import TPL from "./SettingsWindow.html" assert {type: "html"};
-import STYLE from "./SettingsWindow.css" assert {type: "css"};
+import TPL from "./SettingsWindow.js.html" assert {type: "html"};
+import STYLE from "./SettingsWindow.js.css" assert {type: "css"};
 
 function convertValueList(values = {}) {
     const opt = {};

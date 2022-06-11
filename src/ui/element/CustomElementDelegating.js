@@ -1,7 +1,7 @@
 // import TPL from "./CustomElement.html" assert {type: "html"};
 import STYLE from "./CustomElement.css" assert {type: "css"};
 
-export default class CustomDelegatingElement extends HTMLElement {
+export default class CustomElementDelegating extends HTMLElement {
 
     constructor() {
         super();

@@ -1,11 +1,11 @@
-import CustomDelegatingElement from "../element/CustomDelegatingElement.js";
+import CustomElementDelegating from "../element/CustomElementDelegating.js";
 import SearchAnd from "../../util/search/SearchAnd.js";
 import "../header/SelectionHeader.js";
 import "./Option.js";
-import TPL from "./ListSelect.html" assert {type: "html"};
-import STYLE from "./ListSelect.css" assert {type: "css"};
+import TPL from "./ListSelect.js.html" assert {type: "html"};
+import STYLE from "./ListSelect.js.css" assert {type: "css"};
 
-export default class ListSelect extends CustomDelegatingElement {
+export default class ListSelect extends CustomElementDelegating {
 
     constructor() {
         super();

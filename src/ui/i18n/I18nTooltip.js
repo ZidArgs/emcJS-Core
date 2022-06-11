@@ -1,7 +1,7 @@
 import CustomElement from "../element/CustomElement.js";
 import I18nMixin from "../mixin/I18nMixin.js";
-import TPL from "./I18nTooltip.html" assert {type: "html"};
-import STYLE from "./I18nTooltip.css" assert {type: "css"};
+import TPL from "./I18nTooltip.js.html" assert {type: "html"};
+import STYLE from "./I18nTooltip.js.css" assert {type: "css"};
 
 export default class I18nTooltip extends I18nMixin(CustomElement) {
 

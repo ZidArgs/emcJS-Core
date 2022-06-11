@@ -1,8 +1,8 @@
 import CustomElement from "../../element/CustomElement.js";
 import CtxMenuLayer from "./CtxMenuLayer.js";
 import "./ContextMenuItem.js";
-import TPL from "./ContextMenu.html" assert {type: "html"};
-import STYLE from "./ContextMenu.css" assert {type: "css"};
+import TPL from "./ContextMenu.js.html" assert {type: "html"};
+import STYLE from "./ContextMenu.js.css" assert {type: "css"};
 
 const Q_TAB = [
     "button:not([tabindex=\"-1\"])",
@@ -201,6 +201,80 @@ export default class ContextMenu extends CustomElement {
 
     loadItems(config = []) {
         this.innerHTML = "";
+        if (Array.isArray(config)) {
+            for (const entry of config) {
+                if (entry == "splitter") {
+                    const el = document.createElement("div");
+                    el.classList.add("splitter");
+                    this.append(el);
+                } else if (entry instanceof HTMLElement) {
+                    this.append(entry);
+                    const attr = entry.getAttribute("menu-action");
+                    if (attr) {
+                        entry.addEventListener("click", (event) => {
+                            this.#onElementChoice(attr);
+                            /* --- */
+                            event.preventDefault();
+                            return false;
+                        });
+                        entry.addEventListener("keyup", (event) => {
+                            if (event.key == "Enter") {
+                                this.#onElementChoice(attr);
+                                /* --- */
+                                event.preventDefault();
+                                return false;
+                            }
+                        });
+                    }
+                } else if (typeof entry == "object" && !Array.isArray(entry)) {
+                    const el = document.createElement("emc-contextmenuitem");
+                    el.classList.add("item");
+                    el.setAttribute("tabindex", "0");
+                    el.innerHTML = entry.content;
+                    el.info = entry.info;
+
+                    /* --- */
+                    if (typeof entry.action == "function") {
+                        el.addEventListener("click", (event) => {
+                            entry.action();
+                            /* --- */
+                            event.preventDefault();
+                            return false;
+                        });
+                        el.addEventListener("keyup", (event) => {
+                            if (event.key == "Enter") {
+                                entry.action();
+                                /* --- */
+                                event.preventDefault();
+                                return false;
+                            }
+                        });
+                    }
+                    /* --- */
+                    if (typeof entry.menuAction == "string") {
+                        el.setAttribute("menu-action", entry.menuAction);
+                        el.addEventListener("click", (event) => {
+                            this.#onElementChoice(entry.menuAction);
+                            /* --- */
+                            event.preventDefault();
+                            return false;
+                        });
+                        el.addEventListener("keyup", (event) => {
+                            if (event.key == "Enter") {
+                                this.#onElementChoice(entry.menuAction);
+                                /* --- */
+                                event.preventDefault();
+                                return false;
+                            }
+                        });
+                    }
+                    this.append(el);
+                }
+            }
+        }
+    }
+
+    addItems(config = []) {
         if (Array.isArray(config)) {
             for (const entry of config) {
                 if (entry == "splitter") {

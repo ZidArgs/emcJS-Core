@@ -6,8 +6,8 @@ import "../../../input/ListSelect.js";
 import "../../../input/SearchSelect.js";
 import "../../../input/Option.js";
 import "../../../input/InputWrapper.js";
-import TPL from "./SettingsTabContent.html" assert {type: "html"};
-import STYLE from "./SettingsTabContent.css" assert {type: "css"};
+import TPL from "./SettingsTabContent.js.html" assert {type: "html"};
+import STYLE from "./SettingsTabContent.js.css" assert {type: "css"};
 
 function generateField(label, desc, inputEl, storage, visible, resetEl) {
     const optionEl = document.createElement("div");

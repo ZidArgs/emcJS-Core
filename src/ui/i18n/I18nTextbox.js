@@ -1,7 +1,7 @@
 import CustomElement from "../element/CustomElement.js";
 import I18nMixin from "../mixin/I18nMixin.js";
-import TPL from "./I18nTextbox.html" assert {type: "html"};
-import STYLE from "./I18nTextbox.css" assert {type: "css"};
+import TPL from "./I18nTextbox.js.html" assert {type: "html"};
+import STYLE from "./I18nTextbox.js.css" assert {type: "css"};
 
 export default class I18nTextbox extends I18nMixin(CustomElement) {
 

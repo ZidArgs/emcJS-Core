@@ -1,8 +1,8 @@
 import CustomElement from "./element/CustomElement.js";
 import SearchAnd from "../util/search/SearchAnd.js";
 import "./header/SearchHeader.js";
-import TPL from "./FilteredList.html" assert {type: "html"};
-import STYLE from "./FilteredList.css" assert {type: "css"};
+import TPL from "./FilteredList.js.html" assert {type: "html"};
+import STYLE from "./FilteredList.js.css" assert {type: "css"};
 
 export default class FilteredList extends CustomElement {
 

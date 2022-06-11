@@ -2,8 +2,8 @@ import EventMultiTargetManager from "../../util/event/EventMultiTargetManager.js
 import CustomElement from "../element/CustomElement.js";
 import ChildlistMutationObserverMixin from "../mixin/ChildlistMutationObserverMixin.js";
 import "./Option.js";
-import TPL from "./ChoiceSelect.html" assert {type: "html"};
-import STYLE from "./ChoiceSelect.css" assert {type: "css"};
+import TPL from "./ChoiceSelect.js.html" assert {type: "html"};
+import STYLE from "./ChoiceSelect.js.css" assert {type: "css"};
 
 export default class ChoiceSelect extends ChildlistMutationObserverMixin(CustomElement) {
 

@@ -1,6 +1,6 @@
 import CustomElement from "../../element/CustomElement.js";
-import TPL from "./ContextMenuItem.html" assert {type: "html"};
-import STYLE from "./ContextMenuItem.css" assert {type: "css"};
+import TPL from "./ContextMenuItem.js.html" assert {type: "html"};
+import STYLE from "./ContextMenuItem.js.css" assert {type: "css"};
 
 export default class ContextMenuItem extends CustomElement {
 

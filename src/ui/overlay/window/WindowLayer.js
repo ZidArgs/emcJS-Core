@@ -1,8 +1,8 @@
 import IndexedSet from "../../../data/collection/IndexedSet.js";
 import CustomElement from "../../element/CustomElement.js";
 import ChildlistMutationObserverMixin from "../../mixin/ChildlistMutationObserverMixin.js";
-import TPL from "./WindowLayer.html" assert {type: "html"};
-import STYLE from "./WindowLayer.css" assert {type: "css"};
+import TPL from "./WindowLayer.js.html" assert {type: "html"};
+import STYLE from "./WindowLayer.js.css" assert {type: "css"};
 
 const LAYER = new Map();
 let DEFAULT = null;

@@ -1,7 +1,7 @@
 import CustomElement from "../../element/CustomElement.js";
 import "../../i18n/I18nTooltip.js";
-import TPL from "./HamburgerButton.html" assert {type: "html"};
-import STYLE from "./HamburgerButton.css" assert {type: "css"};
+import TPL from "./HamburgerButton.js.html" assert {type: "html"};
+import STYLE from "./HamburgerButton.js.css" assert {type: "css"};
 
 export default class Button extends CustomElement {
 

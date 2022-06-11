@@ -1,6 +1,6 @@
 import ActiveCounter from "../util/ActiveCounter.js";
-import TPL from "./BusyIndicator.html" assert {type: "html"};
-import STYLE from "./BusyIndicator.css" assert {type: "css"};
+import TPL from "./BusyIndicator.js.html" assert {type: "html"};
+import STYLE from "./BusyIndicator.js.css" assert {type: "css"};
 
 // TODO should be self managed html element
 

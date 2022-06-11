@@ -1,7 +1,7 @@
 import CustomElement from "../element/CustomElement.js";
 import I18nMixin from "../mixin/I18nMixin.js";
-import TPL from "./I18nLabel.html" assert {type: "html"};
-import STYLE from "./I18nLabel.css" assert {type: "css"};
+import TPL from "./I18nLabel.js.html" assert {type: "html"};
+import STYLE from "./I18nLabel.js.css" assert {type: "css"};
 
 export default class I18nLabel extends I18nMixin(CustomElement) {
 

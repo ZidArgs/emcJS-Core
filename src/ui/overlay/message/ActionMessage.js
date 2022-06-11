@@ -1,6 +1,6 @@
 import Message from "./Message.js";
-// import TPL from "./ActionMessage.html" assert {type: "html"};
-import STYLE from "./ActionMessage.css" assert {type: "css"};
+// import TPL from "./ActionMessage.js.html" assert {type: "html"};
+import STYLE from "./ActionMessage.js.css" assert {type: "css"};
 
 export default class ActionMessage extends Message {
 

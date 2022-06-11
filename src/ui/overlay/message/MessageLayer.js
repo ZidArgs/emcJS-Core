@@ -1,6 +1,6 @@
 import CustomElement from "../../element/CustomElement.js";
-import TPL from "./MessageLayer.html" assert {type: "html"};
-import STYLE from "./MessageLayer.css" assert {type: "css"};
+import TPL from "./MessageLayer.js.html" assert {type: "html"};
+import STYLE from "./MessageLayer.js.css" assert {type: "css"};
 
 const LAYER = new Map();
 let DEFAULT = null;

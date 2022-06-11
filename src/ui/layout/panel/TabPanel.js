@@ -1,6 +1,6 @@
 import Panel from "../Panel.js";
-import TPL from "./TabPanel.html" assert {type: "html"};
-import STYLE from "./TabPanel.css" assert {type: "css"};
+import TPL from "./TabPanel.js.html" assert {type: "html"};
+import STYLE from "./TabPanel.js.css" assert {type: "css"};
 
 export default class TabPanel extends Panel {
 

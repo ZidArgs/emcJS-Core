@@ -1,11 +1,11 @@
-import CustomDelegatingElement from "../element/CustomDelegatingElement.js";
+import CustomElementDelegating from "../element/CustomElementDelegating.js";
 import "../symbols/ClearSymbol.js";
 import "./components/InputElement.js";
 import "../i18n/I18nTooltip.js";
-import TPL from "./SearchField.html" assert {type: "html"};
-import STYLE from "./SearchField.css" assert {type: "css"};
+import TPL from "./SearchField.js.html" assert {type: "html"};
+import STYLE from "./SearchField.js.css" assert {type: "css"};
 
-export default class SearchField extends CustomDelegatingElement {
+export default class SearchField extends CustomElementDelegating {
 
     constructor() {
         super();

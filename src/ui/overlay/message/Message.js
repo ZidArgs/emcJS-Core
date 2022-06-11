@@ -1,7 +1,7 @@
 import "../../symbols/CloseSymbol.js";
 import AbstractMessage from "./AbstractMessage.js";
-import TPL from "./Message.html" assert {type: "html"};
-import STYLE from "./Message.css" assert {type: "css"};
+import TPL from "./Message.js.html" assert {type: "html"};
+import STYLE from "./Message.js.css" assert {type: "css"};
 
 // TODO needs popin/popout animation
 

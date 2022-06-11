@@ -1,6 +1,6 @@
 import CustomElement from "./element/CustomElement.js";
-import TPL from "./LogScreen.html" assert {type: "html"};
-import STYLE from "./LogScreen.css" assert {type: "css"};
+import TPL from "./LogScreen.js.html" assert {type: "html"};
+import STYLE from "./LogScreen.js.css" assert {type: "css"};
 
 export default class LogScreen extends CustomElement {
 

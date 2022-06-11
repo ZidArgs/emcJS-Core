@@ -3,8 +3,8 @@ import "./panel/HBox.js";
 import "./panel/VBox.js";
 import "./panel/TabPanel.js";
 import Panel from "./Panel.js";
-import TPL from "./Layout.html" assert {type: "html"};
-import STYLE from "./Layout.css" assert {type: "css"};
+import TPL from "./Layout.js.html" assert {type: "html"};
+import STYLE from "./Layout.js.css" assert {type: "css"};
 
 function renderLayout(layout) {
     if (layout != null) {

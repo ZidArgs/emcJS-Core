@@ -1,10 +1,10 @@
-import CustomDelegatingElement from "../element/CustomDelegatingElement.js";
+import CustomElementDelegating from "../element/CustomElementDelegating.js";
 import "../input/SearchField.js";
 import "../i18n/I18nTooltip.js";
-import TPL from "./SearchHeader.html" assert {type: "html"};
-import STYLE from "./SearchHeader.css" assert {type: "css"};
+import TPL from "./SearchHeader.js.html" assert {type: "html"};
+import STYLE from "./SearchHeader.js.css" assert {type: "css"};
 
-export default class SearchHeader extends CustomDelegatingElement {
+export default class SearchHeader extends CustomElementDelegating {
 
     constructor() {
         super();

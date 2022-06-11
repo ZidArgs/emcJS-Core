@@ -1,6 +1,6 @@
 import CustomElement from "../element/CustomElement.js";
-import TPL from "./Option.html" assert {type: "html"};
-import STYLE from "./Option.css" assert {type: "css"};
+import TPL from "./Option.js.html" assert {type: "html"};
+import STYLE from "./Option.js.css" assert {type: "css"};
 
 export default class Option extends CustomElement {
 

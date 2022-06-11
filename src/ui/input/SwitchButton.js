@@ -1,7 +1,7 @@
 import CustomElement from "../element/CustomElement.js";
 import "./Option.js";
-import TPL from "./SwitchButton.html" assert {type: "html"};
-import STYLE from "./SwitchButton.css" assert {type: "css"};
+import TPL from "./SwitchButton.js.html" assert {type: "html"};
+import STYLE from "./SwitchButton.js.css" assert {type: "css"};
 
 function getNextElement(all, current) {
     if (!current.nextElementSibling) {
