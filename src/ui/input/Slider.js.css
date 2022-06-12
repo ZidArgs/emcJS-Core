@@ -16,6 +16,7 @@
     border-color: var(--slider-track-border-color, #f1f1f1);
     border-radius: var(--slider-track-border-radius, 0px);
     border-image-width: 0;
+    cursor: pointer;
     outline: none;
 }
 #slider::-webkit-slider-thumb {
