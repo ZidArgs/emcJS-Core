@@ -13,6 +13,7 @@
 }
 ::slotted(textarea) {
     padding: 7px;
+    cursor: auto;
 }
 ::slotted(input:focus),
 ::slotted(select:focus),
