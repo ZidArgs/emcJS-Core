@@ -225,6 +225,10 @@ export default class ContextMenu extends CustomElement {
         }
     }
 
+    afterRenderCallback() {
+        // nothing
+    }
+
     #renderItems = debounce(() => {
         this.innerHTML = "";
         if (Array.isArray(this.#items)) {
@@ -237,6 +241,7 @@ export default class ContextMenu extends CustomElement {
                 this.#addItem(entry);
             }
         }
+        this.afterRenderCallback();
         if (this.active) {
             const posY = this.#top;
             const posX = this.#left;

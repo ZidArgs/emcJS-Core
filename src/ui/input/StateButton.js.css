@@ -1,10 +1,4 @@
 :host {
-    position: relative;
-    box-sizing: border-box;
-    position: relative;
-    box-sizing: border-box;
-}
-:host {
     display: inline-flex;
     align-items: center;
     justify-content: center;
