@@ -4,7 +4,11 @@
     "rewrites": [
         {
             "source": "/src/**",
-            "destination": "/src/"
+            "destination": "/out/"
+        },
+        {
+            "source": "/emcJS/**",
+            "destination": "/out/"
         },
         {
             "source": "/",

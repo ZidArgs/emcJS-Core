@@ -2,6 +2,10 @@ export default class ObservableStorage extends EventTarget {
 
     #buffer = new Map();
 
+    getDefault() {
+        // nothing
+    }
+
     set(key, value) {
         const oldValue = this.get(key);
         // change event
@@ -36,7 +40,7 @@ export default class ObservableStorage extends EventTarget {
     }
 
     get(key) {
-        return this.#buffer.get(key);
+        return this.#buffer.get(key) ?? this.getDefault();
     }
 
     getAll() {
@@ -49,12 +53,12 @@ export default class ObservableStorage extends EventTarget {
 
     delete(key) {
         const oldValue = this.#buffer.get(key);
-        if (typeof oldValue != "undefined") {
+        if (oldValue != null) {
             this.#buffer.delete(key);
-            const defValue = this.get(key);
+            const defaultValue = this.getDefault(key);
             const ev = new Event("change");
-            ev.data = {[key]: defValue};
-            ev.changes = {[key]: {oldValue, newValue: defValue}};
+            ev.data = {[key]: defaultValue};
+            ev.changes = {[key]: {oldValue, newValue: defaultValue}};
             this.dispatchEvent(ev);
         }
     }
@@ -100,9 +104,9 @@ export default class ObservableStorage extends EventTarget {
             if (oldValue != newValue) {
                 if (newValue == null) {
                     this.#buffer.delete(key);
-                    const defValue = this.get(key);
-                    values[key] = defValue;
-                    changes[key] = {oldValue, newValue: defValue};
+                    const defaultValue = this.getDefault(key);
+                    values[key] = defaultValue;
+                    changes[key] = {oldValue, newValue: defaultValue};
                 } else {
                     this.#buffer.set(key, newValue);
                     values[key] = newValue;

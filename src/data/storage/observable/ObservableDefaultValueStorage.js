@@ -10,8 +10,8 @@ export default class ObservableDefaultValueStorage extends ObservableStorage {
         this.#defaultValue = defaultValue;
     }
 
-    get(key) {
-        return super.get(key) ?? this.#defaultValue;
+    getDefault() {
+        return this.#defaultValue;
     }
 
 }

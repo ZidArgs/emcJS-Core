@@ -1,0 +1,48 @@
+<html>
+
+<head>
+    <title>emcJS sandbox</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Test for emcJS components">
+    <meta name="robots" content="none">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <script type="module">
+        import Observable from "/emcJS/data/Observable.js";
+        import "/emcJS/ui/input/InputWrapper.js";
+
+        const observable = new Observable({});
+
+        const keyInput = document.getElementById("keyInput");
+        const valueInput = document.getElementById("valueInput");
+        const changeObservable = document.getElementById("changeObservable");
+        const valueOutput = document.getElementById("valueOutput");
+
+        changeObservable.addEventListener("click", () => {
+            const key = keyInput.value;
+            const value = valueInput.value;
+            observable[key] = value;
+        });
+
+        observable.addEventListener("change", (event) => {
+            valueOutput.value = `change:\n\n${JSON.stringify(event.data, null, 4)}\n\nvalue:\n\n${JSON.stringify(observable, null, 4)}`;
+        });
+    </script>
+</head>
+
+<body style="display: flex; flex-direction: column;">
+    <emc-input-wrapper>
+        <input type="text" id="keyInput">
+    </emc-input-wrapper>
+    <emc-input-wrapper>
+        <textarea id="valueInput"></textarea>
+    </emc-input-wrapper>
+    <emc-input-wrapper>
+        <input type="button" id="changeObservable" value="Change">
+    </emc-input-wrapper>
+    <emc-input-wrapper>
+        <textarea id="valueOutput"></textarea>
+    </emc-input-wrapper>
+</body>
+
+</html>

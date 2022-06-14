@@ -53,7 +53,7 @@ export default class ObservableDefaultingStorage extends ObservableStorage {
 
     get(key) {
         if (this.#defaults.has(key)) {
-            return super.get(key) ?? this.#defaults.get(key);
+            return super.get(key);
         }
     }
 
