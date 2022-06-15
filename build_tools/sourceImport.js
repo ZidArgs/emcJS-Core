@@ -11,6 +11,10 @@ const LNBR_SEQ = /(?:\r\n|\n|\r)/g;
 const IMPORT_SCRIPT = /^\s*import(?:\s+([a-zA-Z0-9_$]+)\s+from)?\s+"([^"]+)"\s*;?$/;
 const IMPORT_ASSERT = /^\s*import\s+([a-zA-Z0-9_$]+)\s+from\s+"([^"]+)"\s+assert\s+\{\s*type:\s*"([^"]+)"\s*\}\s*;?$/;
 
+function normalizePath(path) {
+    return path.replace(/\\/g, "/");
+}
+
 function augmentFile(emcJSPrefix, sourcePath, fileContent) {
     const sourceDir = path.dirname(sourcePath);
     // lists
@@ -19,6 +23,7 @@ function augmentFile(emcJSPrefix, sourcePath, fileContent) {
     const importedJSON = [];
     // analyzer
     const script = fileContent.split(LNBR_SEQ).map((string) => {
+        // check asserted import
         const isAssertImport = IMPORT_ASSERT.exec(string);
         if (isAssertImport != null) {
             const name = isAssertImport[1];
@@ -46,6 +51,7 @@ function augmentFile(emcJSPrefix, sourcePath, fileContent) {
             }
             return string;
         }
+        // check folder import
         const isScriptImport = IMPORT_SCRIPT.exec(string);
         if (isScriptImport != null) {
             const name = isScriptImport[1];
@@ -67,7 +73,7 @@ function augmentFile(emcJSPrefix, sourcePath, fileContent) {
         // HTML
         if (importedHTML.length) {
             // import Template module
-            const modulePath = `${emcJSPrefix}/${HTMLTemplatePath}`.replace(/\\/g, "/");
+            const modulePath = normalizePath(`${emcJSPrefix}/${HTMLTemplatePath}`);
             result += `import Template from "${modulePath}";\n`;
             // include files
             for (const {name, filePath} of importedHTML) {
@@ -84,7 +90,7 @@ function augmentFile(emcJSPrefix, sourcePath, fileContent) {
         // CSS
         if (importedCSS.length) {
             // import GlobalStyle module
-            const modulePath = `${emcJSPrefix}/${HTMLGlobalStylePath}`.replace(/\\/g, "/");
+            const modulePath = normalizePath(`${emcJSPrefix}/${HTMLGlobalStylePath}`);
             result += `import GlobalStyle from "${modulePath}";\n`;
             // include files
             for (const {name, filePath} of importedCSS) {

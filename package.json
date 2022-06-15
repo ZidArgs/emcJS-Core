@@ -1,6 +1,6 @@
 {
   "name": "emcjs",
-  "version": "0.7.8",
+  "version": "0.7.9",
   "description": "Modular JS API",
   "type": "module",
   "repository": {
@@ -16,6 +16,8 @@
     "@babel/eslint-parser": "^7.16.5",
     "@babel/plugin-syntax-top-level-await": "^7.14.5",
     "@babel/plugin-syntax-import-assertions": "^7.17.12",
+    "del": "^5.1.0",
+    "glob-all": "^3.1.0",
     "gulp": "^4.0.2",
     "gulp-newer": "^1.4.0",
     "eslint": "^8.0.0",
