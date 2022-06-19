@@ -1,8 +1,12 @@
+import Helper from "../helper/Helper.js";
+
 export default class ElementManager {
 
     #target;
 
     #elements = new Map();
+
+    #cache = new Map();
 
     #composer;
 
@@ -10,27 +14,46 @@ export default class ElementManager {
 
     #cleanup;
 
-    constructor(target, composer, {mutator, cleanup} = {}) {
+    constructor(target, options) {
         if (!(target instanceof HTMLElement)) {
             throw new TypeError("target must be of type HTMLElement");
         }
         this.#target = target;
-        if (typeof composer != "function") {
-            throw new TypeError("composer must be a function");
-        }
-        this.#composer = composer;
-        if (mutator) {
-            if (typeof mutator != "function") {
-                throw new TypeError("mutator must be a function or undefined");
+        if (typeof options === "function") {
+            this.#composer = options;
+        } else if (typeof options === "object" && !Array.isArray(options)) {
+            const {composer, mutator, cleanup} = options;
+            if (typeof composer != "function") {
+                throw new TypeError("composer must be a function");
             }
-            this.#mutator = mutator;
-        }
-        if (cleanup) {
-            if (typeof cleanup != "function") {
-                throw new TypeError("cleanup must be a function or undefined");
+            this.#composer = composer;
+            if (mutator) {
+                if (typeof mutator != "function") {
+                    throw new TypeError("mutator must be a function or undefined");
+                }
+                this.#mutator = mutator;
             }
-            this.#cleanup = cleanup;
+            if (cleanup) {
+                if (typeof cleanup != "function") {
+                    throw new TypeError("cleanup must be a function or undefined");
+                }
+                this.#cleanup = cleanup;
+            }
+        } else {
+            throw new TypeError("second argument must be a composer function or an options object containing at least a composer function");
         }
+    }
+
+    #checkChange(data) {
+        if (typeof data?.key !== "string") {
+            return true;
+        }
+        const cachedData = this.#cache.get(data.key);
+        if (cachedData == null || !Helper.isEqual(cachedData, data)) {
+            this.#cache.set(data.key, data);
+            return true;
+        }
+        return false;
     }
 
     manage(data) {
@@ -43,7 +66,7 @@ export default class ElementManager {
             const key = params.key || index;
             if (this.#elements.has(key)) {
                 const el = this.#elements.get(key);
-                if (this.#mutator) {
+                if (this.#mutator && this.#checkChange(params)) {
                     this.#mutator(el, key, params);
                 }
                 unused.delete(key);
@@ -63,6 +86,7 @@ export default class ElementManager {
             const el = this.#elements.get(key);
             el.remove();
             this.#elements.delete(key);
+            this.#cache.delete(key);
             if (this.#cleanup) {
                 this.#cleanup(el, key);
             }

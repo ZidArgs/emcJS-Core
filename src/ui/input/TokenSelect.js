@@ -9,22 +9,25 @@ import "../symbols/ChevronDownSymbol.js";
 import TPL from "./TokenSelect.js.html" assert {type: "html"};
 import STYLE from "./TokenSelect.js.css" assert {type: "css"};
 
+function tokenComposer(key, params) {
+    const el = document.createElement("div");
+    el.className = "token";
+    const label = document.createElement("emc-i18n-label");
+    label.i18nValue = key;
+    el.addEventListener("click", (event) => {
+        params.onClick(event);
+    });
+    el.append(label);
+    return el;
+}
+
+function tokenMutator(el, key, params) {
+    el.setAttribute("value", params.value);
+}
+
 export default class TokenSelect extends CustomElementDelegating {
 
     #elManager;
-
-    #composer(key, params) {
-        const el = document.createElement("div");
-        el.className = "token";
-        const label = document.createElement("emc-i18n-label");
-        label.i18nValue = key;
-        el.setAttribute("value", params.value);
-        el.addEventListener("click", (event) => {
-            params.onClick(event);
-        });
-        el.append(label);
-        return el;
-    }
 
     #onOptionClick = (event) => {
         const el = event.currentTarget;
@@ -208,7 +211,10 @@ export default class TokenSelect extends CustomElementDelegating {
             });
         }, true);
         /* --- */
-        this.#elManager = new ElementManager(view, this.#composer);
+        this.#elManager = new ElementManager(view, {
+            composer: tokenComposer,
+            mutator: tokenMutator
+        });
     }
 
     connectedCallback() {
