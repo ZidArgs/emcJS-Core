@@ -1,18 +1,27 @@
 :host {
+    position: static;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    height: fit-content;
     min-height: min-content;
     min-width: min-content;
 }
 :host > ::slotted(*) {
     flex-grow: 0;
     flex-shrink: 0;
+    width: auto;
+    min-width: 100%;
+}
+:host > ::slotted(*:not(emc-panel-vbox):not(emc-panel-hbox)) {
+    position: sticky;
+    left: 0;
+    right: 0;
 }
 :host(.stretchlast) > ::slotted(:last-child),
 :host > ::slotted(.autosize) {
     flex-grow: 1;
-    flex-shrink: 1;
+    flex-shrink: 0;
 }
 :host > ::slotted(.panel) {
     border-style: solid;
