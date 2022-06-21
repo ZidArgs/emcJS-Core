@@ -4,8 +4,6 @@
     justify-content: center;
     width: 20px;
     height: 20px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
     user-select: none;
 }
 :host(:not([readonly])),

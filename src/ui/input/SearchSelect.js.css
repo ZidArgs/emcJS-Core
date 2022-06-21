@@ -7,8 +7,6 @@
     background-color: var(--input-back-color, #ffffff);
     border: solid 1px var(--input-border-color, #000000);
     border-radius: 2px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
     user-select: none;
 }
 :host(:focus) {

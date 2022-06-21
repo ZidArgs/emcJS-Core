@@ -12,6 +12,7 @@
     flex-shrink: 0;
     height: auto;
     min-height: 100%;
+    max-height: fit-content;
 }
 :host > ::slotted(*:not(emc-panel-vbox):not(emc-panel-hbox)) {
     position: sticky;
@@ -21,7 +22,6 @@
 :host(.stretchlast) > ::slotted(:last-child),
 :host > ::slotted(.autosize) {
     flex-grow: 1;
-    flex-shrink: 0;
 }
 :host > ::slotted(.panel) {
     border-style: solid;

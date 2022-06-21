@@ -4,8 +4,6 @@
     background-color: #000;
     border: solid 2px #777;
     overflow: hidden;
-    -webkit-user-select: none;
-    -moz-user-select: none;
     user-select: none;
 }
 #title {
