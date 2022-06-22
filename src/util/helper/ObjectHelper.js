@@ -1,5 +1,10 @@
 class ObjectHelper {
 
+    isPropertyWritable(obj, name) {
+        const desc = Object.getOwnPropertyDescriptor(obj.constructor.prototype, name);
+        return desc == null || desc.writable || desc.set != null;
+    }
+
     sort(src, fn = () => true) {
         if (typeof src != "object") {
             throw new TypeError("only objects are sortable");
