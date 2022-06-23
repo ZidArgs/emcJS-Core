@@ -1,13 +1,30 @@
 class ObjectHelper {
 
     isPropertyWritable(obj, name) {
+        if (typeof obj !== "object") {
+            throw new TypeError("first parameter must be an object");
+        }
+        if (typeof name !== "string") {
+            throw new TypeError("second parameter must be a string");
+        }
         const desc = Object.getOwnPropertyDescriptor(obj.constructor.prototype, name);
         return desc == null || desc.writable || desc.set != null;
     }
 
+    isPropertyReadable(obj, name) {
+        if (typeof obj !== "object") {
+            throw new TypeError("first parameter must be an object");
+        }
+        if (typeof name !== "string") {
+            throw new TypeError("second parameter must be a string");
+        }
+        const desc = Object.getOwnPropertyDescriptor(obj.constructor.prototype, name);
+        return desc == null || desc.readable || desc.get != null;
+    }
+
     sort(src, fn = () => true) {
         if (typeof src != "object") {
-            throw new TypeError("only objects are sortable");
+            throw new TypeError("only objects can be sorted");
         }
         if (typeof fn != "function") {
             fn = () => true;
@@ -20,7 +37,7 @@ class ObjectHelper {
 
     filter(src = {}, fn = () => true) {
         if (typeof src != "object") {
-            throw new TypeError("only objects are sortable");
+            throw new TypeError("only objects can be filtered");
         }
         if (typeof fn != "function") {
             fn = () => true;
@@ -81,6 +98,32 @@ class ObjectHelper {
             current[path.shift()] = value;
         }
         return res;
+    }
+
+    #writeRecursive(target, key, value) {
+        const oldValue = target[key];
+        if (typeof oldValue === "object" && typeof value === "object") {
+            for (const bKey in value) {
+                const bValue = value[bKey];
+                this.#writeRecursive(oldValue, bKey, bValue);
+            }
+        } else {
+            target[key] = value;
+        }
+    }
+
+    mergeInto(target, source) {
+        if (typeof target !== "object") {
+            throw new TypeError("first parameter must be an object");
+        }
+        if (typeof source !== "object") {
+            throw new TypeError("second parameter must be an object");
+        }
+        for (const key in source) {
+            const value = source[key];
+            this.#writeRecursive(target, key, value);
+        }
+        return target;
     }
 
 }

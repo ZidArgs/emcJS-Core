@@ -1,4 +1,13 @@
 {
-    "input": "Input",
-    "observable": "Observable"
+    "input": {
+        "label": "Input"
+    },
+    "observable": {
+        "label": "Observable",
+        "children": {
+            "full": {
+                "label": "Full Observable"
+            }
+        }
+    }
 }

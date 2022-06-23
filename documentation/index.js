@@ -8,7 +8,7 @@ const viewEl = document.getElementById("view");
 const SRC_PREFIX = "/docs/";
 const SRC_SUFFIX = "/index.html";
 const NAME_PREFIX = "page=";
-const ViEW_MAP = new Map();
+const VIEW_MAP = new Map();
 
 if (location.hash == "") {
     location.hash = "home";
@@ -18,7 +18,7 @@ window.addEventListener("hashchange", (event) => {
     const url = new URL(event.newURL);
     const hash = url.hash.slice(1);
     if (hash.startsWith(NAME_PREFIX)) {
-        viewEl.contentWindow.location.replace(ViEW_MAP.get(hash));
+        viewEl.contentWindow.location.replace(VIEW_MAP.get(hash));
         const entryEl = document.getElementById(hash);
         scrollIntoViewIfNeeded(entryEl);
     } else {
@@ -37,20 +37,32 @@ function scrollIntoViewIfNeeded(target) {
     }
 }
 
-function addEntry(name, src) {
+function addEntry(targetEl, src, {label, children}, hashPrefix = "") {
+    if (hashPrefix) {
+        hashPrefix = hashPrefix + "::"
+    }
     const preSrc = `${SRC_PREFIX}${src}${SRC_SUFFIX}`;
-    const preName = `${NAME_PREFIX}${name.replace(" ", "_")}`;
-    const entryEl = document.createElement("a");
-    const hashName = `#${preName}`;
+    const preName = `${hashPrefix}${label.replace(" ", "_")}`;
+    const hashID = `${NAME_PREFIX}${preName}`;
+    const entryEl = document.createElement("div");
+    const hashName = `#${hashID}`;
 
-    entryEl.href = `/${hashName}`;
-    entryEl.innerHTML = name;
-    entryEl.id = preName;
+    const linkEl = document.createElement("a");
+    linkEl.href = `/${hashName}`;
+    linkEl.innerHTML = label;
+    linkEl.id = hashID;
+    entryEl.append(linkEl);
 
-    listEl.append(entryEl);
+    if (children != null) {
+        for (const [ref, data] of Object.entries(children)) {
+            addEntry(entryEl, `${src}/${ref}`, data, preName);
+        }
+    }
+
+    targetEl.append(entryEl);
 
     // add reference
-    ViEW_MAP.set(preName, preSrc);
+    VIEW_MAP.set(hashID, preSrc);
     if (location.hash == hashName) {
         viewEl.src = preSrc;
         entryEl.focus();
@@ -58,6 +70,6 @@ function addEntry(name, src) {
     }
 }
 
-for (const [ref, name] of Object.entries(config)) {
-    addEntry(name, ref);
+for (const [ref, data] of Object.entries(config)) {
+    addEntry(listEl, ref, data);
 }

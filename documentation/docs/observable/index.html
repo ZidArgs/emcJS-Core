@@ -11,37 +11,38 @@
         import Observable from "/emcJS/data/Observable.js";
         import "/emcJS/ui/input/InputWrapper.js";
 
-        const observable = new Observable({});
+        // partial change
+        const partObservable = new Observable({});
 
-        const keyInput = document.getElementById("keyInput");
-        const valueInput = document.getElementById("valueInput");
-        const changeObservable = document.getElementById("changeObservable");
-        const valueOutput = document.getElementById("valueOutput");
+        const partKeyInput = document.getElementById("partKeyInput");
+        const partValueInput = document.getElementById("partValueInput");
+        const partChangeObservable = document.getElementById("partChangeObservable");
+        const partValueOutput = document.getElementById("partValueOutput");
 
-        changeObservable.addEventListener("click", () => {
-            const key = keyInput.value;
-            const value = valueInput.value;
-            observable[key] = value;
+        partChangeObservable.addEventListener("click", () => {
+            const key = partKeyInput.value;
+            const value = partValueInput.value;
+            partObservable[key] = value;
         });
 
-        observable.addEventListener("change", (event) => {
-            valueOutput.value = `change:\n\n${JSON.stringify(event.data, null, 4)}\n\nvalue:\n\n${JSON.stringify(observable, null, 4)}`;
+        partObservable.addEventListener("change", (event) => {
+            partValueOutput.value = `change:\n\n${JSON.stringify(event.data, null, 4)}\n\nvalue:\n\n${JSON.stringify(partObservable, null, 4)}`;
         });
     </script>
 </head>
 
 <body style="display: flex; flex-direction: column;">
     <emc-input-wrapper>
-        <input type="text" id="keyInput">
+        <input type="text" id="partKeyInput">
     </emc-input-wrapper>
     <emc-input-wrapper>
-        <textarea id="valueInput"></textarea>
+        <textarea id="partValueInput"></textarea>
     </emc-input-wrapper>
     <emc-input-wrapper>
-        <input type="button" id="changeObservable" value="Change">
+        <input type="button" id="partChangeObservable" value="Write">
     </emc-input-wrapper>
     <emc-input-wrapper>
-        <textarea id="valueOutput"></textarea>
+        <textarea id="partValueOutput">{}</textarea>
     </emc-input-wrapper>
 </body>
 

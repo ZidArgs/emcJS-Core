@@ -1,6 +1,6 @@
 {
   "name": "emcjs",
-  "version": "0.7.15",
+  "version": "0.7.16",
   "description": "Modular JS API",
   "type": "module",
   "repository": {
@@ -29,6 +29,6 @@
     "lintfix": "yarn eslint --fix .",
     "build": "gulp build",
     "test": "mocha \"./test/**/*.js\"",
-    "docs": "serve ./documentation -p 12000"
+    "doc": "serve ./documentation -p 12000"
   }
 }

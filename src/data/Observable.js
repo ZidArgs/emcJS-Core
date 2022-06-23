@@ -3,6 +3,7 @@ import {
 } from "../util/Debouncer.js";
 import EventTargetManager from "../util/event/EventTargetManager.js";
 import Helper from "../util/helper/Helper.js";
+import ObjectHelper from "../util/helper/ObjectHelper.js";
 
 const BYPASS_PROPERTIES = [
     // Object
@@ -22,7 +23,12 @@ const BYPASS_PROPERTIES = [
     "addEventListener",
     "removeEventListener",
     "dispatchEvent",
-    "toJSON"
+    // internal
+    "toJSON",
+    "set",
+    "get",
+    "delete",
+    "keys"
 ];
 
 const HANDLER = {
@@ -54,6 +60,9 @@ const HANDLER = {
         return target.keys();
     },
     setPrototypeOf() {
+        return false;
+    },
+    defineProperty() {
         return false;
     }
 };
@@ -87,13 +96,17 @@ export default class Observable extends EventTarget {
     }
 
     #notifyChange = debounceCacheData((data) => {
-        const values = {};
-        for (const {key, value} of data) {
-            values[key] = value;
+        const changes = {};
+        for (const {key, value, change} of data) {
+            if (change != null) {
+                ObjectHelper.mergeInto(changes, change);
+            } else {
+                changes[key] = value;
+            }
         }
         // ---
         const ev = new Event("change");
-        ev.data = values;
+        ev.data = changes;
         this.dispatchEvent(ev);
     });
 
@@ -102,10 +115,20 @@ export default class Observable extends EventTarget {
             return this.#eventManagers.get(key);
         }
         const manager = new EventTargetManager();
-        manager.set("change", () => {
+        manager.set("update", (event) => {
+            const value = this.get(key);
+            const change = {[key]: event.change}
+            // ---
+            const ev = new Event("update");
+            ev.change = change;
+            ev.key = key;
+            ev.value = value;
+            this.dispatchEvent(ev);
+            // ---
             this.#notifyChange({
                 key,
-                value: this.get(key)
+                value,
+                change
             });
         });
         this.#eventManagers.set(key, manager);
@@ -125,7 +148,7 @@ export default class Observable extends EventTarget {
     }
 
     #unobserve(key, data) {
-        if (typeof data === "object") {
+        if (data instanceof Observable) {
             const eventManager = this.#getEventManager(key);
             eventManager.switchTarget(null);
         }
@@ -134,13 +157,29 @@ export default class Observable extends EventTarget {
     set(key, value) {
         const oldValue = this.#buffer.get(key);
         if (!Helper.isEqual(oldValue, value)) {
-            value = this.#observe(key, value);
-            this.#buffer.set(key, value);
-            // ---
-            this.#notifyChange({
-                key,
-                value
-            });
+            if (oldValue instanceof Observable && typeof value === "object") {
+                for (const key in value) {
+                    const buffer = value[key];
+                    oldValue[key] = buffer;
+                }
+            } else {
+                if (oldValue instanceof Observable) {
+                    this.#unobserve(key, oldValue);
+                }
+                value = this.#observe(key, value);
+                this.#buffer.set(key, value);
+                // ---
+                const ev = new Event("update");
+                ev.change = {[key]: value};
+                ev.key = key;
+                ev.value = value;
+                this.dispatchEvent(ev);
+                // ---
+                this.#notifyChange({
+                    key,
+                    value
+                });
+            }
         }
     }
 
@@ -153,6 +192,12 @@ export default class Observable extends EventTarget {
         if (oldValue != null) {
             this.#unobserve(key, oldValue);
             this.#buffer.delete(key);
+            // ---
+            const ev = new Event("update");
+            ev.change = {[key]: undefined};
+            ev.key = key;
+            ev.value = undefined;
+            this.dispatchEvent(ev);
             // ---
             this.#notifyChange({
                 key,
@@ -171,6 +216,10 @@ export default class Observable extends EventTarget {
 
     toJSON() {
         return Object.fromEntries(this.#buffer);
+    }
+
+    toString() {
+        return "[object Observable]";
     }
 
 }
