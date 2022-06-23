@@ -57,7 +57,7 @@ export default class TokenSelect extends CustomElementDelegating {
         /* --- */
         this.shadowRoot.getElementById("container").addEventListener("slotchange", () => {
             const all = this.querySelectorAll(`[value]`);
-            all.forEach((el) => {
+            for (const el of all) {
                 if (el) {
                     el.onclick = (event) => {
                         this.#choose(event.currentTarget.getAttribute("value"));
@@ -66,7 +66,7 @@ export default class TokenSelect extends CustomElementDelegating {
                     };
                     this.#applyValue(this.value);
                 }
-            });
+            }
         });
         const view = this.shadowRoot.getElementById("view");
         const input = this.shadowRoot.getElementById("input");
@@ -201,14 +201,14 @@ export default class TokenSelect extends CustomElementDelegating {
         input.addEventListener("input", () => {
             const all = this.querySelectorAll(`[value]`);
             const regEx = new SearchAnd(input.value);
-            all.forEach((el) => {
+            for (const el of all) {
                 if (el.innerText.trim().match(regEx)) {
                     el.style.display = "";
                 } else {
                     el.style.display = "none";
                     el.classList.remove("marked");
                 }
-            });
+            }
         }, true);
         /* --- */
         this.#elManager = new ElementManager(view, {
@@ -222,7 +222,7 @@ export default class TokenSelect extends CustomElementDelegating {
             this.setAttribute("tabindex", 0);
         }
         const all = this.querySelectorAll(`[value]`);
-        all.forEach((el) => {
+        for (const el of all) {
             if (el) {
                 el.onclick = (event) => {
                     this.#choose(event.currentTarget.getAttribute("value"));
@@ -230,7 +230,7 @@ export default class TokenSelect extends CustomElementDelegating {
                     return false;
                 };
             }
-        });
+        }
     }
 
     serialize() {
@@ -315,7 +315,7 @@ export default class TokenSelect extends CustomElementDelegating {
     calculateItems() {
         const all = this.querySelectorAll(`[value]`);
         const vals = new Set(this.value);
-        all.forEach((el) => {
+        for (const el of all) {
             if (el) {
                 if (vals.has(el.value)) {
                     el.classList.add("active");
@@ -323,7 +323,7 @@ export default class TokenSelect extends CustomElementDelegating {
                     el.classList.remove("active");
                 }
             }
-        });
+        }
     }
 
     #cancelSelection() {
@@ -337,9 +337,9 @@ export default class TokenSelect extends CustomElementDelegating {
             container.style.bottom = "";
             container.style.top = "";
             const all = this.querySelectorAll(`[value]`);
-            all.forEach((el) => {
+            for (const el of all) {
                 el.style.display = "";
-            });
+            }
             const marked = this.querySelector(".marked");
             if (marked != null) {
                 marked.classList.remove("marked");
@@ -362,13 +362,13 @@ export default class TokenSelect extends CustomElementDelegating {
 
     #applyValue(value) {
         const data = [];
-        value.forEach((val) => {
+        for (const val of value) {
             data.push({
                 key: val,
                 value: val,
                 onClick: this.#onOptionClick
             });
-        });
+        }
         this.#elManager.manage(data);
     }
 

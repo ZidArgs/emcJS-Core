@@ -23,14 +23,14 @@ export default class FilteredList extends CustomElement {
             const panels = this.querySelectorAll(`emc-collapsepanel`);
             if (event.value) {
                 const regEx = new SearchAnd(event.value);
-                all.forEach((el) => {
+                for (const el of all) {
                     if (el.dataset.filtervalue.match(regEx)) {
                         el.style.display = "";
                     } else {
                         el.style.display = "none";
                     }
-                });
-                panels.forEach((el) => {
+                }
+                for (const el of panels) {
                     const children = el.querySelectorAll(`[data-filtervalue]`);
                     for (const ch of children) {
                         if (ch.style.display == "") {
@@ -39,14 +39,14 @@ export default class FilteredList extends CustomElement {
                         }
                     }
                     el.style.display = "none";
-                });
+                }
             } else {
-                all.forEach((el) => {
+                for (const el of all) {
                     el.style.display = "";
-                });
-                panels.forEach((el) => {
+                }
+                for (const el of panels) {
                     el.style.display = "";
-                });
+                }
             }
         });
     }

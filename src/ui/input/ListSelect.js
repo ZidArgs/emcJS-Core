@@ -14,13 +14,13 @@ export default class ListSelect extends CustomElementDelegating {
         /* --- */
         this.shadowRoot.getElementById("container").addEventListener("slotchange", () => {
             const all = this.querySelectorAll(`[value]`);
-            all.forEach((el) => {
+            for (const el of all) {
                 if (el) {
                     el.onclick = () => {
                         this.#choose(el.getAttribute("value"));
                     };
                 }
-            });
+            }
             this.calculateItems();
         });
         /* header */
@@ -30,17 +30,17 @@ export default class ListSelect extends CustomElementDelegating {
                 const all = this.querySelectorAll(`[value]`);
                 const value = [];
                 if (event.value) {
-                    all.forEach((el) => {
+                    for (const el of all) {
                         if (!!el && el.style.display == "" || el.classList.contains("active")) {
                             value.push(el.value);
                         }
-                    });
+                    }
                 } else {
-                    all.forEach((el) => {
+                    for (const el of all) {
                         if (!!el && el.style.display == "none" && el.classList.contains("active")) {
                             value.push(el.value);
                         }
-                    });
+                    }
                 }
                 this.value = value;
             }
@@ -54,7 +54,7 @@ export default class ListSelect extends CustomElementDelegating {
                 if (this.style.height == "") {
                     this.style.height = `${this.getBoundingClientRect().height}px`;
                 }
-                all.forEach((el) => {
+                for (const el of all) {
                     if (el.innerText.match(regEx)) {
                         el.style.display = "";
                         if (el.classList.contains("active")) {
@@ -66,16 +66,16 @@ export default class ListSelect extends CustomElementDelegating {
                         el.style.display = "none";
                         el.classList.remove("marked");
                     }
-                });
+                }
             } else {
-                all.forEach((el) => {
+                for (const el of all) {
                     el.style.display = "";
                     if (el.classList.contains("active")) {
                         checked = true;
                     } else {
                         unchecked = true;
                     }
-                });
+                }
                 this.style.height = "";
             }
             if (this.multiple) {
@@ -185,13 +185,13 @@ export default class ListSelect extends CustomElementDelegating {
         if (!this.value && !!all.length) {
             this.value = all[0].value;
         }
-        all.forEach((el) => {
+        for (const el of all) {
             if (el) {
                 el.onclick = () => {
                     this.#choose(el.getAttribute("value"));
                 };
             }
-        });
+        }
         this.calculateItems();
     }
 
@@ -309,7 +309,7 @@ export default class ListSelect extends CustomElementDelegating {
             const vals = new Set(this.value);
             let checked = false;
             let unchecked = false;
-            all.forEach((el) => {
+            for (const el of all) {
                 if (el) {
                     if (vals.has(el.value)) {
                         el.classList.add("active");
@@ -323,7 +323,7 @@ export default class ListSelect extends CustomElementDelegating {
                         }
                     }
                 }
-            });
+            }
             if (checked) {
                 if (unchecked) {
                     header.checked = "mixed";
@@ -334,7 +334,7 @@ export default class ListSelect extends CustomElementDelegating {
                 header.checked = false;
             }
         } else {
-            all.forEach((el) => {
+            for (const el of all) {
                 if (el) {
                     if (this.value == el.value) {
                         el.classList.add("active");
@@ -342,7 +342,7 @@ export default class ListSelect extends CustomElementDelegating {
                         el.classList.remove("active");
                     }
                 }
-            });
+            }
         }
     }
 

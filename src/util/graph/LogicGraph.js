@@ -1,22 +1,6 @@
 import NodeFactory from "./NodeFactory.js";
 import EdgeLogicCompiler from "./EdgeLogicCompiler.js";
 
-function mapToObj(src) {
-    const res = {};
-    src.forEach((v, k) => {
-        res[k] = v;
-    });
-    return res;
-}
-
-function setToArray(src) {
-    const res = [];
-    src.forEach((v) => {
-        res.push(v);
-    });
-    return res;
-}
-
 const DIRTY = new WeakMap();
 const MIXINS = new WeakMap();
 const MEM_I = new WeakMap();
@@ -245,9 +229,9 @@ export default class LogicGraph {
             if (debug) {
                 const redirectMatrix = REDIRECT_MATRIX.get(this);
                 console.groupCollapsed("GRAPH LOGIC EXECUTION");
-                console.log("input", mapToObj(mem_i));
-                console.log("redirects", mapToObj(redirectMatrix));
-                console.log("forced", setToArray(forcedReachable));
+                console.log("input", Object.fromEntries(mem_i));
+                console.log("redirects", Object.fromEntries(redirectMatrix));
+                console.log("forced", Array.from(forcedReachable));
                 console.log("traverse nodes...");
                 console.time("execution time");
                 if (debug == "extended") {
@@ -351,7 +335,7 @@ export default class LogicGraph {
                 console.log("success");
                 console.timeEnd("execution time");
                 console.log("reachable", Array.from(reachableNodes));
-                console.log("output", mapToObj(mem_o));
+                console.log("output", Object.fromEntries(mem_o));
                 console.log("changes", changes);
                 console.groupEnd("GRAPH LOGIC EXECUTION");
             }
@@ -410,9 +394,9 @@ export default class LogicGraph {
     getAll() {
         const mem_o = MEM_O.get(this);
         const obj = {};
-        mem_o.forEach((v, k) => {
-            obj[k] = v
-        });
+        for (const [k, v] of mem_o) {
+            obj[k] = v;
+        }
         return obj;
     }
 

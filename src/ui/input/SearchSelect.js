@@ -14,7 +14,7 @@ export default class SearchSelect extends CustomElementDelegating {
         /* --- */
         this.shadowRoot.getElementById("container").addEventListener("slotchange", () => {
             const all = this.querySelectorAll(`[value]`);
-            all.forEach((el) => {
+            for (const el of all) {
                 if (el) {
                     el.onclick = (event) => {
                         this.#choose(event.currentTarget.getAttribute("value"));
@@ -25,7 +25,7 @@ export default class SearchSelect extends CustomElementDelegating {
                         this.shadowRoot.getElementById("view").value = el.innerHTML;
                     }
                 }
-            });
+            }
         });
         const viewEl = this.shadowRoot.getElementById("view");
         const inputEl = this.shadowRoot.getElementById("input");
@@ -160,14 +160,14 @@ export default class SearchSelect extends CustomElementDelegating {
         inputEl.addEventListener("input", () => {
             const all = this.querySelectorAll(`[value]`);
             const regEx = new SearchAnd(inputEl.value);
-            all.forEach((el) => {
+            for (const el of all) {
                 if (el.innerText.trim().match(regEx)) {
                     el.style.display = "";
                 } else {
                     el.style.display = "none";
                     el.classList.remove("marked");
                 }
-            });
+            }
         }, true);
     }
 
@@ -179,7 +179,7 @@ export default class SearchSelect extends CustomElementDelegating {
         if (!this.value && !!all.length) {
             this.value = all[0].value;
         }
-        all.forEach((el) => {
+        for (const el of all) {
             if (el) {
                 el.onclick = (event) => {
                     this.#choose(event.currentTarget.getAttribute("value"));
@@ -187,7 +187,7 @@ export default class SearchSelect extends CustomElementDelegating {
                     return false;
                 };
             }
-        });
+        }
     }
 
     get value() {
@@ -247,9 +247,9 @@ export default class SearchSelect extends CustomElementDelegating {
             container.style.bottom = "";
             container.style.top = "";
             const all = this.querySelectorAll(`[value]`);
-            all.forEach((el) => {
+            for (const el of all) {
                 el.style.display = "";
-            });
+            }
             const marked = this.querySelector(".marked");
             if (marked != null) {
                 marked.classList.remove("marked");
@@ -267,9 +267,9 @@ export default class SearchSelect extends CustomElementDelegating {
             container.style.bottom = "";
             container.style.top = "";
             const all = this.querySelectorAll(`[value]`);
-            all.forEach((el) => {
+            for (const el of all) {
                 el.style.display = "";
-            });
+            }
             const marked = this.querySelector(".marked");
             if (marked != null) {
                 marked.classList.remove("marked");

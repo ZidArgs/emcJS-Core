@@ -25,7 +25,7 @@ function sortLogic(logic) {
     let len = 0;
     while (!!value_old.size && value_old.size != len) {
         len = value_old.size;
-        value_old.forEach((value, key) => {
+        for (const [key, value] of value_old) {
             for (const requirement of value.requires) {
                 if (value_old.has(requirement)) {
                     return;
@@ -33,21 +33,13 @@ function sortLogic(logic) {
             }
             logic.set(key, value);
             value_old.delete(key);
-        });
+        }
     }
     if (value_old.size > 0) {
         const path = [];
         resolveCircle(value_old, path);
         throw new Error(`PROCESSOR LOGIC LOOP:\n${path.join("\n=> ")}`);
     }
-}
-
-function mapToObj(map) {
-    const res = {};
-    map.forEach((v, k) => {
-        res[k] = v;
-    });
-    return res;
 }
 
 const DIRTY = new WeakMap();
@@ -134,7 +126,7 @@ export default class Processor {
         const debug = DEBUG.get(this);
         if (debug) {
             console.group("PROCESSOR LOGIC EXECUTION");
-            console.log("input", mapToObj(mem_i));
+            console.log("input", Object.fromEntries(mem_i));
             console.log("executing logic...");
             console.time("execution time");
         }
@@ -143,18 +135,18 @@ export default class Processor {
                 return mem_i.get(key);
             }
         };
-        logic.forEach((v, k) => {
+        for (const [k, v] of logic) {
             const r = !!v(val);
             mem_i.set(k, r);
             if (r != mem_o.get(k)) {
                 mem_o.set(k, r);
                 res[k] = r;
             }
-        });
+        }
         if (debug) {
             console.log("success");
             console.timeEnd("execution time");
-            console.log("output", mapToObj(mem_i));
+            console.log("output", Object.fromEntries(mem_i));
             console.log("changes", res);
             console.groupEnd("PROCESSOR LOGIC EXECUTION");
         }
@@ -184,7 +176,9 @@ export default class Processor {
         }
         const mem_i = MEM_I.get(this);
         if (values instanceof Map) {
-            values.forEach((v, k) => mem_i.set(k, v));
+            for (const [k, v] of values) {
+                mem_i.set(k, v);
+            }
         } else if (typeof values == "object" && !Array.isArray(values)) {
             for (const k in values) {
                 const v = values[k];
@@ -208,9 +202,9 @@ export default class Processor {
     getAll() {
         const mem_o = MEM_O.get(this);
         const obj = {};
-        mem_o.forEach((v, k) => {
-            obj[k] = v
-        });
+        for (const [k, v] of mem_o) {
+            obj[k] = v;
+        }
         return obj;
     }
 

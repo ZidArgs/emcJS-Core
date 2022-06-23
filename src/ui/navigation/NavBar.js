@@ -6,6 +6,15 @@ import STYLE from "./NavBar.js.css" assert {type: "css"};
 
 const MIXINS = new Map();
 
+function closeAll(targetEl) {
+    for (const el of targetEl.querySelectorAll(".open")) {
+        el.classList.remove("open");
+    }
+    for (const el of targetEl.querySelectorAll("[expand=\"open\"]")) {
+        el.expand = "closed";
+    }
+}
+
 export default class NavBar extends CustomElement {
 
     constructor() {
@@ -15,36 +24,26 @@ export default class NavBar extends CustomElement {
         /* --- */
 
         // layout
-        const container = this.shadowRoot.getElementById("container");
-        const cover = this.shadowRoot.getElementById("cover");
-        const content = this.shadowRoot.getElementById("content");
-        const hamburger = this.shadowRoot.getElementById("hamburger-button");
-        hamburger.addEventListener("click", () => {
-            if (container.classList.contains("open")) {
-                container.classList.remove("open");
-                container.classList.remove("cover");
-                content.querySelectorAll(".open").forEach(function(el) {
-                    el.classList.remove("open");
-                });
-                content.querySelectorAll("[expand=\"open\"]").forEach(function(el) {
-                    el.expand = "closed";
-                });
-                hamburger.open = false;
+        const containerEl = this.shadowRoot.getElementById("container");
+        const coverEl = this.shadowRoot.getElementById("cover");
+        const contentEl = this.shadowRoot.getElementById("content");
+        const hamburgerEl = this.shadowRoot.getElementById("hamburger-button");
+        hamburgerEl.addEventListener("click", () => {
+            if (containerEl.classList.contains("open")) {
+                containerEl.classList.remove("open");
+                containerEl.classList.remove("cover");
+                closeAll(contentEl);
+                hamburgerEl.open = false;
             } else {
-                container.classList.add("open");
-                hamburger.open = true;
+                containerEl.classList.add("open");
+                hamburgerEl.open = true;
             }
         });
-        cover.addEventListener("click", () => {
-            container.classList.remove("open");
-            container.classList.remove("cover");
-            content.querySelectorAll(".open").forEach(function(el) {
-                el.classList.remove("open");
-            });
-            content.querySelectorAll("[expand=\"open\"]").forEach(function(el) {
-                el.expand = "closed";
-            });
-            hamburger.open = false;
+        coverEl.addEventListener("click", () => {
+            containerEl.classList.remove("open");
+            containerEl.classList.remove("cover");
+            closeAll(contentEl);
+            hamburgerEl.open = false;
         });
     }
 
@@ -85,12 +84,7 @@ export default class NavBar extends CustomElement {
                         hamburger.open = false;
                         containerEl.classList.remove("cover");
                         containerEl.classList.remove("open");
-                        contentEl.querySelectorAll("[expand=\"open\"]").forEach(function(el) {
-                            el.expand = "closed";
-                        });
-                        contentEl.querySelectorAll(".open").forEach(function(el) {
-                            el.classList.remove("open");
-                        });
+                        closeAll(contentEl);
                         config.handler();
                         event.stopPropagation();
                         return false;
@@ -137,12 +131,7 @@ export default class NavBar extends CustomElement {
                             }
                         } else {
                             if (IS_MAIN_NAV) {
-                                contentEl.querySelectorAll("[expand=\"open\"]").forEach(function(el) {
-                                    el.expand = "closed";
-                                });
-                                contentEl.querySelectorAll(".open").forEach(function(el) {
-                                    el.classList.remove("open");
-                                });
+                                closeAll(contentEl);
                                 listEl.classList.add("open");
                                 containerEl.classList.add("cover");
                             }

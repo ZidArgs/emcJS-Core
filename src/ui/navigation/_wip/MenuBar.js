@@ -153,6 +153,15 @@ ul li > emc-navbar-button {
 }
 `);
 
+function closeAll(targetEl) {
+    for (const el of targetEl.querySelectorAll(".open")) {
+        el.classList.remove("open");
+    }
+    for (const el of targetEl.querySelectorAll("[expand=\"open\"]")) {
+        el.expand = "closed";
+    }
+}
+
 export default class MenuBar extends CustomElement {
 
     constructor() {
@@ -160,42 +169,32 @@ export default class MenuBar extends CustomElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const container = this.shadowRoot.getElementById("container");
-        const cover = this.shadowRoot.getElementById("cover");
-        const content = this.shadowRoot.getElementById("content");
-        const hamburger = this.shadowRoot.getElementById("hamburger-button");
-        hamburger.onclick = () => {
-            if (container.classList.contains("open")) {
-                container.classList.remove("open");
-                container.classList.remove("cover");
-                content.querySelectorAll(".open").forEach(function(el) {
-                    el.classList.remove("open");
-                });
-                content.querySelectorAll("[expand=\"open\"]").forEach(function(el) {
-                    el.expand = "closed";
-                });
-                hamburger.open = false;
+        const containerEl = this.shadowRoot.getElementById("container");
+        const coverEl = this.shadowRoot.getElementById("cover");
+        const contentEl = this.shadowRoot.getElementById("content");
+        const hamburgerEl = this.shadowRoot.getElementById("hamburger-button");
+        hamburgerEl.onclick = () => {
+            if (containerEl.classList.contains("open")) {
+                containerEl.classList.remove("open");
+                containerEl.classList.remove("cover");
+                closeAll(contentEl);
+                hamburgerEl.open = false;
             } else {
-                container.classList.add("open");
-                hamburger.open = true;
+                containerEl.classList.add("open");
+                hamburgerEl.open = true;
             }
         };
-        cover.onclick = () => {
-            container.classList.remove("open");
-            container.classList.remove("cover");
-            content.querySelectorAll(".open").forEach(function(el) {
-                el.classList.remove("open");
-            });
-            content.querySelectorAll("[expand=\"open\"]").forEach(function(el) {
-                el.expand = "closed";
-            });
-            hamburger.open = false;
+        coverEl.onclick = () => {
+            containerEl.classList.remove("open");
+            containerEl.classList.remove("cover");
+            closeAll(contentEl);
+            hamburgerEl.open = false;
         };
     }
 
     loadNavigation(config) {
-        const content = this.shadowRoot.getElementById("content");
-        content.innerHTML = "";
+        const contentEl = this.shadowRoot.getElementById("content");
+        contentEl.innerHTML = "";
         for (const item of config) {
             if (item.visible == null || !!item.visible) {
                 const el = document.createElement("li");
@@ -220,12 +219,7 @@ export default class MenuBar extends CustomElement {
                     btn.addEventListener("click", (event) => {
                         const container = this.shadowRoot.getElementById("container");
                         container.classList.remove("cover");
-                        content.querySelectorAll("[expand=\"open\"]").forEach(function(el) {
-                            el.expand = "closed";
-                        });
-                        content.querySelectorAll(".open").forEach(function(el) {
-                            el.classList.remove("open");
-                        });
+                        closeAll(contentEl);
                         item.handler();
                         event.stopPropagation();
                         return false;
@@ -258,12 +252,7 @@ export default class MenuBar extends CustomElement {
                                 subbtn.addEventListener("click", (event) => {
                                     const container = this.shadowRoot.getElementById("container");
                                     container.classList.remove("cover");
-                                    content.querySelectorAll("[expand=\"open\"]").forEach(function(el) {
-                                        el.expand = "closed";
-                                    });
-                                    content.querySelectorAll(".open").forEach(function(el) {
-                                        el.classList.remove("open");
-                                    });
+                                    closeAll(contentEl);
                                     subitem.handler();
                                     event.stopPropagation();
                                     return false;
@@ -281,12 +270,7 @@ export default class MenuBar extends CustomElement {
                             btn.expand = "closed";
                             el.classList.remove("open");
                         } else {
-                            content.querySelectorAll("[expand=\"open\"]").forEach(function(el) {
-                                el.expand = "closed";
-                            });
-                            content.querySelectorAll(".open").forEach(function(el) {
-                                el.classList.remove("open");
-                            });
+                            closeAll(contentEl);
                             btn.expand = "open";
                             el.classList.add("open");
                         }
@@ -294,7 +278,7 @@ export default class MenuBar extends CustomElement {
                         return false;
                     });
                 }
-                content.append(el);
+                contentEl.append(el);
             }
         }
     }

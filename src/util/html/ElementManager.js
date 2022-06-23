@@ -14,7 +14,9 @@ export default class ElementManager {
 
     #cleanup;
 
-    constructor(target, options) {
+    #args;
+
+    constructor(target, options, ...args) {
         if (!(target instanceof HTMLElement)) {
             throw new TypeError("target must be of type HTMLElement");
         }
@@ -42,6 +44,7 @@ export default class ElementManager {
         } else {
             throw new TypeError("second argument must be a composer function or an options object containing at least a composer function");
         }
+        this.#args = args;
     }
 
     #checkChange(data) {
@@ -67,15 +70,15 @@ export default class ElementManager {
             if (this.#elements.has(key)) {
                 const el = this.#elements.get(key);
                 if (this.#mutator && this.#checkChange(params)) {
-                    this.#mutator(el, key, params);
+                    this.#mutator(el, key, params, ...this.#args);
                 }
                 unused.delete(key);
                 this.#target.append(el);
             } else {
-                const el = this.#composer(key, params);
+                const el = this.#composer(key, params, ...this.#args);
                 if (el != null) {
                     if (this.#mutator) {
-                        this.#mutator(el, key, params);
+                        this.#mutator(el, key, params, ...this.#args);
                     }
                     this.#elements.set(key, el);
                     this.#target.append(el);
@@ -88,7 +91,7 @@ export default class ElementManager {
             this.#elements.delete(key);
             this.#cache.delete(key);
             if (this.#cleanup) {
-                this.#cleanup(el, key);
+                this.#cleanup(el, key, ...this.#args);
             }
         }
     }
