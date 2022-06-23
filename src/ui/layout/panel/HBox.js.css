@@ -5,27 +5,22 @@
     width: fit-content;
     min-height: min-content;
     min-width: min-content;
-    overflow-y: auto;
 }
+
 :host > ::slotted(*) {
     flex-grow: 0;
     flex-shrink: 0;
-    height: auto;
     min-height: 100%;
     max-height: fit-content;
 }
-:host > ::slotted(*:not(emc-panel-vbox):not(emc-panel-hbox)) {
-    position: sticky;
-    top: 0;
-    bottom: 0;
-}
+
 :host(.stretchlast) > ::slotted(:last-child),
 :host > ::slotted(.autosize) {
     flex-grow: 1;
 }
+
 :host > ::slotted(.panel) {
     border-style: solid;
     border-width: 2px;
     border-color: var(--page-border-color, #ffffff);
-    overflow: hidden;
 }
