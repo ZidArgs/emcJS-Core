@@ -1,6 +1,32 @@
+import {
+    debounceCacheData
+} from "../../../util/Debouncer.js";
+
 export default class ObservableStorage extends EventTarget {
 
     #buffer = new Map();
+
+    #notifyChange = debounceCacheData((params) => {
+        const data = {};
+        const changes = {};
+        for (const {key, oldValue, newValue} of params) {
+            data[key] = newValue;
+            if (changes[key] != null) {
+                changes[key].newValue = newValue;
+            } else {
+                changes[key] = {oldValue, newValue};
+            }
+        }
+        // ---
+        const ev = new Event("change");
+        ev.data = data;
+        ev.changes = changes;
+        this.dispatchEvent(ev);
+    });
+
+    setDefault(key, oldValue, newValue) {
+        this.#notifyChange({key, oldValue, newValue});
+    }
 
     getDefault() {
         // nothing
@@ -11,31 +37,23 @@ export default class ObservableStorage extends EventTarget {
         // change event
         if (oldValue != value) {
             this.#buffer.set(key, value);
-            const ev = new Event("change");
-            ev.data = {[key]: value};
-            ev.changes = {[key]: {oldValue, newValue: value}};
-            this.dispatchEvent(ev);
+            this.#notifyChange({key, oldValue, newValue: value});
         }
     }
 
     setAll(data) {
-        const values = {};
-        const changes = {};
+        const changes = [];
         for (const key in data) {
             const newValue = data[key];
             const oldValue = this.get(key);
             if (oldValue != newValue) {
                 this.#buffer.set(key, newValue);
-                values[key] = newValue;
-                changes[key] = {oldValue, newValue};
+                changes.push({key, oldValue, newValue});
             }
         }
         // change event
-        if (Object.keys(values).length) {
-            const ev = new Event("change");
-            ev.data = values;
-            ev.changes = changes;
-            this.dispatchEvent(ev);
+        if (Object.keys(changes).length) {
+            this.#notifyChange(...changes);
         }
     }
 
@@ -56,10 +74,7 @@ export default class ObservableStorage extends EventTarget {
         if (oldValue != null) {
             this.#buffer.delete(key);
             const defaultValue = this.getDefault(key);
-            const ev = new Event("change");
-            ev.data = {[key]: defaultValue};
-            ev.changes = {[key]: {oldValue, newValue: defaultValue}};
-            this.dispatchEvent(ev);
+            this.#notifyChange({key, oldValue, newValue: defaultValue});
         }
     }
 
@@ -96,8 +111,7 @@ export default class ObservableStorage extends EventTarget {
     }
 
     overwrite(data = {}) {
-        const values = {};
-        const changes = {};
+        const changes = [];
         for (const key in data) {
             const newValue = data[key];
             const oldValue = this.get(key);
@@ -105,21 +119,16 @@ export default class ObservableStorage extends EventTarget {
                 if (newValue == null) {
                     this.#buffer.delete(key);
                     const defaultValue = this.getDefault(key);
-                    values[key] = defaultValue;
-                    changes[key] = {oldValue, newValue: defaultValue};
+                    changes.push({key, oldValue, newValue: defaultValue});
                 } else {
                     this.#buffer.set(key, newValue);
-                    values[key] = newValue;
-                    changes[key] = {oldValue, newValue};
+                    changes.push({key, oldValue, newValue});
                 }
             }
         }
         // change event
-        if (Object.keys(values).length) {
-            const ev = new Event("change");
-            ev.data = values;
-            ev.changes = changes;
-            this.dispatchEvent(ev);
+        if (Object.keys(changes).length) {
+            this.#notifyChange(...changes);
         }
     }
 

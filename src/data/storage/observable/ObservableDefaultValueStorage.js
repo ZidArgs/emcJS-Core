@@ -10,6 +10,10 @@ export default class ObservableDefaultValueStorage extends ObservableStorage {
         this.#defaultValue = defaultValue;
     }
 
+    setDefault() {
+        throw new Error("can not change default value of ObservableDefaultValueStorage");
+    }
+
     getDefault() {
         return this.#defaultValue;
     }
