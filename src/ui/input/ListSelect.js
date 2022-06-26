@@ -51,8 +51,10 @@ export default class ListSelect extends CustomElementDelegating {
             let unchecked = false;
             if (event.value) {
                 const regEx = new SearchAnd(event.value);
-                if (this.style.height == "") {
-                    this.style.height = `${this.getBoundingClientRect().height}px`;
+                if (this.style.height == "" || this.style.width == "") {
+                    const rect = this.getBoundingClientRect();
+                    this.style.width = `${rect.width}px`;
+                    this.style.height = `${rect.height}px`;
                 }
                 for (const el of all) {
                     if (el.innerText.match(regEx)) {
@@ -76,6 +78,7 @@ export default class ListSelect extends CustomElementDelegating {
                         unchecked = true;
                     }
                 }
+                this.style.width = "";
                 this.style.height = "";
             }
             if (this.multiple) {
@@ -182,8 +185,12 @@ export default class ListSelect extends CustomElementDelegating {
         }
         /* --- */
         const all = this.querySelectorAll(`[value]`);
-        if (!this.value && !!all.length) {
-            this.value = all[0].value;
+        if (!this.value) {
+            if (this.multiple) {
+                this.value = [];
+            } else if (all.length > 0) {
+                this.value = all[0].value;
+            }
         }
         for (const el of all) {
             if (el) {

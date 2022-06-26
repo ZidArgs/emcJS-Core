@@ -128,6 +128,14 @@ export default class ContextMenu extends CustomElement {
             this.active = true;
         }
         /* --- */
+        this.#calculatePostition(posX, posY);
+
+        setTimeout(() => {
+            this.initFocus();
+        }, 0);
+    }
+
+    #calculatePostition(posX, posY) {
         const pRect = getLayerBounds(this);
         this.#top = posY;
         this.#left = posX;
@@ -150,9 +158,6 @@ export default class ContextMenu extends CustomElement {
         }
         menuEl.style.left = `${posX}px`;
         menuEl.style.top = `${posY}px`;
-        setTimeout(() => {
-            this.initFocus();
-        }, 0);
     }
 
     close() {
