@@ -6,11 +6,13 @@ export default class ObservableDefaultingStorage extends ObservableStorage {
     #defaults = new Map();
 
     setDefault(key, value) {
-        const oldValue = this.#defaults.get(key);
-        if (oldValue != value) {
+        const old = this.#defaults.get(key);
+        if (old != value) {
             this.#defaults.set(key, value);
             if (!super.has(key)) {
-                super.setDefault(key, oldValue, value);
+                const ev = new Event("change");
+                ev.data = {[key]: value};
+                this.dispatchEvent(ev);
             }
         }
     }
