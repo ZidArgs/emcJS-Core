@@ -1,4 +1,5 @@
 import CustomElementDelegating from "../element/CustomElementDelegating.js";
+import ListSelectionHelper from "../../util/helper/ListSelectionHelper.js";
 import SearchAnd from "../../util/search/SearchAnd.js";
 import "../header/SelectionHeader.js";
 import "./Option.js";
@@ -12,7 +13,8 @@ export default class ListSelect extends CustomElementDelegating {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.shadowRoot.getElementById("container").addEventListener("slotchange", () => {
+        const containerEl = this.shadowRoot.getElementById("container");
+        containerEl.addEventListener("slotchange", () => {
             const all = this.querySelectorAll(`[value]`);
             for (const el of all) {
                 if (el) {
@@ -94,81 +96,10 @@ export default class ListSelect extends CustomElementDelegating {
             }
         });
         /* --- */
-        this.addEventListener("blur", (event) => {
-            this.#cancelSelection();
-            event.stopPropagation();
-            return false;
-        });
-        const scrollContainer = this.shadowRoot.getElementById("scroll-container");
-        this.addEventListener("keyup", (event) => {
-            if (!this.readonly) {
-                if (event.key == "Escape") {
-                    this.#cancelSelection();
-                    event.stopPropagation();
-                    return false;
-                } else if (event.key == "Enter") {
-                    const marked = this.querySelector(".marked");
-                    if (marked != null) {
-                        this.#choose(marked.getAttribute("value"));
-                    }
-                    event.stopPropagation();
-                    return false;
-                } else if (event.key == "ArrowUp") {
-                    const marked = this.querySelector(".marked");
-                    if (marked != null) {
-                        let el = marked.previousElementSibling;
-                        while (el != null && el.style.display == "none") {
-                            el = el.previousElementSibling;
-                        }
-                        if (el != null) {
-                            marked.classList.remove("marked");
-                            el.classList.add("marked");
-                            const targetScroll = el.offsetTop - 20;
-                            if (scrollContainer.scrollTop > targetScroll) {
-                                scrollContainer.scrollTop = targetScroll;
-                            }
-                        }
-                    } else {
-                        let el = this.querySelector("[value]");
-                        while (el != null && el.style.display == "none") {
-                            el = el.nextElementSibling;
-                        }
-                        if (el != null) {
-                            el.classList.add("marked");
-                            scrollContainer.scrollTop = 0;
-                        }
-                    }
-                    event.stopPropagation();
-                    return false;
-                } else if (event.key == "ArrowDown") {
-                    const marked = this.querySelector(".marked");
-                    if (marked != null) {
-                        let el = marked.nextElementSibling;
-                        while (el != null && el.style.display == "none") {
-                            el = el.nextElementSibling;
-                        }
-                        if (el != null) {
-                            marked.classList.remove("marked");
-                            el.classList.add("marked");
-                            const targetScroll = el.offsetTop - scrollContainer.clientHeight + el.clientHeight + 20;
-                            if (scrollContainer.scrollTop < targetScroll) {
-                                scrollContainer.scrollTop = targetScroll;
-                            }
-                        }
-                    } else {
-                        let el = this.querySelector("[value]");
-                        while (el != null && el.style.display == "none") {
-                            el = el.nextElementSibling;
-                        }
-                        if (el != null) {
-                            el.classList.add("marked");
-                            scrollContainer.scrollTop = 0;
-                        }
-                    }
-                    event.stopPropagation();
-                    return false;
-                }
-            }
+        const scrollContainerEl = this.shadowRoot.getElementById("scroll-container");
+        const selectionHelper = new ListSelectionHelper(this, scrollContainerEl);
+        selectionHelper.addEventListener("choose", (event) => {
+            this.#choose(event.value);
         });
     }
 
@@ -350,13 +281,6 @@ export default class ListSelect extends CustomElementDelegating {
                     }
                 }
             }
-        }
-    }
-
-    #cancelSelection() {
-        const marked = this.querySelector(".marked");
-        if (marked != null) {
-            marked.classList.remove("marked");
         }
     }
 
