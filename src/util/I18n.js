@@ -183,7 +183,7 @@ class I18n extends EventTarget {
 
     get language() {
         const act = this.#active;
-        if (typeof act == "string" && act) {
+        if (typeof act == "string" && act && this.#languages.has(act)) {
             return act;
         }
         const def = this.#default;
