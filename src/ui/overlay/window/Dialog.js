@@ -3,6 +3,8 @@ import Window from "./Window.js";
 import TPL from "./Dialog.js.html" assert {type: "html"};
 import STYLE from "./Dialog.js.css" assert {type: "css"};
 
+// TODO all dialogs should have their own class extending the Dialog class
+
 export default class Dialog extends Window {
 
     constructor(options = {}) {
@@ -156,15 +158,16 @@ export default class Dialog extends Window {
             });
             // ---
             const inputEl = document.createElement("textarea");
-            inputEl.style.width = "100%";
-            inputEl.style.maxWidth = "100%";
-            inputEl.style.maxHeight = "300px";
+            inputEl.style.width = "700px";
+            inputEl.style.maxWidth = "80vw";
+            inputEl.style.height = "300px";
             inputEl.style.padding = "5px";
             inputEl.style.color = "black";
             inputEl.style.backgroundColor = "white";
             inputEl.style.border = "solid 1px black";
             inputEl.style.overflow = "scroll";
             inputEl.style.whiteSpace = "pre";
+            inputEl.style.resize = "none";
             inputEl.readOnly = true;
             inputEl.value = Array.isArray(errors) ? errors.join("\n") : errors.toString();
             dialogEl.append(inputEl);
