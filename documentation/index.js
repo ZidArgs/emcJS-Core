@@ -42,7 +42,7 @@ function addEntry(targetEl, src, {label, children}, hashPrefix = "") {
         hashPrefix = hashPrefix + "::"
     }
     const preSrc = `${SRC_PREFIX}${src}${SRC_SUFFIX}`;
-    const preName = `${hashPrefix}${label.replace(" ", "_")}`;
+    const preName = `${hashPrefix}${label.replace(/ /g, "_")}`;
     const hashID = `${NAME_PREFIX}${preName}`;
     const entryEl = document.createElement("div");
     const hashName = `#${hashID}`;

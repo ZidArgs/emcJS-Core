@@ -1,4 +1,13 @@
+/**
+ * Polyfill for adoptedStyleSheet on WebKit
+ * ---------------------------------------------------------
+ * Apple sure not liking adoptedStyleSheets, but we do
+ *
+ * @author ZidArgs
+ */
+
 /* eslint-disable no-prototype-builtins */
+
 function cloneCSSStyleSheet(styleSheet) {
     const res = document.createElement("style");
     for (const rule of styleSheet.cssRules) {
