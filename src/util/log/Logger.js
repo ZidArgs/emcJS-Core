@@ -213,6 +213,8 @@ export default class Logger {
 
 }
 
+Logger.addOutput(console);
+
 window.Logger = Logger;
 
 window.addEventListener("error", function(msg, url, line, col, error) {
