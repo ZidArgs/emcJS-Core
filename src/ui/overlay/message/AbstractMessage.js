@@ -25,6 +25,9 @@ export default class AbstractMessage extends CustomElement {
         if (!this.hasAttribute("slot")) {
             this.setAttribute("slot", this.constructor.defaultSlot);
         }
+        if (!this.hasAttribute("role")) {
+            this.setAttribute("role", "alert");
+        }
     }
 
     set type(value) {
@@ -33,6 +36,14 @@ export default class AbstractMessage extends CustomElement {
 
     get type() {
         return this.getAttribute("type");
+    }
+
+    set slot(value) {
+        this.setAttribute("slot", value);
+    }
+
+    get slot() {
+        return this.getAttribute("slot");
     }
 
     static get observedAttributes() {
@@ -50,19 +61,21 @@ export default class AbstractMessage extends CustomElement {
     }
 
     static show(params) {
-        if (typeof params == "object") {
-            if (!Array.isArray(params)) {
-                const {type = "", slot, ...p} = params;
-                const el = new this(p);
-                el.type = type;
-                el.slot = slot;
-                return el;
-            } else {
-                throw new TypeError("Array is not a valid value");
+        if (params != null) {
+            if (typeof params == "object") {
+                if (!Array.isArray(params)) {
+                    const {type = "", slot = this.defaultSlot, ...p} = params;
+                    const el = new this(p);
+                    el.type = type;
+                    el.slot = slot;
+                    return el;
+                } else {
+                    throw new TypeError("Array is not a valid value");
+                }
             }
-        } else {
-            return new this(params);
+            return new this({text: params});
         }
+        return new this();
     }
 
     static success(params) {

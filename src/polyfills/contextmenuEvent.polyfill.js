@@ -92,6 +92,7 @@ if (!isOnContextmenuSupported) {
     HTMLElement.prototype.addEventListener = function(type, listener, options) {
         if (type === EVENT_NAME && !REGISTERED.get(this)) {
             REGISTERED.set(this, true);
+            this.style.webkitTouchCallout = "none !important";
             ADD_EVENT_LISTENER.call(this, "touchstart", startTouch, {passive: true});
         }
         ADD_EVENT_LISTENER.call(this, type, listener, options);
