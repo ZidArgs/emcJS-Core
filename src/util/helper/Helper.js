@@ -2,6 +2,8 @@ import NumberHelper from "./NumberHelper.js";
 import StringHelper from "./StringHelper.js";
 import ArrayHelper from "./ArrayHelper.js";
 import ObjectHelper from "./ObjectHelper.js";
+import SetHelper from "./SetHelper.js";
+import MapHelper from "./MapHelper.js";
 
 const STRUCTURED_CLONE_CLASSES = [
     Boolean, Number, String, RegExp, Date, Blob, File, FileList,
@@ -37,6 +39,14 @@ class Helper {
 
     get Object() {
         return ObjectHelper;
+    }
+
+    get Set() {
+        return SetHelper;
+    }
+
+    get Map() {
+        return MapHelper;
     }
 
     instanceOfOne(obj, ...classList) {

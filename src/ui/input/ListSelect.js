@@ -1,5 +1,5 @@
 import CustomElementDelegating from "../element/CustomElementDelegating.js";
-import ListSelectionHelper from "../../util/helper/ListSelectionHelper.js";
+import ListSelectionHelper from "../../util/helper/ui/ListSelectionHelper.js";
 import SearchAnd from "../../util/search/SearchAnd.js";
 import "../header/SelectionHeader.js";
 import "./Option.js";
