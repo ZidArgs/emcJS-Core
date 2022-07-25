@@ -26,6 +26,9 @@ class SettingsBuilder {
                 case "color": {
                     window.addColorInput(category, ref, label, desc, option.default, option.visible, option.resettable);
                 } break;
+                case "hotkey": {
+                    window.addKeyInput(category, ref, label, desc, option.default, option.visible, option.resettable);
+                } break;
                 case "choice": {
                     window.addChoiceInput(category, ref, label, desc, option.default, option.visible, option.resettable, option.values);
                 } break;

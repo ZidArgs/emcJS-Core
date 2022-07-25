@@ -151,6 +151,14 @@ export default class SettingsWindow extends Window {
         }
     }
 
+    addKeyInput(category, ref, label, desc, def, visible, resettable) {
+        const tabEl = this.getTab(category);
+        if (tabEl != null) {
+            this.#storage.setDefault(ref, def);
+            tabEl.addKeyInput(this.#storage, ref, this.constructor.getLabel(label), desc, visible, resettable);
+        }
+    }
+
     addChoiceInput(category, ref, label, desc, def, visible, resettable, values) {
         const tabEl = this.getTab(category);
         if (tabEl != null) {

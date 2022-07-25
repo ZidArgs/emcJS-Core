@@ -9,12 +9,10 @@
     pointer-events: none;
 }
 :host(.inactive) {
-    filter: blur(2px);
-    pointer-events: none;
     z-index: 0;
+    background-color: transparent;
 }
 :host,
-.footer,
 .button {
     display: flex;
 }
@@ -30,6 +28,10 @@
     border-radius: 4px;
     resize: both;
     pointer-events: all;
+}
+:host(.inactive) #window {
+    pointer-events: none;
+    filter: blur(2px);
 }
 #header {
     display: flex;

@@ -301,6 +301,10 @@ export default class ListSelect extends CustomElementDelegating {
         }
     }
 
+    hasValue(value) {
+        return this.querySelector(`[value="${value}"]`) != null;
+    }
+
 }
 
 customElements.define("emc-listselect", ListSelect);

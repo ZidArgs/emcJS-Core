@@ -44,12 +44,29 @@ class HotkeyHandler {
     callHotkey(key, ctrlKey = false, altKey = false, shiftKey = false) {
         let called = false;
         for (const [name, value] of CONFIG) {
-            if (key == value.key && ctrlKey == value.ctrlKey && altKey == value.altKey && shiftKey == value.shiftKey) {
+            const {
+                key: hKey,
+                ctrlKey: hCtrlKey,
+                altKey: hAltKey,
+                shiftKey: hShiftKey
+            } = value;
+
+            if (
+                key.toLowerCase() === hKey?.toLowerCase() &&
+                ctrlKey === hCtrlKey &&
+                altKey === hAltKey &&
+                shiftKey === hShiftKey
+            ) {
                 ACTION.get(name)();
                 called = true;
             }
         }
         return called;
+    }
+
+    clear() {
+        ACTION.clear();
+        CONFIG.clear();
     }
 
 }

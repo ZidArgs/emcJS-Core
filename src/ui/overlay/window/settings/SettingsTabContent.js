@@ -2,10 +2,11 @@ import CustomElement from "../../../element/CustomElement.js";
 import LogicHandler from "../../../../util/logic/LogicHandler.js";
 import I18nLabel from "../../../i18n/I18nLabel.js";
 import "../../../i18n/I18nTextbox.js";
+import "../../../input/InputWrapper.js";
+import "../../../input/KeyInput.js";
 import "../../../input/ListSelect.js";
 import "../../../input/SearchSelect.js";
 import "../../../input/Option.js";
-import "../../../input/InputWrapper.js";
 import TPL from "./SettingsTabContent.js.html" assert {type: "html"};
 import STYLE from "./SettingsTabContent.js.css" assert {type: "css"};
 
@@ -258,6 +259,35 @@ export default class SettingsTabContent extends CustomElement {
         inputEl.id = `${this.id}_${ref}`;
         inputEl.className = "settings-input";
         inputEl.setAttribute("type", "color");
+        inputEl.value = storage.get(ref);
+        inputEl.dataset.ref = ref;
+        // events
+        storage.addEventListener("clear", (event) => {
+            inputEl.value = event.data[ref];
+        });
+        storage.addEventListener("load", (event) => {
+            inputEl.value = event.data[ref];
+        });
+        storage.addEventListener("change", (event) => {
+            if (event.data[ref] != null) {
+                inputEl.value = event.data[ref];
+            }
+        });
+        inputEl.addEventListener("change", () => {
+            storage.set(ref, inputEl.value);
+        });
+        // add element
+        const resetEl = resettable && createResetButton(storage, ref);
+        const labelEl = generateField(label, desc, inputEl, storage, visible, resetEl);
+        const containerEl = this.shadowRoot.getElementById("container");
+        containerEl.append(labelEl);
+    }
+
+    addKeyInput(storage, ref, label, desc, visible, resettable) {
+        const inputEl = document.createElement("emc-keyinput");
+        inputEl.id = `${this.id}_${ref}`;
+        inputEl.className = "settings-input";
+        inputEl.setAttribute("type", "input");
         inputEl.value = storage.get(ref);
         inputEl.dataset.ref = ref;
         // events
