@@ -11,6 +11,7 @@
 :host(.inactive) {
     filter: blur(2px);
     pointer-events: none;
+    z-index: 0;
 }
 :host,
 .footer,

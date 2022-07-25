@@ -22,6 +22,7 @@ export default class WindowLayer extends ChildlistMutationObserverMixin(CustomEl
     }
 
     disconnectedCallback() {
+        super.disconnectedCallback();
         this.innerHTML = "";
     }
 
@@ -29,7 +30,7 @@ export default class WindowLayer extends ChildlistMutationObserverMixin(CustomEl
         const current = WINDOW_STACK.last();
         if (current != null) {
             current.classList.add("inactive");
-            current.parentElement.classList.add("inactive");
+            current.parentElement?.classList.add("inactive");
         }
         // ---
         element.classList.remove("inactive");
@@ -46,7 +47,7 @@ export default class WindowLayer extends ChildlistMutationObserverMixin(CustomEl
             const current = WINDOW_STACK.last();
             if (current != null) {
                 current.classList.remove("inactive");
-                current.parentElement.classList.remove("inactive");
+                current.parentElement?.classList.remove("inactive");
             }
         }
     }

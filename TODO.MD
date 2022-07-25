@@ -1,3 +1,14 @@
+### 0 - implement
+
+- outsource each helper function into its own js-file
+    - better dependence onto each other
+    - sort by folder
+    - index helper file exporting all helper functions at once (?)
+
+- include IndexedSet/IndexedMap into SetHelper/MapHelper
+
+### 1 - test
+
 - test custom build-in elements
     - https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry/define#customized_built-in_element
 
@@ -10,22 +21,6 @@
         const inputEl = document.createElement("input");
         inputEl.setAttribute("is", "my-input");
     ```
-
-- ease method for using MediaDevices
-    - https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia
-    - https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackSupportedConstraints
-
-- REST interface
-    - at least GET/POST
-        - better also PATCH/DELETE
-    - predefine url, leave placeholders
-    - fill placeholders on send request
-
-- Types (self casting types)
-    - integer
-    - float
-    - date
-    - ...
 
 - Toast, PopOver, etc.
     - create one interface for all
@@ -40,6 +35,24 @@
     - create multiple layer, set target element for interface
         - body is not ideal for everything
 
+- Types (self casting types)
+    - integer
+    - float
+    - date
+    - ...
+
+### 2 - refine
+
+- ease method for using MediaDevices
+    - https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia
+    - https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackSupportedConstraints
+
+- REST interface
+    - at least GET/POST
+        - better also PATCH/DELETE
+    - predefine url, leave placeholders
+    - fill placeholders on send request
+
 - search config builder
 ```JSON
 {
@@ -49,7 +62,7 @@
         "lastname",
         "firstname"
     ],
-    "filter": {
+    "filter": { // better to use logic
         "index": {
             "null": false,
             "gt": 20
@@ -75,6 +88,8 @@ count=50
 
 ?query=pet&columns=index,lastname,firstname&filter=index:notnull,index:gt(20),firstname:contains(den)&sort=lastname:asc,firstname:asc&start=0&count=50
 ```
+
+### 3 - proposed
 
 - string templating
     - https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Template_literals#tagged_template-strings

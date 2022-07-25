@@ -9,5 +9,8 @@
                 "label": "Full Observable"
             }
         }
+    },
+    "mutation": {
+        "label": "Mutation Observer"
     }
 }
