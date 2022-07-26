@@ -26,7 +26,15 @@ export default class KeyInput extends CustomElement {
                 altKey,
                 key
             } = event;
-            if (BLACKLIST.includes(key)) {
+            if (key === "Escape") {
+                this.value = "";
+                const ev = new Event("change");
+                ev.ctrlKey = false;
+                ev.shiftKey = false;
+                ev.altKey = false;
+                ev.key = "";
+                this.dispatchEvent(ev);
+            } else if (BLACKLIST.includes(key)) {
                 this.value = KeyInput.stringifyKeys({ctrlKey, shiftKey, altKey});
             } else {
                 this.value = KeyInput.stringifyKeys({ctrlKey, shiftKey, altKey, key});
