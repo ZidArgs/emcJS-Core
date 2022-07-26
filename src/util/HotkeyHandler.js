@@ -6,7 +6,8 @@ class HotkeyHandler {
 
     constructor() {
         window.addEventListener("keydown", (event) => {
-            if (this.callHotkey(event.key, event.ctrlKey, event.altKey, event.shiftKey)) {
+            const {key, ctrlKey, shiftKey, altKey, metaKey} = event;
+            if (this.callHotkey(key, ctrlKey, shiftKey, altKey, metaKey)) {
                 event.preventDefault();
                 event.stopPropagation();
                 return false;
@@ -20,8 +21,9 @@ class HotkeyHandler {
             if (typeof config == "object" && !Array.isArray(config)) {
                 this.#config.set(name, {
                     ctrlKey: !!config.ctrlKey,
-                    altKey: !!config.altKey,
                     shiftKey: !!config.shiftKey,
+                    altKey: !!config.altKey,
+                    metaKey: !!config.metaKey,
                     key: (config.key || "").toString()
                 });
             }
@@ -37,8 +39,9 @@ class HotkeyHandler {
             if (typeof config == "object" && !Array.isArray(config)) {
                 this.#config.set(name, {
                     ctrlKey: !!config.ctrlKey,
-                    altKey: !!config.altKey,
                     shiftKey: !!config.shiftKey,
+                    altKey: !!config.altKey,
+                    metaKey: !!config.metaKey,
                     key: (config.key || "").toString()
                 });
             } else {
@@ -51,21 +54,23 @@ class HotkeyHandler {
         return Object.assign({}, this.#config.get(name));
     }
 
-    callHotkey(key, ctrlKey = false, altKey = false, shiftKey = false) {
+    callHotkey(key, ctrlKey = false, shiftKey = false, altKey = false, metaKey = false) {
         let called = false;
         for (const [name, value] of this.#config) {
             const {
                 key: hKey,
                 ctrlKey: hCtrlKey,
+                shiftKey: hShiftKey,
                 altKey: hAltKey,
-                shiftKey: hShiftKey
+                metaKey: hMetaKey
             } = value;
 
             if (
                 key.toLowerCase() === hKey?.toLowerCase() &&
                 ctrlKey === hCtrlKey &&
+                shiftKey === hShiftKey &&
                 altKey === hAltKey &&
-                shiftKey === hShiftKey
+                metaKey === hMetaKey
             ) {
                 this.#action.get(name)();
                 called = true;

@@ -1,4 +1,4 @@
-import CustomElement from "../element/CustomElement.js";
+import CustomElementDelegating from "../element/CustomElementDelegating.js";
 import {
     toStartUppercaseEndLowercase
 } from "../../util/helper/string/caseConversion.js";
@@ -8,61 +8,67 @@ import STYLE from "./KeyInput.js.css" assert {type: "css"};
 const BLACKLIST = [
     "Control",
     "Shift",
-    "Alt"
+    "Alt",
+    "Meta"
 ];
-const VALUE_PARSE = /(ctrl\+)?(shift\+)?(alt\+)?(.+)?/i;
+const VALUE_PARSE = /(ctrl\+)?(shift\+)?(alt\+)?(meta\+)?(.+)?/i;
 
-export default class KeyInput extends CustomElement {
+export default class KeyInput extends CustomElementDelegating {
 
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.addEventListener("keydown", function(event) {
-            const {
-                ctrlKey,
-                shiftKey,
-                altKey,
-                key
-            } = event;
-            if (key === "Escape") {
-                this.value = "";
-                const ev = new Event("change");
-                ev.ctrlKey = false;
-                ev.shiftKey = false;
-                ev.altKey = false;
-                ev.key = "";
-                this.dispatchEvent(ev);
-            } else if (BLACKLIST.includes(key)) {
-                this.value = KeyInput.stringifyKeys({ctrlKey, shiftKey, altKey});
-            } else {
-                this.value = KeyInput.stringifyKeys({ctrlKey, shiftKey, altKey, key});
-                const ev = new Event("change");
-                ev.ctrlKey = ctrlKey;
-                ev.shiftKey = shiftKey;
-                ev.altKey = altKey;
-                ev.key = key;
-                this.dispatchEvent(ev);
+        this.addEventListener("keydown", (event) => {
+            const {key, ctrlKey, shiftKey, altKey, metaKey} = event;
+            if (key !== "Tab") {
+                if (key === "Escape") {
+                    this.value = "";
+                    const ev = new Event("change");
+                    ev.ctrlKey = false;
+                    ev.shiftKey = false;
+                    ev.altKey = false;
+                    ev.metaKey = false;
+                    ev.key = "";
+                    this.dispatchEvent(ev);
+                } else if (BLACKLIST.includes(key)) {
+                    this.#display(KeyInput.stringifyKeys({ctrlKey, shiftKey, altKey, metaKey}));
+                } else {
+                    this.value = KeyInput.stringifyKeys({ctrlKey, shiftKey, altKey, metaKey, key});
+                    const ev = new Event("change");
+                    ev.ctrlKey = ctrlKey;
+                    ev.shiftKey = shiftKey;
+                    ev.altKey = altKey;
+                    ev.metaKey = metaKey;
+                    ev.key = key;
+                    this.dispatchEvent(ev);
+                }
+                event.preventDefault();
+                event.stopPropagation();
+                return false;
             }
-            event.preventDefault();
-            event.stopPropagation();
-            return false;
         });
-        this.addEventListener("keyup", function(event) {
-            const value = KeyInput.parseKeys(this.value);
-            if (value.key == null) {
-                const {
-                    ctrlKey,
-                    shiftKey,
-                    altKey
-                } = event;
-                this.value = KeyInput.stringifyKeys({ctrlKey, shiftKey, altKey});
+        this.addEventListener("keyup", (event) => {
+            if (event.key !== "Tab") {
+                const value = KeyInput.parseKeys(this.value);
+                if (value.key == null) {
+                    const {ctrlKey, shiftKey, altKey, metaKey} = event;
+                    this.#display(KeyInput.stringifyKeys({ctrlKey, shiftKey, altKey, metaKey}));
+                }
+                event.preventDefault();
+                event.stopPropagation();
+                return false;
             }
-            event.preventDefault();
-            event.stopPropagation();
-            return false;
         });
+        this.addEventListener("blur", () => {
+            this.#display(this.value);
+        });
+    }
+
+    #display(value) {
+        const displayEl = this.shadowRoot.getElementById("display");
+        displayEl.value = value.split("+").map((s) => toStartUppercaseEndLowercase(s)).join(" + ");
     }
 
     set value(val) {
@@ -81,8 +87,7 @@ export default class KeyInput extends CustomElement {
         if (oldValue != newValue) {
             switch (name) {
                 case "value": {
-                    const displayEl = this.shadowRoot.getElementById("display");
-                    displayEl.value = newValue.split("+").map((s) => toStartUppercaseEndLowercase(s)).join(" + ")
+                    this.#display(newValue);
                 } break;
             }
         }
@@ -94,11 +99,12 @@ export default class KeyInput extends CustomElement {
             ctrlKey: res[1] != null,
             shiftKey: res[2] != null,
             altKey: res[3] != null,
-            key: res[4]
+            metaKey: res[4] != null,
+            key: res[5] === "Space" ? " " : res[5]
         };
     }
 
-    static stringifyKeys({ctrlKey, shiftKey, altKey, key} = {}) {
+    static stringifyKeys({ctrlKey, shiftKey, altKey, metaKey, key} = {}) {
         let res = "";
         if (ctrlKey) {
             res += "ctrl+";
@@ -109,8 +115,11 @@ export default class KeyInput extends CustomElement {
         if (altKey) {
             res += "alt+";
         }
+        if (metaKey) {
+            res += "meta+";
+        }
         if (key != null) {
-            res += key;
+            res += key === " " ? "Space" : key;
         }
         return res;
     }
