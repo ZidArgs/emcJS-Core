@@ -9,10 +9,10 @@ async function getWorker() {
         const [SharedWorkerRegistry] = await Import.module("/emcJS/worker/SharedWorkerRegistry.js");
         if (SharedWorkerRegistry.supports("module")) {
             const workerPath = path.getAbsolute("./ThreadDataSync.w.js");
-            return SharedWorkerRegistry.register("SavestateHandler", workerPath, "module");
+            return SharedWorkerRegistry.register("ThreadDataSync", workerPath, "module");
         }
         const workerPath = path.getAbsolute("./ThreadDataSync.leg_w.js");
-        return SharedWorkerRegistry.register("SavestateHandler", workerPath);
+        return SharedWorkerRegistry.register("ThreadDataSync", workerPath);
     }
 }
 

@@ -6,15 +6,19 @@ const PortHandler = (function() {
         constructor() {
             super();
             self.addEventListener("connect", (event) => {
-                const port = event.ports[0];
-                PORTS.add(port);
-                port.addEventListener("message", (event) => {
-                    const ev = new Event("message");
+                for (const port of event.ports) {
+                    PORTS.add(port);
+                    port.addEventListener("message", (event) => {
+                        const ev = new Event("message");
+                        ev.port = port;
+                        ev.data = event.data;
+                        this.dispatchEvent(ev);
+                    });
+                    const ev = new Event("connect");
                     ev.port = port;
-                    ev.data = event.data;
                     this.dispatchEvent(ev);
-                });
-                port.start();
+                    port.start();
+                }
             });
             self.addEventListener("disconnect", (event) => {
                 PORTS.remove(event.ports[0]);
@@ -26,7 +30,7 @@ const PortHandler = (function() {
             });
         }
 
-        sendOne(port, msg) {
+        sendOne(msg, port) {
             if (port instanceof MessagePort) {
                 port.postMessage(msg);
             }
@@ -40,7 +44,7 @@ const PortHandler = (function() {
             self.postMessage?.(msg);
         }
 
-        sendAllButOne(port, msg) {
+        sendAllButOne(msg, port) {
             if (port instanceof MessagePort) {
                 for (const p of PORTS) {
                     if (p == port) {
@@ -49,6 +53,7 @@ const PortHandler = (function() {
                     p.postMessage(msg);
                 }
             }
+            self.postMessage?.(msg);
         }
 
     }

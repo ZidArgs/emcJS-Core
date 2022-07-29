@@ -2,5 +2,5 @@ import PortHandler from "../../worker/modules/PortHandler.js";
 
 PortHandler.addEventListener("message", (event) => {
     const port = event.port;
-    PortHandler.sendAllButOne(port, event.data);
+    PortHandler.sendAllButOne(event.data, port);
 });
