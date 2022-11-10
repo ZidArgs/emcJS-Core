@@ -1,8 +1,8 @@
 import NumberHelper from "../../util/helper/NumberHelper.js";
-import AnyState from "./AnyState.js";
+import AnyState from "./AnyValue.js";
 
 function parseNumber(value) {
-    const result = NumberHelper.parseInteger(value);
+    const result = parseFloat(value);
     if (isNaN(result)) {
         console.warn(`value "${value}" is not a number`);
         return;
@@ -11,10 +11,10 @@ function parseNumber(value) {
 }
 
 /**
- * A state containing an integer value.
+ * A state containing a number value.
  * If the value gets updated, it fires a change event.
  */
-export default class IntegerState extends AnyState {
+export default class NumberState extends AnyState {
 
     #min = 0;
 
@@ -22,9 +22,9 @@ export default class IntegerState extends AnyState {
 
     constructor(value, min, max) {
         value = parseNumber(value) ?? 0;
-        min = parseNumber(min) ?? Number.MIN_SAFE_INTEGER;
-        max = parseNumber(max) ?? Number.MAX_SAFE_INTEGER;
-        super(NumberHelper.delimitInteger(0, min, max));
+        min = parseNumber(min) ?? Number.MIN_VALUE;
+        max = parseNumber(max) ?? Number.MAX_VALUE;
+        super(NumberHelper.delimit(value, min, max));
         this.#min = min;
         this.#max = max;
     }
@@ -66,7 +66,7 @@ export default class IntegerState extends AnyState {
     set value(value) {
         value = parseNumber(value);
         if (value != null) {
-            super.value = NumberHelper.delimitInteger(value, this.#min, this.#max);
+            super.value = NumberHelper.delimit(value, this.#min, this.#max);
         }
     }
 

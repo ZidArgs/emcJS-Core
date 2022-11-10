@@ -1,4 +1,4 @@
-import AnyState from "./AnyState.js";
+import AnyState from "./AnyValue.js";
 
 /**
  * A state containing a boolean value.
