@@ -5,6 +5,14 @@ export default class ObservableDefaultingStorage extends ObservableStorage {
 
     #defaults = new Map();
 
+    clone() {
+        const instance = super.clone();
+        for (const [key, value] of this.#defaults) {
+            instance.#defaults.set(key, value);
+        }
+        return instance;
+    }
+
     setDefault(key, value) {
         const old = this.#defaults.get(key);
         if (old != value) {

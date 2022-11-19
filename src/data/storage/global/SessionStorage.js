@@ -1,3 +1,5 @@
+// TODO sync data to other page instances
+
 class SessionStorage {
 
     set(key, value) {

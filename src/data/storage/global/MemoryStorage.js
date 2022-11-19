@@ -1,3 +1,5 @@
+// TODO sync data to other page instances
+
 const STORAGE = new Map();
 
 class MemoryStorage {

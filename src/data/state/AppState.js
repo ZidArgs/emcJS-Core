@@ -4,6 +4,8 @@ export default class AppState extends EventTarget {
 
     #storageChangeHandler = new Map();
 
+    #eventNames = new Map();
+
     #meta = new Map();
 
     #registeredStorages = new Map();
@@ -17,6 +19,30 @@ export default class AppState extends EventTarget {
             const dataStorage = this.getStorage(category);
             dataStorage.deserialize(data[category]);
         }
+    }
+
+    clone() {
+        const instance = new AppState();
+        for (const [key, value] of this.#meta) {
+            instance.#meta.set(key, value);
+        }
+        for (const [category, dataStorage] of this.#registeredStorages) {
+            const clonedStorage = dataStorage.clone();
+            const eventName = this.#eventNames.get(category);
+            const handler = instance.#getChangeHandler(category);
+            // ---
+            dataStorage.addEventListener(eventName, handler);
+            instance.#eventNames.set(category, eventName);
+            instance.#registeredStorages.set(category, clonedStorage);
+        }
+        for (const [category, dataStorage] of this.#requestedStorages) {
+            const clonedStorage = dataStorage.clone();
+            const handler = instance.#getChangeHandler(category);
+            // ---
+            dataStorage.addEventListener("change", handler);
+            instance.#requestedStorages.set(category, clonedStorage);
+        }
+        return instance;
     }
 
     purge() {
@@ -142,6 +168,7 @@ export default class AppState extends EventTarget {
             this.#requestedStorages.delete(storageCategory);
         }
         this.#registeredStorages.set(storageCategory, dataStorage);
+        this.#eventNames.set(storageCategory, eventName);
         dataStorage.addEventListener(eventName, handler);
     }
 

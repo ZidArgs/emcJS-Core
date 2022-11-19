@@ -1,6 +1,10 @@
 import IDBStorage from "../IDBStorage.js";
 import ObservableStorage from "./ObservableStorage.js";
 
+// TODO sync data to other page instances
+
+const INSTANCES = new Map();
+
 export default class ObservableIDBProxyStorage extends ObservableStorage {
 
     #storage;
@@ -11,8 +15,16 @@ export default class ObservableIDBProxyStorage extends ObservableStorage {
     }
 
     constructor(name) {
+        if (INSTANCES.has(name)) {
+            return INSTANCES.get(name);
+        }
         super();
         this.#createStorage(name);
+        INSTANCES.set(name, this);
+    }
+
+    clone() {
+        return this;
     }
 
     async #createStorage(name) {

@@ -1,3 +1,5 @@
+// TODO sync data to other page instances
+
 class LocalStorage {
 
     set(key, value) {
