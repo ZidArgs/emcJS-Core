@@ -92,6 +92,12 @@ class Helper {
         if (Object.is(a, b)) {
             return true;
         }
+        if (typeof a.equals === "function") {
+            return a.equals(b);
+        }
+        if (typeof b.equals === "function") {
+            return b.equals(a);
+        }
         if (typeof a != "object") {
             return false;
         }

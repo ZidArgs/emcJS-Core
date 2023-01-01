@@ -13,6 +13,10 @@ export default class Enum {
         return this.#value;
     }
 
+    equals(inst) {
+        return this === inst || this.value === inst;
+    }
+
     valueOf() {
         return this.#value;
     }

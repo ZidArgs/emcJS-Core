@@ -33,7 +33,8 @@ export function immute(data) {
             const proxy = new Proxy(res, HANDLER);
             Object.defineProperty(res, TYPE_TAG, {value: true});
             return proxy;
-        } else {
+        }
+        if (data.constructor == Object) {
             const res = {};
             for (const key in data) {
                 const value = data[key];
