@@ -30,7 +30,12 @@ class FileIndex {
         FILES.add(normalizePath(filePath));
     }
 
-    finish(dest = "/", index = "index.json", usedImports = null, ignoreImportPaths = null) {
+    finish(dest = "/", index = "index.json", config = {}) {
+        const {
+            usedImports = null,
+            ignoreImportPaths = null,
+            deleteUnused = true
+        } = config;
         const indexPath = path.resolve(dest, index);
         const indexPathNormal = normalizePath(indexPath);
         console.log(`index file: ${indexPathNormal}`);
@@ -41,25 +46,26 @@ class FileIndex {
         });
 
         const removedImports = [];
-        if (usedImports != null) {
-            console.log("removing unused imports");
-            for (const fName of FILES) {
-                if (fName.endsWith(".js") && !usedImports.has(fName)) {
-                    if (ignoreImportPaths == null || !ignoreImportPaths.test(fName)) {
-                        console.log(`remove import: ${fName}`);
-                        FILES.delete(fName);
-                        removedImports.push(fName);
+        if (deleteUnused) {
+            if (usedImports != null) {
+                console.log("removing unused imports");
+                for (const fName of FILES) {
+                    if (fName.endsWith(".js") && !usedImports.has(fName)) {
+                        if (ignoreImportPaths == null || !ignoreImportPaths.test(fName)) {
+                            console.log(`remove import: ${fName}`);
+                            FILES.delete(fName);
+                            removedImports.push(fName);
+                        }
                     }
                 }
             }
-        }
-
-        console.log("deleting unused files");
-        for (const i in destFiles) {
-            const fName = destFiles[i];
-            if (fName != indexPathNormal && !FILES.has(fName)) {
-                console.log(`delete file: ${fName}`);
-                del.sync(fName);
+            console.log("deleting unused files");
+            for (const i in destFiles) {
+                const fName = destFiles[i];
+                if (fName != indexPathNormal && !FILES.has(fName)) {
+                    console.log(`delete file: ${fName}`);
+                    del.sync(fName);
+                }
             }
         }
 
