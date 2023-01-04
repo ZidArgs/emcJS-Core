@@ -1,4 +1,7 @@
 {
+    "form": {
+        "label": "Form"
+    },
     "input": {
         "label": "Input"
     },

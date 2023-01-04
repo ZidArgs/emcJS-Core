@@ -1,0 +1,30 @@
+<html>
+
+<head>
+    <title>emcJS sandbox</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Test for emcJS components">
+    <meta name="robots" content="none">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <script type="module">
+        import "/emcJS/ui/form/FormContainer.js";
+        import "/emcJS/ui/form/components/input/StringInput.js";
+        import i18n from "/emcJS/util/I18n.js";
+
+        i18n.setTranslation("en", {
+            "test.desc": "this is a test"
+        })
+        i18n.language = "en"
+    </script>
+</head>
+
+<body style="display: flex; flex-direction: column;">
+    <emc-form>
+        <emc-input-string key="test.0" value="test" label="test"></emc-input-string>
+        <emc-input-string key="test.1" value="test2" label="test2" resettable="false"></emc-input-string>
+        <emc-input-string key="test.2" value="test3" label="test3" desc="test.desc" resettable></emc-input-string>
+    </emc-form>
+</body>
+
+</html>

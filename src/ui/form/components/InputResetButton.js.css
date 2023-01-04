@@ -1,0 +1,25 @@
+:host {
+    color: var(--input-text-color, #000000);
+    background-color: var(--input-button-color, #cccccc);
+    border: solid 1px var(--input-border-color, #000000);
+}
+#reset {
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    appearance: none;
+    border: none;
+    border-radius: 2px;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+#reset:focus {
+    box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
+    outline: none;
+    z-index: 1;
+}
+#reset:focus:not(:focus-visible) {
+    box-shadow: none;
+    outline: none;
+}
