@@ -1,5 +1,5 @@
 import CustomElement from "../element/CustomElement.js";
-import FormField from "./components/FormField.js";
+import FormField from "./field/FormField.js";
 import TPL from "./FormContainer.js.html" assert {type: "html"};
 // import STYLE from "./FormContainer.js.css" assert {type: "css"};
 

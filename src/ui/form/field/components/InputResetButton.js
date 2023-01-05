@@ -1,4 +1,4 @@
-import CustomElement from "../../element/CustomElement.js";
+import CustomElement from "../../../element/CustomElement.js";
 import TPL from "./InputResetButton.js.html" assert {type: "html"};
 import STYLE from "./InputResetButton.js.css" assert {type: "css"};
 

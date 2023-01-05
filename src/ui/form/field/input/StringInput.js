@@ -1,5 +1,9 @@
 import FormField from "../FormField.js";
-import "../InputResetButton.js";
+import "../components/InputResetButton.js";
+import {
+    debounce
+} from "../../../../util/Debouncer.js";
+import FormFieldRegistry from "../../../../data/registry/FormFieldRegistry.js";
 import TPL from "./StringInput.js.html" assert {type: "html"};
 import STYLE from "./StringInput.js.css" assert {type: "css"};
 
@@ -13,8 +17,8 @@ export default class StringInput extends FormField {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.#inputEl.addEventListener("change", () => {
-            this.value = this.#inputEl.value;
+        this.#inputEl.addEventListener("input", () => {
+            this.#onInput();
         });
         const resetEl = this.shadowRoot.getElementById("reset");
         resetEl.addEventListener("click", () => {
@@ -23,6 +27,10 @@ export default class StringInput extends FormField {
             this.dispatchEvent(event);
         });
     }
+
+    #onInput = debounce(() => {
+        this.value = this.#inputEl.value;
+    }, 300);
 
     set resettable(value) {
         this.setAttribute("resettable", value);
@@ -44,9 +52,14 @@ export default class StringInput extends FormField {
     }
 
     revalidate() {
-        return this.#inputEl.value !== "";
+        if (this.#inputEl.value == "") {
+            return "required";
+        }
+        return "";
     }
 
 }
 
+FormFieldRegistry.register("string", StringInput);
+FormFieldRegistry.setDefault(StringInput);
 customElements.define("emc-input-string", StringInput);

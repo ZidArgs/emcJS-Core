@@ -39,6 +39,9 @@ export default class ClassRegistry {
                 return new TypeClass(...params);
             }
         }
+        if (this.#defaultClass == null) {
+            throw new Error(`class ${ref} not found and no default class set`);
+        }
         return new this.#defaultClass(...params);
     }
 

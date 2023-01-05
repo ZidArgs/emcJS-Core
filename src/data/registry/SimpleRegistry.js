@@ -1,4 +1,4 @@
-export default class Registry {
+export default class SimpleRegistry {
 
     #data = new Map();
 

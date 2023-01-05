@@ -46,10 +46,25 @@
     border: solid 1px var(--input-border-color, #000000);
     border-radius: 2px;
     font-size: 1rem;
-    margin-top: 5px;
 }
 #text {
     margin-left: 5px;
+    margin-bottom: 5px;
+}
+#text:empty {
+    display: none;
+}
+#error {
+    display: block;
+    flex-shrink: 0;
+    padding: 0px 5px;
+    margin-top: 5px;
+    font-size: 0.9em;
+    font-style: italic;
+    color: #db0000;
+}
+#error:empty {
+    display: none;
 }
 #description {
     display: block;
@@ -58,7 +73,7 @@
     margin-top: 5px;
     font-size: 0.9em;
     font-style: italic;
-    opacity: 0.6;
+    color: #000000;
 }
 #description:empty {
     display: none;

@@ -6,7 +6,7 @@ import STYLE from "./FormField.js.css" assert {type: "css"};
 
 export default class FormField extends CustomElement {
 
-    #isValid = true;
+    #errorText = "";
 
     constructor() {
         super();
@@ -63,13 +63,15 @@ export default class FormField extends CustomElement {
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
-                    this.#isValid = !!this.revalidate();
+                    this.#errorText = this.revalidate();
+                    this.shadowRoot.getElementById("error").innerText = this.#errorText;
                     /* --- */
                     const event = new Event("change");
                     event.oldValue = oldValue;
                     event.newValue = newValue;
-                    event.value = newValue;
-                    event.valid = this.#isValid;
+                    event.value = this.value;
+                    event.valid = this.isValid();
+                    event.error = this.getError();
                     event.key = this.key;
                     this.dispatchEvent(event);
                 }
@@ -93,11 +95,15 @@ export default class FormField extends CustomElement {
     }
 
     revalidate() {
-        return true;
+        return "";
     }
 
     isValid() {
-        return this.#isValid;
+        return this.#errorText === "";
+    }
+
+    getError() {
+        return this.isValid() ? null : this.#errorText;
     }
 
 }

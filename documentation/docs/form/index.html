@@ -9,7 +9,8 @@
     <meta name="theme-color" content="#000000">
     <script type="module">
         import "/emcJS/ui/form/FormContainer.js";
-        import "/emcJS/ui/form/components/input/StringInput.js";
+        import "/emcJS/ui/form/field/input/StringInput.js";
+        import "/emcJS/ui/form/field/input/NumberInput.js";
         import i18n from "/emcJS/util/I18n.js";
 
         i18n.setTranslation("en", {
@@ -21,9 +22,11 @@
 
 <body style="display: flex; flex-direction: column;">
     <emc-form>
-        <emc-input-string key="test.0" value="test" label="test"></emc-input-string>
-        <emc-input-string key="test.1" value="test2" label="test2" resettable="false"></emc-input-string>
-        <emc-input-string key="test.2" value="test3" label="test3" desc="test.desc" resettable></emc-input-string>
+        <emc-input-string key="test.0" value="test" label="text no resettable" desc="test.desc"></emc-input-string>
+        <emc-input-string key="test.1" value="test2" label="text resettable = false"
+            resettable="false"></emc-input-string>
+        <emc-input-string key="test.2" value="test3" label="text resettable" resettable></emc-input-string>
+        <emc-input-number key="test.3" value="42" label="number"></emc-input-number>
     </emc-form>
 </body>
 
