@@ -1,13 +1,15 @@
-import FormField from "../FormField.js";
+import FormInput from "../FormInput.js";
 import "../components/InputResetButton.js";
 import {
     debounce
 } from "../../../../util/Debouncer.js";
-import FormFieldRegistry from "../../../../data/registry/FormFieldRegistry.js";
+import FormInputRegistry from "../../../../data/registry/FormInputRegistry.js";
 import TPL from "./NumberInput.js.html" assert {type: "html"};
 import STYLE from "./NumberInput.js.css" assert {type: "css"};
 
-export default class NumberInput extends FormField {
+// FIXME deletes contents on "." input (maybe on "," if "." is decimal seperator)
+
+export default class NumberInput extends FormInput {
 
     #inputEl;
 
@@ -19,12 +21,6 @@ export default class NumberInput extends FormField {
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#inputEl.addEventListener("input", () => {
             this.#onInput();
-        });
-        const resetEl = this.shadowRoot.getElementById("reset");
-        resetEl.addEventListener("click", () => {
-            const event = new Event("reset");
-            event.key = this.key;
-            this.dispatchEvent(event);
         });
     }
 
@@ -41,14 +37,6 @@ export default class NumberInput extends FormField {
         return !isNaN(value) ? value : undefined;
     }
 
-    set resettable(value) {
-        this.setAttribute("resettable", value);
-    }
-
-    get resettable() {
-        return this.getAttribute("resettable");
-    }
-
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
             case "value":
@@ -62,12 +50,19 @@ export default class NumberInput extends FormField {
 
     revalidate() {
         if (this.#inputEl.value == "") {
+            this.#inputEl.classList.add("invalid");
             return "required";
         }
-        return "";
+        const error = super.revalidate();
+        if (error != "") {
+            this.#inputEl.classList.add("invalid");
+        } else {
+            this.#inputEl.classList.remove("invalid");
+        }
+        return error;
     }
 
 }
 
-FormFieldRegistry.register("number", NumberInput);
+FormInputRegistry.register("number", NumberInput);
 customElements.define("emc-input-number", NumberInput);

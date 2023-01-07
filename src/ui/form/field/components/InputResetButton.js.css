@@ -1,25 +1,33 @@
 :host {
-    color: var(--input-text-color, #000000);
-    background-color: var(--input-button-color, #cccccc);
-    border: solid 1px var(--input-border-color, #000000);
+    border: solid 2px var(--input-border-color, #000000);
+    border-radius: 4px;
+    overflow: hidden;
+}
+:host(:focus) {
+    box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
+    outline: none;
+    z-index: 1;
 }
 #reset {
     align-items: center;
     justify-content: center;
     height: 100%;
     width: 100%;
+    padding: 0px;
+    margin: 0px;
     appearance: none;
+    color: var(--input-text-color, #000000);
+    background-color: var(--input-button-color, #cccccc);
     border: none;
-    border-radius: 2px;
     font-size: 1.5rem;
     font-weight: bold;
+    cursor: pointer;
+}
+#reset:hover {
+    color: var(--input-back-color, #ffffff);
+    background-color: var(--input-text-color, #000000);
 }
 #reset:focus {
-    box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
-    outline: none;
-    z-index: 1;
-}
-#reset:focus:not(:focus-visible) {
     box-shadow: none;
     outline: none;
 }

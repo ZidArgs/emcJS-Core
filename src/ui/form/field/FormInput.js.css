@@ -1,0 +1,43 @@
+:host {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-start;
+    flex-direction: column;
+    width: 100%;
+    min-width: 100px;
+    box-sizing: border-box;
+}
+* {
+    position: relative;
+    box-sizing: border-box;
+    margin: 0px;
+    font-size: 1rem;
+}
+.container {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+#field {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-shrink: 0;
+    flex-grow: 1;
+    color: var(--input-text-color, #000000);
+    background-color: var(--input-back-color, #ffffff);
+    font-size: 1rem;
+}
+#reset {
+    display: none;
+    width: 2rem;
+    height: 2rem;
+    margin-left: 5px;
+}
+:host([resettable]:not([resettable="false"])) #reset {
+    display: block;
+}
+input.invalid {
+    background-color: var(--input-invalid-back-color, #ffcccc);
+}

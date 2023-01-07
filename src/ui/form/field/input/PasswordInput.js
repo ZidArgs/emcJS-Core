@@ -1,13 +1,15 @@
 import FormInput from "../FormInput.js";
 import "../components/InputResetButton.js";
+import "../components/ToggleShowButton.js";
 import {
     debounce
 } from "../../../../util/Debouncer.js";
 import FormInputRegistry from "../../../../data/registry/FormInputRegistry.js";
-import TPL from "./StringInput.js.html" assert {type: "html"};
-import STYLE from "./StringInput.js.css" assert {type: "css"};
+import "../../../i18n/I18nTooltip.js";
+import TPL from "./PasswordInput.js.html" assert {type: "html"};
+import STYLE from "./PasswordInput.js.css" assert {type: "css"};
 
-export default class StringInput extends FormInput {
+export default class PasswordInput extends FormInput {
 
     #inputEl;
 
@@ -19,6 +21,11 @@ export default class StringInput extends FormInput {
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#inputEl.addEventListener("input", () => {
             this.#onInput();
+        });
+        const showEl = this.shadowRoot.getElementById("show");
+        this.#inputEl.type = showEl.checked ? "text" : "password";
+        showEl.addEventListener("input", () => {
+            this.#inputEl.type = showEl.checked ? "text" : "password";
         });
     }
 
@@ -53,6 +60,5 @@ export default class StringInput extends FormInput {
 
 }
 
-FormInputRegistry.register("string", StringInput);
-FormInputRegistry.setDefault(StringInput);
-customElements.define("emc-input-string", StringInput);
+FormInputRegistry.register("password", PasswordInput);
+customElements.define("emc-input-password", PasswordInput);
