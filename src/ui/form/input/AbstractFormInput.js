@@ -29,11 +29,17 @@ export default class AbstractFormInput extends AbstractFormElement {
         /* --- */
         this.#resetEl = this.shadowRoot.getElementById("reset");
         this.#resetEl.addEventListener("click", () => {
+            this.value = this.getAttribute("value") || "";
+            /* --- */
             const event = new Event("value-reset", {bubbles: true, cancelable: true});
             event.key = this.key;
             event.fieldId = this.id;
             this.dispatchEvent(event);
         });
+        this.addEventListener("invalid", function(event) {
+            event.preventDefault();
+            this.focus();
+        }, true);
     }
 
     connectedCallback() {
@@ -89,14 +95,6 @@ export default class AbstractFormInput extends AbstractFormElement {
 
     get readonly() {
         return this.getBooleanAttribute("readonly");
-    }
-
-    set disabled(value) {
-        this.setBooleanAttribute("disabled", value);
-    }
-
-    get disabled() {
-        return this.getBooleanAttribute("disabled");
     }
 
     set required(value) {

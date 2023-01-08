@@ -27,6 +27,7 @@
     font-size: 1em;
     font-weight: bold;
     line-height: 1em;
+    text-decoration: none;
     cursor: pointer;
 }
 #button:disabled {
@@ -42,12 +43,26 @@
     box-shadow: none;
     outline: none;
 }
-#button:before {
+#button #link-icon {
+    position: relative;
+    height: 1em;
+    width: 1em;
+    margin-left: 5px;
+}
+#button:disabled #link-icon path {
+    stroke: var(--input-disabled-text-color, #424242);
+    fill: var(--input-disabled-text-color, #424242);
+}
+#button:hover #link-icon path {
+    stroke: var(--input-back-color, #ffffff);
+    fill: var(--input-back-color, #ffffff);
+}
+#button[icon]:not([icon=""]):before {
     display: inline-flex;
     align-items: center;
     margin-right: 5px;
     font-size: 1.3em;
     line-height: 1em;
     font-weight: bold;
-    content: "↺";
+    content: attr(icon);
 }

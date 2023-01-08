@@ -42,12 +42,12 @@
     box-shadow: none;
     outline: none;
 }
-#button:before {
+#button[icon]:not([icon=""]):before {
     display: inline-flex;
     align-items: center;
     margin-right: 5px;
     font-size: 1.3em;
     line-height: 1em;
     font-weight: bold;
-    content: "↺";
+    content: attr(icon);
 }

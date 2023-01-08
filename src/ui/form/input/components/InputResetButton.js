@@ -5,6 +5,10 @@ import STYLE from "./InputResetButton.js.css" assert {type: "css"};
 
 export default class InputResetButton extends CustomElementDelegating {
 
+    static get formAssociated() {
+        return true;
+    }
+
     #inputEl;
 
     constructor() {
@@ -25,18 +29,19 @@ export default class InputResetButton extends CustomElementDelegating {
         }
     }
 
-    focus() {
+    focus(options) {
         if (this.#inputEl != null) {
-            this.#inputEl.focus();
+            this.#inputEl.focus(options);
         }
     }
 
     set disabled(value) {
         this.#inputEl.disabled = value;
+        this.setBooleanAttribute("disabled", value);
     }
 
     get disabled() {
-        return this.#inputEl.disabled;
+        return this.getBooleanAttribute("disabled");
     }
 
 }

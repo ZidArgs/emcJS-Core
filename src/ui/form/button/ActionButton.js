@@ -1,10 +1,10 @@
 import AbstractFormElement from "../AbstractFormElement.js";
 import "../../i18n/I18nTooltip.js";
 import "../../i18n/I18nInput.js";
-import TPL from "./ResetButton.js.html" assert {type: "html"};
-import STYLE from "./ResetButton.js.css" assert {type: "css"};
+import TPL from "./ActionButton.js.html" assert {type: "html"};
+import STYLE from "./ActionButton.js.css" assert {type: "css"};
 
-export default class ResetButton extends AbstractFormElement {
+export default class ActionButton extends AbstractFormElement {
 
     #buttonEl;
 
@@ -14,15 +14,9 @@ export default class ResetButton extends AbstractFormElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#buttonEl = this.shadowRoot.getElementById("button");
-        this.#buttonEl.addEventListener("click", () => {
-            if (this.form != null) {
-                this.form.reset();
-            } else {
-                const formEl = this.closest("emc-form");
-                if (formEl != null) {
-                    formEl.reset();
-                }
-            }
+        this.#buttonEl.addEventListener("click", (event) => {
+            this.dispatchEvent(new MouseEvent("click", event));
+            event.stopPropagation();
         });
     }
 
@@ -42,10 +36,6 @@ export default class ResetButton extends AbstractFormElement {
         this.#buttonEl.disabled = disabled;
     }
 
-    get type() {
-        return "reset";
-    }
-
     set name(value) {
         this.setAttribute("name", value);
     }
@@ -62,6 +52,14 @@ export default class ResetButton extends AbstractFormElement {
         return this.getAttribute("value");
     }
 
+    set icon(value) {
+        this.setAttribute("icon", value);
+    }
+
+    get icon() {
+        return this.getAttribute("icon");
+    }
+
     set tooltip(value) {
         this.setAttribute("tooltip", value);
     }
@@ -71,7 +69,7 @@ export default class ResetButton extends AbstractFormElement {
     }
 
     static get observedAttributes() {
-        return ["value", "tooltip"];
+        return ["value", "icon", "tooltip"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -79,6 +77,11 @@ export default class ResetButton extends AbstractFormElement {
             case "value": {
                 if (oldValue != newValue) {
                     this.shadowRoot.getElementById("text").i18nValue = newValue;
+                }
+            } break;
+            case "icon": {
+                if (oldValue != newValue) {
+                    this.#buttonEl.setAttribute("icon", newValue);
                 }
             } break;
             case "tooltip": {
@@ -91,4 +94,4 @@ export default class ResetButton extends AbstractFormElement {
 
 }
 
-customElements.define("emc-button-reset", ResetButton);
+customElements.define("emc-button-action", ActionButton);

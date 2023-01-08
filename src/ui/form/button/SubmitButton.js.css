@@ -29,6 +29,11 @@
     line-height: 1em;
     cursor: pointer;
 }
+#button:disabled {
+    color: var(--input-disabled-text-color, #424242);
+    background-color: var(--input-disabled-back-color, #999999);
+    cursor: default;
+}
 #button:hover {
     color: var(--input-back-color, #ffffff);
     background-color: var(--input-text-color, #000000);
@@ -36,4 +41,13 @@
 #button:focus {
     box-shadow: none;
     outline: none;
+}
+#button:before {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 5px;
+    font-size: 1.3em;
+    line-height: 1em;
+    font-weight: bold;
+    content: "✓";
 }

@@ -31,6 +31,12 @@ export default class StringInput extends AbstractFormInput {
         this.#inputEl.disabled = disabled;
     }
 
+    focus(options) {
+        if (this.#inputEl != null) {
+            this.#inputEl.focus(options);
+        }
+    }
+
     #onInput = debounce(() => {
         super.value = this.#inputEl.value;
     }, 300);
@@ -65,6 +71,14 @@ export default class StringInput extends AbstractFormInput {
                     this.#inputEl.setAttribute("readonly", newValue);
                 }
             } break;
+        }
+    }
+
+    setCustomValidity(message) {
+        if (typeof message === "string" && message !== "") {
+            this.internals.setValidity({customError: true}, message, this.#inputEl);
+        } else {
+            this.internals.setValidity({}, "");
         }
     }
 

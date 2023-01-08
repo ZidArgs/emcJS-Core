@@ -11,15 +11,15 @@ const Q_TAB = [
 
 export default class AbstractFormElement extends CustomElementDelegating {
 
+    static get formAssociated() {
+        return true;
+    }
+
     #internals;
 
     constructor() {
         super();
         this.#internals = this.attachInternals();
-    }
-
-    static get formAssociated() {
-        return true;
     }
 
     get internals() {
@@ -32,10 +32,10 @@ export default class AbstractFormElement extends CustomElementDelegating {
         }
     }
 
-    focus() {
+    focus(options) {
         const firstFocusEl = this.shadowRoot.querySelector(Q_TAB);
         if (firstFocusEl != null) {
-            firstFocusEl.focus();
+            firstFocusEl.focus(options);
         }
     }
 
@@ -69,6 +69,14 @@ export default class AbstractFormElement extends CustomElementDelegating {
 
     get value() {
         return this.getAttribute("value");
+    }
+
+    set disabled(value) {
+        this.setBooleanAttribute("disabled", value);
+    }
+
+    get disabled() {
+        return this.getBooleanAttribute("disabled");
     }
 
     get validity() {

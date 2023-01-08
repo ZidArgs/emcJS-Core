@@ -13,15 +13,14 @@ export default class FormContainer extends HTMLFormElement {
             console.log("value reset", event);
         });
         this.addEventListener("submit", (event) => {
-            console.log("submit", event);
-            const formData = new FormData(this);
-            console.log("submit data", Object.fromEntries(formData.entries()));
-            // TODO revalidate and then call new submit event
             event.stopPropagation();
             event.preventDefault();
+            if (this.checkValidity()) {
+                const formData = new FormData(this);
+                console.log("submit", Object.fromEntries(formData.entries()));
+            }
         });
         this.addEventListener("reset", (event) => {
-            console.log("reset", event);
             event.stopPropagation();
         });
     }

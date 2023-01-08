@@ -5,6 +5,10 @@ import STYLE from "./ToggleShowButton.js.css" assert {type: "css"};
 
 export default class ToggleShowButton extends CustomElementDelegating {
 
+    static get formAssociated() {
+        return true;
+    }
+
     #inputEl;
 
     constructor() {
@@ -30,9 +34,9 @@ export default class ToggleShowButton extends CustomElementDelegating {
         }
     }
 
-    focus() {
+    focus(options) {
         if (this.#inputEl != null) {
-            this.#inputEl.focus();
+            this.#inputEl.focus(options);
         }
     }
 
@@ -46,10 +50,11 @@ export default class ToggleShowButton extends CustomElementDelegating {
 
     set disabled(value) {
         this.#inputEl.disabled = value;
+        this.setBooleanAttribute("disabled", value);
     }
 
     get disabled() {
-        return this.#inputEl.disabled;
+        return this.getBooleanAttribute("disabled");
     }
 
 }

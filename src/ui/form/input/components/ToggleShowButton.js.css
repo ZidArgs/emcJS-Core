@@ -60,10 +60,10 @@
     font-size: 0.6em;
     line-height: 0.8em;
     text-shadow:
-            1px 1px var(--input-button-color, #cccccc),
-            -1px 1px var(--input-button-color, #cccccc),
-            1px -1px var(--input-button-color, #cccccc),
-            -1px -1px var(--input-button-color, #cccccc);
+        1px 1px var(--input-button-color, #cccccc),
+        -1px 1px var(--input-button-color, #cccccc),
+        1px -1px var(--input-button-color, #cccccc),
+        -1px -1px var(--input-button-color, #cccccc);
     content: "╱";
 }
 #input:checked::after {
@@ -71,15 +71,15 @@
 }
 #input:disabled::after {
     text-shadow:
-            1px 1px var(--input-disabled-back-color, #999999),
-            -1px 1px var(--input-disabled-back-color, #999999),
-            1px -1px var(--input-disabled-back-color, #999999),
-            -1px -1px var(--input-disabled-back-color, #999999);
+        1px 1px var(--input-disabled-back-color, #999999),
+        -1px 1px var(--input-disabled-back-color, #999999),
+        1px -1px var(--input-disabled-back-color, #999999),
+        -1px -1px var(--input-disabled-back-color, #999999);
 }
 #input:hover:not(:disabled)::after {
     text-shadow:
-            1px 1px var(--input-text-color, #000000),
-            -1px 1px var(--input-text-color, #000000),
-            1px -1px var(--input-text-color, #000000),
-            -1px -1px var(--input-text-color, #000000);
+        1px 1px var(--input-text-color, #000000),
+        -1px 1px var(--input-text-color, #000000),
+        1px -1px var(--input-text-color, #000000),
+        -1px -1px var(--input-text-color, #000000);
 }

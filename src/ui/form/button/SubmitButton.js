@@ -1,5 +1,5 @@
 import AbstractFormElement from "../AbstractFormElement.js";
-import "../../i18n/I18nLabel.js";
+import "../../i18n/I18nTooltip.js";
 import "../../i18n/I18nInput.js";
 import TPL from "./SubmitButton.js.html" assert {type: "html"};
 import STYLE from "./SubmitButton.js.css" assert {type: "css"};
@@ -32,10 +32,14 @@ export default class SubmitButton extends AbstractFormElement {
         }
     }
 
-    focus() {
+    focus(options) {
         if (this.#buttonEl != null) {
-            this.#buttonEl.focus();
+            this.#buttonEl.focus(options);
         }
+    }
+
+    formDisabledCallback(disabled) {
+        this.#buttonEl.disabled = disabled;
     }
 
     set name(value) {
@@ -44,6 +48,14 @@ export default class SubmitButton extends AbstractFormElement {
 
     get name() {
         return this.getAttribute("name");
+    }
+
+    set value(value) {
+        this.setAttribute("value", value);
+    }
+
+    get value() {
+        return this.getAttribute("value");
     }
 
     set tooltip(value) {
@@ -55,11 +67,16 @@ export default class SubmitButton extends AbstractFormElement {
     }
 
     static get observedAttributes() {
-        return ["tooltip"];
+        return ["value", "tooltip"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
+            case "value": {
+                if (oldValue != newValue) {
+                    this.shadowRoot.getElementById("text").i18nValue = newValue;
+                }
+            } break;
             case "tooltip": {
                 if (oldValue != newValue) {
                     this.shadowRoot.getElementById("tooltip").i18nTooltip = newValue;
