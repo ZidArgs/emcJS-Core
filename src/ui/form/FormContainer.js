@@ -1,16 +1,10 @@
-import CustomElement from "../element/CustomElement.js";
-import TPL from "./FormContainer.js.html" assert {type: "html"};
-// import STYLE from "./FormContainer.js.css" assert {type: "css"};
-
 // TODO add write to storage or write to data
 // TODO add reset functionality
 
-export default class FormContainer extends CustomElement {
+export default class FormContainer extends HTMLFormElement {
 
     constructor() {
         super();
-        this.shadowRoot.append(TPL.generate());
-        // STYLE.apply(this.shadowRoot);
         /* --- */
         this.addEventListener("value-change", (event) => {
             console.log("value changed", event);
@@ -18,14 +12,21 @@ export default class FormContainer extends CustomElement {
         this.addEventListener("value-reset", (event) => {
             console.log("value reset", event);
         });
-        /* --- */
-        const formEl = this.shadowRoot.getElementById("form");
-        formEl.addEventListener("submit", (event) => {
+        this.addEventListener("submit", (event) => {
+            console.log("submit", event);
+            const formData = new FormData(this);
+            console.log("submit data", Object.fromEntries(formData.entries()));
             // TODO revalidate and then call new submit event
+            event.stopPropagation();
+            event.preventDefault();
+        });
+        this.addEventListener("reset", (event) => {
+            console.log("reset", event);
+            event.stopPropagation();
             event.preventDefault();
         });
     }
 
 }
 
-customElements.define("emc-form", FormContainer);
+customElements.define("emc-form", FormContainer, {extends: "form"});

@@ -2,37 +2,38 @@
     position: relative;
     display: flex;
     align-items: stretch;
-    justify-content: flex-start;
+    justify-content: stretch;
     flex-direction: column;
     width: 100%;
     min-width: 100px;
+    height: 2rem;
+    font-size: 1rem;
     box-sizing: border-box;
 }
 * {
     position: relative;
     box-sizing: border-box;
     margin: 0px;
-    font-size: 1rem;
+    font-size: 1em;
 }
 .container {
     display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
+    align-items: stretch;
+    justify-content: stretch;
 }
 #field {
     display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
+    align-items: stretch;
+    justify-content: stretch;
     flex-shrink: 0;
     flex-grow: 1;
     color: var(--input-text-color, #000000);
     background-color: var(--input-back-color, #ffffff);
-    font-size: 1rem;
 }
 #reset {
     display: none;
-    width: 2rem;
-    height: 2rem;
+    width: 2em;
+    height: 2em;
     margin-left: 5px;
 }
 :host([resettable]:not([resettable="false"])) #reset {

@@ -16,7 +16,11 @@ export default class ToggleShowButton extends CustomElementDelegating {
         const tooltipEl = this.shadowRoot.getElementById("tooltip");
         this.#inputEl.addEventListener("change", (event) => {
             this.dispatchEvent(new Event("change", event));
-            tooltipEl.i18nTooltip = this.#inputEl.checked ? "input shown" : "input hidden";
+            tooltipEl.i18nTooltip = this.#inputEl.checked ? "Input Shown" : "Input Hidden";
+        });
+        this.#inputEl.addEventListener("click", (event) => {
+            this.dispatchEvent(new MouseEvent("click", event));
+            event.stopPropagation();
         });
     }
 

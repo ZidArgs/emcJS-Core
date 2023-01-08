@@ -1,0 +1,39 @@
+:host {
+    display: flex;
+    width: min-content;
+    height: 2rem;
+    border: solid 2px var(--input-border-color, #000000);
+    border-radius: 4px;
+    overflow: hidden;
+    font-size: 1rem;
+}
+:host(:focus) {
+    box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
+    outline: none;
+    z-index: 1;
+}
+#button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    padding: 0px 10px;
+    margin: 0px;
+    appearance: none;
+    color: var(--input-text-color, #000000);
+    background-color: var(--input-button-color, #cccccc);
+    border: none;
+    font-size: 1em;
+    font-weight: bold;
+    line-height: 1em;
+    cursor: pointer;
+}
+#button:hover {
+    color: var(--input-back-color, #ffffff);
+    background-color: var(--input-text-color, #000000);
+}
+#button:focus {
+    box-shadow: none;
+    outline: none;
+}

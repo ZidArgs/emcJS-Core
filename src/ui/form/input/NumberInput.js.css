@@ -1,6 +1,6 @@
 #input {
     flex-grow: 1;
-    height: 2rem;
+    height: 2em;
     padding: 0px 7px;
     border: solid 2px var(--input-border-color, #000000);
     border-radius: 4px;

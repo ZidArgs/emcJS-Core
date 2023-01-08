@@ -16,7 +16,6 @@ export default class InputResetButton extends CustomElementDelegating {
         this.#inputEl.addEventListener("click", (event) => {
             this.dispatchEvent(new MouseEvent("click", event));
             event.stopPropagation();
-            return false;
         });
     }
 

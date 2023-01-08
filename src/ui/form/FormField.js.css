@@ -10,7 +10,7 @@
     position: relative;
     box-sizing: border-box;
     margin: 0px;
-    font-size: 1rem;
+    font-size: 1em;
 }
 .container {
     display: flex;

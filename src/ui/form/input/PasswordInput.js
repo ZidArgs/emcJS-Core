@@ -1,15 +1,15 @@
-import FormInput from "../FormInput.js";
-import "../components/InputResetButton.js";
-import "../components/ToggleShowButton.js";
+import AbstractFormInput from "./AbstractFormInput.js";
+import "./components/InputResetButton.js";
+import "./components/ToggleShowButton.js";
 import {
     debounce
-} from "../../../../util/Debouncer.js";
-import FormInputRegistry from "../../../../data/registry/FormInputRegistry.js";
-import "../../../i18n/I18nTooltip.js";
+} from "../../../util/Debouncer.js";
+import FormElementRegistry from "../../../data/registry/FormElementRegistry.js";
+import "../../i18n/I18nTooltip.js";
 import TPL from "./PasswordInput.js.html" assert {type: "html"};
 import STYLE from "./PasswordInput.js.css" assert {type: "css"};
 
-export default class PasswordInput extends FormInput {
+export default class PasswordInput extends AbstractFormInput {
 
     #inputEl;
 
@@ -22,6 +22,10 @@ export default class PasswordInput extends FormInput {
         this.#inputEl.addEventListener("input", () => {
             this.#onInput();
         });
+        this.#inputEl.addEventListener("change", (event) => {
+            this.dispatchEvent(new Event("change", event));
+        });
+        /* --- */
         const showEl = this.shadowRoot.getElementById("show");
         this.#inputEl.type = showEl.checked ? "text" : "password";
         showEl.addEventListener("input", () => {
@@ -30,16 +34,29 @@ export default class PasswordInput extends FormInput {
     }
 
     #onInput = debounce(() => {
-        this.value = this.#inputEl.value;
+        super.value = this.#inputEl.value;
     }, 300);
+
+    set value(value) {
+        super.value = value;
+        this.#inputEl.value = value;
+    }
+
+    get value() {
+        return this.#inputEl.value;
+    }
+
+    static get observedAttributes() {
+        return [...super.observedAttributes, "value"];
+    }
 
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
-            case "value":
+            case "value": {
                 if (oldValue != newValue) {
-                    this.#inputEl.value = newValue;
+                    this.value = newValue;
                 }
-                break;
+            } break;
         }
         super.attributeChangedCallback(name, oldValue, newValue);
     }
@@ -60,5 +77,5 @@ export default class PasswordInput extends FormInput {
 
 }
 
-FormInputRegistry.register("password", PasswordInput);
+FormElementRegistry.register("password", PasswordInput);
 customElements.define("emc-input-password", PasswordInput);

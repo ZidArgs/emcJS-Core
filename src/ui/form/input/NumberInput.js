@@ -1,15 +1,15 @@
-import FormInput from "../FormInput.js";
-import "../components/InputResetButton.js";
+import AbstractFormInput from "./AbstractFormInput.js";
+import "./components/InputResetButton.js";
 import {
     debounce
-} from "../../../../util/Debouncer.js";
-import FormInputRegistry from "../../../../data/registry/FormInputRegistry.js";
+} from "../../../util/Debouncer.js";
+import FormElementRegistry from "../../../data/registry/FormElementRegistry.js";
 import TPL from "./NumberInput.js.html" assert {type: "html"};
 import STYLE from "./NumberInput.js.css" assert {type: "css"};
 
 // FIXME deletes contents on "." input (maybe on "," if "." is decimal seperator)
 
-export default class NumberInput extends FormInput {
+export default class NumberInput extends AbstractFormInput {
 
     #inputEl;
 
@@ -22,28 +22,37 @@ export default class NumberInput extends FormInput {
         this.#inputEl.addEventListener("input", () => {
             this.#onInput();
         });
+        this.#inputEl.addEventListener("change", (event) => {
+            this.dispatchEvent(new Event("change", event));
+        });
     }
 
     #onInput = debounce(() => {
-        this.value = this.#inputEl.value;
+        super.value = this.#inputEl.value;
     }, 300);
 
     set value(value) {
-        this.setAttribute("value", value);
+        super.value = value;
+        this.#inputEl.value = value;
     }
 
     get value() {
-        const value = parseFloat(this.getAttribute("value"));
-        return !isNaN(value) ? value : undefined;
+        const value = parseFloat(this.#inputEl.value);
+        return !isNaN(value) ? value : 0;
+    }
+
+    static get observedAttributes() {
+        return [...super.observedAttributes, "value"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
-            case "value":
+            case "value": {
                 if (oldValue != newValue) {
-                    this.#inputEl.value = newValue;
+                    const value = parseFloat(newValue);
+                    this.value = !isNaN(value) ? value : 0;
                 }
-                break;
+            } break;
         }
         super.attributeChangedCallback(name, oldValue, newValue);
     }
@@ -64,5 +73,5 @@ export default class NumberInput extends FormInput {
 
 }
 
-FormInputRegistry.register("number", NumberInput);
+FormElementRegistry.register("number", NumberInput);
 customElements.define("emc-input-number", NumberInput);

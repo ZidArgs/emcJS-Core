@@ -1,0 +1,17 @@
+:host {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    box-sizing: border-box;
+    padding: 10px;
+}
+* {
+    position: relative;
+    box-sizing: border-box;
+    margin: 0px;
+    font-size: 1em;
+}
+::slotted(:not(:first-child)) {
+    margin-left: 5px;
+}

@@ -26,10 +26,12 @@ export default class FormField extends CustomElement {
         });
         /* --- */
         const labelEl = this.shadowRoot.getElementById("label");
-        labelEl.addEventListener("click", () => {
-            const firstFocusEl = this.querySelector(Q_TAB);
-            if (firstFocusEl != null) {
-                firstFocusEl.focus();
+        labelEl.addEventListener("click", (event) => {
+            if (event.target === labelEl) {
+                const firstFocusEl = this.querySelector(Q_TAB);
+                if (firstFocusEl != null) {
+                    firstFocusEl.focus();
+                }
             }
         });
     }

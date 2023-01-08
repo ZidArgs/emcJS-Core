@@ -1,0 +1,78 @@
+import AbstractFormElement from "../AbstractFormElement.js";
+import "../../i18n/I18nLabel.js";
+import "../../i18n/I18nLabel.js";
+import "../../i18n/I18nInput.js";
+import TPL from "./ResetButton.js.html" assert {type: "html"};
+import STYLE from "./ResetButton.js.css" assert {type: "css"};
+
+export default class ResetButton extends AbstractFormElement {
+
+    #buttonEl;
+
+    constructor() {
+        super();
+        this.shadowRoot.append(TPL.generate());
+        STYLE.apply(this.shadowRoot);
+        /* --- */
+        this.#buttonEl = this.shadowRoot.getElementById("button");
+        this.#buttonEl.addEventListener("click", () => {
+            if (this.form != null) {
+                this.form.reset();
+            } else {
+                const formEl = this.closest("emc-form");
+                if (formEl != null) {
+                    formEl.reset();
+                }
+            }
+        });
+    }
+
+    connectedCallback() {
+        if (!this.hasAttribute("tabindex")) {
+            this.setAttribute("tabindex", 0);
+        }
+    }
+
+    focus() {
+        if (this.#buttonEl != null) {
+            this.#buttonEl.focus();
+        }
+    }
+
+    get type() {
+        return "reset";
+    }
+
+    set name(value) {
+        this.setAttribute("name", value);
+    }
+
+    get name() {
+        return this.getAttribute("name");
+    }
+
+    set tooltip(value) {
+        this.setAttribute("tooltip", value);
+    }
+
+    get tooltip() {
+        return this.getAttribute("tooltip");
+    }
+
+    static get observedAttributes() {
+        return ["tooltip"];
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        switch (name) {
+            case "tooltip": {
+                if (oldValue != newValue) {
+                    this.shadowRoot.getElementById("tooltip").i18nTooltip = newValue;
+                }
+            } break;
+        }
+    }
+
+}
+
+customElements.define("emc-button-reset", ResetButton);
