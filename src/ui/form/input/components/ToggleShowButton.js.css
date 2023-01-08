@@ -35,6 +35,11 @@
     box-shadow: none;
     outline: none;
 }
+#input:disabled {
+    color: var(--input-disabled-text-color, #424242);
+    background-color: var(--input-disabled-back-color, #999999);
+    cursor: default;
+}
 #input::before {
     position: absolute;
     display: flex;
@@ -64,7 +69,14 @@
 #input:checked::after {
     display: none;
 }
-#input:hover::after {
+#input:disabled::after {
+    text-shadow:
+            1px 1px var(--input-disabled-back-color, #999999),
+            -1px 1px var(--input-disabled-back-color, #999999),
+            1px -1px var(--input-disabled-back-color, #999999),
+            -1px -1px var(--input-disabled-back-color, #999999);
+}
+#input:hover:not(:disabled)::after {
     text-shadow:
             1px 1px var(--input-text-color, #000000),
             -1px 1px var(--input-text-color, #000000),

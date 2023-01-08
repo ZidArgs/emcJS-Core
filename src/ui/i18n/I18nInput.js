@@ -24,8 +24,20 @@ export default class I18nInput extends I18nMixin(HTMLInputElement) {
         return this.getAttribute("i18n-value") || "";
     }
 
+    set i18nPlaceholder(val) {
+        if (val != null) {
+            this.setAttribute("i18n-placeholder", val);
+        } else {
+            this.removeAttribute("i18n-placeholder");
+        }
+    }
+
+    get i18nPlaceholder() {
+        return this.getAttribute("i18n-placeholder") || "";
+    }
+
     static get observedI18n() {
-        return ["i18n-value"];
+        return ["i18n-value", "i18n-placeholder"];
     }
 
     applyI18n(key, value) {
@@ -33,6 +45,9 @@ export default class I18nInput extends I18nMixin(HTMLInputElement) {
             case "i18n-value": {
                 this.#value = value;
                 this.value = this.#getValue();
+            } break;
+            case "i18n-placeholder": {
+                this.setAttribute("placeholder", value);
             } break;
         }
     }

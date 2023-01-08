@@ -74,3 +74,6 @@
 #description:empty {
     display: none;
 }
+::slotted(input:invalid) {
+    background-color: var(--input-invalid-back-color, #ffcccc);
+}

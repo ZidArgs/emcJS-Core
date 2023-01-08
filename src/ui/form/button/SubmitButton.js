@@ -1,6 +1,5 @@
 import AbstractFormElement from "../AbstractFormElement.js";
 import "../../i18n/I18nLabel.js";
-import "../../i18n/I18nLabel.js";
 import "../../i18n/I18nInput.js";
 import TPL from "./SubmitButton.js.html" assert {type: "html"};
 import STYLE from "./SubmitButton.js.css" assert {type: "css"};

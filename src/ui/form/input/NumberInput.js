@@ -1,5 +1,6 @@
 import AbstractFormInput from "./AbstractFormInput.js";
 import "./components/InputResetButton.js";
+import "../../i18n/I18nInput.js";
 import {
     debounce
 } from "../../../util/Debouncer.js";
@@ -27,48 +28,55 @@ export default class NumberInput extends AbstractFormInput {
         });
     }
 
+    formDisabledCallback(disabled) {
+        super.formDisabledCallback(disabled);
+        this.#inputEl.disabled = disabled;
+    }
+
     #onInput = debounce(() => {
         super.value = this.#inputEl.value;
     }, 300);
 
     set value(value) {
-        super.value = value;
+        value = parseFloat(value);
+        value = !isNaN(value) ? value : 0;
         this.#inputEl.value = value;
+        super.value = value;
     }
 
     get value() {
-        const value = parseFloat(this.#inputEl.value);
-        return !isNaN(value) ? value : 0;
+        return parseFloat(this.#inputEl.value);
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "value"];
+        return ["value", "placeholder", "readonly"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
-                    const value = parseFloat(newValue);
-                    this.value = !isNaN(value) ? value : 0;
+                    this.#inputEl.setAttribute("value", newValue);
+                }
+            } break;
+            case "placeholder": {
+                if (oldValue != newValue) {
+                    this.#inputEl.setAttribute("i18n-placeholder", newValue);
+                }
+            } break;
+            case "readonly": {
+                if (oldValue != newValue) {
+                    this.#inputEl.setAttribute("readonly", newValue);
                 }
             } break;
         }
-        super.attributeChangedCallback(name, oldValue, newValue);
     }
 
     revalidate() {
-        if (this.#inputEl.value == "") {
-            this.#inputEl.classList.add("invalid");
-            return "required";
+        if (isNaN(this.value)) {
+            return "Please enter a valid number";
         }
-        const error = super.revalidate();
-        if (error != "") {
-            this.#inputEl.classList.add("invalid");
-        } else {
-            this.#inputEl.classList.remove("invalid");
-        }
-        return error;
+        return super.revalidate();
     }
 
 }

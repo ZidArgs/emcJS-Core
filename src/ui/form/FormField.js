@@ -21,8 +21,8 @@ export default class FormField extends CustomElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.addEventListener("value-change", (event) => {
-            this.shadowRoot.getElementById("error").innerText = event.error ?? "";
+        this.addEventListener("change", (event) => {
+            this.shadowRoot.getElementById("error").innerText = event.target.validationMessage ?? "";
         });
         /* --- */
         const labelEl = this.shadowRoot.getElementById("label");

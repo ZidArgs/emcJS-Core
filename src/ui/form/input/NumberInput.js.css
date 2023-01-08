@@ -10,3 +10,6 @@
     outline: none;
     z-index: 1;
 }
+:host(:invalid) #input {
+    background-color: var(--input-invalid-back-color, #ffcccc);
+}

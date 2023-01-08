@@ -11,7 +11,7 @@
     outline: none;
     z-index: 1;
 }
-#reset {
+#input {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -27,11 +27,16 @@
     font-weight: bold;
     cursor: pointer;
 }
-#reset:hover {
+#input:hover {
     color: var(--input-back-color, #ffffff);
     background-color: var(--input-text-color, #000000);
 }
-#reset:focus {
+#input:focus {
     box-shadow: none;
     outline: none;
+}
+#input:disabled {
+    color: var(--input-disabled-text-color, #424242);
+    background-color: var(--input-disabled-back-color, #999999);
+    cursor: default;
 }

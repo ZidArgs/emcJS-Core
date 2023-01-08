@@ -20,15 +20,15 @@ document.addEventListener('invalid', (function(){
 
 export default class AbstractFormInput extends AbstractFormElement {
 
-    #errorText = "";
+    #resetEl;
 
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const resetEl = this.shadowRoot.getElementById("reset");
-        resetEl.addEventListener("click", () => {
+        this.#resetEl = this.shadowRoot.getElementById("reset");
+        this.#resetEl.addEventListener("click", () => {
             const event = new Event("value-reset", {bubbles: true, cancelable: true});
             event.key = this.key;
             event.fieldId = this.id;
@@ -36,64 +36,99 @@ export default class AbstractFormInput extends AbstractFormElement {
         });
     }
 
+    connectedCallback() {
+        super.connectedCallback();
+        this.value = this.getAttribute("value") || "";
+    }
+
+    formDisabledCallback(disabled) {
+        this.#resetEl.disabled = disabled;
+    }
+
+    formResetCallback() {
+        this.value = this.getAttribute("value") || "";
+    }
+
+    formStateRestoreCallback(state/* , mode */) {
+        this.value = state;
+    }
+
     set value(value) {
         this.internals.setFormValue(value);
-        /* --- */
-        // TODO check validity
-        const event = new Event("value-change", {bubbles: true, cancelable: true});
-        event.value = value;
-        event.valid = this.isValid();
-        event.error = this.getError();
-        event.name = this.name;
-        event.fieldId = this.id;
-        this.dispatchEvent(event);
+        const message = this.revalidate();
+        if (typeof message === "string" && message !== "") {
+            this.setCustomValidity(message);
+        } else {
+            this.setCustomValidity("");
+            const event = new Event("value-change", {bubbles: true, cancelable: true});
+            event.value = value;
+            event.valid = this.checkValidity();
+            event.error = this.validationMessage;
+            event.name = this.name;
+            event.fieldId = this.id;
+            this.dispatchEvent(event);
+        }
+        this.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
     }
 
     get value() {
         return super.value;
     }
 
-    set tooltip(value) {
-        this.setAttribute("tooltip", value);
-    }
-
-    get tooltip() {
-        return this.getAttribute("tooltip");
-    }
-
     set resettable(value) {
-        this.setAttribute("resettable", value);
+        this.setBooleanAttribute("resettable", value);
     }
 
     get resettable() {
-        return this.getAttribute("resettable");
+        return this.getBooleanAttribute("resettable");
     }
 
-    static get observedAttributes() {
-        return ["tooltip"];
+    set readonly(value) {
+        this.setBooleanAttribute("readonly", value);
     }
 
-    attributeChangedCallback(name, oldValue, newValue) {
-        switch (name) {
-            case "tooltip": {
-                if (oldValue != newValue) {
-                    this.shadowRoot.getElementById("tooltip").i18nTooltip = newValue;
-                }
-            } break;
+    get readonly() {
+        return this.getBooleanAttribute("readonly");
+    }
+
+    set disabled(value) {
+        this.setBooleanAttribute("disabled", value);
+    }
+
+    get disabled() {
+        return this.getBooleanAttribute("disabled");
+    }
+
+    set required(value) {
+        this.setBooleanAttribute("required", value);
+    }
+
+    get required() {
+        return this.getBooleanAttribute("required");
+    }
+
+    set placeholder(value) {
+        this.setAttribute("placeholder", value);
+    }
+
+    get placeholder() {
+        return this.getAttribute("placeholder");
+    }
+
+    setCustomValidity(message) {
+        if (typeof message === "string" && message !== "") {
+            this.internals.setValidity({customError: true}, message);
+        } else {
+            this.internals.setValidity({}, "");
         }
     }
 
     // TODO revalidate with custom validation callback
     revalidate() {
+        if (this.required && this.value === "") {
+            return "This field is required";
+        }
         return "";
-    }
-
-    isValid() {
-        return this.#errorText === "";
-    }
-
-    getError() {
-        return this.isValid() ? null : this.#errorText;
     }
 
 }

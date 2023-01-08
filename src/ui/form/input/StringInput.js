@@ -1,5 +1,6 @@
 import AbstractFormInput from "./AbstractFormInput.js";
 import "./components/InputResetButton.js";
+import "../../i18n/I18nInput.js";
 import {
     debounce
 } from "../../../util/Debouncer.js";
@@ -25,13 +26,18 @@ export default class StringInput extends AbstractFormInput {
         });
     }
 
+    formDisabledCallback(disabled) {
+        super.formDisabledCallback(disabled);
+        this.#inputEl.disabled = disabled;
+    }
+
     #onInput = debounce(() => {
         super.value = this.#inputEl.value;
     }, 300);
 
     set value(value) {
-        super.value = value;
         this.#inputEl.value = value;
+        super.value = value;
     }
 
     get value() {
@@ -39,32 +45,27 @@ export default class StringInput extends AbstractFormInput {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "value"];
+        return ["value", "placeholder", "readonly"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
-                    this.value = newValue;
+                    this.#inputEl.setAttribute("value", newValue);
+                }
+            } break;
+            case "placeholder": {
+                if (oldValue != newValue) {
+                    this.#inputEl.setAttribute("i18n-placeholder", newValue);
+                }
+            } break;
+            case "readonly": {
+                if (oldValue != newValue) {
+                    this.#inputEl.setAttribute("readonly", newValue);
                 }
             } break;
         }
-        super.attributeChangedCallback(name, oldValue, newValue);
-    }
-
-    revalidate() {
-        if (this.#inputEl.value == "") {
-            this.#inputEl.classList.add("invalid");
-            return "required";
-        }
-        const error = super.revalidate();
-        if (error != "") {
-            this.#inputEl.classList.add("invalid");
-        } else {
-            this.#inputEl.classList.remove("invalid");
-        }
-        return error;
     }
 
 }

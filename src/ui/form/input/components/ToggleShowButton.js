@@ -36,12 +36,20 @@ export default class ToggleShowButton extends CustomElementDelegating {
         }
     }
 
+    set checked(value) {
+        this.#inputEl.checked = value;
+    }
+
     get checked() {
         return this.#inputEl.checked;
     }
 
-    set checked(value) {
-        this.#inputEl.checked = value;
+    set disabled(value) {
+        this.#inputEl.disabled = value;
+    }
+
+    get disabled() {
+        return this.#inputEl.disabled;
     }
 
 }

@@ -30,14 +30,11 @@
             console.log("submit", event);
             const formData = new FormData(form1El);
             console.log("submit data", Object.fromEntries(formData.entries()));
-            // TODO revalidate and then call new submit event
             event.preventDefault();
             event.stopPropagation();
         });
         form1El.addEventListener("reset", (event) => {
             console.log("reset", event);
-            // TODO revalidate and then call new submit event
-            event.preventDefault();
             event.stopPropagation();
         });
     </script>
@@ -46,14 +43,13 @@
 <body style="display: flex; flex-direction: column;">
     <form is="emc-form" id="form-0">
 
-        <input type="hidden" name="test.validation" value="works">
-
         <emc-form-field label="text" desc="test.desc">
             <emc-input-string name="test.0" value="test"></emc-input-string>
         </emc-form-field>
 
         <emc-form-field label="text resettable">
-            <emc-input-string name="test.1" value="test3" resettable></emc-input-string>
+            <emc-input-string name="test.1" value="test3" required resettable
+                placeholder="your message..."></emc-input-string>
         </emc-form-field>
 
         <emc-form-field label="number">
@@ -61,42 +57,12 @@
         </emc-form-field>
 
         <emc-form-field label="password">
-            <emc-input-password name="test.3" value=""></emc-input-password>
+            <emc-input-password name="test.3" value="" required placeholder="Enter password..."></emc-input-password>
         </emc-form-field>
 
         <emc-form-field label="password resettable">
-            <emc-input-password name="test.4" value="" resettable></emc-input-password>
-        </emc-form-field>
-
-        <emc-form-button-row>
-            <emc-button-reset name="test.reset"></emc-button-reset>
-            <emc-button-submit name="test.submit"></emc-button-submit>
-        </emc-form-button-row>
-
-    </form>
-    <hr>
-    <form id="form-1">
-
-        <input type="hidden" name="test.validation" value="works">
-
-        <emc-form-field label="text" desc="test.desc">
-            <emc-input-string name="test.0" value="test"></emc-input-string>
-        </emc-form-field>
-
-        <emc-form-field label="text resettable">
-            <emc-input-string name="test.1" value="test3" resettable></emc-input-string>
-        </emc-form-field>
-
-        <emc-form-field label="number">
-            <emc-input-number name="test.2" value="42"></emc-input-number>
-        </emc-form-field>
-
-        <emc-form-field label="password">
-            <emc-input-password name="test.3" value=""></emc-input-password>
-        </emc-form-field>
-
-        <emc-form-field label="password resettable">
-            <emc-input-password name="test.4" value="" resettable></emc-input-password>
+            <emc-input-password name="test.4" value="" resettable disabled
+                placeholder="Enter password..."></emc-input-password>
         </emc-form-field>
 
         <emc-form-button-row>

@@ -39,6 +39,14 @@ export default class AbstractFormElement extends CustomElementDelegating {
         }
     }
 
+    formAssociatedCallback(/* form */) {
+        // ignore
+    }
+
+    formDisabledCallback(/* disabled */) {
+        // ignore
+    }
+
     get form() {
         return this.#internals.form;
     }
@@ -63,29 +71,24 @@ export default class AbstractFormElement extends CustomElementDelegating {
         return this.getAttribute("value");
     }
 
-    // TODO
     get validity() {
-        return this.#internals.validity;
+        return this.internals.validity;
     }
 
-    // TODO
     get validationMessage() {
-        return this.#internals.validationMessage;
+        return this.internals.validationMessage;
     }
 
-    // TODO
     get willValidate() {
-        return this.#internals.willValidate;
+        return this.internals.willValidate;
     }
 
-    // TODO
     checkValidity() {
-        return this.#internals.checkValidity();
+        return this.internals.checkValidity();
     }
 
-    // TODO
     reportValidity() {
-        return this.#internals.reportValidity();
+        return this.internals.reportValidity();
     }
 
 }

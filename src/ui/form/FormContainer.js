@@ -23,7 +23,6 @@ export default class FormContainer extends HTMLFormElement {
         this.addEventListener("reset", (event) => {
             console.log("reset", event);
             event.stopPropagation();
-            event.preventDefault();
         });
     }
 

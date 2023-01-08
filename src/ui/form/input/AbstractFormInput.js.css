@@ -39,6 +39,8 @@
 :host([resettable]:not([resettable="false"])) #reset {
     display: block;
 }
-input.invalid {
-    background-color: var(--input-invalid-back-color, #ffcccc);
+input:disabled {
+    color: var(--input-disabled-text-color, #424242);
+    background-color: var(--input-disabled-back-color, #999999);
+    cursor: default;
 }

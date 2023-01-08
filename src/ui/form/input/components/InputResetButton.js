@@ -12,7 +12,7 @@ export default class InputResetButton extends CustomElementDelegating {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.#inputEl = this.shadowRoot.getElementById("reset");
+        this.#inputEl = this.shadowRoot.getElementById("input");
         this.#inputEl.addEventListener("click", (event) => {
             this.dispatchEvent(new MouseEvent("click", event));
             event.stopPropagation();
@@ -29,6 +29,14 @@ export default class InputResetButton extends CustomElementDelegating {
         if (this.#inputEl != null) {
             this.#inputEl.focus();
         }
+    }
+
+    set disabled(value) {
+        this.#inputEl.disabled = value;
+    }
+
+    get disabled() {
+        return this.#inputEl.disabled;
     }
 
 }

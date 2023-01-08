@@ -1,6 +1,7 @@
 import AbstractFormInput from "./AbstractFormInput.js";
 import "./components/InputResetButton.js";
 import "./components/ToggleShowButton.js";
+import "../../i18n/I18nInput.js";
 import {
     debounce
 } from "../../../util/Debouncer.js";
@@ -12,6 +13,8 @@ import STYLE from "./PasswordInput.js.css" assert {type: "css"};
 export default class PasswordInput extends AbstractFormInput {
 
     #inputEl;
+
+    #showEl;
 
     constructor() {
         super();
@@ -26,11 +29,18 @@ export default class PasswordInput extends AbstractFormInput {
             this.dispatchEvent(new Event("change", event));
         });
         /* --- */
-        const showEl = this.shadowRoot.getElementById("show");
-        this.#inputEl.type = showEl.checked ? "text" : "password";
-        showEl.addEventListener("input", () => {
-            this.#inputEl.type = showEl.checked ? "text" : "password";
+        this.#showEl = this.shadowRoot.getElementById("show");
+        this.#inputEl.type = this.#showEl.checked ? "text" : "password";
+        this.#showEl.addEventListener("input", () => {
+            this.#inputEl.type = this.#showEl.checked ? "text" : "password";
         });
+    }
+
+    formDisabledCallback(disabled) {
+        super.formDisabledCallback(disabled);
+        this.#inputEl.disabled = disabled;
+        this.#showEl.disabled = disabled;
+        this.#showEl.checked = false;
     }
 
     #onInput = debounce(() => {
@@ -38,8 +48,8 @@ export default class PasswordInput extends AbstractFormInput {
     }, 300);
 
     set value(value) {
-        super.value = value;
         this.#inputEl.value = value;
+        super.value = value;
     }
 
     get value() {
@@ -47,32 +57,27 @@ export default class PasswordInput extends AbstractFormInput {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "value"];
+        return ["value", "placeholder", "readonly"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
-                    this.value = newValue;
+                    this.#inputEl.setAttribute("value", newValue);
+                }
+            } break;
+            case "placeholder": {
+                if (oldValue != newValue) {
+                    this.#inputEl.setAttribute("i18n-placeholder", newValue);
+                }
+            } break;
+            case "readonly": {
+                if (oldValue != newValue) {
+                    this.#inputEl.setAttribute("readonly", newValue);
                 }
             } break;
         }
-        super.attributeChangedCallback(name, oldValue, newValue);
-    }
-
-    revalidate() {
-        if (this.#inputEl.value == "") {
-            this.#inputEl.classList.add("invalid");
-            return "required";
-        }
-        const error = super.revalidate();
-        if (error != "") {
-            this.#inputEl.classList.add("invalid");
-        } else {
-            this.#inputEl.classList.remove("invalid");
-        }
-        return error;
     }
 
 }

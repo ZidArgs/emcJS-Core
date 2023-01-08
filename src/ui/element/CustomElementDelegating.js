@@ -9,4 +9,27 @@ export default class CustomElementDelegating extends HTMLElement {
         STYLE.apply(this.shadowRoot);
     }
 
+    setBooleanAttribute(name, value) {
+        if (typeof value === "boolean") {
+            if (value) {
+                this.setAttribute(name, "");
+            } else {
+                this.removeAttribute(name);
+            }
+        } else {
+            this.setAttribute(name, value);
+        }
+    }
+
+    getBooleanAttribute(name) {
+        const value = this.getAttribute(name);
+        if (value === "") {
+            return true;
+        }
+        if (value == null) {
+            return false;
+        }
+        return value;
+    }
+
 }
