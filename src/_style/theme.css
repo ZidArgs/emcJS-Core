@@ -1,0 +1,28 @@
+:root {
+
+    /* === form === */
+    --form-text-color: #000000;
+    --form-back-color: #ffffff;
+    --form-border-color: #000000; /* all; top_bottom right_left; top right bottom left*/
+    --form-hover-text-color: #000000;
+    --form-hover-back-color: #eeeeee;
+    --form-invalid-text-color: #a70000;
+    --form-invalid-back-color: #ffeeee;
+
+    /* === input === */
+    --input-text-color: #000000;
+    --input-back-color: #ffffff;
+    --input-invalid-back-color: #ffcccc;
+    --input-invalid-border-color: #b93d3d; /* all; top_bottom right_left; top right bottom left*/
+    --input-disabled-text-color: #424242;
+    --input-disabled-back-color: #999999;
+    --input-disabled-border-color: #6a6a6a; /* all; top_bottom right_left; top right bottom left*/
+    --input-focus-color: #06b5ff;
+
+    /* === button === */
+    --button-text-color: #000000;
+    --button-back-color: #cccccc;
+    --button-hover-text-color: #ffffff;
+    --button-hover-back-color: #000000;
+
+}

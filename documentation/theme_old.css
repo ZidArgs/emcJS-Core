@@ -1,0 +1,85 @@
+:root {
+    --page-background-color: #000000;
+    --page-text-color: #ffffff;
+
+    /* all; top_bottom right_left; top right bottom left*/
+    --page-border-color: #664e1f #d0a650 #e5ce9e #b78c37;
+    /* all; top_bottom right_left; top right bottom left*/
+    --page-border-color-inverted: #e5ce9e #b78c37 #664e1f #d0a650;
+
+    --navigation-background-color: #cb9c3d;
+    --navigation-text-color: #000000;
+
+    --edit-background-color: #222222;
+    --edit-text-color: #ffffff;
+
+    --main-hover-color: #cb9c3d32;
+
+    --contextmenu-background: #000000;
+    --contextmenu-text: #cb9c3d;
+    --contextmenu-info: #cccccc;
+    /* all; top_bottom right_left; top right bottom left*/
+    --contextmenu-border: #cb9c3d;
+    --contextmenu-background-hover: #cb9c3d32;
+    --contextmenu-text-hover: #e7be6b;
+
+    /* all; top_bottom right_left; top right bottom left*/
+    --list-border-top-color: #d4ad5e77;
+    /* all; top_bottom right_left; top right bottom left*/
+    --list-border-bottom-color: #795b2077;
+
+    --input-text-color: #000000;
+    --input-back-color: #ffffff;
+    --input-invalid-text-color: #db0000;
+    --input-invalid-back-color: #ffcccc;
+    --input-disabled-text-color: #424242;
+    --input-disabled-back-color: #999999;
+    /* all; top_bottom right_left; top right bottom left*/
+    --input-border-color: #000000;
+    --input-button-color: #cccccc;
+    --input-color-hover: #eeeeee;
+    --input-focus-color: #06b5ff;
+
+    /* slider */
+    --slider-track-size: 5px;
+    --slider-track-color: #755922;
+    --slider-track-border-width: 0px;
+    --slider-track-border-style: none;
+    --slider-track-border-color:transparent;
+    --slider-track-border-radius: 0px;
+
+    --slider-thumb-size: 15px;
+    --slider-thumb-color: var(--navigation-background-color);
+    --slider-thumb-border-width: 4px;
+    --slider-thumb-border-style: solid;
+    --slider-thumb-border-color: var(--page-border-color-inverted);
+    --slider-thumb-border-radius: 0px;
+
+    /* scrollbar */
+    --scrollbar-size: 12px;
+    --scrollbar-corner-color: #000000;
+
+    --scrollbar-track-color: #000000;
+    --scrollbar-track-color-hover: #000000;
+    --scrollbar-track-color-active: #000000;
+    --scrollbar-track-border-width: 0px;
+    --scrollbar-track-border-style: none;
+    --scrollbar-track-border-color:transparent;
+    --scrollbar-track-border-radius: 0px;
+
+    --scrollbar-thumb-color: var(--navigation-background-color);
+    --scrollbar-thumb-color-hover: var(--scrollbar-thumb-color);
+    --scrollbar-thumb-color-active: var(--scrollbar-thumb-color);
+    --scrollbar-thumb-border-width: 4px;
+    --scrollbar-thumb-border-style: solid;
+    --scrollbar-thumb-border-color: var(--page-border-color-inverted);
+    --scrollbar-thumb-border-radius: 0px;
+
+    /* ally color variables for world entities */
+    --world-entry-status-opened-color: #777777;
+    --world-entry-status-available-color: #00ff00;
+    --world-entry-status-unavailable-color: #ff0000;
+    --world-entry-status-possible-color: #ffff00;
+    --world-connection-background-color: #ffffff;
+    --world-connection-text-color: #000000;
+}

@@ -14,6 +14,21 @@ if (location.hash == "") {
     location.hash = "home";
 }
 
+viewEl.addEventListener("load", () => {
+    // load default theme
+    const defaultThemeLink = document.createElement("link");
+    defaultThemeLink.href = "/emcJS/_style/theme.css";
+    defaultThemeLink.rel = "stylesheet";
+    defaultThemeLink.type = "text/css";
+    viewEl.contentDocument.head.appendChild(defaultThemeLink);
+    // load override theme
+    const overrideThemeLink = document.createElement("link");
+    overrideThemeLink.href = "/theme.css";
+    overrideThemeLink.rel = "stylesheet";
+    overrideThemeLink.type = "text/css";
+    viewEl.contentDocument.head.appendChild(overrideThemeLink);
+});
+
 window.addEventListener("hashchange", (event) => {
     const url = new URL(event.newURL);
     const hash = url.hash.slice(1);

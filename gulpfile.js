@@ -26,4 +26,19 @@ function copyJS() {
     return res;
 }
 
-export const build = copyJS;
+function copyCSS() {
+    const FILES = [
+        `${IN_PATH}/_style/**/*.css`
+    ];
+    let res = gulp.src(FILES);
+    if (!REBUILD) {
+        res = res.pipe(newer(`${OUT_PATH}/_style`))
+    }
+    res = res.pipe(gulp.dest(`${OUT_PATH}/_style`));
+    return res;
+}
+
+export const build = gulp.parallel(
+    copyJS,
+    copyCSS
+);

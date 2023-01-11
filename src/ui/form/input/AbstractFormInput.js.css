@@ -28,7 +28,6 @@
     flex-shrink: 0;
     flex-grow: 1;
     color: var(--input-text-color, #000000);
-    background-color: var(--input-back-color, #ffffff);
 }
 #reset {
     display: none;

@@ -33,7 +33,7 @@ export default class LinkButton extends AbstractFormElement {
     }
 
     formDisabledCallback(disabled) {
-        this.#buttonEl.disabled = disabled;
+        this.#buttonEl.setAttribute("disabled", disabled);
     }
 
     set name(value) {

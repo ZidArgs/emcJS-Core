@@ -2,10 +2,13 @@
     display: flex;
     width: min-content;
     height: 2rem;
-    border: solid 2px var(--input-border-color, #000000);
+    border: solid 2px var(--form-border-color, #000000);
     border-radius: 4px;
     overflow: hidden;
     font-size: 1rem;
+}
+:host(:disabled) {
+    border-color: var(--input-disabled-border-color, #6a6a6a);
 }
 :host(:focus) {
     box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
@@ -21,22 +24,22 @@
     padding: 0px 10px;
     margin: 0px;
     appearance: none;
-    color: var(--input-text-color, #000000);
-    background-color: var(--input-button-color, #cccccc);
+    color: var(--button-text-color, #000000);
+    background-color: var(--button-back-color, #cccccc);
     border: none;
     font-size: 1em;
     font-weight: bold;
     line-height: 1em;
     cursor: pointer;
 }
+#button:hover {
+    color: var(--button-hover-text-color, #ffffff);
+    background-color: var(--button-hover-back-color, #000000);
+}
 #button:disabled {
     color: var(--input-disabled-text-color, #424242);
     background-color: var(--input-disabled-back-color, #999999);
     cursor: default;
-}
-#button:hover {
-    color: var(--input-back-color, #ffffff);
-    background-color: var(--input-text-color, #000000);
 }
 #button:focus {
     box-shadow: none;

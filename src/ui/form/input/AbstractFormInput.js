@@ -29,10 +29,11 @@ export default class AbstractFormInput extends AbstractFormElement {
         /* --- */
         this.#resetEl = this.shadowRoot.getElementById("reset");
         this.#resetEl.addEventListener("click", () => {
-            this.value = this.getAttribute("value") || "";
+            this.fieldResetCallback();
             /* --- */
             const event = new Event("value-reset", {bubbles: true, cancelable: true});
-            event.key = this.key;
+            event.name = this.name;
+            event.ref = this.ref;
             event.fieldId = this.id;
             this.dispatchEvent(event);
         });
@@ -51,12 +52,24 @@ export default class AbstractFormInput extends AbstractFormElement {
         this.#resetEl.disabled = disabled;
     }
 
+    fieldResetCallback() {
+        this.value = this.getAttribute("value") || "";
+    }
+
     formResetCallback() {
         this.value = this.getAttribute("value") || "";
     }
 
     formStateRestoreCallback(state/* , mode */) {
         this.value = state;
+    }
+
+    set ref(value) {
+        this.setAttribute("ref", value);
+    }
+
+    get ref() {
+        return this.getAttribute("ref");
     }
 
     set value(value) {
@@ -71,6 +84,7 @@ export default class AbstractFormInput extends AbstractFormElement {
             event.valid = this.checkValidity();
             event.error = this.validationMessage;
             event.name = this.name;
+            event.ref = this.ref;
             event.fieldId = this.id;
             this.dispatchEvent(event);
         }

@@ -9,15 +9,15 @@ export default class InputResetButton extends CustomElementDelegating {
         return true;
     }
 
-    #inputEl;
+    #buttonEl;
 
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.#inputEl = this.shadowRoot.getElementById("input");
-        this.#inputEl.addEventListener("click", (event) => {
+        this.#buttonEl = this.shadowRoot.getElementById("button");
+        this.#buttonEl.addEventListener("click", (event) => {
             this.dispatchEvent(new MouseEvent("click", event));
             event.stopPropagation();
         });
@@ -30,13 +30,13 @@ export default class InputResetButton extends CustomElementDelegating {
     }
 
     focus(options) {
-        if (this.#inputEl != null) {
-            this.#inputEl.focus(options);
+        if (this.#buttonEl != null) {
+            this.#buttonEl.focus(options);
         }
     }
 
     set disabled(value) {
-        this.#inputEl.disabled = value;
+        this.#buttonEl.disabled = value;
         this.setBooleanAttribute("disabled", value);
     }
 

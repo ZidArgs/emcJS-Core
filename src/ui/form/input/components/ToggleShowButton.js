@@ -9,20 +9,20 @@ export default class ToggleShowButton extends CustomElementDelegating {
         return true;
     }
 
-    #inputEl;
+    #buttonEl;
 
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.#inputEl = this.shadowRoot.getElementById("input");
+        this.#buttonEl = this.shadowRoot.getElementById("button");
         const tooltipEl = this.shadowRoot.getElementById("tooltip");
-        this.#inputEl.addEventListener("change", (event) => {
+        this.#buttonEl.addEventListener("change", (event) => {
             this.dispatchEvent(new Event("change", event));
-            tooltipEl.i18nTooltip = this.#inputEl.checked ? "Input Shown" : "Input Hidden";
+            tooltipEl.i18nTooltip = this.#buttonEl.checked ? "Input shown" : "Input hidden";
         });
-        this.#inputEl.addEventListener("click", (event) => {
+        this.#buttonEl.addEventListener("click", (event) => {
             this.dispatchEvent(new MouseEvent("click", event));
             event.stopPropagation();
         });
@@ -35,21 +35,21 @@ export default class ToggleShowButton extends CustomElementDelegating {
     }
 
     focus(options) {
-        if (this.#inputEl != null) {
-            this.#inputEl.focus(options);
+        if (this.#buttonEl != null) {
+            this.#buttonEl.focus(options);
         }
     }
 
     set checked(value) {
-        this.#inputEl.checked = value;
+        this.#buttonEl.checked = value;
     }
 
     get checked() {
-        return this.#inputEl.checked;
+        return this.#buttonEl.checked;
     }
 
     set disabled(value) {
-        this.#inputEl.disabled = value;
+        this.#buttonEl.disabled = value;
         this.setBooleanAttribute("disabled", value);
     }
 
