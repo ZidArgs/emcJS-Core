@@ -25,4 +25,10 @@
     --button-hover-text-color: #ffffff;
     --button-hover-back-color: #000000;
 
+    /* === range === */
+    --range-track-back-top-color: #f5f5f5;
+    --range-track-back-bottom-color: #f5f5f5;
+    --range-track-front-top-color: #2a84cd;
+    --range-track-front-bottom-color: #2a84cd;
+
 }

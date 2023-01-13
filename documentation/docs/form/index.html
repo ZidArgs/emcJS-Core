@@ -32,6 +32,7 @@
         import "/emcJS/ui/form/input/NumberInput.js";
         import "/emcJS/ui/form/input/PasswordInput.js";
         import "/emcJS/ui/form/input/ColorInput.js";
+        import "/emcJS/ui/form/input/RangeInput.js";
         import i18n from "/emcJS/util/I18n.js";
 
         i18n.setTranslation("en", {
@@ -49,7 +50,7 @@
         <emc-form-fieldset label="text" desc="test.desc">
 
             <emc-form-field label="text default" desc="test.desc">
-                <emc-input-string name="text.default" value="" placeholder="Enter text..."></emc-input-string>
+                <emc-input-string name="text.default" value="this is a text" placeholder="Enter text..."></emc-input-string>
             </emc-form-field>
 
             <emc-form-field label="text resettable">
@@ -75,7 +76,7 @@
         <emc-form-fieldset label="number">
 
             <emc-form-field label="number default">
-                <emc-input-number name="number.default" value="" placeholder="Enter number..."></emc-input-number>
+                <emc-input-number name="number.default" value="42" placeholder="Enter number..."></emc-input-number>
             </emc-form-field>
 
             <emc-form-field label="number resettable">
@@ -101,7 +102,7 @@
         <emc-form-fieldset label="password">
 
             <emc-form-field label="password default">
-                <emc-input-password name="password.default" value="" placeholder="Enter password..."></emc-input-password>
+                <emc-input-password name="password.default" value="password" placeholder="Enter password..."></emc-input-password>
             </emc-form-field>
 
             <emc-form-field label="password resettable">
@@ -127,7 +128,7 @@
         <emc-form-fieldset label="color">
 
             <emc-form-field label="color default">
-                <emc-input-color name="color.default" value="" placeholder="Choose color..."></emc-input-color>
+                <emc-input-color name="color.default" value="#ff0000" placeholder="Choose color..."></emc-input-color>
             </emc-form-field>
 
             <emc-form-field label="color resettable">
@@ -144,6 +145,32 @@
 
             <emc-form-field label="color resettable disabled">
                 <emc-input-color name="color.resettable_disabled" value="" resettable disabled placeholder="Choose color..."></emc-input-color>
+            </emc-form-field>
+
+        </emc-form-fieldset>
+
+        <!-- range inputs -->
+
+        <emc-form-fieldset label="range">
+
+            <emc-form-field label="range default">
+                <emc-input-range name="range.default" value="4"></emc-input-range>
+            </emc-form-field>
+
+            <emc-form-field label="range scratched">
+                <emc-input-range name="range.scratched" value="4" scratch></emc-input-range>
+            </emc-form-field>
+
+            <emc-form-field label="range resettable">
+                <emc-input-range name="range.resettable" value="" min="-20" max="20" resettable></emc-input-range>
+            </emc-form-field>
+
+            <emc-form-field label="range disabled">
+                <emc-input-range name="range.disabled" value="" disabled></emc-input-range>
+            </emc-form-field>
+
+            <emc-form-field label="range resettable disabled">
+                <emc-input-range name="range.resettable_disabled" value="" resettable disabled></emc-input-range>
             </emc-form-field>
 
         </emc-form-fieldset>

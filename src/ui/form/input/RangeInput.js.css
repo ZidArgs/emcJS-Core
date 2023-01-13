@@ -1,0 +1,177 @@
+#field {
+    --range-scratch: 0;
+}
+:host([scratch]:not([scratch="false"])) #field {
+    --range-scratch: 1;
+}
+#number {
+    appearance: textfield;
+    height: 2em;
+    width: 50px;
+    padding: 0px 7px;
+    margin-right: -2px;
+    color: var(--input-text-color, #000000);
+    background-color: var(--input-back-color, #ffffff);
+    border: solid 2px var(--form-border-color, #000000);
+    border-radius: 4px 0px 0px 4px;
+    text-align: end;
+}
+#number:focus {
+    box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
+    outline: none;
+    z-index: 1;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    appearance: none;
+    margin: 0;
+}
+#input {
+    position: relative;
+    appearance: none;
+    flex-grow: 1;
+    height: 2em;
+    padding: 8px 4px;
+    margin: 0px;
+    background-color: var(--input-back-color, #ffffff);
+    background-image:
+        linear-gradient(0deg, var(--range-track-front-color, #2a84cd), var(--range-track-front-color, #2a84cd)),
+        linear-gradient(0deg, var(--range-track-back-color, #f5f5f5), var(--range-track-back-color, #f5f5f5));
+    background-position: 5px 8px;
+    background-size:
+        calc((100% - 28px) / var(--range-parts, 10) * var(--range-value, 0) + 9px) calc(100% - 16px),
+        calc(100% - 10px) calc(100% - 16px);
+    background-repeat: no-repeat;
+    border: solid 2px var(--form-border-color, #000000);
+    border-radius: 0px 4px 4px 0px;
+    box-sizing: border-box;
+    caret-color: transparent;
+    cursor: pointer;
+}
+#input:before {
+    position: absolute;
+    inset: 8px 9px;
+    padding: 2px calc(5px + 1px * var(--range-scratch, 0));
+    background-image:
+        linear-gradient(90deg,
+            var(--input-back-color, #ffffff) calc(1px * var(--range-scratch, 0)),
+            transparent calc(1px * var(--range-scratch, 0)),
+            transparent calc(100% - 1px * var(--range-scratch, 0)),
+            var(--input-back-color, #ffffff) calc(100% - 1px * var(--range-scratch, 0))
+        );
+    background-size:
+        calc((100% - 10px) / var(--range-parts, 10)) 100%;
+    background-position: 5px 0px;
+    background-clip: content-box;
+    box-sizing: border-box;
+    box-shadow:
+         5px 0px 0px 0px var(--input-back-color, #ffffff) inset,
+        -5px 0px 0px 0px var(--input-back-color, #ffffff) inset,
+         6px 0px 0px 0px var(--input-back-color, #ffffff),
+        -6px 0px 0px 0px var(--input-back-color, #ffffff);
+    content: "";
+}
+#input:disabled:before {
+    box-shadow:
+         5px 0px 0px 0px var(--input-disabled-back-color, #999999) inset,
+        -5px 0px 0px 0px var(--input-disabled-back-color, #999999) inset,
+         6px 0px 0px 0px var(--input-disabled-back-color, #999999),
+        -6px 0px 0px 0px var(--input-disabled-back-color, #999999);
+}
+#input:focus {
+    box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
+    outline: none;
+    z-index: 1;
+}
+
+#input::-webkit-slider-thumb {
+    appearance: none;
+    height: 1.6em;
+    width: 10px;
+    margin: -0.4em 0px;
+    background-color: var(--button-back-color, #cccccc);
+    border: 1px solid var(--input-back-color, #ffffff);
+    border-radius: 2px;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+#input::-webkit-slider-thumb:hover {
+    background-color: var(--button-hover-back-color, #000000);
+}
+#input:disabled::-webkit-slider-thumb {
+    color: var(--input-disabled-text-color, #424242) !important;
+    background-color: var(--input-disabled-back-color, #999999) !important;
+    border-color: var(--input-disabled-border-color, #6a6a6a) !important;
+    cursor: default !important;
+}
+
+#input::-moz-range-thumb {
+    height: 1.6em;
+    width: 10px;
+    background-color: var(--button-back-color, #cccccc);
+    border: 1px solid var(--input-back-color, #ffffff);
+    border-radius: 2px;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+#input::-moz-range-thumb:hover {
+    background-color: var(--button-hover-back-color, #000000);
+}
+#input:disabled::-moz-range-thumb {
+    color: var(--input-disabled-text-color, #424242) !important;
+    background-color: var(--input-disabled-back-color, #999999) !important;
+    border-color: var(--input-disabled-border-color, #6a6a6a) !important;
+    cursor: default !important;
+}
+
+#input::-ms-thumb {
+    height: 1.6em;
+    width: 10px;
+    background-color: var(--button-back-color, #cccccc);
+    border: 1px solid var(--input-back-color, #ffffff);
+    border-radius: 2px;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+#input::-ms-thumb:hover {
+    background-color: var(--button-hover-back-color, #000000);
+}
+#input:disabled::-ms-thumb:hover {
+    color: var(--input-disabled-text-color, #424242) !important;
+    background-color: var(--input-disabled-back-color, #999999) !important;
+    border-color: var(--input-disabled-border-color, #6a6a6a) !important;
+    cursor: default !important;
+}
+
+#input::-webkit-slider-runnable-track {
+    position: relative;
+    height: 0.8em;
+    width: 100%;
+    padding: 0px 5px;
+    cursor: pointer;
+    background: transparent;
+    border-radius: 2px;
+    box-sizing: border-box;
+}
+
+#input::-moz-range-track {
+    position: relative;
+    height: 0.8em;
+    width: 100%;
+    padding: 0px 5px;
+    cursor: pointer;
+    background: transparent;
+    border-radius: 2px;
+    box-sizing: border-box;
+}
+
+#input::-ms-track {
+    position: relative;
+    height: 0.8em;
+    width: 100%;
+    padding: 0px 5px;
+    cursor: pointer;
+    background: transparent;
+    border-radius: 2px;
+    box-sizing: border-box;
+}

@@ -1,12 +1,12 @@
 :root {
 
     /* === form === */
-    --form-text-color: #ffffff;
-    --form-back-color: #000000;
-    --form-hover-text-color: #ffffff;
-    --form-hover-back-color: #363636;
+    --form-text-color: #000000;
+    --form-back-color: #b8d5e2;
+    --form-hover-text-color: #000000;
+    --form-hover-back-color: #b8b8b8;
     --form-invalid-text-color: #a70000;
     --form-invalid-back-color: #ffeeee;
-    --form-border-color: #ffffff; /* all; top_bottom right_left; top right bottom left*/
+    --form-border-color: #000000; /* all; top_bottom right_left; top right bottom left*/
 
 }

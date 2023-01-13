@@ -46,7 +46,7 @@ a {
 #list {
     flex: 1;
     min-width: 200px;
-    width: 500px;
+    width: 20%;
     max-width: 1000px;
     overflow: scroll;
     resize: horizontal;

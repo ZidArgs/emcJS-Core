@@ -6,17 +6,7 @@ import STYLE from "./AbstractFormInput.js.css" assert {type: "css"};
 
 // https://web.dev/more-capable-form-controls/#form-associated-custom-elements
 
-/*
-TODO prevent default invalid handling
-document.addEventListener('invalid', (function(){
-    return function(e) {
-      //prevent the browser from showing default error bubble / hint
-      e.preventDefault();
-      // optionally fire off some custom validation handler
-      // myValidation();
-    };
-})(), true);
-*/
+// TODO actually handle readonly correctly (in all of the fields)
 
 export default class AbstractFormInput extends AbstractFormElement {
 

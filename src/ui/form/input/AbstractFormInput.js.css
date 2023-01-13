@@ -27,7 +27,6 @@
     justify-content: stretch;
     flex-shrink: 0;
     flex-grow: 1;
-    color: var(--input-text-color, #000000);
 }
 #reset {
     display: none;
@@ -39,7 +38,8 @@
     display: block;
 }
 input:disabled {
-    color: var(--input-disabled-text-color, #424242);
-    background-color: var(--input-disabled-back-color, #999999);
-    cursor: default;
+    color: var(--input-disabled-text-color, #424242) !important;
+    background-color: var(--input-disabled-back-color, #999999) !important;
+    border-color: var(--input-disabled-border-color, #6a6a6a) !important;
+    cursor: default !important;
 }

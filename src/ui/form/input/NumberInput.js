@@ -8,8 +8,6 @@ import FormElementRegistry from "../../../data/registry/FormElementRegistry.js";
 import TPL from "./NumberInput.js.html" assert {type: "html"};
 import STYLE from "./NumberInput.js.css" assert {type: "css"};
 
-// FIXME deletes contents on "." input (maybe on "," if "." is decimal seperator)
-
 export default class NumberInput extends AbstractFormInput {
 
     #inputEl;
@@ -59,24 +57,22 @@ export default class NumberInput extends AbstractFormInput {
     }
 
     static get observedAttributes() {
-        return ["value", "placeholder", "readonly"];
+        return ["value", "placeholder", "readonly", "min", "max"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
-            case "value": {
+            case "value":
+            case "readonly":
+            case "min":
+            case "max": {
                 if (oldValue != newValue) {
-                    this.#inputEl.setAttribute("value", newValue);
+                    this.#inputEl.setAttribute(name, newValue);
                 }
             } break;
             case "placeholder": {
                 if (oldValue != newValue) {
                     this.#inputEl.setAttribute("i18n-placeholder", newValue);
-                }
-            } break;
-            case "readonly": {
-                if (oldValue != newValue) {
-                    this.#inputEl.setAttribute("readonly", newValue);
                 }
             } break;
         }
