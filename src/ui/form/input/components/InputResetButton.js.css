@@ -1,8 +1,8 @@
 :host {
-    width: 2rem;
-    height: 2rem;
-    border: solid 2px var(--form-border-color, #000000);
-    border-radius: 4px;
+    width: 2em;
+    height: 2em;
+    border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
+    border-radius: var(--form-border-radius, 0.25em);
     overflow: hidden;
     font-size: 1rem;
 }

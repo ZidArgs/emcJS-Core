@@ -15,8 +15,8 @@
 #fieldset {
     padding: 10px;
     margin: 5px;
-    border: solid 2px var(--form-border-color, #000000);
-    border-radius: 8px;
+    border: solid var(--fieldset-border-width, 2px) var(--form-border-color, #000000);
+    border-radius: var(--fieldset-border-radius, 0.5em);
 }
 #legend {
     color: var(--form-text-color, #000000);

@@ -119,6 +119,12 @@ export default class ColorInput extends AbstractFormInput {
             case "readonly": {
                 if (oldValue != newValue) {
                     this.#inputEl.setAttribute("readonly", newValue);
+                    this.#buttonEl.setAttribute("readonly", newValue);
+                    if (newValue != null && newValue != "false") {
+                        this.#buttonEl.setAttribute("tabindex", -1);
+                    } else {
+                        this.#buttonEl.setAttribute("tabindex", 0);
+                    }
                 }
             } break;
         }

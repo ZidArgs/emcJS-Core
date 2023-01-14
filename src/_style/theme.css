@@ -4,6 +4,8 @@
     --form-text-color: #000000;
     --form-back-color: #ffffff;
     --form-border-color: #000000; /* all; top_bottom right_left; top right bottom left*/
+    --form-border-width: 2px;
+    --form-border-radius: 0.25em;
     --form-hover-text-color: #000000;
     --form-hover-back-color: #eeeeee;
     --form-invalid-text-color: #a70000;
@@ -30,5 +32,9 @@
     --range-track-back-bottom-color: #f5f5f5;
     --range-track-front-top-color: #2a84cd;
     --range-track-front-bottom-color: #2a84cd;
+
+    /* === fieldset === */
+    --fieldset-border-width: 4px;
+    --fieldset-border-radius: 0.5em;
 
 }

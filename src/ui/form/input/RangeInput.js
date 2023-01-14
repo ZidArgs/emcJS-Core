@@ -33,6 +33,9 @@ export default class RangeInput extends AbstractFormInput {
         this.#inputEl.addEventListener("change", (event) => {
             this.dispatchEvent(new Event("change", event));
         });
+        new ResizeObserver(() => {
+            this.#applyScratchValue();
+        }).observe(this.#inputEl);
         /* --- */
         this.#numberEl = this.shadowRoot.getElementById("number");
         this.#numberEl.addEventListener("input", () => {
@@ -44,7 +47,7 @@ export default class RangeInput extends AbstractFormInput {
     connectedCallback() {
         super.connectedCallback();
         this.#applyValueToBar(this.#inputEl.value);
-        this.#setRangeParts();
+        this.#setRange();
     }
 
     formDisabledCallback(disabled) {
@@ -81,13 +84,12 @@ export default class RangeInput extends AbstractFormInput {
     }
 
     static get observedAttributes() {
-        return ["value", "readonly", "min", "max"];
+        return ["value", "readonly", "min", "max", "scratched"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
-            case "value":
-            case "readonly": {
+            case "value": {
                 if (oldValue != newValue) {
                     this.#inputEl.setAttribute(name, newValue);
                     this.#numberEl.setAttribute(name, newValue);
@@ -98,7 +100,13 @@ export default class RangeInput extends AbstractFormInput {
                 if (oldValue != newValue) {
                     this.#inputEl.setAttribute(name, newValue);
                     this.#numberEl.setAttribute(name, newValue);
-                    this.#setRangeParts();
+                    this.#setRange();
+                    this.#applyValueToBar(this.value);
+                }
+            } break;
+            case "scratched": {
+                if (oldValue != newValue) {
+                    this.#applyScratchValue();
                 }
             } break;
         }
@@ -120,11 +128,12 @@ export default class RangeInput extends AbstractFormInput {
         return super.revalidate();
     }
 
-    #setRangeParts() {
+    #setRange() {
         const min = parseInt(this.getAttribute("min") || "0");
         const max = parseInt(this.getAttribute("max") || "10");
-        const diff = max - min;
-        this.#fieldEl.style.setProperty("--range-parts", diff);
+        const parts = max - min;
+        this.#fieldEl.style.setProperty("--range-parts", parts);
+        this.#applyScratchValue();
     }
 
     #applyValueToBar(value) {
@@ -137,6 +146,19 @@ export default class RangeInput extends AbstractFormInput {
             const pos = (max - min) / 2;
             this.#fieldEl.style.setProperty("--range-value", pos - min);
             this.#numberEl.value = pos;
+        }
+    }
+
+    #applyScratchValue() {
+        this.#inputEl.classList.remove("scratched");
+        const value = this.getAttribute("scratched");
+        if (value != null && value != "false") {
+            const min = parseInt(this.getAttribute("min") || "0");
+            const max = parseInt(this.getAttribute("max") || "10");
+            const parts = max - min;
+            if (parts < this.#inputEl.offsetWidth / 10) {
+                this.#inputEl.classList.add("scratched");
+            }
         }
     }
 

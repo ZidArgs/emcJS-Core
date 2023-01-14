@@ -9,4 +9,7 @@
     --form-invalid-back-color: #ffeeee;
     --form-border-color: #000000; /* all; top_bottom right_left; top right bottom left*/
 
+    --range-track-back-top-color: #a63636;
+    --range-track-back-bottom-color: #a63636;
+
 }

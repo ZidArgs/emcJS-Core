@@ -61,6 +61,10 @@
                 <emc-input-string name="text.required" value="" required placeholder="Enter text..."></emc-input-string>
             </emc-form-field>
 
+            <emc-form-field label="text readonly">
+                <emc-input-string name="text.readonly" value="readonly text" readonly placeholder="Enter text..."></emc-input-string>
+            </emc-form-field>
+
             <emc-form-field label="text disabled">
                 <emc-input-string name="text.disabled" value="" disabled placeholder="Enter text..."></emc-input-string>
             </emc-form-field>
@@ -85,6 +89,10 @@
 
             <emc-form-field label="number required">
                 <emc-input-number name="number.required" value="" required placeholder="Enter number..."></emc-input-number>
+            </emc-form-field>
+
+            <emc-form-field label="number readonly">
+                <emc-input-number name="number.readonly" value="42" readonly placeholder="Enter text..."></emc-input-number>
             </emc-form-field>
 
             <emc-form-field label="number disabled">
@@ -113,6 +121,10 @@
                 <emc-input-password name="password.required" value="" required placeholder="Enter password..."></emc-input-password>
             </emc-form-field>
 
+            <emc-form-field label="password readonly">
+                <emc-input-password name="password.readonly" value="password" readonly placeholder="Enter password..."></emc-input-password>
+            </emc-form-field>
+
             <emc-form-field label="password disabled">
                 <emc-input-password name="password.disabled" value="" disabled placeholder="Enter password..."></emc-input-password>
             </emc-form-field>
@@ -139,6 +151,10 @@
                 <emc-input-color name="color.required" value="" required placeholder="Choose color..."></emc-input-color>
             </emc-form-field>
 
+            <emc-form-field label="color readonly">
+                <emc-input-color name="color.readonly" value="#00ffff" readonly placeholder="Choose color..."></emc-input-color>
+            </emc-form-field>
+
             <emc-form-field label="color disabled">
                 <emc-input-color name="color.disabled" value="" disabled placeholder="Choose color..."></emc-input-color>
             </emc-form-field>
@@ -158,7 +174,7 @@
             </emc-form-field>
 
             <emc-form-field label="range scratched">
-                <emc-input-range name="range.scratched" value="4" scratch></emc-input-range>
+                <emc-input-range name="range.scratched" value="4" min="-10" max="30" scratched></emc-input-range>
             </emc-form-field>
 
             <emc-form-field label="range resettable">

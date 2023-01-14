@@ -1,9 +1,9 @@
 :host {
     display: flex;
     width: min-content;
-    height: 2rem;
-    border: solid 2px var(--form-border-color, #000000);
-    border-radius: 4px;
+    height: 2em;
+    border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
+    border-radius: var(--form-border-radius, 0.25em);
     overflow: hidden;
     font-size: 1rem;
 }
