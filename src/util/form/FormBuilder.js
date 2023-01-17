@@ -5,7 +5,7 @@ export default class FormBuilder {
         for (const ref in options) {
             const option = options[ref];
             switch (option.type) {
-                case "action-button": {
+                case "action-button": { // former "button"
                     // existing
                 } break;
                 case "link-button": {
@@ -25,7 +25,10 @@ export default class FormBuilder {
         const category = option.category; // deprecated
         const label = option.label || ref;
         const desc = option.desc;
-        switch (option.is) {
+        switch (option.inputType) {
+            case "boolean": { // former "check"
+                window.addCheckInput(category, ref, label, desc, option.default, option.visible, option.resettable);
+            } break;
             case "string": {
                 // existing
             } break;
@@ -35,9 +38,6 @@ export default class FormBuilder {
             case "range": {
                 // existing
             } break;
-            case "check": {
-                window.addCheckInput(category, ref, label, desc, option.default, option.visible, option.resettable);
-            } break;
             case "color": {
                 // existing
             } break;
@@ -45,20 +45,13 @@ export default class FormBuilder {
                 // existing - new
             } break;
             case "hotkey": {
-                window.addKeyInput(category, ref, label, desc, option.default, option.visible, option.resettable);
+                // existing
             } break;
-            case "choice": {
+            case "search-select": { // former "choice"
                 window.addChoiceInput(category, ref, label, desc, option.default, option.visible, option.resettable, option.values);
             } break;
-            case "list": {
+            case "list-select": { // former "list"
                 window.addListSelectInput(category, ref, label, desc, option.default, option.visible, option.resettable, option.multiple, option.values);
-            } break;
-            case "button": {
-                window.addButton(category, ref, label, desc, option.visible, option.text, () => {
-                    const event = new Event(option.event ?? "button");
-                    event.action = option.action;
-                    window.dispatchEvent(event);
-                });
             } break;
         }
     }

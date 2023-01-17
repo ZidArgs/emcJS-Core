@@ -61,10 +61,11 @@
     flex-shrink: 0;
     padding: 0px 5px;
     margin-top: 5px;
-    font-size: 0.9em;
-    font-style: italic;
     color: var(--form-invalid-text-color, #a70000);
     background-color: var(--form-invalid-back-color, #ffeeee);
+    font-size: 0.9em;
+    line-height: 1.4em;
+    font-style: italic;
     cursor: pointer;
     user-select: none;
 }
@@ -77,6 +78,7 @@
     padding: 0px 5px;
     margin-top: 5px;
     font-size: 0.9em;
+    line-height: 1.4em;
     font-style: italic;
     cursor: default;
     user-select: none;

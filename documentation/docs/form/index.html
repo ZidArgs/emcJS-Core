@@ -32,6 +32,7 @@
         import "/emcJS/ui/form/input/PasswordInput.js";
         import "/emcJS/ui/form/input/ColorInput.js";
         import "/emcJS/ui/form/input/RangeInput.js";
+        import "/emcJS/ui/form/input/HotkeyInput.js";
         import i18n from "/emcJS/util/I18n.js";
 
         i18n.setTranslation("en", {
@@ -129,6 +130,24 @@
             <emc-input-range label="range disabled" name="range.disabled" value="" disabled></emc-input-range>
 
             <emc-input-range label="range resettable disabled" name="range.resettable_disabled" value="" resettable disabled></emc-input-range>
+
+        </emc-form-fieldset>
+
+        <!-- hotkey inputs -->
+
+        <emc-form-fieldset label="hotkey">
+
+            <emc-input-hotkey label="hotkey default" name="hotkey.default" value="ctrl+h" placeholder="Enter hotkey..."></emc-input-hotkey>
+
+            <emc-input-hotkey label="hotkey resettable" name="hotkey.resettable" value="" resettable placeholder="Enter hotkey..."></emc-input-hotkey>
+
+            <emc-input-hotkey label="hotkey required" name="hotkey.required" value="" required placeholder="Enter hotkey..."></emc-input-hotkey>
+
+            <emc-input-hotkey label="hotkey readonly" name="hotkey.readonly" value="ctrl+h" readonly placeholder="Enter hotkey..."></emc-input-hotkey>
+
+            <emc-input-hotkey label="hotkey disabled" name="hotkey.disabled" value="" disabled placeholder="Enter hotkey..."></emc-input-hotkey>
+
+            <emc-input-hotkey label="hotkey resettable disabled" name="hotkey.resettable_disabled" value="" resettable disabled placeholder="Enter hotkey..."></emc-input-hotkey>
 
         </emc-form-fieldset>
 

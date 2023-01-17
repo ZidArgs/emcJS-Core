@@ -1,6 +1,5 @@
 import AbstractFormInput from "../abstract/AbstractFormInput.js";
-import "./components/InputResetButton.js";
-import "./components/ToggleShowButton.js";
+import "../button/internal/ToggleShowButton.js";
 import "../../i18n/I18nInput.js";
 import {
     debounce

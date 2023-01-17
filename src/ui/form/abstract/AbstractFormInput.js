@@ -1,4 +1,5 @@
 import AbstractFormField from "./AbstractFormField.js";
+import "../button/internal/InputResetButton.js";
 import "../../i18n/I18nLabel.js";
 import "../../i18n/I18nTextbox.js";
 import TPL from "../abstract/AbstractFormInput.js.html" assert {type: "html"};
@@ -22,11 +23,11 @@ export default class AbstractFormInput extends AbstractFormField {
         this.#resetEl.addEventListener("click", () => {
             this.fieldResetCallback();
             /* --- */
-            const event = new Event("value-reset", {bubbles: true, cancelable: true});
-            event.name = this.name;
-            event.ref = this.ref;
-            event.fieldId = this.id;
-            this.dispatchEvent(event);
+            const resetEvent = new Event("value-reset", {bubbles: true, cancelable: true});
+            resetEvent.name = this.name;
+            resetEvent.ref = this.ref;
+            resetEvent.fieldId = this.id;
+            this.dispatchEvent(resetEvent);
         });
     }
 
