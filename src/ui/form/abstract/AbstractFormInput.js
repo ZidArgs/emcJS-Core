@@ -1,20 +1,21 @@
-import AbstractFormElement from "../AbstractFormElement.js";
+import AbstractFormField from "./AbstractFormField.js";
 import "../../i18n/I18nLabel.js";
 import "../../i18n/I18nTextbox.js";
-import TPL from "./AbstractFormInput.js.html" assert {type: "html"};
-import STYLE from "./AbstractFormInput.js.css" assert {type: "css"};
+import TPL from "../abstract/AbstractFormInput.js.html" assert {type: "html"};
+import STYLE from "../abstract/AbstractFormInput.js.css" assert {type: "css"};
 
 // https://web.dev/more-capable-form-controls/#form-associated-custom-elements
 
-// TODO actually handle readonly correctly (in all of the fields)
-
-export default class AbstractFormInput extends AbstractFormElement {
+export default class AbstractFormInput extends AbstractFormField {
 
     #resetEl;
 
     constructor() {
+        if (new.target === AbstractFormInput) {
+            throw new Error("can not construct abstract class");
+        }
         super();
-        this.shadowRoot.append(TPL.generate());
+        this.shadowRoot.getElementById("field-container").append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#resetEl = this.shadowRoot.getElementById("reset");
@@ -27,14 +28,9 @@ export default class AbstractFormInput extends AbstractFormElement {
             event.fieldId = this.id;
             this.dispatchEvent(event);
         });
-        this.addEventListener("invalid", function(event) {
-            event.preventDefault();
-            this.focus();
-        }, true);
     }
 
     connectedCallback() {
-        super.connectedCallback();
         this.value = this.getAttribute("value") || "";
     }
 

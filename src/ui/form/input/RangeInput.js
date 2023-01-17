@@ -1,4 +1,4 @@
-import AbstractFormInput from "./AbstractFormInput.js";
+import AbstractFormInput from "../abstract/AbstractFormInput.js";
 import "./components/InputResetButton.js";
 import "../../i18n/I18nInput.js";
 import {
@@ -84,10 +84,11 @@ export default class RangeInput extends AbstractFormInput {
     }
 
     static get observedAttributes() {
-        return ["value", "readonly", "min", "max", "scratched"];
+        return [...super.observedAttributes, "value", "readonly", "min", "max", "scratched"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {

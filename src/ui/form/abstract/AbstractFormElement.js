@@ -1,4 +1,4 @@
-import CustomElementDelegating from "../element/CustomElementDelegating.js";
+import CustomElement from "../../element/CustomElement.js";
 
 const Q_TAB = [
     "button:not([tabindex=\"-1\"])",
@@ -9,7 +9,7 @@ const Q_TAB = [
     "[tabindex]:not([tabindex=\"-1\"])"
 ].join(",");
 
-export default class AbstractFormElement extends CustomElementDelegating {
+export default class AbstractFormElement extends CustomElement {
 
     static get formAssociated() {
         return true;
@@ -18,18 +18,15 @@ export default class AbstractFormElement extends CustomElementDelegating {
     #internals;
 
     constructor() {
+        if (new.target === AbstractFormElement) {
+            throw new Error("can not construct abstract class");
+        }
         super();
         this.#internals = this.attachInternals();
     }
 
     get internals() {
         return this.#internals;
-    }
-
-    connectedCallback() {
-        if (!this.hasAttribute("tabindex")) {
-            this.setAttribute("tabindex", 0);
-        }
     }
 
     focus(options) {

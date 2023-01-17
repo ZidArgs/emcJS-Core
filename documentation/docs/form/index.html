@@ -19,7 +19,6 @@
     </style>
     <script type="module">
         import "/emcJS/ui/form/FormContainer.js";
-        import "/emcJS/ui/form/FormField.js";
         import "/emcJS/ui/form/FormFieldset.js";
         import "/emcJS/ui/form/FormButtonRow.js";
         // buttons
@@ -49,29 +48,17 @@
 
         <emc-form-fieldset label="text" desc="test.desc">
 
-            <emc-form-field label="text default" desc="test.desc">
-                <emc-input-string name="text.default" value="this is a text" placeholder="Enter text..."></emc-input-string>
-            </emc-form-field>
+            <emc-input-string label="text default" desc="test.desc" name="text.default" value="this is a text" placeholder="Enter text..."></emc-input-string>
 
-            <emc-form-field label="text resettable">
-                <emc-input-string name="text.resettable" value="" resettable placeholder="Enter text..."></emc-input-string>
-            </emc-form-field>
+            <emc-input-string label="text resettable" name="text.resettable" value="" resettable placeholder="Enter text..."></emc-input-string>
 
-            <emc-form-field label="text required">
-                <emc-input-string name="text.required" value="" required placeholder="Enter text..."></emc-input-string>
-            </emc-form-field>
+            <emc-input-string label="text required" name="text.required" value="" required placeholder="Enter text..."></emc-input-string>
 
-            <emc-form-field label="text readonly">
-                <emc-input-string name="text.readonly" value="readonly text" readonly placeholder="Enter text..."></emc-input-string>
-            </emc-form-field>
+            <emc-input-string label="text readonly" name="text.readonly" value="readonly text" readonly placeholder="Enter text..."></emc-input-string>
 
-            <emc-form-field label="text disabled">
-                <emc-input-string name="text.disabled" value="" disabled placeholder="Enter text..."></emc-input-string>
-            </emc-form-field>
+            <emc-input-string label="text disabled" name="text.disabled" value="" disabled placeholder="Enter text..."></emc-input-string>
 
-            <emc-form-field label="text resettable disabled">
-                <emc-input-string name="text.resettable_disabled" value="" resettable disabled placeholder="Enter text..."></emc-input-string>
-            </emc-form-field>
+            <emc-input-string label="text resettable disabled" name="text.resettable_disabled" value="" resettable disabled placeholder="Enter text..."></emc-input-string>
 
         </emc-form-fieldset>
 
@@ -79,29 +66,17 @@
 
         <emc-form-fieldset label="number">
 
-            <emc-form-field label="number default">
-                <emc-input-number name="number.default" value="42" placeholder="Enter number..."></emc-input-number>
-            </emc-form-field>
+            <emc-input-number label="number default" name="number.default" value="42" placeholder="Enter number..."></emc-input-number>
 
-            <emc-form-field label="number resettable">
-                <emc-input-number name="number.resettable" value="" resettable placeholder="Enter number..."></emc-input-number>
-            </emc-form-field>
+            <emc-input-number label="number resettable" name="number.resettable" value="" resettable placeholder="Enter number..."></emc-input-number>
 
-            <emc-form-field label="number required">
-                <emc-input-number name="number.required" value="" required placeholder="Enter number..."></emc-input-number>
-            </emc-form-field>
+            <emc-input-number label="number required" name="number.required" value="" required placeholder="Enter number..."></emc-input-number>
 
-            <emc-form-field label="number readonly">
-                <emc-input-number name="number.readonly" value="42" readonly placeholder="Enter text..."></emc-input-number>
-            </emc-form-field>
+            <emc-input-number label="number readonly" name="number.readonly" value="42" readonly placeholder="Enter text..."></emc-input-number>
 
-            <emc-form-field label="number disabled">
-                <emc-input-number name="number.disabled" value="" disabled placeholder="Enter number..."></emc-input-number>
-            </emc-form-field>
+            <emc-input-number label="number disabled" name="number.disabled" value="" disabled placeholder="Enter number..."></emc-input-number>
 
-            <emc-form-field label="number resettable disabled">
-                <emc-input-number name="number.resettable_disabled" value="" resettable disabled placeholder="Enter number..."></emc-input-number>
-            </emc-form-field>
+            <emc-input-number label="number resettable disabled" name="number.resettable_disabled" value="" resettable disabled placeholder="Enter number..."></emc-input-number>
 
         </emc-form-fieldset>
 
@@ -109,29 +84,17 @@
 
         <emc-form-fieldset label="password">
 
-            <emc-form-field label="password default">
-                <emc-input-password name="password.default" value="password" placeholder="Enter password..."></emc-input-password>
-            </emc-form-field>
+            <emc-input-password label="password default" name="password.default" value="password" placeholder="Enter password..."></emc-input-password>
 
-            <emc-form-field label="password resettable">
-                <emc-input-password name="password.resettable" value="" resettable placeholder="Enter password..."></emc-input-password>
-            </emc-form-field>
+            <emc-input-password label="password resettable" name="password.resettable" value="" resettable placeholder="Enter password..."></emc-input-password>
 
-            <emc-form-field label="password required">
-                <emc-input-password name="password.required" value="" required placeholder="Enter password..."></emc-input-password>
-            </emc-form-field>
+            <emc-input-password label="password required" name="password.required" value="" required placeholder="Enter password..."></emc-input-password>
 
-            <emc-form-field label="password readonly">
-                <emc-input-password name="password.readonly" value="password" readonly placeholder="Enter password..."></emc-input-password>
-            </emc-form-field>
+            <emc-input-password label="password readonly" name="password.readonly" value="password" readonly placeholder="Enter password..."></emc-input-password>
 
-            <emc-form-field label="password disabled">
-                <emc-input-password name="password.disabled" value="" disabled placeholder="Enter password..."></emc-input-password>
-            </emc-form-field>
+            <emc-input-password label="password disabled" name="password.disabled" value="" disabled placeholder="Enter password..."></emc-input-password>
 
-            <emc-form-field label="password resettable disabled">
-                <emc-input-password name="password.resettable_disabled" value="" resettable disabled placeholder="Enter password..."></emc-input-password>
-            </emc-form-field>
+            <emc-input-password label="password resettable disabled" name="password.resettable_disabled" value="" resettable disabled placeholder="Enter password..."></emc-input-password>
 
         </emc-form-fieldset>
 
@@ -139,29 +102,17 @@
 
         <emc-form-fieldset label="color">
 
-            <emc-form-field label="color default">
-                <emc-input-color name="color.default" value="#ff0000" placeholder="Choose color..."></emc-input-color>
-            </emc-form-field>
+            <emc-input-color label="color default" name="color.default" value="#ff0000" placeholder="Choose color..."></emc-input-color>
 
-            <emc-form-field label="color resettable">
-                <emc-input-color name="color.resettable" value="" resettable placeholder="Choose color..."></emc-input-color>
-            </emc-form-field>
+            <emc-input-color label="color resettable" name="color.resettable" value="" resettable placeholder="Choose color..."></emc-input-color>
 
-            <emc-form-field label="color required">
-                <emc-input-color name="color.required" value="" required placeholder="Choose color..."></emc-input-color>
-            </emc-form-field>
+            <emc-input-color label="color required" name="color.required" value="" required placeholder="Choose color..."></emc-input-color>
 
-            <emc-form-field label="color readonly">
-                <emc-input-color name="color.readonly" value="#00ffff" readonly placeholder="Choose color..."></emc-input-color>
-            </emc-form-field>
+            <emc-input-color label="color readonly" name="color.readonly" value="#00ffff" readonly placeholder="Choose color..."></emc-input-color>
 
-            <emc-form-field label="color disabled">
-                <emc-input-color name="color.disabled" value="" disabled placeholder="Choose color..."></emc-input-color>
-            </emc-form-field>
+            <emc-input-color label="color disabled" name="color.disabled" value="" disabled placeholder="Choose color..."></emc-input-color>
 
-            <emc-form-field label="color resettable disabled">
-                <emc-input-color name="color.resettable_disabled" value="" resettable disabled placeholder="Choose color..."></emc-input-color>
-            </emc-form-field>
+            <emc-input-color label="color resettable disabled" name="color.resettable_disabled" value="" resettable disabled placeholder="Choose color..."></emc-input-color>
 
         </emc-form-fieldset>
 
@@ -169,25 +120,15 @@
 
         <emc-form-fieldset label="range">
 
-            <emc-form-field label="range default">
-                <emc-input-range name="range.default" value="4"></emc-input-range>
-            </emc-form-field>
+            <emc-input-range label="range default" name="range.default" value="4"></emc-input-range>
 
-            <emc-form-field label="range scratched">
-                <emc-input-range name="range.scratched" value="4" min="-10" max="30" scratched></emc-input-range>
-            </emc-form-field>
+            <emc-input-range label="range scratched" name="range.scratched" value="4" min="-10" max="30" scratched></emc-input-range>
 
-            <emc-form-field label="range resettable">
-                <emc-input-range name="range.resettable" value="" min="-20" max="20" resettable></emc-input-range>
-            </emc-form-field>
+            <emc-input-range label="range resettable" name="range.resettable" value="" min="-20" max="20" resettable></emc-input-range>
 
-            <emc-form-field label="range disabled">
-                <emc-input-range name="range.disabled" value="" disabled></emc-input-range>
-            </emc-form-field>
+            <emc-input-range label="range disabled" name="range.disabled" value="" disabled></emc-input-range>
 
-            <emc-form-field label="range resettable disabled">
-                <emc-input-range name="range.resettable_disabled" value="" resettable disabled></emc-input-range>
-            </emc-form-field>
+            <emc-input-range label="range resettable disabled" name="range.resettable_disabled" value="" resettable disabled></emc-input-range>
 
         </emc-form-fieldset>
 

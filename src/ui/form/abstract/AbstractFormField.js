@@ -1,22 +1,16 @@
-import CustomElement from "../element/CustomElement.js";
-import "../i18n/I18nLabel.js";
-import "../i18n/I18nTextbox.js";
-import TPL from "./FormField.js.html" assert {type: "html"};
-import STYLE from "./FormField.js.css" assert {type: "css"};
-
-const Q_TAB = [
-    "button:not([tabindex=\"-1\"])",
-    "[href]:not([tabindex=\"-1\"])",
-    "input:not([tabindex=\"-1\"])",
-    "select:not([tabindex=\"-1\"])",
-    "textarea:not([tabindex=\"-1\"])",
-    "[tabindex]:not([tabindex=\"-1\"])"
-].join(",");
+import AbstractFormElement from "./AbstractFormElement.js";
+import "../../i18n/I18nLabel.js";
+import "../../i18n/I18nTextbox.js";
+import TPL from "./AbstractFormField.js.html" assert {type: "html"};
+import STYLE from "./AbstractFormField.js.css" assert {type: "css"};
 
 // TODO store all errors based on keys
-export default class FormField extends CustomElement {
+export default class AbstractFormField extends AbstractFormElement {
 
     constructor() {
+        if (new.target === AbstractFormField) {
+            throw new Error("can not construct abstract class");
+        }
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
@@ -25,14 +19,10 @@ export default class FormField extends CustomElement {
             this.shadowRoot.getElementById("error").innerText = event.target.validationMessage ?? "";
         });
         /* --- */
-        const labelEl = this.shadowRoot.getElementById("label");
-        labelEl.addEventListener("click", (event) => {
-            if (event.target === labelEl) {
-                const firstFocusEl = this.querySelector(Q_TAB);
-                if (firstFocusEl != null) {
-                    firstFocusEl.focus();
-                }
-            }
+        const errorEl = this.shadowRoot.getElementById("error");
+        errorEl.addEventListener("click", (event) => {
+            this.focus();
+            event.preventDefault();
         });
     }
 
@@ -85,5 +75,3 @@ export default class FormField extends CustomElement {
     }
 
 }
-
-customElements.define("emc-form-field", FormField);

@@ -4,9 +4,6 @@
     align-items: stretch;
     justify-content: stretch;
     flex-direction: column;
-    width: 100%;
-    min-width: 100px;
-    height: 2rem;
     font-size: 1rem;
     box-sizing: border-box;
 }

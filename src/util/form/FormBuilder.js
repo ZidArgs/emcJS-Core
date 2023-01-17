@@ -31,12 +31,9 @@ export default class FormBuilder {
             } break;
             case "number": {
                 // existing
-                // missing: min, max
             } break;
             case "range": {
-                const min = parseFloat(option.min);
-                const max = parseFloat(option.max);
-                window.addRangeInput(category, ref, label, desc, option.default, option.visible, option.resettable, min, max);
+                // existing
             } break;
             case "check": {
                 window.addCheckInput(category, ref, label, desc, option.default, option.visible, option.resettable);

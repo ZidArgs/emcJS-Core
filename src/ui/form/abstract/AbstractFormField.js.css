@@ -17,6 +17,7 @@
     align-items: flex-start;
     justify-content: flex-start;
     flex-direction: column;
+    padding: 10px;
     color: var(--form-text-color, #000000);
     background-color: var(--form-back-color, #ffffff);
 }
@@ -29,11 +30,7 @@
     align-items: flex-start;
     justify-content: flex-start;
     flex-direction: column;
-    flex-basis: 40px;
     flex-shrink: 0;
-    width: 100%;
-    min-width: 100px;
-    padding: 10px;
     cursor: pointer;
     user-select: none;
 }
@@ -47,6 +44,18 @@
 #text:empty {
     display: none;
 }
+#field-container {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-start;
+    height: 2rem;
+    width: 100%;
+    min-width: 100px;
+}
+#field-container input:invalid {
+    background-color: var(--input-invalid-back-color, #ffcccc);
+}
 #error {
     display: block;
     flex-shrink: 0;
@@ -56,6 +65,8 @@
     font-style: italic;
     color: var(--form-invalid-text-color, #a70000);
     background-color: var(--form-invalid-back-color, #ffeeee);
+    cursor: pointer;
+    user-select: none;
 }
 #error:empty {
     display: none;
@@ -67,10 +78,9 @@
     margin-top: 5px;
     font-size: 0.9em;
     font-style: italic;
+    cursor: default;
+    user-select: none;
 }
 #description:empty {
     display: none;
-}
-::slotted(input:invalid) {
-    background-color: var(--input-invalid-back-color, #ffcccc);
 }

@@ -1,4 +1,4 @@
-import AbstractFormElement from "../../ui/form/AbstractFormElement.js";
+import AbstractFormElement from "../../ui/form/abstract/AbstractFormElement.js";
 import ClassRegistry from "./ClassRegistry.js";
 
 class FormElementRegistry extends ClassRegistry {

@@ -1,4 +1,4 @@
-import AbstractFormInput from "./AbstractFormInput.js";
+import AbstractFormInput from "../abstract/AbstractFormInput.js";
 import "./components/InputResetButton.js";
 import "./components/ToggleShowButton.js";
 import "../../i18n/I18nInput.js";
@@ -63,10 +63,11 @@ export default class PasswordInput extends AbstractFormInput {
     }
 
     static get observedAttributes() {
-        return ["value", "placeholder", "readonly"];
+        return [...super.observedAttributes, "value", "placeholder", "readonly"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
