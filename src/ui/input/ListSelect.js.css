@@ -31,13 +31,17 @@ slot {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    min-height: 2rem;
+    min-height: 32px;
     padding: 5px 5px 5px 35px;
     white-space: normal;
     color: var(--list-color-front, #000000);
     background-color: var(--list-color-back, #ffffff);
     border-bottom: solid 1px #eee;
     font-size: 1rem;
+    line-height: 1.3em;
+}
+::slotted([value]:last-child) {
+    border-bottom: none 0px transparent;
 }
 ::slotted([value][disabled]) {
     display: none;
@@ -49,7 +53,7 @@ slot {
 ::slotted([value])::before {
     position: absolute;
     left: 0;
-    margin: 0px 10px 0px 9px;
+    margin: -1px 10px -4px 9px;
     font-size: 1.2rem;
     line-height: 1em;
     content: "☐";
@@ -68,7 +72,7 @@ slot {
     align-items: center;
     justify-content: center;
     font-style: italic;
-    min-height: 2rem;
+    min-height: 32px;
     padding: 5px;
     margin: 5px 2px;
     white-space: normal;

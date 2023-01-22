@@ -1,6 +1,14 @@
 import CustomElementDelegating from "../element/CustomElementDelegating.js";
 import ListSelectionHelper from "../../util/helper/ui/ListSelectionHelper.js";
+import EventTargetManager from "../../util/event/EventTargetManager.js";
+import i18n from "../../util/I18n.js";
 import SearchAnd from "../../util/search/SearchAnd.js";
+import {
+    sortChildrenByText
+} from "../../util/helper/ui/sortNodeList.js";
+import {
+    debounce
+} from "../../util/Debouncer.js";
 import "../header/SelectionHeader.js";
 import "./Option.js";
 import TPL from "./ListSelect.js.html" assert {type: "html"};
@@ -8,13 +16,18 @@ import STYLE from "./ListSelect.js.css" assert {type: "css"};
 
 export default class ListSelect extends CustomElementDelegating {
 
+    #slotEventManager;
+
+    #i18nEventManager = new EventTargetManager(i18n);
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
         const containerEl = this.shadowRoot.getElementById("container");
-        containerEl.addEventListener("slotchange", () => {
+        this.#slotEventManager = new EventTargetManager(containerEl);
+        this.#slotEventManager.set("slotchange", () => {
             const all = this.querySelectorAll(`[value]`);
             for (const el of all) {
                 if (el) {
@@ -23,7 +36,10 @@ export default class ListSelect extends CustomElementDelegating {
                     };
                 }
             }
-            this.calculateItems();
+            this.#calculateItems();
+            if (this.getBooleanAttribute("sort")) {
+                this.#sort();
+            }
         });
         /* header */
         const headerEl = this.shadowRoot.getElementById("header");
@@ -101,6 +117,14 @@ export default class ListSelect extends CustomElementDelegating {
         selectionHelper.addEventListener("choose", (event) => {
             this.#choose(event.value);
         });
+        /* --- */
+        this.#i18nEventManager.setActive(this.getBooleanAttribute("sort"));
+        this.#i18nEventManager.set("language", () => {
+            this.#sort();
+        });
+        this.#i18nEventManager.set("translation", () => {
+            this.#sort();
+        });
     }
 
     focus() {
@@ -130,7 +154,7 @@ export default class ListSelect extends CustomElementDelegating {
                 };
             }
         }
-        this.calculateItems();
+        this.#calculateItems();
     }
 
     serialize() {
@@ -198,22 +222,22 @@ export default class ListSelect extends CustomElementDelegating {
     }
 
     static get observedAttributes() {
-        return ["value", "multiple"];
+        return ["value", "multiple", "sort"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
-            case "value":
+            case "value": {
                 if (oldValue != newValue) {
-                    this.calculateItems();
+                    this.#calculateItems();
                     const event = new Event("change");
                     event.oldValue = oldValue;
                     event.newValue = newValue;
                     event.value = newValue;
                     this.dispatchEvent(event);
                 }
-                break;
-            case "multiple":
+            } break;
+            case "multiple": {
                 if (oldValue != newValue) {
                     if (newValue != "true") {
                         const arr = JSON.parse(this.getAttribute("value"));
@@ -231,7 +255,12 @@ export default class ListSelect extends CustomElementDelegating {
                     const header = this.shadowRoot.getElementById("header");
                     header.multiple = newValue;
                 }
-                break;
+            } break;
+            case "sort": {
+                if (oldValue != newValue) {
+                    this.#i18nEventManager.setActive(this.getBooleanAttribute("sort"));
+                }
+            } break;
         }
     }
 
@@ -240,7 +269,7 @@ export default class ListSelect extends CustomElementDelegating {
         header.search = "";
     }
 
-    calculateItems() {
+    #calculateItems() {
         const header = this.shadowRoot.getElementById("header");
         const all = this.querySelectorAll(`[value]`);
         if (this.multiple) {
@@ -304,6 +333,12 @@ export default class ListSelect extends CustomElementDelegating {
     hasValue(value) {
         return this.querySelector(`[value="${value}"]`) != null;
     }
+
+    #sort = debounce(() => {
+        this.#slotEventManager.setActive(false);
+        sortChildrenByText(this, `[value]`);
+        this.#slotEventManager.setActive(true);
+    });
 
 }
 

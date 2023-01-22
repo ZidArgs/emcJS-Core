@@ -1,5 +1,13 @@
 import CustomElementDelegating from "../element/CustomElementDelegating.js";
+import EventTargetManager from "../../util/event/EventTargetManager.js";
+import i18n from "../../util/I18n.js";
 import SearchAnd from "../../util/search/SearchAnd.js";
+import {
+    sortChildrenByText
+} from "../../util/helper/ui/sortNodeList.js";
+import {
+    debounce
+} from "../../util/Debouncer.js";
 import "./Option.js";
 import "../symbols/ChevronDownSymbol.js";
 import TPL from "./SearchSelect.js.html" assert {type: "html"};
@@ -7,12 +15,18 @@ import STYLE from "./SearchSelect.js.css" assert {type: "css"};
 
 export default class SearchSelect extends CustomElementDelegating {
 
+    #slotEventManager;
+
+    #i18nEventManager = new EventTargetManager(i18n);
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.shadowRoot.getElementById("container").addEventListener("slotchange", () => {
+        const containerEl = this.shadowRoot.getElementById("container");
+        this.#slotEventManager = new EventTargetManager(containerEl);
+        this.#slotEventManager.set("slotchange", () => {
             const all = this.querySelectorAll(`[value]`);
             for (const el of all) {
                 if (el) {
@@ -26,10 +40,14 @@ export default class SearchSelect extends CustomElementDelegating {
                     }
                 }
             }
+            if (this.getBooleanAttribute("sort")) {
+                this.#sort();
+            }
         });
+        /* --- */
         const viewEl = this.shadowRoot.getElementById("view");
         const inputEl = this.shadowRoot.getElementById("input");
-        const containerEl = this.shadowRoot.getElementById("scroll-container");
+        const scrollContainerEl = this.shadowRoot.getElementById("scroll-container");
         this.addEventListener("click", (event) => {
             if (!this.readonly) {
                 viewEl.setAttribute("mode", "edit");
@@ -38,7 +56,6 @@ export default class SearchSelect extends CustomElementDelegating {
             event.stopPropagation();
             return false;
         });
-        const scrollContainerEl = this.shadowRoot.getElementById("scroll-container");
         this.addEventListener("keyup", (event) => {
             if (!this.readonly) {
                 if (viewEl.getAttribute("mode") == "view") {
@@ -120,14 +137,14 @@ export default class SearchSelect extends CustomElementDelegating {
             if (!this.readonly) {
                 inputEl.value = "";
                 const thisRect = this.getBoundingClientRect();
-                containerEl.style.display = "block";
-                containerEl.style.left = `${thisRect.left}px`;
-                containerEl.style.width = `${thisRect.width}px`;
-                const containerRect = containerEl.getBoundingClientRect();
+                scrollContainerEl.style.display = "block";
+                scrollContainerEl.style.left = `${thisRect.left}px`;
+                scrollContainerEl.style.width = `${thisRect.width}px`;
+                const containerRect = scrollContainerEl.getBoundingClientRect();
                 if (thisRect.bottom + containerRect.height > window.innerHeight - 25) {
-                    containerEl.style.bottom = `${window.innerHeight - thisRect.top}px`;
+                    scrollContainerEl.style.bottom = `${window.innerHeight - thisRect.top}px`;
                 } else {
-                    containerEl.style.top = `${thisRect.bottom}px`;
+                    scrollContainerEl.style.top = `${thisRect.bottom}px`;
                 }
             }
         });
@@ -144,7 +161,7 @@ export default class SearchSelect extends CustomElementDelegating {
                 return false;
             }
         });
-        containerEl.addEventListener("wheel", (event) => {
+        scrollContainerEl.addEventListener("wheel", (event) => {
             event.stopPropagation();
             return false;
         }, {passive: true});
@@ -169,6 +186,14 @@ export default class SearchSelect extends CustomElementDelegating {
                 }
             }
         }, true);
+        /* --- */
+        this.#i18nEventManager.setActive(this.getBooleanAttribute("sort"));
+        this.#i18nEventManager.set("language", () => {
+            this.#sort();
+        });
+        this.#i18nEventManager.set("translation", () => {
+            this.#sort();
+        });
     }
 
     connectedCallback() {
@@ -208,12 +233,12 @@ export default class SearchSelect extends CustomElementDelegating {
     }
 
     static get observedAttributes() {
-        return ["value", "readonly"];
+        return ["value", "readonly", "sort"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
-            case "value":
+            case "value": {
                 if (oldValue != newValue) {
                     this.#applyValue(this.value);
                     const event = new Event("change");
@@ -222,8 +247,8 @@ export default class SearchSelect extends CustomElementDelegating {
                     event.value = newValue;
                     this.dispatchEvent(event);
                 }
-                break;
-            case "readonly":
+            } break;
+            case "readonly": {
                 if (oldValue != newValue) {
                     this.shadowRoot.getElementById("view").readonly = newValue;
                     if (newValue != null && newValue != "false") {
@@ -232,7 +257,12 @@ export default class SearchSelect extends CustomElementDelegating {
                         this.shadowRoot.getElementById("view").disabled = false;
                     }
                 }
-                break;
+            } break;
+            case "sort": {
+                if (oldValue != newValue) {
+                    this.#i18nEventManager.setActive(this.getBooleanAttribute("sort"));
+                }
+            } break;
         }
     }
 
@@ -288,6 +318,12 @@ export default class SearchSelect extends CustomElementDelegating {
             view.innerHTML = value;
         }
     }
+
+    #sort = debounce(() => {
+        this.#slotEventManager.setActive(false);
+        sortChildrenByText(this, `[value]`);
+        this.#slotEventManager.setActive(true);
+    });
 
 }
 

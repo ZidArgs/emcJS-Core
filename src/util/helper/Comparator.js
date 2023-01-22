@@ -42,17 +42,22 @@ class Comparator {
             }
         }
 
+        // check dates
+        if (a instanceof Date && b instanceof Date) {
+            return a.getTime() === b.getTime();
+        }
+
+        // check nodes
+        if (a instanceof Node && b instanceof Node) {
+            return a === b;
+        }
+
         // check arrays
         if (Array.isArray(a)) {
             if (a.length != b.length) {
                 return false;
             }
             return a.every((i, j) => this.isEqual(i, b[j]));
-        }
-
-        // check dates
-        if (a instanceof Date && b instanceof Date) {
-            return a.getTime() === b.getTime();
         }
 
         // check dicts

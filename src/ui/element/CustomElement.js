@@ -23,13 +23,10 @@ export default class CustomElement extends HTMLElement {
 
     getBooleanAttribute(name) {
         const value = this.getAttribute(name);
-        if (value === "") {
-            return true;
-        }
-        if (value == null) {
+        if (value == null || value === "false") {
             return false;
         }
-        return value;
+        return true;
     }
 
 }

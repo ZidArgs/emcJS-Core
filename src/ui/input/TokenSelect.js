@@ -1,6 +1,14 @@
 import CustomElementDelegating from "../element/CustomElementDelegating.js";
+import EventTargetManager from "../../util/event/EventTargetManager.js";
+import i18n from "../../util/I18n.js";
 import SearchAnd from "../../util/search/SearchAnd.js";
 import ElementManager from "../../util/html/ElementManager.js";
+import {
+    sortChildrenByText
+} from "../../util/helper/ui/sortNodeList.js";
+import {
+    debounce
+} from "../../util/Debouncer.js";
 import "./components/InputElement.js";
 import "../i18n/I18nLabel.js";
 import "../i18n/I18nTooltip.js";
@@ -29,6 +37,10 @@ export default class TokenSelect extends CustomElementDelegating {
 
     #elManager;
 
+    #slotEventManager;
+
+    #i18nEventManager = new EventTargetManager(i18n);
+
     #onOptionClick = (event) => {
         const el = event.currentTarget;
         if (!this.readonly) {
@@ -55,7 +67,9 @@ export default class TokenSelect extends CustomElementDelegating {
             this.#applyValue([]);
         });
         /* --- */
-        this.shadowRoot.getElementById("container").addEventListener("slotchange", () => {
+        const containerEl = this.shadowRoot.getElementById("container");
+        this.#slotEventManager = new EventTargetManager(containerEl);
+        this.#slotEventManager.set("slotchange", () => {
             const all = this.querySelectorAll(`[value]`);
             for (const el of all) {
                 if (el) {
@@ -66,6 +80,9 @@ export default class TokenSelect extends CustomElementDelegating {
                     };
                     this.#applyValue(this.value);
                 }
+            }
+            if (this.getBooleanAttribute("sort")) {
+                this.#sort();
             }
         });
         const view = this.shadowRoot.getElementById("view");
@@ -215,6 +232,14 @@ export default class TokenSelect extends CustomElementDelegating {
             composer: tokenComposer,
             mutator: tokenMutator
         });
+        /* --- */
+        this.#i18nEventManager.setActive(this.getBooleanAttribute("sort"));
+        this.#i18nEventManager.set("language", () => {
+            this.#sort();
+        });
+        this.#i18nEventManager.set("translation", () => {
+            this.#sort();
+        });
     }
 
     connectedCallback() {
@@ -284,12 +309,12 @@ export default class TokenSelect extends CustomElementDelegating {
     }
 
     static get observedAttributes() {
-        return ["value", "readonly"];
+        return ["value", "readonly", "sort"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
-            case "value":
+            case "value": {
                 if (oldValue != newValue) {
                     this.calculateItems();
                     const event = new Event("change");
@@ -298,8 +323,8 @@ export default class TokenSelect extends CustomElementDelegating {
                     event.value = newValue;
                     this.dispatchEvent(event);
                 }
-                break;
-            case "readonly":
+            } break;
+            case "readonly": {
                 if (oldValue != newValue) {
                     this.shadowRoot.getElementById("view").readonly = newValue;
                     if (newValue != null && newValue != "false") {
@@ -308,7 +333,12 @@ export default class TokenSelect extends CustomElementDelegating {
                         this.shadowRoot.getElementById("view").disabled = false;
                     }
                 }
-                break;
+            } break;
+            case "sort": {
+                if (oldValue != newValue) {
+                    this.#i18nEventManager.setActive(this.getBooleanAttribute("sort"));
+                }
+            } break;
         }
     }
 
@@ -371,6 +401,12 @@ export default class TokenSelect extends CustomElementDelegating {
         }
         this.#elManager.manage(data);
     }
+
+    #sort = debounce(() => {
+        this.#slotEventManager.setActive(false);
+        sortChildrenByText(this, `[value]`);
+        this.#slotEventManager.setActive(true);
+    });
 
 }
 

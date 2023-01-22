@@ -26,7 +26,7 @@ export default class FormBuilder {
         const label = option.label || ref;
         const desc = option.desc;
         switch (option.inputType) {
-            case "boolean": { // former "check"
+            case "switch": { // former "check"
                 window.addCheckInput(category, ref, label, desc, option.default, option.visible, option.resettable);
             } break;
             case "string": {

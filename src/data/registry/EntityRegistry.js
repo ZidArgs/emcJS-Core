@@ -1,4 +1,4 @@
-export default class SimpleRegistry {
+export default class EntityRegistry {
 
     #data = new Map();
 
