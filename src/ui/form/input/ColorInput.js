@@ -25,8 +25,8 @@ export default class ColorInput extends AbstractFormInput {
         this.#inputEl.addEventListener("input", () => {
             this.#onInput();
         });
-        this.#inputEl.addEventListener("change", (event) => {
-            this.dispatchEvent(new Event("change", event));
+        this.#inputEl.addEventListener("change", () => {
+            this.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
         });
         /* --- */
         this.#buttonEl = this.shadowRoot.getElementById("button");
@@ -73,9 +73,7 @@ export default class ColorInput extends AbstractFormInput {
     }
 
     focus(options) {
-        if (this.#inputEl != null) {
-            this.#inputEl.focus(options);
-        }
+        this.#inputEl.focus(options);
     }
 
     #onInput = debounce(() => {

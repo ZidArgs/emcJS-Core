@@ -15,12 +15,17 @@
 #fieldset {
     padding: 10px;
     margin: 5px;
+    background-color: var(--fieldset-back-color, #ffffff);
     border: solid var(--fieldset-border-width, 2px) var(--form-border-color, #000000);
     border-radius: var(--fieldset-border-radius, 0.5em);
 }
 #legend {
+    min-width: 50%;
+    padding: 4px 12px;
     color: var(--form-text-color, #000000);
-    background-color: var(--form-back-color, #ffffff);
+    background-color: var(--fieldset-back-color, #ffffff);
+    border: solid var(--fieldset-border-width, 2px) var(--form-border-color, #000000);
+    border-radius: var(--fieldset-border-radius, 0.5em);
 }
 #description {
     display: block;

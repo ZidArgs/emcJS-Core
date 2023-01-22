@@ -20,7 +20,9 @@ export default class AbstractFormInput extends AbstractFormField {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#resetEl = this.shadowRoot.getElementById("reset");
-        this.#resetEl.addEventListener("click", () => {
+        this.#resetEl.addEventListener("click", (event) => {
+            event.stopPropagation();
+            event.preventDefault();
             this.fieldResetCallback();
             /* --- */
             const resetEvent = new Event("value-reset", {bubbles: true, cancelable: true});

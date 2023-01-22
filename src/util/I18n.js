@@ -84,7 +84,7 @@ class I18n extends EventTarget {
     }
 
     setBase(lang, base = "") {
-        if (typeof lang != "string" || !lang) {
+        if (typeof lang !== "string" || !lang) {
             return;
         }
         const oldBase = this.#base.get(lang) ?? "";
@@ -115,7 +115,7 @@ class I18n extends EventTarget {
     }
 
     setTranslation(lang, values = {}) {
-        if (typeof lang != "string" || !lang) {
+        if (typeof lang !== "string" || !lang) {
             return;
         }
         if (!this.#languages.has(lang)) {
@@ -129,11 +129,11 @@ class I18n extends EventTarget {
         }
         const changes = {};
         for (const key in values) {
-            if (!key || typeof key != "string") {
+            if (!key || typeof key !== "string") {
                 continue;
             }
             const value = values[key];
-            if (!value || typeof value != "string") {
+            if (!value || typeof value !== "string") {
                 continue;
             }
             const trans = this.#languages.get(lang);
@@ -150,7 +150,7 @@ class I18n extends EventTarget {
     }
 
     set default(lang) {
-        if (typeof lang != "string") {
+        if (typeof lang !== "string") {
             return;
         }
         if (this.#default != lang) {
@@ -166,7 +166,7 @@ class I18n extends EventTarget {
     }
 
     set language(lang) {
-        if (typeof lang != "string") {
+        if (typeof lang !== "string") {
             return;
         }
         if (this.#active != lang) {
@@ -183,11 +183,11 @@ class I18n extends EventTarget {
 
     get language() {
         const act = this.#active;
-        if (typeof act == "string" && act && this.#languages.has(act)) {
+        if (typeof act === "string" && act && this.#languages.has(act)) {
             return act;
         }
         const def = this.#default;
-        if (typeof def == "string" && def) {
+        if (typeof def === "string" && def) {
             return def;
         }
         return "";
@@ -200,22 +200,20 @@ class I18n extends EventTarget {
         return this.get(key);
     }
 
-    get(key) {
-        return this.#getTranslation(this.language, key).trim();
+    get(key, values = []) {
+        const trans = this.#getTranslation(this.language, key).trim();
+        return trans.replace(/\{\{([0-9]+)\}\}/g, (n) => values[n]);
     }
 
     #getTranslation(lang, key) {
         if (key == null) {
             return "";
         }
-        if (typeof key == "number" || !isNaN(parseFloat(key))) {
+        if (typeof key === "number" || !isNaN(parseFloat(key))) {
             return key;
         }
-        if (typeof key == "string") {
-            if (typeof lang == "string" && lang) {
-                if (key == "") {
-                    return "";
-                }
+        if (typeof key === "string" && key !== "") {
+            if (typeof lang === "string" && lang) {
                 if (!this.#languages.has(lang)) {
                     I18n.logger.warn(`language "${lang}" is not loaded`);
                     return key;
@@ -250,10 +248,10 @@ class I18n extends EventTarget {
     }
 
     #hasTranslation(lang, key) {
-        if (typeof key != "string" || !key) {
+        if (typeof key !== "string" || !key) {
             return false;
         }
-        if (typeof lang == "string" && lang) {
+        if (typeof lang === "string" && lang) {
             if (this.#languages.get(lang).has(key)) {
                 return true;
             }
@@ -275,7 +273,7 @@ class I18n extends EventTarget {
 
     getKeys(lang) {
         const keys = new Set();
-        if (typeof lang == "string" && lang) {
+        if (typeof lang === "string" && lang) {
             const language = this.#languages.get(lang);
             for (const [key] of language) {
                 keys.add(key);
@@ -301,7 +299,7 @@ class I18n extends EventTarget {
 
     getMissing(lang) {
         const keys = new Set();
-        if (typeof lang == "string" && lang) {
+        if (typeof lang === "string" && lang) {
             const missing = this.#missing.get(lang);
             for (const key of missing) {
                 keys.add(key);

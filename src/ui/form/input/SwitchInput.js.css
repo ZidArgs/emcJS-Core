@@ -1,0 +1,51 @@
+#input {
+    appearance: none;
+    flex-grow: 0;
+    width: 4em;
+    height: 2em;
+    padding: 2px;
+    margin-right: auto;
+    color: var(--input-text-color, #000000);
+    background-color: var(--switch-unchecked-back-color, #ffd68a);
+    border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
+    border-radius: var(--form-border-radius, 0.25em);
+    cursor: pointer;
+}
+#input:checked {
+    background-color: var(--switch-checked-back-color, #a5faa5);
+}
+#input:indeterminate {
+    background-color: var(--switch-indeterminate-back-color, #ffffff);
+}
+#input:focus {
+    box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
+    outline: none;
+    z-index: 1;
+}
+:host(:invalid) #input {
+    background-color: var(--input-invalid-back-color, #ffcccc);
+    border-color: var(--input-invalid-border-color, #b93d3d);
+}
+#input:after {
+    display: block;
+    width: calc(2em - (2 * var(--form-border-width, 2px)));
+    height: calc(2em - (4 * var(--form-border-width, 2px)));
+    background-color: var(--button-back-color, #cccccc);
+    border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
+    border-radius: calc(var(--form-border-radius, 0.25em) / 2);
+    box-sizing: border-box;
+    content: "";
+}
+#input:hover:after {
+    background-color: var(--button-hover-back-color, #000000);
+}
+#input:checked:after {
+    margin-left: auto;
+}
+#input:indeterminate:after {
+    margin-left: auto;
+    margin-right: auto;
+}
+#input:disabled:after {
+    background-color: var(--input-disabled-back-color, #999999);
+}

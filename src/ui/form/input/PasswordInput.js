@@ -24,8 +24,8 @@ export default class PasswordInput extends AbstractFormInput {
         this.#inputEl.addEventListener("input", () => {
             this.#onInput();
         });
-        this.#inputEl.addEventListener("change", (event) => {
-            this.dispatchEvent(new Event("change", event));
+        this.#inputEl.addEventListener("change", () => {
+            this.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
         });
         /* --- */
         this.#showEl = this.shadowRoot.getElementById("show");
@@ -43,9 +43,7 @@ export default class PasswordInput extends AbstractFormInput {
     }
 
     focus(options) {
-        if (this.#inputEl != null) {
-            this.#inputEl.focus(options);
-        }
+        this.#inputEl.focus(options);
     }
 
     #onInput = debounce(() => {

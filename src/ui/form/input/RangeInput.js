@@ -29,8 +29,8 @@ export default class RangeInput extends AbstractFormInput {
             this.#applyValueToBar(this.#inputEl.value);
             this.#onInput();
         });
-        this.#inputEl.addEventListener("change", (event) => {
-            this.dispatchEvent(new Event("change", event));
+        this.#inputEl.addEventListener("change", () => {
+            this.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
         });
         new ResizeObserver(() => {
             this.#applyScratchValue();
@@ -56,9 +56,7 @@ export default class RangeInput extends AbstractFormInput {
     }
 
     focus(options) {
-        if (this.#inputEl != null) {
-            this.#inputEl.focus(options);
-        }
+        this.#inputEl.focus(options);
     }
 
     #onInput = debounce(() => {
@@ -83,7 +81,7 @@ export default class RangeInput extends AbstractFormInput {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "value", "readonly", "min", "max", "scratched"];
+        return [...super.observedAttributes, "value", "min", "max", "scratched"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {

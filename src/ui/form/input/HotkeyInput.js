@@ -97,9 +97,7 @@ export default class HotkeyInput extends AbstractFormInput {
     }
 
     focus(options) {
-        if (this.#inputEl != null) {
-            this.#inputEl.focus(options);
-        }
+        this.#inputEl.focus(options);
     }
 
     #onInput = debounce(() => {

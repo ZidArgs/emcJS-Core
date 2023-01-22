@@ -33,6 +33,7 @@
         import "/emcJS/ui/form/input/ColorInput.js";
         import "/emcJS/ui/form/input/RangeInput.js";
         import "/emcJS/ui/form/input/HotkeyInput.js";
+        import "/emcJS/ui/form/input/SwitchInput.js";
         import i18n from "/emcJS/util/I18n.js";
 
         i18n.setTranslation("en", {
@@ -47,7 +48,7 @@
 
         <!-- text inputs -->
 
-        <emc-form-fieldset label="text" desc="test.desc">
+        <emc-form-fieldset label="text" desc="test.desc" novalidate>
 
             <emc-input-string label="text default" desc="test.desc" name="text.default" value="this is a text" placeholder="Enter text..."></emc-input-string>
 
@@ -148,6 +149,22 @@
             <emc-input-hotkey label="hotkey disabled" name="hotkey.disabled" value="" disabled placeholder="Enter hotkey..."></emc-input-hotkey>
 
             <emc-input-hotkey label="hotkey resettable disabled" name="hotkey.resettable_disabled" value="" resettable disabled placeholder="Enter hotkey..."></emc-input-hotkey>
+
+        </emc-form-fieldset>
+
+        <!-- switch inputs -->
+
+        <emc-form-fieldset label="switch">
+
+            <emc-input-switch label="switch default" name="switch.default" value="true" placeholder="Enter hotkey..."></emc-input-switch>
+
+            <emc-input-switch label="switch resettable" name="switch.resettable" value="false" resettable placeholder="Enter hotkey..."></emc-input-switch>
+
+            <emc-input-switch label="switch required" name="switch.required" value="" required placeholder="Enter hotkey..."></emc-input-switch>
+
+            <emc-input-switch label="switch disabled" name="switch.disabled" value="" disabled placeholder="Enter hotkey..."></emc-input-switch>
+
+            <emc-input-switch label="switch resettable disabled" name="switch.resettable_disabled" value="" resettable disabled placeholder="Enter hotkey..."></emc-input-switch>
 
         </emc-form-fieldset>
 

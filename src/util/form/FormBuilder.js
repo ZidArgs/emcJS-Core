@@ -27,7 +27,7 @@ export default class FormBuilder {
         const desc = option.desc;
         switch (option.inputType) {
             case "switch": { // former "check"
-                window.addCheckInput(category, ref, label, desc, option.default, option.visible, option.resettable);
+                // existing
             } break;
             case "string": {
                 // existing

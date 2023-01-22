@@ -19,7 +19,7 @@
     flex-direction: column;
     padding: 10px;
     color: var(--form-text-color, #000000);
-    background-color: var(--form-back-color, #ffffff);
+    /* background-color: var(--form-back-color, #ffffff); */
 }
 .container:hover {
     color: var(--form-hover-text-color, #000000);

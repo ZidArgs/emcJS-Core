@@ -4,6 +4,11 @@ import {
 import i18n from "../../util/I18n.js";
 import EventTargetManager from "../../util/event/EventTargetManager.js";
 
+/* TODO use templating
+example
+    key: needs {{1}} keypresses to use {{2}}
+    tans_en: to use {{2}} you need to enter at least {{1}} keypresses
+*/
 export default createMixin((superclass) => class I18nMixin extends superclass {
 
     #i18nEventManager = new EventTargetManager(i18n);
