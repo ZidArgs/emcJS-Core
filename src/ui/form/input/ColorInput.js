@@ -96,13 +96,14 @@ export default class ColorInput extends AbstractFormInput {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "value", "placeholder", "readonly"];
+        return [...super.observedAttributes, "value", "placeholder", "readonly", "autocomplete"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
-            case "value": {
+            case "value":
+            case "autocomplete": {
                 if (oldValue != newValue) {
                     this.#inputEl.setAttribute("value", newValue);
                     this.#buttonEl.setAttribute("value", newValue);

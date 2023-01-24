@@ -54,16 +54,17 @@ export default class NumberInput extends AbstractFormInput {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "value", "placeholder", "readonly", "min", "max"];
+        return [...super.observedAttributes, "value", "placeholder", "min", "max", "readonly", "autocomplete"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
             case "value":
-            case "readonly":
             case "min":
-            case "max": {
+            case "max":
+            case "readonly":
+            case "autocomplete": {
                 if (oldValue != newValue) {
                     this.#inputEl.setAttribute(name, newValue);
                 }

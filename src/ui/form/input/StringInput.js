@@ -48,25 +48,22 @@ export default class StringInput extends AbstractFormInput {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "value", "placeholder", "readonly"];
+        return [...super.observedAttributes, "value", "placeholder", "readonly", "autocomplete"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
-            case "value": {
+            case "value":
+            case "readonly":
+            case "autocomplete": {
                 if (oldValue != newValue) {
-                    this.#inputEl.setAttribute("value", newValue);
+                    this.#inputEl.setAttribute(name, newValue);
                 }
             } break;
             case "placeholder": {
                 if (oldValue != newValue) {
                     this.#inputEl.setAttribute("i18n-placeholder", newValue);
-                }
-            } break;
-            case "readonly": {
-                if (oldValue != newValue) {
-                    this.#inputEl.setAttribute("readonly", newValue);
                 }
             } break;
         }

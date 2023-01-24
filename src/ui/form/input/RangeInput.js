@@ -7,8 +7,6 @@ import FormElementRegistry from "../../../data/registry/FormElementRegistry.js";
 import TPL from "./RangeInput.js.html" assert {type: "html"};
 import STYLE from "./RangeInput.js.css" assert {type: "css"};
 
-// TODO calculate if "scratches" can be rendered and if not hide them no matter the attributes
-
 export default class RangeInput extends AbstractFormInput {
 
     #fieldEl;
