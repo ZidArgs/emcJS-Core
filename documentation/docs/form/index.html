@@ -18,6 +18,9 @@
         }
     </style>
     <script type="module">
+        // utils
+        import i18n from "/emcJS/util/I18n.js";
+        // form
         import "/emcJS/ui/form/FormContainer.js";
         import "/emcJS/ui/form/FormFieldset.js";
         import "/emcJS/ui/form/FormButtonRow.js";
@@ -34,7 +37,8 @@
         import "/emcJS/ui/form/input/RangeInput.js";
         import "/emcJS/ui/form/input/HotkeyInput.js";
         import "/emcJS/ui/form/input/SwitchInput.js";
-        import i18n from "/emcJS/util/I18n.js";
+        // select
+        import "/emcJS/ui/form/select/SearchSelect.js";
 
         i18n.setTranslation("en", {
             "test.desc": "this is a test"
@@ -46,7 +50,7 @@
 <body style="display: flex; flex-direction: column;">
     <form is="emc-form" id="form-0">
 
-        <!-- text inputs -->
+        <!-- text input -->
 
         <emc-form-fieldset label="text" desc="test.desc" novalidate>
 
@@ -64,7 +68,7 @@
 
         </emc-form-fieldset>
 
-        <!-- number inputs -->
+        <!-- number input -->
 
         <emc-form-fieldset label="number">
 
@@ -78,11 +82,9 @@
 
             <emc-input-number label="number disabled" name="number.disabled" value="" disabled placeholder="Enter number..."></emc-input-number>
 
-            <emc-input-number label="number resettable disabled" name="number.resettable_disabled" value="" resettable disabled placeholder="Enter number..."></emc-input-number>
-
         </emc-form-fieldset>
 
-        <!-- password inputs -->
+        <!-- password input -->
 
         <emc-form-fieldset label="password">
 
@@ -96,11 +98,9 @@
 
             <emc-input-password label="password disabled" name="password.disabled" value="" disabled placeholder="Enter password..."></emc-input-password>
 
-            <emc-input-password label="password resettable disabled" name="password.resettable_disabled" value="" resettable disabled placeholder="Enter password..."></emc-input-password>
-
         </emc-form-fieldset>
 
-        <!-- color inputs -->
+        <!-- color input -->
 
         <emc-form-fieldset label="color">
 
@@ -114,11 +114,9 @@
 
             <emc-input-color label="color disabled" name="color.disabled" value="" disabled placeholder="Choose color..."></emc-input-color>
 
-            <emc-input-color label="color resettable disabled" name="color.resettable_disabled" value="" resettable disabled placeholder="Choose color..."></emc-input-color>
-
         </emc-form-fieldset>
 
-        <!-- range inputs -->
+        <!-- range input -->
 
         <emc-form-fieldset label="range">
 
@@ -130,11 +128,9 @@
 
             <emc-input-range label="range disabled" name="range.disabled" value="" disabled></emc-input-range>
 
-            <emc-input-range label="range resettable disabled" name="range.resettable_disabled" value="" resettable disabled></emc-input-range>
-
         </emc-form-fieldset>
 
-        <!-- hotkey inputs -->
+        <!-- hotkey input -->
 
         <emc-form-fieldset label="hotkey">
 
@@ -148,11 +144,9 @@
 
             <emc-input-hotkey label="hotkey disabled" name="hotkey.disabled" value="" disabled placeholder="Enter hotkey..."></emc-input-hotkey>
 
-            <emc-input-hotkey label="hotkey resettable disabled" name="hotkey.resettable_disabled" value="" resettable disabled placeholder="Enter hotkey..."></emc-input-hotkey>
-
         </emc-form-fieldset>
 
-        <!-- switch inputs -->
+        <!-- switch input -->
 
         <emc-form-fieldset label="switch">
 
@@ -164,7 +158,35 @@
 
             <emc-input-switch label="switch disabled" name="switch.disabled" value="" disabled placeholder="Enter hotkey..."></emc-input-switch>
 
-            <emc-input-switch label="switch resettable disabled" name="switch.resettable_disabled" value="" resettable disabled placeholder="Enter hotkey..."></emc-input-switch>
+        </emc-form-fieldset>
+
+        <!-- search select -->
+
+        <emc-form-fieldset label="search-select">
+
+            <emc-select-search label="search-select default" name="search-select.default" value="test" placeholder="Enter hotkey...">
+                <emc-option value="test">Test</emc-option>
+                <emc-option value="foobar">Foobar</emc-option>
+                <emc-option value="barfoo">Barfoo</emc-option>
+            </emc-select-search>
+
+            <emc-select-search label="search-select resettable" name="search-select.resettable" value="false" resettable placeholder="Enter hotkey...">
+                <emc-option value="test">Test</emc-option>
+                <emc-option value="foobar">Foobar</emc-option>
+                <emc-option value="barfoo">Barfoo</emc-option>
+            </emc-select-search>
+
+            <emc-select-search label="search-select required" name="search-select.required" value="" required placeholder="Enter hotkey...">
+                <emc-option value="test">Test</emc-option>
+                <emc-option value="foobar">Foobar</emc-option>
+                <emc-option value="barfoo">Barfoo</emc-option>
+            </emc-select-search>
+
+            <emc-select-search label="search-select disabled" name="search-select.disabled" value="" disabled placeholder="Enter hotkey...">
+                <emc-option value="test">Test</emc-option>
+                <emc-option value="foobar">Foobar</emc-option>
+                <emc-option value="barfoo">Barfoo</emc-option>
+            </emc-select-search>
 
         </emc-form-fieldset>
 

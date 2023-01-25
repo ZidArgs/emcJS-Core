@@ -26,7 +26,7 @@ export default class SearchSelect extends AbstractFormInput {
 
     constructor() {
         super();
-        this.shadowRoot.append(TPL.generate());
+        this.shadowRoot.getElementById("field").append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
         const containerEl = this.shadowRoot.getElementById("container");
@@ -238,10 +238,11 @@ export default class SearchSelect extends AbstractFormInput {
     }
 
     static get observedAttributes() {
-        return ["value", "readonly", "sort"];
+        return [...super.observedAttributes, "value", "readonly", "sort"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
