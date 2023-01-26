@@ -1,11 +1,11 @@
-import AbstractFormElement from "./AbstractFormElement.js";
+import CustomFormElement from "../../element/CustomFormElement.js";
 import "../../i18n/I18nLabel.js";
 import "../../i18n/I18nTextbox.js";
 import TPL from "./AbstractFormField.js.html" assert {type: "html"};
 import STYLE from "./AbstractFormField.js.css" assert {type: "css"};
 
 // TODO store all errors based on keys
-export default class AbstractFormField extends AbstractFormElement {
+export default class AbstractFormField extends CustomFormElement {
 
     constructor() {
         if (new.target === AbstractFormField) {

@@ -1,11 +1,15 @@
-// import TPL from "./CustomElement.html" assert {type: "html"};
-import STYLE from "./CustomElement.css" assert {type: "css"};
+// import TPL from "./CustomElement.js.html" assert {type: "html"};
+import STYLE from "./CustomElement.js.css" assert {type: "css"};
 
 export default class CustomElement extends HTMLElement {
 
     constructor() {
+        if (new.target === CustomElement) {
+            throw new Error("can not construct abstract class");
+        }
         super();
         this.attachShadow({mode: "open"});
+        // this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
     }
 

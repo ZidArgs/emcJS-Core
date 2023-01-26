@@ -1,10 +1,10 @@
-import AbstractFormElement from "../AbstractFormElement.js";
+import CustomFormElement from "../../element/CustomFormElement.js";
 import "../../i18n/I18nTooltip.js";
 import "../../i18n/I18nLabel.js";
 import TPL from "./LinkButton.js.html" assert {type: "html"};
 import STYLE from "./LinkButton.js.css" assert {type: "css"};
 
-export default class LinkButton extends AbstractFormElement {
+export default class LinkButton extends CustomFormElement {
 
     #buttonEl;
 

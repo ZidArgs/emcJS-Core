@@ -1,13 +1,13 @@
-import AbstractFormInput from "../abstract/AbstractFormInput.js";
-import "../../i18n/I18nInput.js";
+import AbstractFormInput from "../../abstract/AbstractFormInput.js";
+import "../../../i18n/I18nInput.js";
 import {
     debounce
-} from "../../../util/Debouncer.js";
+} from "../../../../util/Debouncer.js";
 import {
     toStartUppercaseEndLowercase
-} from "../../../util/helper/string/caseConversion.js";
-import FormElementRegistry from "../../../data/registry/FormElementRegistry.js";
-import EventTargetManager from "../../../util/event/EventTargetManager.js";
+} from "../../../../util/helper/string/caseConversion.js";
+import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
+import EventTargetManager from "../../../../util/event/EventTargetManager.js";
 import TPL from "./HotkeyInput.js.html" assert {type: "html"};
 import STYLE from "./HotkeyInput.js.css" assert {type: "css"};
 

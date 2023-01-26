@@ -1,5 +1,5 @@
-import AbstractFormInput from "../abstract/AbstractFormInput.js";
-import FormElementRegistry from "../../../data/registry/FormElementRegistry.js";
+import AbstractFormInput from "../../abstract/AbstractFormInput.js";
+import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
 import TPL from "./SwitchInput.js.html" assert {type: "html"};
 import STYLE from "./SwitchInput.js.css" assert {type: "css"};
 

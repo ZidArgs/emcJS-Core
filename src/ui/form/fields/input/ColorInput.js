@@ -1,10 +1,10 @@
-import AbstractFormInput from "../abstract/AbstractFormInput.js";
-import "../../i18n/I18nInput.js";
+import AbstractFormInput from "../../abstract/AbstractFormInput.js";
+import "../../../i18n/I18nInput.js";
 import {
     debounce
-} from "../../../util/Debouncer.js";
-import FormElementRegistry from "../../../data/registry/FormElementRegistry.js";
-import "../../i18n/I18nTooltip.js";
+} from "../../../../util/Debouncer.js";
+import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
+import "../../../i18n/I18nTooltip.js";
 import TPL from "./ColorInput.js.html" assert {type: "html"};
 import STYLE from "./ColorInput.js.css" assert {type: "css"};
 

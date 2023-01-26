@@ -1,15 +1,19 @@
-import AbstractFormInput from "../abstract/AbstractFormInput.js";
-import "../../i18n/I18nInput.js";
+import AbstractFormInput from "../../abstract/AbstractFormInput.js";
+import "../../button/internal/ToggleShowButton.js";
+import "../../../i18n/I18nInput.js";
 import {
     debounce
-} from "../../../util/Debouncer.js";
-import FormElementRegistry from "../../../data/registry/FormElementRegistry.js";
-import TPL from "./NumberInput.js.html" assert {type: "html"};
-import STYLE from "./NumberInput.js.css" assert {type: "css"};
+} from "../../../../util/Debouncer.js";
+import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
+import "../../../i18n/I18nTooltip.js";
+import TPL from "./PasswordInput.js.html" assert {type: "html"};
+import STYLE from "./PasswordInput.js.css" assert {type: "css"};
 
-export default class NumberInput extends AbstractFormInput {
+export default class PasswordInput extends AbstractFormInput {
 
     #inputEl;
+
+    #showEl;
 
     constructor() {
         super();
@@ -23,11 +27,19 @@ export default class NumberInput extends AbstractFormInput {
         this.#inputEl.addEventListener("change", () => {
             this.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
         });
+        /* --- */
+        this.#showEl = this.shadowRoot.getElementById("show");
+        this.#inputEl.type = this.#showEl.checked ? "text" : "password";
+        this.#showEl.addEventListener("input", () => {
+            this.#inputEl.type = this.#showEl.checked ? "text" : "password";
+        });
     }
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
         this.#inputEl.disabled = disabled;
+        this.#showEl.disabled = disabled;
+        this.#showEl.checked = false;
     }
 
     focus(options) {
@@ -39,39 +51,34 @@ export default class NumberInput extends AbstractFormInput {
     }, 300);
 
     set value(value) {
-        value = parseFloat(value);
-        value = !isNaN(value) ? value : "";
         this.#inputEl.value = value;
         super.value = value;
     }
 
     get value() {
-        const value = this.#inputEl.value;
-        if (value === "") {
-            return value;
-        }
-        return parseFloat(value);
+        return this.#inputEl.value;
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "value", "placeholder", "min", "max", "readonly", "autocomplete"];
+        return [...super.observedAttributes, "value", "placeholder", "readonly"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
-            case "value":
-            case "min":
-            case "max":
-            case "readonly":
-            case "autocomplete": {
+            case "value": {
                 if (oldValue != newValue) {
-                    this.#inputEl.setAttribute(name, newValue);
+                    this.#inputEl.setAttribute("value", newValue);
                 }
             } break;
             case "placeholder": {
                 if (oldValue != newValue) {
                     this.#inputEl.setAttribute("i18n-placeholder", newValue);
+                }
+            } break;
+            case "readonly": {
+                if (oldValue != newValue) {
+                    this.#inputEl.setAttribute("readonly", newValue);
                 }
             } break;
         }
@@ -85,15 +92,7 @@ export default class NumberInput extends AbstractFormInput {
         }
     }
 
-    revalidate() {
-        const value = this.value;
-        if (value !== "" && isNaN(value)) {
-            return "Please enter a valid number";
-        }
-        return super.revalidate();
-    }
-
 }
 
-FormElementRegistry.register("number", NumberInput);
-customElements.define("emc-input-number", NumberInput);
+FormElementRegistry.register("password", PasswordInput);
+customElements.define("emc-input-password", PasswordInput);

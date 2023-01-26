@@ -1,13 +1,13 @@
-import AbstractFormInput from "../abstract/AbstractFormInput.js";
-import "../../i18n/I18nInput.js";
+import AbstractFormInput from "../../abstract/AbstractFormInput.js";
+import "../../../i18n/I18nInput.js";
 import {
     debounce
-} from "../../../util/Debouncer.js";
-import FormElementRegistry from "../../../data/registry/FormElementRegistry.js";
-import TPL from "./StringInput.js.html" assert {type: "html"};
-import STYLE from "./StringInput.js.css" assert {type: "css"};
+} from "../../../../util/Debouncer.js";
+import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
+import TPL from "./NumberInput.js.html" assert {type: "html"};
+import STYLE from "./NumberInput.js.css" assert {type: "css"};
 
-export default class StringInput extends AbstractFormInput {
+export default class NumberInput extends AbstractFormInput {
 
     #inputEl;
 
@@ -39,22 +39,30 @@ export default class StringInput extends AbstractFormInput {
     }, 300);
 
     set value(value) {
+        value = parseFloat(value);
+        value = !isNaN(value) ? value : "";
         this.#inputEl.value = value;
         super.value = value;
     }
 
     get value() {
-        return this.#inputEl.value;
+        const value = this.#inputEl.value;
+        if (value === "") {
+            return value;
+        }
+        return parseFloat(value);
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "value", "placeholder", "readonly", "autocomplete"];
+        return [...super.observedAttributes, "value", "placeholder", "min", "max", "readonly", "autocomplete"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
             case "value":
+            case "min":
+            case "max":
             case "readonly":
             case "autocomplete": {
                 if (oldValue != newValue) {
@@ -77,8 +85,15 @@ export default class StringInput extends AbstractFormInput {
         }
     }
 
+    revalidate() {
+        const value = this.value;
+        if (value !== "" && isNaN(value)) {
+            return "Please enter a valid number";
+        }
+        return super.revalidate();
+    }
+
 }
 
-FormElementRegistry.register("string", StringInput);
-FormElementRegistry.setDefault(StringInput);
-customElements.define("emc-input-string", StringInput);
+FormElementRegistry.register("number", NumberInput);
+customElements.define("emc-input-number", NumberInput);

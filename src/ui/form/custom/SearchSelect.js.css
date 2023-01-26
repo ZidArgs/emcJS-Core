@@ -1,42 +1,51 @@
-.button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 100%;
-    color: var(--input-text-color, #000000);
-    background-color: transparent;
-    font-size: 1.5rem;
-    cursor: pointer;
-}
-#view,
 #input {
-    flex: 1;
+    flex-grow: 1;
+    height: 2em;
     padding: 0px 7px;
-    font-size: inherit;
     color: var(--input-text-color, #000000);
     background-color: var(--input-back-color, #ffffff);
-    border: none;
-    font-size: 1rem;
+    border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
+    border-radius: var(--form-border-radius, 0.25em);
 }
-#input {
-    height: 100%;
+#input:focus {
+    box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
+    outline: none;
+    z-index: 1;
 }
-#view {
-    display: inline;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    cursor: pointer;
+:host(:invalid) #input {
+    background-color: var(--input-invalid-back-color, #ffcccc);
+    border-color: var(--input-invalid-border-color, #b93d3d);
 }
-#view:empty:after {
-    content: "...";
+#button {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    right: 0px;
+    width: 2em;
+    height: 2em;
+    color: var(--button-text-color, #000000);
+    background-color: var(--button-back-color, #cccccc);
+    border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
+    border-radius: 0px var(--form-border-radius, 0.25em) var(--form-border-radius, 0.25em) 0px;
+    line-height: 1.2em;
 }
-#view[mode="edit"] {
-    display: none;
+#button:hover {
+    color: var(--button-hover-text-color, #ffffff);
+    background-color: var(--button-hover-back-color, #000000);
 }
-#view[mode="view"] + #input {
-    display: none;
+#input:disabled + #button {
+    color: var(--input-disabled-text-color, #424242);
+    background-color: var(--input-disabled-back-color, #999999);
+    cursor: default;
+}
+#input:focus + #button {
+    outline: none;
+    z-index: 1;
+}
+:host(:invalid) #button {
+    background-color: var(--input-invalid-back-color, #ffcccc);
+    border-color: var(--input-invalid-border-color, #b93d3d);
 }
 #scroll-container {
     position: fixed;
@@ -49,7 +58,7 @@
     z-index: 1000;
     box-shadow: black 2px 2px 2px;
 }
-slot {
+#options-container {
     display: block;
     width: 100%;
 }

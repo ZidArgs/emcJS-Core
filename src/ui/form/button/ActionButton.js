@@ -1,10 +1,10 @@
-import AbstractFormElement from "../AbstractFormElement.js";
+import CustomFormElement from "../../element/CustomFormElement.js";
 import "../../i18n/I18nTooltip.js";
 import "../../i18n/I18nInput.js";
 import TPL from "./ActionButton.js.html" assert {type: "html"};
 import STYLE from "./ActionButton.js.css" assert {type: "css"};
 
-export default class ActionButton extends AbstractFormElement {
+export default class ActionButton extends CustomFormElement {
 
     #buttonEl;
 
