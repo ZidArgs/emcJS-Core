@@ -15,7 +15,7 @@
     color: #fff;
     overflow: hidden;
 }
-#title:before {
+#title::before {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -27,7 +27,7 @@
     text-align: center;
     content: "+"
 }
-:host([expanded]:not([expanded="false"])) #title:before {
+:host([expanded]:not([expanded="false"])) #title::before {
     content:"-"
 }
 #text {

@@ -34,8 +34,8 @@ button:focus-visible {
 button:disabled {
     opacity: 0.3;
 }
-:host([expand="closed"]) button:before,
-:host([expand="open"]) button:before {
+:host([expand="closed"]) button::before,
+:host([expand="open"]) button::before {
     display: block;
     width: 6px;
     height: 0px;
@@ -49,6 +49,6 @@ button:disabled {
     transform-origin: 3px 4px;
     content: "";
 }
-:host([expand="open"]) button:before {
+:host([expand="open"]) button::before {
     transform: rotate(90deg);
 }

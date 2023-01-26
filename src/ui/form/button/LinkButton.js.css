@@ -61,7 +61,7 @@
     stroke: var(--input-disabled-text-color, #424242);
     fill: var(--input-disabled-text-color, #424242);
 }
-#button[icon]:not([icon=""]):before {
+#button[icon]:not([icon=""])::before {
     display: inline-flex;
     align-items: center;
     margin-right: 5px;

@@ -78,7 +78,7 @@
     align-items: center;
     text-decoration: none;
 }
-::slotted(a):after {
+::slotted(a)::after {
     display: inline-flex;
     align-items: center;
     margin-left: 5px;
@@ -94,7 +94,7 @@
     border-radius: 1rem;
     appearance: none;
 }
-::slotted(input[type="checkbox"]):after {
+::slotted(input[type="checkbox"])::after {
     position: absolute;
     box-sizing: border-box;
     display: block;
@@ -107,13 +107,13 @@
 ::slotted(input[type="checkbox"]:indeterminate) {
     background-color: var(--input-color-hover, #999999);
 }
-::slotted(input[type="checkbox"]:indeterminate):after {
+::slotted(input[type="checkbox"]:indeterminate)::after {
     left: 25%;
 }
 ::slotted(input[type="checkbox"]:checked) {
     background-color: var(--input-text-color, #000000);
 }
-::slotted(input[type="checkbox"]:checked):after {
+::slotted(input[type="checkbox"]:checked)::after {
     left: 50%;
 }
 ::slotted(input[type="radio"]) {
@@ -125,7 +125,7 @@
     border-radius: 1rem;
     appearance: none;
 }
-::slotted(input[type="radio"]:checked):after {
+::slotted(input[type="radio"]:checked)::after {
     position: absolute;
     box-sizing: border-box;
     display: block;

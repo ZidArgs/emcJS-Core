@@ -52,7 +52,7 @@
     white-space: nowrap;
     cursor: pointer;
 }
-#view:empty:after {
+#view:empty::after {
     content: "...";
 }
 #view[mode="edit"] {

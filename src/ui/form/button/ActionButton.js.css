@@ -45,7 +45,7 @@
     box-shadow: none;
     outline: none;
 }
-#button[icon]:not([icon=""]):before {
+#button[icon]:not([icon=""])::before {
     display: inline-flex;
     align-items: center;
     margin-right: 5px;

@@ -42,7 +42,7 @@
     caret-color: transparent;
     cursor: pointer;
 }
-#input.scratched:before {
+#input.scratched::before {
     position: absolute;
     inset: 0.5em;
     padding: 0.125em 2px;
