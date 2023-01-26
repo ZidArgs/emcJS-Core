@@ -161,4 +161,4 @@ export default class RangeInput extends AbstractFormInput {
 }
 
 FormElementRegistry.register("range", RangeInput);
-customElements.define("emc-input-range", RangeInput);
+customElements.define("emc-field-input-range", RangeInput);

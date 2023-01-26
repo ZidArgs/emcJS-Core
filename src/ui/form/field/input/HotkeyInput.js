@@ -193,4 +193,4 @@ export default class HotkeyInput extends AbstractFormInput {
 }
 
 FormElementRegistry.register("hotkey", HotkeyInput);
-customElements.define("emc-input-hotkey", HotkeyInput);
+customElements.define("emc-field-input-hotkey", HotkeyInput);

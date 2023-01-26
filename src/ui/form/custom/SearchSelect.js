@@ -1,18 +1,15 @@
-import "../../../element/FocusKeeper.js";
-import AbstractFormInput from "../../abstract/AbstractFormInput.js";
-import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
-import EventTargetManager from "../../../../util/event/EventTargetManager.js";
-import EventMultiTargetManager from "../../../../util/event/EventMultiTargetManager.js";
-import i18n from "../../../../util/I18n.js";
-import SearchAnd from "../../../../util/search/SearchAnd.js";
+import CustomFormElementDelegating from "../../element/CustomFormElementDelegating.js";
+import EventTargetManager from "../../../util/event/EventTargetManager.js";
+import EventMultiTargetManager from "../../../util/event/EventMultiTargetManager.js";
+import i18n from "../../../util/I18n.js";
+import SearchAnd from "../../../util/search/SearchAnd.js";
 import {
     sortChildrenByText
-} from "../../../../util/helper/ui/sortNodeList.js";
+} from "../../../util/helper/ui/sortNodeList.js";
 import {
     debounce
-} from "../../../../util/Debouncer.js";
-import "../../custom/Option.js";
-import "../../../symbols/ChevronDownSymbol.js";
+} from "../../../util/Debouncer.js";
+import "./Option.js";
 import TPL from "./SearchSelect.js.html" assert {type: "html"};
 import STYLE from "./SearchSelect.js.css" assert {type: "css"};
 
@@ -20,7 +17,7 @@ import STYLE from "./SearchSelect.js.css" assert {type: "css"};
     TODO remove view element - make everything work with just the input
     TODO integrate as form control
 */
-export default class SearchSelect extends AbstractFormInput {
+export default class SearchSelect extends CustomFormElementDelegating {
 
     #isEditMode = false;
 
@@ -38,7 +35,7 @@ export default class SearchSelect extends AbstractFormInput {
 
     constructor() {
         super();
-        this.shadowRoot.getElementById("field").append(TPL.generate());
+        this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#optionSelectEventManager = new EventMultiTargetManager();
@@ -47,6 +44,12 @@ export default class SearchSelect extends AbstractFormInput {
             event.stopPropagation();
             return false;
         });
+        this.#optionSelectEventManager.set("mouseover", () => {
+            const marked = this.querySelector(".marked");
+            if (marked != null) {
+                marked.classList.remove("marked");
+            }
+        });
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#scrollContainerEl = this.shadowRoot.getElementById("scroll-container");
@@ -54,6 +57,7 @@ export default class SearchSelect extends AbstractFormInput {
         const optionsContainerEl = this.shadowRoot.getElementById("options-container");
         this.#slotEventManager = new EventTargetManager(optionsContainerEl);
         this.#slotEventManager.set("slotchange", () => {
+            // TODO build recursive (or at least one level) slot handling
             this.#optionSelectEventManager.clearTargets();
             const all = this.querySelectorAll(`[value]`);
             for (const el of all) {
@@ -82,20 +86,19 @@ export default class SearchSelect extends AbstractFormInput {
                 if (!this.#isEditMode) {
                     switch (event.key) {
                         case "ArrowUp": {
-                            this.#moveSelection(true);
-                            this.#applyValue(this.#value);
+                            this.#switchSelected(true);
                             event.preventDefault();
                             event.stopPropagation();
                             return false;
                         }
                         case "ArrowDown": {
-                            this.#moveSelection(false);
-                            this.#applyValue(this.#value);
+                            this.#switchSelected(false);
                             event.preventDefault();
                             event.stopPropagation();
                             return false;
                         }
-                        case "Enter": {
+                        case "Enter":
+                        case " ": {
                             this.#startEditMode();
                             event.preventDefault();
                             event.stopPropagation();
@@ -117,6 +120,7 @@ export default class SearchSelect extends AbstractFormInput {
                             return false;
                         }
                         case "Enter":
+                        case "Tab":
                         case "Escape": {
                             this.#stopEditMode();
                             event.preventDefault();
@@ -127,7 +131,7 @@ export default class SearchSelect extends AbstractFormInput {
                 }
             }
         });
-        this.shadowRoot.getElementById("focus-keeper").addEventListener("focusout", (event) => {
+        this.addEventListener("blur", (event) => {
             this.#cancelSelection();
             event.stopPropagation();
             return false;
@@ -140,7 +144,6 @@ export default class SearchSelect extends AbstractFormInput {
                     el.style.display = "";
                 } else {
                     el.style.display = "none";
-                    el.classList.remove("marked");
                 }
             }
         }, true);
@@ -177,6 +180,9 @@ export default class SearchSelect extends AbstractFormInput {
     }
 
     connectedCallback() {
+        if (!this.hasAttribute("tabindex")) {
+            this.setAttribute("tabindex", 0);
+        }
         const all = this.querySelectorAll(`[value]`);
         if (!this.value && !!all.length) {
             this.value = all[0].value;
@@ -196,26 +202,54 @@ export default class SearchSelect extends AbstractFormInput {
         this.#inputEl.focus(options);
     }
 
-    #onInput = debounce(() => {
-        super.value = this.#value;
-    }, 300);
-
     set value(value) {
         this.#value = value;
         this.#applyValue(value);
-        super.value = value;
+        this.internals.setFormValue(value);
+        /* --- */
+        const message = this.revalidate();
+        if (typeof message === "string" && message !== "") {
+            this.setCustomValidity(message);
+        } else {
+            this.setCustomValidity("");
+        }
+        /* --- */
+        this.dispatchEvent(new Event("change"));
     }
 
     get value() {
         return this.#value;
     }
 
+    set readonly(value) {
+        this.setBooleanAttribute("readonly", value);
+    }
+
+    get readonly() {
+        return this.getBooleanAttribute("readonly");
+    }
+
+    set required(value) {
+        this.setBooleanAttribute("required", value);
+    }
+
+    get required() {
+        return this.getBooleanAttribute("required");
+    }
+
+    set placeholder(value) {
+        this.setAttribute("placeholder", value);
+    }
+
+    get placeholder() {
+        return this.getAttribute("placeholder");
+    }
+
     static get observedAttributes() {
-        return [...super.observedAttributes, "value", "placeholder", "sort"];
+        return ["value", "placeholder", "sort"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
@@ -252,7 +286,6 @@ export default class SearchSelect extends AbstractFormInput {
     }
 
     #startEditMode() {
-        // TODO remove readonly from input
         // TODO change placeholder
         if (!this.getBooleanAttribute("readonly")) {
             this.#isEditMode = true;
@@ -277,11 +310,9 @@ export default class SearchSelect extends AbstractFormInput {
     }
 
     #stopEditMode() {
-        // TODO add readonly to input
         // TODO reset placeholder
         this.#isEditMode = false;
         this.#inputEl.setAttribute("readonly", "");
-        this.#applyValue(this.#value);
         /* --- */
         this.#scrollContainerEl.style.display = "";
         this.#scrollContainerEl.style.bottom = "";
@@ -293,6 +324,9 @@ export default class SearchSelect extends AbstractFormInput {
         const marked = this.querySelector(".marked");
         if (marked != null) {
             marked.classList.remove("marked");
+            this.value = marked.value;
+        } else {
+            this.#applyValue(this.#value);
         }
     }
 
@@ -305,9 +339,17 @@ export default class SearchSelect extends AbstractFormInput {
         }
     }
 
+    #switchSelected(modeUp = false) {
+        const marked = this.querySelector(`[value="${this.#value}"]`);
+        const el = this.#switchOption(marked, modeUp);
+        if (el != null) {
+            this.value = el.value;
+        }
+    }
+
     #moveMarker(modeUp = false) {
         const marked = this.querySelector(".marked");
-        const el = this.#moveSelection(modeUp);
+        const el = this.#switchOption(marked, modeUp);
         if (el != null) {
             if (marked != null) {
                 marked.classList.remove("marked");
@@ -320,32 +362,57 @@ export default class SearchSelect extends AbstractFormInput {
         }
     }
 
-    #moveSelection(modeUp = false) {
-        const marked = this.querySelector(`[value="${this.#value}"]`);
-        let el;
-        if (marked != null) {
+    #switchOption(oldEl, modeUp = false) {
+        let nextEl;
+        if (oldEl != null) {
             if (modeUp) {
-                el = marked.previousElementSibling;
-                while (el != null && el.style.display == "none") {
-                    el = el.previousElementSibling;
+                nextEl = this.#getPrevOption(oldEl);
+                if (nextEl == null) {
+                    nextEl = this.#getNextOption(oldEl);
                 }
             } else {
-                el = marked.nextElementSibling;
-                while (el != null && el.style.display == "none") {
-                    el = el.nextElementSibling;
+                nextEl = this.#getNextOption(oldEl);
+                if (nextEl == null) {
+                    nextEl = this.#getPrevOption(oldEl);
                 }
             }
         } else {
-            el = this.querySelector("[value]");
-            while (el != null && el.style.display == "none") {
-                el = el.nextElementSibling;
+            nextEl = this.querySelector(`[value="${this.#value}"]`);
+            if (nextEl == null) {
+                nextEl = this.#getFirstOption();
             }
         }
-        if (el != null) {
-            this.#value = el.value;
-            this.#onInput();
+        return nextEl;
+    }
+
+    #getFirstOption() {
+        let nextEl = this.querySelector("[value]");
+        while (nextEl != null && (nextEl.style.display == "none" || !nextEl.matches("[value]"))) {
+            nextEl = nextEl.nextElementSibling;
         }
-        return el;
+        if (nextEl != null && nextEl.style.display != "none" && nextEl.matches("[value]")) {
+            return nextEl;
+        }
+    }
+
+    #getPrevOption(oldEl) {
+        let nextEl = oldEl.previousElementSibling;
+        while (nextEl != null && (nextEl.style.display == "none" || !nextEl.matches("[value]"))) {
+            nextEl = nextEl.previousElementSibling;
+        }
+        if (nextEl != null && nextEl.style.display != "none" && nextEl.matches("[value]")) {
+            return nextEl;
+        }
+    }
+
+    #getNextOption(oldEl) {
+        let nextEl = oldEl.nextElementSibling;
+        while (nextEl != null && (nextEl.style.display == "none" || !nextEl.matches("[value]"))) {
+            nextEl = nextEl.nextElementSibling;
+        }
+        if (nextEl != null && nextEl.style.display != "none" && nextEl.matches("[value]")) {
+            return nextEl;
+        }
     }
 
     #sort = debounce(() => {
@@ -354,7 +421,22 @@ export default class SearchSelect extends AbstractFormInput {
         this.#slotEventManager.setActive(true);
     });
 
+    setCustomValidity(message) {
+        if (typeof message === "string" && message !== "") {
+            this.internals.setValidity({customError: true}, message);
+        } else {
+            this.internals.setValidity({}, "");
+        }
+    }
+
+    // TODO revalidate with custom validation callback
+    revalidate() {
+        if (this.required && this.value === "") {
+            return "This field is required";
+        }
+        return "";
+    }
+
 }
 
-FormElementRegistry.register("search-select", SearchSelect);
 customElements.define("emc-select-search", SearchSelect);

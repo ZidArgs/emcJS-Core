@@ -81,4 +81,4 @@ export default class StringInput extends AbstractFormInput {
 
 FormElementRegistry.register("string", StringInput);
 FormElementRegistry.setDefault(StringInput);
-customElements.define("emc-input-string", StringInput);
+customElements.define("emc-field-input-string", StringInput);

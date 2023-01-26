@@ -86,4 +86,4 @@ export default class SwitchInput extends AbstractFormInput {
 }
 
 FormElementRegistry.register("switch", SwitchInput);
-customElements.define("emc-input-switch", SwitchInput);
+customElements.define("emc-field-input-switch", SwitchInput);

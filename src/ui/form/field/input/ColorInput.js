@@ -147,4 +147,4 @@ export default class ColorInput extends AbstractFormInput {
 }
 
 FormElementRegistry.register("color", ColorInput);
-customElements.define("emc-input-color", ColorInput);
+customElements.define("emc-field-input-color", ColorInput);
