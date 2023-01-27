@@ -27,6 +27,8 @@ export default class SearchSelect extends CustomFormElementDelegating {
 
     #scrollContainerEl;
 
+    #optionsContainerEl;
+
     #optionSelectEventManager;
 
     #slotEventManager;
@@ -39,8 +41,9 @@ export default class SearchSelect extends CustomFormElementDelegating {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#optionSelectEventManager = new EventMultiTargetManager();
-        this.#optionSelectEventManager.set("click", (event) => {
+        this.#optionSelectEventManager.set("mousedown", (event) => {
             this.#choose(event.currentTarget.getAttribute("value"));
+            event.preventDefault();
             event.stopPropagation();
             return false;
         });
@@ -54,16 +57,18 @@ export default class SearchSelect extends CustomFormElementDelegating {
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#scrollContainerEl = this.shadowRoot.getElementById("scroll-container");
         const buttonEl = this.shadowRoot.getElementById("button");
-        const optionsContainerEl = this.shadowRoot.getElementById("options-container");
-        this.#slotEventManager = new EventTargetManager(optionsContainerEl);
+        this.#optionsContainerEl = this.shadowRoot.getElementById("options-container");
+        this.#slotEventManager = new EventTargetManager(this.#optionsContainerEl);
         this.#slotEventManager.set("slotchange", () => {
             // TODO build recursive (or at least one level) slot handling
             this.#optionSelectEventManager.clearTargets();
-            const all = this.querySelectorAll(`[value]`);
+            const all = this.#optionsContainerEl.assignedElements({flatten: true});
             for (const el of all) {
-                this.#optionSelectEventManager.addTarget(el);
-                if (el.value == this.value) {
-                    this.#inputEl.innerHTML = el.innerHTML;
+                if (el.matches("[value]")) {
+                    this.#optionSelectEventManager.addTarget(el);
+                    if (el.value == this.value) {
+                        this.#inputEl.innerHTML = el.innerHTML;
+                    }
                 }
             }
             if (this.getBooleanAttribute("sort")) {
@@ -157,18 +162,6 @@ export default class SearchSelect extends CustomFormElementDelegating {
                 this.#cancelSelection();
             }
         }, {passive: true});
-        window.addEventListener("click", (event) => {
-            if (this.#isEditMode) {
-                this.#cancelSelection();
-                event.preventDefault();
-                event.stopPropagation();
-                return false;
-            }
-        });
-        this.addEventListener("click", (event) => {
-            event.stopPropagation();
-            return false;
-        });
         /* --- */
         this.#i18nEventManager.setActive(this.getBooleanAttribute("sort"));
         this.#i18nEventManager.set("language", () => {
@@ -183,19 +176,33 @@ export default class SearchSelect extends CustomFormElementDelegating {
         if (!this.hasAttribute("tabindex")) {
             this.setAttribute("tabindex", 0);
         }
-        const all = this.querySelectorAll(`[value]`);
-        if (!this.value && !!all.length) {
-            this.value = all[0].value;
-        }
+        this.value = this.getAttribute("value") || "";
         this.#optionSelectEventManager.clearTargets();
+        const all = this.#optionsContainerEl.assignedElements({flatten: true});
         for (const el of all) {
-            this.#optionSelectEventManager.addTarget(el);
+            if (!this.#value) {
+                this.value = all[0].value;
+            }
+            if (el.matches("[value]")) {
+                this.#optionSelectEventManager.addTarget(el);
+                if (el.value == this.value) {
+                    this.#inputEl.innerHTML = el.innerHTML;
+                }
+            }
         }
     }
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
         this.#inputEl.disabled = disabled;
+    }
+
+    formResetCallback() {
+        this.value = this.getAttribute("value") || "";
+    }
+
+    formStateRestoreCallback(state/* , mode */) {
+        this.value = state;
     }
 
     focus(options) {
@@ -206,13 +213,6 @@ export default class SearchSelect extends CustomFormElementDelegating {
         this.#value = value;
         this.#applyValue(value);
         this.internals.setFormValue(value);
-        /* --- */
-        const message = this.revalidate();
-        if (typeof message === "string" && message !== "") {
-            this.setCustomValidity(message);
-        } else {
-            this.setCustomValidity("");
-        }
         /* --- */
         this.dispatchEvent(new Event("change"));
     }
@@ -273,7 +273,6 @@ export default class SearchSelect extends CustomFormElementDelegating {
     #choose(value) {
         if (!this.getBooleanAttribute("readonly")) {
             if (this.#value != value) {
-                this.#applyValue(value);
                 this.value = value;
             }
         }
@@ -330,6 +329,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
         }
     }
 
+    // FIXME use assignedElements
     #applyValue(value) {
         const el = this.querySelector(`[value="${value}"]`);
         if (el != null) {
@@ -385,6 +385,8 @@ export default class SearchSelect extends CustomFormElementDelegating {
         return nextEl;
     }
 
+    // FIXME use assignedElements
+    // TODO add helper for asssigned elements? (indexOf, next, prev, first, last)
     #getFirstOption() {
         let nextEl = this.querySelector("[value]");
         while (nextEl != null && (nextEl.style.display == "none" || !nextEl.matches("[value]"))) {
@@ -395,6 +397,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
         }
     }
 
+    // FIXME use assignedElements
     #getPrevOption(oldEl) {
         let nextEl = oldEl.previousElementSibling;
         while (nextEl != null && (nextEl.style.display == "none" || !nextEl.matches("[value]"))) {
@@ -405,6 +408,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
         }
     }
 
+    // FIXME use assignedElements
     #getNextOption(oldEl) {
         let nextEl = oldEl.nextElementSibling;
         while (nextEl != null && (nextEl.style.display == "none" || !nextEl.matches("[value]"))) {
@@ -415,6 +419,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
         }
     }
 
+    // FIXME somehow this needs to work in some way or sort also in field
     #sort = debounce(() => {
         this.#slotEventManager.setActive(false);
         sortChildrenByText(this, `[value]`);
@@ -427,14 +432,6 @@ export default class SearchSelect extends CustomFormElementDelegating {
         } else {
             this.internals.setValidity({}, "");
         }
-    }
-
-    // TODO revalidate with custom validation callback
-    revalidate() {
-        if (this.required && this.value === "") {
-            return "This field is required";
-        }
-        return "";
     }
 
 }
