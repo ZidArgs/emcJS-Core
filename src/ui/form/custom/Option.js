@@ -1,4 +1,5 @@
 import CustomElement from "../../element/CustomElement.js";
+import "../../i18n/I18nLabel.js";
 import TPL from "./Option.js.html" assert {type: "html"};
 import STYLE from "./Option.js.css" assert {type: "css"};
 

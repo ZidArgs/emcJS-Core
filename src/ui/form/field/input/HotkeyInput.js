@@ -12,6 +12,13 @@ import TPL from "./HotkeyInput.js.html" assert {type: "html"};
 import STYLE from "./HotkeyInput.js.css" assert {type: "css"};
 
 const BLACKLIST = [
+    "Tab",
+    "AltGraph",
+    "Capslock",
+    "Numlock"
+];
+
+const CONTROL_KEYS = [
     "Control",
     "Shift",
     "Alt",
@@ -42,7 +49,7 @@ export default class HotkeyInput extends AbstractFormInput {
         this.#eventTargetManager = new EventTargetManager(this.#inputEl);
         this.#eventTargetManager.set("keydown", (event) => {
             const {key, ctrlKey, shiftKey, altKey, metaKey} = event;
-            if (key !== "Tab") {
+            if (!BLACKLIST.includes(key)) {
                 if (key === "Escape") {
                     this.#value.ctrlKey = false;
                     this.#value.shiftKey = false;
@@ -51,7 +58,7 @@ export default class HotkeyInput extends AbstractFormInput {
                     this.#value.key = null;
                     this.#display(this.#value);
                     this.#onInput();
-                } else if (BLACKLIST.includes(key)) {
+                } else if (CONTROL_KEYS.includes(key)) {
                     this.#display({ctrlKey, shiftKey, altKey, metaKey, key: null});
                 } else {
                     this.#value.ctrlKey = ctrlKey;
@@ -147,8 +154,10 @@ export default class HotkeyInput extends AbstractFormInput {
     setCustomValidity(message) {
         if (typeof message === "string" && message !== "") {
             this.internals.setValidity({customError: true}, message, this.#inputEl);
+            this.#inputEl.setCustomValidity(message);
         } else {
             this.internals.setValidity({}, "");
+            this.#inputEl.setCustomValidity("");
         }
     }
 

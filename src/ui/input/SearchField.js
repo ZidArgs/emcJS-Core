@@ -22,12 +22,6 @@ export default class SearchField extends CustomElementDelegating {
         });
     }
 
-    connectedCallback() {
-        if (!this.hasAttribute("tabindex")) {
-            this.setAttribute("tabindex", 0);
-        }
-    }
-
     get value() {
         return this.getAttribute("value") ?? "";
     }

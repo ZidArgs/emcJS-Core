@@ -1,10 +1,10 @@
-import CustomFormElement from "../../element/CustomFormElement.js";
+import CustomFormElementDelegating from "../../element/CustomFormElementDelegating.js";
 import "../../i18n/I18nTooltip.js";
 import "../../i18n/I18nInput.js";
 import TPL from "./ActionButton.js.html" assert {type: "html"};
 import STYLE from "./ActionButton.js.css" assert {type: "css"};
 
-export default class ActionButton extends CustomFormElement {
+export default class ActionButton extends CustomFormElementDelegating {
 
     #buttonEl;
 
@@ -18,18 +18,6 @@ export default class ActionButton extends CustomFormElement {
             this.dispatchEvent(new MouseEvent("click", event));
             event.stopPropagation();
         });
-    }
-
-    connectedCallback() {
-        if (!this.hasAttribute("tabindex")) {
-            this.setAttribute("tabindex", 0);
-        }
-    }
-
-    focus(options) {
-        if (this.#buttonEl != null) {
-            this.#buttonEl.focus(options);
-        }
     }
 
     formDisabledCallback(disabled) {

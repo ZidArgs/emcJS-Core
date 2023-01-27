@@ -16,3 +16,6 @@
 :host([value][disabled]) {
     display: none;
 }
+#empty {
+    font-style: italic;
+}

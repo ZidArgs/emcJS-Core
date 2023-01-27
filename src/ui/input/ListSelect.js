@@ -4,7 +4,7 @@ import EventTargetManager from "../../util/event/EventTargetManager.js";
 import i18n from "../../util/I18n.js";
 import SearchAnd from "../../util/search/SearchAnd.js";
 import {
-    sortChildrenByText
+    sortChildren
 } from "../../util/helper/ui/sortNodeList.js";
 import {
     debounce
@@ -135,10 +135,6 @@ export default class ListSelect extends CustomElementDelegating {
     }
 
     connectedCallback() {
-        if (!this.hasAttribute("tabindex")) {
-            this.setAttribute("tabindex", 0);
-        }
-        /* --- */
         const all = this.querySelectorAll(`[value]`);
         if (!this.value) {
             if (this.multiple) {
@@ -336,7 +332,7 @@ export default class ListSelect extends CustomElementDelegating {
 
     #sort = debounce(() => {
         this.#slotEventManager.setActive(false);
-        sortChildrenByText(this, `[value]`);
+        sortChildren(this, `[value]`);
         this.#slotEventManager.setActive(true);
     });
 

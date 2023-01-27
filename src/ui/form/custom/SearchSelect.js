@@ -2,24 +2,45 @@ import CustomFormElementDelegating from "../../element/CustomFormElementDelegati
 import EventTargetManager from "../../../util/event/EventTargetManager.js";
 import EventMultiTargetManager from "../../../util/event/EventMultiTargetManager.js";
 import i18n from "../../../util/I18n.js";
-import SearchAnd from "../../../util/search/SearchAnd.js";
+import SearchLoose from "../../../util/search/SearchLoose.js";
 import {
     sortNodeList
 } from "../../../util/helper/ui/sortNodeList.js";
 import {
     debounce
 } from "../../../util/Debouncer.js";
+import Comparator from "../../../util/helper/Comparator.js";
+import ElementListCache from "../../../util/html/ElementListCache.js";
+import "../../i18n/I18nLabel.js";
 import "./Option.js";
 import TPL from "./SearchSelect.js.html" assert {type: "html"};
 import STYLE from "./SearchSelect.js.css" assert {type: "css"};
-import Comparator from "../../../util/helper/Comparator.js";
-import ElementListCache from "../../../util/html/ElementListCache.js";
 
-/*
-    TODO remove view element - make everything work with just the input
-    TODO integrate as form control
-    TODO add viewElement again to be able to show html properly
-*/
+const BLACKLIST = [
+    "Tab",
+    "AltGraph",
+    "Capslock",
+    "Numlock"
+];
+
+const CONTROL_KEYS = [
+    "Tab",
+    "Control",
+    "AltGraph",
+    "Shift",
+    "Alt",
+    "Meta",
+    "Capslock",
+    "Numlock",
+    "Escape"
+];
+
+const ESCAPE_KEYS = [
+    "Tab",
+    "Escape",
+    "Enter"
+];
+
 export default class SearchSelect extends CustomFormElementDelegating {
 
     #isEditMode = false;
@@ -28,6 +49,12 @@ export default class SearchSelect extends CustomFormElementDelegating {
 
     #inputEl;
 
+    #viewEl;
+
+    #buttonEl;
+
+    #placeholderEl;
+
     #scrollContainerEl;
 
     #optionsContainerEl;
@@ -35,8 +62,6 @@ export default class SearchSelect extends CustomFormElementDelegating {
     #optionNodeList = new ElementListCache();
 
     #optionSelectEventManager;
-
-    #slotEventManager;
 
     #i18nEventManager = new EventTargetManager(i18n);
 
@@ -50,7 +75,6 @@ export default class SearchSelect extends CustomFormElementDelegating {
             this.#choose(event.currentTarget.getAttribute("value"));
             event.preventDefault();
             event.stopPropagation();
-            return false;
         });
         this.#optionSelectEventManager.set("mouseover", () => {
             const marked = this.#optionNodeList.querySelector(".marked");
@@ -60,20 +84,21 @@ export default class SearchSelect extends CustomFormElementDelegating {
         });
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
+        this.#viewEl = this.shadowRoot.getElementById("view");
+        this.#placeholderEl = this.shadowRoot.getElementById("placeholder");
         this.#scrollContainerEl = this.shadowRoot.getElementById("scroll-container");
-        const buttonEl = this.shadowRoot.getElementById("button");
+        this.#buttonEl = this.shadowRoot.getElementById("button");
         this.#optionsContainerEl = this.shadowRoot.getElementById("options-container");
-        this.#slotEventManager = new EventTargetManager(this.#optionsContainerEl);
-        this.#slotEventManager.set("slotchange", () => {
+        this.#optionsContainerEl.addEventListener("slotchange", () => {
             this.#resolveSlottedElements()
         });
         /* --- */
-        buttonEl.addEventListener("click", () => {
+        this.#buttonEl.addEventListener("click", () => {
             if (!this.#isEditMode) {
                 this.#startEditMode();
             }
         });
-        this.#inputEl.addEventListener("click", () => {
+        this.#viewEl.addEventListener("click", () => {
             if (!this.#isEditMode) {
                 this.#startEditMode();
             }
@@ -81,61 +106,47 @@ export default class SearchSelect extends CustomFormElementDelegating {
         this.#inputEl.addEventListener("keydown", (event) => {
             if (!this.getBooleanAttribute("readonly")) {
                 if (!this.#isEditMode) {
-                    switch (event.key) {
-                        case "ArrowUp": {
+                    const {key} = event;
+                    if (!BLACKLIST.includes(key) && !CONTROL_KEYS.includes(key)) {
+                        if (key === "ArrowUp") {
                             this.#switchSelected(true);
                             event.preventDefault();
                             event.stopPropagation();
-                            return false;
-                        }
-                        case "ArrowDown": {
+                        } else if (key === "ArrowDown") {
                             this.#switchSelected(false);
                             event.preventDefault();
                             event.stopPropagation();
-                            return false;
-                        }
-                        case "Enter":
-                        case " ": {
+                        } else if (key === "Enter" || key === " ") {
                             this.#startEditMode();
                             event.preventDefault();
                             event.stopPropagation();
-                            return false;
                         }
                     }
                 } else {
-                    switch (event.key) {
-                        case "ArrowUp": {
-                            this.#moveMarker(true);
-                            event.preventDefault();
-                            event.stopPropagation();
-                            return false;
-                        }
-                        case "ArrowDown": {
-                            this.#moveMarker(false);
-                            event.preventDefault();
-                            event.stopPropagation();
-                            return false;
-                        }
-                        case "Enter":
-                        case "Tab":
-                        case "Escape": {
-                            this.#stopEditMode();
-                            event.preventDefault();
-                            event.stopPropagation();
-                            return false;
-                        }
+                    const {key} = event;
+                    if (key === "ArrowUp") {
+                        this.#moveMarker(true);
+                        event.preventDefault();
+                        event.stopPropagation();
+                    } else if (key === "ArrowDown") {
+                        this.#moveMarker(false);
+                        event.preventDefault();
+                        event.stopPropagation();
+                    } else if (ESCAPE_KEYS.includes(key)) {
+                        this.#stopEditMode();
+                        event.preventDefault();
+                        event.stopPropagation();
                     }
                 }
             }
         });
-        this.addEventListener("blur", (event) => {
+        this.#inputEl.addEventListener("blur", (event) => {
             this.#cancelSelection();
             event.stopPropagation();
-            return false;
         });
         this.#inputEl.addEventListener("input", () => {
-            const all = this.querySelectorAll(`[value]`);
-            const regEx = new SearchAnd(this.#inputEl.value);
+            const all = this.#optionNodeList.getNodeList();
+            const regEx = new SearchLoose(this.#inputEl.value);
             for (const el of all) {
                 if (el.innerText.trim().match(regEx)) {
                     el.style.display = "";
@@ -146,7 +157,6 @@ export default class SearchSelect extends CustomFormElementDelegating {
         }, true);
         this.#scrollContainerEl.addEventListener("wheel", (event) => {
             event.stopPropagation();
-            return false;
         }, {passive: true});
         /* --- */
         window.addEventListener("wheel", () => {
@@ -165,9 +175,6 @@ export default class SearchSelect extends CustomFormElementDelegating {
     }
 
     connectedCallback() {
-        if (!this.hasAttribute("tabindex")) {
-            this.setAttribute("tabindex", 0);
-        }
         this.value = this.getAttribute("value") || "";
         this.#resolveSlottedElements();
         if (!this.#value) {
@@ -178,6 +185,8 @@ export default class SearchSelect extends CustomFormElementDelegating {
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
         this.#inputEl.disabled = disabled;
+        this.#viewEl.classList.toggle("disabled", disabled);
+        this.#buttonEl.classList.toggle("disabled", disabled);
     }
 
     formResetCallback() {
@@ -186,10 +195,6 @@ export default class SearchSelect extends CustomFormElementDelegating {
 
     formStateRestoreCallback(state/* , mode */) {
         this.value = state;
-    }
-
-    focus(options) {
-        this.#inputEl.focus(options);
     }
 
     set value(value) {
@@ -241,8 +246,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
             } break;
             case "placeholder": {
                 if (oldValue != newValue) {
-                    // TODO if not edit mode
-                    this.#inputEl.setAttribute("i18n-placeholder", newValue);
+                    this.#placeholderEl.setAttribute("i18n-value", newValue)
                 }
             } break;
             case "sort": {
@@ -268,11 +272,11 @@ export default class SearchSelect extends CustomFormElementDelegating {
     }
 
     #startEditMode() {
-        // TODO change placeholder
         if (!this.getBooleanAttribute("readonly")) {
             this.#isEditMode = true;
-            this.#inputEl.removeAttribute("readonly");
             this.#inputEl.value = "";
+            this.#inputEl.classList.add("active");
+            this.#inputEl.focus();
             /* --- */
             const thisRect = this.getBoundingClientRect();
             this.#scrollContainerEl.style.display = "block";
@@ -292,9 +296,9 @@ export default class SearchSelect extends CustomFormElementDelegating {
     }
 
     #stopEditMode() {
-        // TODO reset placeholder
         this.#isEditMode = false;
-        this.#inputEl.setAttribute("readonly", "");
+        this.#inputEl.classList.remove("active");
+        this.#viewEl.focus();
         /* --- */
         this.#scrollContainerEl.style.display = "";
         this.#scrollContainerEl.style.bottom = "";
@@ -315,9 +319,13 @@ export default class SearchSelect extends CustomFormElementDelegating {
     #applyValue(value) {
         const el = this.#optionNodeList.querySelector(`[value="${value}"]`);
         if (el != null) {
-            this.#inputEl.value = el.innerHTML;
+            value = el.innerHTML;
+        }
+        if (value !== "") {
+            this.#viewEl.innerHTML = value;
         } else {
-            this.#inputEl.value = value;
+            this.#viewEl.innerHTML = "";
+            this.#viewEl.append(this.#placeholderEl);
         }
     }
 
@@ -398,16 +406,14 @@ export default class SearchSelect extends CustomFormElementDelegating {
     }
 
     #sort = debounce(() => {
-        this.#slotEventManager.setActive(false);
         const optionNodeList = this.#optionNodeList.getNodeList();
         const sortedNodeList = sortNodeList(optionNodeList);
-        if (!Comparator.isEqual(this.#optionNodeList, sortedNodeList)) {
+        if (!Comparator.isEqual(optionNodeList, sortedNodeList)) {
             for (const el of sortedNodeList) {
                 (el.parentElement ?? el.getRootNode() ?? document).append(el);
             }
         }
         this.#optionNodeList.setNodeList(sortedNodeList);
-        this.#slotEventManager.setActive(true);
     });
 
     #resolveSlottedElements() {
@@ -429,7 +435,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
 
     setCustomValidity(message) {
         if (typeof message === "string" && message !== "") {
-            this.internals.setValidity({customError: true}, message);
+            this.internals.setValidity({customError: true}, message, this.#inputEl);
         } else {
             this.internals.setValidity({}, "");
         }

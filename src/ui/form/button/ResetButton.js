@@ -1,10 +1,10 @@
-import CustomFormElement from "../../element/CustomFormElement.js";
+import CustomFormElementDelegating from "../../element/CustomFormElementDelegating.js";
 import "../../i18n/I18nTooltip.js";
 import "../../i18n/I18nInput.js";
 import TPL from "./ResetButton.js.html" assert {type: "html"};
 import STYLE from "./ResetButton.js.css" assert {type: "css"};
 
-export default class ResetButton extends CustomFormElement {
+export default class ResetButton extends CustomFormElementDelegating {
 
     #buttonEl;
 
@@ -24,18 +24,6 @@ export default class ResetButton extends CustomFormElement {
                 }
             }
         });
-    }
-
-    connectedCallback() {
-        if (!this.hasAttribute("tabindex")) {
-            this.setAttribute("tabindex", 0);
-        }
-    }
-
-    focus(options) {
-        if (this.#buttonEl != null) {
-            this.#buttonEl.focus(options);
-        }
     }
 
     formDisabledCallback(disabled) {

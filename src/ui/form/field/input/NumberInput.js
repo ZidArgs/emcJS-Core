@@ -80,8 +80,10 @@ export default class NumberInput extends AbstractFormInput {
     setCustomValidity(message) {
         if (typeof message === "string" && message !== "") {
             this.internals.setValidity({customError: true}, message, this.#inputEl);
+            this.#inputEl.setCustomValidity(message);
         } else {
             this.internals.setValidity({}, "");
+            this.#inputEl.setCustomValidity("");
         }
     }
 

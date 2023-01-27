@@ -12,3 +12,7 @@
     outline: none;
     z-index: 1;
 }
+:host(:invalid) #input {
+    background-color: var(--input-invalid-back-color, #ffcccc);
+    border-color: var(--input-invalid-border-color, #b93d3d);
+}

@@ -1,10 +1,10 @@
-import CustomFormElement from "../../element/CustomFormElement.js";
+import CustomFormElementDelegating from "../../element/CustomFormElementDelegating.js";
 import "../../i18n/I18nTooltip.js";
 import "../../i18n/I18nLabel.js";
 import TPL from "./LinkButton.js.html" assert {type: "html"};
 import STYLE from "./LinkButton.js.css" assert {type: "css"};
 
-export default class LinkButton extends CustomFormElement {
+export default class LinkButton extends CustomFormElementDelegating {
 
     #buttonEl;
 
@@ -20,20 +20,13 @@ export default class LinkButton extends CustomFormElement {
         });
     }
 
-    connectedCallback() {
-        if (!this.hasAttribute("tabindex")) {
-            this.setAttribute("tabindex", 0);
-        }
-    }
-
-    focus(options) {
-        if (this.#buttonEl != null) {
-            this.#buttonEl.focus(options);
-        }
-    }
-
     formDisabledCallback(disabled) {
         this.#buttonEl.setAttribute("disabled", disabled);
+        if (disabled) {
+            this.#buttonEl.setAttribute("tabindex", "-1");
+        } else {
+            this.#buttonEl.removeAttribute("tabindex");
+        }
     }
 
     set name(value) {

@@ -23,18 +23,6 @@ export default class InputResetButton extends CustomElementDelegating {
         });
     }
 
-    connectedCallback() {
-        if (!this.hasAttribute("tabindex")) {
-            this.setAttribute("tabindex", 0);
-        }
-    }
-
-    focus(options) {
-        if (this.#buttonEl != null) {
-            this.#buttonEl.focus(options);
-        }
-    }
-
     set disabled(value) {
         this.#buttonEl.disabled = value;
         this.setBooleanAttribute("disabled", value);

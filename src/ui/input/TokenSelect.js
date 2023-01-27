@@ -4,7 +4,7 @@ import i18n from "../../util/I18n.js";
 import SearchAnd from "../../util/search/SearchAnd.js";
 import ElementManager from "../../util/html/ElementManager.js";
 import {
-    sortChildrenByText
+    sortChildren
 } from "../../util/helper/ui/sortNodeList.js";
 import {
     debounce
@@ -243,9 +243,6 @@ export default class TokenSelect extends CustomElementDelegating {
     }
 
     connectedCallback() {
-        if (!this.hasAttribute("tabindex")) {
-            this.setAttribute("tabindex", 0);
-        }
         const all = this.querySelectorAll(`[value]`);
         for (const el of all) {
             if (el) {
@@ -404,7 +401,7 @@ export default class TokenSelect extends CustomElementDelegating {
 
     #sort = debounce(() => {
         this.#slotEventManager.setActive(false);
-        sortChildrenByText(this, `[value]`);
+        sortChildren(this, `[value]`);
         this.#slotEventManager.setActive(true);
     });
 

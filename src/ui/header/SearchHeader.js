@@ -20,12 +20,6 @@ export default class SearchHeader extends CustomElementDelegating {
         });
     }
 
-    connectedCallback() {
-        if (!this.hasAttribute("tabindex")) {
-            this.setAttribute("tabindex", 0);
-        }
-    }
-
     get search() {
         return this.getAttribute("search");
     }

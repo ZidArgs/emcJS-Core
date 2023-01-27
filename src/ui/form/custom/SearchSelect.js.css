@@ -8,21 +8,51 @@
     border-radius: var(--form-border-radius, 0.25em);
 }
 #input {
+    position: absolute;
     flex-grow: 1;
     height: 100%;
     margin-right: 2em;
+    background-color: transparent;
     border: none;
     font-size: 1em;
+    opacity: 0;
+    z-index: -100;
+}
+#input.active {
+    position: relative;
+    opacity: 1;
+    z-index: 0;
 }
 #input:focus {
     outline: none;
 }
-:host(:invalid) #input {
-    background-color: var(--input-invalid-back-color, #ffcccc);
-    border-color: var(--input-invalid-border-color, #b93d3d);
-}
 #input[readonly] {
     cursor: pointer;
+}
+#view {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-grow: 1;
+    width: 100%;
+    margin-right: 2em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+}
+#view:focus {
+    outline: none;
+}
+#view.disabled {
+    cursor: default;
+    pointer-events: none;
+}
+#input.active + #view {
+    display: none;
+}
+#placeholder {
+    font-style: italic;
 }
 #button {
     position: absolute;
@@ -32,8 +62,6 @@
     right: 0px;
     width: 2em;
     height: 100%;
-    color: var(--button-text-color, #000000);
-    background-color: var(--button-back-color, #cccccc);
     line-height: 1.2em;
     cursor: pointer;
 }
@@ -41,18 +69,15 @@
     color: var(--button-hover-text-color, #ffffff);
     background-color: var(--button-hover-back-color, #000000);
 }
-#input:disabled + #button {
+#button.disabled {
     color: var(--input-disabled-text-color, #424242);
     background-color: var(--input-disabled-back-color, #999999);
     cursor: default;
+    pointer-events: none;
 }
 #input:focus + #button {
     outline: none;
     z-index: 1;
-}
-:host(:invalid) #button {
-    background-color: var(--input-invalid-back-color, #ffcccc);
-    border-color: var(--input-invalid-border-color, #b93d3d);
 }
 #scroll-container {
     position: fixed;

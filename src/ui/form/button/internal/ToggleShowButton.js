@@ -28,18 +28,6 @@ export default class ToggleShowButton extends CustomElementDelegating {
         });
     }
 
-    connectedCallback() {
-        if (!this.hasAttribute("tabindex")) {
-            this.setAttribute("tabindex", 0);
-        }
-    }
-
-    focus(options) {
-        if (this.#buttonEl != null) {
-            this.#buttonEl.focus(options);
-        }
-    }
-
     set checked(value) {
         this.#buttonEl.checked = value;
     }

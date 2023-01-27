@@ -50,14 +50,10 @@ export default class SearchSelect extends AbstractFormInput {
             case "value":
             case "readonly":
             case "autocomplete":
+            case "placeholder":
             case "sort": {
                 if (oldValue != newValue) {
                     this.#inputEl.setAttribute(name, newValue);
-                }
-            } break;
-            case "placeholder": {
-                if (oldValue != newValue) {
-                    this.#inputEl.setAttribute("i18n-placeholder", newValue);
                 }
             } break;
         }
@@ -65,9 +61,11 @@ export default class SearchSelect extends AbstractFormInput {
 
     setCustomValidity(message) {
         if (typeof message === "string" && message !== "") {
-            this.internals.setValidity({customError: true}, message, this.#inputEl);
+            this.internals.setValidity({customError: true}, message, this.#inputEl.shadowRoot.getElementById("input"));
+            this.#inputEl.setCustomValidity(message);
         } else {
             this.internals.setValidity({}, "");
+            this.#inputEl.setCustomValidity("");
         }
     }
 

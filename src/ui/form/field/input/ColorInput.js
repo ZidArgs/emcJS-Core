@@ -25,14 +25,17 @@ export default class ColorInput extends AbstractFormInput {
         this.#inputEl.addEventListener("input", () => {
             this.#onInput();
         });
-        this.#inputEl.addEventListener("change", () => {
-            this.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
-        });
         /* --- */
         this.#buttonEl = this.shadowRoot.getElementById("button");
         this.#buttonEl.addEventListener("change", () => {
             this.#inputEl.value = this.#buttonEl.value;
             super.value = this.#buttonEl.value;
+        });
+        this.#buttonEl.addEventListener("click", () => {
+            if (this.#inputEl.value === "") {
+                this.#inputEl.value = this.#buttonEl.value;
+                super.value = this.#buttonEl.value;
+            }
         });
     }
 
@@ -131,8 +134,10 @@ export default class ColorInput extends AbstractFormInput {
     setCustomValidity(message) {
         if (typeof message === "string" && message !== "") {
             this.internals.setValidity({customError: true}, message, this.#inputEl);
+            this.#inputEl.setCustomValidity(message);
         } else {
             this.internals.setValidity({}, "");
+            this.#inputEl.setCustomValidity("");
         }
     }
 

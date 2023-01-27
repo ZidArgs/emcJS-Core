@@ -1,10 +1,10 @@
-import CustomFormElement from "../../element/CustomFormElement.js";
+import CustomFormElementDelegating from "../../element/CustomFormElementDelegating.js";
 import "../../i18n/I18nTooltip.js";
 import "../../i18n/I18nInput.js";
 import TPL from "./SubmitButton.js.html" assert {type: "html"};
 import STYLE from "./SubmitButton.js.css" assert {type: "css"};
 
-export default class SubmitButton extends CustomFormElement {
+export default class SubmitButton extends CustomFormElementDelegating {
 
     #buttonEl;
 
@@ -24,18 +24,6 @@ export default class SubmitButton extends CustomFormElement {
                 }
             }
         });
-    }
-
-    connectedCallback() {
-        if (!this.hasAttribute("tabindex")) {
-            this.setAttribute("tabindex", 0);
-        }
-    }
-
-    focus(options) {
-        if (this.#buttonEl != null) {
-            this.#buttonEl.focus(options);
-        }
     }
 
     formDisabledCallback(disabled) {

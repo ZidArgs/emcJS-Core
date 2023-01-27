@@ -27,19 +27,6 @@ export default class SelectionHeader extends CustomElementDelegating {
         });
     }
 
-    focus() {
-        const searchEl = this.shadowRoot.getElementById("search");
-        if (searchEl != null) {
-            searchEl.focus();
-        }
-    }
-
-    connectedCallback() {
-        if (!this.hasAttribute("tabindex")) {
-            this.setAttribute("tabindex", 0);
-        }
-    }
-
     get checked() {
         return this.getAttribute("checked");
     }

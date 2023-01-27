@@ -48,7 +48,7 @@ export default class FormBuilder {
                 // existing
             } break;
             case "search-select": { // former "choice"
-                window.addChoiceInput(category, ref, label, desc, option.default, option.visible, option.resettable, option.values);
+                // existing
             } break;
             case "list-select": { // former "list"
                 window.addListSelectInput(category, ref, label, desc, option.default, option.visible, option.resettable, option.multiple, option.values);
