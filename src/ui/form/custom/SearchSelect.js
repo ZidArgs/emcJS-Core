@@ -4,7 +4,7 @@ import EventMultiTargetManager from "../../../util/event/EventMultiTargetManager
 import i18n from "../../../util/I18n.js";
 import SearchAnd from "../../../util/search/SearchAnd.js";
 import {
-    sortChildrenByText
+    sortNodeList
 } from "../../../util/helper/ui/sortNodeList.js";
 import {
     debounce
@@ -12,10 +12,13 @@ import {
 import "./Option.js";
 import TPL from "./SearchSelect.js.html" assert {type: "html"};
 import STYLE from "./SearchSelect.js.css" assert {type: "css"};
+import Comparator from "../../../util/helper/Comparator.js";
+import ElementListCache from "../../../util/html/ElementListCache.js";
 
 /*
     TODO remove view element - make everything work with just the input
     TODO integrate as form control
+    TODO add viewElement again to be able to show html properly
 */
 export default class SearchSelect extends CustomFormElementDelegating {
 
@@ -28,6 +31,8 @@ export default class SearchSelect extends CustomFormElementDelegating {
     #scrollContainerEl;
 
     #optionsContainerEl;
+
+    #optionNodeList = new ElementListCache();
 
     #optionSelectEventManager;
 
@@ -48,7 +53,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
             return false;
         });
         this.#optionSelectEventManager.set("mouseover", () => {
-            const marked = this.querySelector(".marked");
+            const marked = this.#optionNodeList.querySelector(".marked");
             if (marked != null) {
                 marked.classList.remove("marked");
             }
@@ -60,20 +65,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
         this.#optionsContainerEl = this.shadowRoot.getElementById("options-container");
         this.#slotEventManager = new EventTargetManager(this.#optionsContainerEl);
         this.#slotEventManager.set("slotchange", () => {
-            // TODO build recursive (or at least one level) slot handling
-            this.#optionSelectEventManager.clearTargets();
-            const all = this.#optionsContainerEl.assignedElements({flatten: true});
-            for (const el of all) {
-                if (el.matches("[value]")) {
-                    this.#optionSelectEventManager.addTarget(el);
-                    if (el.value == this.value) {
-                        this.#inputEl.innerHTML = el.innerHTML;
-                    }
-                }
-            }
-            if (this.getBooleanAttribute("sort")) {
-                this.#sort();
-            }
+            this.#resolveSlottedElements()
         });
         /* --- */
         buttonEl.addEventListener("click", () => {
@@ -177,18 +169,9 @@ export default class SearchSelect extends CustomFormElementDelegating {
             this.setAttribute("tabindex", 0);
         }
         this.value = this.getAttribute("value") || "";
-        this.#optionSelectEventManager.clearTargets();
-        const all = this.#optionsContainerEl.assignedElements({flatten: true});
-        for (const el of all) {
-            if (!this.#value) {
-                this.value = all[0].value;
-            }
-            if (el.matches("[value]")) {
-                this.#optionSelectEventManager.addTarget(el);
-                if (el.value == this.value) {
-                    this.#inputEl.innerHTML = el.innerHTML;
-                }
-            }
+        this.#resolveSlottedElements();
+        if (!this.#value) {
+            this.value = this.#optionNodeList.first?.value;
         }
     }
 
@@ -301,7 +284,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
             } else {
                 this.#scrollContainerEl.style.top = `${thisRect.bottom}px`;
             }
-            const el = this.querySelector(`[value="${this.#value}"]`);
+            const el = this.#optionNodeList.querySelector(`[value="${this.#value}"]`);
             if (el != null) {
                 el.classList.add("marked");
             }
@@ -320,7 +303,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
         for (const el of all) {
             el.style.display = "";
         }
-        const marked = this.querySelector(".marked");
+        const marked = this.#optionNodeList.querySelector(".marked");
         if (marked != null) {
             marked.classList.remove("marked");
             this.value = marked.value;
@@ -329,9 +312,8 @@ export default class SearchSelect extends CustomFormElementDelegating {
         }
     }
 
-    // FIXME use assignedElements
     #applyValue(value) {
-        const el = this.querySelector(`[value="${value}"]`);
+        const el = this.#optionNodeList.querySelector(`[value="${value}"]`);
         if (el != null) {
             this.#inputEl.value = el.innerHTML;
         } else {
@@ -340,7 +322,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
     }
 
     #switchSelected(modeUp = false) {
-        const marked = this.querySelector(`[value="${this.#value}"]`);
+        const marked = this.#optionNodeList.querySelector(`[value="${this.#value}"]`);
         const el = this.#switchOption(marked, modeUp);
         if (el != null) {
             this.value = el.value;
@@ -348,7 +330,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
     }
 
     #moveMarker(modeUp = false) {
-        const marked = this.querySelector(".marked");
+        const marked = this.#optionNodeList.querySelector(".marked");
         const el = this.#switchOption(marked, modeUp);
         if (el != null) {
             if (marked != null) {
@@ -367,12 +349,12 @@ export default class SearchSelect extends CustomFormElementDelegating {
         if (oldEl != null) {
             if (modeUp) {
                 nextEl = this.#getPrevOption(oldEl);
-                if (nextEl == null) {
+                if (nextEl == null && oldEl.style.display == "none") {
                     nextEl = this.#getNextOption(oldEl);
                 }
             } else {
                 nextEl = this.#getNextOption(oldEl);
-                if (nextEl == null) {
+                if (nextEl == null && oldEl.style.display == "none") {
                     nextEl = this.#getPrevOption(oldEl);
                 }
             }
@@ -385,46 +367,65 @@ export default class SearchSelect extends CustomFormElementDelegating {
         return nextEl;
     }
 
-    // FIXME use assignedElements
-    // TODO add helper for asssigned elements? (indexOf, next, prev, first, last)
     #getFirstOption() {
-        let nextEl = this.querySelector("[value]");
+        let nextEl = this.#optionNodeList.first;
         while (nextEl != null && (nextEl.style.display == "none" || !nextEl.matches("[value]"))) {
-            nextEl = nextEl.nextElementSibling;
+            nextEl = this.#optionNodeList.getNext(nextEl);
         }
         if (nextEl != null && nextEl.style.display != "none" && nextEl.matches("[value]")) {
             return nextEl;
         }
     }
 
-    // FIXME use assignedElements
     #getPrevOption(oldEl) {
-        let nextEl = oldEl.previousElementSibling;
+        let nextEl = this.#optionNodeList.getPrev(oldEl);
         while (nextEl != null && (nextEl.style.display == "none" || !nextEl.matches("[value]"))) {
-            nextEl = nextEl.previousElementSibling;
+            nextEl = this.#optionNodeList.getPrev(nextEl);
         }
         if (nextEl != null && nextEl.style.display != "none" && nextEl.matches("[value]")) {
             return nextEl;
         }
     }
 
-    // FIXME use assignedElements
     #getNextOption(oldEl) {
-        let nextEl = oldEl.nextElementSibling;
+        let nextEl = this.#optionNodeList.getNext(oldEl);
         while (nextEl != null && (nextEl.style.display == "none" || !nextEl.matches("[value]"))) {
-            nextEl = nextEl.nextElementSibling;
+            nextEl = this.#optionNodeList.getNext(nextEl);
         }
         if (nextEl != null && nextEl.style.display != "none" && nextEl.matches("[value]")) {
             return nextEl;
         }
     }
 
-    // FIXME somehow this needs to work in some way or sort also in field
     #sort = debounce(() => {
         this.#slotEventManager.setActive(false);
-        sortChildrenByText(this, `[value]`);
+        const optionNodeList = this.#optionNodeList.getNodeList();
+        const sortedNodeList = sortNodeList(optionNodeList);
+        if (!Comparator.isEqual(this.#optionNodeList, sortedNodeList)) {
+            for (const el of sortedNodeList) {
+                (el.parentElement ?? el.getRootNode() ?? document).append(el);
+            }
+        }
+        this.#optionNodeList.setNodeList(sortedNodeList);
         this.#slotEventManager.setActive(true);
     });
+
+    #resolveSlottedElements() {
+        const optionNodeList = this.#optionsContainerEl.assignedElements({flatten: true}).filter((el) => el.matches("[value]"));
+        this.#optionNodeList.setNodeList(optionNodeList);
+        /* --- */
+        this.#optionSelectEventManager.clearTargets();
+        for (const el of optionNodeList) {
+            this.#optionSelectEventManager.addTarget(el);
+            if (el.value == this.value) {
+                this.#inputEl.innerHTML = el.innerHTML;
+            }
+        }
+        /* --- */
+        if (this.getBooleanAttribute("sort")) {
+            this.#sort();
+        }
+    }
 
     setCustomValidity(message) {
         if (typeof message === "string" && message !== "") {

@@ -32,48 +32,32 @@ export default class SearchSelect extends AbstractFormInput {
     }
 
     set value(value) {
-        if (value === "") {
-            this.#inputEl.checked = false;
-            this.#inputEl.indeterminate = true;
-        } else if (!value || value === "false") {
-            this.#inputEl.checked = false;
-            this.#inputEl.indeterminate = false;
-        } else {
-            this.#inputEl.checked = true;
-            this.#inputEl.indeterminate = false;
-        }
+        this.#inputEl.value = value;
         super.value = value;
     }
 
     get value() {
-        if (this.#inputEl.checked) {
-            return "true";
-        }
-        if (this.#inputEl.indeterminate) {
-            return "";
-        }
-        return "false";
+        return this.#inputEl.value;
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "value"];
+        return [...super.observedAttributes, "value", "placeholder", "readonly", "autocomplete", "sort"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
-            case "value": {
+            case "value":
+            case "readonly":
+            case "autocomplete":
+            case "sort": {
                 if (oldValue != newValue) {
-                    if (newValue === "") {
-                        this.#inputEl.removeAttribute("checked");
-                        this.#inputEl.setAttribute("indeterminate", "");
-                    } else if (!newValue || newValue === "false") {
-                        this.#inputEl.removeAttribute("checked");
-                        this.#inputEl.removeAttribute("indeterminate");
-                    } else {
-                        this.#inputEl.setAttribute("checked", "");
-                        this.#inputEl.removeAttribute("indeterminate");
-                    }
+                    this.#inputEl.setAttribute(name, newValue);
+                }
+            } break;
+            case "placeholder": {
+                if (oldValue != newValue) {
+                    this.#inputEl.setAttribute("i18n-placeholder", newValue);
                 }
             } break;
         }
