@@ -17,6 +17,9 @@
     background-color: var(--input-invalid-back-color, #ffcccc);
     border-color: var(--input-invalid-border-color, #b93d3d);
 }
+#input::placeholder {
+    color: var(--input-placeholder-text-color, #757575);
+}
 #button {
     width: 2em;
     height: 2em;

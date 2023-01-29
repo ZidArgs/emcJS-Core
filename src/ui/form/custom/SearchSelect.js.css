@@ -29,6 +29,9 @@
 #input[readonly] {
     cursor: pointer;
 }
+#input::placeholder {
+    color: var(--input-placeholder-text-color, #757575);
+}
 #view {
     display: flex;
     align-items: center;
@@ -52,6 +55,7 @@
     display: none;
 }
 #placeholder {
+    color: var(--input-placeholder-text-color, #757575);
     font-style: italic;
 }
 #button {
@@ -65,10 +69,6 @@
     line-height: 1.2em;
     cursor: pointer;
 }
-#button:hover {
-    color: var(--button-hover-text-color, #ffffff);
-    background-color: var(--button-hover-back-color, #000000);
-}
 #button.disabled {
     color: var(--input-disabled-text-color, #424242);
     background-color: var(--input-disabled-back-color, #999999);
@@ -78,6 +78,15 @@
 #input:focus + #button {
     outline: none;
     z-index: 1;
+}
+#button:after {
+    position: relative;
+    display: block;
+    border: solid 0.25em transparent;
+    border-bottom-color: var(--input-text-color, #000000);
+    border-right-color: var(--input-text-color, #000000);
+    transform: translateY(-0.125em) rotate(45deg);
+    content: " ";
 }
 #scroll-container {
     position: fixed;

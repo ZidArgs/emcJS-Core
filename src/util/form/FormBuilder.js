@@ -26,10 +26,26 @@ import "../../ui/form/button/LinkButton.js";
 */
 
 // TODO integrate storage control (maybe a FormController watching if anything in form changes)
-// TODO use logic for disabled property
-// TODO add visible property (use logic)
 
-class FormBuilder {
+// TODO use logic for disabled property
+
+/* TODO add visible property (use logic)
+    if (visible != null) {
+        if (typeof visible === "boolean") {
+            el.style.display = visible ? "" : "none";
+        } else {
+            const logicHandler = new LogicHandler(storage, visible);
+            logicHandler.addEventListener("change", (event) => {
+                el.style.display = event.value ? "" : "none";
+            });
+            if (!logicHandler.value) {
+                el.style.display = "none";
+            }
+        }
+    }
+*/
+
+class FormBuilder { // FormController(?)
 
     build(options, opts = {}) {
         const formEl = document.createElement("form", {is: "emc-form"});
