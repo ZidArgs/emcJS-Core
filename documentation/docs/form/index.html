@@ -71,8 +71,9 @@
         ]);
 
         const formEl = FormBuilder.build(formConfig, {
-            submit: {},
-            reset: {}
+            submitButton: true,
+            resetButton: true,
+            allowsInvalid: true
         });
         document.body.append(formEl);
     </script>

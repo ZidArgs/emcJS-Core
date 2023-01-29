@@ -88,6 +88,10 @@ class Helper {
         return !!f;
     }
 
+    isNullOrFalse(a) {
+        return a == null || a === false;
+    }
+
     isEqual(a, b) {
         if (Object.is(a, b)) {
             return true;

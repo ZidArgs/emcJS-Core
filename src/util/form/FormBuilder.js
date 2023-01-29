@@ -1,4 +1,5 @@
 import FormElementRegistry from "../../data/registry/FormElementRegistry.js";
+import Helper from "../helper/Helper.js";
 import "../../ui/form/FormContainer.js";
 import "../../ui/form/FormFieldset.js";
 import "../../ui/form/button/SubmitButton.js";
@@ -24,26 +25,52 @@ import "../../ui/form/button/LinkButton.js";
 
 */
 
-// TODO integrate storage control (maybe FormController watching if anything in form changes)
-// TODO duplicate names should be linked
-// TODO add visible property
+// TODO integrate storage control (maybe a FormController watching if anything in form changes)
+// TODO use logic for disabled property
+// TODO add visible property (use logic)
 
 class FormBuilder {
 
-    build(options, buttons = {}) {
+    build(options, opts = {}) {
         const formEl = document.createElement("form", {is: "emc-form"});
+
+        const {
+            allowsInvalid = false,
+            submitButton,
+            resetButton
+        } = opts;
+
+        if (allowsInvalid) {
+            formEl.setAttribute("novalidate", "");
+        }
 
         for (const option of options) {
             formEl.append(this.#createOption(option));
         }
 
-        if (buttons.submit != null || buttons.reset != null) {
+        if (!Helper.isNullOrFalse(submitButton) || !Helper.isNullOrFalse(resetButton)) {
             const buttonRowEl = document.createElement("emc-form-buttonrow");
-            if (buttons.reset != null) {
-                buttonRowEl.append(this.#createResetButton(buttons.reset));
+            if (!Helper.isNullOrFalse(resetButton)) {
+                if (typeof resetButton === "object") {
+                    buttonRowEl.append(this.#createResetButton(null, resetButton));
+                } else if (typeof resetButton === "string") {
+                    buttonRowEl.append(this.#createResetButton(null, {
+                        value: resetButton
+                    }));
+                } else if (resetButton === true) {
+                    buttonRowEl.append(this.#createResetButton(null, {}));
+                }
             }
-            if (buttons.submit != null) {
-                buttonRowEl.append(this.#createSubmitButton(buttons.submit));
+            if (!Helper.isNullOrFalse(submitButton)) {
+                if (typeof submitButton === "object") {
+                    buttonRowEl.append(this.#createSubmitButton(null, submitButton));
+                } else if (typeof submitButton === "string") {
+                    buttonRowEl.append(this.#createSubmitButton(null, {
+                        value: submitButton
+                    }));
+                } else if (submitButton === true) {
+                    buttonRowEl.append(this.#createSubmitButton(null, {}));
+                }
             }
             formEl.append(buttonRowEl);
         }

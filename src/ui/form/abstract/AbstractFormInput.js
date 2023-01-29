@@ -9,6 +9,8 @@ import STYLE from "../abstract/AbstractFormInput.js.css" assert {type: "css"};
 
 export default class AbstractFormInput extends AbstractFormField {
 
+    #value;
+
     #resetEl;
 
     constructor() {
@@ -62,25 +64,28 @@ export default class AbstractFormInput extends AbstractFormField {
     }
 
     set value(value) {
-        this.internals.setFormValue(value);
-        const message = this.revalidate();
-        if (typeof message === "string" && message !== "") {
-            this.setCustomValidity(message);
-        } else {
-            this.setCustomValidity("");
-            /* --- */
-            const event = new Event("value", {bubbles: true, cancelable: true});
-            event.value = value;
-            event.name = this.name;
-            event.ref = this.ref;
-            event.fieldId = this.id;
-            this.dispatchEvent(event);
+        if (this.#value != value) {
+            this.#value = value;
+            this.internals.setFormValue(value);
+            const message = this.revalidate();
+            if (typeof message === "string" && message !== "") {
+                this.setCustomValidity(message);
+            } else {
+                this.setCustomValidity("");
+                /* --- */
+                const event = new Event("value", {bubbles: true, cancelable: true});
+                event.value = value;
+                event.name = this.name;
+                event.ref = this.ref;
+                event.fieldId = this.id;
+                this.dispatchEvent(event);
+            }
+            this.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
         }
-        this.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
     }
 
     get value() {
-        return super.value;
+        return this.#value ?? super.value;
     }
 
     set resettable(value) {
