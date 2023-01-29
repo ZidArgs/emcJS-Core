@@ -86,3 +86,8 @@
         1px -1px var(--input-disabled-back-color, #999999),
         -1px -1px var(--input-disabled-back-color, #999999);
 }
+@media all and (min--moz-device-pixel-ratio:0) {
+    #button {
+        padding-bottom: 0.125em;
+    }
+}

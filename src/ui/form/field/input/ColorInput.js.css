@@ -23,7 +23,7 @@
 #button {
     width: 2em;
     height: 2em;
-    padding: 2px 4px;
+    padding: 0.25em;
     margin-left: calc(-1 * var(--form-border-width, 2px));;
     color: var(--button-text-color, #000000);
     background-color: var(--button-back-color, #cccccc);
@@ -45,4 +45,7 @@
 }
 #button[readonly]:not([readonly="false"]) {
     pointer-events: none;
+}
+#button::-webkit-color-swatch-wrapper {
+    padding: 0px;
 }

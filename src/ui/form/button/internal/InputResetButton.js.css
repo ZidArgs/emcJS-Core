@@ -43,3 +43,8 @@
     box-shadow: none;
     outline: none;
 }
+@media all and (min--moz-device-pixel-ratio:0) {
+    #button {
+        padding-bottom: 0.25em;
+    }
+}
