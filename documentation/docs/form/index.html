@@ -20,7 +20,10 @@
     <script type="module">
         // utils
         import i18n from "/emcJS/util/I18n.js";
+        import FileLoader from "/emcJS/util/file/FileLoader.js";
+        import CustomActionRegistry from "/emcJS/data/registry/CustomActionRegistry.js";
         // form
+        import FormBuilder from "/emcJS/util/form/FormBuilder.js";
         import "/emcJS/ui/form/FormContainer.js";
         import "/emcJS/ui/form/FormFieldset.js";
         import "/emcJS/ui/form/FormButtonRow.js";
@@ -47,187 +50,35 @@
         })
         i18n.language = "en";
 
-        // document.getElementById("test-select").addEventListener("change", (event) => {
-        //     console.log(document.getElementById("test-select").value)
-        // });
+        CustomActionRegistry.set("soup", () => {
+            alert("only soup");
+        });
 
-        // document.getElementById("test-searchselect").addEventListener("change", (event) => {
-        //     console.log(document.getElementById("test-searchselect").value)
-        // });
+        CustomActionRegistry.set("cheese", () => {
+            alert("more cheese");
+        });
+
+        const formConfig = await Promise.all([
+            FileLoader.json("./form/form-config/SearchSelect.json"),
+            FileLoader.json("./form/form-config/StringInput.json"),
+            FileLoader.json("./form/form-config/NumberInput.json"),
+            FileLoader.json("./form/form-config/RangeInput.json"),
+            FileLoader.json("./form/form-config/PasswordInput.json"),
+            FileLoader.json("./form/form-config/ColorInput.json"),
+            FileLoader.json("./form/form-config/HotkeyInput.json"),
+            FileLoader.json("./form/form-config/SwitchInput.json"),
+            FileLoader.json("./form/form-config/Buttons.json")
+        ]);
+
+        const formEl = FormBuilder.build(formConfig, {
+            submit: {},
+            reset: {}
+        });
+        document.body.append(formEl);
     </script>
 </head>
 
 <body style="display: flex; flex-direction: column;">
-    <form is="emc-form" id="form-0">
-
-        <!-- text input -->
-
-        <emc-form-fieldset label="text" desc="test.desc" novalidate>
-
-            <emc-field-input-string label="text default" desc="test.desc" name="text.default" value="this is a text" placeholder="Enter text..."></emc-field-input-string>
-
-            <emc-field-input-string label="text resettable" name="text.resettable" value="" resettable placeholder="Enter text..."></emc-field-input-string>
-
-            <emc-field-input-string label="text required" name="text.required" value="" required placeholder="Enter text..."></emc-field-input-string>
-
-            <emc-field-input-string label="text readonly" name="text.readonly" value="readonly text" readonly placeholder="Enter text..."></emc-field-input-string>
-
-            <emc-field-input-string label="text disabled" name="text.disabled" value="" disabled placeholder="Enter text..."></emc-field-input-string>
-
-            <emc-field-input-string label="text resettable disabled" name="text.resettable_disabled" value="" resettable disabled placeholder="Enter text..."></emc-field-input-string>
-
-        </emc-form-fieldset>
-
-        <!-- number input -->
-
-        <emc-form-fieldset label="number">
-
-            <emc-field-input-number label="number default" name="number.default" value="42" placeholder="Enter number..."></emc-field-input-number>
-
-            <emc-field-input-number label="number resettable" name="number.resettable" value="" resettable placeholder="Enter number..."></emc-field-input-number>
-
-            <emc-field-input-number label="number required" name="number.required" value="" required placeholder="Enter number..."></emc-field-input-number>
-
-            <emc-field-input-number label="number readonly" name="number.readonly" value="42" readonly placeholder="Enter text..."></emc-field-input-number>
-
-            <emc-field-input-number label="number disabled" name="number.disabled" value="" disabled placeholder="Enter number..."></emc-field-input-number>
-
-        </emc-form-fieldset>
-
-        <!-- password input -->
-
-        <emc-form-fieldset label="password">
-
-            <emc-field-input-password label="password default" name="password.default" value="password" placeholder="Enter password..."></emc-field-input-password>
-
-            <emc-field-input-password label="password resettable" name="password.resettable" value="" resettable placeholder="Enter password..."></emc-field-input-password>
-
-            <emc-field-input-password label="password required" name="password.required" value="" required placeholder="Enter password..."></emc-field-input-password>
-
-            <emc-field-input-password label="password readonly" name="password.readonly" value="password" readonly placeholder="Enter password..."></emc-field-input-password>
-
-            <emc-field-input-password label="password disabled" name="password.disabled" value="" disabled placeholder="Enter password..."></emc-field-input-password>
-
-        </emc-form-fieldset>
-
-        <!-- color input -->
-
-        <emc-form-fieldset label="color">
-
-            <emc-field-input-color label="color default" name="color.default" value="#ff0000" placeholder="Choose color..."></emc-field-input-color>
-
-            <emc-field-input-color label="color resettable" name="color.resettable" value="" resettable placeholder="Choose color..."></emc-field-input-color>
-
-            <emc-field-input-color label="color required" name="color.required" value="" required placeholder="Choose color..."></emc-field-input-color>
-
-            <emc-field-input-color label="color readonly" name="color.readonly" value="#00ffff" readonly placeholder="Choose color..."></emc-field-input-color>
-
-            <emc-field-input-color label="color disabled" name="color.disabled" value="" disabled placeholder="Choose color..."></emc-field-input-color>
-
-        </emc-form-fieldset>
-
-        <!-- range input -->
-
-        <emc-form-fieldset label="range">
-
-            <emc-field-input-range label="range default" name="range.default" value="4"></emc-field-input-range>
-
-            <emc-field-input-range label="range scratched" name="range.scratched" value="4" min="-10" max="30" scratched></emc-field-input-range>
-
-            <emc-field-input-range label="range resettable" name="range.resettable" value="" min="-20" max="20" resettable></emc-field-input-range>
-
-            <emc-field-input-range label="range disabled" name="range.disabled" value="" disabled></emc-field-input-range>
-
-        </emc-form-fieldset>
-
-        <!-- hotkey input -->
-
-        <emc-form-fieldset label="hotkey">
-
-            <emc-field-input-hotkey label="hotkey default" name="hotkey.default" value="ctrl+h" placeholder="Enter hotkey..."></emc-field-input-hotkey>
-
-            <emc-field-input-hotkey label="hotkey resettable" name="hotkey.resettable" value="" resettable placeholder="Enter hotkey..."></emc-field-input-hotkey>
-
-            <emc-field-input-hotkey label="hotkey required" name="hotkey.required" value="" required placeholder="Enter hotkey..."></emc-field-input-hotkey>
-
-            <emc-field-input-hotkey label="hotkey readonly" name="hotkey.readonly" value="ctrl+h" readonly placeholder="Enter hotkey..."></emc-field-input-hotkey>
-
-            <emc-field-input-hotkey label="hotkey disabled" name="hotkey.disabled" value="" disabled placeholder="Enter hotkey..."></emc-field-input-hotkey>
-
-        </emc-form-fieldset>
-
-        <!-- switch input -->
-
-        <emc-form-fieldset label="switch">
-
-            <emc-field-input-switch label="switch default" name="switch.default" value="true" placeholder="Enter hotkey..."></emc-field-input-switch>
-
-            <emc-field-input-switch label="switch resettable" name="switch.resettable" value="false" resettable placeholder="Enter hotkey..."></emc-field-input-switch>
-
-            <emc-field-input-switch label="switch required" name="switch.required" value="" required placeholder="Enter hotkey..."></emc-field-input-switch>
-
-            <emc-field-input-switch label="switch disabled" name="switch.disabled" value="" disabled placeholder="Enter hotkey..."></emc-field-input-switch>
-
-        </emc-form-fieldset>
-
-        <!-- search select -->
-
-        <emc-form-fieldset label="search-select">
-
-            <!-- <select id="test-select">
-                <option value="test">Test</option>
-                <option value="foobar">Foobar</option>
-                <option value="barfoo">Barfoo</option>
-            </select>
-
-            <emc-select-search id="test-searchselect">
-                <emc-option value="test">Test</emc-option>
-                <emc-option value="foobar">Foobar</emc-option>
-                <emc-option value="barfoo">Barfoo</emc-option>
-            </emc-select-search> -->
-
-            <emc-field-select-search label="search-select default" name="search-select.default" value="test" placeholder="Select entry..." sort>
-                <emc-option value=""></emc-option>
-                <emc-option value="test">Test</emc-option>
-                <emc-option value="foobar">Foobar</emc-option>
-                <emc-option value="barfoo">Barfoo</emc-option>
-            </emc-field-select-search>
-
-            <emc-field-select-search label="search-select resettable" name="search-select.resettable" value="test" resettable placeholder="Select entry..." sort>
-                <emc-option value=""></emc-option>
-                <emc-option value="test">Test</emc-option>
-                <emc-option value="foobar">Foobar</emc-option>
-                <emc-option value="barfoo">Barfoo</emc-option>
-            </emc-field-select-search>
-
-            <emc-field-select-search label="search-select required" name="search-select.required" value="" required placeholder="Select entry..." sort>
-                <emc-option value=""></emc-option>
-                <emc-option value="test">Test</emc-option>
-                <emc-option value="foobar">Foobar</emc-option>
-                <emc-option value="barfoo">Barfoo</emc-option>
-            </emc-field-select-search>
-
-            <emc-field-select-search label="search-select disabled" name="search-select.disabled" value="" disabled placeholder="Select entry..." sort>
-                <emc-option value=""></emc-option>
-                <emc-option value="test">Test</emc-option>
-                <emc-option value="foobar">Foobar</emc-option>
-                <emc-option value="barfoo">Barfoo</emc-option>
-            </emc-field-select-search>
-
-        </emc-form-fieldset>
-
-        <!-- buttons -->
-
-        <emc-form-button-row>
-            <emc-button-link name="button.link_disabled" value="cookie" icon="🍪" href="/#page=Input" disabled></emc-button-link>
-            <emc-button-link name="button.link" value="hotdog" icon="🌭" href="/#page=Input"></emc-button-link>
-            <emc-button-action name="button.action_disabled" value="soup" onclick="alert('only soup')" icon="🍲" disabled></emc-button-action>
-            <emc-button-action name="button.action" value="cheese" onclick="alert('more cheese')" icon="🧀"></emc-button-action>
-            <emc-button-reset name="button.reset"></emc-button-reset>
-            <emc-button-submit name="button.submit"></emc-button-submit>
-        </emc-form-button-row>
-
-    </form>
 </body>
 
 </html>

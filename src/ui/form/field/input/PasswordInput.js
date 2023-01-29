@@ -85,16 +85,10 @@ export default class PasswordInput extends AbstractFormInput {
     }
 
     setCustomValidity(message) {
-        if (typeof message === "string" && message !== "") {
-            this.internals.setValidity({customError: true}, message, this.#inputEl);
-            this.#inputEl.setCustomValidity(message);
-        } else {
-            this.internals.setValidity({}, "");
-            this.#inputEl.setCustomValidity("");
-        }
+        super.setCustomValidity(message, this.#inputEl);
     }
 
 }
 
-FormElementRegistry.register("password", PasswordInput);
+FormElementRegistry.register("PasswordInput", PasswordInput);
 customElements.define("emc-field-input-password", PasswordInput);

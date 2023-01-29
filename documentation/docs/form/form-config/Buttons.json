@@ -1,0 +1,43 @@
+{
+    "type": "ButtonRow",
+    "children": [
+        {
+            "type": "LinkButton",
+            "name": "button.link_disabled",
+            "value": "cookie",
+            "icon": "🍪",
+            "href": "/#page=Input",
+            "disabled": true
+        },
+        {
+            "type": "LinkButton",
+            "name": "button.link",
+            "value": "hotdog",
+            "icon": "🌭",
+            "href": "/#page=Input"
+        },
+        {
+            "type": "ActionButton",
+            "name": "button.action_disabled",
+            "value": "soup",
+            "icon": "🍲",
+            "action": "soup",
+            "disabled": true
+        },
+        {
+            "type": "ActionButton",
+            "name": "button.action",
+            "value": "cheese",
+            "icon": "🧀",
+            "action": "cheese"
+        },
+        {
+            "type": "ResetButton",
+            "name": "button.reset"
+        },
+        {
+            "type": "SubmitButton",
+            "name": "button.submit"
+        }
+    ]
+}

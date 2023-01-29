@@ -14,4 +14,4 @@ export default class FormButtonRow extends CustomElement {
 
 }
 
-customElements.define("emc-form-button-row", FormButtonRow);
+customElements.define("emc-form-buttonrow", FormButtonRow);

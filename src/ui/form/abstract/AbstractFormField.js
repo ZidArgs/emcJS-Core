@@ -15,8 +15,8 @@ export default class AbstractFormField extends CustomFormElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.addEventListener("change", (event) => {
-            this.shadowRoot.getElementById("error").innerText = event.target.validationMessage ?? "";
+        this.addEventListener("validity", (event) => {
+            this.shadowRoot.getElementById("error").i18nContent = event.target.validationMessage ?? "";
         });
         /* --- */
         const errorEl = this.shadowRoot.getElementById("error");

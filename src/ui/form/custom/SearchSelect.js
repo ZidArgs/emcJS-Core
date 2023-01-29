@@ -90,7 +90,8 @@ export default class SearchSelect extends CustomFormElementDelegating {
         this.#buttonEl = this.shadowRoot.getElementById("button");
         this.#optionsContainerEl = this.shadowRoot.getElementById("options-container");
         this.#optionsContainerEl.addEventListener("slotchange", () => {
-            this.#resolveSlottedElements()
+            this.#resolveSlottedElements();
+            this.#applyValue(this.value);
         });
         /* --- */
         this.#buttonEl.addEventListener("click", () => {
@@ -165,7 +166,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
             }
         }, {passive: true});
         /* --- */
-        this.#i18nEventManager.setActive(this.getBooleanAttribute("sort"));
+        this.#i18nEventManager.setActive(this.getBooleanAttribute("sorted"));
         this.#i18nEventManager.set("language", () => {
             this.#sort();
         });
@@ -233,8 +234,16 @@ export default class SearchSelect extends CustomFormElementDelegating {
         return this.getAttribute("placeholder");
     }
 
+    set sorted(value) {
+        this.setBooleanAttribute("sorted", value);
+    }
+
+    get sorted() {
+        return this.getBooleanAttribute("sorted");
+    }
+
     static get observedAttributes() {
-        return ["value", "placeholder", "sort"];
+        return ["value", "placeholder", "sorted"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -249,9 +258,9 @@ export default class SearchSelect extends CustomFormElementDelegating {
                     this.#placeholderEl.setAttribute("i18n-value", newValue)
                 }
             } break;
-            case "sort": {
+            case "sorted": {
                 if (oldValue != newValue) {
-                    this.#i18nEventManager.setActive(this.getBooleanAttribute("sort"));
+                    this.#i18nEventManager.setActive(this.getBooleanAttribute("sorted"));
                 }
             } break;
         }
@@ -428,7 +437,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
             }
         }
         /* --- */
-        if (this.getBooleanAttribute("sort")) {
+        if (this.getBooleanAttribute("sorted")) {
             this.#sort();
         }
     }

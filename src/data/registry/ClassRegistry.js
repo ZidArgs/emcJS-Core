@@ -14,7 +14,7 @@ export default class ClassRegistry {
 
     register(ref, RegClass) {
         if (this.#registry.has(ref)) {
-            throw new Error(`type "${ref}" already exists in ${this.#defaultClass.name}`);
+            throw new Error(`type "${ref}" already registered`);
         }
         this.#registry.set(ref, RegClass);
         return this;

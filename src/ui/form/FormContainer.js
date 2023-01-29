@@ -6,11 +6,14 @@ export default class FormContainer extends HTMLFormElement {
     constructor() {
         super();
         /* --- */
-        this.addEventListener("value-change", (event) => {
+        this.addEventListener("value", (event) => {
             console.log("value changed", event);
         });
-        this.addEventListener("value-reset", (event) => {
+        this.addEventListener("reset", (event) => {
             console.log("value reset", event);
+        });
+        this.addEventListener("validity", (event) => {
+            console.log("value validity", event);
         });
         this.addEventListener("submit", (event) => {
             event.stopPropagation();

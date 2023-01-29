@@ -22,15 +22,30 @@
     --input-focus-color: #06b5ff;
 
     /* === switch === */
-    --switch-checked-back-color: #64d6eb;
+    --switch-checked-back-color: #9ee1ec;
     --switch-indeterminate-back-color: #ffffff;
     --switch-unchecked-back-color: #ffffff;
 
     /* === range === */
-    --range-track-back-top-color: #f5f5f5;
-    --range-track-back-bottom-color: #f5f5f5;
-    --range-track-front-top-color: #64d6eb;
-    --range-track-front-bottom-color: #64d6eb;
+    --range-track-back-color: #f5f5f5;
+    --range-track-front-color: #9ee1ec;
+    --range-track-disabled-back-color: #b5b5b5;
+    --range-track-disabled-front-color: #464646;
+    --range-track-back-top-color: var(--range-track-back-color, #f5f5f5);
+    --range-track-back-bottom-color: var(--range-track-back-color, #f5f5f5);
+    --range-track-front-top-color: var(--range-track-front-color, #9ee1ec);
+    --range-track-front-bottom-color: var(--range-track-front-color, #9ee1ec);
+    --range-track-disabled-back-top-color: var(--range-track-disabled-back-color, #b5b5b5);
+    --range-track-disabled-back-bottom-color: var(--range-track-disabled-back-color, #b5b5b5);
+    --range-track-disabled-front-top-color: var(--range-track-disabled-front-color, #464646);
+    --range-track-disabled-front-bottom-color: var(--range-track-disabled-front-color, #464646);
+
+    /* === select === */
+    --select-option-divider-color: #949494;
+    --select-option-text-color: #000000;
+    --select-option-back-color: #ffffff;
+    --select-option-marked-text-color: #000000;
+    --select-option-marked-back-color: #9ee1ec;
 
     /* === button === */
     --button-text-color: #000000;

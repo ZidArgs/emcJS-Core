@@ -1,0 +1,39 @@
+{
+    "type": "Fieldset",
+    "label": "range",
+    "children": [
+        {
+            "type": "RangeInput",
+            "label": "range default",
+            "name": "range.default",
+            "value": "4"
+        },
+        {
+            "type": "RangeInput",
+            "label": "range scratched",
+            "name": "range.scratched",
+            "value": "4",
+            "min": "-10",
+            "max": "30",
+            "scratched": true
+        },
+        {
+            "type": "RangeInput",
+            "label": "range resettable",
+            "name": "range.resettable",
+            "value": "5",
+            "min": "-20",
+            "max": "20",
+            "resettable": true
+        },
+        {
+            "type": "RangeInput",
+            "label": "range disabled",
+            "name": "range.disabled",
+            "value": "4",
+            "min": "-10",
+            "max": "30",
+            "disabled": true
+        }
+    ]
+}

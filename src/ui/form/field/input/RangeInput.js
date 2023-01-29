@@ -109,13 +109,7 @@ export default class RangeInput extends AbstractFormInput {
     }
 
     setCustomValidity(message) {
-        if (typeof message === "string" && message !== "") {
-            this.internals.setValidity({customError: true}, message, this.#inputEl);
-            this.#inputEl.setCustomValidity(message);
-        } else {
-            this.internals.setValidity({}, "");
-            this.#inputEl.setCustomValidity("");
-        }
+        super.setCustomValidity(message, this.#inputEl);
     }
 
     revalidate() {
@@ -162,5 +156,5 @@ export default class RangeInput extends AbstractFormInput {
 
 }
 
-FormElementRegistry.register("range", RangeInput);
+FormElementRegistry.register("RangeInput", RangeInput);
 customElements.define("emc-field-input-range", RangeInput);

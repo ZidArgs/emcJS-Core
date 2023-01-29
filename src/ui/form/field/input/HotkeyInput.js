@@ -152,13 +152,7 @@ export default class HotkeyInput extends AbstractFormInput {
     }
 
     setCustomValidity(message) {
-        if (typeof message === "string" && message !== "") {
-            this.internals.setValidity({customError: true}, message, this.#inputEl);
-            this.#inputEl.setCustomValidity(message);
-        } else {
-            this.internals.setValidity({}, "");
-            this.#inputEl.setCustomValidity("");
-        }
+        super.setCustomValidity(message, this.#inputEl);
     }
 
     #display({ctrlKey, shiftKey, altKey, metaKey, key} = {}) {
@@ -201,5 +195,5 @@ export default class HotkeyInput extends AbstractFormInput {
 
 }
 
-FormElementRegistry.register("hotkey", HotkeyInput);
+FormElementRegistry.register("HotkeyInput", HotkeyInput);
 customElements.define("emc-field-input-hotkey", HotkeyInput);

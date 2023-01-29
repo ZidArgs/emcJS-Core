@@ -1,5 +1,6 @@
 import AbstractFormInput from "../../abstract/AbstractFormInput.js";
 import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
+import "../../../i18n/I18nLabel.js";
 import TPL from "./SearchSelect.js.html" assert {type: "html"};
 import STYLE from "./SearchSelect.js.css" assert {type: "css"};
 
@@ -41,7 +42,7 @@ export default class SearchSelect extends AbstractFormInput {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "value", "placeholder", "readonly", "autocomplete", "sort"];
+        return [...super.observedAttributes, "value", "placeholder", "readonly", "autocomplete", "sorted"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -51,7 +52,7 @@ export default class SearchSelect extends AbstractFormInput {
             case "readonly":
             case "autocomplete":
             case "placeholder":
-            case "sort": {
+            case "sorted": {
                 if (oldValue != newValue) {
                     this.#inputEl.setAttribute(name, newValue);
                 }
@@ -60,16 +61,37 @@ export default class SearchSelect extends AbstractFormInput {
     }
 
     setCustomValidity(message) {
-        if (typeof message === "string" && message !== "") {
-            this.internals.setValidity({customError: true}, message, this.#inputEl.shadowRoot.getElementById("input"));
-            this.#inputEl.setCustomValidity(message);
-        } else {
-            this.internals.setValidity({}, "");
-            this.#inputEl.setCustomValidity("");
+        super.setCustomValidity(message, this.#inputEl.shadowRoot.getElementById("input"));
+    }
+
+    static fromConfig(config) {
+        const selectEl = new SearchSelect();
+        const {options = {}, ...params} = config;
+        for (const name in params) {
+            const value = params[name];
+            if (value != null) {
+                selectEl.setAttribute(name, value);
+            }
         }
+        for (const name in options) {
+            const optionEl = document.createElement("emc-option");
+            optionEl.setAttribute("value", name);
+            const textValue = options[name];
+            if (typeof textValue === "string" && textValue !== "") {
+                const labelEl = document.createElement("emc-i18n-label");
+                labelEl.i18nValue = textValue;
+                optionEl.append(labelEl);
+            } else if (name !== "") {
+                const labelEl = document.createElement("emc-i18n-label");
+                labelEl.i18nValue = name;
+                optionEl.append(labelEl);
+            }
+            selectEl.append(optionEl);
+        }
+        return selectEl;
     }
 
 }
 
-FormElementRegistry.register("search-select", SearchSelect);
+FormElementRegistry.register("SearchSelect", SearchSelect);
 customElements.define("emc-field-select-search", SearchSelect);

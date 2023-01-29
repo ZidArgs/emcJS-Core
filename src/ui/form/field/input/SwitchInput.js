@@ -76,16 +76,10 @@ export default class SwitchInput extends AbstractFormInput {
     }
 
     setCustomValidity(message) {
-        if (typeof message === "string" && message !== "") {
-            this.internals.setValidity({customError: true}, message, this.#inputEl);
-            this.#inputEl.setCustomValidity(message);
-        } else {
-            this.internals.setValidity({}, "");
-            this.#inputEl.setCustomValidity("");
-        }
+        super.setCustomValidity(message, this.#inputEl);
     }
 
 }
 
-FormElementRegistry.register("switch", SwitchInput);
+FormElementRegistry.register("SwitchInput", SwitchInput);
 customElements.define("emc-field-input-switch", SwitchInput);

@@ -1,4 +1,5 @@
 import CustomFormElementDelegating from "../../element/CustomFormElementDelegating.js";
+import CustomActionRegistry from "../../../data/registry/CustomActionRegistry.js";
 import "../../i18n/I18nTooltip.js";
 import "../../i18n/I18nInput.js";
 import TPL from "./ActionButton.js.html" assert {type: "html"};
@@ -15,6 +16,10 @@ export default class ActionButton extends CustomFormElementDelegating {
         /* --- */
         this.#buttonEl = this.shadowRoot.getElementById("button");
         this.#buttonEl.addEventListener("click", (event) => {
+            const customAction = CustomActionRegistry.get(this.action);
+            if (customAction != null) {
+                customAction(this);
+            }
             this.dispatchEvent(new MouseEvent("click", event));
             event.stopPropagation();
         });
@@ -30,6 +35,14 @@ export default class ActionButton extends CustomFormElementDelegating {
 
     get name() {
         return this.getAttribute("name");
+    }
+
+    set action(value) {
+        this.setAttribute("action", value);
+    }
+
+    get action() {
+        return this.getAttribute("action");
     }
 
     set value(value) {

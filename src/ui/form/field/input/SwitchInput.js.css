@@ -13,7 +13,7 @@
     cursor: pointer;
 }
 #input:checked {
-    background-color: var(--switch-checked-back-color, #a5faa5);
+    background-color: var(--switch-checked-back-color, #9ee1ec);
 }
 #input:indeterminate {
     background-color: var(--switch-indeterminate-back-color, #ffffff);

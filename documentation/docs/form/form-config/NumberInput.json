@@ -1,0 +1,45 @@
+{
+    "type": "Fieldset",
+    "label": "number",
+    "children": [
+        {
+            "type": "NumberInput",
+            "label": "number default",
+            "name": "number.default",
+            "value": "42",
+            "placeholder": "Enter number..."
+        },
+        {
+            "type": "NumberInput",
+            "label": "number resettable",
+            "name": "number.resettable",
+            "value": "",
+            "placeholder": "Enter number...",
+            "resettable": true
+        },
+        {
+            "type": "NumberInput",
+            "label": "number required",
+            "name": "number.required",
+            "value": "",
+            "placeholder": "Enter number...",
+            "required": true
+        },
+        {
+            "type": "NumberInput",
+            "label": "number readonly",
+            "name": "number.readonly",
+            "value": "42",
+            "placeholder": "Enter number...",
+            "readonly": true
+        },
+        {
+            "type": "NumberInput",
+            "label": "number disabled",
+            "name": "number.disabled",
+            "value": "",
+            "placeholder": "Enter number...",
+            "disabled": true
+        }
+    ]
+}

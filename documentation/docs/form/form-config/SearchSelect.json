@@ -1,0 +1,79 @@
+{
+    "type": "Fieldset",
+    "label": "search-select",
+    "children": [
+        {
+            "type": "SearchSelect",
+            "label": "search-select default",
+            "name": "search-select.default",
+            "value": "test",
+            "options": {
+                "": "",
+                "test": "Test",
+                "foobar": "Foobar",
+                "barfoo": "Barfoo"
+            },
+            "placeholder": "Select entry...",
+            "sorted": true
+        },
+        {
+            "type": "SearchSelect",
+            "label": "search-select default (duplicate)",
+            "name": "search-select.default",
+            "value": "test",
+            "options": {
+                "": "",
+                "test": "Test",
+                "foobar": "Foobar",
+                "barfoo": "Barfoo"
+            },
+            "placeholder": "Select entry...",
+            "sorted": true
+        },
+        {
+            "type": "SearchSelect",
+            "label": "search-select resettable",
+            "name": "search-select.resettable",
+            "value": "test",
+            "options": {
+                "": "",
+                "test": "Test",
+                "foobar": "Foobar",
+                "barfoo": "Barfoo"
+            },
+            "placeholder": "Select entry...",
+            "sorted": true,
+            "resettable": true
+        },
+        {
+            "type": "SearchSelect",
+            "label": "search-select required",
+            "name": "search-select.required",
+            "value": "",
+            "options": {
+                "": "",
+                "test": "Test",
+                "foobar": "Foobar",
+                "barfoo": "Barfoo"
+            },
+            "placeholder": "Select entry...",
+            "sorted": true,
+            "required": true
+        },
+        {
+            "type": "SearchSelect",
+            "label": "search-select disabled",
+            "name": "search-select.disabled",
+            "value": "",
+            "options": {
+                "": "",
+                "test": "Test",
+                "foobar": "Foobar",
+                "barfoo": "Barfoo"
+            },
+            "placeholder": "Select entry...",
+            "sorted": true,
+            "disabled": true
+        }
+    ]
+}

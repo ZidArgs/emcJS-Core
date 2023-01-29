@@ -25,7 +25,7 @@ export default class AbstractFormInput extends AbstractFormField {
             event.preventDefault();
             this.fieldResetCallback();
             /* --- */
-            const resetEvent = new Event("value-reset", {bubbles: true, cancelable: true});
+            const resetEvent = new Event("reset", {bubbles: true, cancelable: true});
             resetEvent.name = this.name;
             resetEvent.ref = this.ref;
             resetEvent.fieldId = this.id;
@@ -68,10 +68,9 @@ export default class AbstractFormInput extends AbstractFormField {
             this.setCustomValidity(message);
         } else {
             this.setCustomValidity("");
-            const event = new Event("value-change", {bubbles: true, cancelable: true});
+            /* --- */
+            const event = new Event("value", {bubbles: true, cancelable: true});
             event.value = value;
-            event.valid = this.checkValidity();
-            event.error = this.validationMessage;
             event.name = this.name;
             event.ref = this.ref;
             event.fieldId = this.id;
@@ -116,11 +115,40 @@ export default class AbstractFormInput extends AbstractFormField {
         return this.getAttribute("placeholder");
     }
 
-    setCustomValidity(message) {
-        if (typeof message === "string" && message !== "") {
-            this.internals.setValidity({customError: true}, message);
-        } else {
-            this.internals.setValidity({}, "");
+    static get observedAttributes() {
+        return [...super.observedAttributes, "required"];
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback(name, oldValue, newValue);
+        switch (name) {
+            case "required": {
+                if (oldValue != newValue) {
+                    const message = this.revalidate();
+                    this.setCustomValidity(message);
+                }
+            } break;
+        }
+    }
+
+    setCustomValidity(message, target) {
+        if (typeof message !== "string") {
+            message = "";
+        }
+        if (this.validationMessage != message) {
+            this.internals.setValidity({customError: message !== ""}, message, target);
+            if ("setCustomValidity" in target) {
+                target.setCustomValidity(message);
+            }
+            /* --- */
+            const event = new Event("validity", {bubbles: true, cancelable: true});
+            event.value = this.value;
+            event.valid = message === "";
+            event.error = message;
+            event.name = this.name;
+            event.ref = this.ref;
+            event.fieldId = this.id;
+            this.dispatchEvent(event);
         }
     }
 
