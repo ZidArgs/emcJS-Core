@@ -23,23 +23,21 @@ export default class FormContainer extends HTMLFormElement {
         this.addEventListener("value", (event) => {
             console.log("value changed", event);
         });
-        this.addEventListener("reset", (event) => {
-            console.log("value reset", event);
+        this.addEventListener("default", (event) => {
+            console.log("value default", event);
         });
         this.addEventListener("validity", (event) => {
             console.log("value validity", event);
         });
-        this.addEventListener("submit", (event) => {
-            event.stopPropagation();
-            event.preventDefault();
+        this.addEventListener("submit", () => {
             if (this.checkValidity()) {
                 console.log("submit (valid)", this.getData());
             } else {
                 console.log("submit (invalid)", this.getData());
             }
         });
-        this.addEventListener("reset", (event) => {
-            event.stopPropagation();
+        this.addEventListener("reset", () => {
+            console.log("reset all");
         });
     }
 
@@ -47,6 +45,8 @@ export default class FormContainer extends HTMLFormElement {
         const formData = new FormData(this);
         return Object.fromEntries(formData.entries());
     }
+
+    // get elements() {return super.elements}
 
 }
 

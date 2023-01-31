@@ -19,8 +19,13 @@ export default class SearchSelect extends AbstractFormInput {
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#inputEl.addEventListener("change", () => {
-            super.value = this.value
+            this.value = this.#inputEl.value
         });
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+        this.#inputEl.value = this.value;
     }
 
     formDisabledCallback(disabled) {
@@ -38,7 +43,7 @@ export default class SearchSelect extends AbstractFormInput {
     }
 
     get value() {
-        return this.#inputEl.value;
+        return super.value;
     }
 
     static get observedAttributes() {

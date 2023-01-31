@@ -25,6 +25,32 @@ import "../../ui/form/button/LinkButton.js";
 
 */
 
+/* TODO better change how default values are defined?
+{
+    "formConfig": [
+        {
+            "type": "Fieldset",
+            "label": "text",
+            "desc": "test.desc",
+            "tooltip": "lorem ipsum dolor sit amet",
+            "children": [
+                {
+                    "type": "StringInput",
+                    "label": "text default",
+                    "desc": "test.desc",
+                    "name": "text.default",
+                    "tooltip": "lorem ipsum dolor sit amet",
+                    "placeholder": "Enter text..."
+                }
+            }
+        }
+    ],
+    "defaultValues": {
+        "text.default": "lorem ipsum dolor sit amet"
+    }
+}
+*/
+
 // TODO integrate storage control (maybe a FormController watching if anything in form changes)
 
 // TODO use logic for disabled property
@@ -45,9 +71,9 @@ import "../../ui/form/button/LinkButton.js";
     }
 */
 
-class FormBuilder { // FormController(?)
+class FormBuilder {
 
-    build(options, opts = {}) {
+    build(formConfig, defaultValues = {}, opts = {}) {
         const formEl = document.createElement("form", {is: "emc-form"});
 
         const {
@@ -60,8 +86,12 @@ class FormBuilder { // FormController(?)
             formEl.setAttribute("novalidate", "");
         }
 
-        for (const option of options) {
-            formEl.append(this.#createOption(option));
+        if (Array.isArray(formConfig)) {
+            for (const option of formConfig) {
+                formEl.append(this.#createOption(option, defaultValues ?? {}));
+            }
+        } else {
+            formEl.append(this.#createOption(formConfig, defaultValues ?? {}));
         }
 
         if (!Helper.isNullOrFalse(submitButton) || !Helper.isNullOrFalse(resetButton)) {
@@ -94,7 +124,7 @@ class FormBuilder { // FormController(?)
         return formEl;
     }
 
-    #createOption(option = {}) {
+    #createOption(option = {}, defaultValues = {}) {
         const {type, id, ...params} = option;
         switch (type) {
             case "SubmitButton": {
@@ -116,15 +146,23 @@ class FormBuilder { // FormController(?)
                 return this.#createButtonRow(id, params);
             }
             default: {
-                return this.#createField(type, id, params);
+                return this.#createField(type, id, params, defaultValues);
             }
         }
     }
 
-    #createField(type, id, params = {}) {
+    #createField(type, id, config = {}, defaultValues = {}) {
+        const {value, ...params} = config;
         const el = FormElementRegistry.create(type, params);
         if (id != null) {
             el.id = id;
+        }
+        if (params.name != null && defaultValues[params.name] != null) {
+            el.setAttribute("value", defaultValues[params.name]);
+        } else if (value != null) {
+            el.setAttribute("value", value); // TODO remove this (?)
+        } else {
+            el.removeAttribute("value");
         }
         return el;
     }

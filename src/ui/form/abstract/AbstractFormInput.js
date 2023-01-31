@@ -7,6 +7,25 @@ import STYLE from "../abstract/AbstractFormInput.js.css" assert {type: "css"};
 
 // https://web.dev/more-capable-form-controls/#form-associated-custom-elements
 
+function isValueSet(value) {
+    if (value == null) {
+        return false;
+    }
+    if (typeof value === "string") {
+        return value !== "";
+    }
+    if (typeof value === "number") {
+        return !isNaN(value);
+    }
+    if (typeof value === "object") {
+        if (Array.isArray(value)) {
+            return value.length > 0;
+        }
+        return Object.keys(value).length > 0;
+    }
+    return true;
+}
+
 export default class AbstractFormInput extends AbstractFormField {
 
     #value;
@@ -27,16 +46,21 @@ export default class AbstractFormInput extends AbstractFormField {
             event.preventDefault();
             this.fieldResetCallback();
             /* --- */
-            const resetEvent = new Event("reset", {bubbles: true, cancelable: true});
+            const resetEvent = new Event("default", {bubbles: true, cancelable: true});
             resetEvent.name = this.name;
-            resetEvent.ref = this.ref;
             resetEvent.fieldId = this.id;
             this.dispatchEvent(resetEvent);
         });
     }
 
     connectedCallback() {
-        this.value = this.getAttribute("value") || "";
+        this.#value = this.value;
+        /* --- */
+        this.internals.setFormValue(this.#value);
+        const message = this.revalidate();
+        if (typeof message === "string" && message !== "") {
+            this.setCustomValidity(message);
+        }
     }
 
     formDisabledCallback(disabled) {
@@ -55,14 +79,6 @@ export default class AbstractFormInput extends AbstractFormField {
         this.value = state;
     }
 
-    set ref(value) {
-        this.setAttribute("ref", value);
-    }
-
-    get ref() {
-        return this.getAttribute("ref");
-    }
-
     set value(value) {
         if (this.#value != value) {
             this.#value = value;
@@ -76,7 +92,6 @@ export default class AbstractFormInput extends AbstractFormField {
                 const event = new Event("value", {bubbles: true, cancelable: true});
                 event.value = value;
                 event.name = this.name;
-                event.ref = this.ref;
                 event.fieldId = this.id;
                 this.dispatchEvent(event);
             }
@@ -151,7 +166,6 @@ export default class AbstractFormInput extends AbstractFormField {
             event.valid = message === "";
             event.error = message;
             event.name = this.name;
-            event.ref = this.ref;
             event.fieldId = this.id;
             this.dispatchEvent(event);
         }
@@ -159,10 +173,19 @@ export default class AbstractFormInput extends AbstractFormField {
 
     // TODO revalidate with custom validation callback
     revalidate() {
-        if (this.required && this.value === "") {
+        const value = this.value;
+        if (this.required && !isValueSet(value)) {
             return "This field is required";
         }
         return "";
+    }
+
+    static scalarToValue(value) {
+        value.toString();
+    }
+
+    static valueToScalar(value) {
+        return value.toString();
     }
 
 }

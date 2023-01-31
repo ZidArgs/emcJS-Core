@@ -41,7 +41,8 @@ export default class ColorInput extends AbstractFormInput {
 
     connectedCallback() {
         super.connectedCallback();
-        const value = this.getAttribute("value");
+        const value = this.value;
+        this.#inputEl.value = value;
         if (REGEX_HEX.test(value)) {
             this.#buttonEl.value = value;
         } else {
@@ -81,7 +82,7 @@ export default class ColorInput extends AbstractFormInput {
 
     #onInput = debounce(() => {
         const value = this.#inputEl.value;
-        super.value = value;
+        this.value = value;
         if (REGEX_HEX.test(value)) {
             this.#buttonEl.value = value;
         } else {
@@ -95,7 +96,7 @@ export default class ColorInput extends AbstractFormInput {
     }
 
     get value() {
-        return this.#inputEl.value;
+        return super.value;
     }
 
     static get observedAttributes() {
@@ -105,11 +106,15 @@ export default class ColorInput extends AbstractFormInput {
     attributeChangedCallback(name, oldValue, newValue) {
         super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
-            case "value":
-            case "autocomplete": {
+            case "value": {
                 if (oldValue != newValue) {
                     this.#inputEl.setAttribute("value", newValue);
                     this.#buttonEl.setAttribute("value", newValue);
+                }
+            } break;
+            case "autocomplete": {
+                if (oldValue != newValue) {
+                    this.#inputEl.setAttribute("autocomplete", newValue);
                 }
             } break;
             case "placeholder": {

@@ -25,6 +25,11 @@ export default class NumberInput extends AbstractFormInput {
         });
     }
 
+    connectedCallback() {
+        super.connectedCallback();
+        this.#inputEl.value = this.value;
+    }
+
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
         this.#inputEl.disabled = disabled;
@@ -35,7 +40,7 @@ export default class NumberInput extends AbstractFormInput {
     }
 
     #onInput = debounce(() => {
-        super.value = this.#inputEl.value;
+        this.value = this.#inputEl.value;
     }, 300);
 
     set value(value) {
@@ -46,9 +51,9 @@ export default class NumberInput extends AbstractFormInput {
     }
 
     get value() {
-        const value = this.#inputEl.value;
-        if (value === "") {
-            return value;
+        const value = super.value;
+        if (value == null || value === "") {
+            return Number.NaN;
         }
         return parseFloat(value);
     }
@@ -83,7 +88,7 @@ export default class NumberInput extends AbstractFormInput {
 
     revalidate() {
         const value = this.value;
-        if (value !== "" && isNaN(value)) {
+        if (this.#inputEl.value !== "" && isNaN(value)) {
             return "Please enter a valid number";
         }
         return super.revalidate();

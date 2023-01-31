@@ -35,6 +35,11 @@ export default class PasswordInput extends AbstractFormInput {
         });
     }
 
+    connectedCallback() {
+        super.connectedCallback();
+        this.#inputEl.value = this.value;
+    }
+
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
         this.#inputEl.disabled = disabled;
@@ -47,7 +52,7 @@ export default class PasswordInput extends AbstractFormInput {
     }
 
     #onInput = debounce(() => {
-        super.value = this.#inputEl.value;
+        this.value = this.#inputEl.value;
     }, 300);
 
     set value(value) {
@@ -56,7 +61,7 @@ export default class PasswordInput extends AbstractFormInput {
     }
 
     get value() {
-        return this.#inputEl.value;
+        return super.value;
     }
 
     static get observedAttributes() {

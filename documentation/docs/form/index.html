@@ -24,6 +24,7 @@
         import CustomActionRegistry from "/emcJS/data/registry/CustomActionRegistry.js";
         // form
         import FormBuilder from "/emcJS/util/form/FormBuilder.js";
+        import FormContext from "/emcJS/util/form/FormContext.js";
         import "/emcJS/ui/form/FormContainer.js";
         import "/emcJS/ui/form/FormFieldset.js";
         import "/emcJS/ui/form/FormButtonRow.js";
@@ -50,14 +51,6 @@
         })
         i18n.language = "en";
 
-        CustomActionRegistry.set("soup", () => {
-            alert("only soup");
-        });
-
-        CustomActionRegistry.set("cheese", () => {
-            alert("more cheese");
-        });
-
         const formConfig = await Promise.all([
             FileLoader.json("./form/form-config/SearchSelect.json"),
             FileLoader.json("./form/form-config/StringInput.json"),
@@ -70,12 +63,67 @@
             FileLoader.json("./form/form-config/Buttons.json")
         ]);
 
-        const formEl = FormBuilder.build(formConfig, {
+        const formEl = FormBuilder.build(formConfig, null, {
             submitButton: true,
             resetButton: true,
             allowsInvalid: true
         });
         document.body.append(formEl);
+
+        const formEl2 = FormBuilder.build(formConfig[0], null, {
+            submitButton: true,
+            resetButton: true,
+            allowsInvalid: true
+        });
+        document.body.append(formEl2);
+
+        const formContext = new FormContext();
+        formContext.registerForm(formEl);
+        formContext.registerForm(formEl2);
+
+        console.log("init data", formContext.getChanges());
+
+        formEl.addEventListener("submit", (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            if (formEl.checkValidity()) {
+                console.log("changed data (valid)", formContext.getChanges());
+            } else {
+                console.log("changed data (invalid)", formContext.getChanges());
+            }
+        });
+
+        formEl2.addEventListener("submit", (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            if (formEl.checkValidity()) {
+                console.log("changed data (valid)", formContext.getChanges());
+            } else {
+                console.log("changed data (invalid)", formContext.getChanges());
+            }
+        });
+
+        CustomActionRegistry.set("soup", () => {
+            alert("only soup");
+        });
+
+        CustomActionRegistry.set("cheese", () => {
+            alert("more cheese");
+            formContext.setData({
+                "search-select.required": "foobar",
+                "text.required": "nice",
+                "number.required": 69,
+                "password.required": "password",
+                "color.default": "#ff0000",
+                "color.resettable": "#00ff00",
+                "color.required": "#0000ff",
+                "hotkey.default": "Ctrl + W",
+                "hotkey.resettable": "Ctrl + A",
+                "hotkey.required": "Ctrl + S",
+                "hotkey.readonly": "Ctrl + D",
+                "switch.required": true
+            });
+        });
     </script>
 </head>
 

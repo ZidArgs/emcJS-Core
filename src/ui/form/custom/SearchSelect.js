@@ -61,7 +61,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
 
     #optionNodeList = new ElementListCache();
 
-    #optionSelectEventManager;
+    #optionSelectEventManager = new EventMultiTargetManager();
 
     #i18nEventManager = new EventTargetManager(i18n);
 
@@ -70,7 +70,6 @@ export default class SearchSelect extends CustomFormElementDelegating {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.#optionSelectEventManager = new EventMultiTargetManager();
         this.#optionSelectEventManager.set("mousedown", (event) => {
             this.#choose(event.currentTarget.getAttribute("value"));
             event.preventDefault();
@@ -176,11 +175,11 @@ export default class SearchSelect extends CustomFormElementDelegating {
     }
 
     connectedCallback() {
-        this.value = this.getAttribute("value") || "";
+        const value = this.value ?? this.#optionNodeList.first?.value;
+        this.#value = value;
+        this.#applyValue(value);
+        this.internals.setFormValue(value);
         this.#resolveSlottedElements();
-        if (!this.#value) {
-            this.value = this.#optionNodeList.first?.value;
-        }
     }
 
     formDisabledCallback(disabled) {
@@ -199,15 +198,17 @@ export default class SearchSelect extends CustomFormElementDelegating {
     }
 
     set value(value) {
-        this.#value = value;
-        this.#applyValue(value);
-        this.internals.setFormValue(value);
-        /* --- */
-        this.dispatchEvent(new Event("change"));
+        if (this.#value != value) {
+            this.#value = value;
+            this.#applyValue(value);
+            this.internals.setFormValue(value);
+            /* --- */
+            this.dispatchEvent(new Event("change"));
+        }
     }
 
     get value() {
-        return this.#value;
+        return this.#value ?? this.getAttribute("value");
     }
 
     set readonly(value) {

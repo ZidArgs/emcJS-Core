@@ -43,7 +43,7 @@ export default class RangeInput extends AbstractFormInput {
 
     connectedCallback() {
         super.connectedCallback();
-        this.#applyValueToBar(this.#inputEl.value);
+        this.#applyValueToBar(this.value);
         this.#setRange();
     }
 
@@ -58,7 +58,7 @@ export default class RangeInput extends AbstractFormInput {
     }
 
     #onInput = debounce(() => {
-        super.value = this.#inputEl.value;
+        this.value = this.#inputEl.value;
     }, 300);
 
     set value(value) {
@@ -71,9 +71,9 @@ export default class RangeInput extends AbstractFormInput {
     }
 
     get value() {
-        const value = this.#inputEl.value;
-        if (value === "") {
-            return value;
+        const value = super.value;
+        if (value == null || value === "") {
+            return Number.NaN;
         }
         return parseFloat(value);
     }

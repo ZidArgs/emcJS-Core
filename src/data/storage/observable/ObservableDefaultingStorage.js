@@ -29,6 +29,11 @@ export default class ObservableDefaultingStorage extends ObservableStorage {
         return this.#defaults.get(key);
     }
 
+    clear() {
+        this.#defaults.clear();
+        super.clear();
+    }
+
     resetValue(key) {
         const value = this.#defaults.get(key);
         super.set(key, value);

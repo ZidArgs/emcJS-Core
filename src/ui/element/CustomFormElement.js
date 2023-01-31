@@ -49,7 +49,7 @@ export default class CustomFormElement extends CustomElement {
     }
 
     get type() {
-        return this.localName;
+        return this.constructor.name;
     }
 
     set name(value) {

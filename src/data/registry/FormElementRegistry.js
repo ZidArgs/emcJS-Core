@@ -38,21 +38,22 @@ class FormElementRegistry {
     }
 
     #getClass(ref) {
-        if (typeof ref == "string" && ref) {
-            if (this.#registry.has(ref)) {
-                return this.#registry.get(ref);
-            }
+        if (typeof ref === "string" && ref !== "") {
+            return this.#registry.get(ref);
         }
     }
 
-    register(ref, RegClass) {
-        if (!Helper.instanceOfOne(RegClass.prototype, ...EXPECTED_CLASSES)) {
+    register(ref, FormElementClass) {
+        if (typeof ref !== "string" || ref === "") {
+            throw new TypeError("ref must be a non empty string");
+        }
+        if (!Helper.instanceOfOne(FormElementClass.prototype, ...EXPECTED_CLASSES)) {
             throw new TypeError(`registered types must inherit from one of [${EXPECTED_CLASSES.map((c) => c.name).join(", ")}]`);
         }
         if (this.#registry.has(ref)) {
             throw new Error(`type "${ref}" already registered`);
         }
-        this.#registry.set(ref, RegClass);
+        this.#registry.set(ref, FormElementClass);
         return this;
     }
 
