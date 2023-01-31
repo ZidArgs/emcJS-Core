@@ -29,6 +29,10 @@ export default class ActionButton extends CustomFormElementDelegating {
         this.#buttonEl.disabled = disabled;
     }
 
+    get type() {
+        return "button";
+    }
+
     set name(value) {
         this.setAttribute("name", value);
     }

@@ -56,19 +56,10 @@ export default class ColorInput extends AbstractFormInput {
         this.#buttonEl.disabled = disabled;
     }
 
-    fieldResetCallback() {
-        super.fieldResetCallback();
-        const value = this.getAttribute("value");
-        if (REGEX_HEX.test(value)) {
-            this.#buttonEl.value = value;
-        } else {
-            this.#buttonEl.value = "#000000";
-        }
-    }
-
     formResetCallback() {
         super.formResetCallback();
-        const value = this.getAttribute("value");
+        const value = this.value;
+        this.#inputEl.value = value;
         if (REGEX_HEX.test(value)) {
             this.#buttonEl.value = value;
         } else {
@@ -91,7 +82,7 @@ export default class ColorInput extends AbstractFormInput {
     }, 300);
 
     set value(value) {
-        this.#inputEl.value = value;
+        this.#inputEl.value = value ?? this.defaultValue;
         super.value = value;
     }
 
@@ -110,6 +101,15 @@ export default class ColorInput extends AbstractFormInput {
                 if (oldValue != newValue) {
                     this.#inputEl.setAttribute("value", newValue);
                     this.#buttonEl.setAttribute("value", newValue);
+                    if (!this.isChanged) {
+                        const value = this.value;
+                        this.#inputEl.value = value;
+                        if (REGEX_HEX.test(value)) {
+                            this.#buttonEl.value = value;
+                        } else {
+                            this.#buttonEl.value = "#000000";
+                        }
+                    }
                 }
             } break;
             case "autocomplete": {

@@ -44,39 +44,45 @@ export default class AbstractFormInput extends AbstractFormField {
         this.#resetEl.addEventListener("click", (event) => {
             event.stopPropagation();
             event.preventDefault();
-            this.fieldResetCallback();
-            /* --- */
-            const resetEvent = new Event("default", {bubbles: true, cancelable: true});
-            resetEvent.name = this.name;
-            resetEvent.fieldId = this.id;
-            this.dispatchEvent(resetEvent);
+            this.formResetCallback();
         });
     }
 
     connectedCallback() {
-        this.#value = this.value;
-        /* --- */
-        this.internals.setFormValue(this.#value);
-        const message = this.revalidate();
-        if (typeof message === "string" && message !== "") {
-            this.setCustomValidity(message);
-        }
+        this.internals.setFormValue(this.value);
     }
 
     formDisabledCallback(disabled) {
         this.#resetEl.disabled = disabled;
     }
 
-    fieldResetCallback() {
-        this.value = this.getAttribute("value") || "";
-    }
-
     formResetCallback() {
-        this.value = this.getAttribute("value") || "";
+        this.#value = null;
+        this.internals.setFormValue(this.value);
+        const message = this.revalidate();
+        if (typeof message === "string" && message !== "") {
+            this.setCustomValidity(message);
+        } else {
+            this.setCustomValidity("");
+        }
+        /* --- */
+        const event = new Event("default", {bubbles: true, cancelable: true});
+        event.value = this.value;
+        event.name = this.name;
+        event.fieldId = this.id;
+        this.dispatchEvent(event);
     }
 
     formStateRestoreCallback(state/* , mode */) {
         this.value = state;
+    }
+
+    get defaultValue() {
+        return super.defaultValue ?? "";
+    }
+
+    get isChanged() {
+        return this.#value != null;
     }
 
     set value(value) {
@@ -136,12 +142,25 @@ export default class AbstractFormInput extends AbstractFormField {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "required"];
+        return [...super.observedAttributes, "value", "required"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
+            case "value": {
+                if (oldValue != newValue) {
+                    if (!this.isChanged) {
+                        this.internals.setFormValue(this.value);
+                        const message = this.revalidate();
+                        if (typeof message === "string" && message !== "") {
+                            this.setCustomValidity(message);
+                        } else {
+                            this.setCustomValidity("");
+                        }
+                    }
+                }
+            } break;
             case "required": {
                 if (oldValue != newValue) {
                     const message = this.revalidate();

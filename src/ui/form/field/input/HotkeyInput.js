@@ -93,9 +93,9 @@ export default class HotkeyInput extends AbstractFormInput {
 
     connectedCallback() {
         super.connectedCallback();
+        const value = this.#parseKeys(this.value);
         this.#handleReadOnlyDisabled();
-        this.#value = this.#parseKeys(this.value);
-        this.#display(this.#value);
+        this.#display(value);
     }
 
     formDisabledCallback(disabled) {
@@ -113,14 +113,14 @@ export default class HotkeyInput extends AbstractFormInput {
     }, 300);
 
     set value(value) {
-        const parsedValue = this.#parseKeys(value);
+        const parsedValue = this.#parseKeys(value ?? this.defaultValue);
+        this.#display(parsedValue);
         this.#value.ctrlKey = parsedValue.ctrlKey;
         this.#value.shiftKey = parsedValue.shiftKey;
         this.#value.altKey = parsedValue.altKey;
         this.#value.metaKey = parsedValue.metaKey;
         this.#value.key = parsedValue.key;
-        this.#display(this.#value);
-        super.value = this.#inputEl.value;
+        super.value = value != null ? this.#inputEl.value : null;
     }
 
     get value() {
@@ -137,6 +137,11 @@ export default class HotkeyInput extends AbstractFormInput {
             case "value": {
                 if (oldValue != newValue) {
                     this.#inputEl.setAttribute("value", newValue);
+                    if (!this.isChanged) {
+                        const value = this.#parseKeys(this.value);
+                        this.#handleReadOnlyDisabled();
+                        this.#display(value);
+                    }
                 }
             } break;
             case "placeholder": {

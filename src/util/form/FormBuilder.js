@@ -140,7 +140,7 @@ class FormBuilder {
                 return this.#createLinkButton(id, params);
             }
             case "Fieldset": {
-                return this.#createFieldset(id, params);
+                return this.#createFieldset(id, params, defaultValues);
             }
             case "ButtonRow": {
                 return this.#createButtonRow(id, params);
@@ -160,7 +160,7 @@ class FormBuilder {
         if (params.name != null && defaultValues[params.name] != null) {
             el.setAttribute("value", defaultValues[params.name]);
         } else if (value != null) {
-            el.setAttribute("value", value); // TODO remove this (?)
+            el.setAttribute("value", value);
         } else {
             el.removeAttribute("value");
         }
@@ -259,7 +259,7 @@ class FormBuilder {
         return el;
     }
 
-    #createFieldset(id, params = {}) {
+    #createFieldset(id, params = {}, defaultValues = {}) {
         const el = document.createElement("emc-form-fieldset");
         if (id != null) {
             el.id = id;
@@ -274,7 +274,7 @@ class FormBuilder {
             el.tooltip = params.tooltip;
         }
         for (const op of params.children) {
-            el.append(this.#createOption(op));
+            el.append(this.#createOption(op, defaultValues));
         }
         return el;
     }

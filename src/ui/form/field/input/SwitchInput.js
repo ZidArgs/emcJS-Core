@@ -43,11 +43,12 @@ export default class SwitchInput extends AbstractFormInput {
     }
 
     set value(value) {
-        if (value == null || value === "") {
+        const convertedValue = value ?? this.defaultValue;
+        if (convertedValue === "") {
             this.#inputEl.checked = false;
             this.#inputEl.indeterminate = true;
-            super.value = undefined;
-        } else if (!value || value === "false") {
+            super.value = null;
+        } else if (!convertedValue || convertedValue === "false") {
             this.#inputEl.checked = false;
             this.#inputEl.indeterminate = false;
             super.value = false;
@@ -80,6 +81,19 @@ export default class SwitchInput extends AbstractFormInput {
                     } else {
                         this.#inputEl.setAttribute("checked", "");
                         this.#inputEl.removeAttribute("indeterminate");
+                    }
+                    if (!this.isChanged) {
+                        const value = this.value;
+                        if (value == null || value === "") {
+                            this.#inputEl.checked = false;
+                            this.#inputEl.indeterminate = true;
+                        } else if (!value || value === "false") {
+                            this.#inputEl.checked = false;
+                            this.#inputEl.indeterminate = false;
+                        } else {
+                            this.#inputEl.checked = true;
+                            this.#inputEl.indeterminate = false;
+                        }
                     }
                 }
             } break;

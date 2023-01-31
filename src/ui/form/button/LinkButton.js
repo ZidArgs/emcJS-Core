@@ -29,6 +29,10 @@ export default class LinkButton extends CustomFormElementDelegating {
         }
     }
 
+    get type() {
+        return "button";
+    }
+
     set name(value) {
         this.setAttribute("name", value);
     }

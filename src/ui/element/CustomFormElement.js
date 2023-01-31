@@ -65,6 +65,10 @@ export default class CustomFormElement extends CustomElement {
     }
 
     get value() {
+        return this.defaultValue;
+    }
+
+    get defaultValue() {
         return this.getAttribute("value");
     }
 

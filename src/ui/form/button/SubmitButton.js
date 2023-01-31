@@ -30,6 +30,10 @@ export default class SubmitButton extends CustomFormElementDelegating {
         this.#buttonEl.disabled = disabled;
     }
 
+    get type() {
+        return "submit";
+    }
+
     set name(value) {
         this.setAttribute("name", value);
     }

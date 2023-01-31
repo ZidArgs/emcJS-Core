@@ -56,7 +56,6 @@
 }
 #placeholder {
     color: var(--input-placeholder-text-color, #757575);
-    font-style: italic;
 }
 #button {
     position: absolute;

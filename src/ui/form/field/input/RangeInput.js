@@ -43,7 +43,10 @@ export default class RangeInput extends AbstractFormInput {
 
     connectedCallback() {
         super.connectedCallback();
-        this.#applyValueToBar(this.value);
+        const value = this.value;
+        this.#inputEl.value = value;
+        this.#numberEl.value = value;
+        this.#applyValueToBar(value);
         this.#setRange();
     }
 
@@ -61,13 +64,16 @@ export default class RangeInput extends AbstractFormInput {
         this.value = this.#inputEl.value;
     }, 300);
 
+    get defaultValue() {
+        return parseInt(super.defaultValue) || 0;
+    }
+
     set value(value) {
-        value = parseInt(value);
-        value = !isNaN(value) ? value : 0;
-        this.#inputEl.value = value;
-        super.value = value;
-        this.#numberEl.value = value;
-        this.#applyValueToBar(value);
+        const convertedValue = parseInt(value ?? this.defaultValue) || 0;
+        this.#inputEl.value = convertedValue;
+        this.#numberEl.value = convertedValue;
+        this.#applyValueToBar(convertedValue);
+        super.value = convertedValue;
     }
 
     get value() {
@@ -89,6 +95,13 @@ export default class RangeInput extends AbstractFormInput {
                 if (oldValue != newValue) {
                     this.#inputEl.setAttribute(name, newValue);
                     this.#numberEl.setAttribute(name, newValue);
+                    if (!this.isChanged) {
+                        const value = this.value;
+                        this.#inputEl.value = value;
+                        this.#numberEl.value = value;
+                        this.#applyValueToBar(this.value);
+                        this.#setRange();
+                    }
                 }
             } break;
             case "min":

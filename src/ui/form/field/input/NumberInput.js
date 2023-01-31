@@ -27,7 +27,8 @@ export default class NumberInput extends AbstractFormInput {
 
     connectedCallback() {
         super.connectedCallback();
-        this.#inputEl.value = this.value;
+        const value = this.value;
+        this.#inputEl.value = value;
     }
 
     formDisabledCallback(disabled) {
@@ -44,9 +45,8 @@ export default class NumberInput extends AbstractFormInput {
     }, 300);
 
     set value(value) {
-        value = parseFloat(value);
-        value = !isNaN(value) ? value : "";
-        this.#inputEl.value = value;
+        const convertedValue = parseFloat(value ?? this.defaultValue);
+        this.#inputEl.value = !isNaN(convertedValue) ? convertedValue : "";
         super.value = value;
     }
 
@@ -65,7 +65,15 @@ export default class NumberInput extends AbstractFormInput {
     attributeChangedCallback(name, oldValue, newValue) {
         super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
-            case "value":
+            case "value": {
+                if (oldValue != newValue) {
+                    this.#inputEl.setAttribute("value", newValue);
+                    if (!this.isChanged) {
+                        const value = this.value;
+                        this.#inputEl.value = value;
+                    }
+                }
+            } break;
             case "min":
             case "max":
             case "readonly":

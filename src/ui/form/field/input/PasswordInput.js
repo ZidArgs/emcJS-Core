@@ -56,7 +56,7 @@ export default class PasswordInput extends AbstractFormInput {
     }, 300);
 
     set value(value) {
-        this.#inputEl.value = value;
+        this.#inputEl.value = value ?? this.defaultValue;
         super.value = value;
     }
 
@@ -74,6 +74,10 @@ export default class PasswordInput extends AbstractFormInput {
             case "value": {
                 if (oldValue != newValue) {
                     this.#inputEl.setAttribute("value", newValue);
+                    if (!this.isChanged) {
+                        const value = this.value;
+                        this.#inputEl.value = value;
+                    }
                 }
             } break;
             case "placeholder": {

@@ -6,14 +6,12 @@
             "type": "ColorInput",
             "label": "color default",
             "name": "color.default",
-            "value": "#ff0000",
             "placeholder": "Choose color..."
         },
         {
             "type": "ColorInput",
             "label": "color resettable",
             "name": "color.resettable",
-            "value": "",
             "placeholder": "Choose color...",
             "resettable": true
         },
@@ -21,7 +19,6 @@
             "type": "ColorInput",
             "label": "color required",
             "name": "color.required",
-            "value": "",
             "placeholder": "Choose color...",
             "required": true
         },
@@ -29,7 +26,6 @@
             "type": "ColorInput",
             "label": "color readonly",
             "name": "color.readonly",
-            "value": "#00ffff",
             "placeholder": "Choose color...",
             "readonly": true
         },
@@ -37,7 +33,6 @@
             "type": "ColorInput",
             "label": "color disabled",
             "name": "color.disabled",
-            "value": "",
             "placeholder": "Choose color...",
             "disabled": true
         }

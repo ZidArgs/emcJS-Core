@@ -6,14 +6,12 @@
             "type": "HotkeyInput",
             "label": "hotkey default",
             "name": "hotkey.default",
-            "value": "ctrl+h",
             "placeholder": "Enter hotkey..."
         },
         {
             "type": "HotkeyInput",
             "label": "hotkey resettable",
             "name": "hotkey.resettable",
-            "value": "",
             "placeholder": "Enter hotkey...",
             "resettable": true
         },
@@ -21,7 +19,6 @@
             "type": "HotkeyInput",
             "label": "hotkey required",
             "name": "hotkey.required",
-            "value": "",
             "placeholder": "Enter hotkey...",
             "required": true
         },
@@ -29,7 +26,6 @@
             "type": "HotkeyInput",
             "label": "hotkey readonly",
             "name": "hotkey.readonly",
-            "value": "ctrl+h",
             "placeholder": "Enter hotkey...",
             "readonly": true
         },
@@ -37,7 +33,6 @@
             "type": "HotkeyInput",
             "label": "hotkey disabled",
             "name": "hotkey.disabled",
-            "value": "",
             "placeholder": "Enter hotkey...",
             "disabled": true
         }

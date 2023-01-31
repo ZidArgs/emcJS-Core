@@ -51,7 +51,9 @@
         })
         i18n.language = "en";
 
-        const formConfig = await Promise.all([
+        const [defaultValues, ...formConfig] = await Promise.all([
+            FileLoader.json("./form/form-config/_defaults.json"),
+            FileLoader.json("./form/form-config/Buttons.json"),
             FileLoader.json("./form/form-config/SearchSelect.json"),
             FileLoader.json("./form/form-config/StringInput.json"),
             FileLoader.json("./form/form-config/NumberInput.json"),
@@ -59,25 +61,24 @@
             FileLoader.json("./form/form-config/PasswordInput.json"),
             FileLoader.json("./form/form-config/ColorInput.json"),
             FileLoader.json("./form/form-config/HotkeyInput.json"),
-            FileLoader.json("./form/form-config/SwitchInput.json"),
-            FileLoader.json("./form/form-config/Buttons.json")
+            FileLoader.json("./form/form-config/SwitchInput.json")
         ]);
 
-        const formEl = FormBuilder.build(formConfig, null, {
+        const formEl = FormBuilder.build(formConfig, defaultValues, {
             submitButton: true,
             resetButton: true,
             allowsInvalid: true
         });
         document.body.append(formEl);
 
-        const formEl2 = FormBuilder.build(formConfig[0], null, {
+        const formEl2 = FormBuilder.build(formConfig[1], defaultValues, {
             submitButton: true,
             resetButton: true,
             allowsInvalid: true
         });
         document.body.append(formEl2);
 
-        const formContext = new FormContext();
+        const formContext = new FormContext(defaultValues);
         formContext.registerForm(formEl);
         formContext.registerForm(formEl2);
 
@@ -109,7 +110,7 @@
 
         CustomActionRegistry.set("cheese", () => {
             alert("more cheese");
-            formContext.setData({
+            formContext.loadData({
                 "search-select.required": "foobar",
                 "text.required": "nice",
                 "number.required": 69,

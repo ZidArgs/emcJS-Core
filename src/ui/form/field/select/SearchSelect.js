@@ -38,7 +38,7 @@ export default class SearchSelect extends AbstractFormInput {
     }
 
     set value(value) {
-        this.#inputEl.value = value;
+        this.#inputEl.value = value ?? this.defaultValue;
         super.value = value;
     }
 
@@ -53,7 +53,15 @@ export default class SearchSelect extends AbstractFormInput {
     attributeChangedCallback(name, oldValue, newValue) {
         super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
-            case "value":
+            case "value": {
+                if (oldValue != newValue) {
+                    this.#inputEl.setAttribute("value", newValue);
+                    if (!this.isChanged) {
+                        const value = this.value;
+                        this.#inputEl.value = value;
+                    }
+                }
+            } break;
             case "readonly":
             case "autocomplete":
             case "placeholder":

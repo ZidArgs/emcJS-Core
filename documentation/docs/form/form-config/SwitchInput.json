@@ -5,28 +5,24 @@
         {
             "type": "SwitchInput",
             "label": "switch default",
-            "name": "switch.default",
-            "value": "true"
+            "name": "switch.default"
         },
         {
             "type": "SwitchInput",
             "label": "switch resettable",
             "name": "switch.resettable",
-            "value": "false",
             "resettable": true
         },
         {
             "type": "SwitchInput",
             "label": "switch required",
             "name": "switch.required",
-            "value": "",
             "required": true
         },
         {
             "type": "SwitchInput",
             "label": "switch disabled",
             "name": "switch.disabled",
-            "value": "",
             "disabled": true
         }
     ]

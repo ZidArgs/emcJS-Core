@@ -1,5 +1,9 @@
 export default class ObservableStorage extends EventTarget {
 
+    #rootData = new Map();
+
+    #changeData = new Map();
+
     #buffer = new Map();
 
     clone() {
@@ -18,6 +22,7 @@ export default class ObservableStorage extends EventTarget {
         const oldValue = this.get(key);
         // change event
         if (oldValue != value) {
+            this.#writeChangeData(key, value);
             this.#buffer.set(key, value);
             const ev = new Event("change");
             ev.data = {[key]: value};
@@ -33,6 +38,7 @@ export default class ObservableStorage extends EventTarget {
             const newValue = data[key];
             const oldValue = this.get(key);
             if (oldValue != newValue) {
+                this.#writeChangeData(key, newValue);
                 this.#buffer.set(key, newValue);
                 values[key] = newValue;
                 changes[key] = {oldValue, newValue};
@@ -62,6 +68,7 @@ export default class ObservableStorage extends EventTarget {
     delete(key) {
         const oldValue = this.#buffer.get(key);
         if (oldValue != null) {
+            this.#writeChangeData(key, null);
             this.#buffer.delete(key);
             const defaultValue = this.getDefault(key);
             const ev = new Event("change");
@@ -80,6 +87,8 @@ export default class ObservableStorage extends EventTarget {
     }
 
     clear() {
+        this.#rootData.clear();
+        this.#changeData.clear();
         this.#buffer.clear();
         const ev = new Event("clear");
         ev.data = this.getAll();
@@ -91,10 +100,13 @@ export default class ObservableStorage extends EventTarget {
     }
 
     deserialize(data = {}) {
+        this.#rootData.clear();
+        this.#changeData.clear();
         this.#buffer.clear();
         for (const key in data) {
             const newValue = data[key];
             if (newValue != null) {
+                this.#rootData.set(key, newValue);
                 this.#buffer.set(key, newValue);
             }
         }
@@ -110,6 +122,7 @@ export default class ObservableStorage extends EventTarget {
             const newValue = data[key];
             const oldValue = this.get(key);
             if (oldValue != newValue) {
+                this.#writeChangeData(key, newValue);
                 if (newValue == null) {
                     this.#buffer.delete(key);
                     const defaultValue = this.getDefault(key);
@@ -131,8 +144,24 @@ export default class ObservableStorage extends EventTarget {
         }
     }
 
+    getChanges() {
+        const res = {};
+        for (const [key, value] of this.#changeData) {
+            res[key] = value;
+        }
+        return res;
+    }
+
     [Symbol.iterator]() {
         return this.#buffer[Symbol.iterator]()
+    }
+
+    #writeChangeData(key, value) {
+        if (this.#rootData.get(key) === value) {
+            this.#changeData.delete(key);
+        } else {
+            this.#changeData.set(key, value);
+        }
     }
 
 }
