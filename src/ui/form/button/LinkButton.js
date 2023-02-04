@@ -1,10 +1,18 @@
 import CustomFormElementDelegating from "../../element/CustomFormElementDelegating.js";
+import {
+    deepClone
+} from "../../../util/helper/DeepClone.js";
 import "../../i18n/I18nTooltip.js";
 import "../../i18n/I18nLabel.js";
 import TPL from "./LinkButton.js.html" assert {type: "html"};
 import STYLE from "./LinkButton.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./LinkButton.js.form-config.json" assert {type: "json"};
 
 export default class LinkButton extends CustomFormElementDelegating {
+
+    static get formConfigurationFields() {
+        return deepClone(CONFIG_FIELDS);
+    }
 
     #buttonEl;
 

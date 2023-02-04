@@ -1,10 +1,22 @@
 import CustomElement from "../element/CustomElement.js";
+import {
+    deepClone
+} from "../../util/helper/DeepClone.js";
 import "../i18n/I18nLabel.js";
 import "../i18n/I18nTextbox.js";
 import TPL from "./FormFieldset.js.html" assert {type: "html"};
 import STYLE from "./FormFieldset.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./FormFieldset.js.form-config.json" assert {type: "json"};
 
 export default class FormFieldset extends CustomElement {
+
+    static get formConfigurationFields() {
+        return deepClone(CONFIG_FIELDS);
+    }
+
+    static get formConfigurationCanHaveChildren() {
+        return true;
+    }
 
     constructor() {
         super();

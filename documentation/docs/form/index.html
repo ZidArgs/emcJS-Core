@@ -25,25 +25,7 @@
         // form
         import FormBuilder from "/emcJS/util/form/FormBuilder.js";
         import FormContext from "/emcJS/util/form/FormContext.js";
-        import "/emcJS/ui/form/FormFieldset.js";
-        import "/emcJS/ui/form/FormButtonRow.js";
-        // custom
-        import "/emcJS/ui/form/custom/SearchSelect.js";
-        // buttons
-        import "/emcJS/ui/form/button/ActionButton.js";
-        import "/emcJS/ui/form/button/LinkButton.js";
-        import "/emcJS/ui/form/button/SubmitButton.js";
-        import "/emcJS/ui/form/button/ResetButton.js";
-        // field input
-        import "/emcJS/ui/form/field/input/StringInput.js";
-        import "/emcJS/ui/form/field/input/NumberInput.js";
-        import "/emcJS/ui/form/field/input/PasswordInput.js";
-        import "/emcJS/ui/form/field/input/ColorInput.js";
-        import "/emcJS/ui/form/field/input/RangeInput.js";
-        import "/emcJS/ui/form/field/input/HotkeyInput.js";
-        import "/emcJS/ui/form/field/input/SwitchInput.js";
-        // field select
-        import "/emcJS/ui/form/field/select/SearchSelect.js";
+        import "/emcJS/ui/form/DefaultFormElementsLoader.js";
 
         /*
                NOW          :    BEFORE
@@ -62,6 +44,12 @@
             "HotkeyInput"   : "hotkey"
             "SearchSelect"  : "choice"
             todo            : "list"
+
+            MISSING
+            "TextInput"
+            "KeyValueList"
+            "CharInput"
+            "LogicInput"
 
         */
 
@@ -120,7 +108,7 @@
         console.log("changed data", formContext.getChanges());
         console.groupEnd("init context");
 
-        formContext.addEventListener("submit", (event) => {
+        formContext.addEventListener("submit", () => {
             const valid = formContext.getFormValidity() ? "valid" : "invalid";
             console.group(`submit (${valid})`);
             console.log("changed data", formContext.getChanges());

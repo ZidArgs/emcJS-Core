@@ -3,14 +3,22 @@ import "../../../i18n/I18nInput.js";
 import {
     debounce
 } from "../../../../util/Debouncer.js";
+import {
+    deepClone
+} from "../../../../util/helper/DeepClone.js";
 import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
 import {
     saveSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
 import TPL from "./NumberInput.js.html" assert {type: "html"};
 import STYLE from "./NumberInput.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./NumberInput.js.form-config.json" assert {type: "json"};
 
 export default class NumberInput extends AbstractFormInput {
+
+    static get formConfigurationFields() {
+        return deepClone(CONFIG_FIELDS);
+    }
 
     #inputEl;
 

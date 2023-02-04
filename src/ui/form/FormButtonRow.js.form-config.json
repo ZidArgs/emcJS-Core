@@ -1,0 +1,8 @@
+[
+    {
+        "type": "LogicInput",
+        "name": "visible",
+        "label": "Visible",
+        "value": true
+    }
+]

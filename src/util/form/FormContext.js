@@ -1,6 +1,5 @@
 import ObservableStorage from "../../data/storage/observable/ObservableStorage.js";
 import AbstractFormField from "../../ui/form/abstract/AbstractFormField.js";
-import FormContainer from "../../ui/form/FormContainer.js";
 import EventMultiTargetManager from "../event/EventMultiTargetManager.js";
 import EventTargetManager from "../event/EventTargetManager.js";
 import {
@@ -65,11 +64,11 @@ export default class FormContext extends EventTarget {
         this.#dataStorage.deserialize(initValues);
         this.#storageEventTargetManager.switchTarget(this.#dataStorage);
         this.#storageEventTargetManager.set("clear", (event) => {
-            this.#formListEventManager.setActive(false);
-            for (const formEl of this.#formElList) {
-                formEl.reset();
-            }
-            this.#formListEventManager.setActive(true);
+            // this.#formListEventManager.setActive(false);
+            // for (const formEl of this.#formElList) {
+            //     formEl.reset();
+            // }
+            // this.#formListEventManager.setActive(true);
             /* --- */
             const ev = new Event("clear");
             ev.data = event.data;
@@ -106,8 +105,8 @@ export default class FormContext extends EventTarget {
     }
 
     unregisterForm(formEl) {
-        if (!(formEl instanceof FormContainer)) {
-            throw new TypeError("FormContainer expected");
+        if (!(formEl instanceof HTMLFormElement)) {
+            throw new TypeError("HTMLFormElement expected");
         }
         this.#formElList.delete(formEl);
         this.#formListEventManager.removeTarget(formEl);

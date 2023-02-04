@@ -60,7 +60,7 @@ export default class FormElementContext {
     }
 
     set storage(value) {
-        if (!(value instanceof ObservableStorage)) {
+        if (value != null && !(value instanceof ObservableStorage)) {
             throw new TypeError("ObservableStorage expected");
         }
         if (this.#storage != value) {

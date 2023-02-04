@@ -16,7 +16,7 @@ class FormElementRegistry {
     #registry = new Map();
 
     create(ref, params) {
-        const Clazz = this.#getClass(ref);
+        const Clazz = this.getRegisteredClass(ref);
         if (Clazz != null) {
             if ("fromConfig" in Clazz) {
                 return Clazz.fromConfig(params);
@@ -39,6 +39,7 @@ class FormElementRegistry {
         /* --- */
         console.warn(`FormElementRegistry: no form element registered for type "${ref}"`);
         const el = document.createElement("input");
+        el.dataset.elementRef = ref;
         el.setAttribute("type", "hidden");
         el.setAttribute("name", params.name ?? "");
         if (typeof value === "object") {
@@ -49,7 +50,7 @@ class FormElementRegistry {
         return el;
     }
 
-    #getClass(ref) {
+    getRegisteredClass(ref) {
         if (typeof ref === "string" && ref !== "") {
             return this.#registry.get(ref);
         }
@@ -67,6 +68,10 @@ class FormElementRegistry {
         }
         this.#registry.set(ref, FormElementClass);
         return this;
+    }
+
+    getRegisteredRefs() {
+        return Array.from(this.#registry.keys());
     }
 
 }

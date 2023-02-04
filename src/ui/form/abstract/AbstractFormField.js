@@ -1,11 +1,22 @@
 import CustomFormElement from "../../element/CustomFormElement.js";
+import {
+    deepClone
+} from "../../../util/helper/DeepClone.js";
 import "../../i18n/I18nLabel.js";
 import "../../i18n/I18nTextbox.js";
 import TPL from "./AbstractFormField.js.html" assert {type: "html"};
 import STYLE from "./AbstractFormField.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./AbstractFormField.js.form-config.json" assert {type: "json"};
 
-// TODO store all errors based on keys
 export default class AbstractFormField extends CustomFormElement {
+
+    static get formConfigurationFields() {
+        return deepClone(CONFIG_FIELDS);
+    }
+
+    static get formConfigurationCanHaveChildren() {
+        return false;
+    }
 
     constructor() {
         if (new.target === AbstractFormField) {

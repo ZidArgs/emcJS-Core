@@ -3,6 +3,9 @@ import "../../../i18n/I18nInput.js";
 import {
     debounce
 } from "../../../../util/Debouncer.js";
+import {
+    deepClone
+} from "../../../../util/helper/DeepClone.js";
 import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
 import {
     saveSetAttribute
@@ -10,10 +13,15 @@ import {
 import "../../../i18n/I18nTooltip.js";
 import TPL from "./ColorInput.js.html" assert {type: "html"};
 import STYLE from "./ColorInput.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./ColorInput.js.form-config.json" assert {type: "json"};
 
 const REGEX_HEX = /^#[0-9a-f]{6}$/;
 
 export default class ColorInput extends AbstractFormInput {
+
+    static get formConfigurationFields() {
+        return deepClone(CONFIG_FIELDS);
+    }
 
     #inputEl;
 

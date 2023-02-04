@@ -1,0 +1,44 @@
+[
+    {
+        "type": "StringInput",
+        "name": "name",
+        "label": "Name",
+        "value": ""
+    },
+    {
+        "type": "StringInput",
+        "name": "text",
+        "label": "Text",
+        "value": ""
+    },
+    {
+        "type": "CharInput",
+        "name": "icon",
+        "label": "Icon",
+        "value": ""
+    },
+    {
+        "type": "StringInput",
+        "name": "href",
+        "label": "URL",
+        "value": ""
+    },
+    {
+        "type": "TextInput",
+        "name": "tooltip",
+        "label": "Tooltip",
+        "value": ""
+    },
+    {
+        "type": "LogicInput",
+        "name": "enabled",
+        "label": "Enabled",
+        "value": true
+    },
+    {
+        "type": "LogicInput",
+        "name": "visible",
+        "label": "Visible",
+        "value": true
+    }
+]

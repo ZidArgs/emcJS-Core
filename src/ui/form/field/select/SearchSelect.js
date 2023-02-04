@@ -1,17 +1,22 @@
 import AbstractFormInput from "../../abstract/AbstractFormInput.js";
 import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
 import {
+    deepClone
+} from "../../../../util/helper/DeepClone.js";
+import {
     saveSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
 import "../../../i18n/I18nLabel.js";
+import "../../custom/SearchSelect.js";
 import TPL from "./SearchSelect.js.html" assert {type: "html"};
 import STYLE from "./SearchSelect.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./SearchSelect.js.form-config.json" assert {type: "json"};
 
-/*
-    TODO remove view element - make everything work with just the input
-    TODO integrate as form control
-*/
 export default class SearchSelect extends AbstractFormInput {
+
+    static get formConfigurationFields() {
+        return deepClone(CONFIG_FIELDS);
+    }
 
     #inputEl;
 

@@ -3,14 +3,22 @@ import "../../../i18n/I18nInput.js";
 import {
     debounce
 } from "../../../../util/Debouncer.js";
+import {
+    deepClone
+} from "../../../../util/helper/DeepClone.js";
 import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
 import {
     saveSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
 import TPL from "./StringInput.js.html" assert {type: "html"};
 import STYLE from "./StringInput.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./StringInput.js.form-config.json" assert {type: "json"};
 
 export default class StringInput extends AbstractFormInput {
+
+    static get formConfigurationFields() {
+        return deepClone(CONFIG_FIELDS);
+    }
 
     #inputEl;
 
