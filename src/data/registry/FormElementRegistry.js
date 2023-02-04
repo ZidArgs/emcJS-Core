@@ -23,7 +23,13 @@ class FormElementRegistry {
             for (const name in params) {
                 const value = params[name];
                 if (value != null) {
-                    el.setAttribute(name, value);
+                    if (typeof value === "object") {
+                        el.setAttribute(name, JSON.stringify(value));
+                    } else {
+                        el.setAttribute(name, value);
+                    }
+                } else {
+                    el.removeAttribute(name);
                 }
             }
             return el;
@@ -33,7 +39,11 @@ class FormElementRegistry {
         const el = document.createElement("input");
         el.setAttribute("type", "hidden");
         el.setAttribute("name", params.name ?? "");
-        el.setAttribute("value", params.value ?? "");
+        if (typeof value === "object") {
+            el.setAttribute("value", JSON.stringify(params.value ?? ""));
+        } else {
+            el.setAttribute("value", params.value ?? "");
+        }
         return el;
     }
 

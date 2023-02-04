@@ -82,7 +82,19 @@
         formContext.registerForm(formEl);
         formContext.registerForm(formEl2);
 
-        console.log("init data", formContext.getChanges());
+        console.log("init data", defaultValues, formContext.getChanges());
+
+        formContext.addEventListener("clear", (event) => {
+            console.log("cleared stored data", event);
+        });
+
+        formContext.addEventListener("load", (event) => {
+            console.log("loaded stored data", event);
+        });
+
+        formContext.addEventListener("change", (event) => {
+            console.log("changed stored data", event);
+        });
 
         formEl.addEventListener("submit", (event) => {
             event.stopPropagation();

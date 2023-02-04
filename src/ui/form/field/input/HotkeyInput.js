@@ -14,8 +14,15 @@ import STYLE from "./HotkeyInput.js.css" assert {type: "css"};
 const BLACKLIST = [
     "Tab",
     "AltGraph",
-    "Capslock",
-    "Numlock"
+    "CapsLock",
+    "NumLock",
+    "Fn",
+    "FnLock",
+    "Hyper",
+    "ScrollLock",
+    "Super",
+    "Symbol",
+    "SymbolLock"
 ];
 
 const CONTROL_KEYS = [
@@ -24,7 +31,7 @@ const CONTROL_KEYS = [
     "Alt",
     "Meta"
 ];
-const VALUE_PARSE = /(ctrl\s*\+)?\s*(shift\s*\+)?\s*(alt\s*\+)?\s*(meta\s*\+)?\s*(.+)?/i;
+const VALUE_PARSE = /(ctrl\s+)?(shift\s+)?(alt\s+)?(meta\s+)?(.+)?/i;
 
 export default class HotkeyInput extends AbstractFormInput {
 
@@ -104,6 +111,12 @@ export default class HotkeyInput extends AbstractFormInput {
         this.#handleReadOnlyDisabled();
     }
 
+    formResetCallback() {
+        super.formResetCallback();
+        const value = this.value;
+        this.#display(value);
+    }
+
     focus(options) {
         this.#inputEl.focus(options);
     }
@@ -120,7 +133,7 @@ export default class HotkeyInput extends AbstractFormInput {
         this.#value.altKey = parsedValue.altKey;
         this.#value.metaKey = parsedValue.metaKey;
         this.#value.key = parsedValue.key;
-        super.value = value != null ? this.#inputEl.value : null;
+        super.value = value != null ? this.#inputEl.value.toLowerCase() : null;
     }
 
     get value() {
@@ -164,16 +177,16 @@ export default class HotkeyInput extends AbstractFormInput {
     #display({ctrlKey, shiftKey, altKey, metaKey, key} = {}) {
         let res = "";
         if (ctrlKey) {
-            res += "Ctrl + ";
+            res += "Ctrl ";
         }
         if (shiftKey) {
-            res += "Shift + ";
+            res += "Shift ";
         }
         if (altKey) {
-            res += "Alt + ";
+            res += "Alt ";
         }
         if (metaKey) {
-            res += "Meta + ";
+            res += "Meta ";
         }
         if (key != null) {
             res += key === " " ? "Space" : toStartUppercaseEndLowercase(key);

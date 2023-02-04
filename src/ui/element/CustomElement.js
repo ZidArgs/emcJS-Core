@@ -33,4 +33,16 @@ export default class CustomElement extends HTMLElement {
         return true;
     }
 
+    setJSONAttribute(name, value) {
+        if (value != null) {
+            this.setAttribute(name, JSON.stringify(value));
+        } else {
+            this.removeAttribute(name);
+        }
+    }
+
+    getJSONAttribute(name) {
+        return JSON.parse(this.getAttribute(name));
+    }
+
 }

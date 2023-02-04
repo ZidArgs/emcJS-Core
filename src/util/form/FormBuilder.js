@@ -25,52 +25,6 @@ import "../../ui/form/button/LinkButton.js";
 
 */
 
-/* TODO better change how default values are defined?
-{
-    "formConfig": [
-        {
-            "type": "Fieldset",
-            "label": "text",
-            "desc": "test.desc",
-            "tooltip": "lorem ipsum dolor sit amet",
-            "children": [
-                {
-                    "type": "StringInput",
-                    "label": "text default",
-                    "desc": "test.desc",
-                    "name": "text.default",
-                    "tooltip": "lorem ipsum dolor sit amet",
-                    "placeholder": "Enter text..."
-                }
-            }
-        }
-    ],
-    "defaultValues": {
-        "text.default": "lorem ipsum dolor sit amet"
-    }
-}
-*/
-
-// TODO integrate storage control (maybe a FormController watching if anything in form changes)
-
-// TODO use logic for disabled property
-
-/* TODO add visible property (use logic)
-    if (visible != null) {
-        if (typeof visible === "boolean") {
-            el.style.display = visible ? "" : "none";
-        } else {
-            const logicHandler = new LogicHandler(storage, visible);
-            logicHandler.addEventListener("change", (event) => {
-                el.style.display = event.value ? "" : "none";
-            });
-            if (!logicHandler.value) {
-                el.style.display = "none";
-            }
-        }
-    }
-*/
-
 class FormBuilder {
 
     build(formConfig, defaultValues = {}, opts = {}) {
@@ -125,53 +79,68 @@ class FormBuilder {
     }
 
     #createOption(option = {}, defaultValues = {}) {
-        const {type, id, ...params} = option;
+        const {type, id, visible, ...params} = option;
         switch (type) {
             case "SubmitButton": {
-                return this.#createSubmitButton(id, params);
+                return this.#createSubmitButton(id, visible, params);
             }
             case "ResetButton": {
-                return this.#createResetButton(id, params);
+                return this.#createResetButton(id, visible, params);
             }
             case "ActionButton": {
-                return this.#createActionButton(id, params);
+                return this.#createActionButton(id, visible, params);
             }
             case "LinkButton": {
-                return this.#createLinkButton(id, params);
+                return this.#createLinkButton(id, visible, params);
             }
             case "Fieldset": {
-                return this.#createFieldset(id, params, defaultValues);
+                return this.#createFieldset(id, visible, params, defaultValues);
             }
             case "ButtonRow": {
-                return this.#createButtonRow(id, params);
+                return this.#createButtonRow(id, visible, params);
             }
             default: {
-                return this.#createField(type, id, params, defaultValues);
+                return this.#createField(type, id, visible, params, defaultValues);
             }
         }
     }
 
-    #createField(type, id, config = {}, defaultValues = {}) {
+    #createField(type, id, visible, config = {}, defaultValues = {}) {
         const {value, ...params} = config;
         const el = FormElementRegistry.create(type, params);
         if (id != null) {
             el.id = id;
         }
+        if (visible != null) {
+            el.setAttribute("visible", JSON.stringify(visible));
+        }
         if (params.name != null && defaultValues[params.name] != null) {
-            el.setAttribute("value", defaultValues[params.name]);
+            const value = defaultValues[params.name];
+            if (typeof value === "object") {
+                el.setAttribute("value", JSON.stringify(value));
+            } else {
+                el.setAttribute("value", value);
+            }
         } else if (value != null) {
-            el.setAttribute("value", value);
+            if (typeof value === "object") {
+                el.setAttribute("value", JSON.stringify(value));
+            } else {
+                el.setAttribute("value", value);
+            }
         } else {
             el.removeAttribute("value");
         }
         return el;
     }
 
-    #createSubmitButton(id, params = {}) {
+    #createSubmitButton(id, visible, params = {}) {
         const el = document.createElement("emc-button-submit");
         if (id != null) {
             el.id = id;
         }
+        if (visible != null) {
+            el.setAttribute("visible", JSON.stringify(visible));
+        }
         if (params.name != null) {
             el.name = params.name;
         }
@@ -187,11 +156,14 @@ class FormBuilder {
         return el;
     }
 
-    #createResetButton(id, params = {}) {
+    #createResetButton(id, visible, params = {}) {
         const el = document.createElement("emc-button-reset");
         if (id != null) {
             el.id = id;
         }
+        if (visible != null) {
+            el.setAttribute("visible", JSON.stringify(visible));
+        }
         if (params.name != null) {
             el.name = params.name;
         }
@@ -207,10 +179,13 @@ class FormBuilder {
         return el;
     }
 
-    #createActionButton(id, params = {}) {
+    #createActionButton(id, visible, params = {}) {
         const el = document.createElement("emc-button-action");
         if (id != null) {
             el.id = id;
+        }
+        if (visible != null) {
+            el.setAttribute("visible", JSON.stringify(visible));
         }
         if (params.name != null) {
             el.name = params.name;
@@ -233,10 +208,13 @@ class FormBuilder {
         return el;
     }
 
-    #createLinkButton(id, params = {}) {
+    #createLinkButton(id, visible, params = {}) {
         const el = document.createElement("emc-button-link");
         if (id != null) {
             el.id = id;
+        }
+        if (visible != null) {
+            el.setAttribute("visible", JSON.stringify(visible));
         }
         if (params.name != null) {
             el.name = params.name;
@@ -259,10 +237,13 @@ class FormBuilder {
         return el;
     }
 
-    #createFieldset(id, params = {}, defaultValues = {}) {
+    #createFieldset(id, visible, params = {}, defaultValues = {}) {
         const el = document.createElement("emc-form-fieldset");
         if (id != null) {
             el.id = id;
+        }
+        if (visible != null) {
+            el.setAttribute("visible", JSON.stringify(visible));
         }
         if (params.label != null) {
             el.label = params.label;
@@ -279,10 +260,13 @@ class FormBuilder {
         return el;
     }
 
-    #createButtonRow(id, params = {}) {
+    #createButtonRow(id, visible, params = {}) {
         const el = document.createElement("emc-form-buttonrow");
         if (id != null) {
             el.id = id;
+        }
+        if (visible != null) {
+            el.setAttribute("visible", JSON.stringify(visible));
         }
         for (const op of params.children) {
             el.append(this.#createOption(op));

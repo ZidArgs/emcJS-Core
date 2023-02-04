@@ -21,21 +21,18 @@ export default class SwitchInput extends AbstractFormInput {
     connectedCallback() {
         super.connectedCallback();
         const value = this.value;
-        if (value == null || value === "") {
-            this.#inputEl.checked = false;
-            this.#inputEl.indeterminate = true;
-        } else if (!value || value === "false") {
-            this.#inputEl.checked = false;
-            this.#inputEl.indeterminate = false;
-        } else {
-            this.#inputEl.checked = true;
-            this.#inputEl.indeterminate = false;
-        }
+        this.#applyValue(value);
     }
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
         this.#inputEl.disabled = disabled;
+    }
+
+    formResetCallback() {
+        super.formResetCallback();
+        const value = this.value;
+        this.#applyValue(value);
     }
 
     focus(options) {
@@ -44,19 +41,7 @@ export default class SwitchInput extends AbstractFormInput {
 
     set value(value) {
         const convertedValue = value ?? this.defaultValue;
-        if (convertedValue === "") {
-            this.#inputEl.checked = false;
-            this.#inputEl.indeterminate = true;
-            super.value = null;
-        } else if (!convertedValue || convertedValue === "false") {
-            this.#inputEl.checked = false;
-            this.#inputEl.indeterminate = false;
-            super.value = false;
-        } else {
-            this.#inputEl.checked = true;
-            this.#inputEl.indeterminate = false;
-            super.value = true;
-        }
+        super.value = this.#applyValue(convertedValue)
     }
 
     get value() {
@@ -84,16 +69,7 @@ export default class SwitchInput extends AbstractFormInput {
                     }
                     if (!this.isChanged) {
                         const value = this.value;
-                        if (value == null || value === "") {
-                            this.#inputEl.checked = false;
-                            this.#inputEl.indeterminate = true;
-                        } else if (!value || value === "false") {
-                            this.#inputEl.checked = false;
-                            this.#inputEl.indeterminate = false;
-                        } else {
-                            this.#inputEl.checked = true;
-                            this.#inputEl.indeterminate = false;
-                        }
+                        this.#applyValue(value);
                     }
                 }
             } break;
@@ -102,6 +78,22 @@ export default class SwitchInput extends AbstractFormInput {
 
     setCustomValidity(message) {
         super.setCustomValidity(message, this.#inputEl);
+    }
+
+    #applyValue(value) {
+        if (value === "") {
+            this.#inputEl.checked = false;
+            this.#inputEl.indeterminate = true;
+            return null;
+        }
+        if (!value || value === "false") {
+            this.#inputEl.checked = false;
+            this.#inputEl.indeterminate = false;
+            return false;
+        }
+        this.#inputEl.checked = true;
+        this.#inputEl.indeterminate = false;
+        return true;
     }
 
 }

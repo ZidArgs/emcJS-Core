@@ -47,6 +47,12 @@ export default class PasswordInput extends AbstractFormInput {
         this.#showEl.checked = false;
     }
 
+    formResetCallback() {
+        super.formResetCallback();
+        const value = this.value;
+        this.#inputEl.value = value;
+    }
+
     focus(options) {
         this.#inputEl.focus(options);
     }

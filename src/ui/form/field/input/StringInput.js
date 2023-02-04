@@ -35,6 +35,11 @@ export default class StringInput extends AbstractFormInput {
         this.#inputEl.disabled = disabled;
     }
 
+    formResetCallback() {
+        super.formResetCallback();
+        this.#inputEl.value = this.value;
+    }
+
     focus(options) {
         this.#inputEl.focus(options);
     }

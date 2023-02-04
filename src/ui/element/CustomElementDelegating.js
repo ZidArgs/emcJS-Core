@@ -36,4 +36,16 @@ export default class CustomElementDelegating extends HTMLElement {
         return value;
     }
 
+    setJSONAttribute(name, value) {
+        if (value != null) {
+            this.setAttribute(name, JSON.stringify(value));
+        } else {
+            this.removeAttribute(name);
+        }
+    }
+
+    getJSONAttribute(name) {
+        return JSON.parse(this.getAttribute(name));
+    }
+
 }

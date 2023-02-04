@@ -74,16 +74,16 @@ export default class ColorInput extends AbstractFormInput {
     #onInput = debounce(() => {
         const value = this.#inputEl.value;
         this.value = value;
-        if (REGEX_HEX.test(value)) {
-            this.#buttonEl.value = value;
-        } else {
-            this.#buttonEl.value = "#000000";
-        }
     }, 300);
 
     set value(value) {
         this.#inputEl.value = value ?? this.defaultValue;
         super.value = value;
+        if (REGEX_HEX.test(value)) {
+            this.#buttonEl.value = value;
+        } else {
+            this.#buttonEl.value = "#000000";
+        }
     }
 
     get value() {

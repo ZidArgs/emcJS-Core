@@ -36,6 +36,12 @@ export default class NumberInput extends AbstractFormInput {
         this.#inputEl.disabled = disabled;
     }
 
+    formResetCallback() {
+        super.formResetCallback();
+        const value = this.value;
+        this.#inputEl.value = value;
+    }
+
     focus(options) {
         this.#inputEl.focus(options);
     }

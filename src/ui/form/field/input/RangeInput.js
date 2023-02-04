@@ -56,6 +56,13 @@ export default class RangeInput extends AbstractFormInput {
         this.#numberEl.disabled = disabled;
     }
 
+    formResetCallback() {
+        super.formResetCallback();
+        const value = this.value;
+        this.#inputEl.value = value;
+        this.#numberEl.value = value;
+    }
+
     focus(options) {
         this.#inputEl.focus(options);
     }
