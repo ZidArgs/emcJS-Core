@@ -4,6 +4,9 @@ import {
     debounce
 } from "../../../../util/Debouncer.js";
 import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
+import {
+    saveSetAttribute
+} from "../../../../util/helper/ui/SetAttribute.js";
 import TPL from "./RangeInput.js.html" assert {type: "html"};
 import STYLE from "./RangeInput.js.css" assert {type: "css"};
 
@@ -100,8 +103,8 @@ export default class RangeInput extends AbstractFormInput {
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
-                    this.#inputEl.setAttribute(name, newValue);
-                    this.#numberEl.setAttribute(name, newValue);
+                    saveSetAttribute(this.#inputEl, "value", newValue);
+                    saveSetAttribute(this.#numberEl, "value", newValue);
                     if (!this.isChanged) {
                         const value = this.value;
                         this.#inputEl.value = value;
@@ -114,8 +117,8 @@ export default class RangeInput extends AbstractFormInput {
             case "min":
             case "max": {
                 if (oldValue != newValue) {
-                    this.#inputEl.setAttribute(name, newValue);
-                    this.#numberEl.setAttribute(name, newValue);
+                    saveSetAttribute(this.#inputEl, name, newValue);
+                    saveSetAttribute(this.#numberEl, name, newValue);
                     this.#setRange();
                     this.#applyValueToBar(this.value);
                 }

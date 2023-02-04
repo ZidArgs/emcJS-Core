@@ -8,6 +8,9 @@ import {
 } from "../../../../util/helper/string/caseConversion.js";
 import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
 import EventTargetManager from "../../../../util/event/EventTargetManager.js";
+import {
+    saveSetAttribute
+} from "../../../../util/helper/ui/SetAttribute.js";
 import TPL from "./HotkeyInput.js.html" assert {type: "html"};
 import STYLE from "./HotkeyInput.js.css" assert {type: "css"};
 
@@ -149,7 +152,7 @@ export default class HotkeyInput extends AbstractFormInput {
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
-                    this.#inputEl.setAttribute("value", newValue);
+                    saveSetAttribute(this.#inputEl, "value", newValue);
                     if (!this.isChanged) {
                         const value = this.#parseKeys(this.value);
                         this.#handleReadOnlyDisabled();
@@ -159,7 +162,7 @@ export default class HotkeyInput extends AbstractFormInput {
             } break;
             case "placeholder": {
                 if (oldValue != newValue) {
-                    this.#inputEl.setAttribute("i18n-placeholder", newValue);
+                    saveSetAttribute(this.#inputEl, "i18n-placeholder", newValue);
                 }
             } break;
             case "readonly": {

@@ -1,4 +1,5 @@
 import ObservableStorage from "../../data/storage/observable/ObservableStorage.js";
+import AbstractFormField from "../../ui/form/abstract/AbstractFormField.js";
 import FormContainer from "../../ui/form/FormContainer.js";
 import EventMultiTargetManager from "../event/EventMultiTargetManager.js";
 import EventTargetManager from "../event/EventTargetManager.js";
@@ -41,6 +42,11 @@ export default class FormContext extends EventTarget {
                 this.#dataStorage.delete(name);
             }
         });
+        this.#formListEventManager.set("reset", (event) => {
+            this.#dataStorage.resetChanges();
+            event.preventDefault();
+            event.stopPropagation();
+        });
         /* --- */
         this.#dataStorage.deserialize(initValues);
         this.#storageEventTargetManager.switchTarget(this.#dataStorage);
@@ -77,7 +83,9 @@ export default class FormContext extends EventTarget {
         this.#mutationObserver.observe(formEl);
         const all = formEl.querySelectorAll("[name]");
         for (const el of all) {
-            FieldContext.getContext(el).storage = this.#dataStorage;
+            if (el instanceof AbstractFormField) {
+                FieldContext.getContext(el).storage = this.#dataStorage;
+            }
         }
     }
 
@@ -90,7 +98,9 @@ export default class FormContext extends EventTarget {
         this.#mutationObserver.unobserve(formEl);
         const all = formEl.querySelectorAll("[name]");
         for (const el of all) {
-            FieldContext.getContext(el).storage = null;
+            if (el instanceof AbstractFormField) {
+                FieldContext.getContext(el).storage = null;
+            }
         }
     }
 
@@ -104,26 +114,34 @@ export default class FormContext extends EventTarget {
         return this.#dataStorage.getChanges();
     }
 
+    getData() {
+        return this.#dataStorage.getAll();
+    }
+
     #registerNode(node) {
-        if (node instanceof Element) {
+        if (node instanceof AbstractFormField) {
             if (node.matches("[name]")) {
                 FieldContext.getContext(node).storage = this.#dataStorage;
             }
             const all = node.querySelectorAll("[name]");
             for (const el of all) {
-                FieldContext.getContext(el).storage = this.#dataStorage;
+                if (el instanceof AbstractFormField) {
+                    FieldContext.getContext(el).storage = this.#dataStorage;
+                }
             }
         }
     }
 
     #unregisterNode(node) {
-        if (node instanceof Element) {
+        if (node instanceof AbstractFormField) {
             if (node.matches("[name]")) {
                 FieldContext.getContext(node).storage = null;
             }
             const all = node.querySelectorAll("[name]");
             for (const el of all) {
-                FieldContext.getContext(el).storage = null;
+                if (el instanceof AbstractFormField) {
+                    FieldContext.getContext(el).storage = null;
+                }
             }
         }
     }

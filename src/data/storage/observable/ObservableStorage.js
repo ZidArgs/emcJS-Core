@@ -144,12 +144,54 @@ export default class ObservableStorage extends EventTarget {
         }
     }
 
+    getRootValue(key) {
+        return this.#rootData.get(key);
+    }
+
     getChanges() {
         const res = {};
         for (const [key, value] of this.#changeData) {
             res[key] = value;
         }
         return res;
+    }
+
+    purgeChanges() {
+        for (const [key, value] of this.#changeData) {
+            this.#rootData.set(key, value);
+        }
+        this.#changeData.clear();
+    }
+
+    resetValueChange(key) {
+        const oldValue = this.#buffer.get(key);
+        if (this.#rootData.has(key)) {
+            const newValue = this.#rootData.get(key);
+            this.#buffer.set(key, newValue);
+        } else {
+            this.#buffer.delete(key);
+        }
+        this.#changeData.delete(key);
+        const defaultValue = this.getDefault(key);
+        const ev = new Event("change");
+        ev.data = {[key]: defaultValue};
+        ev.changes = {[key]: {oldValue, newValue: defaultValue}};
+        this.dispatchEvent(ev);
+    }
+
+    resetChanges() {
+        for (const [key] of this.#changeData) {
+            if (this.#rootData.has(key)) {
+                const newValue = this.#rootData.get(key);
+                this.#buffer.set(key, newValue);
+            } else {
+                this.#buffer.delete(key);
+            }
+        }
+        this.#changeData.clear();
+        const ev = new Event("load");
+        ev.data = this.getAll();
+        this.dispatchEvent(ev);
     }
 
     [Symbol.iterator]() {

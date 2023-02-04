@@ -4,6 +4,9 @@ import {
     debounce
 } from "../../../../util/Debouncer.js";
 import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
+import {
+    saveSetAttribute
+} from "../../../../util/helper/ui/SetAttribute.js";
 import "../../../i18n/I18nTooltip.js";
 import TPL from "./ColorInput.js.html" assert {type: "html"};
 import STYLE from "./ColorInput.js.css" assert {type: "css"};
@@ -99,8 +102,8 @@ export default class ColorInput extends AbstractFormInput {
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
-                    this.#inputEl.setAttribute("value", newValue);
-                    this.#buttonEl.setAttribute("value", newValue);
+                    saveSetAttribute(this.#inputEl, "value", newValue);
+                    saveSetAttribute(this.#buttonEl, "value", newValue);
                     if (!this.isChanged) {
                         const value = this.value;
                         this.#inputEl.value = value;
@@ -114,18 +117,18 @@ export default class ColorInput extends AbstractFormInput {
             } break;
             case "autocomplete": {
                 if (oldValue != newValue) {
-                    this.#inputEl.setAttribute("autocomplete", newValue);
+                    saveSetAttribute(this.#inputEl, "autocomplete", newValue);
                 }
             } break;
             case "placeholder": {
                 if (oldValue != newValue) {
-                    this.#inputEl.setAttribute("i18n-placeholder", newValue);
+                    saveSetAttribute(this.#inputEl, "i18n-placeholder", newValue);
                 }
             } break;
             case "readonly": {
                 if (oldValue != newValue) {
-                    this.#inputEl.setAttribute("readonly", newValue);
-                    this.#buttonEl.setAttribute("readonly", newValue);
+                    saveSetAttribute(this.#inputEl, "readonly", newValue);
+                    saveSetAttribute(this.#buttonEl, "readonly", newValue);
                     if (newValue != null && newValue != "false") {
                         this.#buttonEl.setAttribute("tabindex", -1);
                     } else {

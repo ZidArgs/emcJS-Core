@@ -1,5 +1,8 @@
 import AbstractFormInput from "../../abstract/AbstractFormInput.js";
 import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
+import {
+    saveSetAttribute
+} from "../../../../util/helper/ui/SetAttribute.js";
 import "../../../i18n/I18nLabel.js";
 import TPL from "./SearchSelect.js.html" assert {type: "html"};
 import STYLE from "./SearchSelect.js.css" assert {type: "css"};
@@ -60,7 +63,7 @@ export default class SearchSelect extends AbstractFormInput {
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
-                    this.#inputEl.setAttribute("value", newValue);
+                    saveSetAttribute(this.#inputEl, "value", newValue);
                     if (!this.isChanged) {
                         const value = this.value;
                         this.#inputEl.value = value;
@@ -72,7 +75,7 @@ export default class SearchSelect extends AbstractFormInput {
             case "placeholder":
             case "sorted": {
                 if (oldValue != newValue) {
-                    this.#inputEl.setAttribute(name, newValue);
+                    saveSetAttribute(this.#inputEl, name, newValue);
                 }
             } break;
         }

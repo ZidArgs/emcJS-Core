@@ -4,6 +4,9 @@ import {
     debounce
 } from "../../../../util/Debouncer.js";
 import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
+import {
+    saveSetAttribute
+} from "../../../../util/helper/ui/SetAttribute.js";
 import TPL from "./StringInput.js.html" assert {type: "html"};
 import STYLE from "./StringInput.js.css" assert {type: "css"};
 
@@ -66,7 +69,7 @@ export default class StringInput extends AbstractFormInput {
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
-                    this.#inputEl.setAttribute("value", newValue);
+                    saveSetAttribute(this.#inputEl, "value", newValue);
                     if (!this.isChanged) {
                         const value = this.value;
                         this.#inputEl.value = value;
@@ -76,12 +79,12 @@ export default class StringInput extends AbstractFormInput {
             case "readonly":
             case "autocomplete": {
                 if (oldValue != newValue) {
-                    this.#inputEl.setAttribute(name, newValue);
+                    saveSetAttribute(this.#inputEl, name, newValue);
                 }
             } break;
             case "placeholder": {
                 if (oldValue != newValue) {
-                    this.#inputEl.setAttribute("i18n-placeholder", newValue);
+                    saveSetAttribute(this.#inputEl, "i18n-placeholder", newValue);
                 }
             } break;
         }

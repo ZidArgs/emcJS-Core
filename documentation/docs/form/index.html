@@ -64,55 +64,78 @@
             FileLoader.json("./form/form-config/SwitchInput.json")
         ]);
 
-        const formEl = FormBuilder.build(formConfig, defaultValues, {
+        const formEl0 = FormBuilder.build(formConfig, null, {
             submitButton: true,
             resetButton: true,
             allowsInvalid: true
         });
-        document.body.append(formEl);
+        document.body.append(formEl0);
 
-        const formEl2 = FormBuilder.build(formConfig[1], defaultValues, {
+        const formEl1 = FormBuilder.build(formConfig[1], null, {
             submitButton: true,
             resetButton: true,
             allowsInvalid: true
         });
-        document.body.append(formEl2);
+        document.body.append(formEl1);
 
         const formContext = new FormContext(defaultValues);
-        formContext.registerForm(formEl);
-        formContext.registerForm(formEl2);
+        formContext.registerForm(formEl0);
+        formContext.registerForm(formEl1);
 
-        console.log("init data", defaultValues, formContext.getChanges());
+        console.group("init context");
+        console.log("loaded data", defaultValues);
+        console.log("changed data", formContext.getChanges());
+        console.groupEnd("init context");
 
-        formContext.addEventListener("clear", (event) => {
-            console.log("cleared stored data", event);
-        });
+        // formContext.addEventListener("clear", (event) => {
+        //     console.log("cleared stored data", event);
+        // });
 
-        formContext.addEventListener("load", (event) => {
-            console.log("loaded stored data", event);
-        });
+        // formContext.addEventListener("load", (event) => {
+        //     console.log("loaded stored data", event);
+        // });
 
-        formContext.addEventListener("change", (event) => {
-            console.log("changed stored data", event);
-        });
+        // formContext.addEventListener("change", (event) => {
+        //     console.log("changed stored data", event);
+        // });
 
-        formEl.addEventListener("submit", (event) => {
+        formEl0.addEventListener("submit", (event) => {
             event.stopPropagation();
             event.preventDefault();
-            if (formEl.checkValidity()) {
-                console.log("changed data (valid)", formContext.getChanges());
+            if (formEl0.checkValidity()) {
+                console.group("submit (valid)");
+                console.log("changed data", formContext.getChanges());
+                console.log("all data", formContext.getData());
+                console.log("form0 data", formEl0.getData());
+                console.log("form1 data", formEl1.getData());
+                console.groupEnd("submit (valid)");
             } else {
-                console.log("changed data (invalid)", formContext.getChanges());
+                console.group("submit (invalid)");
+                console.log("changed data", formContext.getChanges());
+                console.log("all data", formContext.getData());
+                console.log("form0 data", formEl0.getData());
+                console.log("form1 data", formEl1.getData());
+                console.groupEnd("submit (invalid)");
             }
         });
 
-        formEl2.addEventListener("submit", (event) => {
+        formEl1.addEventListener("submit", (event) => {
             event.stopPropagation();
             event.preventDefault();
-            if (formEl.checkValidity()) {
-                console.log("changed data (valid)", formContext.getChanges());
+            if (formEl0.checkValidity()) {
+                console.group("submit (valid)");
+                console.log("changed data", formContext.getChanges());
+                console.log("all data", formContext.getData());
+                console.log("form0 data", formEl0.getData());
+                console.log("form1 data", formEl1.getData());
+                console.groupEnd("submit (valid)");
             } else {
-                console.log("changed data (invalid)", formContext.getChanges());
+                console.group("submit (invalid)");
+                console.log("changed data", formContext.getChanges());
+                console.log("all data", formContext.getData());
+                console.log("form0 data", formEl0.getData());
+                console.log("form1 data", formEl1.getData());
+                console.groupEnd("submit (invalid)");
             }
         });
 
@@ -130,10 +153,10 @@
                 "color.default": "#ff0000",
                 "color.resettable": "#00ff00",
                 "color.required": "#0000ff",
-                "hotkey.default": "Ctrl + W",
-                "hotkey.resettable": "Ctrl + A",
-                "hotkey.required": "Ctrl + S",
-                "hotkey.readonly": "Ctrl + D",
+                "hotkey.default": "Ctrl W",
+                "hotkey.resettable": "Ctrl A",
+                "hotkey.required": "Ctrl S",
+                "hotkey.readonly": "Ctrl D",
                 "switch.required": true
             });
         });
