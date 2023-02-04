@@ -1,4 +1,6 @@
-import StringHelper from "../helper/StringHelper.js";
+import {
+    unescapeUnicode
+} from "../helper/string/Unicode.js";
 
 const LNBR_SEQ = /(?:\r\n|\n|\r)/g;
 const COMMENT = /^(?:!|#).*$/;
@@ -9,7 +11,7 @@ function processLine(line) {
         .replace(/\\=/g, "\\u003D")
         .replace(/\\:/g, "\\u003A");
     const [, key = "", value = ""] = escaped.match(/(.*?)(?:=|:)(.*)/) ?? escaped.match(/(.*?)(?: )(.*)/) ?? [];
-    return [StringHelper.unescapeUnicode(key.trim()), StringHelper.unescapeUnicode(value.trim())];
+    return [unescapeUnicode(key.trim()), unescapeUnicode(value.trim())];
 }
 
 class Properties {

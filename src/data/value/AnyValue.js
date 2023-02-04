@@ -1,4 +1,6 @@
-import Helper from "../../util/helper/Helper.js";
+import {
+    isEqual
+} from "../../util/helper/Comparator.js";
 
 /**
  * A state containing a value of any kind.
@@ -14,7 +16,7 @@ export default class AnyState extends EventTarget {
     }
 
     set value(value) {
-        if (!Helper.isEqual(this.#state, value)) {
+        if (!isEqual(this.#state, value)) {
             this.#state = value;
             const event = new Event("value");
             event.data = value;

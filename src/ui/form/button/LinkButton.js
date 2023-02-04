@@ -41,12 +41,12 @@ export default class LinkButton extends CustomFormElementDelegating {
         return this.getAttribute("name");
     }
 
-    set value(value) {
-        this.setAttribute("value", value);
+    set text(value) {
+        this.setAttribute("text", value);
     }
 
-    get value() {
-        return this.getAttribute("value");
+    get text() {
+        return this.getAttribute("text");
     }
 
     set icon(value) {
@@ -74,12 +74,12 @@ export default class LinkButton extends CustomFormElementDelegating {
     }
 
     static get observedAttributes() {
-        return ["value", "icon", "href", "tooltip"];
+        return ["text", "icon", "href", "tooltip"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
-            case "value": {
+            case "text": {
                 if (oldValue != newValue) {
                     this.shadowRoot.getElementById("text").i18nValue = newValue;
                 }

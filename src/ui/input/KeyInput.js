@@ -1,7 +1,7 @@
 import CustomElementDelegating from "../element/CustomElementDelegating.js";
 import {
     toStartUppercaseEndLowercase
-} from "../../util/helper/string/caseConversion.js";
+} from "../../util/helper/string/ConvertCase.js";
 import TPL from "./KeyInput.js.html" assert {type: "html"};
 import STYLE from "./KeyInput.js.css" assert {type: "css"};
 

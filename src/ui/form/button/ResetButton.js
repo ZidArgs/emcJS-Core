@@ -42,12 +42,12 @@ export default class ResetButton extends CustomFormElementDelegating {
         return this.getAttribute("name");
     }
 
-    set value(value) {
-        this.setAttribute("value", value);
+    set text(value) {
+        this.setAttribute("text", value);
     }
 
-    get value() {
-        return this.getAttribute("value");
+    get text() {
+        return this.getAttribute("text");
     }
 
     set tooltip(value) {
@@ -59,12 +59,12 @@ export default class ResetButton extends CustomFormElementDelegating {
     }
 
     static get observedAttributes() {
-        return ["value", "tooltip"];
+        return ["text", "tooltip"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
-            case "value": {
+            case "text": {
                 if (oldValue != newValue) {
                     this.shadowRoot.getElementById("text").i18nValue = newValue;
                 }

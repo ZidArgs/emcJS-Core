@@ -5,7 +5,7 @@ import i18n from "../../../util/I18n.js";
 import SearchLoose from "../../../util/search/SearchLoose.js";
 import {
     sortNodeList
-} from "../../../util/helper/ui/sortNodeList.js";
+} from "../../../util/helper/ui/NodeListSort.js";
 import {
     debounce
 } from "../../../util/Debouncer.js";

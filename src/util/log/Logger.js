@@ -1,4 +1,6 @@
-import Helper from "../helper/Helper.js";
+import {
+    isClass
+} from "../helper/Class.js";
 import Rest from "../net/Rest.js";
 
 /* LOG LEVEL */
@@ -65,7 +67,7 @@ export default class Logger {
 
     constructor(clazz) {
         if (clazz != null) {
-            if (clazz == null || !Helper.isClass(clazz)) {
+            if (clazz == null || !isClass(clazz)) {
                 throw new Error("can only construct Logger for classes");
             }
         }

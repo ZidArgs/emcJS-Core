@@ -6,7 +6,7 @@ import {
 import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
 import {
     saveSetAttribute
-} from "../../../../util/helper/ui/SetAttribute.js";
+} from "../../../../util/helper/ui/NodeAttributes.js";
 import TPL from "./NumberInput.js.html" assert {type: "html"};
 import STYLE from "./NumberInput.js.css" assert {type: "css"};
 
@@ -56,7 +56,7 @@ export default class NumberInput extends AbstractFormInput {
     set value(value) {
         const convertedValue = parseFloat(value ?? this.defaultValue);
         this.#inputEl.value = !isNaN(convertedValue) ? convertedValue : "";
-        super.value = value;
+        super.value = value != null ? parseFloat(value) : null;
     }
 
     get value() {

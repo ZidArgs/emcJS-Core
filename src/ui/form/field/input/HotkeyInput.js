@@ -5,12 +5,12 @@ import {
 } from "../../../../util/Debouncer.js";
 import {
     toStartUppercaseEndLowercase
-} from "../../../../util/helper/string/caseConversion.js";
+} from "../../../../util/helper/string/ConvertCase.js";
 import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
 import EventTargetManager from "../../../../util/event/EventTargetManager.js";
 import {
     saveSetAttribute
-} from "../../../../util/helper/ui/SetAttribute.js";
+} from "../../../../util/helper/ui/NodeAttributes.js";
 import TPL from "./HotkeyInput.js.html" assert {type: "html"};
 import STYLE from "./HotkeyInput.js.css" assert {type: "css"};
 

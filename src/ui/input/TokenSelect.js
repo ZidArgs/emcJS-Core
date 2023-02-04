@@ -5,7 +5,7 @@ import SearchAnd from "../../util/search/SearchAnd.js";
 import ElementManager from "../../util/html/ElementManager.js";
 import {
     sortChildren
-} from "../../util/helper/ui/sortNodeList.js";
+} from "../../util/helper/ui/NodeListSort.js";
 import {
     debounce
 } from "../../util/Debouncer.js";

@@ -4,7 +4,7 @@
         {
             "type": "LinkButton",
             "name": "button.link_disabled",
-            "value": "cookie",
+            "text": "cookie",
             "icon": "🍪",
             "href": "/#page=Input",
             "disabled": true
@@ -12,32 +12,33 @@
         {
             "type": "LinkButton",
             "name": "button.link",
-            "value": "hotdog",
+            "text": "hotdog",
             "icon": "🌭",
             "href": "/#page=Input"
         },
         {
             "type": "ActionButton",
             "name": "button.action_disabled",
-            "value": "soup",
+            "text": "soup",
             "icon": "🍲",
             "action": "soup",
-            "disabled": true
+            "disabled": true,
+            "tooltip": "invisible if search-select default is empty",
+            "visible": {
+                "type": "not",
+                "el": {
+                    "type": "state",
+                    "el": "search-select.default",
+                    "value": ""
+                }
+            }
         },
         {
             "type": "ActionButton",
             "name": "button.action",
-            "value": "cheese",
+            "text": "cheese",
             "icon": "🧀",
             "action": "cheese"
-        },
-        {
-            "type": "ResetButton",
-            "name": "button.reset"
-        },
-        {
-            "type": "SubmitButton",
-            "name": "button.submit"
         }
     ]
 }

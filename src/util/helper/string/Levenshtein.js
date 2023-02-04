@@ -15,8 +15,6 @@ export function getMinLevenshteinDistanceValue(targetValue, compareValues) {
 }
 
 export function calculateLevenshteinDistance(source, target) {
-    // To limit the space in minimum of source and target,
-    // we make sure that source length is greater than target length
     if (source.length < target.length) {
         return calculateDistance(target, source);
     }

@@ -1,43 +1,40 @@
 import FormElementRegistry from "../../data/registry/FormElementRegistry.js";
-import Helper from "../helper/Helper.js";
-import "../../ui/form/FormContainer.js";
+import {
+    isNullOrFalse
+} from "../helper/Comparator.js";
 import "../../ui/form/FormFieldset.js";
 import "../../ui/form/button/SubmitButton.js";
 import "../../ui/form/button/ResetButton.js";
 import "../../ui/form/button/ActionButton.js";
 import "../../ui/form/button/LinkButton.js";
 
-/*
-       NOW          :    BEFORE
-    "SubmitButton"  : new
-    "ResetButton"   : new
-    "ActionButton"  : "button"
-    "LinkButton"    : new
-    "SwitchInput"   : "check"
-    "StringInput"   : "string"
-    "NumberInput"   : "number"
-    "RangeInput"    : "range"
-    "ColorInput"    : "color"
-    "PasswordInput" : "password"
-    "HotkeyInput"   : "hotkey"
-    "SearchSelect"  : "choice"
-    todo            : "list"
-
-*/
-
 class FormBuilder {
 
     build(formConfig, defaultValues = {}, opts = {}) {
-        const formEl = document.createElement("form", {is: "emc-form"});
+        const formEl = document.createElement("form");
 
         const {
             allowsInvalid = false,
             submitButton,
-            resetButton
+            resetButton,
+            data = {}
         } = opts;
 
         if (allowsInvalid) {
             formEl.setAttribute("novalidate", "");
+        }
+
+        for (const key in data) {
+            const value = data[key];
+            const hiddenEl = document.createElement("input");
+            hiddenEl.setAttribute("type", "hidden");
+            hiddenEl.setAttribute("name", key);
+            if (typeof value === "object") {
+                hiddenEl.setAttribute("value", JSON.stringify(value ?? ""));
+            } else {
+                hiddenEl.setAttribute("value", value ?? "");
+            }
+            formEl.append(hiddenEl);
         }
 
         if (Array.isArray(formConfig)) {
@@ -48,25 +45,25 @@ class FormBuilder {
             formEl.append(this.#createOption(formConfig, defaultValues ?? {}));
         }
 
-        if (!Helper.isNullOrFalse(submitButton) || !Helper.isNullOrFalse(resetButton)) {
+        if (!isNullOrFalse(submitButton) || !isNullOrFalse(resetButton)) {
             const buttonRowEl = document.createElement("emc-form-buttonrow");
-            if (!Helper.isNullOrFalse(resetButton)) {
+            if (!isNullOrFalse(resetButton)) {
                 if (typeof resetButton === "object") {
                     buttonRowEl.append(this.#createResetButton(null, resetButton));
                 } else if (typeof resetButton === "string") {
                     buttonRowEl.append(this.#createResetButton(null, {
-                        value: resetButton
+                        text: resetButton
                     }));
                 } else if (resetButton === true) {
                     buttonRowEl.append(this.#createResetButton(null, {}));
                 }
             }
-            if (!Helper.isNullOrFalse(submitButton)) {
+            if (!isNullOrFalse(submitButton)) {
                 if (typeof submitButton === "object") {
                     buttonRowEl.append(this.#createSubmitButton(null, submitButton));
                 } else if (typeof submitButton === "string") {
                     buttonRowEl.append(this.#createSubmitButton(null, {
-                        value: submitButton
+                        text: submitButton
                     }));
                 } else if (submitButton === true) {
                     buttonRowEl.append(this.#createSubmitButton(null, {}));
@@ -144,8 +141,8 @@ class FormBuilder {
         if (params.name != null) {
             el.name = params.name;
         }
-        if (params.value != null) {
-            el.value = params.value;
+        if (params.text != null) {
+            el.text = params.text;
         }
         if (params.tooltip != null) {
             el.tooltip = params.tooltip;
@@ -167,8 +164,8 @@ class FormBuilder {
         if (params.name != null) {
             el.name = params.name;
         }
-        if (params.value != null) {
-            el.value = params.value;
+        if (params.text != null) {
+            el.text = params.text;
         }
         if (params.tooltip != null) {
             el.tooltip = params.tooltip;
@@ -190,8 +187,8 @@ class FormBuilder {
         if (params.name != null) {
             el.name = params.name;
         }
-        if (params.value != null) {
-            el.value = params.value;
+        if (params.text != null) {
+            el.text = params.text;
         }
         if (params.icon != null) {
             el.icon = params.icon;
@@ -219,8 +216,8 @@ class FormBuilder {
         if (params.name != null) {
             el.name = params.name;
         }
-        if (params.value != null) {
-            el.value = params.value;
+        if (params.text != null) {
+            el.text = params.text;
         }
         if (params.icon != null) {
             el.icon = params.icon;

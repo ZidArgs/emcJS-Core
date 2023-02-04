@@ -1,4 +1,6 @@
-import Helper from "../../util/helper/Helper.js";
+import {
+    getFromObjectByPath
+} from "../../util/helper/collection/ObjectContent.js";
 import {
     immute
 } from "../Immutable.js";
@@ -67,11 +69,11 @@ export default class FileResource extends AbstractResource {
     get(path) {
         if (this.#data != null && path != null) {
             if (Array.isArray(path)) {
-                return Helper.getFromPath(this.#data, path);
+                return getFromObjectByPath(this.#data, path);
             }
             if (!!AbstractResource.pathSeparator && typeof path === "string" && path.includes(AbstractResource.pathSeparator)) {
                 path = path.split(AbstractResource.pathSeparator);
-                return Helper.getFromPath(this.#data, path);
+                return getFromObjectByPath(this.#data, path);
             }
             return this.#data[path];
         }

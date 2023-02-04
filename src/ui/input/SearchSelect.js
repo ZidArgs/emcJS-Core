@@ -4,7 +4,7 @@ import i18n from "../../util/I18n.js";
 import SearchAnd from "../../util/search/SearchAnd.js";
 import {
     sortChildren
-} from "../../util/helper/ui/sortNodeList.js";
+} from "../../util/helper/ui/NodeListSort.js";
 import {
     debounce
 } from "../../util/Debouncer.js";

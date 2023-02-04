@@ -1,4 +1,6 @@
-import Helper from "../helper/Helper.js";
+import {
+    isEqual
+} from "../helper/Comparator.js";
 
 export default class ElementManager {
 
@@ -52,7 +54,7 @@ export default class ElementManager {
             return true;
         }
         const cachedData = this.#cache.get(data.key);
-        if (cachedData == null || !Helper.isEqual(cachedData, data)) {
+        if (cachedData == null || !isEqual(cachedData, data)) {
             this.#cache.set(data.key, data);
             return true;
         }

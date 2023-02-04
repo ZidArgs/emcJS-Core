@@ -6,7 +6,7 @@ import {
 import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
 import {
     saveSetAttribute
-} from "../../../../util/helper/ui/SetAttribute.js";
+} from "../../../../util/helper/ui/NodeAttributes.js";
 import TPL from "./RangeInput.js.html" assert {type: "html"};
 import STYLE from "./RangeInput.js.css" assert {type: "css"};
 
@@ -47,9 +47,10 @@ export default class RangeInput extends AbstractFormInput {
     connectedCallback() {
         super.connectedCallback();
         const value = this.value;
-        this.#inputEl.value = value;
-        this.#numberEl.value = value;
-        this.#applyValueToBar(value);
+        const convertedValue = parseInt(value) || 0;
+        this.#inputEl.value = convertedValue;
+        this.#numberEl.value = convertedValue;
+        this.#applyValueToBar(convertedValue);
         this.#setRange();
     }
 
@@ -62,8 +63,10 @@ export default class RangeInput extends AbstractFormInput {
     formResetCallback() {
         super.formResetCallback();
         const value = this.value;
-        this.#inputEl.value = value;
-        this.#numberEl.value = value;
+        const convertedValue = parseInt(value) || 0;
+        this.#inputEl.value = convertedValue;
+        this.#numberEl.value = convertedValue;
+        this.#applyValueToBar(convertedValue);
     }
 
     focus(options) {
@@ -74,24 +77,17 @@ export default class RangeInput extends AbstractFormInput {
         this.value = this.#inputEl.value;
     }, 300);
 
-    get defaultValue() {
-        return parseInt(super.defaultValue) || 0;
-    }
-
     set value(value) {
         const convertedValue = parseInt(value ?? this.defaultValue) || 0;
         this.#inputEl.value = convertedValue;
         this.#numberEl.value = convertedValue;
         this.#applyValueToBar(convertedValue);
-        super.value = convertedValue;
+        super.value = value != null ? parseInt(value) : null;
     }
 
     get value() {
         const value = super.value;
-        if (value == null || value === "") {
-            return Number.NaN;
-        }
-        return parseFloat(value);
+        return parseInt(value ?? this.defaultValue) || 0;
     }
 
     static get observedAttributes() {
@@ -110,7 +106,6 @@ export default class RangeInput extends AbstractFormInput {
                         this.#inputEl.value = value;
                         this.#numberEl.value = value;
                         this.#applyValueToBar(this.value);
-                        this.#setRange();
                     }
                 }
             } break;
@@ -135,46 +130,51 @@ export default class RangeInput extends AbstractFormInput {
         super.setCustomValidity(message, this.#inputEl);
     }
 
-    revalidate() {
-        const value = this.value;
-        if (value !== "" && isNaN(value)) {
-            return "Please enter a valid number";
-        }
-        return super.revalidate();
-    }
-
     #setRange() {
         const min = parseInt(this.getAttribute("min") || "0");
         const max = parseInt(this.getAttribute("max") || "10");
-        const parts = max - min;
-        this.#fieldEl.style.setProperty("--range-parts", parts);
-        this.#applyScratchValue();
+        if (min < max) {
+            const parts = max - min;
+            this.#fieldEl.style.setProperty("--range-parts", parts);
+            this.#applyScratchValue();
+        } else {
+            this.#fieldEl.style.setProperty("--range-parts", 1);
+            this.#applyScratchValue();
+        }
     }
 
     #applyValueToBar(value) {
         const min = parseInt(this.getAttribute("min") || "0");
-        if (value !== "") {
-            this.#fieldEl.style.setProperty("--range-value", value - min);
-            this.#numberEl.value = value;
+        const max = parseInt(this.getAttribute("max") || "10");
+        if (min < max) {
+            if (value !== "") {
+                this.#fieldEl.style.setProperty("--range-value", value - min);
+                this.#numberEl.value = value;
+            } else {
+                const pos = (max - min) / 2;
+                this.#fieldEl.style.setProperty("--range-value", pos - min);
+                this.#numberEl.value = pos;
+            }
         } else {
-            const max = parseInt(this.getAttribute("max") || "10");
-            const pos = (max - min) / 2;
-            this.#fieldEl.style.setProperty("--range-value", pos - min);
-            this.#numberEl.value = pos;
+            this.#fieldEl.style.setProperty("--range-value", 0);
+            this.#applyScratchValue();
         }
     }
 
     #applyScratchValue() {
-        this.#inputEl.classList.remove("scratched");
         const value = this.getAttribute("scratched");
         if (value != null && value != "false") {
             const min = parseInt(this.getAttribute("min") || "0");
             const max = parseInt(this.getAttribute("max") || "10");
-            const parts = max - min;
-            if (parts < this.#inputEl.offsetWidth / 10) {
-                this.#inputEl.classList.add("scratched");
+            if (min < max) {
+                const parts = max - min;
+                if (parts < this.#inputEl.offsetWidth / 10) {
+                    this.#inputEl.classList.add("scratched");
+                    return;
+                }
             }
         }
+        this.#inputEl.classList.remove("scratched");
     }
 
 }

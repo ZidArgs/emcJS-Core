@@ -3,8 +3,12 @@ import AbstractFormField from "../../ui/form/abstract/AbstractFormField.js";
 import FormContainer from "../../ui/form/FormContainer.js";
 import EventMultiTargetManager from "../event/EventMultiTargetManager.js";
 import EventTargetManager from "../event/EventTargetManager.js";
+import {
+    extractFormData
+} from "../helper/ui/Form.js";
 import MutationObserverManager from "../observer/MutationObserverManager.js";
-import FieldContext from "./FieldContext.js";
+import FormElementContext from "./FormElementContext.js";
+import FormFieldContext from "./FormFieldContext.js";
 
 const MUTATION_CONFIG = {
     childList: true,
@@ -42,6 +46,16 @@ export default class FormContext extends EventTarget {
                 this.#dataStorage.delete(name);
             }
         });
+        this.#formListEventManager.set("submit", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            /* --- */
+            const ev = new Event("submit");
+            ev.changes = this.#dataStorage.getChanges();
+            ev.data = this.#dataStorage.getAll();
+            ev.formData = this.getFormData();
+            this.dispatchEvent(ev);
+        });
         this.#formListEventManager.set("reset", (event) => {
             this.#dataStorage.resetChanges();
             event.preventDefault();
@@ -75,8 +89,8 @@ export default class FormContext extends EventTarget {
     }
 
     registerForm(formEl) {
-        if (!(formEl instanceof FormContainer)) {
-            throw new TypeError("FormContainer expected");
+        if (!(formEl instanceof HTMLFormElement)) {
+            throw new TypeError("HTMLFormElement expected");
         }
         this.#formElList.add(formEl);
         this.#formListEventManager.addTarget(formEl);
@@ -84,7 +98,9 @@ export default class FormContext extends EventTarget {
         const all = formEl.querySelectorAll("[name]");
         for (const el of all) {
             if (el instanceof AbstractFormField) {
-                FieldContext.getContext(el).storage = this.#dataStorage;
+                FormFieldContext.getContext(el).storage = this.#dataStorage;
+            } else {
+                FormElementContext.getContext(el).storage = this.#dataStorage;
             }
         }
     }
@@ -99,7 +115,9 @@ export default class FormContext extends EventTarget {
         const all = formEl.querySelectorAll("[name]");
         for (const el of all) {
             if (el instanceof AbstractFormField) {
-                FieldContext.getContext(el).storage = null;
+                FormFieldContext.getContext(el).storage = null;
+            } else {
+                FormElementContext.getContext(el).storage = null;
             }
         }
     }
@@ -118,15 +136,52 @@ export default class FormContext extends EventTarget {
         return this.#dataStorage.getAll();
     }
 
+    getFormData() {
+        const res = {};
+        for (const formEl of this.#formElList) {
+            const data = extractFormData(formEl);
+            for (const key in data) {
+                res[key] = data[key];
+            }
+        }
+        return res;
+    }
+
+    getHiddenFormData() {
+        const res = {};
+        for (const formEl of this.#formElList) {
+            const all = formEl.querySelectorAll("input[type=\"hidden\"][name]")
+            for (const el of all) {
+                const name = el.getAttribute("name");
+                if (name != null) {
+                    const value = el.getAttribute("value") ?? "";
+                    res[name] = value;
+                }
+            }
+        }
+        return res;
+    }
+
+    getFormValidity() {
+        for (const formEl of this.#formElList) {
+            if (!formEl.checkValidity()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     #registerNode(node) {
         if (node instanceof AbstractFormField) {
             if (node.matches("[name]")) {
-                FieldContext.getContext(node).storage = this.#dataStorage;
+                FormFieldContext.getContext(node).storage = this.#dataStorage;
             }
             const all = node.querySelectorAll("[name]");
             for (const el of all) {
                 if (el instanceof AbstractFormField) {
-                    FieldContext.getContext(el).storage = this.#dataStorage;
+                    FormFieldContext.getContext(el).storage = this.#dataStorage;
+                } else {
+                    FormElementContext.getContext(el).storage = this.#dataStorage;
                 }
             }
         }
@@ -135,12 +190,14 @@ export default class FormContext extends EventTarget {
     #unregisterNode(node) {
         if (node instanceof AbstractFormField) {
             if (node.matches("[name]")) {
-                FieldContext.getContext(node).storage = null;
+                FormFieldContext.getContext(node).storage = null;
             }
             const all = node.querySelectorAll("[name]");
             for (const el of all) {
                 if (el instanceof AbstractFormField) {
-                    FieldContext.getContext(el).storage = null;
+                    FormFieldContext.getContext(el).storage = null;
+                } else {
+                    FormElementContext.getContext(el).storage = null;
                 }
             }
         }

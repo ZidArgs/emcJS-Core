@@ -25,7 +25,6 @@
         // form
         import FormBuilder from "/emcJS/util/form/FormBuilder.js";
         import FormContext from "/emcJS/util/form/FormContext.js";
-        import "/emcJS/ui/form/FormContainer.js";
         import "/emcJS/ui/form/FormFieldset.js";
         import "/emcJS/ui/form/FormButtonRow.js";
         // custom
@@ -46,12 +45,32 @@
         // field select
         import "/emcJS/ui/form/field/select/SearchSelect.js";
 
+        /*
+               NOW          :    BEFORE
+            "Fieldset"      : new (structural only)
+            "ButtonRow"     : new (structural only)
+            "SubmitButton"  : new
+            "ResetButton"   : new
+            "ActionButton"  : "button"
+            "LinkButton"    : new
+            "SwitchInput"   : "check"
+            "StringInput"   : "string"
+            "NumberInput"   : "number"
+            "RangeInput"    : "range"
+            "ColorInput"    : "color"
+            "PasswordInput" : "password"
+            "HotkeyInput"   : "hotkey"
+            "SearchSelect"  : "choice"
+            todo            : "list"
+
+        */
+
         i18n.setTranslation("en", {
             "test.desc": "this is a test"
         })
         i18n.language = "en";
 
-        const [defaultValues, ...formConfig] = await Promise.all([
+        const [defaultValues, buttonConfig, ...formConfig] = await Promise.all([
             FileLoader.json("./form/form-config/_defaults.json"),
             FileLoader.json("./form/form-config/Buttons.json"),
             FileLoader.json("./form/form-config/SearchSelect.json"),
@@ -64,79 +83,51 @@
             FileLoader.json("./form/form-config/SwitchInput.json")
         ]);
 
-        const formEl0 = FormBuilder.build(formConfig, null, {
-            submitButton: true,
-            resetButton: true,
-            allowsInvalid: true
-        });
-        document.body.append(formEl0);
-
-        const formEl1 = FormBuilder.build(formConfig[1], null, {
-            submitButton: true,
-            resetButton: true,
-            allowsInvalid: true
-        });
-        document.body.append(formEl1);
-
         const formContext = new FormContext(defaultValues);
-        formContext.registerForm(formEl0);
-        formContext.registerForm(formEl1);
+
+        { /* add buttons in seperate form */
+            const formEl = FormBuilder.build(buttonConfig, null, {
+                data: {
+                    test: "foobar"
+                }
+            });
+            document.body.append(formEl);
+            formContext.registerForm(formEl);
+        }
+
+        { /* add the first config twice */
+            const formEl = FormBuilder.build(formConfig[0], null, {
+                submitButton: true,
+                resetButton: true,
+                allowsInvalid: true
+            });
+            document.body.append(formEl);
+            formContext.registerForm(formEl);
+        }
+
+        for (const config of formConfig) {
+            const formEl = FormBuilder.build(config, null, {
+                submitButton: true,
+                resetButton: true,
+                allowsInvalid: true
+            });
+            document.body.append(formEl);
+            formContext.registerForm(formEl);
+        }
 
         console.group("init context");
         console.log("loaded data", defaultValues);
         console.log("changed data", formContext.getChanges());
         console.groupEnd("init context");
 
-        // formContext.addEventListener("clear", (event) => {
-        //     console.log("cleared stored data", event);
-        // });
-
-        // formContext.addEventListener("load", (event) => {
-        //     console.log("loaded stored data", event);
-        // });
-
-        // formContext.addEventListener("change", (event) => {
-        //     console.log("changed stored data", event);
-        // });
-
-        formEl0.addEventListener("submit", (event) => {
-            event.stopPropagation();
-            event.preventDefault();
-            if (formEl0.checkValidity()) {
-                console.group("submit (valid)");
-                console.log("changed data", formContext.getChanges());
-                console.log("all data", formContext.getData());
-                console.log("form0 data", formEl0.getData());
-                console.log("form1 data", formEl1.getData());
-                console.groupEnd("submit (valid)");
-            } else {
-                console.group("submit (invalid)");
-                console.log("changed data", formContext.getChanges());
-                console.log("all data", formContext.getData());
-                console.log("form0 data", formEl0.getData());
-                console.log("form1 data", formEl1.getData());
-                console.groupEnd("submit (invalid)");
-            }
-        });
-
-        formEl1.addEventListener("submit", (event) => {
-            event.stopPropagation();
-            event.preventDefault();
-            if (formEl0.checkValidity()) {
-                console.group("submit (valid)");
-                console.log("changed data", formContext.getChanges());
-                console.log("all data", formContext.getData());
-                console.log("form0 data", formEl0.getData());
-                console.log("form1 data", formEl1.getData());
-                console.groupEnd("submit (valid)");
-            } else {
-                console.group("submit (invalid)");
-                console.log("changed data", formContext.getChanges());
-                console.log("all data", formContext.getData());
-                console.log("form0 data", formEl0.getData());
-                console.log("form1 data", formEl1.getData());
-                console.groupEnd("submit (invalid)");
-            }
+        formContext.addEventListener("submit", (event) => {
+            const valid = formContext.getFormValidity() ? "valid" : "invalid";
+            console.group(`submit (${valid})`);
+            console.log("changed data", formContext.getChanges());
+            console.log("all data", formContext.getData());
+            console.log("form data", formContext.getFormData());
+            console.log("hidden form data", formContext.getHiddenFormData());
+            console.groupEnd(`submit (${valid})`);
         });
 
         CustomActionRegistry.set("soup", () => {
@@ -153,10 +144,10 @@
                 "color.default": "#ff0000",
                 "color.resettable": "#00ff00",
                 "color.required": "#0000ff",
-                "hotkey.default": "Ctrl W",
-                "hotkey.resettable": "Ctrl A",
-                "hotkey.required": "Ctrl S",
-                "hotkey.readonly": "Ctrl D",
+                "hotkey.default": "ctrl w",
+                "hotkey.resettable": "ctrl a",
+                "hotkey.required": "ctrl s",
+                "hotkey.readonly": "ctrl d",
                 "switch.required": true
             });
         });

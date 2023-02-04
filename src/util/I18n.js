@@ -1,5 +1,7 @@
 import FileLoader from "./file/FileLoader.js";
-import ObjectHelper from "./helper/ObjectHelper.js";
+import {
+    flattenObject
+} from "./helper/collection/ObjectContent.js";
 import Import from "./import/Import.js";
 import Logger from "./log/Logger.js";
 
@@ -15,12 +17,12 @@ async function importFragment(basePath, type, name) {
         }
         case "json": {
             const trans = await FileLoader.jsonc(`${basePath}/fragments/${name}.json`);
-            return ObjectHelper.flatten(trans);
+            return flattenObject(trans);
         }
         case "js": {
             const [exec] = await Import.module(`${basePath}/fragments/${name}.js`);
             const trans = exec();
-            return ObjectHelper.flatten(trans);
+            return flattenObject(trans);
         }
         default: {
             return {};

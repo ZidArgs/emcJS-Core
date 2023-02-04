@@ -7,7 +7,7 @@ import {
 import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
 import {
     saveSetAttribute
-} from "../../../../util/helper/ui/SetAttribute.js";
+} from "../../../../util/helper/ui/NodeAttributes.js";
 import "../../../i18n/I18nTooltip.js";
 import TPL from "./PasswordInput.js.html" assert {type: "html"};
 import STYLE from "./PasswordInput.js.css" assert {type: "css"};

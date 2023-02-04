@@ -6,7 +6,7 @@ import {
 import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
 import {
     saveSetAttribute
-} from "../../../../util/helper/ui/SetAttribute.js";
+} from "../../../../util/helper/ui/NodeAttributes.js";
 import TPL from "./StringInput.js.html" assert {type: "html"};
 import STYLE from "./StringInput.js.css" assert {type: "css"};
 
