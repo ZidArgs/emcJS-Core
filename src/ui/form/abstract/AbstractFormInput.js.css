@@ -1,20 +1,8 @@
 :host {
-    position: relative;
-    display: flex;
-    align-items: stretch;
     justify-content: stretch;
-    flex-direction: column;
     font-size: 1rem;
-    box-sizing: border-box;
-}
-* {
-    position: relative;
-    box-sizing: border-box;
-    margin: 0px;
-    font-size: 1em;
 }
 .container {
-    display: flex;
     align-items: stretch;
     justify-content: stretch;
 }
