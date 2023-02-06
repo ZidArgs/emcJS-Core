@@ -1,0 +1,144 @@
+import AbstractFormInput from "../../abstract/AbstractFormInput.js";
+import "../../../i18n/builtin/I18nInput.js";
+import {
+    deepClone
+} from "../../../../util/helper/DeepClone.js";
+import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
+import {
+    saveSetAttribute
+} from "../../../../util/helper/ui/NodeAttributes.js";
+import "../../custom/logicEditor/LogicEditor.js";
+import TPL from "./LogicInput.js.html" assert {type: "html"};
+import STYLE from "./LogicInput.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./LogicInput.js.form-config.json" assert {type: "json"};
+
+export default class LogicInput extends AbstractFormInput {
+
+    static get formConfigurationFields() {
+        return deepClone(CONFIG_FIELDS);
+    }
+
+    #value;
+
+    #inputEl;
+
+    #logicEl;
+
+    constructor() {
+        super();
+        this.shadowRoot.getElementById("field").append(TPL.generate());
+        STYLE.apply(this.shadowRoot);
+        /* --- */
+        this.#inputEl = this.shadowRoot.getElementById("input");
+        this.#logicEl = this.shadowRoot.getElementById("logic");
+        this.#inputEl.addEventListener("change", () => {
+            const value = this.#inputEl.value;
+            if (value === "logic") {
+                this.#logicEl.classList.add("active");
+            } else {
+                this.#logicEl.classList.remove("active");
+                this.#logicEl.value = null;
+            }
+            this.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
+        });
+        this.#logicEl.addEventListener("change", () => {
+            const value = this.#inputEl.value;
+            if (value === "logic") {
+                this.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
+            }
+        });
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+        const value = this.value;
+        this.#applyValue(value);
+    }
+
+    formDisabledCallback(disabled) {
+        super.formDisabledCallback(disabled);
+        this.#inputEl.disabled = disabled;
+        this.#logicEl.disabled = disabled;
+    }
+
+    formResetCallback() {
+        super.formResetCallback();
+        const value = this.value;
+        this.#applyValue(value);
+    }
+
+    focus(options) {
+        this.#inputEl.focus(options);
+    }
+
+    get defaultValue() {
+        return this.getJSONAttribute("value");
+    }
+
+    set value(value) {
+        if (value === "true") {
+            value = true;
+        } else if (value === "false") {
+            value = false;
+        }
+        if (this.#value != value) {
+            this.#applyValue(value);
+            this.#value = value;
+            this.internals.setFormValue(value != null ? JSON.stringify(value) : null);
+            /* --- */
+            this.dispatchEvent(new Event("change"));
+        }
+    }
+
+    get value() {
+        return super.value;
+    }
+
+    static get observedAttributes() {
+        return [...super.observedAttributes, "value", "readonly"];
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback(name, oldValue, newValue);
+        switch (name) {
+            case "value": {
+                if (oldValue != newValue) {
+                    saveSetAttribute(this.#inputEl, "value", newValue);
+                    if (!this.isChanged) {
+                        const value = this.value;
+                        this.#inputEl.value = value;
+                    }
+                }
+            } break;
+            case "readonly": {
+                if (oldValue != newValue) {
+                    saveSetAttribute(this.#inputEl, name, newValue);
+                }
+            } break;
+        }
+    }
+
+    setCustomValidity(message) {
+        super.setCustomValidity(message, this.#inputEl);
+    }
+
+    #applyValue(value) {
+        if (typeof value === "object") {
+            this.#inputEl.value = "logic";
+            this.#logicEl.classList.add("active");
+            this.#logicEl.value = value;
+        } else if (value === false) {
+            this.#inputEl.value = "false";
+            this.#logicEl.classList.remove("active");
+            this.#logicEl.value = null;
+        } else {
+            this.#inputEl.value = "true";
+            this.#logicEl.classList.remove("active");
+            this.#logicEl.value = null;
+        }
+    }
+
+}
+
+FormElementRegistry.register("LogicInput", LogicInput);
+customElements.define("emc-field-input-logic", LogicInput);

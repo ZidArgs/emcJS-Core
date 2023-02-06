@@ -1,0 +1,44 @@
+[
+    {
+        "type": "StringInput",
+        "name": "name",
+        "label": "Name",
+        "value": ""
+    },
+    {
+        "type": "StringInput",
+        "name": "label",
+        "label": "Label",
+        "value": ""
+    },
+    {
+        "type": "StringInput",
+        "name": "desc",
+        "label": "Description",
+        "value": ""
+    },
+    {
+        "type": "TextInput",
+        "name": "tooltip",
+        "label": "Tooltip",
+        "value": ""
+    },
+    {
+        "type": "SwitchInput",
+        "name": "resettable",
+        "label": "Resettable",
+        "value": false
+    },
+    {
+        "type": "LogicInput",
+        "name": "enabled",
+        "label": "Enabled",
+        "value": true
+    },
+    {
+        "type": "LogicInput",
+        "name": "visible",
+        "label": "Visible",
+        "value": true
+    }
+]

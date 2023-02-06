@@ -3,6 +3,29 @@
     "color.readonly": "#00ffff",
     "hotkey.default": "ctrl h",
     "hotkey.readonly": "ctrl h",
+    "logic.default": false,
+    "logic.resettable": {
+        "type": "nand",
+        "el": [
+            {
+                "type": "true"
+            },
+            {
+                "type": "false"
+            },
+            {
+                "type": "nor",
+                "el": [
+                    {
+                        "type": "true"
+                    },
+                    {
+                        "type": "false"
+                    }
+                ]
+            }
+        ]
+    },
     "number.default": 42,
     "number.readonly": 42,
     "password.default": "password",

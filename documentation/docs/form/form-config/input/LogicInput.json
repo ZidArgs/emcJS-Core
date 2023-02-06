@@ -1,0 +1,23 @@
+{
+    "type": "Fieldset",
+    "label": "logic",
+    "children": [
+        {
+            "type": "LogicInput",
+            "label": "logic default",
+            "name": "logic.default"
+        },
+        {
+            "type": "LogicInput",
+            "label": "logic resettable",
+            "name": "logic.resettable",
+            "resettable": true
+        },
+        {
+            "type": "LogicInput",
+            "label": "logic disabled",
+            "name": "logic.disabled",
+            "disabled": true
+        }
+    ]
+}

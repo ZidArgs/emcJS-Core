@@ -1,0 +1,36 @@
+* {
+    position: relative;
+    box-sizing: border-box;
+}
+:host {
+    display: flex;
+    flex-direction: column;
+    min-height: 200px;
+    padding: 5px;
+    background-color: var(--input-back-color, #ffffff);
+    border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
+    border-radius: var(--form-border-radius, 0.25em);
+    user-select: none;
+    overflow: hidden;
+}
+.placeholder {
+    display: table;
+    margin: 5px;
+    padding: 5px 20px;
+    color: black;
+    background-color: lightgray;
+    border: 1px solid gray;
+    font-weight: bold;
+}
+slot {
+    display: block;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+:host([readonly]:not([readonly="false"])),
+:host([disabled]:not([readonly="disabled"])) {
+    /*
+        TODO add noninteraction etc
+    */
+}
