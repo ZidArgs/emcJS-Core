@@ -1,5 +1,5 @@
 import AbstractFormInput from "../../abstract/AbstractFormInput.js";
-import "../../../i18n/I18nInput.js";
+import "../../../i18n/builtin/I18nInput.js";
 import {
     debounce
 } from "../../../../util/Debouncer.js";

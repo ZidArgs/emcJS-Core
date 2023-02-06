@@ -24,24 +24,6 @@
         "value": ""
     },
     {
-        "type": "StringInput",
-        "name": "placeholder",
-        "label": "Placeholder",
-        "value": ""
-    },
-    {
-        "type": "NumberInput",
-        "name": "min",
-        "label": "Min",
-        "value": 0
-    },
-    {
-        "type": "NumberInput",
-        "name": "max",
-        "label": "Max",
-        "value": 0
-    },
-    {
         "type": "SwitchInput",
         "name": "resettable",
         "label": "Resettable",
@@ -58,16 +40,6 @@
         "name": "required",
         "label": "Required",
         "value": false
-    },
-    {
-        "type": "SimpleSelect",
-        "name": "autocomplete",
-        "label": "Autocomplete",
-        "value": "off",
-        "options": {
-            "off": "off",
-            "on": "on"
-        }
     },
     {
         "type": "LogicInput",

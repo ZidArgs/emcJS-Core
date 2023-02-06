@@ -25,7 +25,13 @@
         // form
         import FormBuilder from "/emcJS/util/form/FormBuilder.js";
         import FormContext from "/emcJS/util/form/FormContext.js";
-        import "/emcJS/ui/form/DefaultFormElementsLoader.js";
+        import "/emcJS/ui/form/FormFieldset.js";
+        import "/emcJS/ui/form/FormButtonRow.js";
+        import "/emcJS/ui/form/button/SubmitButton.js";
+        import "/emcJS/ui/form/button/ResetButton.js";
+        import "/emcJS/ui/form/button/ActionButton.js";
+        import "/emcJS/ui/form/button/LinkButton.js";
+        import "/emcJS/ui/form/field/DefaultFormFieldsLoader.js";
 
         /*
                NOW          :    BEFORE
@@ -43,10 +49,11 @@
             "PasswordInput" : "password"
             "HotkeyInput"   : "hotkey"
             "SearchSelect"  : "choice"
+            "TextInput"     : new
+            "SimpleSelect"  : new
             todo            : "list"
 
             MISSING
-            "TextInput"
             "KeyValueList"
             "CharInput"
             "LogicInput"
@@ -61,14 +68,16 @@
         const [defaultValues, buttonConfig, ...formConfig] = await Promise.all([
             FileLoader.json("./form/form-config/_defaults.json"),
             FileLoader.json("./form/form-config/Buttons.json"),
-            FileLoader.json("./form/form-config/SearchSelect.json"),
-            FileLoader.json("./form/form-config/StringInput.json"),
-            FileLoader.json("./form/form-config/NumberInput.json"),
-            FileLoader.json("./form/form-config/RangeInput.json"),
-            FileLoader.json("./form/form-config/PasswordInput.json"),
-            FileLoader.json("./form/form-config/ColorInput.json"),
-            FileLoader.json("./form/form-config/HotkeyInput.json"),
-            FileLoader.json("./form/form-config/SwitchInput.json")
+            FileLoader.json("./form/form-config/select/SearchSelect.json"),
+            FileLoader.json("./form/form-config/select/SimpleSelect.json"),
+            FileLoader.json("./form/form-config/input/TextInput.json"),
+            FileLoader.json("./form/form-config/input/StringInput.json"),
+            FileLoader.json("./form/form-config/input/NumberInput.json"),
+            FileLoader.json("./form/form-config/input/RangeInput.json"),
+            FileLoader.json("./form/form-config/input/PasswordInput.json"),
+            FileLoader.json("./form/form-config/input/ColorInput.json"),
+            FileLoader.json("./form/form-config/input/HotkeyInput.json"),
+            FileLoader.json("./form/form-config/input/SwitchInput.json")
         ]);
 
         const formContext = new FormContext(defaultValues);

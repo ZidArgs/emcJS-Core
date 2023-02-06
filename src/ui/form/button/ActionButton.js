@@ -4,7 +4,7 @@ import {
     deepClone
 } from "../../../util/helper/DeepClone.js";
 import "../../i18n/I18nTooltip.js";
-import "../../i18n/I18nInput.js";
+import "../../i18n/builtin/I18nInput.js";
 import TPL from "./ActionButton.js.html" assert {type: "html"};
 import STYLE from "./ActionButton.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./ActionButton.js.form-config.json" assert {type: "json"};

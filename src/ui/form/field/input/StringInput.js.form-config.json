@@ -48,10 +48,14 @@
         "value": false
     },
     {
-        "type": "SwitchInput",
+        "type": "SimpleSelect",
         "name": "autocomplete",
         "label": "Autocomplete",
-        "value": false
+        "value": "off",
+        "options": {
+            "off": "off",
+            "on": "on"
+        }
     },
     {
         "type": "LogicInput",

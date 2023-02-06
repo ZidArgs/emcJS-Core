@@ -1,5 +1,5 @@
 import AbstractFormInput from "../../abstract/AbstractFormInput.js";
-import "../../../i18n/builtin/I18nInput.js";
+import "../../../i18n/builtin/I18nTextarea.js";
 import {
     debounce
 } from "../../../../util/Debouncer.js";
@@ -10,11 +10,11 @@ import FormElementRegistry from "../../../../data/registry/FormElementRegistry.j
 import {
     saveSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
-import TPL from "./StringInput.js.html" assert {type: "html"};
-import STYLE from "./StringInput.js.css" assert {type: "css"};
-import CONFIG_FIELDS from "./StringInput.js.form-config.json" assert {type: "json"};
+import TPL from "./TextInput.js.html" assert {type: "html"};
+import STYLE from "./TextInput.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./TextInput.js.form-config.json" assert {type: "json"};
 
-export default class StringInput extends AbstractFormInput {
+export default class TextInput extends AbstractFormInput {
 
     static get formConfigurationFields() {
         return deepClone(CONFIG_FIELDS);
@@ -104,5 +104,5 @@ export default class StringInput extends AbstractFormInput {
 
 }
 
-FormElementRegistry.register("StringInput", StringInput);
-customElements.define("emc-field-input-string", StringInput);
+FormElementRegistry.register("TextInput", TextInput);
+customElements.define("emc-field-input-text", TextInput);

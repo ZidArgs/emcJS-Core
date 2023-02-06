@@ -1,8 +1,5 @@
 import AbstractFormInput from "../../abstract/AbstractFormInput.js";
-import "../../../i18n/builtin/I18nInput.js";
-import {
-    debounce
-} from "../../../../util/Debouncer.js";
+import "../../../i18n/builtin/I18nOption.js";
 import {
     deepClone
 } from "../../../../util/helper/DeepClone.js";
@@ -10,11 +7,11 @@ import FormElementRegistry from "../../../../data/registry/FormElementRegistry.j
 import {
     saveSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
-import TPL from "./StringInput.js.html" assert {type: "html"};
-import STYLE from "./StringInput.js.css" assert {type: "css"};
-import CONFIG_FIELDS from "./StringInput.js.form-config.json" assert {type: "json"};
+import TPL from "./SimpleSelect.js.html" assert {type: "html"};
+import STYLE from "./SimpleSelect.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./SimpleSelect.js.form-config.json" assert {type: "json"};
 
-export default class StringInput extends AbstractFormInput {
+export default class SimpleSelect extends AbstractFormInput {
 
     static get formConfigurationFields() {
         return deepClone(CONFIG_FIELDS);
@@ -28,11 +25,8 @@ export default class StringInput extends AbstractFormInput {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.#inputEl.addEventListener("input", () => {
-            this.#onInput();
-        });
         this.#inputEl.addEventListener("change", () => {
-            this.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
+            this.value = this.#inputEl.value
         });
     }
 
@@ -55,10 +49,6 @@ export default class StringInput extends AbstractFormInput {
         this.#inputEl.focus(options);
     }
 
-    #onInput = debounce(() => {
-        this.value = this.#inputEl.value;
-    }, 300);
-
     set value(value) {
         this.#inputEl.value = value ?? this.defaultValue;
         super.value = value;
@@ -69,7 +59,7 @@ export default class StringInput extends AbstractFormInput {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "value", "placeholder", "readonly", "autocomplete"];
+        return [...super.observedAttributes, "value", "readonly"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -84,15 +74,9 @@ export default class StringInput extends AbstractFormInput {
                     }
                 }
             } break;
-            case "readonly":
-            case "autocomplete": {
+            case "readonly": {
                 if (oldValue != newValue) {
                     saveSetAttribute(this.#inputEl, name, newValue);
-                }
-            } break;
-            case "placeholder": {
-                if (oldValue != newValue) {
-                    saveSetAttribute(this.#inputEl, "i18n-placeholder", newValue);
                 }
             } break;
         }
@@ -102,7 +86,31 @@ export default class StringInput extends AbstractFormInput {
         super.setCustomValidity(message, this.#inputEl);
     }
 
+    static fromConfig(config) {
+        const selectEl = new SimpleSelect();
+        const {options = {}, ...params} = config;
+        for (const name in params) {
+            const value = params[name];
+            if (value != null) {
+                selectEl.setAttribute(name, value);
+            }
+        }
+        const inputEl = selectEl.shadowRoot.getElementById("input");
+        for (const name in options) {
+            const optionEl = document.createElement("option", {is: "emc-i18n-option"});
+            optionEl.setAttribute("value", name);
+            const textValue = options[name];
+            if (typeof textValue === "string" && textValue !== "") {
+                optionEl.i18nValue = textValue;
+            } else if (name !== "") {
+                optionEl.i18nValue = name;
+            }
+            inputEl.append(optionEl);
+        }
+        return selectEl;
+    }
+
 }
 
-FormElementRegistry.register("StringInput", StringInput);
-customElements.define("emc-field-input-string", StringInput);
+FormElementRegistry.register("SimpleSelect", SimpleSelect);
+customElements.define("emc-field-select-simple", SimpleSelect);

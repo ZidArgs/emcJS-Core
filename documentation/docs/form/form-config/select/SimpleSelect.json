@@ -1,0 +1,69 @@
+{
+    "type": "Fieldset",
+    "label": "simple-select",
+    "children": [
+        {
+            "type": "SimpleSelect",
+            "label": "simple-select default",
+            "name": "simple-select.default",
+            "options": {
+                "": "Select entry...",
+                "test": "Test",
+                "foobar": "Foobar",
+                "barfoo": "Barfoo"
+            },
+            "sorted": true
+        },
+        {
+            "type": "SimpleSelect",
+            "label": "simple-select default (duplicate)",
+            "name": "simple-select.default",
+            "options": {
+                "": "Select entry...",
+                "test": "Test",
+                "foobar": "Foobar",
+                "barfoo": "Barfoo"
+            },
+            "sorted": true
+        },
+        {
+            "type": "SimpleSelect",
+            "label": "simple-select resettable",
+            "name": "simple-select.resettable",
+            "options": {
+                "": "Select entry...",
+                "test": "Test",
+                "foobar": "Foobar",
+                "barfoo": "Barfoo"
+            },
+            "sorted": true,
+            "resettable": true
+        },
+        {
+            "type": "SimpleSelect",
+            "label": "simple-select required",
+            "name": "simple-select.required",
+            "options": {
+                "": "Select entry...",
+                "test": "Test",
+                "foobar": "Foobar",
+                "barfoo": "Barfoo"
+            },
+            "sorted": true,
+            "required": true
+        },
+        {
+            "type": "SimpleSelect",
+            "label": "simple-select disabled",
+            "name": "simple-select.disabled",
+            "options": {
+                "": "Select entry...",
+                "test": "Test",
+                "foobar": "Foobar",
+                "barfoo": "Barfoo"
+            },
+            "sorted": true,
+            "disabled": true
+        }
+    ]
+}

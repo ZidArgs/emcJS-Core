@@ -10,10 +10,14 @@
     "range.default": 4,
     "range.scratched": 4,
     "range.resettable": 1,
+    "string.default": "lorem ipsum dolor sit amet",
+    "string.readonly": "lorem ipsum dolor sit amet",
     "text.default": "lorem ipsum dolor sit amet",
     "text.readonly": "lorem ipsum dolor sit amet",
     "switch.default": true,
     "switch.resettable": false,
     "search-select.default": "test",
-    "search-select.resettable": "foobar"
+    "search-select.resettable": "foobar",
+    "simple-select.default": "test",
+    "simple-select.resettable": "foobar"
 }
