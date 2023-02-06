@@ -9,7 +9,7 @@ import LogicCompiler from "../logic/LogicCompiler.js";
 const CONTEXTS = new WeakMap();
 const MUTATION_CONFIG = {
     attributes: true,
-    attributeFilter: ["name", "visible"]
+    attributeFilter: ["name", "visible", "enabled"]
 };
 
 const mutationObserver = new MutationObserver((mutationsList) => {
@@ -22,7 +22,11 @@ const mutationObserver = new MutationObserver((mutationsList) => {
                     const elName = target.name;
                     const defaultValue = context.storage.getRootValue(elName);
                     if (defaultValue != null) {
-                        target.setAttribute("value", defaultValue);
+                        if (typeof value === "object") {
+                            target.setAttribute("value", JSON.stringify(defaultValue));
+                        } else {
+                            target.setAttribute("value", defaultValue);
+                        }
                     } else {
                         target.removeAttribute("value");
                     }
@@ -30,6 +34,8 @@ const mutationObserver = new MutationObserver((mutationsList) => {
                 }
             } else if (mutation.attributeName === "visible") {
                 context.setVisibleLogic(JSON.parse(target.getAttribute("visible")));
+            } else if (mutation.attributeName === "enabled") {
+                context.setEnabledLogic(JSON.parse(target.getAttribute("enabled")));
             }
         }
     }
@@ -48,6 +54,10 @@ export default class FormFieldContext {
     #visibleLogic;
 
     #visibleValue = true;
+
+    #enabledLogic;
+
+    #enabledValue = true;
 
     static getContext(node) {
         return CONTEXTS.get(node) ?? new FormFieldContext(node);
@@ -84,23 +94,32 @@ export default class FormFieldContext {
                 node.value = event.data[node.name];
             }
             this.#callUpdateVisible();
+            this.#callUpdateEnabled();
             this.#elementEventManager.setActive(true);
         });
         this.#storageEventManager.set(["load", "clear"], (event) => {
             this.#elementEventManager.setActive(false);
             const value = event.data[node.name];
             if (value != null) {
-                node.setAttribute("value", value);
+                if (typeof value === "object") {
+                    node.setAttribute("value", JSON.stringify(value));
+                } else {
+                    node.setAttribute("value", value);
+                }
             } else {
                 node.removeAttribute("value");
             }
             node.value = value;
             this.#callUpdateVisible();
+            this.#callUpdateEnabled();
             this.#elementEventManager.setActive(true);
         });
         /* --- */
         const visibleValue = node.getAttribute("visible");
         this.setVisibleLogic(JSON.parse(visibleValue));
+        /* --- */
+        const enabledValue = node.getAttribute("enabled");
+        this.setEnabledLogic(JSON.parse(enabledValue));
     }
 
     set storage(value) {
@@ -113,7 +132,11 @@ export default class FormFieldContext {
                 const elName = this.#element.name;
                 const defaultValue = value.getRootValue(elName);
                 if (defaultValue != null) {
-                    this.#element.setAttribute("value", defaultValue);
+                    if (typeof value === "object") {
+                        this.#element.setAttribute("value", JSON.stringify(defaultValue));
+                    } else {
+                        this.#element.setAttribute("value", defaultValue);
+                    }
                 } else {
                     this.#element.removeAttribute("value");
                 }
@@ -121,6 +144,7 @@ export default class FormFieldContext {
             }
             this.#storageEventManager.switchTarget(value);
             this.#callUpdateVisible();
+            this.#callUpdateEnabled();
         }
     }
 
@@ -132,23 +156,26 @@ export default class FormFieldContext {
         return this.#element;
     }
 
+    /* visible logic */
     get visible() {
         return this.#visibleValue;
     }
 
     setVisibleLogic(logic) {
-        this.#compileLogic(logic)
-    }
-
-    #compileLogic(logic) {
-        if (logic != null && typeof logic === "object") {
-            this.#visibleLogic = LogicCompiler.compile(logic);
-            this.#callUpdateVisible();
-        } else {
-            const value = logic == null || !!logic;
-            this.#visibleLogic = logic;
-            this.#visibleValue = value;
-            this.#element.style.display = value ? "" : "none";
+        if (logic != null) {
+            if (typeof logic === "object") {
+                this.#visibleLogic = LogicCompiler.compile(logic);
+                this.#callUpdateVisible();
+            } else {
+                const value = logic == null || !!logic;
+                this.#visibleLogic = logic;
+                this.#visibleValue = value;
+                if (value) {
+                    this.#element.style.display = "";
+                } else {
+                    this.#element.style.display = "none";
+                }
+            }
         }
     }
 
@@ -163,7 +190,11 @@ export default class FormFieldContext {
             const value = this.#executeVisibleLogic();
             if (this.#visibleValue != value) {
                 this.#visibleValue = value;
-                this.#element.style.display = value ? "" : "none";
+                if (value) {
+                    this.#element.style.display = "";
+                } else {
+                    this.#element.style.display = "none";
+                }
             }
         }
     });
@@ -174,6 +205,56 @@ export default class FormFieldContext {
         });
     }
 
+    /* enabled logic */
+    get enabled() {
+        return this.#enabledValue;
+    }
+
+    setEnabledLogic(logic) {
+        if (logic != null) {
+            if (typeof logic === "object") {
+                this.#enabledLogic = LogicCompiler.compile(logic);
+                this.#callUpdateEnabled();
+            } else {
+                const value = logic == null || !!logic;
+                this.#enabledLogic = logic;
+                this.#enabledValue = value;
+                if (value) {
+                    this.#element.removeAttribute("disabled");
+                } else {
+                    this.#element.setAttribute("disabled");
+                }
+            }
+        }
+    }
+
+    #callUpdateEnabled() {
+        if (typeof this.#enabledLogic === "function") {
+            this.#updateEnabled();
+        }
+    }
+
+    #updateEnabled = debounce(() => {
+        if (typeof this.#enabledLogic === "function") {
+            const value = this.#executeEnabledeLogic();
+            if (this.#enabledValue != value) {
+                this.#enabledValue = value;
+                if (value) {
+                    this.#element.removeAttribute("disabled");
+                } else {
+                    this.#element.setAttribute("disabled");
+                }
+            }
+        }
+    });
+
+    #executeEnabledeLogic() {
+        return !!this.#enabledLogic((key) => {
+            return this.#getValue(key);
+        });
+    }
+
+    /* logic helper */
     #getValue(key) {
         return this.storage?.get(key);
     }

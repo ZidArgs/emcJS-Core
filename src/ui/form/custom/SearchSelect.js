@@ -45,7 +45,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
 
     #isEditMode = false;
 
-    #value = "";
+    #value;
 
     #inputEl;
 

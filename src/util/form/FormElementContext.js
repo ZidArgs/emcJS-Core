@@ -8,7 +8,7 @@ import LogicCompiler from "../logic/LogicCompiler.js";
 const CONTEXTS = new WeakMap();
 const MUTATION_CONFIG = {
     attributes: true,
-    attributeFilter: ["visible"]
+    attributeFilter: ["visible", "enabled"]
 };
 
 const mutationObserver = new MutationObserver((mutationsList) => {
@@ -18,6 +18,8 @@ const mutationObserver = new MutationObserver((mutationsList) => {
             const context = CONTEXTS.get(target);
             if (mutation.attributeName === "visible") {
                 context.setVisibleLogic(JSON.parse(target.getAttribute("visible")));
+            } else if (mutation.attributeName === "enabled") {
+                context.setEnabledLogic(JSON.parse(target.getAttribute("enabled")));
             }
         }
     }
@@ -34,6 +36,10 @@ export default class FormElementContext {
     #visibleLogic;
 
     #visibleValue = true;
+
+    #enabledLogic;
+
+    #enabledValue = true;
 
     static getContext(node) {
         return CONTEXTS.get(node) ?? new FormElementContext(node);
@@ -53,6 +59,7 @@ export default class FormElementContext {
         /* --- */
         this.#storageEventManager.set(["load", "clear", "change"], () => {
             this.#callUpdateVisible();
+            this.#callUpdateEnabled();
         });
         /* --- */
         const visibleValue = node.getAttribute("visible");
@@ -67,6 +74,7 @@ export default class FormElementContext {
             this.#storage = value;
             this.#storageEventManager.switchTarget(value);
             this.#callUpdateVisible();
+            this.#callUpdateEnabled();
         }
     }
 
@@ -78,15 +86,12 @@ export default class FormElementContext {
         return this.#element;
     }
 
+    /* visible logic */
     get visible() {
         return this.#visibleValue;
     }
 
     setVisibleLogic(logic) {
-        this.#compileLogic(logic)
-    }
-
-    #compileLogic(logic) {
         if (logic != null && typeof logic === "object") {
             this.#visibleLogic = LogicCompiler.compile(logic);
             this.#callUpdateVisible();
@@ -94,7 +99,11 @@ export default class FormElementContext {
             const value = logic == null || !!logic;
             this.#visibleLogic = logic;
             this.#visibleValue = value;
-            this.#element.style.display = value ? "" : "none";
+            if (value) {
+                this.#element.style.display = "";
+            } else {
+                this.#element.style.display = "none";
+            }
         }
     }
 
@@ -109,7 +118,11 @@ export default class FormElementContext {
             const value = this.#executeVisibleLogic();
             if (this.#visibleValue != value) {
                 this.#visibleValue = value;
-                this.#element.style.display = value ? "" : "none";
+                if (value) {
+                    this.#element.style.display = "";
+                } else {
+                    this.#element.style.display = "none";
+                }
             }
         }
     });
@@ -120,6 +133,54 @@ export default class FormElementContext {
         });
     }
 
+    /* enabled logic */
+    get enabled() {
+        return this.#enabledValue;
+    }
+
+    setEnabledLogic(logic) {
+        if (logic != null && typeof logic === "object") {
+            this.#enabledLogic = LogicCompiler.compile(logic);
+            this.#callUpdateEnabled();
+        } else {
+            const value = logic == null || !!logic;
+            this.#enabledLogic = logic;
+            this.#enabledValue = value;
+            if (value) {
+                this.#element.removeAttribute("disabled");
+            } else {
+                this.#element.setAttribute("disabled");
+            }
+        }
+    }
+
+    #callUpdateEnabled() {
+        if (typeof this.#enabledLogic === "function") {
+            this.#updateEnabled();
+        }
+    }
+
+    #updateEnabled = debounce(() => {
+        if (typeof this.#enabledLogic === "function") {
+            const value = this.#executeEnabledeLogic();
+            if (this.#enabledValue != value) {
+                this.#enabledValue = value;
+                if (value) {
+                    this.#element.removeAttribute("disabled");
+                } else {
+                    this.#element.setAttribute("disabled");
+                }
+            }
+        }
+    });
+
+    #executeEnabledeLogic() {
+        return !!this.#enabledLogic((key) => {
+            return this.#getValue(key);
+        });
+    }
+
+    /* logic helper */
     #getValue(key) {
         return this.storage?.get(key);
     }

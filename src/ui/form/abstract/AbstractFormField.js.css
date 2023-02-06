@@ -34,6 +34,9 @@
     cursor: pointer;
     user-select: none;
 }
+:host(:disabled) #label {
+    cursor: default;
+}
 :host([resettable]:not([resettable="false"])) #reset {
     display: block;
 }
