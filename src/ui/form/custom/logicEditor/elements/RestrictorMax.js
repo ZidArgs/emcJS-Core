@@ -41,6 +41,7 @@ export default class LogicElement extends AbstractElement {
         const input = this.shadowRoot.getElementById("input");
         input.onchange = () => {
             this.value = parseInt(input.value) || 0;
+            this.dispatchEvent(new Event("valuechange", {bubbles: true, cancelable: true}));
         };
     }
 

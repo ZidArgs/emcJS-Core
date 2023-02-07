@@ -1,5 +1,8 @@
 import CustomFormElement from "../../../element/CustomFormElement.js";
 import DragDropMemory from "../../../../util/DragDropMemory.js";
+import {
+    isEqual
+} from "../../../../util/helper/Comparator.js";
 import LogicElementWindow from "./components/LogicElementWindow.js";
 import LogicAbstractElement from "./elements/AbstractElement.js";
 import "./elements/ComparatorEqual.js";
@@ -32,6 +35,20 @@ import "./elements/RestrictorMin.js";
 import TPL from "./LogicEditor.js.html" assert {type: "html"};
 import STYLE from "./LogicEditor.js.css" assert {type: "css"};
 
+const MUTATION_CONFIG = {
+    childList: true,
+    subtree: true
+};
+
+const mutationObserver = new MutationObserver((mutationsList) => {
+    for (const mutation of mutationsList) {
+        if (mutation.type == "childList") {
+            const target = mutation.target.closest("emc-edit-logic");
+            target.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
+        }
+    }
+});
+
 export default class LogicEditor extends CustomFormElement {
 
     #logicElementWindow = new LogicElementWindow();
@@ -41,6 +58,7 @@ export default class LogicEditor extends CustomFormElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
+        mutationObserver.observe(this, MUTATION_CONFIG);
         const target = this.shadowRoot.getElementById("droptarget");
         target.ondragover = (event) => {
             event.preventDefault();
@@ -81,7 +99,21 @@ export default class LogicEditor extends CustomFormElement {
             };
             this.#logicElementWindow.show();
         });
+        this.addEventListener("valuechange", (event) => {
+            this.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
+            event.stopPropagation();
+        });
         // this.#logicElementWindow.loadOperators([]);
+    }
+
+    set value(data) {
+        if (data == null) {
+            this.innerHTML = "";
+        } else if (!isEqual(this.value, data)) {
+            this.innerHTML = "";
+            const buildLogic = LogicAbstractElement.buildLogic(data);
+            this.append(buildLogic);
+        }
     }
 
     get value() {
@@ -92,27 +124,20 @@ export default class LogicEditor extends CustomFormElement {
         return null;
     }
 
-    set value(data) {
-        this.innerHTML = "";
-        if (data) {
-            this.append(LogicAbstractElement.buildLogic(data));
-        }
+    set readonly(val) {
+        this.setBooleanAttribute("readonly", val);
     }
 
     get readonly() {
         return this.getBooleanAttribute("readonly");
     }
 
-    set readonly(val) {
-        this.setBooleanAttribute("readonly", val);
+    set disabled(val) {
+        this.setBooleanAttribute("disabled", val);
     }
 
     get disabled() {
         return this.getBooleanAttribute("disabled");
-    }
-
-    set disabled(val) {
-        this.setBooleanAttribute("disabled", val);
     }
 
     append(el) {

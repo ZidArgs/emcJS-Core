@@ -22,8 +22,14 @@ export function compareVersions(a = "", b = "", s = ".") {
 }
 
 export function isEqual(a, b) {
+    if (a == null && b == null) {
+        return true;
+    }
     if (Object.is(a, b)) {
         return true;
+    }
+    if (a == null || b == null) {
+        return false;
     }
     if (typeof a.equals === "function") {
         return a.equals(b);
@@ -50,7 +56,7 @@ export function isEqual(a, b) {
     if (c.length != Object.keys(b).length) {
         return false;
     }
-    return c.every((i) => b[i] != null && isEqual(a[i], b[i]));
+    return c.every((i) => isEqual(a[i], b[i]));
 }
 
 class Comparator {
@@ -72,7 +78,7 @@ class Comparator {
             return true;
         }
 
-        if (typeof a != "object" || !(a instanceof b.constructor || b instanceof a.constructor)) {
+        if (a == null || b == null || typeof a != "object" || !(a instanceof b.constructor || b instanceof a.constructor)) {
             return false;
         }
 
@@ -119,7 +125,7 @@ class Comparator {
         if (c.length != Object.keys(b).length) {
             return false;
         }
-        return c.every((i) => b[i] != null && this.isEqual(a[i], b[i]));
+        return c.every((i) => this.isEqual(a[i], b[i]));
     }
 
 }

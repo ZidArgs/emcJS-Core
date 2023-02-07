@@ -57,7 +57,12 @@ export default class AbstractFormInput extends AbstractFormField {
     }
 
     connectedCallback() {
-        this.internals.setFormValue(this.value);
+        const value = this.value;
+        if (typeof value === "object") {
+            this.internals.setFormValue(JSON.stringify(value));
+        } else {
+            this.internals.setFormValue(value);
+        }
     }
 
     formDisabledCallback(disabled) {
@@ -66,7 +71,12 @@ export default class AbstractFormInput extends AbstractFormField {
 
     formResetCallback() {
         this.#value = null;
-        this.internals.setFormValue(this.value);
+        const value = this.value;
+        if (typeof value === "object") {
+            this.internals.setFormValue(JSON.stringify(value));
+        } else {
+            this.internals.setFormValue(value);
+        }
         const message = this.revalidate();
         if (typeof message === "string" && message !== "") {
             this.setCustomValidity(message);
@@ -75,7 +85,7 @@ export default class AbstractFormInput extends AbstractFormField {
         }
         /* --- */
         const event = new Event("default", {bubbles: true, cancelable: true});
-        event.value = this.value;
+        event.value = value;
         event.name = this.name;
         event.fieldId = this.id;
         this.dispatchEvent(event);
@@ -96,7 +106,11 @@ export default class AbstractFormInput extends AbstractFormField {
     set value(value) {
         if (this.#value != value) {
             this.#value = value;
-            this.internals.setFormValue(value);
+            if (typeof value === "object") {
+                this.internals.setFormValue(JSON.stringify(value));
+            } else {
+                this.internals.setFormValue(value);
+            }
             const message = this.revalidate();
             if (typeof message === "string" && message !== "") {
                 this.setCustomValidity(message);
@@ -159,7 +173,12 @@ export default class AbstractFormInput extends AbstractFormField {
             case "value": {
                 if (oldValue != newValue) {
                     if (!this.isChanged) {
-                        this.internals.setFormValue(this.value);
+                        const value = this.value;
+                        if (typeof value === "object") {
+                            this.internals.setFormValue(JSON.stringify(value));
+                        } else {
+                            this.internals.setFormValue(value);
+                        }
                         const message = this.revalidate();
                         if (typeof message === "string" && message !== "") {
                             this.setCustomValidity(message);

@@ -1,3 +1,7 @@
+import {
+    isEqual
+} from "../../../util/helper/Comparator.js";
+
 export default class ObservableStorage extends EventTarget {
 
     #rootData = new Map();
@@ -21,7 +25,7 @@ export default class ObservableStorage extends EventTarget {
     set(key, value) {
         const oldValue = this.get(key);
         // change event
-        if (oldValue != value) {
+        if (!isEqual(oldValue, value)) {
             this.#writeChangeData(key, value);
             this.#buffer.set(key, value);
             const ev = new Event("change");
@@ -37,7 +41,7 @@ export default class ObservableStorage extends EventTarget {
         for (const key in data) {
             const newValue = data[key];
             const oldValue = this.get(key);
-            if (oldValue != newValue) {
+            if (!isEqual(oldValue, newValue)) {
                 this.#writeChangeData(key, newValue);
                 this.#buffer.set(key, newValue);
                 values[key] = newValue;
@@ -121,7 +125,7 @@ export default class ObservableStorage extends EventTarget {
         for (const key in data) {
             const newValue = data[key];
             const oldValue = this.get(key);
-            if (oldValue != newValue) {
+            if (!isEqual(oldValue, newValue)) {
                 this.#writeChangeData(key, newValue);
                 if (newValue == null) {
                     this.#buffer.delete(key);

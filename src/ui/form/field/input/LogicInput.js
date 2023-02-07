@@ -3,6 +3,9 @@ import "../../../i18n/builtin/I18nInput.js";
 import {
     deepClone
 } from "../../../../util/helper/DeepClone.js";
+import {
+    isEqual
+} from "../../../../util/helper/Comparator.js";
 import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
 import {
     saveSetAttribute
@@ -35,16 +38,17 @@ export default class LogicInput extends AbstractFormInput {
             const value = this.#inputEl.value;
             if (value === "logic") {
                 this.#logicEl.classList.add("active");
+                this.value = this.#logicEl.value;
             } else {
                 this.#logicEl.classList.remove("active");
                 this.#logicEl.value = null;
+                this.value = value === "true";
             }
-            this.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
         });
         this.#logicEl.addEventListener("change", () => {
             const value = this.#inputEl.value;
             if (value === "logic") {
-                this.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
+                this.value = this.#logicEl.value;
             }
         });
     }
@@ -81,12 +85,10 @@ export default class LogicInput extends AbstractFormInput {
         } else if (value === "false") {
             value = false;
         }
-        if (this.#value != value) {
+        if (!isEqual(this.#value, value)) {
             this.#applyValue(value);
             this.#value = value;
-            this.internals.setFormValue(value != null ? JSON.stringify(value) : null);
-            /* --- */
-            this.dispatchEvent(new Event("change"));
+            super.value = value;
         }
     }
 
