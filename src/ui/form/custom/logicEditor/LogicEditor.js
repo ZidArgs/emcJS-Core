@@ -1,5 +1,6 @@
 import CustomFormElement from "../../../element/CustomFormElement.js";
 import DragDropMemory from "../../../../util/DragDropMemory.js";
+import LogicElementWindow from "./components/LogicElementWindow.js";
 import LogicAbstractElement from "./elements/AbstractElement.js";
 import "./elements/ComparatorEqual.js";
 import "./elements/ComparatorGreaterThan.js";
@@ -9,7 +10,6 @@ import "./elements/ComparatorLessThanEqual.js";
 import "./elements/ComparatorNotEqual.js";
 import "./elements/LiteralFalse.js";
 // import "./elements/LiteralNumber.js";
-import "./elements/LiteralPointer.js";
 import "./elements/LiteralState.js";
 // import "./elements/LiteralString.js";
 import "./elements/LiteralTrue.js";
@@ -21,18 +21,20 @@ import "./elements/MathMul.js";
 import "./elements/MathPow.js";
 import "./elements/MathSub.js";
 import "./elements/OperatorAnd.js";
-import "./elements/OperatorMax.js";
-import "./elements/OperatorMin.js";
 import "./elements/OperatorNand.js";
 import "./elements/OperatorNor.js";
 import "./elements/OperatorNot.js";
 import "./elements/OperatorOr.js";
 import "./elements/OperatorXnor.js";
 import "./elements/OperatorXor.js";
+import "./elements/RestrictorMax.js";
+import "./elements/RestrictorMin.js";
 import TPL from "./LogicEditor.js.html" assert {type: "html"};
 import STYLE from "./LogicEditor.js.css" assert {type: "css"};
 
 export default class LogicEditor extends CustomFormElement {
+
+    #logicElementWindow = new LogicElementWindow();
 
     constructor() {
         super();
@@ -60,9 +62,26 @@ export default class LogicEditor extends CustomFormElement {
             event.stopPropagation();
             return false;
         };
-        target.addEventListener("click", () => {
-
+        target.addEventListener("click", (event) => {
+            const e = new Event("placeholderclicked");
+            this.dispatchEvent(e);
+            event.stopPropagation();
         });
+        /* --- */
+        this.addEventListener("placeholderclicked", (event) => {
+            const targetEl = event.target;
+            const slotName = event.name;
+            this.#logicElementWindow.onsubmit = (event) => {
+                const resultEl = event.element;
+                resultEl.removeAttribute("template");
+                if (slotName) {
+                    resultEl.setAttribute("slot", slotName);
+                }
+                targetEl.append(resultEl);
+            };
+            this.#logicElementWindow.show();
+        });
+        // this.#logicElementWindow.loadOperators([]);
     }
 
     get value() {

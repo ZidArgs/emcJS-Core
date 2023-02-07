@@ -3,7 +3,7 @@ import AbstractElement from "./AbstractElement.js";
 
 const TPL_CAPTION = "XOR";
 const TPL_BACKGROUND = "#ffa500";
-const TPL_BORDER = "#774455";
+const TPL_BORDER = "#995c00";
 const REFERENCE = "xor";
 
 const TPL = new Template(`
@@ -36,8 +36,8 @@ export default class LogicElement extends AbstractElement {
         target0.ondrop = AbstractElement.dropOnPlaceholder;
         target1.ondrop = AbstractElement.dropOnPlaceholder;
         target1.onclick = target0.onclick = (event) => {
-            const e = new Event("placeholderclicked");
-            e.name = event.target.name;
+            const e = new Event("placeholderclicked", {bubbles: true, cancelable: true});
+            e.name = event.target.parentElement.name;
             this.dispatchEvent(e);
             event.stopPropagation();
         };

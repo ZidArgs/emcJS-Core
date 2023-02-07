@@ -29,8 +29,8 @@ export default class LogicElement extends AbstractElement {
         target.ondragover = AbstractElement.allowDrop;
         target.ondrop = AbstractElement.dropOnPlaceholder;
         target.onclick = (event) => {
-            const e = new Event("placeholderclicked");
-            e.name = event.target.name;
+            const e = new Event("placeholderclicked", {bubbles: true, cancelable: true});
+            e.name = event.target.parentElement.name;
             this.dispatchEvent(e);
             event.stopPropagation();
         };

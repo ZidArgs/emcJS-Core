@@ -5,7 +5,6 @@ const TRANSPILERS = {
     "string":   (logic) => `${escapeString(logic.el)}`,
     "number":   (logic) => `${escapeNumber(logic.el)}`,
     "value":    (logic) => `(val(${escapeString(logic.el)})??0)`,
-    "pointer":  (logic) => `(val(val(${escapeString(logic.el)})??"")??0)`,
     "state":    (logic) => `(val(${escapeString(logic.el)})??0)==${escapeValue(logic.value)}`,
 
     /* operators */

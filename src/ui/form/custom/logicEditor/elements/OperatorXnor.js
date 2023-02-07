@@ -5,7 +5,7 @@ const TPL_CAPTION = "XNOR";
 const TPL_BG_0 = "#ffa500";
 const TPL_BG_1 = "#ffdfe4";
 const TPL_BACKGROUND = `repeating-linear-gradient(145deg, ${TPL_BG_0}, ${TPL_BG_0} 20px, ${TPL_BG_1} 20px, ${TPL_BG_1} 40px)`;
-const TPL_BORDER = "#774455";
+const TPL_BORDER = "#995c00";
 const REFERENCE = "xnor";
 
 const TPL = new Template(`
@@ -38,8 +38,8 @@ export default class LogicElement extends AbstractElement {
         target0.ondrop = AbstractElement.dropOnPlaceholder;
         target1.ondrop = AbstractElement.dropOnPlaceholder;
         target1.onclick = target0.onclick = (event) => {
-            const e = new Event("placeholderclicked");
-            e.name = event.target.name;
+            const e = new Event("placeholderclicked", {bubbles: true, cancelable: true});
+            e.name = event.target.parentElement.name;
             this.dispatchEvent(e);
             event.stopPropagation();
         };

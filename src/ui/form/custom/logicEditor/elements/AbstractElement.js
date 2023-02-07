@@ -16,7 +16,7 @@ const TPL = new Template(`
             cursor: move;
             font-family: monospace;
             background: var(--logic-color-back, white);
-            border-width: 1px;
+            border-width: 2px;
             border-style: solid;
             color: var(--logic-color-text, black);
             border-color: var(--logic-color-border, black);
@@ -53,7 +53,7 @@ const TPL = new Template(`
         .body {
             display: block;
             padding: 5px;
-            border-top-width: 1px;
+            border-top-width: 2px;
             border-top-style: solid;
             border-color: var(--logic-color-border, black);
         }
@@ -81,7 +81,8 @@ const TPL = new Template(`
         :host([readonly]:not([readonly="false"])) input,
         :host([readonly]:not([readonly="false"])) select,
         :host([template]:not([template="false"])) input,
-        :host([template]:not([template="false"])) select {
+        :host([template]:not([template="false"])) select,
+        :host([template]:not([template="false"])) .placeholder {
             pointer-events: none;
         }
     </style>
@@ -110,7 +111,7 @@ export default class AbstractElement extends HTMLElement {
     }
 
     connectedCallback() {
-        if (this.readonly === null || this.readonly == "false") {
+        if ((this.readonly === null || this.readonly == "false") && this.template != "clicked") {
             this.setAttribute("draggable", "true");
         }
         this.id = ID.get(this);
@@ -244,7 +245,7 @@ export default class AbstractElement extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ["readonly", "value", "visualize"];
+        return ["readonly", "value", "visualize", "template"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -275,6 +276,15 @@ export default class AbstractElement extends HTMLElement {
                     }
                 }
                 break;
+            case "template": {
+                if (oldValue != newValue) {
+                    if (newValue != "clicked") {
+                        this.setAttribute("draggable", "true");
+                    } else {
+                        this.removeAttribute("draggable");
+                    }
+                }
+            } break;
         }
     }
 
@@ -305,7 +315,7 @@ export default class AbstractElement extends HTMLElement {
                 } else {
                     cl = AbstractElement.getReference(logic.type);
                 }
-                const el = new cl;
+                const el = new cl();
                 el.loadLogic(logic);
                 return el;
             }
