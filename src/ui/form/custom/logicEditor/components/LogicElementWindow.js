@@ -1,5 +1,6 @@
 import Window from "../../../../overlay/window/Window.js";
 import AbstractElement from "../elements/AbstractElement.js";
+import "../../../../FilteredList.js";
 import "../../../../container/CollapsePanel.js";
 import "../elements/ComparatorEqual.js";
 import "../elements/ComparatorGreaterThan.js";
@@ -78,6 +79,7 @@ export default class LogicElementWindow extends Window {
         this.#loadOperators({
             "type": "group",
             "caption": "default",
+            "compact": true,
             children: DEFAULT_LOGIC_OPERATORS.map((type) => {
                 return {type};
             })
@@ -89,6 +91,7 @@ export default class LogicElementWindow extends Window {
         this.#loadOperators({
             "type": "group",
             "caption": "default",
+            "compact": true,
             children: DEFAULT_LOGIC_OPERATORS.map((type) => {
                 return {type};
             })
@@ -107,12 +110,13 @@ export default class LogicElementWindow extends Window {
         } else if (config.type === "group") {
             const newConteinerEl = document.createElement("emc-collapsepanel");
             newConteinerEl.caption = config.caption;
+            newConteinerEl.compact = config.compact ?? false;
             this.#loadOperators(config.children, newConteinerEl);
             containerEl.append(newConteinerEl);
         } else {
             const typeClass = AbstractElement.getReference(config.type);
             const logicEl = new typeClass();
-            logicEl.ref = config.ref;
+            logicEl.ref = config.ref ?? logicEl.getHeader() ?? config.type;
             if (config["value"] != null) {
                 logicEl.value = config.value;
             }

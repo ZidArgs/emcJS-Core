@@ -103,21 +103,24 @@ export default class LogicElement extends AbstractElement {
     attributeChangedCallback(name, oldValue, newValue) {
         super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
-            case "readonly":
+            case "template":
+            case "readonly": {
                 if (oldValue != newValue) {
+                    const template = this.template;
+                    const readonly = this.readonly;
                     const input = this.shadowRoot.getElementById("input");
-                    if (newValue != null) {
-                        input.setAttribute("disabled", newValue);
+                    if (template || readonly) {
+                        input.setAttribute("disabled", "true");
                     } else {
                         input.removeAttribute("disabled");
                     }
                 }
-                break;
-            case "value":
+            } break;
+            case "value": {
                 if (oldValue != newValue) {
                     this.shadowRoot.getElementById("input").value = parseInt(newValue) || 0;
                 }
-                break;
+            } break;
         }
     }
 

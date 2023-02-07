@@ -1,3 +1,6 @@
+#field {
+    flex-grow: 0;
+}
 #input {
     appearance: none;
     flex-grow: 0;

@@ -4,25 +4,15 @@
     pointer-events: all;
 }
 #footer,
-#submit,
 #cancel {
     display: flex;
 }
-#text {
-    display: block;
-    margin: 8px 0px;
-    word-wrap: break-word;
-    white-space: pre-wrap;
-    resize: none;
-}
 #footer {
     height: 50px;
-    margin-top: 20px;
     padding: 10px 30px 10px;
     justify-content: flex-end;
     border-top: solid 2px #cccccc;
 }
-#submit,
 #cancel {
     align-items: center;
     justify-content: center;
@@ -33,9 +23,8 @@
     text-transform: uppercase;
     cursor: pointer;
     user-select: none;
-    -webkit-appearance: none;
+    appearance: none;
 }
-#submit:hover,
 #cancel:hover {
     color: white;
     background-color: black;

@@ -1,22 +1,36 @@
 :host {
     display: flex;
     flex-direction: column;
-    background-color: #000;
-    border: solid 2px #777;
+    border: solid var(--panel-border-width, 2px) var(--panel-border-color, #000000);
+    border-radius: var(--panel-border-radius, 0.25em);
     overflow: hidden;
     user-select: none;
 }
 #title {
     display: flex;
-    top: 0;
     padding: 8px;
-    background-color: #777;
-    color: #fff;
+    color: var(--panel-header-text-color, #000000);
+    background-color: var(--panel-header-back-color, #ffffff);
+    border-bottom: solid var(--panel-border-width, 2px) var(--panel-border-color, #000000);
 }
 #body {
     position: relative;
     display: block;
     flex: 1;
+    padding: 8px;
+    color: var(--panel-text-color, #000000);
+    background-color: var(--panel-back-color, #ffffff);
     overflow-x: auto;
     overflow-y: auto;
+}
+#body::-webkit-scrollbar-track {
+    background-color: var(--panel-back-color, #ffffff);
+}
+#body::-webkit-scrollbar-thumb {
+    background-color: var(--button-back-color, #cccccc);
+    border: solid 2px var(--panel-back-color, #ffffff);
+    border-radius: 8px;
+}
+#body::-webkit-scrollbar-thumb:hover {
+    background-color: var(--button-hover-back-color, #000000);
 }

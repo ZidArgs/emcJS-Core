@@ -1,0 +1,20 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    margin: 8px;
+}
+::slotted(form) {
+    margin: 0px;
+    color: var(--form-text-color, #000000);
+    background-color: var(--form-back-color, #cccccc);
+    border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
+}
+::slotted(form:first-child) {
+    border-radius: var(--form-border-radius, 0.25em) var(--form-border-radius, 0.25em) 0px 0px;
+}
+::slotted(form:nth-child(n + 1)) {
+    margin-top: calc(-1 * var(--form-border-width, 2px));
+}
+::slotted(form:last-child) {
+    border-radius: 0px 0px var(--form-border-radius, 0.25em) var(--form-border-radius, 0.25em);
+}

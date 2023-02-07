@@ -1,15 +1,38 @@
 :root {
 
+    /* === page === */
+    --page-text-color: #000000;
+    --page-back-color: #ffffff;
+    --page-border-color: #000000; /* all; top_bottom right_left; top right bottom left*/
+    --page-border-width: 2px;
+    --page-border-radius: 0.25em;
+
+    /* === panel === */
+    --panel-text-color: var(--page-text-color, #000000);
+    --panel-back-color: var(--page-back-color, #ffffff);
+    --panel-border-color: var(--page-border-color, #000000);
+    --panel-border-width: var(--page-border-width, 2px);
+    --panel-border-radius: var(--page-border-radius, 0.25em);
+    --panel-header-text-color: var(--panel-text-color, #000000);
+    --panel-header-back-color: var(--panel-back-color, #ffffff);
+    --panel-input-text-color: var(--panel-text-color, #000000);
+    --panel-input-back-color: var(--panel-back-color, #ffffff);
+
     /* === form === */
     --form-text-color: #000000;
     --form-back-color: #ffffff;
     --form-border-color: #000000; /* all; top_bottom right_left; top right bottom left*/
-    --form-border-width: 2px;
-    --form-border-radius: 0.25em;
+    --form-border-width: var(--page-border-width, 2px);
+    --form-border-radius: var(--page-border-radius, 0.25em);
     --form-hover-text-color: #000000;
     --form-hover-back-color: #eeeeee;
     --form-invalid-text-color: #a70000;
     --form-invalid-back-color: #ffeeee;
+
+    /* === fieldset === */
+    --fieldset-back-color: #ffffff;
+    --fieldset-border-width: var(--form-border-width, 2px);
+    --fieldset-border-radius: var(--form-border-radius, 0.25em);
 
     /* === input === */
     --input-text-color: #000000;
@@ -53,11 +76,6 @@
     --button-back-color: #cccccc;
     --button-hover-text-color: #ffffff;
     --button-hover-back-color: #000000;
-
-    /* === fieldset === */
-    --fieldset-back-color: #ffffff;
-    --fieldset-border-width: 4px;
-    --fieldset-border-radius: 0.5em;
 
 }
 

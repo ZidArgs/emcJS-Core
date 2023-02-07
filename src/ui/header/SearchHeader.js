@@ -1,46 +1,44 @@
 import CustomElementDelegating from "../element/CustomElementDelegating.js";
-import "../input/SearchField.js";
+import {
+    debounce
+} from "../../util/Debouncer.js";
 import "../i18n/I18nTooltip.js";
 import TPL from "./SearchHeader.js.html" assert {type: "html"};
 import STYLE from "./SearchHeader.js.css" assert {type: "css"};
 
 export default class SearchHeader extends CustomElementDelegating {
 
+    #inputEl;
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const searchEl = this.shadowRoot.getElementById("search");
-        searchEl.addEventListener("change", (ev) => {
-            this.search = ev.currentTarget.value;
-            const event = new Event("search");
-            event.value = ev.currentTarget.value;
-            this.dispatchEvent(event);
+        this.#inputEl = this.shadowRoot.getElementById("input");
+        this.#inputEl.addEventListener("input", () => {
+            this.#onInput();
+        });
+        const resetEl = this.shadowRoot.getElementById("reset");
+        resetEl.addEventListener("click", () => {
+            this.value = "";
         });
     }
 
-    get search() {
-        return this.getAttribute("search");
+    #onInput = debounce(() => {
+        const value = this.#inputEl.value;
+        this.value = value;
+    }, 300);
+
+    set value(value) {
+        this.#inputEl.value = value;
+        const event = new Event("search", {bubbles: true, cancelable: true});
+        event.value = value;
+        this.dispatchEvent(event);
     }
 
-    set search(val) {
-        this.setAttribute("search", val);
-    }
-
-    static get observedAttributes() {
-        return ["search"];
-    }
-
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (oldValue != newValue) {
-            switch (name) {
-                case "search": {
-                    const searchEl = this.shadowRoot.getElementById("search");
-                    searchEl.value = newValue;
-                } break;
-            }
-        }
+    get value() {
+        return this.#inputEl.value;
     }
 
 }

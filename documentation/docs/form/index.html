@@ -16,15 +16,22 @@
         * {
             font-family: Arial, Helvetica, sans-serif;
         }
+
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
     </style>
     <script type="module">
-        // utils
+        // main
         import i18n from "/emcJS/util/I18n.js";
         import FileLoader from "/emcJS/util/file/FileLoader.js";
         import CustomActionRegistry from "/emcJS/data/registry/CustomActionRegistry.js";
+        import "/emcJS/ui/Page.js";
         // form
         import FormBuilder from "/emcJS/util/form/FormBuilder.js";
         import FormContext from "/emcJS/util/form/FormContext.js";
+        import "/emcJS/ui/form/FormContainer.js";
         import "/emcJS/ui/form/FormFieldset.js";
         import "/emcJS/ui/form/FormButtonRow.js";
         import "/emcJS/ui/form/button/SubmitButton.js";
@@ -81,6 +88,8 @@
             FileLoader.json("./form/form-config/input/SwitchInput.json")
         ]);
 
+        const formContainerEl = document.getElementById("form-container");
+
         const formContext = new FormContext(defaultValues);
 
         { /* add buttons in seperate form */
@@ -89,7 +98,7 @@
                     test: "foobar"
                 }
             });
-            document.body.append(formEl);
+            formContainerEl.append(formEl);
             formContext.registerForm(formEl);
         }
 
@@ -99,7 +108,7 @@
                 resetButton: true,
                 allowsInvalid: true
             });
-            document.body.append(formEl);
+            formContainerEl.append(formEl);
             formContext.registerForm(formEl);
         }
 
@@ -143,6 +152,9 @@
 </head>
 
 <body style="display: flex; flex-direction: column;">
+    <emc-page>
+        <emc-form-container id="form-container"></emc-form-container>
+    </emc-page>
 </body>
 
 </html>

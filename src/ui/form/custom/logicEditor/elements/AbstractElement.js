@@ -1,3 +1,4 @@
+import CustomElement from "../../../../element/CustomElement.js";
 import DragDropMemory from "/emcJS/util/DragDropMemory.js";
 import Template from "/emcJS/util/html/Template.js";
 import UGen from "/emcJS/util/UniqueGenerator.js";
@@ -98,14 +99,13 @@ function dragStart(event) {
 const ID = new WeakMap();
 const REG = new Map();
 
-export default class AbstractElement extends HTMLElement {
+export default class AbstractElement extends CustomElement {
 
     constructor() {
         super();
         if (new.target === AbstractElement) {
             throw new Error("can not construct abstract class");
         }
-        this.attachShadow({mode: "open"});
         this.shadowRoot.append(TPL.generate());
         ID.set(this, UGen.appUID("logic-element"));
     }
@@ -122,6 +122,13 @@ export default class AbstractElement extends HTMLElement {
         this.removeAttribute("draggable");
         this.removeAttribute("id");
         this.removeEventListener("dragstart", dragStart);
+    }
+
+    getHeader() {
+        const headerEl = this.shadowRoot.getElementById("header");
+        if (headerEl) {
+            return headerEl.innerText;
+        }
     }
 
     getElement(forceCopy = false) {
@@ -200,12 +207,24 @@ export default class AbstractElement extends HTMLElement {
         }
     }
 
-    get template() {
-        return this.getAttribute("template");
-    }
-
-    set template(val) {
-        this.setAttribute("template", val);
+    set value(value) {
+        const hdr = this.shadowRoot.querySelector(".header");
+        if (typeof value == "undefined") {
+            this.removeAttribute("value");
+            if (hdr) {
+                delete hdr.dataset.value;
+            }
+        } else if (typeof value == "boolean") {
+            this.setAttribute("value", +value);
+            if (hdr) {
+                hdr.dataset.value = +value;
+            }
+        } else {
+            this.setAttribute("value", parseInt(value) || 0);
+            if (hdr) {
+                hdr.dataset.value = parseInt(value) || 0;
+            }
+        }
     }
 
     get value() {
@@ -216,32 +235,20 @@ export default class AbstractElement extends HTMLElement {
         return parseInt(val) || 0;
     }
 
-    set value(val) {
-        const hdr = this.shadowRoot.querySelector(".header");
-        if (typeof val == "undefined") {
-            this.removeAttribute("value");
-            if (hdr) {
-                delete hdr.dataset.value;
-            }
-        } else if (typeof val == "boolean") {
-            this.setAttribute("value", +val);
-            if (hdr) {
-                hdr.dataset.value = +val;
-            }
-        } else {
-            this.setAttribute("value", parseInt(val) || 0);
-            if (hdr) {
-                hdr.dataset.value = parseInt(val) || 0;
-            }
-        }
+    set readonly(value) {
+        this.setBooleanAttribute("readonly", value);
     }
 
     get readonly() {
-        return this.getAttribute("readonly");
+        return this.getBooleanAttribute("readonly");
     }
 
-    set readonly(val) {
-        this.setAttribute("readonly", val);
+    set template(value) {
+        this.setBooleanAttribute("template", value);
+    }
+
+    get template() {
+        return this.getBooleanAttribute("template");
     }
 
     static get observedAttributes() {
@@ -250,18 +257,6 @@ export default class AbstractElement extends HTMLElement {
 
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
-            case "readonly":
-                if (oldValue != newValue) {
-                    if (newValue === null || newValue == "false") {
-                        this.setAttribute("draggable", "true");
-                    } else {
-                        this.removeAttribute("draggable");
-                    }
-                    for (const ch of this.children) {
-                        ch.readonly = newValue;
-                    }
-                }
-                break;
             case "value":
                 if (oldValue != newValue) {
                     const event = new Event("update");
@@ -276,9 +271,25 @@ export default class AbstractElement extends HTMLElement {
                     }
                 }
                 break;
+            case "readonly": {
+                if (oldValue != newValue) {
+                    const template = this.template;
+                    const readonly = this.readonly;
+                    if (template || readonly) {
+                        this.setAttribute("draggable", "true");
+                    } else {
+                        this.removeAttribute("draggable");
+                    }
+                    for (const ch of this.children) {
+                        ch.readonly = newValue;
+                    }
+                }
+            } break;
             case "template": {
                 if (oldValue != newValue) {
-                    if (newValue != "clicked") {
+                    const template = this.template;
+                    const readonly = this.readonly;
+                    if (template || readonly) {
                         this.setAttribute("draggable", "true");
                     } else {
                         this.removeAttribute("draggable");

@@ -19,11 +19,19 @@ export default class CollapsePanel extends CustomElement {
     }
 
     get expanded() {
-        return this.getAttribute("expanded");
+        return this.getBooleanAttribute("expanded");
     }
 
     set expanded(val) {
-        this.setAttribute("expanded", val);
+        this.setBooleanAttribute("expanded", val);
+    }
+
+    get compact() {
+        return this.getBooleanAttribute("compact");
+    }
+
+    set compact(val) {
+        this.setBooleanAttribute("compact", val);
     }
 
     get caption() {
