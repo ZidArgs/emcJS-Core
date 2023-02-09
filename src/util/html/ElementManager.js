@@ -1,6 +1,9 @@
 import {
     isEqual
 } from "../helper/Comparator.js";
+import {
+    deepClone
+} from "../helper/DeepClone.js";
 
 export default class ElementManager {
 
@@ -55,7 +58,7 @@ export default class ElementManager {
         }
         const cachedData = this.#cache.get(data.key);
         if (cachedData == null || !isEqual(cachedData, data)) {
-            this.#cache.set(data.key, data);
+            this.#cache.set(data.key, deepClone(data));
             return true;
         }
         return false;
