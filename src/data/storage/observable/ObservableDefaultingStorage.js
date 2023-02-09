@@ -106,8 +106,10 @@ export default class ObservableDefaultingStorage extends ObservableStorage {
     overwrite(data = {}) {
         const res = {};
         for (const [key] of this.#defaults) {
-            const newValue = data[key];
-            res[key] = newValue;
+            if (key in data) {
+                const newValue = data[key];
+                res[key] = newValue;
+            }
         }
         super.overwrite(res);
     }
