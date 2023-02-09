@@ -1,4 +1,4 @@
-const APP_ID_CNT = new Map;
+const APP_ID_CNT = new Map();
 
 class UniqueGenerator {
 

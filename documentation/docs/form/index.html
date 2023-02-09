@@ -64,6 +64,7 @@
             "KeyValueList"
             "CharInput"
             "LogicInput"
+            "FileInput"
 
         */
 
@@ -96,18 +97,29 @@
             const formEl = FormBuilder.build(buttonConfig, null, {
                 data: {
                     test: "foobar"
-                }
+                },
+                allowsInvalid: true
             });
+            formEl.classList.add("form-header");
             formContainerEl.append(formEl);
             formContext.registerForm(formEl);
         }
 
         for (const config of formConfig) {
             const formEl = FormBuilder.build(config, null, {
+                allowsInvalid: true
+            });
+            formContainerEl.append(formEl);
+            formContext.registerForm(formEl);
+        }
+
+        { /* add seperate submit */
+            const formEl = FormBuilder.build(null, null, {
                 submitButton: true,
                 resetButton: true,
                 allowsInvalid: true
             });
+            formEl.classList.add("form-footer");
             formContainerEl.append(formEl);
             formContext.registerForm(formEl);
         }
@@ -152,8 +164,8 @@
 </head>
 
 <body style="display: flex; flex-direction: column;">
-    <emc-page>
-        <emc-form-container id="form-container"></emc-form-container>
+    <emc-page style="padding: 8px;">
+        <emc-form-container id="form-container" style="--content-mask: 8px;"></emc-form-container>
     </emc-page>
 </body>
 

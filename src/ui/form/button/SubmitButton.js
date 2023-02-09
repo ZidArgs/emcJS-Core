@@ -25,11 +25,6 @@ export default class SubmitButton extends CustomFormElementDelegating {
         this.#buttonEl.addEventListener("click", () => {
             if (this.form != null) {
                 this.form.requestSubmit();
-            } else {
-                const formEl = this.closest("emc-form");
-                if (formEl != null) {
-                    formEl.submit();
-                }
             }
         });
     }
