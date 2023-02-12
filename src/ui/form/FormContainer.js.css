@@ -3,6 +3,7 @@
     flex-direction: column;
 }
 ::slotted(form) {
+    min-height: 2em;
     margin: 0px;
     color: var(--form-text-color, #000000);
     background-color: var(--form-back-color, #cccccc);
