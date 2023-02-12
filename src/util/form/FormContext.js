@@ -1,5 +1,6 @@
 import ObservableStorage from "../../data/storage/observable/ObservableStorage.js";
 import AbstractFormField from "../../ui/form/abstract/AbstractFormField.js";
+import FormContainer from "../../ui/form/FormContainer.js";
 import EventMultiTargetManager from "../event/EventMultiTargetManager.js";
 import EventTargetManager from "../event/EventTargetManager.js";
 import {
@@ -85,6 +86,26 @@ export default class FormContext extends EventTarget {
             ev.data = event.data;
             this.dispatchEvent(ev);
         });
+    }
+
+    registerFormContainer(formContainerEl) {
+        if (!(formContainerEl instanceof FormContainer)) {
+            throw new TypeError("FormContainer expected");
+        }
+        const allFormEls = formContainerEl.querySelectorAll("form");
+        for (const formEl of allFormEls) {
+            this.registerForm(formEl);
+        }
+    }
+
+    unregisterFormContainer(formContainerEl) {
+        if (!(formContainerEl instanceof FormContainer)) {
+            throw new TypeError("FormContainer expected");
+        }
+        const allFormEls = formContainerEl.querySelectorAll("form");
+        for (const formEl of allFormEls) {
+            this.unregisterForm(formEl);
+        }
     }
 
     registerForm(formEl) {

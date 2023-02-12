@@ -9,13 +9,15 @@
     border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
 }
 ::slotted(form:first-child) {
-    border-radius: var(--form-border-radius, 0.25em) var(--form-border-radius, 0.25em) 0px 0px;
+    border-top-left-radius: var(--form-border-radius, 0.25em);
+    border-top-right-radius: var(--form-border-radius, 0.25em);
 }
 ::slotted(form:nth-child(n + 1)) {
     margin-top: calc(-1 * var(--form-border-width, 2px));
 }
 ::slotted(form:last-child) {
-    border-radius: 0px 0px var(--form-border-radius, 0.25em) var(--form-border-radius, 0.25em);
+    border-bottom-left-radius: var(--form-border-radius, 0.25em);
+    border-bottom-right-radius: var(--form-border-radius, 0.25em);
 }
 ::slotted(form.form-header) {
     position: sticky;

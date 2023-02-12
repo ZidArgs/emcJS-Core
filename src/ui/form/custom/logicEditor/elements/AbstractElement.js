@@ -21,6 +21,7 @@ const TPL = new Template(`
             border-style: solid;
             color: var(--logic-color-text, black);
             border-color: var(--logic-color-border, black);
+            font-size: 1rem;
             -webkit-user-select: none;
             user-select: none;
             word-break: break-word;

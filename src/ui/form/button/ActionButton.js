@@ -24,7 +24,7 @@ export default class ActionButton extends CustomFormElementDelegating {
         /* --- */
         this.#buttonEl = this.shadowRoot.getElementById("button");
         this.#buttonEl.addEventListener("click", (event) => {
-            const customAction = CustomActionRegistry.get(this.action);
+            const customAction = CustomActionRegistry.current.get(this.action);
             if (customAction != null) {
                 customAction(this);
             }

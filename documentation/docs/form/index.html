@@ -55,15 +55,15 @@
             "ColorInput"    : "color"
             "PasswordInput" : "password"
             "HotkeyInput"   : "hotkey"
-            "SearchSelect"  : "choice"
             "TextInput"     : new
+            "LogicInput"    : new
+            "SearchSelect"  : "choice"
             "SimpleSelect"  : new
             todo            : "list"
 
             MISSING
             "KeyValueList"
             "CharInput"
-            "LogicInput"
             "FileInput"
 
         */
@@ -89,40 +89,46 @@
             FileLoader.json("./form/form-config/input/SwitchInput.json")
         ]);
 
-        const formContainerEl = document.getElementById("form-container");
+        const pageEl = document.getElementById("page");
 
         const formContext = new FormContext(defaultValues);
 
-        { /* add buttons in seperate form */
-            const formEl = FormBuilder.build(buttonConfig, null, {
-                data: {
+        const config = [];
+
+        /* add buttons in seperate form */
+        config.push({
+            params: {
+                values: {
                     test: "foobar"
                 },
-                allowsInvalid: true
+                allowsInvalid: true,
+                type: "header",
+                contentMask: "8px"
+            },
+            elements: buttonConfig
+        });
+
+        for (const elements of formConfig) {
+            config.push({
+                params: {
+                    allowsInvalid: true
+                },
+                elements
             });
-            formEl.classList.add("form-header");
-            formContainerEl.append(formEl);
-            formContext.registerForm(formEl);
         }
 
-        for (const config of formConfig) {
-            const formEl = FormBuilder.build(config, null, {
-                allowsInvalid: true
-            });
-            formContainerEl.append(formEl);
-            formContext.registerForm(formEl);
-        }
-
-        { /* add seperate submit */
-            const formEl = FormBuilder.build(null, null, {
+        /* add seperate submit */
+        config.push({
+            params: {
                 submitButton: true,
                 resetButton: true,
-                allowsInvalid: true
-            });
-            formEl.classList.add("form-footer");
-            formContainerEl.append(formEl);
-            formContext.registerForm(formEl);
-        }
+                allowsInvalid: true,
+                type: "footer",
+                contentMask: "8px"
+            }
+        });
+
+        pageEl.append(FormBuilder.build(config));
 
         console.group("init context");
         console.log("loaded data", defaultValues);
@@ -139,11 +145,11 @@
             console.groupEnd(`submit (${valid})`);
         });
 
-        CustomActionRegistry.set("soup", () => {
+        CustomActionRegistry.current.set("soup", () => {
             alert("only soup");
         });
 
-        CustomActionRegistry.set("cheese", () => {
+        CustomActionRegistry.current.set("cheese", () => {
             alert("more cheese");
             formContext.loadData({
                 "search-select.required": "foobar",
@@ -164,8 +170,7 @@
 </head>
 
 <body style="display: flex; flex-direction: column;">
-    <emc-page style="padding: 8px;">
-        <emc-form-container id="form-container" style="--content-mask: 8px;"></emc-form-container>
+    <emc-page id="page" style="padding: 8px;">
     </emc-page>
 </body>
 

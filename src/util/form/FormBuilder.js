@@ -11,15 +11,41 @@ import "../../ui/form/button/LinkButton.js";
 
 class FormBuilder {
 
-    build(formConfig, defaultValues, opts) {
-        if (formConfig != null && !(typeof formConfig === "object")) {
-            throw new TypeError("first parameter must be an object or an array or null");
+    build(config) {
+        if (config != null && !(typeof config === "object")) {
+            throw new TypeError("config must be an object or an array or null");
+        }
+
+        const {
+            forms,
+            values: defaultValues
+        } = config;
+
+        const formContainerEl = document.createElement("emc-form-container");
+
+        if (forms != null) {
+            if (Array.isArray(forms)) {
+                for (const {elements, params, values} of forms) {
+                    formContainerEl.append(this.buildForm(elements, {...values, ...defaultValues}, params));
+                }
+            } else {
+                const {elements, params, values} = forms;
+                formContainerEl.append(this.buildForm(elements, {...values, ...defaultValues}, params));
+            }
+        }
+
+        return formContainerEl;
+    }
+
+    buildForm(elements, defaultValues, params) {
+        if (elements != null && !(typeof elements === "object")) {
+            throw new TypeError("elements must be an object or an array or null");
         }
         if (defaultValues != null && !(typeof defaultValues === "object") || Array.isArray(defaultValues)) {
-            throw new TypeError("second parameter must be an object or null");
+            throw new TypeError("values must be an object or null");
         }
-        if (opts != null && !(typeof opts === "object") || Array.isArray(opts)) {
-            throw new TypeError("third parameter must be an object or null");
+        if (params != null && !(typeof params === "object") || Array.isArray(params)) {
+            throw new TypeError("params must be an object or null");
         }
 
         const formEl = document.createElement("form");
@@ -28,15 +54,32 @@ class FormBuilder {
             allowsInvalid = false,
             submitButton,
             resetButton,
+            type,
+            contentMask,
+            values = {},
             data = {}
-        } = opts ?? {};
+        } = params ?? {};
 
         if (allowsInvalid) {
             formEl.setAttribute("novalidate", "");
         }
 
+        if (type === "header") {
+            formEl.classList.add("form-header");
+        } else if (type === "footer") {
+            formEl.classList.add("form-footer");
+        }
+
+        if (typeof contentMask === "string") {
+            formEl.style.setProperty("--content-mask", contentMask);
+        }
+
         for (const key in data) {
-            const value = data[key];
+            formEl.dataset[key] = data[key];
+        }
+
+        for (const key in values) {
+            const value = values[key];
             const hiddenEl = document.createElement("input");
             hiddenEl.setAttribute("type", "hidden");
             hiddenEl.setAttribute("name", key);
@@ -48,13 +91,13 @@ class FormBuilder {
             formEl.append(hiddenEl);
         }
 
-        if (formConfig != null) {
-            if (Array.isArray(formConfig)) {
-                for (const option of formConfig) {
+        if (elements != null) {
+            if (Array.isArray(elements)) {
+                for (const option of elements) {
                     formEl.append(this.#createOption(option, defaultValues ?? {}));
                 }
             } else {
-                formEl.append(this.#createOption(formConfig, defaultValues ?? {}));
+                formEl.append(this.#createOption(elements, defaultValues ?? {}));
             }
         }
 
@@ -89,37 +132,40 @@ class FormBuilder {
     }
 
     #createOption(option = {}, defaultValues = {}) {
-        const {type, id, visible, enabled, ...params} = option;
+        const {type, id, visible, enabled, data, ...params} = option;
         switch (type) {
             case "SubmitButton": {
-                return this.#createSubmitButton(id, visible, enabled, params);
+                return this.#createSubmitButton(id, visible, enabled, params, data);
             }
             case "ResetButton": {
-                return this.#createResetButton(id, visible, enabled, params);
+                return this.#createResetButton(id, visible, enabled, params, data);
             }
             case "ActionButton": {
-                return this.#createActionButton(id, visible, enabled, params);
+                return this.#createActionButton(id, visible, enabled, params, data);
             }
             case "LinkButton": {
-                return this.#createLinkButton(id, visible, enabled, params);
+                return this.#createLinkButton(id, visible, enabled, params, data);
             }
             case "Fieldset": {
-                return this.#createFieldset(id, visible, enabled, params, defaultValues);
+                return this.#createFieldset(id, visible, enabled, params, data, defaultValues);
             }
             case "ButtonRow": {
-                return this.#createButtonRow(id, visible, enabled, params);
+                return this.#createButtonRow(id, visible, enabled, params, data);
             }
             default: {
-                return this.#createField(type, id, visible, enabled, params, defaultValues);
+                return this.#createField(type, id, visible, enabled, params, data, defaultValues);
             }
         }
     }
 
-    #createField(type, id, visible, enabled, config = {}, defaultValues = {}) {
+    #createField(type, id, visible, enabled, config = {}, data = {}, defaultValues = {}) {
         const {value, ...params} = config;
         const el = FormElementRegistry.create(type, params);
         if (id != null) {
             el.id = id;
+        }
+        for (const key in data) {
+            el.dataset[key] = data[key];
         }
         if (visible != null) {
             el.setAttribute("visible", JSON.stringify(visible));
@@ -146,11 +192,14 @@ class FormBuilder {
         return el;
     }
 
-    #createSubmitButton(id, visible, enabled, params = {}) {
+    #createSubmitButton(id, visible, enabled, params = {}, data = {}) {
         const el = document.createElement("emc-button-submit");
         if (id != null) {
             el.id = id;
         }
+        for (const key in data) {
+            el.dataset[key] = data[key];
+        }
         if (visible != null) {
             el.setAttribute("visible", JSON.stringify(visible));
         }
@@ -172,11 +221,14 @@ class FormBuilder {
         return el;
     }
 
-    #createResetButton(id, visible, enabled, params = {}) {
+    #createResetButton(id, visible, enabled, params = {}, data = {}) {
         const el = document.createElement("emc-button-reset");
         if (id != null) {
             el.id = id;
         }
+        for (const key in data) {
+            el.dataset[key] = data[key];
+        }
         if (visible != null) {
             el.setAttribute("visible", JSON.stringify(visible));
         }
@@ -198,10 +250,13 @@ class FormBuilder {
         return el;
     }
 
-    #createActionButton(id, visible, enabled, params = {}) {
+    #createActionButton(id, visible, enabled, params = {}, data = {}) {
         const el = document.createElement("emc-button-action");
         if (id != null) {
             el.id = id;
+        }
+        for (const key in data) {
+            el.dataset[key] = data[key];
         }
         if (visible != null) {
             el.setAttribute("visible", JSON.stringify(visible));
@@ -230,10 +285,13 @@ class FormBuilder {
         return el;
     }
 
-    #createLinkButton(id, visible, enabled, params = {}) {
+    #createLinkButton(id, visible, enabled, params = {}, data = {}) {
         const el = document.createElement("emc-button-link");
         if (id != null) {
             el.id = id;
+        }
+        for (const key in data) {
+            el.dataset[key] = data[key];
         }
         if (visible != null) {
             el.setAttribute("visible", JSON.stringify(visible));
@@ -262,10 +320,13 @@ class FormBuilder {
         return el;
     }
 
-    #createFieldset(id, visible, enabled, params = {}, defaultValues = {}) {
+    #createFieldset(id, visible, enabled, params = {}, data = {}, defaultValues = {}) {
         const el = document.createElement("emc-form-fieldset");
         if (id != null) {
             el.id = id;
+        }
+        for (const key in data) {
+            el.dataset[key] = data[key];
         }
         if (visible != null) {
             el.setAttribute("visible", JSON.stringify(visible));
@@ -288,10 +349,13 @@ class FormBuilder {
         return el;
     }
 
-    #createButtonRow(id, visible, enabled, params = {}) {
+    #createButtonRow(id, visible, enabled, params = {}, data = {}) {
         const el = document.createElement("emc-form-buttonrow");
         if (id != null) {
             el.id = id;
+        }
+        for (const key in data) {
+            el.dataset[key] = data[key];
         }
         if (visible != null) {
             el.setAttribute("visible", JSON.stringify(visible));
