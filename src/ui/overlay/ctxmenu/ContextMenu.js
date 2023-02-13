@@ -1,6 +1,9 @@
 import {
     debounce
 } from "../../../util/Debouncer.js";
+import {
+    deepClone
+} from "../../../util/helper/DeepClone.js";
 import CustomElement from "../../element/CustomElement.js";
 import CtxMenuLayer from "./CtxMenuLayer.js";
 import "./ContextMenuItem.js";
@@ -33,6 +36,8 @@ export default class ContextMenu extends CustomElement {
     #top = 0;
 
     #left = 0;
+
+    #props;
 
     #items = [];
 
@@ -123,13 +128,15 @@ export default class ContextMenu extends CustomElement {
         this.setAttribute("active", val);
     }
 
-    show(posX, posY) {
+    show(posX, posY, props) {
+        this.#calculatePostition(posX, posY);
+        this.#props = deepClone(props);
+        /* --- */
         if (!this.active) {
             this.active = true;
+            this.dispatchEvent(new Event("show"));
         }
         /* --- */
-        this.#calculatePostition(posX, posY);
-
         setTimeout(() => {
             this.initFocus();
         }, 0);
@@ -163,6 +170,7 @@ export default class ContextMenu extends CustomElement {
     close() {
         if (this.active) {
             this.active = false;
+            this.dispatchEvent(new Event("close"));
         }
         /* --- */
         const menuEl = this.shadowRoot.getElementById("menu");
@@ -245,7 +253,7 @@ export default class ContextMenu extends CustomElement {
         if (this.active) {
             const posY = this.#top;
             const posX = this.#left;
-            this.show(posX, posY);
+            this.show(posX, posY, this.#props);
         }
     });
 
@@ -341,6 +349,7 @@ export default class ContextMenu extends CustomElement {
         const ev = new Event(name);
         ev.left = this.left;
         ev.top = this.top;
+        ev.props = deepClone(this.#props);
         this.dispatchEvent(ev);
     }
 

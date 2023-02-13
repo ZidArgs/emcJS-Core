@@ -1,6 +1,6 @@
-.tree {
-    padding-inline-start: 0.4em;
-    margin-inline-start: 0.6em;
+#tree {
+    padding-inline-start: 0px;
+    margin-inline-start: 0px;
     margin-block-start: 0px;
     margin-block-end: 0px;
 }

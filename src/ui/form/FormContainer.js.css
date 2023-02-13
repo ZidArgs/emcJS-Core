@@ -20,19 +20,15 @@
     border-bottom-left-radius: var(--form-border-radius, 0.25em);
     border-bottom-right-radius: var(--form-border-radius, 0.25em);
 }
-::slotted(form.form-header) {
+:host(.has-header) ::slotted(form:first-child) {
     position: sticky;
     top: 0px;
-    margin-bottom: calc(-1 * var(--form-border-width, 2px));
-    border-radius: var(--form-border-radius, 0.25em) var(--form-border-radius, 0.25em) 0px 0px;
-    box-shadow: var(--page-back-color, #ffffff) 0px calc(-1 * var(--content-mask, 0px)) 0px var(--content-mask, 0px);
+    box-shadow: var(--page-back-color, #ffffff) 0px calc(-1 * (var(--content-mask, 0px) + var(--form-border-radius, 0.25em))) 0px 0px;
     z-index: 100;
 }
-::slotted(form.form-footer) {
+:host(.has-footer) ::slotted(form:last-child) {
     position: sticky;
     bottom: 0px;
-    margin-top: calc(-1 * var(--form-border-width, 2px));
-    border-radius: 0px 0px var(--form-border-radius, 0.25em) var(--form-border-radius, 0.25em);
-    box-shadow: var(--page-back-color, #ffffff) 0px var(--content-mask, 0px) 0px var(--content-mask, 0px);
+    box-shadow: var(--page-back-color, #ffffff) 0px calc(var(--content-mask, 0px) + var(--form-border-radius, 0.25em)) 0px 0px;
     z-index: 100;
 }

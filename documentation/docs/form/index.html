@@ -93,23 +93,26 @@
 
         const formContext = new FormContext(defaultValues);
 
-        const config = [];
+        const config = {
+            contentMask: "8px",
+            hasHeader: true,
+            hasFooter: true,
+            forms: []
+        };
 
         /* add buttons in seperate form */
-        config.push({
+        config.forms.push({
             params: {
                 values: {
                     test: "foobar"
                 },
-                allowsInvalid: true,
-                type: "header",
-                contentMask: "8px"
+                allowsInvalid: true
             },
             elements: buttonConfig
         });
 
         for (const elements of formConfig) {
-            config.push({
+            config.forms.push({
                 params: {
                     allowsInvalid: true
                 },
@@ -118,13 +121,11 @@
         }
 
         /* add seperate submit */
-        config.push({
+        config.forms.push({
             params: {
                 submitButton: true,
                 resetButton: true,
-                allowsInvalid: true,
-                type: "footer",
-                contentMask: "8px"
+                allowsInvalid: true
             }
         });
 

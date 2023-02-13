@@ -22,8 +22,8 @@
     position: relative;
     display: block;
     border: solid 0.25em transparent;
-    border-bottom-color: var(--input-text-color, #000000);
-    border-right-color: var(--input-text-color, #000000);
+    border-bottom-color: var(--tree-text-color, #000000);
+    border-right-color: var(--tree-text-color, #000000);
     transform: translate(0em, -0.125em) rotate(45deg);
     content: " ";
 }
@@ -39,4 +39,26 @@
 }
 .collapsed #tree {
     display: none;
+}
+#content {
+    color: var(--tree-text-color, #000000);
+    background-color: var(--tree-back-color, #ffffff);
+}
+#content:hover,
+:host(.ctx-marked) #content {
+    color: var(--tree-hover-text-color, #000000);
+    background-color: var(--tree-hover-back-color, #cccccc);
+}
+#content:hover #collapse:after,
+:host(.ctx-marked) #collapse:after {
+    border-bottom-color: var(--tree-hover-text-color, #000000);
+    border-right-color: var(--tree-hover-text-color, #000000);
+}
+:host(.marked) #content {
+    color: var(--tree-marked-text-color, #ffffff);
+    background-color: var(--tree-marked-back-color, #000000);
+}
+:host(.marked) #content #collapse:after {
+    border-bottom-color: var(--tree-marked-text-color, #ffffff);
+    border-right-color: var(--tree-marked-text-color, #ffffff);
 }

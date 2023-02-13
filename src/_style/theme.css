@@ -77,6 +77,14 @@
     --button-hover-text-color: #ffffff;
     --button-hover-back-color: #000000;
 
+    /* === tree === */
+    --tree-text-color: #000000;
+    --tree-back-color: #ffffff;
+    --tree-hover-text-color: #000000;
+    --tree-hover-back-color: #cccccc;
+    --tree-marked-text-color: #ffffff;
+    --tree-marked-back-color: #000000;
+
 }
 
 form {

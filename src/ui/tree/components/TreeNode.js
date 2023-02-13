@@ -42,6 +42,8 @@ export default class TreeNode extends CustomElement {
             ev.element = this;
             ev.path = [targetIndex];
             ev.refPath = [this.ref];
+            ev.left = event.clientX;
+            ev.top = event.clientY;
             this.dispatchEvent(ev);
         });
         this.addEventListener("contextmenu", (event) => {
@@ -52,6 +54,8 @@ export default class TreeNode extends CustomElement {
             ev.element = this;
             ev.path = [targetIndex];
             ev.refPath = [this.ref];
+            ev.left = event.clientX;
+            ev.top = event.clientY;
             this.dispatchEvent(ev);
         });
         /* --- */
@@ -63,6 +67,8 @@ export default class TreeNode extends CustomElement {
             ev.element = event.element;
             ev.path = [targetIndex, ...event.path ?? []];
             ev.refPath = [this.ref, ...event.refPath ?? []];
+            ev.left = event.left;
+            ev.top = event.top;
             this.dispatchEvent(ev);
         });
         subTreeEl.addEventListener("menu", (event) => {
@@ -72,6 +78,8 @@ export default class TreeNode extends CustomElement {
             ev.element = event.element;
             ev.path = [targetIndex, ...event.path ?? []];
             ev.refPath = [this.ref, ...event.refPath ?? []];
+            ev.left = event.left;
+            ev.top = event.top;
             this.dispatchEvent(ev);
         });
         /* --- */

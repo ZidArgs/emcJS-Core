@@ -16,21 +16,39 @@ class FormBuilder {
             throw new TypeError("config must be an object or an array or null");
         }
 
-        const {
-            forms,
-            values: defaultValues
-        } = config;
-
         const formContainerEl = document.createElement("emc-form-container");
 
-        if (forms != null) {
-            if (Array.isArray(forms)) {
-                for (const {elements, params, values} of forms) {
+        if (config != null) {
+            const {
+                forms,
+                contentMask,
+                hasHeader = false,
+                hasFooter = false,
+                defaultValues = {}
+            } = config;
+
+            if (hasHeader) {
+                formContainerEl.classList.add("has-header");
+            }
+            if (hasFooter) {
+                formContainerEl.classList.add("has-footer");
+            }
+            if (typeof contentMask === "string") {
+                formContainerEl.style.setProperty("--content-mask", contentMask);
+            }
+
+            if (forms != null) {
+                if (Array.isArray(forms)) {
+                    for (const {elements, params, values} of forms) {
+                        formContainerEl.append(this.buildForm(elements, {...values, ...defaultValues}, params));
+                    }
+                } else {
+                    const {elements, params, values} = forms;
                     formContainerEl.append(this.buildForm(elements, {...values, ...defaultValues}, params));
                 }
             } else {
-                const {elements, params, values} = forms;
-                formContainerEl.append(this.buildForm(elements, {...values, ...defaultValues}, params));
+                const {elements, params, values} = config;
+                formContainerEl.append(this.buildForm(elements, values, params));
             }
         }
 
@@ -54,24 +72,12 @@ class FormBuilder {
             allowsInvalid = false,
             submitButton,
             resetButton,
-            type,
-            contentMask,
             values = {},
             data = {}
         } = params ?? {};
 
         if (allowsInvalid) {
             formEl.setAttribute("novalidate", "");
-        }
-
-        if (type === "header") {
-            formEl.classList.add("form-header");
-        } else if (type === "footer") {
-            formEl.classList.add("form-footer");
-        }
-
-        if (typeof contentMask === "string") {
-            formEl.style.setProperty("--content-mask", contentMask);
         }
 
         for (const key in data) {

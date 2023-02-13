@@ -33,6 +33,7 @@ export default createMixin((superclass) => class ContextMenuManagerMixin extends
     #closeCtxMenu() {
         if (this.#counter.remove() <= 0) {
             this.classList.remove("ctx-marked");
+            this.dispatchEvent(new Event("contextmenusclosed", {bubbles: true, cancelable: true}));
         }
     }
 
@@ -102,8 +103,8 @@ export default createMixin((superclass) => class ContextMenuManagerMixin extends
         return this.getContextMenu(DEFAULT_MENU_ID);
     }
 
-    showDefaultContextMenu(event, ...props) {
-        this.showContextMenu(DEFAULT_MENU_ID, event, ...props);
+    showDefaultContextMenu(event, props) {
+        this.showContextMenu(DEFAULT_MENU_ID, event, props);
     }
 
     addDefaultContextMenuHandler(event, handler) {
@@ -134,13 +135,13 @@ export default createMixin((superclass) => class ContextMenuManagerMixin extends
         return this.#menus.get(name) ?? this.#createMenu(name);
     }
 
-    showContextMenu(name, event, ...props) {
+    showContextMenu(name, event, props) {
         const mnu_ctx = this.getContextMenu(name);
         if (mnu_ctx != null) {
             if (event instanceof MouseEvent) {
-                mnu_ctx.show(event.clientX, event.clientY, ...props);
+                mnu_ctx.show(event.clientX, event.clientY, props);
             } else {
-                mnu_ctx.show(event?.left ?? 0, event?.top ?? 0, ...props);
+                mnu_ctx.show(event?.left ?? 0, event?.top ?? 0, props);
             }
         }
     }
