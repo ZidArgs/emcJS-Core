@@ -65,6 +65,18 @@ export default class Tree extends CustomElement {
         const element = this.#getElementByPath(path);
         if (element != null) {
             element.click();
+        } else {
+            const oldMarked = this.querySelector(".marked");
+            if (oldMarked != null) {
+                oldMarked.classList.remove("marked");
+            }
+            const ev = new Event("select", {bubbles: true, cancelable: true});
+            ev.element = null;
+            ev.path = [];
+            ev.refPath = [];
+            ev.left = 0;
+            ev.top = 0;
+            this.dispatchEvent(ev);
         }
     }
 
