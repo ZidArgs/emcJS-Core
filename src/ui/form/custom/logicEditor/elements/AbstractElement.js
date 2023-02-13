@@ -112,7 +112,7 @@ export default class AbstractElement extends CustomElement {
     }
 
     connectedCallback() {
-        if ((this.readonly === null || this.readonly == "false") && this.template != "clicked") {
+        if (!this.readonly && (!this.template || this.template !== "clicked")) {
             this.setAttribute("draggable", "true");
         }
         this.id = ID.get(this);

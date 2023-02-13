@@ -129,7 +129,9 @@
             }
         });
 
-        pageEl.append(FormBuilder.build(config));
+        const formContainerEl = FormBuilder.build(config);
+        formContext.registerFormContainer(formContainerEl);
+        pageEl.append(formContainerEl);
 
         console.group("init context");
         console.log("loaded data", defaultValues);

@@ -5,24 +5,34 @@ import TPL from "./TreeNode.js.html" assert {type: "html"};
 import STYLE from "./TreeNode.js.css" assert {type: "css"};
 
 function treeComposer(key, params) {
-    const {label = key, data = {}, children = {}} = params;
+    const {label = key, data = {}, children} = params;
     const el = document.createElement("emc-tree-node");
     el.ref = key;
     el.label = label;
     for (const key in data) {
         el.dataset[key] = data[key];
     }
-    el.loadConfig(children);
+    if (children != null) {
+        el.loadConfig(children);
+        el.forceCollapsible = true;
+    } else {
+        el.forceCollapsible = false;
+    }
     return el;
 }
 
 function treeMutator(el, key, params) {
-    const {label = key, data = {}, children = {}} = params;
+    const {label = key, data = {}, children} = params;
     el.label = label;
     for (const key in data) {
         el.dataset[key] = data[key];
     }
-    el.loadConfig(children);
+    if (children != null) {
+        el.loadConfig(children);
+        el.forceCollapsible = true;
+    } else {
+        el.forceCollapsible = false;
+    }
 }
 
 export default class TreeNode extends CustomElement {
@@ -111,6 +121,14 @@ export default class TreeNode extends CustomElement {
 
     get label() {
         return this.getAttribute("label");
+    }
+
+    set forceCollapsible(val) {
+        this.setBooleanAttribute("forcecollapsible", val);
+    }
+
+    get forceCollapsible() {
+        return this.getBooleanAttribute("forcecollapsible");
     }
 
     static get observedAttributes() {

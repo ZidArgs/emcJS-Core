@@ -5,7 +5,8 @@
     display: flex;
     height: 2em;
 }
-:host(:empty) #content {
+:host(:empty:not([forcecollapsible])) #content,
+:host(:empty[forcecollapsible="false"]) #content {
     padding-left: 1.5em;
 }
 #collapse {
@@ -15,7 +16,8 @@
     width: 1.5em;
     height: 2em;
 }
-:host(:empty) #collapse {
+:host(:empty:not([forcecollapsible])) #collapse,
+:host(:empty[forcecollapsible="false"]) #collapse {
     display: none;
 }
 #collapse:after {

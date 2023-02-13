@@ -27,6 +27,12 @@ class FormElementRegistry {
                 if (value != null) {
                     if (typeof value === "object") {
                         el.setAttribute(name, JSON.stringify(value));
+                    } else if (typeof value === "boolean") {
+                        if (value) {
+                            el.setAttribute(name, "");
+                        } else {
+                            el.removeAttribute(name);
+                        }
                     } else {
                         el.setAttribute(name, value);
                     }

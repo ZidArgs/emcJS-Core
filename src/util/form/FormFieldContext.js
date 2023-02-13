@@ -222,7 +222,7 @@ export default class FormFieldContext {
                 if (value) {
                     this.#element.removeAttribute("disabled");
                 } else {
-                    this.#element.setAttribute("disabled");
+                    this.#element.setAttribute("disabled", "");
                 }
             }
         }
@@ -242,7 +242,7 @@ export default class FormFieldContext {
                 if (value) {
                     this.#element.removeAttribute("disabled");
                 } else {
-                    this.#element.setAttribute("disabled");
+                    this.#element.setAttribute("disabled", "");
                 }
             }
         }
