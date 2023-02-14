@@ -1,0 +1,7 @@
+#ref,
+#input {
+    margin: 5px;
+}
+#input[disabled]:not([disabled="false"]) {
+    pointer-events: none;
+}

@@ -1,131 +1,34 @@
-import Template from "/emcJS/util/html/Template.js";
-import AbstractElement from "./AbstractElement.js";
+import AbstractElement from "./abstract/AbstractElement.js";
+import AbstractRestrictorElement from "./abstract/AbstractRestrictorElement.js";
+import STYLE from "./styles/Restrictor.css" assert {type: "css"};
 
 const TPL_CAPTION = "MAX";
-const TPL_BACKGROUND = "#9affec";
-const TPL_BORDER = "#51978a";
 const REFERENCE = "max";
 
-const TPL = new Template(`
-    <style>
-        :host {
-            --logic-color-back: ${TPL_BACKGROUND};
-            --logic-color-border: ${TPL_BORDER};
-        }
-    </style>
-    <div id="header" class="header">${TPL_CAPTION}</div>
-    <div class="body">
-        <input id="input" type="number" value="0" />
-    </div>
-    <div class="body">
-        <slot id="children">
-            <span id="droptarget" class="placeholder">...</span>
-        </slot>
-    </div>
-`);
-
-export default class LogicElement extends AbstractElement {
+export default class RestrictorMax extends AbstractRestrictorElement {
 
     constructor() {
-        super();
-        this.shadowRoot.append(TPL.generate());
-        const target = this.shadowRoot.getElementById("droptarget");
-        target.ondragover = AbstractElement.allowDrop;
-        target.ondrop = AbstractElement.dropOnPlaceholder;
-        target.onclick = (event) => {
-            const e = new Event("placeholderclicked", {bubbles: true, cancelable: true});
-            e.name = event.target.parentElement.name;
-            this.dispatchEvent(e);
-            event.stopPropagation();
-        };
-        const input = this.shadowRoot.getElementById("input");
-        input.onchange = () => {
-            this.value = parseInt(input.value) || 0;
-            this.dispatchEvent(new Event("valuechange", {bubbles: true, cancelable: true}));
-        };
-    }
-
-    get value() {
-        return this.getAttribute("value");
-    }
-
-    set value(val) {
-        this.setAttribute("value", val);
-    }
-
-    getElement(forceCopy = false) {
-        const el = super.getElement(forceCopy);
-        el.value = this.value;
-        return el;
+        super(REFERENCE, TPL_CAPTION);
+        STYLE.apply(this.shadowRoot);
     }
 
     calculate(state = {}) {
         let value;
-        const ch = this.children;
+        const ch = this.childList;
         if (ch[0]) {
             const val = ch[0].calculate(state);
-            if (typeof val != "undefined") {
-                value = +(val <= this.shadowRoot.getElementById("input").value);
+            const v = parseFloat(val);
+            if (isNaN(v)) {
+                this.shadowRoot.getElementById("header").setAttribute("value", "NaN");
+                return 0;
             }
+            value = +(v <= this.shadowRoot.getElementById("input").value);
         }
         this.shadowRoot.getElementById("header").setAttribute("value", value);
         return value;
     }
 
-    loadLogic(logic) {
-        if (!!logic && !!logic.el) {
-            this.value = parseInt(logic.value) || 0;
-            let cl;
-            if (logic.el.category) {
-                cl = AbstractElement.getReference(logic.el.category, logic.el.type);
-            } else {
-                cl = AbstractElement.getReference(logic.el.type);
-            }
-            const el = new cl;
-            el.loadLogic(logic.el);
-            this.append(el);
-        }
-    }
-
-    toJSON() {
-        return {
-            type: REFERENCE,
-            el: Array.from(this.children).slice(0, 1).map((e) => e.toJSON())[0],
-            value: parseInt(this.value) || 0
-        };
-    }
-
-    static get observedAttributes() {
-        const attr = AbstractElement.observedAttributes;
-        attr.push("value");
-        return attr;
-    }
-
-    attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
-        switch (name) {
-            case "template":
-            case "readonly": {
-                if (oldValue != newValue) {
-                    const template = this.template;
-                    const readonly = this.readonly;
-                    const input = this.shadowRoot.getElementById("input");
-                    if (template || readonly) {
-                        input.setAttribute("disabled", "true");
-                    } else {
-                        input.removeAttribute("disabled");
-                    }
-                }
-            } break;
-            case "value": {
-                if (oldValue != newValue) {
-                    this.shadowRoot.getElementById("input").value = parseInt(newValue) || 0;
-                }
-            } break;
-        }
-    }
-
 }
 
-AbstractElement.registerReference(REFERENCE, LogicElement);
-customElements.define(`jse-logic-${REFERENCE}`, LogicElement);
+AbstractElement.registerReference(REFERENCE, RestrictorMax);
+customElements.define(`jse-logic-${REFERENCE}`, RestrictorMax);

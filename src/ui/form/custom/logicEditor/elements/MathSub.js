@@ -1,82 +1,33 @@
-import Template from "/emcJS/util/html/Template.js";
-import AbstractElement from "./AbstractElement.js";
+import AbstractElement from "./abstract/AbstractElement.js";
+import AbstractInfChildrenElement from "./abstract/AbstractInfChildrenElement.js";
+import STYLE from "./styles/Math.css" assert {type: "css"};
 
 const TPL_CAPTION = "SUBSTRACT";
-const TPL_BACKGROUND = "#f6daf6";
-const TPL_BORDER = "#a669a6";
 const REFERENCE = "sub";
 
-const TPL = new Template(`
-    <style>
-        :host {
-            --logic-color-back: ${TPL_BACKGROUND};
-            --logic-color-border: ${TPL_BORDER};
-        }
-    </style>
-    <div id="header" class="header">${TPL_CAPTION}</div>
-    <div class="body">
-        <slot id="children"></slot>
-        <span id="droptarget" class="placeholder">...</span>
-    </div>
-`);
-
-export default class LogicElement extends AbstractElement {
+export default class MathSub extends AbstractInfChildrenElement {
 
     constructor() {
-        super();
-        this.shadowRoot.append(TPL.generate());
-        const target = this.shadowRoot.getElementById("droptarget");
-        target.ondragover = AbstractElement.allowDrop;
-        target.ondrop = AbstractElement.dropOnPlaceholder;
-        target.onclick = (event) => {
-            const e = new Event("placeholderclicked", {bubbles: true, cancelable: true});
-            e.name = event.target.parentElement.name;
-            this.dispatchEvent(e);
-            event.stopPropagation();
-        };
+        super(REFERENCE, TPL_CAPTION);
+        STYLE.apply(this.shadowRoot);
     }
 
     calculate(state = {}) {
-        let value;
-        const ch = Array.from(this.children).map((el) => el.calculate(state));
+        const ch = this.childList.map((el) => el.calculate(state));
+        let value = ch.shift() ?? 0;
         for (const val of ch) {
-            if (typeof val != "undefined") {
-                value = +!!val;
-                if (!value) {
-                    break;
-                }
+            const v = parseFloat(val);
+            if (isNaN(v)) {
+                this.shadowRoot.getElementById("header").setAttribute("value", "NaN");
+                return 0;
             }
+            value -= v;
         }
         this.shadowRoot.getElementById("header").setAttribute("value", value);
         return value;
     }
 
-    toJSON() {
-        return {
-            type: REFERENCE,
-            el: Array.from(this.children).map((e) => e.toJSON())
-        };
-    }
-
-    loadLogic(logic) {
-        if (!!logic && Array.isArray(logic.el)) {
-            logic.el.forEach((ch) => {
-                if (ch) {
-                    let cl;
-                    if (ch.category) {
-                        cl = AbstractElement.getReference(ch.category, ch.type);
-                    } else {
-                        cl = AbstractElement.getReference(ch.type);
-                    }
-                    const el = new cl;
-                    el.loadLogic(ch);
-                    this.append(el);
-                }
-            });
-        }
-    }
-
 }
 
-AbstractElement.registerReference(REFERENCE, LogicElement);
-customElements.define(`jse-logic-${REFERENCE}`, LogicElement);
+AbstractElement.registerReference(REFERENCE, MathSub);
+customElements.define(`jse-logic-${REFERENCE}`, MathSub);

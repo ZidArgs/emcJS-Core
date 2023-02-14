@@ -1,26 +1,14 @@
-import Template from "/emcJS/util/html/Template.js";
-import AbstractElement from "./AbstractElement.js";
+import AbstractElement from "./abstract/AbstractElement.js";
+import STYLE from "./styles/LiteralFalse.css" assert {type: "css"};
 
 const TPL_CAPTION = "FALSE";
-const TPL_BACKGROUND = "#fb7c7c";
-const TPL_BORDER = "#650000";
 const REFERENCE = "false";
 
-const TPL = new Template(`
-    <style>
-        :host {
-            --logic-color-back: ${TPL_BACKGROUND};
-            --logic-color-border: ${TPL_BORDER};
-        }
-    </style>
-    <div id="header" class="header">${TPL_CAPTION}</div>
-`);
-
-export default class LogicElement extends AbstractElement {
+export default class LiteralFalse extends AbstractElement {
 
     constructor() {
-        super();
-        this.shadowRoot.append(TPL.generate());
+        super(TPL_CAPTION);
+        STYLE.apply(this.shadowRoot);
     }
 
     calculate(/* state = {} */) {
@@ -28,13 +16,13 @@ export default class LogicElement extends AbstractElement {
         return 0;
     }
 
-    loadLogic(/* logic */) {}
-
     toJSON() {
         return {type: REFERENCE};
     }
 
+    loadLogic(/* logic */) {}
+
 }
 
-AbstractElement.registerReference(REFERENCE, LogicElement);
-customElements.define(`jse-logic-${REFERENCE}`, LogicElement);
+AbstractElement.registerReference(REFERENCE, LiteralFalse);
+customElements.define(`jse-logic-${REFERENCE}`, LiteralFalse);

@@ -5,7 +5,8 @@
         {
             "type": "LogicInput",
             "label": "logic default",
-            "name": "logic.default"
+            "name": "logic.default",
+            "id": "logicTest"
         },
         {
             "type": "LogicInput",

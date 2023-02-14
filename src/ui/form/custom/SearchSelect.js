@@ -93,15 +93,19 @@ export default class SearchSelect extends CustomFormElementDelegating {
             this.#applyValue(this.value);
         });
         /* --- */
-        this.#buttonEl.addEventListener("click", () => {
+        this.#buttonEl.addEventListener("click", (event) => {
             if (!this.#isEditMode) {
                 this.#startEditMode();
             }
+            event.stopPropagation();
+            event.preventDefault();
         });
-        this.#viewEl.addEventListener("click", () => {
+        this.#viewEl.addEventListener("click", (event) => {
             if (!this.#isEditMode) {
                 this.#startEditMode();
             }
+            event.stopPropagation();
+            event.preventDefault();
         });
         this.#inputEl.addEventListener("keydown", (event) => {
             if (!this.getBooleanAttribute("readonly")) {

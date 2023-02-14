@@ -1,17 +1,29 @@
 :host {
     display: flex;
     height: 2em;
-    padding: 0px 7px;
+    min-width: 200px;
+    padding: 0px calc(7px + 2em) 0px 7px;
     color: var(--input-text-color, #000000);
     background-color: var(--input-back-color, #ffffff);
     border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
     border-radius: var(--form-border-radius, 0.25em);
 }
+:host(:disabled) {
+    color: var(--input-disabled-text-color, #424242) !important;
+    background-color: var(--input-disabled-back-color, #999999) !important;
+    border-color: var(--input-disabled-border-color, #6a6a6a) !important;
+    cursor: default !important;
+}
+:host(:focus) {
+    box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
+    outline: none;
+    z-index: 1;
+}
 #input {
     position: absolute;
     flex-grow: 1;
     height: 100%;
-    margin-right: 2em;
+    width: 0px;
     background-color: transparent;
     border: none;
     font-size: 1em;
@@ -37,8 +49,7 @@
     align-items: center;
     justify-content: flex-start;
     flex-grow: 1;
-    width: 100%;
-    margin-right: 2em;
+    width: 0px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

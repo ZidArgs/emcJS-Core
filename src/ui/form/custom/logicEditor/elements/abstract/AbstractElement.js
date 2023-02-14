@@ -1,94 +1,9 @@
-import CustomElement from "../../../../element/CustomElement.js";
+import CustomElement from "../../../../../element/CustomElement.js";
 import DragDropMemory from "/emcJS/util/DragDropMemory.js";
-import Template from "/emcJS/util/html/Template.js";
 import UGen from "/emcJS/util/UniqueGenerator.js";
-
-const TPL = new Template(`
-    <style>
-        * {
-            position: relative;
-            box-sizing: border-box;
-        }
-        :host {
-            display: table;
-            margin: 5px;
-            user-select: none;
-            border-radius: 5px;
-            cursor: move;
-            font-family: monospace;
-            background: var(--logic-color-back, white);
-            border-width: 2px;
-            border-style: solid;
-            color: var(--logic-color-text, black);
-            border-color: var(--logic-color-border, black);
-            font-size: 1rem;
-            -webkit-user-select: none;
-            user-select: none;
-            word-break: break-word;
-        }
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            height: 35px;
-            padding: 5px;
-            font-weight: bold;
-            user-select: none;
-        }
-        .header[value]::before {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 50px;
-            height: 16px;
-            font-size: 12px;
-            line-height: 10px;
-            margin-right: 5px;
-            border-radius: 10px;
-            border: solid 2px black;
-            background-color: #85ff85;
-            content: attr(value);
-        }
-        .header[value="0"]::before {
-            background-color: #ff8585;
-        }
-        .body {
-            display: block;
-            padding: 5px;
-            border-top-width: 2px;
-            border-top-style: solid;
-            border-color: var(--logic-color-border, black);
-        }
-        .body input {
-            width: 100px;
-            height: 25px;
-            text-align: right;
-            margin: 0 5px;
-        }
-        .placeholder {
-            display: table;
-            margin: 5px;
-            padding: 5px 20px;
-            background-color: lightgray;
-            border: 1px solid gray;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        :host([readonly]:not([readonly="false"])) {
-            cursor: default;
-        }
-        :host([readonly]:not([readonly="false"])) .placeholder {
-            display: none;
-        }
-        :host([readonly]:not([readonly="false"])) input,
-        :host([readonly]:not([readonly="false"])) select,
-        :host([template]:not([template="false"])) input,
-        :host([template]:not([template="false"])) select,
-        :host([template]:not([template="false"])) .placeholder {
-            pointer-events: none;
-        }
-    </style>
-`);
+import TPL from "./AbstractElement.js.html" assert {type: "html"};
+import STYLE from "./AbstractElement.js.css" assert {type: "css"};
+import STYLE_ERROR from "./AbstractElement.js.ErrorElement.css" assert {type: "css"};
 
 function dragStart(event) {
     DragDropMemory.clear();
@@ -96,32 +11,60 @@ function dragStart(event) {
     event.stopPropagation();
 }
 
-// TODO add on placeholder click dialog to append logic elements
-const ID = new WeakMap();
 const REG = new Map();
 
 export default class AbstractElement extends CustomElement {
 
-    constructor() {
-        super();
+    #id;
+
+    constructor(caption) {
         if (new.target === AbstractElement) {
             throw new Error("can not construct abstract class");
         }
+        /* --- */
+        super();
         this.shadowRoot.append(TPL.generate());
-        ID.set(this, UGen.appUID("logic-element"));
+        STYLE.apply(this.shadowRoot);
+        /* --- */
+        this.shadowRoot.getElementById("header").innerText = caption;
+        this.#id = UGen.appUID("logic-element");
+        /* --- */
+        this.addEventListener("contextmenu", (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            if (this.editable) {
+                const ev = new Event("menu", {bubbles: true, cancelable: true});
+                ev.id = this.#id;
+                ev.left = event.clientX;
+                ev.top = event.clientY;
+                this.dispatchEvent(ev);
+            }
+        });
     }
 
     connectedCallback() {
-        if (!this.readonly && (!this.template || this.template !== "clicked")) {
+        if (this.draggable) {
             this.setAttribute("draggable", "true");
+        } else {
+            this.removeAttribute("draggable");
         }
-        this.id = ID.get(this);
+        this.setAttribute("id", this.#id);
         this.addEventListener("dragstart", dragStart);
     }
 
+    get draggable() {
+        return !this.disabled && !this.readonly && (!this.template || this.template !== "clicked");
+    }
+
+    get editable() {
+        return !this.disabled && !this.readonly && !this.template;
+    }
+
+    get id() {
+        return this.#id;
+    }
+
     disconnectedCallback() {
-        this.removeAttribute("draggable");
-        this.removeAttribute("id");
         this.removeEventListener("dragstart", dragStart);
     }
 
@@ -133,7 +76,7 @@ export default class AbstractElement extends CustomElement {
     }
 
     getElement(forceCopy = false) {
-        if (!!forceCopy || (typeof this.template == "string" && this.template != "false")) {
+        if (forceCopy || this.template) {
             const el = this.cloneNode(true);
             el.removeAttribute("template");
             return el;
@@ -146,11 +89,11 @@ export default class AbstractElement extends CustomElement {
         throw new Error("can not call abstract method");
     }
 
-    loadLogic() {
+    toJSON() {
         throw new Error("can not call abstract method");
     }
 
-    toJSON() {
+    loadLogic() {
         throw new Error("can not call abstract method");
     }
 
@@ -171,7 +114,7 @@ export default class AbstractElement extends CustomElement {
     }
 
     appendChild(el) {
-        if (el instanceof AbstractElement && (typeof this.template != "string" || this.template == "false")) {
+        if (el instanceof AbstractElement && this.editable) {
             const r = super.appendChild(el);
 
             if (this.hasAttribute("visualize")) {
@@ -190,7 +133,7 @@ export default class AbstractElement extends CustomElement {
     }
 
     insertBefore(el, ref) {
-        if (el instanceof AbstractElement && (typeof this.template != "string" || this.template == "false")) {
+        if (el instanceof AbstractElement && this.editable) {
             const r = super.insertBefore(el, ref);
 
             if (this.hasAttribute("visualize")) {
@@ -206,6 +149,10 @@ export default class AbstractElement extends CustomElement {
 
             return r;
         }
+    }
+
+    get childList() {
+        return [];
     }
 
     set value(value) {
@@ -236,6 +183,14 @@ export default class AbstractElement extends CustomElement {
         return parseInt(val) || 0;
     }
 
+    set disabled(val) {
+        this.setBooleanAttribute("disabled", val);
+    }
+
+    get disabled() {
+        return this.getBooleanAttribute("disabled");
+    }
+
     set readonly(value) {
         this.setBooleanAttribute("readonly", value);
     }
@@ -253,30 +208,40 @@ export default class AbstractElement extends CustomElement {
     }
 
     static get observedAttributes() {
-        return ["readonly", "value", "visualize", "template"];
+        return ["disabled", "readonly", "value", "visualize", "template"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
-            case "value":
+            case "value": {
                 if (oldValue != newValue) {
                     const event = new Event("update");
                     event.value = this.value;
                     this.dispatchEvent(event);
                 }
-                break;
-            case "visualize":
+            } break;
+            case "visualize": {
                 if (oldValue != newValue) {
                     for (const ch of this.children) {
                         ch.visualize = newValue;
                     }
                 }
-                break;
+            } break;
+            case "disabled": {
+                if (oldValue != newValue) {
+                    if (this.draggable) {
+                        this.setAttribute("draggable", "true");
+                    } else {
+                        this.removeAttribute("draggable");
+                    }
+                    for (const ch of this.children) {
+                        ch.disabled = newValue;
+                    }
+                }
+            } break;
             case "readonly": {
                 if (oldValue != newValue) {
-                    const template = this.template;
-                    const readonly = this.readonly;
-                    if (template || readonly) {
+                    if (this.draggable) {
                         this.setAttribute("draggable", "true");
                     } else {
                         this.removeAttribute("draggable");
@@ -288,9 +253,7 @@ export default class AbstractElement extends CustomElement {
             } break;
             case "template": {
                 if (oldValue != newValue) {
-                    const template = this.template;
-                    const readonly = this.readonly;
-                    if (template || readonly) {
+                    if (this.draggable) {
                         this.setAttribute("draggable", "true");
                     } else {
                         this.removeAttribute("draggable");
@@ -313,13 +276,13 @@ export default class AbstractElement extends CustomElement {
                 return REG.get(ref);
             }
         }
-        return LogicError;
+        return ErrorElement;
     }
 
     static buildLogic(logic) {
         if (typeof logic == "object" && !!logic) {
             if (Array.isArray(logic)) {
-                return new LogicError();
+                return new ErrorElement();
             } else {
                 let cl;
                 if (logic.category) {
@@ -337,8 +300,7 @@ export default class AbstractElement extends CustomElement {
 
     static allowDrop(event) {
         const el = event.target.getRootNode().host;
-        if ((typeof el.readonly != "string" || el.readonly == "false")
-        &&  (typeof el.template != "string" || el.template == "false")) {
+        if (el.editable) {
             event.preventDefault();
             event.stopPropagation();
             return false;
@@ -370,26 +332,11 @@ export default class AbstractElement extends CustomElement {
 
 }
 
-/**
- * for undefined references
- */
-const TPL_E = new Template(`
-    <style>
-        :host {
-            --logic-color-back: #ff0000;
-            --logic-color-border: #770000;
-            --logic-color-text: #ffffff;
-        }
-    </style>
-    <div class="header">ERROR: REFERENCE NOT FOUND</div>
-    <div id="ref" class="body"></div>
-`);
-
-class LogicError extends AbstractElement {
+class ErrorElement extends AbstractElement {
 
     constructor() {
-        super();
-        this.shadowRoot.append(TPL_E.generate());
+        super("ERROR: REFERENCE NOT FOUND");
+        STYLE_ERROR.apply(this.shadowRoot);
     }
 
     getElement() {
@@ -400,26 +347,17 @@ class LogicError extends AbstractElement {
         return undefined;
     }
 
-    update() {}
-
-    visualizeValue() {}
+    calculate(/* state = {} */) {
+        this.shadowRoot.getElementById("header").setAttribute("value", "0");
+        return 0;
+    }
 
     toJSON() {}
 
     loadLogic(logic) {
-        let type = logic.type;
-        if (type) {
-            type = type.toUpperCase();
-        } else {
-            type = "UNKNOWN TYPE";
-        }
-        if (logic.category) {
-            this.shadowRoot.getElementById("ref").innerHTML = `${type}(${logic.category.toUpperCase()})`;
-        } else {
-            this.shadowRoot.getElementById("ref").innerHTML = type;
-        }
+        this.shadowRoot.getElementById("body").innerHTML = logic.type || "UNKNOWN TYPE";
     }
 
 }
 
-customElements.define("jse-logic-error", LogicError);
+customElements.define("jse-logic-error", ErrorElement);

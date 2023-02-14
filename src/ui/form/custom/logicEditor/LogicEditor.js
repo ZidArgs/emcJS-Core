@@ -1,10 +1,10 @@
-import CustomFormElement from "../../../element/CustomFormElement.js";
+import CustomFormElementDelegating from "../../../element/CustomFormElementDelegating.js";
 import DragDropMemory from "../../../../util/DragDropMemory.js";
 import {
     isEqual
 } from "../../../../util/helper/Comparator.js";
 import LogicElementWindow from "./components/LogicElementWindow.js";
-import LogicAbstractElement from "./elements/AbstractElement.js";
+import LogicAbstractElement from "./elements/abstract/AbstractElement.js";
 import "./elements/ComparatorEqual.js";
 import "./elements/ComparatorGreaterThan.js";
 import "./elements/ComparatorGreaterThanEqual.js";
@@ -35,6 +35,9 @@ import "./elements/RestrictorMin.js";
 import TPL from "./LogicEditor.js.html" assert {type: "html"};
 import STYLE from "./LogicEditor.js.css" assert {type: "css"};
 
+// TODO add string input logic element
+// TODO add number input logic element
+
 const MUTATION_CONFIG = {
     childList: true,
     subtree: true
@@ -49,7 +52,9 @@ const mutationObserver = new MutationObserver((mutationsList) => {
     }
 });
 
-export default class LogicEditor extends CustomFormElement {
+export default class LogicEditor extends CustomFormElementDelegating {
+
+    #placeholderEl;
 
     #logicElementWindow = new LogicElementWindow();
 
@@ -59,13 +64,13 @@ export default class LogicEditor extends CustomFormElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         mutationObserver.observe(this, MUTATION_CONFIG);
-        const target = this.shadowRoot.getElementById("droptarget");
-        target.ondragover = (event) => {
+        this.#placeholderEl = this.shadowRoot.getElementById("droptarget");
+        this.#placeholderEl.ondragover = (event) => {
             event.preventDefault();
             event.stopPropagation();
             return false;
         };
-        target.ondrop = (event) => {
+        this.#placeholderEl.ondrop = (event) => {
             const els = DragDropMemory.get();
             if (els.length) {
                 const el = els[0];
@@ -80,7 +85,7 @@ export default class LogicEditor extends CustomFormElement {
             event.stopPropagation();
             return false;
         };
-        target.addEventListener("click", (event) => {
+        this.#placeholderEl.addEventListener("click", (event) => {
             const e = new Event("placeholderclicked");
             this.dispatchEvent(e);
             event.stopPropagation();
@@ -91,7 +96,6 @@ export default class LogicEditor extends CustomFormElement {
             const slotName = event.name;
             this.#logicElementWindow.onsubmit = (event) => {
                 const resultEl = event.element;
-                resultEl.removeAttribute("template");
                 if (slotName) {
                     resultEl.setAttribute("slot", slotName);
                 }
@@ -99,11 +103,36 @@ export default class LogicEditor extends CustomFormElement {
             };
             this.#logicElementWindow.show();
         });
+        this.addEventListener("menu", (event) => {
+            console.log("logic menu", event);
+            // TODO put this in a contextmenu handler
+            this.#removeElement(event.id);
+            event.stopPropagation();
+        });
         this.addEventListener("valuechange", (event) => {
             this.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
             event.stopPropagation();
         });
-        // this.#logicElementWindow.loadOperators([]);
+    }
+
+    formDisabledCallback(disabled) {
+        super.formDisabledCallback(disabled);
+        this.#placeholderEl.disabled = disabled;
+        const el = this.children[0];
+        if (el) {
+            return el.disabled = disabled;
+        }
+    }
+
+    loadOperators(operators) {
+        this.#logicElementWindow.loadOperators(operators);
+    }
+
+    #removeElement(id) {
+        const el = this.querySelector(`#${id}`);
+        if (el != null && (typeof el.template != "string" || el.template == "false")) {
+            el.parentElement.removeChild(el);
+        }
     }
 
     set value(data) {

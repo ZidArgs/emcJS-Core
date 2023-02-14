@@ -35,19 +35,19 @@ export default class CustomActionRegistry {
         CURRENT_REGISTRY = this;
     }
 
-    get current() {
+    static get current() {
         return CURRENT_REGISTRY ?? CustomActionRegistry.getDefaultRegistry();
     }
 
-    getDefaultRegistry() {
+    static getDefaultRegistry() {
         return new CustomActionRegistry();
     }
 
-    getRegistry(name) {
+    static getRegistry(name) {
         return new CustomActionRegistry(name);
     }
 
-    removeRegistry(name) {
+    static removeRegistry(name) {
         if (typeof name !== "string" || name === "") {
             throw new TypeError("non empty string expected");
         }

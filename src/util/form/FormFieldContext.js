@@ -132,7 +132,7 @@ export default class FormFieldContext {
                 const elName = this.#element.name;
                 const defaultValue = value.getRootValue(elName);
                 if (defaultValue != null) {
-                    if (typeof value === "object") {
+                    if (typeof defaultValue === "object") {
                         this.#element.setAttribute("value", JSON.stringify(defaultValue));
                     } else {
                         this.#element.setAttribute("value", defaultValue);

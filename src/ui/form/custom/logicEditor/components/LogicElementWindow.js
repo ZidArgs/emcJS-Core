@@ -1,5 +1,5 @@
 import Window from "../../../../overlay/window/Window.js";
-import AbstractElement from "../elements/AbstractElement.js";
+import AbstractElement from "../elements/abstract/AbstractElement.js";
 import "../../../../FilteredList.js";
 import "../../../../container/CollapsePanel.js";
 import "../elements/ComparatorEqual.js";
@@ -69,7 +69,7 @@ export default class LogicElementWindow extends Window {
             if (targetEl instanceof AbstractElement) {
                 this.remove();
                 const ev = new Event("submit");
-                ev.element = targetEl.cloneNode(true);
+                ev.element = targetEl.getElement(true);
                 this.dispatchEvent(ev);
                 event.preventDefault();
                 return false;
@@ -92,7 +92,7 @@ export default class LogicElementWindow extends Window {
             "type": "group",
             "caption": "default",
             "compact": true,
-            children: DEFAULT_LOGIC_OPERATORS.map((type) => {
+            "children": DEFAULT_LOGIC_OPERATORS.map((type) => {
                 return {type};
             })
         }, this.#containerEl);
@@ -116,13 +116,18 @@ export default class LogicElementWindow extends Window {
         } else {
             const typeClass = AbstractElement.getReference(config.type);
             const logicEl = new typeClass();
-            logicEl.ref = config.ref ?? logicEl.getHeader() ?? config.type;
-            if (config["value"] != null) {
+            if (config.ref != null) {
+                logicEl.ref = config.ref;
+            }
+            if (config.options != null && "setOptions" in logicEl) {
+                logicEl.setOptions(config.options);
+            }
+            if (config.value != null) {
                 logicEl.value = config.value;
             }
             logicEl.category = config.category;
             logicEl.template = "clicked";
-            logicEl.dataset.filtervalue = logicEl.ref;
+            logicEl.dataset.filtervalue = config.ref ?? logicEl.getHeader() ?? config.type;
             containerEl.append(logicEl);
         }
     }

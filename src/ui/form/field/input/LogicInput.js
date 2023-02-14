@@ -75,6 +75,10 @@ export default class LogicInput extends AbstractFormInput {
         this.#inputEl.focus(options);
     }
 
+    loadOperators(operators) {
+        this.#logicEl.loadOperators(operators);
+    }
+
     get defaultValue() {
         return this.getJSONAttribute("value");
     }

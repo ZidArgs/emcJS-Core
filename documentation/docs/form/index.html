@@ -169,6 +169,31 @@
                 "switch.required": true
             });
         });
+
+        const logicTestEl = document.getElementById("logicTest");
+        logicTestEl.loadOperators([
+            {
+                "type": "group",
+                "caption": "settings",
+                "compact": false,
+                "children": [
+                    {
+                        "type": "value",
+                        "ref": "test"
+                    },
+                    {
+                        "type": "state",
+                        "ref": "test",
+                        "options": {
+                            "test": "Test",
+                            "foobar": "Foobar",
+                            "barfoo": "Barfoo"
+                        },
+                        "value": "test"
+                    }
+                ]
+            }
+        ]);
     </script>
 </head>
 
