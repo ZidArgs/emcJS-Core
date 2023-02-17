@@ -49,7 +49,6 @@ export default class TreeNode extends CustomElement {
         this.addEventListener("click", (event) => {
             event.stopPropagation();
             event.preventDefault();
-            this.scrollIntoView();
             const targetIndex = Array.from(this.parentElement.children).indexOf(this);
             const ev = new Event("select", {bubbles: true, cancelable: true});
             ev.element = this;
@@ -115,6 +114,15 @@ export default class TreeNode extends CustomElement {
         this.#elManager = new ElementManager(this, {
             composer: treeComposer,
             mutator: treeMutator
+        });
+    }
+
+    click() {
+        super.click();
+        this.shadowRoot.getElementById("content").scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+            inline: "start"
         });
     }
 
