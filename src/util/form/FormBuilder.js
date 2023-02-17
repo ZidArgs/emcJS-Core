@@ -39,16 +39,16 @@ class FormBuilder {
 
             if (forms != null) {
                 if (Array.isArray(forms)) {
-                    for (const {elements, params, values} of forms) {
-                        formContainerEl.append(this.buildForm(elements, {...values, ...defaultValues}, params));
+                    for (const {elements, config: formConfig, values} of forms) {
+                        formContainerEl.append(this.buildForm(elements, {...values, ...defaultValues}, formConfig));
                     }
                 } else {
-                    const {elements, params, values} = forms;
-                    formContainerEl.append(this.buildForm(elements, {...values, ...defaultValues}, params));
+                    const {elements, config: formConfig, values} = forms;
+                    formContainerEl.append(this.buildForm(elements, {...values, ...defaultValues}, formConfig));
                 }
             } else {
-                const {elements, params, values} = config;
-                formContainerEl.append(this.buildForm(elements, values, params));
+                const {elements, config: formConfig, values} = config;
+                formContainerEl.append(this.buildForm(elements, values, formConfig));
             }
         }
 
@@ -111,24 +111,24 @@ class FormBuilder {
             const buttonRowEl = document.createElement("emc-form-buttonrow");
             if (!isNullOrFalse(resetButton)) {
                 if (typeof resetButton === "object") {
-                    buttonRowEl.append(this.#createResetButton(null, resetButton));
+                    buttonRowEl.append(this.#createResetButton(null, true, true, resetButton));
                 } else if (typeof resetButton === "string") {
-                    buttonRowEl.append(this.#createResetButton(null, {
+                    buttonRowEl.append(this.#createResetButton(null, true, true, {
                         text: resetButton
                     }));
                 } else if (resetButton === true) {
-                    buttonRowEl.append(this.#createResetButton(null, {}));
+                    buttonRowEl.append(this.#createResetButton(null, true, true, {}));
                 }
             }
             if (!isNullOrFalse(submitButton)) {
                 if (typeof submitButton === "object") {
-                    buttonRowEl.append(this.#createSubmitButton(null, submitButton));
+                    buttonRowEl.append(this.#createSubmitButton(null, true, true, submitButton));
                 } else if (typeof submitButton === "string") {
-                    buttonRowEl.append(this.#createSubmitButton(null, {
+                    buttonRowEl.append(this.#createSubmitButton(null, true, true, {
                         text: submitButton
                     }));
                 } else if (submitButton === true) {
-                    buttonRowEl.append(this.#createSubmitButton(null, {}));
+                    buttonRowEl.append(this.#createSubmitButton(null, true, true, {}));
                 }
             }
             formEl.append(buttonRowEl);
