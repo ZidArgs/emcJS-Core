@@ -55,6 +55,8 @@ export default class FormFieldContext {
 
     #visibleValue = true;
 
+    #ghostInvisible = false;
+
     #enabledLogic;
 
     #enabledValue = true;
@@ -161,21 +163,22 @@ export default class FormFieldContext {
         return this.#visibleValue;
     }
 
+    set ghostInvisible(value) {
+        this.#ghostInvisible = !!value;
+    }
+
+    get ghostInvisible() {
+        return this.#ghostInvisible;
+    }
+
     setVisibleLogic(logic) {
-        if (logic != null) {
-            if (typeof logic === "object") {
-                this.#visibleLogic = LogicCompiler.compile(logic);
-                this.#callUpdateVisible();
-            } else {
-                const value = logic == null || !!logic;
-                this.#visibleLogic = logic;
-                this.#visibleValue = value;
-                if (value) {
-                    this.#element.style.display = "";
-                } else {
-                    this.#element.style.display = "none";
-                }
-            }
+        if (logic != null && typeof logic === "object") {
+            this.#visibleLogic = LogicCompiler.compile(logic);
+            this.#callUpdateVisible();
+        } else {
+            const value = logic == null || !!logic;
+            this.#visibleLogic = logic;
+            this.#setVisibileValue(value);
         }
     }
 
@@ -188,14 +191,7 @@ export default class FormFieldContext {
     #updateVisible = debounce(() => {
         if (typeof this.#visibleLogic === "function") {
             const value = this.#executeVisibleLogic();
-            if (this.#visibleValue != value) {
-                this.#visibleValue = value;
-                if (value) {
-                    this.#element.style.display = "";
-                } else {
-                    this.#element.style.display = "none";
-                }
-            }
+            this.#setVisibileValue(value);
         }
     });
 
@@ -205,26 +201,36 @@ export default class FormFieldContext {
         });
     }
 
+    #setVisibileValue(value) {
+        if (this.#visibleValue != value) {
+            this.#visibleValue = value;
+            if (this.#ghostInvisible) {
+                if (value) {
+                    this.#element.style.opacity = "";
+                } else {
+                    this.#element.style.opacity = "0.2";
+                }
+            } else if (value) {
+                this.#element.style.display = "";
+            } else {
+                this.#element.style.display = "none";
+            }
+        }
+    }
+
     /* enabled logic */
     get enabled() {
         return this.#enabledValue;
     }
 
     setEnabledLogic(logic) {
-        if (logic != null) {
-            if (typeof logic === "object") {
-                this.#enabledLogic = LogicCompiler.compile(logic);
-                this.#callUpdateEnabled();
-            } else {
-                const value = logic == null || !!logic;
-                this.#enabledLogic = logic;
-                this.#enabledValue = value;
-                if (value) {
-                    this.#element.removeAttribute("disabled");
-                } else {
-                    this.#element.setAttribute("disabled", "");
-                }
-            }
+        if (logic != null && typeof logic === "object") {
+            this.#enabledLogic = LogicCompiler.compile(logic);
+            this.#callUpdateEnabled();
+        } else {
+            const value = logic == null || !!logic;
+            this.#enabledLogic = logic;
+            this.#setEnabledValue(value);
         }
     }
 
@@ -237,14 +243,7 @@ export default class FormFieldContext {
     #updateEnabled = debounce(() => {
         if (typeof this.#enabledLogic === "function") {
             const value = this.#executeEnabledeLogic();
-            if (this.#enabledValue != value) {
-                this.#enabledValue = value;
-                if (value) {
-                    this.#element.removeAttribute("disabled");
-                } else {
-                    this.#element.setAttribute("disabled", "");
-                }
-            }
+            this.#setEnabledValue(value);
         }
     });
 
@@ -252,6 +251,17 @@ export default class FormFieldContext {
         return !!this.#enabledLogic((key) => {
             return this.#getValue(key);
         });
+    }
+
+    #setEnabledValue(value) {
+        if (this.#enabledValue != value) {
+            this.#enabledValue = value;
+            if (value) {
+                this.#element.removeAttribute("disabled");
+            } else {
+                this.#element.setAttribute("disabled", "");
+            }
+        }
     }
 
     /* logic helper */

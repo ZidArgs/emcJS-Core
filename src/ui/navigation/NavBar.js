@@ -12,6 +12,7 @@ function closeAll(targetEl) {
     }
     for (const el of targetEl.querySelectorAll("[expand=\"open\"]")) {
         el.expand = "closed";
+        el.blur();
     }
 }
 
@@ -93,7 +94,7 @@ export default class NavBar extends CustomElement {
                 // submenu events
                 if (!IS_MAIN_NAV) {
                     btnEl.addEventListener("blur", (event) => {
-                        if (!contentEl.contains(event.relatedTarget)) {
+                        if (event.relatedTarget == null || !contentEl.contains(event.relatedTarget)) {
                             const pListEl = contentEl.parentElement;
                             const pBtnEl = pListEl.children[0];
                             pBtnEl.expand = "closed";
@@ -103,7 +104,7 @@ export default class NavBar extends CustomElement {
                         }
                     });
                     btnEl.addEventListener("focus", (event) => {
-                        if (!contentEl.contains(event.relatedTarget)) {
+                        if (event.relatedTarget != null && !contentEl.contains(event.relatedTarget)) {
                             const pListEl = contentEl.parentElement;
                             const pBtnEl = pListEl.children[0];
                             pBtnEl.expand = "open";

@@ -25,6 +25,8 @@ export default class FormContext extends EventTarget {
 
     #formElList = new Set();
 
+    #ghostInvisible = false;
+
     #mutationObserver = new MutationObserverManager(MUTATION_CONFIG, (mutationsList) => {
         for (const mutation of mutationsList) {
             if (mutation.type == "childList") {
@@ -88,6 +90,14 @@ export default class FormContext extends EventTarget {
         });
     }
 
+    set ghostInvisible(value) {
+        this.#ghostInvisible = !!value;
+    }
+
+    get ghostInvisible() {
+        return this.#ghostInvisible;
+    }
+
     registerFormContainer(formContainerEl) {
         if (!(formContainerEl instanceof FormContainer)) {
             throw new TypeError("FormContainer expected");
@@ -118,9 +128,13 @@ export default class FormContext extends EventTarget {
         const all = formEl.querySelectorAll("[name]");
         for (const el of all) {
             if (el instanceof AbstractFormField) {
-                FormFieldContext.getContext(el).storage = this.#dataStorage;
+                const context = FormFieldContext.getContext(el);
+                context.storage = this.#dataStorage;
+                context.ghostInvisible = this.#ghostInvisible;
             } else {
-                FormElementContext.getContext(el).storage = this.#dataStorage;
+                const context = FormElementContext.getContext(el);
+                context.storage = this.#dataStorage;
+                context.ghostInvisible = this.#ghostInvisible;
             }
         }
     }
@@ -135,9 +149,13 @@ export default class FormContext extends EventTarget {
         const all = formEl.querySelectorAll("[name]");
         for (const el of all) {
             if (el instanceof AbstractFormField) {
-                FormFieldContext.getContext(el).storage = null;
+                const context = FormFieldContext.getContext(el);
+                context.storage = null;
+                context.ghostInvisible = false;
             } else {
-                FormElementContext.getContext(el).storage = null;
+                const context = FormElementContext.getContext(el);
+                context.storage = null;
+                context.ghostInvisible = false;
             }
         }
     }
