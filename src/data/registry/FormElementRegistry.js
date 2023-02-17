@@ -44,16 +44,27 @@ class FormElementRegistry {
         }
         /* --- */
         console.warn(`FormElementRegistry: no form element registered for type "${ref}"`);
-        const el = document.createElement("input");
-        el.dataset.elementRef = ref;
-        el.setAttribute("type", "hidden");
-        el.setAttribute("name", params.name ?? "");
+
+        const hiddenWrapperEl = document.createElement("div");
+        hiddenWrapperEl.classList.add("unknown-form-element");
+        hiddenWrapperEl.innerHTML = `⚠ unknown form element (${ref})`;
+        hiddenWrapperEl.style.color = "#e5ad14";
+        hiddenWrapperEl.style.background = "#fff5d5";
+        hiddenWrapperEl.style.padding = "10px";
+        hiddenWrapperEl.style.fontStyle = "italic";
+
+        const hiddenEl = document.createElement("input");
+        hiddenEl.dataset.elementRef = ref;
+        hiddenEl.setAttribute("type", "hidden");
+        hiddenEl.setAttribute("name", params.name ?? "");
         if (typeof value === "object") {
-            el.setAttribute("value", JSON.stringify(params.value ?? ""));
+            hiddenEl.setAttribute("value", JSON.stringify(params.value ?? ""));
         } else {
-            el.setAttribute("value", params.value ?? "");
+            hiddenEl.setAttribute("value", params.value ?? "");
         }
-        return el;
+        hiddenWrapperEl.append(hiddenEl);
+
+        return hiddenWrapperEl;
     }
 
     getRegisteredClass(ref) {

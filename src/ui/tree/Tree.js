@@ -9,8 +9,8 @@ function treeComposer(key, params) {
     const el = document.createElement("emc-tree-node");
     el.ref = key;
     el.label = label;
-    for (const key in data) {
-        el.dataset[key] = data[key];
+    for (const name in data) {
+        el.dataset[name] = data[name];
     }
     if (children != null) {
         el.loadConfig(children);
@@ -24,8 +24,8 @@ function treeComposer(key, params) {
 function treeMutator(el, key, params) {
     const {label = key, data = {}, children} = params;
     el.label = label;
-    for (const key in data) {
-        el.dataset[key] = data[key];
+    for (const name in data) {
+        el.dataset[name] = data[name];
     }
     if (children != null) {
         el.loadConfig(children);
@@ -46,13 +46,15 @@ export default class Tree extends CustomElement {
         /* --- */
         const treeEl = this.shadowRoot.getElementById("tree");
         treeEl.addEventListener("select", (event) => {
-            const {element} = event;
-            const oldMarked = this.querySelector(".marked");
-            if (oldMarked != null) {
-                oldMarked.classList.remove("marked");
-            }
-            if (element != null) {
-                element.classList.add("marked");
+            if (!event.isSelected) {
+                const {element} = event;
+                const oldMarked = this.querySelector(".marked");
+                if (oldMarked != null) {
+                    oldMarked.classList.remove("marked");
+                }
+                if (element != null) {
+                    element.classList.add("marked");
+                }
             }
         });
         /* --- */
@@ -98,6 +100,34 @@ export default class Tree extends CustomElement {
         const element = this.#getElementByPath(path);
         if (element != null) {
             element.classList.add("ctx-marked");
+        }
+    }
+
+    toggleNodeCollapsed(path, force) {
+        const element = this.#getElementByPath(path);
+        if (element != null) {
+            element.toggleCollapsed(force);
+        }
+    }
+
+    forcePathExpanded(path) {
+        if (path == null || !path.length) {
+            return;
+        }
+        const p = [...path];
+        let res = this;
+        while (p.length) {
+            res = res.children[p.shift()];
+            if (res == null) {
+                return;
+            }
+            res.toggleCollapsed(false);
+        }
+    }
+
+    forceAllCollapsed(collapsed = true) {
+        for (const ch of this.children) {
+            ch.forceAllCollapsed(collapsed);
         }
     }
 

@@ -9,8 +9,8 @@ function treeComposer(key, params) {
     const el = document.createElement("emc-tree-node");
     el.ref = key;
     el.label = label;
-    for (const key in data) {
-        el.dataset[key] = data[key];
+    for (const name in data) {
+        el.dataset[name] = data[name];
     }
     if (children != null) {
         el.loadConfig(children);
@@ -24,8 +24,8 @@ function treeComposer(key, params) {
 function treeMutator(el, key, params) {
     const {label = key, data = {}, children} = params;
     el.label = label;
-    for (const key in data) {
-        el.dataset[key] = data[key];
+    for (const name in data) {
+        el.dataset[name] = data[name];
     }
     if (children != null) {
         el.loadConfig(children);
@@ -36,6 +36,8 @@ function treeMutator(el, key, params) {
 }
 
 export default class TreeNode extends CustomElement {
+
+    #nodeEl;
 
     #elManager;
 
@@ -50,11 +52,15 @@ export default class TreeNode extends CustomElement {
             const targetIndex = Array.from(this.parentElement.children).indexOf(this);
             const ev = new Event("select", {bubbles: true, cancelable: true});
             ev.element = this;
+            ev.isSelected = this.classList.contains("marked");
             ev.path = [targetIndex];
             ev.refPath = [this.ref];
             ev.left = event.clientX;
             ev.top = event.clientY;
             this.dispatchEvent(ev);
+            if (!ev.defaultPrevented) {
+                this.toggleCollapsed();
+            }
         });
         this.addEventListener("contextmenu", (event) => {
             event.stopPropagation();
@@ -75,11 +81,15 @@ export default class TreeNode extends CustomElement {
             const targetIndex = Array.from(this.parentElement.children).indexOf(this);
             const ev = new Event("select", {bubbles: true, cancelable: true});
             ev.element = event.element;
+            ev.isSelected = event.isSelected;
             ev.path = [targetIndex, ...event.path ?? []];
             ev.refPath = [this.ref, ...event.refPath ?? []];
             ev.left = event.left;
             ev.top = event.top;
             this.dispatchEvent(ev);
+            if (ev.defaultPrevented) {
+                event.preventDefault();
+            }
         });
         subTreeEl.addEventListener("menu", (event) => {
             event.stopPropagation();
@@ -93,18 +103,31 @@ export default class TreeNode extends CustomElement {
             this.dispatchEvent(ev);
         });
         /* --- */
-        const nodeEl = this.shadowRoot.getElementById("node");
+        this.#nodeEl = this.shadowRoot.getElementById("node");
         const collapseEl = this.shadowRoot.getElementById("collapse");
         collapseEl.addEventListener("click", (event) => {
             event.stopPropagation();
             event.preventDefault();
-            nodeEl.classList.toggle("collapsed");
+            this.toggleCollapsed();
         });
         /* --- */
         this.#elManager = new ElementManager(this, {
             composer: treeComposer,
             mutator: treeMutator
         });
+    }
+
+    toggleCollapsed(force) {
+        if (this.forceCollapsible || this.children.length) {
+            this.#nodeEl.classList.toggle("collapsed", force);
+        }
+    }
+
+    forceAllCollapsed(collapsed = true) {
+        this.toggleCollapsed(!!collapsed);
+        for (const ch of this.children) {
+            ch.forceAllCollapsed(collapsed);
+        }
     }
 
     set ref(val) {

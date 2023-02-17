@@ -32,3 +32,6 @@
     box-shadow: var(--page-back-color, #ffffff) 0px calc(var(--content-mask, 0px) + var(--form-border-radius, 0.25em)) 0px 0px;
     z-index: 100;
 }
+::slotted(form > .unknown-form-element) {
+    padding: 10px;
+}
