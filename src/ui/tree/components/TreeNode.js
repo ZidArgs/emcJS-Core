@@ -49,7 +49,7 @@ export default class TreeNode extends CustomElement {
         this.addEventListener("click", (event) => {
             event.stopPropagation();
             event.preventDefault();
-            this.scrollIntoViewIfNeeded();
+            this.scrollIntoView();
             const targetIndex = Array.from(this.parentElement.children).indexOf(this);
             const ev = new Event("select", {bubbles: true, cancelable: true});
             ev.element = this;
