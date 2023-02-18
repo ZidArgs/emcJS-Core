@@ -1,8 +1,13 @@
 import CustomFormElementDelegating from "../../../element/CustomFormElementDelegating.js";
+import ContextMenuManagerMixin from "../../../mixin/ContextMenuManagerMixin.js";
+import {
+    mix
+} from "../../../../util/Mixin.js";
 import DragDropMemory from "../../../../util/DragDropMemory.js";
 import {
     isEqual
 } from "../../../../util/helper/Comparator.js";
+import LogicEditorContextMenuElement from "./contexmenu/LogicEditorContextMenuElement.js";
 import LogicElementWindow from "./components/LogicElementWindow.js";
 import LogicAbstractElement from "./elements/abstract/AbstractElement.js";
 import "./elements/ComparatorEqual.js";
@@ -52,7 +57,13 @@ const mutationObserver = new MutationObserver((mutationsList) => {
     }
 });
 
-export default class LogicEditor extends CustomFormElementDelegating {
+const BaseClass = mix(
+    CustomFormElementDelegating
+).with(
+    ContextMenuManagerMixin
+);
+
+export default class LogicEditor extends BaseClass {
 
     #placeholderEl;
 
@@ -62,6 +73,17 @@ export default class LogicEditor extends CustomFormElementDelegating {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
+        /* --- */
+        this.setContextMenu("element", LogicEditorContextMenuElement);
+        this.addContextMenuHandler("element", "remove", (event) => {
+            const {id} = event.props;
+            this.#removeElement(id);
+        });
+        this.addEventListener("menu", (event) => {
+            const {id} = event;
+            this.showContextMenu("element", event, {id});
+            event.stopPropagation();
+        });
         /* --- */
         mutationObserver.observe(this, MUTATION_CONFIG);
         this.#placeholderEl = this.shadowRoot.getElementById("droptarget");
@@ -102,12 +124,6 @@ export default class LogicEditor extends CustomFormElementDelegating {
                 targetEl.append(resultEl);
             };
             this.#logicElementWindow.show();
-        });
-        this.addEventListener("menu", (event) => {
-            console.log("logic menu", event);
-            // TODO put this in a contextmenu handler
-            this.#removeElement(event.id);
-            event.stopPropagation();
         });
         this.addEventListener("valuechange", (event) => {
             this.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
