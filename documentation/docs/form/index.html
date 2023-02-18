@@ -21,6 +21,28 @@
             margin: 0px;
             padding: 0px;
         }
+
+        .global-errors {
+            margin: 10px;
+        }
+
+        .global-errors:empty {
+            display: none;
+        }
+
+        .global-errors>.error {
+            display: block;
+            flex-shrink: 0;
+            padding: 0px 5px;
+            margin-top: 5px;
+            color: var(--form-invalid-text-color, #a70000);
+            background-color: var(--form-invalid-back-color, #ffeeee);
+            font-size: 0.9em;
+            line-height: 1.4em;
+            font-style: italic;
+            cursor: pointer;
+            user-select: none;
+        }
     </style>
     <script type="module">
         // main
@@ -62,11 +84,14 @@
             todo            : "list"
 
             MISSING
-            "KeyValueList"
+            "KeyValueListInput"
+            "TokenSelect"
             "CharInput"
             "FileInput"
 
         */
+
+        const ALLOW_INVALID = false;
 
         i18n.setTranslation("en", {
             "test.desc": "this is a test"
@@ -94,7 +119,6 @@
         const formContext = new FormContext(defaultValues);
 
         const config = {
-            contentMask: "8px",
             hasHeader: true,
             hasFooter: true,
             forms: []
@@ -102,19 +126,19 @@
 
         /* add buttons in seperate form */
         config.forms.push({
-            params: {
+            config: {
                 values: {
                     test: "foobar"
                 },
-                allowsInvalid: true
+                allowsInvalid: ALLOW_INVALID
             },
             elements: buttonConfig
         });
 
         for (const elements of formConfig) {
             config.forms.push({
-                params: {
-                    allowsInvalid: true
+                config: {
+                    allowsInvalid: ALLOW_INVALID
                 },
                 elements
             });
@@ -122,10 +146,10 @@
 
         /* add seperate submit */
         config.forms.push({
-            params: {
+            config: {
                 submitButton: true,
                 resetButton: true,
-                allowsInvalid: true
+                allowsInvalid: ALLOW_INVALID
             }
         });
 
@@ -139,12 +163,14 @@
         console.groupEnd("init context");
 
         formContext.addEventListener("submit", () => {
+            const { errors, changes, data, formData, hiddenData } = event;
             const valid = formContext.getFormValidity() ? "valid" : "invalid";
             console.group(`submit (${valid})`);
-            console.log("changed data", formContext.getChanges());
-            console.log("all data", formContext.getData());
-            console.log("form data", formContext.getFormData());
-            console.log("hidden form data", formContext.getHiddenFormData());
+            console.log("errors", errors);
+            console.log("changed data", changes);
+            console.log("all data", data);
+            console.log("form data", formData);
+            console.log("hidden form data", hiddenData);
             console.groupEnd(`submit (${valid})`);
         });
 

@@ -40,12 +40,10 @@ export default class ColorInput extends AbstractFormInput {
         this.#buttonEl = this.shadowRoot.getElementById("button");
         this.#buttonEl.addEventListener("change", () => {
             this.#inputEl.value = this.#buttonEl.value;
-            super.value = this.#buttonEl.value;
         });
         this.#buttonEl.addEventListener("click", () => {
             if (this.#inputEl.value === "") {
                 this.#inputEl.value = this.#buttonEl.value;
-                super.value = this.#buttonEl.value;
             }
         });
     }

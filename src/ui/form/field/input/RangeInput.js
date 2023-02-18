@@ -38,9 +38,6 @@ export default class RangeInput extends AbstractFormInput {
             this.#applyValueToBar(this.#inputEl.value);
             this.#onInput();
         });
-        this.#inputEl.addEventListener("change", () => {
-            this.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
-        });
         new ResizeObserver(() => {
             this.#applyScratchValue();
         }).observe(this.#inputEl);

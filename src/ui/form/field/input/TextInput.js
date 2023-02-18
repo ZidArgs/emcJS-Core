@@ -31,9 +31,6 @@ export default class TextInput extends AbstractFormInput {
         this.#inputEl.addEventListener("input", () => {
             this.#onInput();
         });
-        this.#inputEl.addEventListener("change", () => {
-            this.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
-        });
     }
 
     connectedCallback() {

@@ -21,7 +21,6 @@ class FormBuilder {
         if (config != null) {
             const {
                 forms,
-                contentMask,
                 hasHeader = false,
                 hasFooter = false,
                 defaultValues = {}
@@ -32,9 +31,6 @@ class FormBuilder {
             }
             if (hasFooter) {
                 formContainerEl.classList.add("has-footer");
-            }
-            if (typeof contentMask === "string") {
-                formContainerEl.style.setProperty("--content-mask", contentMask);
             }
 
             if (forms != null) {
@@ -100,8 +96,14 @@ class FormBuilder {
         if (elements != null) {
             if (Array.isArray(elements)) {
                 for (const option of elements) {
-                    formEl.append(this.#createOption(option, defaultValues ?? {}));
+                    if (option instanceof HTMLElement) {
+                        formEl.append(option);
+                    } else {
+                        formEl.append(this.#createOption(option, defaultValues ?? {}));
+                    }
                 }
+            } else if (elements instanceof HTMLElement) {
+                formEl.append(elements);
             } else {
                 formEl.append(this.#createOption(elements, defaultValues ?? {}));
             }

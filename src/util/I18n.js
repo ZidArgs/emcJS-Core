@@ -5,6 +5,21 @@ import {
 import Import from "./import/Import.js";
 import Logger from "./log/Logger.js";
 
+const INTERNAL_VALUES_REGEX = /\{\{([0-9]+)::(.*?)\}\}/g;
+const TEMPLATE_VALUES_REGEX = /\{\{([0-9]+)\}\}/g;
+
+function extractInternalValues(key) {
+    const res = {};
+    let match;
+    do {
+        match = INTERNAL_VALUES_REGEX.exec(key);
+        if (match) {
+            res[match[1]] =  match[2];
+        }
+    } while (match);
+    return res;
+}
+
 async function importFragment(basePath, type, name) {
     switch (type) {
         case "lang": {
@@ -203,8 +218,9 @@ class I18n extends EventTarget {
     }
 
     get(key, values = []) {
-        const trans = this.#getTranslation(this.language, key).trim();
-        return trans.replace(/\{\{([0-9]+)\}\}/g, (n) => values[n]);
+        const internalValues = extractInternalValues(key);
+        const trans = this.#getTranslation(this.language, key.replace(INTERNAL_VALUES_REGEX, "{{$1}}")).trim();
+        return trans.replace(TEMPLATE_VALUES_REGEX, (_, n) => values[n] ?? internalValues[n]);
     }
 
     #getTranslation(lang, key) {

@@ -31,9 +31,6 @@ export default class NumberInput extends AbstractFormInput {
         this.#inputEl.addEventListener("input", () => {
             this.#onInput();
         });
-        this.#inputEl.addEventListener("change", () => {
-            this.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
-        });
     }
 
     connectedCallback() {
@@ -75,8 +72,24 @@ export default class NumberInput extends AbstractFormInput {
         return parseFloat(value);
     }
 
+    set min(value) {
+        this.setNumberAttribute("min", value);
+    }
+
+    get min() {
+        return this.getNumberAttribute("min");
+    }
+
+    set max(value) {
+        this.setNumberAttribute("max", value);
+    }
+
+    get max() {
+        return this.getNumberAttribute("max");
+    }
+
     static get observedAttributes() {
-        return [...super.observedAttributes, "value", "placeholder", "min", "max", "readonly", "autocomplete"];
+        return [...super.observedAttributes, "value", "placeholder", "readonly", "autocomplete"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -91,8 +104,6 @@ export default class NumberInput extends AbstractFormInput {
                     }
                 }
             } break;
-            case "min":
-            case "max":
             case "readonly":
             case "autocomplete": {
                 if (oldValue != newValue) {
@@ -113,8 +124,13 @@ export default class NumberInput extends AbstractFormInput {
 
     revalidate() {
         const value = this.value;
-        if (this.#inputEl.value !== "" && isNaN(value)) {
-            return "Please enter a valid number";
+        if (this.#inputEl.value !== "") {
+            if (isNaN(value)) {
+                return "Please enter a valid number";
+            }
+            if ((this.min != null && this.#inputEl.value < this.min) || (this.max != null && this.#inputEl.value > this.max)) {
+                return `Out of range. The Value must be between {{0::${this.min}}} and {{1::${this.max}}}`;
+            }
         }
         return super.revalidate();
     }

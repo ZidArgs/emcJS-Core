@@ -1,10 +1,21 @@
 :host {
     display: flex;
+    max-height: 100%;
+    max-width: 100%;
+}
+.container {
+    flex: 1;
+    overflow: auto;
+}
+.content {
+    position: relative;
+    display: flex;
     flex-direction: column;
 }
 ::slotted(form) {
     min-height: 2em;
     margin: 0px;
+    padding: 0px;
     color: var(--form-text-color, #000000);
     background-color: var(--form-back-color, #cccccc);
     border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
@@ -13,7 +24,7 @@
     border-top-left-radius: var(--form-border-radius, 0.25em);
     border-top-right-radius: var(--form-border-radius, 0.25em);
 }
-::slotted(form:nth-child(n + 1)) {
+::slotted(form:not(:first-child)) {
     margin-top: calc(-1 * var(--form-border-width, 2px));
 }
 ::slotted(form:last-child) {
@@ -23,15 +34,26 @@
 :host(.has-header) ::slotted(form:first-child) {
     position: sticky;
     top: 0px;
-    box-shadow: var(--page-back-color, #ffffff) 0px calc(-1 * (var(--content-mask, 0px) + var(--form-border-radius, 0.25em))) 0px 0px;
+    box-shadow: var(--page-back-color, #ffffff) 0px calc(-1 * var(--form-border-radius, 0.25em)) 0px 0px;
     z-index: 100;
 }
 :host(.has-footer) ::slotted(form:last-child) {
     position: sticky;
     bottom: 0px;
-    box-shadow: var(--page-back-color, #ffffff) 0px calc(var(--content-mask, 0px) + var(--form-border-radius, 0.25em)) 0px 0px;
+    box-shadow: var(--page-back-color, #ffffff) 0px var(--form-border-radius, 0.25em) 0px 0px;
     z-index: 100;
 }
 ::slotted(form > .unknown-form-element) {
     padding: 10px;
+}
+.container::-webkit-scrollbar-track {
+    background-color: var(--panel-back-color, #ffffff);
+}
+.container::-webkit-scrollbar-thumb {
+    background-color: var(--button-back-color, #cccccc);
+    border: solid 2px var(--panel-back-color, #ffffff);
+    border-radius: 8px;
+}
+.container::-webkit-scrollbar-thumb:hover {
+    background-color: var(--button-hover-back-color, #000000);
 }

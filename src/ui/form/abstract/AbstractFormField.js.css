@@ -17,7 +17,8 @@
     align-items: flex-start;
     justify-content: flex-start;
     flex-direction: column;
-    padding: 10px;
+    padding: 4px;
+    margin: 6px;
     color: var(--form-text-color, #000000);
     /* background-color: var(--form-back-color, #ffffff); */
 }

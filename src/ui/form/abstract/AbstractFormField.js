@@ -2,11 +2,28 @@ import CustomFormElement from "../../element/CustomFormElement.js";
 import {
     deepClone
 } from "../../../util/helper/DeepClone.js";
+import {
+    getScrollParent
+} from "../../../util/helper/ui/Scroll.js";
 import "../../i18n/I18nLabel.js";
 import "../../i18n/I18nTextbox.js";
 import TPL from "./AbstractFormField.js.html" assert {type: "html"};
 import STYLE from "./AbstractFormField.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./AbstractFormField.js.form-config.json" assert {type: "json"};
+
+function getTopScrollOffset(formHost) {
+    if (formHost.classList.contains("has-header")) {
+        return formHost.firstElementChild.getBoundingClientRect().height;
+    }
+    return 0;
+}
+
+function getBottomScrollOffset(formHost) {
+    if (formHost.classList.contains("has-footer")) {
+        return formHost.lastElementChild.getBoundingClientRect().height;
+    }
+    return 0;
+}
 
 export default class AbstractFormField extends CustomFormElement {
 
@@ -28,6 +45,23 @@ export default class AbstractFormField extends CustomFormElement {
         /* --- */
         this.addEventListener("validity", (event) => {
             this.shadowRoot.getElementById("error").i18nContent = event.target.validationMessage ?? "";
+        });
+        this.addEventListener("focus", () => {
+            const scrollParent = getScrollParent(this);
+            const formHost = scrollParent.getRootNode().host;
+            if (formHost.matches("emc-form-container")) {
+                this.scrollIntoViewIfNeeded({
+                    behavior: "instant",
+                    block: "center",
+                    offsetTop: getTopScrollOffset(formHost),
+                    offsetBottom: getBottomScrollOffset(formHost)
+                });
+            } else {
+                this.scrollIntoViewIfNeeded({
+                    behavior: "instant",
+                    block: "center"
+                });
+            }
         });
         /* --- */
         const errorEl = this.shadowRoot.getElementById("error");

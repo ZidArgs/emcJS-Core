@@ -51,6 +51,7 @@ class FormElementRegistry {
         hiddenWrapperEl.style.color = "#e5ad14";
         hiddenWrapperEl.style.background = "#fff5d5";
         hiddenWrapperEl.style.padding = "10px";
+        hiddenWrapperEl.style.margin = "6px";
         hiddenWrapperEl.style.fontStyle = "italic";
 
         const hiddenEl = document.createElement("input");

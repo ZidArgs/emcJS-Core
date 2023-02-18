@@ -77,10 +77,9 @@ export default class FormFieldContext {
         /* --- */
         mutationObserver.observe(node, MUTATION_CONFIG);
         this.#elementEventManager.switchTarget(node);
-        this.#elementEventManager.set("value", (event) => {
+        this.#elementEventManager.set("change", () => {
             this.#storageEventManager.setActive(false);
-            const {name, value} = event;
-            this.storage.set(name, value);
+            this.storage.set(this.#element.name, this.#element.value);
             this.#storageEventManager.setActive(true);
         });
         this.#elementEventManager.set("default", (event) => {

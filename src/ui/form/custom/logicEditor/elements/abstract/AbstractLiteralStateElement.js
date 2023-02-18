@@ -92,7 +92,7 @@ export default class AbstractLiteralStateElement extends AbstractElement {
     }
 
     loadLogic(logic) {
-        this.ref = logic.ref;
+        this.ref = logic.ref ?? logic.el;
         this.value = logic.value;
     }
 
