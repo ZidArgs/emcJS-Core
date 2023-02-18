@@ -175,6 +175,9 @@ export default class SearchSelect extends CustomFormElementDelegating {
         window.addEventListener("blur", () => {
             this.#cancelSelection();
         }, {passive: true});
+        window.addEventListener("click", () => {
+            this.#cancelSelection();
+        }, {passive: true});
         /* --- */
         this.#i18nEventManager.setActive(this.getBooleanAttribute("sorted"));
         this.#i18nEventManager.set("language", () => {
