@@ -1,14 +1,18 @@
 import CustomElement from "../element/CustomElement.js";
 import ElementManager from "../../util/html/ElementManager.js";
-import "./components/TreeNode.js";
+import {
+    sortChildren
+} from "../../util/helper/ui/NodeListSort.js";
+import TreeNode from "./components/TreeNode.js";
 import TPL from "./Tree.js.html" assert {type: "html"};
 import STYLE from "./Tree.js.css" assert {type: "css"};
 
 function treeComposer(key, params) {
-    const {label = key, data = {}, children} = params;
-    const el = document.createElement("emc-tree-node");
+    const {label = key, type, data = {}, sorted = false, children} = params;
+    const el = TreeNode.createNodeType(type);
     el.ref = key;
     el.label = label;
+    el.sorted = sorted;
     for (const name in data) {
         el.dataset[name] = data[name];
     }
@@ -22,8 +26,9 @@ function treeComposer(key, params) {
 }
 
 function treeMutator(el, key, params) {
-    const {label = key, data = {}, children} = params;
+    const {label = key, data = {}, sorted = false, children} = params;
     el.label = label;
+    el.sorted = sorted;
     for (const name in data) {
         el.dataset[name] = data[name];
     }
@@ -71,6 +76,9 @@ export default class Tree extends CustomElement {
             data.push({...config, key});
         }
         this.#elManager.manage(data);
+        if (this.sorted) {
+            sortChildren(this);
+        }
     }
 
     selectItemByPath(path) {

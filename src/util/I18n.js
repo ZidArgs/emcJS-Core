@@ -220,7 +220,11 @@ class I18n extends EventTarget {
     get(key, values = []) {
         const internalValues = extractInternalValues(key);
         const trans = this.#getTranslation(this.language, key.replace(INTERNAL_VALUES_REGEX, "{{$1}}")).trim();
-        return trans.replace(TEMPLATE_VALUES_REGEX, (_, n) => values[n] ?? internalValues[n]);
+        return trans.replace(TEMPLATE_VALUES_REGEX, (_, n) => {
+            const value = values[n] ?? internalValues[n];
+            const trans = this.#getTranslation(this.language, value).trim();
+            return trans;
+        });
     }
 
     #getTranslation(lang, key) {

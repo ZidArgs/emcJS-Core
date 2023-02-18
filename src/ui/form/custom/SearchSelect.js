@@ -275,7 +275,12 @@ export default class SearchSelect extends CustomFormElementDelegating {
             } break;
             case "sorted": {
                 if (oldValue != newValue) {
-                    this.#i18nEventManager.setActive(this.getBooleanAttribute("sorted"));
+                    const sorted = this.getBooleanAttribute("sorted");
+                    this.#i18nEventManager.setActive(sorted);
+                    this.#sort();
+                    if (sorted) {
+                        this.#sort();
+                    }
                 }
             } break;
         }
