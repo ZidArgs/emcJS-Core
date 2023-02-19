@@ -17,17 +17,6 @@
     border: solid var(--panel-border-width, 2px) var(--panel-border-color, #000000);
     border-radius: 0px 0px var(--panel-border-radius, 0.25em) var(--panel-border-radius, 0.25em);
 }
-#scroll-container::-webkit-scrollbar-track {
-    background-color: var(--panel-back-color, #ffffff);
-}
-#scroll-container::-webkit-scrollbar-thumb {
-    background-color: var(--button-back-color, #cccccc);
-    border: solid 2px var(--panel-back-color, #ffffff);
-    border-radius: 8px;
-}
-#scroll-container::-webkit-scrollbar-thumb:hover {
-    background-color: var(--button-hover-back-color, #000000);
-}
 slot {
     display: block;
     width: 100%;

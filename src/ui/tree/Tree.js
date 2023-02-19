@@ -37,6 +37,22 @@ export default class Tree extends CustomElement {
                 }
             }
         });
+        treeEl.addEventListener("blur", () => {
+            const keyboardMarked = this.querySelector(".keyboard-marked");
+            if (keyboardMarked != null) {
+                keyboardMarked.classList.remove("keyboard-marked");
+            }
+        });
+        treeEl.addEventListener("focus", (event) => {
+            console.log(event)
+            const currentEl = this.querySelector(".keyboard-marked") ?? this.querySelector(".marked");
+            if (currentEl == null) {
+                const element = this.#getElementByPath([0]);
+                if (element != null) {
+                    this.#markKeyboardUsage(null, element);
+                }
+            }
+        });
         /* --- */
         this.addEventListener("keydown", (event) => {
             const {key} = event;
@@ -93,26 +109,8 @@ export default class Tree extends CustomElement {
                 event.stopPropagation();
             }
         });
-        this.addEventListener("blur", () => {
-            const keyboardMarked = this.querySelector(".keyboard-marked");
-            if (keyboardMarked != null) {
-                keyboardMarked.classList.remove("keyboard-marked");
-            }
-        });
-        this.addEventListener("focus", () => {
-            const element = this.#getElementByPath([0]);
-            if (element != null) {
-                this.#markKeyboardUsage(null, element);
-            }
-        });
         /* --- */
         this.#elManager = TreeNode.getTreeElementManager(this);
-    }
-
-    connectedCallback() {
-        if (this.getAttribute("tabindex") == null) {
-            this.setAttribute("tabindex", "0");
-        }
     }
 
     loadConfig(structure) {

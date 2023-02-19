@@ -15,22 +15,12 @@
 }
 #body {
     position: relative;
-    display: block;
+    display: flex;
+    flex-direction: column;
     flex: 1;
     padding: 8px;
     color: var(--panel-text-color, #000000);
     background-color: var(--panel-back-color, #ffffff);
     overflow-x: auto;
     overflow-y: auto;
-}
-#body::-webkit-scrollbar-track {
-    background-color: var(--panel-back-color, #ffffff);
-}
-#body::-webkit-scrollbar-thumb {
-    background-color: var(--button-back-color, #cccccc);
-    border: solid 2px var(--panel-back-color, #ffffff);
-    border-radius: 8px;
-}
-#body::-webkit-scrollbar-thumb:hover {
-    background-color: var(--button-hover-back-color, #000000);
 }

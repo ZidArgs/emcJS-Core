@@ -8,39 +8,33 @@
 
 /* scrollbar */
 ::-webkit-scrollbar {
-    width: var(--scrollbar-size, 16px);
-    height: var(--scrollbar-size, 16px);
+    width: var(--scrollbar-size, 12px);
+    height: var(--scrollbar-size, 12px);
 }
 ::-webkit-scrollbar-button {
     width: 0px;
     height: 0px;
 }
-::-webkit-scrollbar-corner {
-    background: var(--scrollbar-corner-color, #f1f1f1);
-}
 ::-webkit-scrollbar-track {
-    background: var(--scrollbar-track-color, #f1f1f1);
-    border-width: var(--scrollbar-track-border-width, 0px);
-    border-style: var(--scrollbar-track-border-style, none);
-    border-color: var(--scrollbar-track-border-color, transparent);
-    border-radius: var(--scrollbar-track-border-radius, 0px);
+    background-color: var(--scrollbar-track-color, #eeeeee);
+    border: solid var(--scrollbar-track-border-width, 0px) var(--scrollbar-track-border-color, #00000000);
+    border-radius: var(--scrollbar-track-border-radius, 6px);
 }
-::-webkit-scrollbar-track:hover {
-    background: var(--scrollbar-track-color-hover, #f1f1f1);
-}
-::-webkit-scrollbar-track:active {
-    background: var(--scrollbar-track-color-active, #f1f1f1);
+::-webkit-scrollbar-corner {
+    background-color: var(--scrollbar-corner-color, #00000000);
+    border: solid var(--scrollbar-corner-border-width, 0px) var(--scrollbar-corner-border-color, #00000000);
+    border-radius: var(--scrollbar-corner-border-radius, 0px);
 }
 ::-webkit-scrollbar-thumb {
-    background: var(--scrollbar-thumb-color, #c1c1c1);
-    border-width: var(--scrollbar-thumb-border-width, 2px);
-    border-style: var(--scrollbar-thumb-border-style, solid);
-    border-color: var(--scrollbar-thumb-border-color, #f1f1f1);
-    border-radius: var(--scrollbar-thumb-border-radius, 0px);
+    background-color: var(--scrollbar-thumb-color, #cccccc);
+    border: solid var(--scrollbar-thumb-border-width, 2px) var(--scrollbar-thumb-border-color, #eeeeee);
+    border-radius: var(--scrollbar-thumb-border-radius, 6px);
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--scrollbar-thumb-color-hover, #999999);
+    background-color: var(--scrollbar-thumb-hover-color, #999999);
+    border: solid var(--scrollbar-thumb-hover-border-width, 2px) var(--scrollbar-thumb-hover-border-color, #eeeeee);
 }
 ::-webkit-scrollbar-thumb:active {
-    background: var(--scrollbar-thumb-color-active, #747474);
+    background-color: var(--scrollbar-thumb-active-color, #000000);
+    border: solid var(--scrollbar-thumb-active-border-width, 2px) var(--scrollbar-thumb-active-border-color, #eeeeee);
 }
