@@ -1,6 +1,9 @@
 import CustomElement from "../../element/CustomElement.js";
 import ElementManager from "../../../util/html/ElementManager.js";
 import {
+    scrollIntoViewIfNeeded
+} from "../../../util/helper/ui/Scroll.js";
+import {
     sortChildren
 } from "../../../util/helper/ui/NodeListSort.js";
 import EventTargetManager from "../../../util/event/EventTargetManager.js";
@@ -12,8 +15,8 @@ import STYLE from "./TreeNode.js.css" assert {type: "css"};
 const NODE_TYPES = new Map();
 
 function treeComposer(key, params) {
-    const {label = key, type, data = {}, sorted = false, children} = params;
-    const el = TreeNode.createNodeType(type);
+    const {nodeType, label = key, data = {}, sorted = false, startCollapsed = false, children, ...attr} = params;
+    const el = TreeNode.createNodeType(nodeType);
     el.ref = key;
     el.label = label;
     el.sorted = sorted;
@@ -23,14 +26,33 @@ function treeComposer(key, params) {
     if (children != null) {
         el.loadConfig(children);
         el.forceCollapsible = true;
+        el.toggleCollapsed(!!startCollapsed);
     } else {
         el.forceCollapsible = false;
+    }
+    for (const name in attr) {
+        const value = attr[name];
+        if (value != null) {
+            if (typeof value === "object") {
+                el.setAttribute(name, JSON.stringify(value));
+            } else if (typeof value === "boolean") {
+                if (value) {
+                    el.setAttribute(name, "");
+                } else {
+                    el.removeAttribute(name);
+                }
+            } else {
+                el.setAttribute(name, value);
+            }
+        } else {
+            el.removeAttribute(name);
+        }
     }
     return el;
 }
 
 function treeMutator(el, key, params) {
-    const {label = key, data = {}, sorted = false, children} = params;
+    const {label = key, data = {}, sorted = false, children, ...attr} = params;
     el.label = label;
     el.sorted = sorted;
     for (const name in data) {
@@ -41,6 +63,24 @@ function treeMutator(el, key, params) {
         el.forceCollapsible = true;
     } else {
         el.forceCollapsible = false;
+    }
+    for (const name in attr) {
+        const value = attr[name];
+        if (value != null) {
+            if (typeof value === "object") {
+                el.setAttribute(name, JSON.stringify(value));
+            } else if (typeof value === "boolean") {
+                if (value) {
+                    el.setAttribute(name, "");
+                } else {
+                    el.removeAttribute(name);
+                }
+            } else {
+                el.setAttribute(name, value);
+            }
+        } else {
+            el.removeAttribute(name);
+        }
     }
 }
 
@@ -72,7 +112,7 @@ export default class TreeNode extends CustomElement {
             ev.left = event.clientX;
             ev.top = event.clientY;
             this.dispatchEvent(ev);
-            if (!ev.defaultPrevented) {
+            if (event.pointerType && !ev.defaultPrevented) {
                 this.toggleCollapsed();
             }
         });
@@ -128,10 +168,7 @@ export default class TreeNode extends CustomElement {
             this.toggleCollapsed();
         });
         /* --- */
-        this.#elManager = new ElementManager(this, {
-            composer: treeComposer,
-            mutator: treeMutator
-        });
+        this.#elManager = TreeNode.getTreeElementManager(this);
         /* --- */
         this.#i18nEventManager.setActive(this.getBooleanAttribute("sorted"));
         this.#i18nEventManager.set("language", () => {
@@ -144,15 +181,15 @@ export default class TreeNode extends CustomElement {
 
     click() {
         super.click();
-        this.shadowRoot.getElementById("content").scrollIntoView({
+        const contentEl = this.shadowRoot.getElementById("content");
+        scrollIntoViewIfNeeded(contentEl, {
             behavior: "smooth",
-            block: "center",
-            inline: "start"
+            block: "nearest"
         });
     }
 
     toggleCollapsed(force) {
-        if (this.forceCollapsible || this.children.length) {
+        if (this.isCollapsible) {
             this.#nodeEl.classList.toggle("collapsed", force);
         }
     }
@@ -162,6 +199,14 @@ export default class TreeNode extends CustomElement {
         for (const ch of this.children) {
             ch.forceAllCollapsed(collapsed);
         }
+    }
+
+    get isCollapsible() {
+        return this.forceCollapsible || this.children.length;
+    }
+
+    get isCollapsed() {
+        return this.#nodeEl.classList.contains("collapsed");
     }
 
     set ref(val) {
@@ -256,6 +301,13 @@ export default class TreeNode extends CustomElement {
     static createNodeType(type) {
         const TreeNodeClass = NODE_TYPES.get(type) ?? TreeNode;
         return new TreeNodeClass();
+    }
+
+    static getTreeElementManager(container) {
+        return new ElementManager(container, {
+            composer: treeComposer,
+            mutator: treeMutator
+        });
     }
 
 }

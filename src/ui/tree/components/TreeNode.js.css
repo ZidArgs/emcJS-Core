@@ -64,3 +64,7 @@
     border-bottom-color: var(--tree-marked-text-color, #ffffff);
     border-right-color: var(--tree-marked-text-color, #ffffff);
 }
+
+:host(.keyboard-marked) #content {
+    box-shadow: inset 0 0 2px 2px var(--input-focus-color, #06b5ff);
+}

@@ -1,5 +1,5 @@
 import {
-    getScrollParent
+    scrollIntoView, scrollIntoViewIfNeeded
 } from "../../util/helper/ui/Scroll.js";
 // import TPL from "./CustomElement.js.html" assert {type: "html"};
 import STYLE from "./CustomElement.js.css" assert {type: "css"};
@@ -52,12 +52,11 @@ export default class CustomElementDelegating extends HTMLElement {
     }
 
     scrollIntoViewIfNeeded(options) {
-        const {behavior = "auto", block, inline, offsetTop = 0, offsetBottom = 0} = options;
-        const scrollEl = getScrollParent(this);
-        const nodeRect = this.getBoundingClientRect();
-        if (nodeRect.top < offsetTop || nodeRect.bottom > scrollEl.clientHeight - offsetBottom) {
-            this.scrollIntoView({behavior, block, inline});
-        }
+        scrollIntoViewIfNeeded(this, options);
+    }
+
+    scrollIntoView(options) {
+        scrollIntoView(this, options);
     }
 
 }

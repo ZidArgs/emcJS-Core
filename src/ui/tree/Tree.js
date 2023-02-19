@@ -1,44 +1,15 @@
 import CustomElement from "../element/CustomElement.js";
-import ElementManager from "../../util/html/ElementManager.js";
 import {
     sortChildren
 } from "../../util/helper/ui/NodeListSort.js";
+import {
+    scrollIntoViewIfNeeded
+} from "../../util/helper/ui/Scroll.js";
 import TreeNode from "./components/TreeNode.js";
 import TPL from "./Tree.js.html" assert {type: "html"};
 import STYLE from "./Tree.js.css" assert {type: "css"};
 
-function treeComposer(key, params) {
-    const {label = key, type, data = {}, sorted = false, children} = params;
-    const el = TreeNode.createNodeType(type);
-    el.ref = key;
-    el.label = label;
-    el.sorted = sorted;
-    for (const name in data) {
-        el.dataset[name] = data[name];
-    }
-    if (children != null) {
-        el.loadConfig(children);
-        el.forceCollapsible = true;
-    } else {
-        el.forceCollapsible = false;
-    }
-    return el;
-}
-
-function treeMutator(el, key, params) {
-    const {label = key, data = {}, sorted = false, children} = params;
-    el.label = label;
-    el.sorted = sorted;
-    for (const name in data) {
-        el.dataset[name] = data[name];
-    }
-    if (children != null) {
-        el.loadConfig(children);
-        el.forceCollapsible = true;
-    } else {
-        el.forceCollapsible = false;
-    }
-}
+// TODO add keyboard navigation
 
 export default class Tree extends CustomElement {
 
@@ -53,6 +24,10 @@ export default class Tree extends CustomElement {
         treeEl.addEventListener("select", (event) => {
             if (!event.isSelected) {
                 const {element} = event;
+                const keyboardMarked = this.querySelector(".keyboard-marked");
+                if (keyboardMarked != null) {
+                    keyboardMarked.classList.remove("keyboard-marked");
+                }
                 const oldMarked = this.querySelector(".marked");
                 if (oldMarked != null) {
                     oldMarked.classList.remove("marked");
@@ -63,10 +38,81 @@ export default class Tree extends CustomElement {
             }
         });
         /* --- */
-        this.#elManager = new ElementManager(this, {
-            composer: treeComposer,
-            mutator: treeMutator
+        this.addEventListener("keydown", (event) => {
+            const {key} = event;
+            if (key === "ArrowUp") {
+                const currentEl = this.querySelector(".keyboard-marked") ?? this.querySelector(".marked");
+                if (currentEl != null) {
+                    const nextEl = this.#findPrevNode(currentEl);
+                    if (nextEl != null) {
+                        this.#markKeyboardUsage(currentEl, nextEl);
+                    }
+                } else {
+                    const element = this.#getElementByPath([0]);
+                    if (element != null) {
+                        this.#markKeyboardUsage(null, element);
+                    }
+                }
+                event.preventDefault();
+                event.stopPropagation();
+            } else if (key === "ArrowDown") {
+                const currentEl = this.querySelector(".keyboard-marked") ?? this.querySelector(".marked");
+                if (currentEl != null) {
+                    const nextEl = this.#findNextNode(currentEl);
+                    if (nextEl != null) {
+                        this.#markKeyboardUsage(currentEl, nextEl);
+                    }
+                } else {
+                    const element = this.#getElementByPath([0]);
+                    if (element != null) {
+                        this.#markKeyboardUsage(null, element);
+                    }
+                }
+                event.preventDefault();
+                event.stopPropagation();
+            } else if (key === "ArrowLeft") {
+                const currentEl = this.querySelector(".keyboard-marked") ?? this.querySelector(".marked");
+                if (currentEl != null && currentEl.isCollapsible) {
+                    currentEl.toggleCollapsed(true);
+                }
+                event.preventDefault();
+                event.stopPropagation();
+            } else if (key === "ArrowRight") {
+                const currentEl = this.querySelector(".keyboard-marked") ?? this.querySelector(".marked");
+                if (currentEl != null && currentEl.isCollapsible) {
+                    currentEl.toggleCollapsed(false);
+                }
+                event.preventDefault();
+                event.stopPropagation();
+            } else if (key === "Enter" || key === " ") {
+                const currentEl = this.querySelector(".keyboard-marked");
+                if (currentEl != null) {
+                    currentEl.click();
+                }
+                event.preventDefault();
+                event.stopPropagation();
+            }
         });
+        this.addEventListener("blur", () => {
+            const keyboardMarked = this.querySelector(".keyboard-marked");
+            if (keyboardMarked != null) {
+                keyboardMarked.classList.remove("keyboard-marked");
+            }
+        });
+        this.addEventListener("focus", () => {
+            const element = this.#getElementByPath([0]);
+            if (element != null) {
+                this.#markKeyboardUsage(null, element);
+            }
+        });
+        /* --- */
+        this.#elManager = TreeNode.getTreeElementManager(this);
+    }
+
+    connectedCallback() {
+        if (this.getAttribute("tabindex") == null) {
+            this.setAttribute("tabindex", "0");
+        }
     }
 
     loadConfig(structure) {
@@ -86,6 +132,10 @@ export default class Tree extends CustomElement {
         if (element != null) {
             element.click();
         } else {
+            const keyboardMarked = this.querySelector(".keyboard-marked");
+            if (keyboardMarked != null) {
+                keyboardMarked.classList.remove("keyboard-marked");
+            }
             const oldMarked = this.querySelector(".marked");
             if (oldMarked != null) {
                 oldMarked.classList.remove("marked");
@@ -101,6 +151,10 @@ export default class Tree extends CustomElement {
     }
 
     markItemByPathForMenu(path) {
+        const keyboardMarked = this.querySelector(".keyboard-marked");
+        if (keyboardMarked != null) {
+            keyboardMarked.classList.remove("keyboard-marked");
+        }
         const oldMarked = this.querySelector(".ctx-marked");
         if (oldMarked != null) {
             oldMarked.classList.remove("ctx-marked");
@@ -152,6 +206,76 @@ export default class Tree extends CustomElement {
             }
         }
         return res;
+    }
+
+    getPathForNode(node) {
+        if (!this.contains(node)) {
+            return null;
+        }
+        return this.#getPathForNodeRecursive(node);
+    }
+
+    #getPathForNodeRecursive(node, res = []) {
+        if (node === this) {
+            return res;
+        }
+        const targetIndex = Array.from(node.parentElement.children).indexOf(node);
+        res.unshift(targetIndex);
+        return this.#getPathForNodeRecursive(node.parentElement, res);
+    }
+
+    #findPrevNode(node) {
+        if (node === this || !this.contains(node)) {
+            return null;
+        }
+        const prevEl = node.previousElementSibling;
+        if (prevEl != null) {
+            if (node.children.length && !prevEl.isCollapsed) {
+                let current = prevEl;
+                while (current.lastElementChild != null && !current.isCollapsed) {
+                    current = current.lastElementChild;
+                }
+                return current;
+            }
+            return prevEl;
+        }
+        const parentEl = node.parentElement;
+        if (parentEl !== this) {
+            return parentEl;
+        }
+        return null;
+    }
+
+    #findNextNode(node) {
+        if (node === this || !this.contains(node)) {
+            return null;
+        }
+        if (node.children.length && !node.isCollapsed) {
+            return node.firstElementChild;
+        }
+        let current = node;
+        while (current !== this) {
+            const nextEl = node.nextElementSibling;
+            if (nextEl != null) {
+                return nextEl;
+            }
+            current = current.parentElement;
+        }
+        return null;
+    }
+
+    #markKeyboardUsage(currentEl, nextEl) {
+        if (currentEl != null) {
+            currentEl.classList.remove("keyboard-marked");
+        }
+        if (nextEl != null) {
+            nextEl.classList.add("keyboard-marked");
+            const contentEl = nextEl.shadowRoot.getElementById("content");
+            scrollIntoViewIfNeeded(contentEl, {
+                behavior: "smooth",
+                block: "nearest"
+            });
+        }
     }
 
 }
