@@ -2,7 +2,7 @@ function escapeRegExp(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-export default class SearchLoose {
+export default class CharacterSearch {
 
     constructor(query = "") {
         if (typeof query != "string") {

@@ -2,7 +2,7 @@ import CustomFormElementDelegating from "../../element/CustomFormElementDelegati
 import EventTargetManager from "../../../util/event/EventTargetManager.js";
 import EventMultiTargetManager from "../../../util/event/EventMultiTargetManager.js";
 import i18n from "../../../util/I18n.js";
-import SearchLoose from "../../../util/search/SearchLoose.js";
+import CharacterSearch from "../../../util/search/CharacterSearch.js";
 import {
     sortNodeList
 } from "../../../util/helper/ui/NodeListSort.js";
@@ -154,7 +154,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
         });
         this.#inputEl.addEventListener("input", () => {
             const all = this.#optionNodeList.getNodeList();
-            const regEx = new SearchLoose(this.#inputEl.value);
+            const regEx = new CharacterSearch(this.#inputEl.value);
             for (const el of all) {
                 if (el.innerText.trim().match(regEx)) {
                     el.style.display = "";
