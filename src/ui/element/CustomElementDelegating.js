@@ -16,6 +16,14 @@ export default class CustomElementDelegating extends HTMLElement {
         STYLE.apply(this.shadowRoot);
     }
 
+    connectedCallback() {
+        // ignore
+    }
+
+    disconnectedCallback() {
+        // ignore
+    }
+
     setBooleanAttribute(name, value) {
         if (typeof value === "boolean") {
             if (value) {
@@ -37,6 +45,26 @@ export default class CustomElementDelegating extends HTMLElement {
             return false;
         }
         return value;
+    }
+
+    setNumberAttribute(name, value) {
+        const parsedValue = parseFloat(value);
+        if (!isNaN(parsedValue)) {
+            this.setAttribute(name, parsedValue);
+        } else {
+            this.removeAttribute(name);
+        }
+    }
+
+    getNumberAttribute(name) {
+        const value = this.getAttribute(name);
+        if (value != null) {
+            const parsedValue = parseFloat(value);
+            if (!isNaN(parsedValue)) {
+                return parsedValue;
+            }
+        }
+        return null;
     }
 
     setJSONAttribute(name, value) {

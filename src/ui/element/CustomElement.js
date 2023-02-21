@@ -16,6 +16,14 @@ export default class CustomElement extends HTMLElement {
         STYLE.apply(this.shadowRoot);
     }
 
+    connectedCallback() {
+        // ignore
+    }
+
+    disconnectedCallback() {
+        // ignore
+    }
+
     setBooleanAttribute(name, value) {
         if (typeof value === "boolean") {
             if (value) {

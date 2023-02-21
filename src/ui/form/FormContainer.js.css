@@ -19,17 +19,18 @@
     color: var(--form-text-color, #000000);
     background-color: var(--form-back-color, #cccccc);
     border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
+    border-radius: 0px !important;
 }
 ::slotted(form:first-child) {
-    border-top-left-radius: var(--form-border-radius, 0.25em);
-    border-top-right-radius: var(--form-border-radius, 0.25em);
+    border-top-left-radius: var(--form-border-radius, 0.25em) !important;
+    border-top-right-radius: var(--form-border-radius, 0.25em) !important;
 }
 ::slotted(form:not(:first-child)) {
     margin-top: calc(-1 * var(--form-border-width, 2px));
 }
 ::slotted(form:last-child) {
-    border-bottom-left-radius: var(--form-border-radius, 0.25em);
-    border-bottom-right-radius: var(--form-border-radius, 0.25em);
+    border-bottom-left-radius: var(--form-border-radius, 0.25em) !important;
+    border-bottom-right-radius: var(--form-border-radius, 0.25em) !important;
 }
 :host(.has-header) ::slotted(form:first-child) {
     position: sticky;

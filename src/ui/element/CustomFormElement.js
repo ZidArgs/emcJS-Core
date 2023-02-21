@@ -1,14 +1,5 @@
 import CustomElement from "./CustomElement.js";
 
-const Q_TAB = [
-    "button:not([tabindex=\"-1\"])",
-    "[href]:not([tabindex=\"-1\"])",
-    "input:not([tabindex=\"-1\"])",
-    "select:not([tabindex=\"-1\"])",
-    "textarea:not([tabindex=\"-1\"])",
-    "[tabindex]:not([tabindex=\"-1\"])"
-].join(",");
-
 export default class CustomFormElement extends CustomElement {
 
     static get formAssociated() {
@@ -27,13 +18,6 @@ export default class CustomFormElement extends CustomElement {
 
     get internals() {
         return this.#internals;
-    }
-
-    focus(options) {
-        const firstFocusEl = this.shadowRoot.querySelector(Q_TAB);
-        if (firstFocusEl != null) {
-            firstFocusEl.focus(options);
-        }
     }
 
     formAssociatedCallback(/* form */) {

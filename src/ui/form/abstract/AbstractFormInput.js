@@ -202,10 +202,11 @@ export default class AbstractFormInput extends AbstractFormField {
             message = "";
         }
         if (this.validationMessage != message) {
+            // this.internals.setValidity({customError: message !== ""}, message);
             this.internals.setValidity({customError: message !== ""}, message, target);
-            if ("setCustomValidity" in target) {
-                target.setCustomValidity(message);
-            }
+            // if ("setCustomValidity" in target) {
+            //     target.setCustomValidity(message);
+            // }
             /* --- */
             const event = new Event("validity", {bubbles: true, cancelable: true});
             event.value = this.value;
@@ -218,6 +219,8 @@ export default class AbstractFormInput extends AbstractFormField {
     }
 
     // TODO revalidate with custom validation callback
+    // --> validate in fieldcontext
+    // --> allow multiple error messages to be registered
     revalidate() {
         const value = this.value;
         if (this.required && !isValueSet(value)) {
