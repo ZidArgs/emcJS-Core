@@ -14,7 +14,7 @@ export default class I18nOption extends I18nMixin(HTMLOptionElement) {
         return this.getAttribute("i18n-value") || "";
     }
 
-    static get observedI18n() {
+    static get i18nObservedAttributes() {
         return ["i18n-value"];
     }
 

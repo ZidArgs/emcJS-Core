@@ -95,17 +95,9 @@ export default class KeyValueListInput extends CustomFormElementDelegating {
         // TODO build internal structure
     }
 
-    setCustomValidity(message) {
-        if (typeof message === "string" && message !== "") {
-            this.internals.setValidity({customError: true}, message);
-        } else {
-            this.internals.setValidity({}, "");
-        }
-    }
-
-    revalidate() {
+    checkValid() {
         // TODO validate unique key
-        return super.revalidate();
+        return super.checkValid();
     }
 
 }

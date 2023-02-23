@@ -118,11 +118,7 @@ export default class NumberInput extends AbstractFormInput {
         }
     }
 
-    setCustomValidity(message) {
-        super.setCustomValidity(message, this.#inputEl);
-    }
-
-    revalidate() {
+    checkValid() {
         const value = this.value;
         if (this.#inputEl.value !== "") {
             if (isNaN(value)) {
@@ -132,7 +128,7 @@ export default class NumberInput extends AbstractFormInput {
                 return `Out of range. The Value must be between {{0::${this.min}}} and {{1::${this.max}}}`;
             }
         }
-        return super.revalidate();
+        return super.checkValid();
     }
 
 }

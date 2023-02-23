@@ -173,10 +173,14 @@ export default class SearchSelect extends CustomFormElementDelegating {
             }
         }, {passive: true});
         window.addEventListener("blur", () => {
-            this.#cancelSelection();
+            if (this.#isEditMode) {
+                this.#cancelSelection();
+            }
         }, {passive: true});
         window.addEventListener("click", () => {
-            this.#cancelSelection();
+            if (this.#isEditMode) {
+                this.#cancelSelection();
+            }
         }, {passive: true});
         /* --- */
         this.#i18nEventManager.setActive(this.getBooleanAttribute("sorted"));
@@ -318,9 +322,14 @@ export default class SearchSelect extends CustomFormElementDelegating {
             } else {
                 this.#scrollContainerEl.style.top = `${thisRect.bottom}px`;
             }
-            const el = this.#optionNodeList.querySelector(`[value="${this.#value}"]`);
-            if (el != null) {
-                el.classList.add("marked");
+            const all = this.#optionNodeList.querySelectorAll(`[value]`);
+            for (const el of all) {
+                el.style.display = "";
+                if (el.value === this.#value) {
+                    el.classList.add("marked");
+                } else {
+                    el.classList.remove("marked");
+                }
             }
         }
     }
@@ -397,7 +406,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
                 }
             }
         } else {
-            nextEl = this.querySelector(`[value="${this.#value}"]`);
+            nextEl = this.#optionNodeList.querySelector(`[value="${this.#value}"]`);
             if (nextEl == null) {
                 nextEl = this.#getFirstOption();
             }
@@ -453,22 +462,12 @@ export default class SearchSelect extends CustomFormElementDelegating {
         this.#optionSelectEventManager.clearTargets();
         for (const el of optionNodeList) {
             this.#optionSelectEventManager.addTarget(el);
-            if (el.value == this.value) {
-                this.#inputEl.innerHTML = el.innerHTML;
-            }
         }
         /* --- */
         if (this.getBooleanAttribute("sorted")) {
             this.#sort();
         }
-    }
-
-    setCustomValidity(message) {
-        if (typeof message === "string" && message !== "") {
-            this.internals.setValidity({customError: true}, message, this.#inputEl);
-        } else {
-            this.internals.setValidity({}, "");
-        }
+        this.#applyValue(this.#value);
     }
 
 }

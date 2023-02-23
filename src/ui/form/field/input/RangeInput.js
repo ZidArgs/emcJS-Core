@@ -131,10 +131,6 @@ export default class RangeInput extends AbstractFormInput {
         }
     }
 
-    setCustomValidity(message) {
-        super.setCustomValidity(message, this.#inputEl);
-    }
-
     #setRange() {
         const min = parseInt(this.getAttribute("min") || "0");
         const max = parseInt(this.getAttribute("max") || "10");

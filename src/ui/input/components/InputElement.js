@@ -20,7 +20,7 @@ export default class InputElement extends I18nMixin(HTMLInputElement) {
         return this.getAttribute("i18n-value") || "";
     }
 
-    static get observedI18n() {
+    static get i18nObservedAttributes() {
         return ["i18n-value"];
     }
 

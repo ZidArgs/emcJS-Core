@@ -99,10 +99,6 @@ export default class PasswordInput extends AbstractFormInput {
         }
     }
 
-    setCustomValidity(message) {
-        super.setCustomValidity(message, this.#inputEl);
-    }
-
 }
 
 FormElementRegistry.register("PasswordInput", PasswordInput);

@@ -124,10 +124,6 @@ export default class LogicInput extends AbstractFormInput {
         }
     }
 
-    setCustomValidity(message) {
-        super.setCustomValidity(message, this.#inputEl);
-    }
-
     #applyValue(value) {
         if (typeof value === "object") {
             this.#inputEl.value = "logic";

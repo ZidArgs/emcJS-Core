@@ -173,10 +173,6 @@ export default class HotkeyInput extends AbstractFormInput {
         }
     }
 
-    setCustomValidity(message) {
-        super.setCustomValidity(message, this.#inputEl);
-    }
-
     #display({ctrlKey, shiftKey, altKey, metaKey, key} = {}) {
         let res = "";
         if (ctrlKey) {

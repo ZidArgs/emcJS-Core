@@ -25,6 +25,9 @@
     border: solid var(--scrollbar-corner-border-width, 0px) var(--scrollbar-corner-border-color, #00000000);
     border-radius: var(--scrollbar-corner-border-radius, 0px);
 }
+::-webkit-resizer {
+    background: radial-gradient(var(--scrollbar-resizer-color, #000000) calc(var(--scrollbar-size, 12px) / 2 - 2px), transparent calc(var(--scrollbar-size, 12px) / 2 - 1px));
+}
 ::-webkit-scrollbar-thumb {
     background-color: var(--scrollbar-thumb-color, #cccccc);
     border: solid var(--scrollbar-thumb-border-width, 2px) var(--scrollbar-thumb-border-color, #eeeeee);

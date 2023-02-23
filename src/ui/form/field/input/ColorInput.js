@@ -145,16 +145,12 @@ export default class ColorInput extends AbstractFormInput {
         }
     }
 
-    setCustomValidity(message) {
-        super.setCustomValidity(message, this.#inputEl);
-    }
-
-    revalidate() {
+    checkValid() {
         const value = this.value;
         if (value !== "" && !REGEX_HEX.test(value)) {
             return "Please enter a valid hexadecimal color (#000000 - #FFFFFF)";
         }
-        return super.revalidate();
+        return super.checkValid();
     }
 
 }

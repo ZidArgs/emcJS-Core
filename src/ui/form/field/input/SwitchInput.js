@@ -76,10 +76,6 @@ export default class SwitchInput extends AbstractFormInput {
         }
     }
 
-    setCustomValidity(message) {
-        super.setCustomValidity(message, this.#inputEl);
-    }
-
     #applyValue(value) {
         if (value === "") {
             this.#inputEl.checked = false;

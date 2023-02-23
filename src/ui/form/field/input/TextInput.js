@@ -95,10 +95,6 @@ export default class TextInput extends AbstractFormInput {
         }
     }
 
-    setCustomValidity(message) {
-        super.setCustomValidity(message, this.#inputEl);
-    }
-
 }
 
 FormElementRegistry.register("TextInput", TextInput);

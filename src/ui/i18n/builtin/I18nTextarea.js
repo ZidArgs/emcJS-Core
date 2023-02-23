@@ -14,7 +14,7 @@ export default class I18nTextarea extends I18nMixin(HTMLTextAreaElement) {
         return this.getAttribute("i18n-placeholder") || "";
     }
 
-    static get observedI18n() {
+    static get i18nObservedAttributes() {
         return ["i18n-placeholder"];
     }
 

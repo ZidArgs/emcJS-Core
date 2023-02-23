@@ -26,7 +26,7 @@ export default class I18nInput extends I18nMixin(HTMLInputElement) {
         return this.getAttribute("i18n-placeholder") || "";
     }
 
-    static get observedI18n() {
+    static get i18nObservedAttributes() {
         return ["i18n-value", "i18n-placeholder"];
     }
 

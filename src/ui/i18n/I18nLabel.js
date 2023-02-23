@@ -23,7 +23,7 @@ export default class I18nLabel extends I18nMixin(CustomElement) {
         return this.getAttribute("i18n-value") || "";
     }
 
-    static get observedI18n() {
+    static get i18nObservedAttributes() {
         return ["i18n-value"];
     }
 

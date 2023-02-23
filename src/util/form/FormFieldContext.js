@@ -157,6 +157,22 @@ export default class FormFieldContext {
         return this.#element;
     }
 
+    async revalidate() {
+        return await this.#element.revalidate();
+    }
+
+    addValidator(validator) {
+        this.#element.addValidator(validator);
+    }
+
+    removeValidator(validator) {
+        this.#element.removeValidator(validator);
+    }
+
+    get errors() {
+        return this.#element.errors;
+    }
+
     /* visible logic */
     get visible() {
         return this.#visibleValue;

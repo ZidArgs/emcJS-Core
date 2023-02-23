@@ -2,6 +2,9 @@ import AbstractFormField from "./AbstractFormField.js";
 import {
     deepClone
 } from "../../../util/helper/DeepClone.js";
+import {
+    debounce
+} from "../../../util/Debouncer.js";
 import "../button/internal/InputResetButton.js";
 import "../../i18n/I18nLabel.js";
 import "../../i18n/I18nTextbox.js";
@@ -40,6 +43,10 @@ export default class AbstractFormInput extends AbstractFormField {
 
     #resetEl;
 
+    #validators = new Set();
+
+    #errorList = new Set();
+
     constructor() {
         if (new.target === AbstractFormInput) {
             throw new Error("can not construct abstract class");
@@ -63,6 +70,7 @@ export default class AbstractFormInput extends AbstractFormField {
         } else {
             this.internals.setFormValue(value);
         }
+        this.revalidate();
     }
 
     formDisabledCallback(disabled) {
@@ -77,12 +85,7 @@ export default class AbstractFormInput extends AbstractFormField {
         } else {
             this.internals.setFormValue(value);
         }
-        const message = this.revalidate();
-        if (typeof message === "string" && message !== "") {
-            this.setCustomValidity(message);
-        } else {
-            this.setCustomValidity("");
-        }
+        this.revalidate();
         /* --- */
         const event = new Event("default", {bubbles: true, cancelable: true});
         event.value = value;
@@ -111,12 +114,8 @@ export default class AbstractFormInput extends AbstractFormField {
             } else {
                 this.internals.setFormValue(value);
             }
-            const message = this.revalidate();
-            if (typeof message === "string" && message !== "") {
-                this.setCustomValidity(message);
-            } else {
-                this.setCustomValidity("");
-                /* --- */
+            this.revalidate();
+            if (!this.#errorList.size) {
                 const event = new Event("value", {bubbles: true, cancelable: true});
                 event.value = value;
                 event.name = this.name;
@@ -179,35 +178,24 @@ export default class AbstractFormInput extends AbstractFormField {
                         } else {
                             this.internals.setFormValue(value);
                         }
-                        const message = this.revalidate();
-                        if (typeof message === "string" && message !== "") {
-                            this.setCustomValidity(message);
-                        } else {
-                            this.setCustomValidity("");
-                        }
+                        this.revalidate();
                     }
                 }
             } break;
             case "required": {
                 if (oldValue != newValue) {
-                    const message = this.revalidate();
-                    this.setCustomValidity(message);
+                    this.revalidate();
                 }
             } break;
         }
     }
 
-    setCustomValidity(message, target) {
+    setCustomValidity(message) {
         if (typeof message !== "string") {
             message = "";
         }
         if (this.validationMessage != message) {
-            // this.internals.setValidity({customError: message !== ""}, message);
-            this.internals.setValidity({customError: message !== ""}, message, target);
-            // if ("setCustomValidity" in target) {
-            //     target.setCustomValidity(message);
-            // }
-            /* --- */
+            super.setCustomValidity(message);
             const event = new Event("validity", {bubbles: true, cancelable: true});
             event.value = this.value;
             event.valid = message === "";
@@ -218,15 +206,65 @@ export default class AbstractFormInput extends AbstractFormField {
         }
     }
 
-    // TODO revalidate with custom validation callback
-    // --> validate in fieldcontext
-    // --> allow multiple error messages to be registered
-    revalidate() {
+    async revalidate() {
+        const value = this.value;
+        this.#errorList.clear();
+        const internalMessage = this.checkValid();
+        if (typeof internalMessage === "string" && internalMessage !== "") {
+            this.#errorList.add(internalMessage);
+        }
+        const validations = [];
+        for (const validator of this.#validators) {
+            validations.push(this.#doValidation(validator, value));
+        }
+        await Promise.all(validations);
+        this.#showErrors();
+        return [...this.#errorList];
+    }
+
+    checkValid() {
         const value = this.value;
         if (this.required && !isValueSet(value)) {
             return "This field is required";
         }
         return "";
+    }
+
+    addError(message) {
+        if (!this.#errorList.has(message)) {
+            this.#errorList.add(message);
+            this.#showErrors();
+        }
+    }
+
+    #showErrors = debounce(() => {
+        const message = [...this.#errorList].join("\n");
+        this.setCustomValidity(message);
+    });
+
+    get errors() {
+        return [...this.#errorList];
+    }
+
+    addValidator(validator) {
+        if (typeof validator === "function" && !this.#validators.has(validator)) {
+            this.#validators.add(validator);
+            this.revalidate();
+        }
+    }
+
+    removeValidator(validator) {
+        if (typeof validator === "function" && this.#validators.has(validator)) {
+            this.#validators.remove(validator);
+            this.revalidate();
+        }
+    }
+
+    async #doValidation(validator, value) {
+        const message = await validator(value);
+        if (typeof message === "string" && message !== "") {
+            this.#errorList.add(message);
+        }
     }
 
     static scalarToValue(value) {

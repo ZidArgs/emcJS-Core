@@ -13,13 +13,16 @@
     overflow: scroll;
 }
 #input:focus {
-    box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
+    box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
     outline: none;
     z-index: 1;
 }
 :host(:invalid) #input {
     background-color: var(--input-invalid-back-color, #ffcccc);
     border-color: var(--input-invalid-border-color, #b93d3d);
+}
+:host(:invalid) #input:focus {
+    box-shadow: 0 0 2px 3px var(--input-invalid-focus-color, #ff2500);
 }
 #input::placeholder {
     color: var(--input-placeholder-text-color, #757575);

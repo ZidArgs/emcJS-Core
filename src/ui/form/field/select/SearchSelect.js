@@ -86,10 +86,6 @@ export default class SearchSelect extends AbstractFormInput {
         }
     }
 
-    setCustomValidity(message) {
-        super.setCustomValidity(message, this.#inputEl.shadowRoot.getElementById("input"));
-    }
-
     static fromConfig(config) {
         const selectEl = new SearchSelect();
         const {options = {}, ...params} = config;

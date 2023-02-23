@@ -83,10 +83,6 @@ export default class SimpleSelect extends AbstractFormInput {
         }
     }
 
-    setCustomValidity(message) {
-        super.setCustomValidity(message, this.#inputEl);
-    }
-
     static fromConfig(config) {
         const selectEl = new SimpleSelect();
         const {options = {}, ...params} = config;

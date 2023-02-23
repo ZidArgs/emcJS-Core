@@ -35,8 +35,12 @@ export default class I18nTextbox extends I18nMixin(CustomElement) {
         return this.getAttribute("i18n-tooltip") || "";
     }
 
-    static get observedI18n() {
+    static get i18nObservedAttributes() {
         return ["i18n-content", "i18n-tooltip"];
+    }
+
+    static get i18nMultilineAttributes() {
+        return ["i18n-content"];
     }
 
     applyI18n(key, value) {

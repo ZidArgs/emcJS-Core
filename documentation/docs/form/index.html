@@ -135,12 +135,32 @@
         formContext.registerFormContainer(formContainerEl);
         pageEl.append(formContainerEl);
 
+        const stringRequiredFields = formContext.findFieldsByName("string.required");
+        for (const stringRequiredField of stringRequiredFields) {
+            stringRequiredField.addValidator((value) => {
+                if (value === "") {
+                    return "This is a custom error shown if the field is empty";
+                }
+            });
+        }
+        formContext.addValidator((data) => {
+            for (const name in data) {
+                const value = data[name];
+                // if (name.endsWith("required") && (value === "" || (typeof value === "number" && isNaN(value)))) {
+                const errorFields = formContext.findFieldsByName(name);
+                for (const errorField of errorFields) {
+                    errorField.addError("This is a global custom error shown if the field is empty");
+                }
+                // }
+            }
+        });
+
         console.group("init context");
         console.log("loaded data", defaultValues);
         console.log("changed data", formContext.getChanges());
         console.groupEnd("init context");
 
-        formContext.addEventListener("submit", () => {
+        formContext.addEventListener("submit", (event) => {
             const { errors, changes, data, formData, hiddenData } = event;
             const valid = formContext.getFormValidity() ? "valid" : "invalid";
             console.group(`submit (${valid})`);
@@ -150,6 +170,13 @@
             console.log("form data", formData);
             console.log("hidden form data", hiddenData);
             console.groupEnd(`submit (${valid})`);
+        });
+
+        formContext.addEventListener("error", (event) => {
+            const { errors } = event;
+            console.group("error");
+            console.log("errors", errors);
+            console.groupEnd("error");
         });
 
         CustomActionRegistry.current.set("soup", () => {

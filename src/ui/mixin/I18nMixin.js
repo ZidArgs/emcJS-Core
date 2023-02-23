@@ -13,15 +13,12 @@ export default createMixin((superclass) => class I18nMixin extends superclass {
 
     #i18nEventManager = new EventTargetManager(i18n);
 
-    #observedI18nAttr;
-
     constructor(...args) {
         super(...args);
         /* --- */
-        this.#observedI18nAttr = new.target.observedI18n;
         this.#i18nEventManager = new EventTargetManager(i18n);
         this.#i18nEventManager.set("language", () => {
-            for (const attr of this.#observedI18nAttr) {
+            for (const attr of this.constructor.i18nObservedAttributes) {
                 const key = this.getAttribute(attr);
                 if (key) {
                     this.applyI18n(attr, i18n.get(key));
@@ -29,7 +26,7 @@ export default createMixin((superclass) => class I18nMixin extends superclass {
             }
         });
         this.#i18nEventManager.set("translation", (event) => {
-            for (const attr of this.#observedI18nAttr) {
+            for (const attr of this.constructor.i18nObservedAttributes) {
                 const key = this.getAttribute(attr);
                 if (key && event.changes[key] != null) {
                     this.applyI18n(attr, event.changes[key]);
@@ -49,7 +46,7 @@ export default createMixin((superclass) => class I18nMixin extends superclass {
         /* --- */
         this.#i18nEventManager.setActive(true);
         /* --- */
-        for (const attr of this.#observedI18nAttr) {
+        for (const attr of this.constructor.i18nObservedAttributes) {
             const key = this.getAttribute(attr);
             if (key) {
                 this.applyI18n(attr, i18n.get(key));
@@ -67,24 +64,34 @@ export default createMixin((superclass) => class I18nMixin extends superclass {
         this.#i18nEventManager.setActive(false);
     }
 
-    static get observedI18n() {
+    static get i18nObservedAttributes() {
+        return [];
+    }
+
+    static get i18nMultilineAttributes() {
         return [];
     }
 
     static get observedAttributes() {
         if (super.observedAttributes) {
-            return [...super.observedAttributes, ...this.observedI18n];
+            return [...super.observedAttributes, ...this.i18nObservedAttributes];
         }
-        return this.observedI18n;
+        return this.i18nObservedAttributes;
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         if (super.attributeChangedCallback) {
             super.attributeChangedCallback(name, oldValue, newValue);
         }
-        if (oldValue != newValue && this.#observedI18nAttr.includes(name)) {
+        if (oldValue != newValue && this.constructor.i18nObservedAttributes.includes(name)) {
             if (newValue) {
-                this.applyI18n(name, i18n.get(newValue));
+                if (this.constructor.i18nMultilineAttributes.includes(name)) {
+                    const values = newValue.split("\n");
+                    const translation = values.map((value) => i18n.get(value));
+                    this.applyI18n(name, translation.join("\n"));
+                } else {
+                    this.applyI18n(name, i18n.get(newValue));
+                }
             } else {
                 this.applyI18n(name, "");
             }

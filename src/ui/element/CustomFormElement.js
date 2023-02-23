@@ -84,4 +84,12 @@ export default class CustomFormElement extends CustomElement {
         return this.internals.reportValidity();
     }
 
+    setCustomValidity(message) {
+        if (typeof message === "string" && message !== "") {
+            this.internals.setValidity({customError: true}, message);
+        } else {
+            this.internals.setValidity({}, "");
+        }
+    }
+
 }

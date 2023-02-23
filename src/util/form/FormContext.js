@@ -1,6 +1,9 @@
 import ObservableStorage from "../../data/storage/observable/ObservableStorage.js";
 import AbstractFormField from "../../ui/form/abstract/AbstractFormField.js";
 import FormContainer from "../../ui/form/FormContainer.js";
+import {
+    debounce
+} from "../Debouncer.js";
 import EventMultiTargetManager from "../event/EventMultiTargetManager.js";
 import EventTargetManager from "../event/EventTargetManager.js";
 import {
@@ -19,11 +22,15 @@ export default class FormContext extends EventTarget {
 
     #dataStorage = new ObservableStorage();
 
-    #formListEventManager = new EventMultiTargetManager();
+    #validators = new Set();
+
+    #formElList = new Set();
+
+    #formEventManager = new EventMultiTargetManager();
 
     #storageEventTargetManager = new EventTargetManager();
 
-    #formElList = new Set();
+    #formFieldContextList = new Set();
 
     #ghostInvisible = false;
 
@@ -46,28 +53,13 @@ export default class FormContext extends EventTarget {
 
     constructor(initValues = {}) {
         super();
-        this.#formListEventManager.set("submit", (event) => {
+        this.#formEventManager.set("submit", (event) => {
+            this.submit();
             event.preventDefault();
             event.stopPropagation();
-            for (const formEl of this.#formElList) {
-                if (!formEl.noValidate && !formEl.reportValidity()) {
-                    const ev = new Event("error");
-                    ev.errors = this.getErrors();
-                    this.dispatchEvent(ev);
-                    return;
-                }
-            }
-            /* --- */
-            const ev = new Event("submit");
-            ev.errors = this.getErrors();
-            ev.changes = this.#dataStorage.getChanges();
-            ev.data = this.#dataStorage.getAll();
-            ev.formData = this.getFormData();
-            ev.hiddenData = this.getHiddenFormData();
-            this.dispatchEvent(ev);
         });
-        this.#formListEventManager.set("reset", (event) => {
-            this.#dataStorage.resetChanges();
+        this.#formEventManager.set("reset", (event) => {
+            this.reset();
             event.preventDefault();
             event.stopPropagation();
         });
@@ -75,12 +67,6 @@ export default class FormContext extends EventTarget {
         this.#dataStorage.deserialize(initValues);
         this.#storageEventTargetManager.switchTarget(this.#dataStorage);
         this.#storageEventTargetManager.set("clear", (event) => {
-            // this.#formListEventManager.setActive(false);
-            // for (const formEl of this.#formElList) {
-            //     formEl.reset();
-            // }
-            // this.#formListEventManager.setActive(true);
-            /* --- */
             const ev = new Event("clear");
             ev.data = event.data;
             this.dispatchEvent(ev);
@@ -96,6 +82,91 @@ export default class FormContext extends EventTarget {
             ev.data = event.data;
             this.dispatchEvent(ev);
         });
+    }
+
+    async submit() {
+        const errorFields = await this.revalidate();
+        if (errorFields.length) {
+            const ev = new Event("error");
+            ev.errors = errorFields;
+            this.dispatchEvent(ev);
+            errorFields[0].element.focus();
+            return;
+        }
+        /* --- */
+        const ev = new Event("submit");
+        ev.errors = this.getErrors();
+        ev.changes = this.#dataStorage.getChanges();
+        ev.data = this.#dataStorage.getAll();
+        ev.formData = this.getFormData();
+        ev.hiddenData = this.getHiddenFormData();
+        this.dispatchEvent(ev);
+    }
+
+    addValidator(validator) {
+        if (typeof validator === "function" && !this.#validators.has(validator)) {
+            this.#validators.add(validator);
+            this.revalidate();
+        }
+    }
+
+    removeValidator(validator) {
+        if (typeof validator === "function" && this.#validators.has(validator)) {
+            this.#validators.remove(validator);
+            this.revalidate();
+        }
+    }
+
+    async revalidate() {
+        const validations = [];
+        for (const validator of this.#validators) {
+            validations.push(this.#doGlobalValidation(validator));
+        }
+        for (const formEl of this.#formElList) {
+            if (!formEl.noValidate) {
+                for (const node of formEl.elements) {
+                    if (node instanceof AbstractFormField) {
+                        validations.push(this.#doFormFieldValidation(node));
+                    } else if (!node.reportValidity()) {
+                        validations.push(Promise.resolve({
+                            name: node.name,
+                            element: node,
+                            errors: [node.validationMessage]
+                        }));
+                    }
+                }
+            }
+        }
+        const errors = await Promise.all(validations);
+        return errors.filter((e) => e != null);
+    }
+
+    async #doGlobalValidation(validator) {
+        const message = await validator(this.getFieldData());
+        if (typeof message === "string" && message !== "") {
+            return {
+                name: null,
+                element: null,
+                errors: [message]
+            }
+        }
+    }
+
+    async #doFormFieldValidation(fieldEl) {
+        if (!fieldEl.noValidate) {
+            const errors = await fieldEl.revalidate();
+            if (errors.length) {
+                return {
+                    name: fieldEl.name,
+                    element: fieldEl,
+                    errors
+                }
+            }
+        }
+    }
+
+    reset() {
+        this.#dataStorage.resetChanges();
     }
 
     set ghostInvisible(value) {
@@ -131,7 +202,7 @@ export default class FormContext extends EventTarget {
             throw new TypeError("HTMLFormElement expected");
         }
         this.#formElList.add(formEl);
-        this.#formListEventManager.addTarget(formEl);
+        this.#formEventManager.addTarget(formEl);
         this.#mutationObserver.observe(formEl);
         const all = formEl.querySelectorAll("[name]");
         for (const node of all) {
@@ -144,7 +215,7 @@ export default class FormContext extends EventTarget {
             throw new TypeError("HTMLFormElement expected");
         }
         this.#formElList.delete(formEl);
-        this.#formListEventManager.removeTarget(formEl);
+        this.#formEventManager.removeTarget(formEl);
         this.#mutationObserver.unobserve(formEl);
         const all = formEl.querySelectorAll("[name]");
         for (const node of all) {
@@ -153,24 +224,20 @@ export default class FormContext extends EventTarget {
     }
 
     loadData(data) {
-        this.#formListEventManager.setActive(false);
+        this.#formEventManager.setActive(false);
         this.#dataStorage.deserialize(data);
-        this.#formListEventManager.setActive(true);
+        this.#formEventManager.setActive(true);
     }
 
     getErrors() {
         const res = [];
-        for (const formEl of this.#formElList) {
-            const all = formEl.querySelectorAll("[name]")
-            for (const element of all) {
-                const message = element.validationMessage;
-                if (message !== "") {
-                    res.push({
-                        name: element.name,
-                        message,
-                        element
-                    });
-                }
+        for (const fieldEl of this.#formFieldContextList) {
+            if (fieldEl.errors.length) {
+                res.push({
+                    name: fieldEl.node.name,
+                    errors: fieldEl.errors,
+                    element: fieldEl.node
+                });
             }
         }
         return res;
@@ -191,6 +258,14 @@ export default class FormContext extends EventTarget {
             for (const key in data) {
                 res[key] = data[key];
             }
+        }
+        return res;
+    }
+
+    getFieldData() {
+        const res = {};
+        for (const fieldEl of this.#formFieldContextList) {
+            res[fieldEl.node.name] = fieldEl.node.value;
         }
         return res;
     }
@@ -244,6 +319,8 @@ export default class FormContext extends EventTarget {
             const context = FormFieldContext.getContext(node);
             context.storage = this.#dataStorage;
             context.ghostInvisible = this.#ghostInvisible;
+            this.#formFieldContextList.add(context);
+            node.addValidator(this.#doGlobalValidationFromField);
         } else {
             const context = FormElementContext.getContext(node);
             context.storage = this.#dataStorage;
@@ -256,11 +333,49 @@ export default class FormContext extends EventTarget {
             const context = FormFieldContext.getContext(node);
             context.storage = null;
             context.ghostInvisible = false;
+            this.#formFieldContextList.delete(context);
+            node.removeValidator(this.#doGlobalValidationFromField);
         } else {
             const context = FormElementContext.getContext(node);
             context.storage = null;
             context.ghostInvisible = false;
         }
+    }
+
+    #doGlobalValidationFromField = debounce(() => {
+        for (const validator of this.#validators) {
+            this.#doGlobalValidation(validator);
+        }
+    });
+
+    findFields(callback) {
+        const res = [];
+        for (const fieldEl of this.#formFieldContextList) {
+            if (callback(fieldEl.node)) {
+                res.push(fieldEl.node);
+            }
+        }
+        return res;
+    }
+
+    findFieldsByName(name) {
+        const res = [];
+        for (const fieldEl of this.#formFieldContextList) {
+            if (fieldEl.node.name === name) {
+                res.push(fieldEl.node);
+            }
+        }
+        return res;
+    }
+
+    findFieldContexts(callback) {
+        const res = [];
+        for (const fieldEl of this.#formFieldContextList) {
+            if (callback(fieldEl)) {
+                res.push(fieldEl);
+            }
+        }
+        return res;
     }
 
 }

@@ -12,7 +12,7 @@
     text-align: end;
 }
 #number:focus {
-    box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
+    box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
     outline: none;
     z-index: 1;
 }
@@ -63,7 +63,7 @@
     content: " ";
 }
 #input:focus {
-    box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
+    box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
     outline: none;
     z-index: 1;
 }
