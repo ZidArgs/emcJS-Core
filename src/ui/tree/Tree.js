@@ -9,7 +9,7 @@ import TreeNode from "./components/TreeNode.js";
 import TPL from "./Tree.js.html" assert {type: "html"};
 import STYLE from "./Tree.js.css" assert {type: "css"};
 
-// TODO add keyboard navigation
+// TODO add cut/copy/paste functionality
 
 export default class Tree extends CustomElement {
 

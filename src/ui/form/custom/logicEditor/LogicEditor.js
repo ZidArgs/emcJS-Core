@@ -42,6 +42,9 @@ import STYLE from "./LogicEditor.js.css" assert {type: "css"};
 
 // TODO add string input logic element
 // TODO add number input logic element
+// TODO add import/export (button opens dialog to copy/paste logic)
+// TODO add optimize button (optimize logic e.g. merge contained AND with parent AND)
+// TODO add negate function to contextmenu (add optional negation readonly property to logic elements)
 
 const MUTATION_CONFIG = {
     childList: true,
