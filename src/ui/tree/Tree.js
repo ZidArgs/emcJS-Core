@@ -10,6 +10,8 @@ import TPL from "./Tree.js.html" assert {type: "html"};
 import STYLE from "./Tree.js.css" assert {type: "css"};
 
 // TODO add cut/copy/paste functionality
+// TODO add optional  search
+// TODO for sort add ascending/descending option and folder handling
 
 export default class Tree extends CustomElement {
 
