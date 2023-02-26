@@ -255,7 +255,7 @@ export default class AbstractFormInput extends AbstractFormField {
 
     removeValidator(validator) {
         if (typeof validator === "function" && this.#validators.has(validator)) {
-            this.#validators.remove(validator);
+            this.#validators.delete(validator);
             this.revalidate();
         }
     }

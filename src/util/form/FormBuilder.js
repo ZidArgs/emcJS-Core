@@ -148,6 +148,9 @@ class FormBuilder {
             case "ResetButton": {
                 return this.#createResetButton(id, visible, enabled, params, data);
             }
+            case "Button": {
+                return this.#createButton(id, visible, enabled, params, data);
+            }
             case "ActionButton": {
                 return this.#createActionButton(id, visible, enabled, params, data);
             }
@@ -220,6 +223,9 @@ class FormBuilder {
         if (params.text != null) {
             el.text = params.text;
         }
+        if (params.icon != null) {
+            el.icon = params.icon;
+        }
         if (params.tooltip != null) {
             el.tooltip = params.tooltip;
         }
@@ -248,6 +254,41 @@ class FormBuilder {
         }
         if (params.text != null) {
             el.text = params.text;
+        }
+        if (params.icon != null) {
+            el.icon = params.icon;
+        }
+        if (params.tooltip != null) {
+            el.tooltip = params.tooltip;
+        }
+        if (params.disabled != null) {
+            el.disabled = params.disabled;
+        }
+        return el;
+    }
+
+    #createButton(id, visible, enabled, params = {}, data = {}) {
+        const el = document.createElement("emc-button");
+        if (id != null) {
+            el.id = id;
+        }
+        for (const key in data) {
+            el.dataset[key] = data[key];
+        }
+        if (visible != null) {
+            el.setAttribute("visible", JSON.stringify(visible));
+        }
+        if (enabled != null) {
+            el.setAttribute("enabled", JSON.stringify(enabled));
+        }
+        if (params.name != null) {
+            el.name = params.name;
+        }
+        if (params.text != null) {
+            el.text = params.text;
+        }
+        if (params.icon != null) {
+            el.icon = params.icon;
         }
         if (params.tooltip != null) {
             el.tooltip = params.tooltip;

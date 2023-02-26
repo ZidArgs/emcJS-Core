@@ -79,13 +79,13 @@ export default class FormFieldContext {
         this.#elementEventManager.switchTarget(node);
         this.#elementEventManager.set("change", () => {
             this.#storageEventManager.setActive(false);
-            this.storage.set(this.#element.name, this.#element.value);
+            this.#storage.set(this.#element.name, this.#element.value);
             this.#storageEventManager.setActive(true);
         });
         this.#elementEventManager.set("default", (event) => {
             this.#storageEventManager.setActive(false);
             const {name} = event;
-            this.storage.resetValueChange(name);
+            this.#storage.resetValueChange(name);
             this.#storageEventManager.setActive(true);
         });
         /* --- */

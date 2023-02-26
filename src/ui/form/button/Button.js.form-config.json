@@ -12,6 +12,12 @@
         "value": ""
     },
     {
+        "type": "CharInput",
+        "name": "icon",
+        "label": "Icon",
+        "value": ""
+    },
+    {
         "type": "TextInput",
         "name": "tooltip",
         "label": "Tooltip",

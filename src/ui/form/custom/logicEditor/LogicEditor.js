@@ -10,6 +10,8 @@ import {
 import LogicEditorContextMenuElement from "./contexmenu/LogicEditorContextMenuElement.js";
 import LogicElementWindow from "./components/LogicElementWindow.js";
 import LogicAbstractElement from "./elements/abstract/AbstractElement.js";
+import "../../FormButtonRow.js";
+import "../../button/Button.js";
 import "./elements/ComparatorEqual.js";
 import "./elements/ComparatorGreaterThan.js";
 import "./elements/ComparatorGreaterThanEqual.js";
@@ -68,6 +70,10 @@ const BaseClass = mix(
 
 export default class LogicEditor extends BaseClass {
 
+    #optimizeButtonEl;
+
+    #jsonButtonEl;
+
     #placeholderEl;
 
     #logicElementWindow = new LogicElementWindow();
@@ -89,6 +95,8 @@ export default class LogicEditor extends BaseClass {
         });
         /* --- */
         mutationObserver.observe(this, MUTATION_CONFIG);
+        this.#optimizeButtonEl = this.shadowRoot.getElementById("optimize");
+        this.#jsonButtonEl = this.shadowRoot.getElementById("json");
         this.#placeholderEl = this.shadowRoot.getElementById("droptarget");
         this.#placeholderEl.ondragover = (event) => {
             event.preventDefault();
@@ -136,6 +144,8 @@ export default class LogicEditor extends BaseClass {
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
+        this.#optimizeButtonEl.disabled = disabled;
+        this.#jsonButtonEl.disabled = disabled;
         this.#placeholderEl.disabled = disabled;
         const el = this.children[0];
         if (el) {

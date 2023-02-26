@@ -1,15 +1,11 @@
-import CustomFormElementDelegating from "../../element/CustomFormElementDelegating.js";
+import Button from "./Button.js";
 import CustomActionRegistry from "../../../data/registry/CustomActionRegistry.js";
 import {
     deepClone
 } from "../../../util/helper/DeepClone.js";
-import "../../i18n/I18nTooltip.js";
-import "../../i18n/builtin/I18nInput.js";
-import TPL from "./ActionButton.js.html" assert {type: "html"};
-import STYLE from "./ActionButton.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./ActionButton.js.form-config.json" assert {type: "json"};
 
-export default class ActionButton extends CustomFormElementDelegating {
+export default class ActionButton extends Button {
 
     static get formConfigurationFields() {
         return deepClone(CONFIG_FIELDS);
@@ -19,8 +15,6 @@ export default class ActionButton extends CustomFormElementDelegating {
 
     constructor() {
         super();
-        this.shadowRoot.append(TPL.generate());
-        STYLE.apply(this.shadowRoot);
         /* --- */
         this.#buttonEl = this.shadowRoot.getElementById("button");
         this.#buttonEl.addEventListener("click", (event) => {
@@ -33,76 +27,12 @@ export default class ActionButton extends CustomFormElementDelegating {
         });
     }
 
-    formDisabledCallback(disabled) {
-        this.#buttonEl.disabled = disabled;
-    }
-
-    get type() {
-        return "button";
-    }
-
-    set name(value) {
-        this.setAttribute("name", value);
-    }
-
-    get name() {
-        return this.getAttribute("name");
-    }
-
     set action(value) {
         this.setAttribute("action", value);
     }
 
     get action() {
         return this.getAttribute("action");
-    }
-
-    set text(value) {
-        this.setAttribute("text", value);
-    }
-
-    get text() {
-        return this.getAttribute("text");
-    }
-
-    set icon(value) {
-        this.setAttribute("icon", value);
-    }
-
-    get icon() {
-        return this.getAttribute("icon");
-    }
-
-    set tooltip(value) {
-        this.setAttribute("tooltip", value);
-    }
-
-    get tooltip() {
-        return this.getAttribute("tooltip");
-    }
-
-    static get observedAttributes() {
-        return ["text", "icon", "tooltip"];
-    }
-
-    attributeChangedCallback(name, oldValue, newValue) {
-        switch (name) {
-            case "text": {
-                if (oldValue != newValue) {
-                    this.shadowRoot.getElementById("text").i18nValue = newValue;
-                }
-            } break;
-            case "icon": {
-                if (oldValue != newValue) {
-                    this.#buttonEl.setAttribute("icon", newValue);
-                }
-            } break;
-            case "tooltip": {
-                if (oldValue != newValue) {
-                    this.shadowRoot.getElementById("tooltip").i18nTooltip = newValue;
-                }
-            } break;
-        }
     }
 
 }
