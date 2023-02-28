@@ -1,0 +1,15 @@
+<div id="focus_catcher_top" tabindex="0"></div>
+<emc-ctxmenulayer>
+    <div id="modal" role="modal" aria-modal="true" aria-labelledby="title" aria-describedby="title">
+        <div id="header">
+            <div id="title"></div>
+            <button id="close" title="close">
+                <emc-symbol-close></emc-symbol-close>
+            </button>
+        </div>
+        <div id="body">
+            <slot></slot>
+        </div>
+    </div>
+</emc-ctxmenulayer>
+<div id="focus_catcher_bottom" tabindex="0"></div>

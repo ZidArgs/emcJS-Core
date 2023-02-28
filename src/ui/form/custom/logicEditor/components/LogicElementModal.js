@@ -1,4 +1,4 @@
-import Window from "../../../../overlay/window/Window.js";
+import Modal from "../../../../modal/Modal.js";
 import AbstractElement from "../elements/abstract/AbstractElement.js";
 import "../../../../FilteredList.js";
 import "../../../../container/CollapsePanel.js";
@@ -27,8 +27,8 @@ import "../elements/OperatorXnor.js";
 import "../elements/OperatorXor.js";
 import "../elements/RestrictorMax.js";
 import "../elements/RestrictorMin.js";
-import TPL from "./LogicElementWindow.js.html" assert {type: "html"};
-import STYLE from "./LogicElementWindow.js.css" assert {type: "css"};
+import TPL from "./LogicElementModal.js.html" assert {type: "html"};
+import STYLE from "./LogicElementModal.js.css" assert {type: "css"};
 
 const DEFAULT_LOGIC_OPERATORS = [
     /* literals */
@@ -43,7 +43,7 @@ const DEFAULT_LOGIC_OPERATORS = [
     "add", "sub", "mul", "div", "mod", "pow"
 ];
 
-export default class LogicElementWindow extends Window {
+export default class LogicElementModal extends Modal {
 
     #containerEl;
 
@@ -52,7 +52,7 @@ export default class LogicElementWindow extends Window {
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const windowEl = this.shadowRoot.getElementById("window");
+        const windowEl = this.shadowRoot.getElementById("modal");
         const bodyEl = this.shadowRoot.getElementById("body");
         bodyEl.innerHTML = "";
         this.#containerEl = els.getElementById("elements");
@@ -134,4 +134,4 @@ export default class LogicElementWindow extends Window {
 
 }
 
-customElements.define("emc-dialog", LogicElementWindow);
+customElements.define("emc-edit-logic-modal-element", LogicElementModal);

@@ -8,7 +8,7 @@ import {
     isEqual
 } from "../../../../util/helper/Comparator.js";
 import LogicEditorContextMenuElement from "./contexmenu/LogicEditorContextMenuElement.js";
-import LogicElementWindow from "./components/LogicElementWindow.js";
+import LogicElementModal from "./components/LogicElementModal.js";
 import LogicAbstractElement from "./elements/abstract/AbstractElement.js";
 import "../../FormButtonRow.js";
 import "../../button/Button.js";
@@ -76,7 +76,7 @@ export default class LogicEditor extends BaseClass {
 
     #placeholderEl;
 
-    #logicElementWindow = new LogicElementWindow();
+    #logicElementModal = new LogicElementModal();
 
     constructor() {
         super();
@@ -127,14 +127,14 @@ export default class LogicEditor extends BaseClass {
         this.addEventListener("placeholderclicked", (event) => {
             const targetEl = event.target;
             const slotName = event.name;
-            this.#logicElementWindow.onsubmit = (event) => {
+            this.#logicElementModal.onsubmit = (event) => {
                 const resultEl = event.element;
                 if (slotName) {
                     resultEl.setAttribute("slot", slotName);
                 }
                 targetEl.append(resultEl);
             };
-            this.#logicElementWindow.show();
+            this.#logicElementModal.show();
         });
         this.addEventListener("valuechange", (event) => {
             this.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
@@ -154,7 +154,7 @@ export default class LogicEditor extends BaseClass {
     }
 
     loadOperators(operators) {
-        this.#logicElementWindow.loadOperators(operators);
+        this.#logicElementModal.loadOperators(operators);
     }
 
     #removeElement(id) {
