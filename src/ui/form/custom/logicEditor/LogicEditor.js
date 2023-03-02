@@ -7,8 +7,12 @@ import DragDropMemory from "../../../../util/DragDropMemory.js";
 import {
     isEqual
 } from "../../../../util/helper/Comparator.js";
+import {
+    reduceLogic
+} from "../../../../util/logic/LogicReducer.js";
 import LogicEditorContextMenuElement from "./contexmenu/LogicEditorContextMenuElement.js";
 import LogicElementModal from "./components/LogicElementModal.js";
+import LogicJSONModal from "./components/LogicJSONModal.js";
 import LogicAbstractElement from "./elements/abstract/AbstractElement.js";
 import "../../FormButtonRow.js";
 import "../../button/Button.js";
@@ -78,6 +82,8 @@ export default class LogicEditor extends BaseClass {
 
     #logicElementModal = new LogicElementModal();
 
+    #logicJSONModal = new LogicJSONModal();
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
@@ -122,6 +128,16 @@ export default class LogicEditor extends BaseClass {
             const e = new Event("placeholderclicked");
             this.dispatchEvent(e);
             event.stopPropagation();
+        });
+        this.#optimizeButtonEl.addEventListener("click", () => {
+            this.value = reduceLogic(this.value);
+        });
+        this.#jsonButtonEl.addEventListener("click", () => {
+            this.#logicJSONModal.value = this.value;
+            this.#logicJSONModal.show();
+        });
+        this.#logicJSONModal.addEventListener("submit", () => {
+            this.value = this.#logicJSONModal.value;
         });
         /* --- */
         this.addEventListener("placeholderclicked", (event) => {

@@ -31,4 +31,4 @@ export default class RestrictorMax extends AbstractRestrictorElement {
 }
 
 AbstractElement.registerReference(REFERENCE, RestrictorMax);
-customElements.define(`jse-logic-${REFERENCE}`, RestrictorMax);
+customElements.define(`emc-logic-${REFERENCE}`, RestrictorMax);

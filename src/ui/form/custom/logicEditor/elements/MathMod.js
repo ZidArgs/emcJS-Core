@@ -34,4 +34,4 @@ export default class MathMod extends AbstractInfChildrenElement {
 }
 
 AbstractElement.registerReference(REFERENCE, MathMod);
-customElements.define(`jse-logic-${REFERENCE}`, MathMod);
+customElements.define(`emc-logic-${REFERENCE}`, MathMod);

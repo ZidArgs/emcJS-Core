@@ -360,4 +360,4 @@ class ErrorElement extends AbstractElement {
 
 }
 
-customElements.define("jse-logic-error", ErrorElement);
+customElements.define("emc-logic-error", ErrorElement);

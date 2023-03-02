@@ -30,4 +30,4 @@ export default class OperatorXor extends AbstractTwoChildrenElement {
 }
 
 AbstractElement.registerReference(REFERENCE, OperatorXor);
-customElements.define(`jse-logic-${REFERENCE}`, OperatorXor);
+customElements.define(`emc-logic-${REFERENCE}`, OperatorXor);

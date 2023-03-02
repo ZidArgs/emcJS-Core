@@ -1,0 +1,73 @@
+import Modal from "../../../../modal/Modal.js";
+import {
+    debounce
+} from "../../../../../util/Debouncer.js";
+import LogicAbstractElement from "../elements/abstract/AbstractElement.js";
+import TPL from "./LogicJSONModal.js.html" assert {type: "html"};
+import STYLE from "./LogicJSONModal.js.css" assert {type: "css"};
+
+export default class LogicJSONModal extends Modal {
+
+    #submitEl;
+
+    #jsonEl;
+
+    #errorEl;
+
+    constructor() {
+        super("Import/Export JSON...");
+        const els = TPL.generate();
+        STYLE.apply(this.shadowRoot);
+        /* --- */
+        const modalEl = this.shadowRoot.getElementById("modal");
+        const bodyEl = this.shadowRoot.getElementById("body");
+        bodyEl.innerHTML = "";
+        this.#jsonEl = els.getElementById("json");
+        this.#errorEl = els.getElementById("error");
+        bodyEl.append(this.#jsonEl);
+        bodyEl.append(this.#errorEl);
+        modalEl.append(els.getElementById("footer"));
+        /* --- */
+        this.#submitEl = this.shadowRoot.getElementById("submit");
+        this.#submitEl.addEventListener("click", () => {
+            if (this.#jsonEl.validationMessage === "") {
+                const build = LogicAbstractElement.buildLogic(this.value);
+                if (build.matches("emc-logic-error") || build.querySelector("emc-logic-error") != null) {
+                    this.#jsonEl.setCustomValidity("Invalid Logic");
+                    this.#errorEl.i18nContent = "Invalid Logic";
+                } else {
+                    this.dispatchEvent(new Event("submit"));
+                    this.close();
+                }
+            }
+        });
+        /* --- */
+        this.#jsonEl.addEventListener("input", () => {
+            this.#validateInput();
+        });
+    }
+
+    #validateInput = debounce(() => {
+        try {
+            JSON.parse(this.#jsonEl.value);
+            this.#jsonEl.setCustomValidity("");
+            this.#errorEl.i18nContent = "";
+            this.#submitEl.disabled = false;
+        } catch {
+            this.#jsonEl.setCustomValidity("Invalid JSON");
+            this.#errorEl.i18nContent = "Invalid JSON";
+            this.#submitEl.disabled = true;
+        }
+    });
+
+    set value(value) {
+        this.#jsonEl.value = JSON.stringify(value, null, 4);
+    }
+
+    get value() {
+        return JSON.parse(this.#jsonEl.value);
+    }
+
+}
+
+customElements.define("emc-edit-logic-modal-json", LogicJSONModal);

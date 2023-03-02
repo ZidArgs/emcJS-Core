@@ -34,4 +34,4 @@ export default class MathDiv extends AbstractInfChildrenElement {
 }
 
 AbstractElement.registerReference(REFERENCE, MathDiv);
-customElements.define(`jse-logic-${REFERENCE}`, MathDiv);
+customElements.define(`emc-logic-${REFERENCE}`, MathDiv);

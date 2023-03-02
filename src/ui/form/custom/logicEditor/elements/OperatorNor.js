@@ -27,4 +27,4 @@ export default class OperatorNor extends AbstractInfChildrenElement {
 }
 
 AbstractElement.registerReference(REFERENCE, OperatorNor);
-customElements.define(`jse-logic-${REFERENCE}`, OperatorNor);
+customElements.define(`emc-logic-${REFERENCE}`, OperatorNor);

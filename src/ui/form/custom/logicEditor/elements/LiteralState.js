@@ -15,4 +15,4 @@ export default class LiteralState extends AbstractLiteralStateElement {
 }
 
 AbstractElement.registerReference(REFERENCE, LiteralState);
-customElements.define(`jse-logic-${REFERENCE}`, LiteralState);
+customElements.define(`emc-logic-${REFERENCE}`, LiteralState);

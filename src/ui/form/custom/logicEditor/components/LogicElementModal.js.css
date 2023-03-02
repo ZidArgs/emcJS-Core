@@ -3,6 +3,10 @@
     z-index: 900900;
     pointer-events: all;
 }
+#modal {
+    width: auto;
+    min-width: 20vw;
+}
 #footer,
 #cancel {
     display: flex;
@@ -28,10 +32,6 @@
 #cancel:hover {
     color: white;
     background-color: black;
-}
-#window {
-    width: auto;
-    min-width: 20vw;
 }
 #elements [template] {
     cursor: pointer;

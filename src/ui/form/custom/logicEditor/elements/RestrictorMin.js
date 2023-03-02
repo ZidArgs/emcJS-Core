@@ -31,4 +31,4 @@ export default class RestrictorMin extends AbstractRestrictorElement {
 }
 
 AbstractElement.registerReference(REFERENCE, RestrictorMin);
-customElements.define(`jse-logic-${REFERENCE}`, RestrictorMin);
+customElements.define(`emc-logic-${REFERENCE}`, RestrictorMin);

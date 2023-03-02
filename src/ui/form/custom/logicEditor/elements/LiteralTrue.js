@@ -25,4 +25,4 @@ export default class LiteralTrue extends AbstractElement {
 }
 
 AbstractElement.registerReference(REFERENCE, LiteralTrue);
-customElements.define(`jse-logic-${REFERENCE}`, LiteralTrue);
+customElements.define(`emc-logic-${REFERENCE}`, LiteralTrue);

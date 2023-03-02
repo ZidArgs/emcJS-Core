@@ -30,4 +30,4 @@ export default class MathMul extends AbstractInfChildrenElement {
 }
 
 AbstractElement.registerReference(REFERENCE, MathMul);
-customElements.define(`jse-logic-${REFERENCE}`, MathMul);
+customElements.define(`emc-logic-${REFERENCE}`, MathMul);

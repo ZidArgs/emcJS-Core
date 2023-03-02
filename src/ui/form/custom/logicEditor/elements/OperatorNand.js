@@ -27,4 +27,4 @@ export default class OperatorNand extends AbstractInfChildrenElement {
 }
 
 AbstractElement.registerReference(REFERENCE, OperatorNand);
-customElements.define(`jse-logic-${REFERENCE}`, OperatorNand);
+customElements.define(`emc-logic-${REFERENCE}`, OperatorNand);

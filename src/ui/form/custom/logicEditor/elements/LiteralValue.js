@@ -15,4 +15,4 @@ export default class LiteralValue extends AbstractLiteralValueElement {
 }
 
 AbstractElement.registerReference(REFERENCE, LiteralValue);
-customElements.define(`jse-logic-${REFERENCE}`, LiteralValue);
+customElements.define(`emc-logic-${REFERENCE}`, LiteralValue);

@@ -30,4 +30,4 @@ export default class MathAdd extends AbstractInfChildrenElement {
 }
 
 AbstractElement.registerReference(REFERENCE, MathAdd);
-customElements.define(`jse-logic-${REFERENCE}`, MathAdd);
+customElements.define(`emc-logic-${REFERENCE}`, MathAdd);

@@ -31,4 +31,4 @@ export default class ComparatorEqual extends AbstractTwoChildrenElement {
 }
 
 AbstractElement.registerReference(REFERENCE, ComparatorEqual);
-customElements.define(`jse-logic-${REFERENCE}`, ComparatorEqual);
+customElements.define(`emc-logic-${REFERENCE}`, ComparatorEqual);

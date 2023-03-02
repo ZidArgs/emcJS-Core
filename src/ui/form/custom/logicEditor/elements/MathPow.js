@@ -40,4 +40,4 @@ export default class LogicElement extends AbstractTwoChildrenElement {
 }
 
 AbstractElement.registerReference(REFERENCE, LogicElement);
-customElements.define(`jse-logic-${REFERENCE}`, LogicElement);
+customElements.define(`emc-logic-${REFERENCE}`, LogicElement);

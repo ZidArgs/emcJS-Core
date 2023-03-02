@@ -26,4 +26,4 @@ export default class OperatorNot extends AbstractOneChildElement {
 }
 
 AbstractElement.registerReference(REFERENCE, OperatorNot);
-customElements.define(`jse-logic-${REFERENCE}`, OperatorNot);
+customElements.define(`emc-logic-${REFERENCE}`, OperatorNot);

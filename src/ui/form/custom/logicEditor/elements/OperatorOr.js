@@ -27,4 +27,4 @@ export default class LogicElement extends AbstractInfChildrenElement {
 }
 
 AbstractElement.registerReference(REFERENCE, LogicElement);
-customElements.define(`jse-logic-${REFERENCE}`, LogicElement);
+customElements.define(`emc-logic-${REFERENCE}`, LogicElement);

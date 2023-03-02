@@ -52,12 +52,12 @@ export default class LogicElementModal extends Modal {
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const windowEl = this.shadowRoot.getElementById("modal");
+        const modalEl = this.shadowRoot.getElementById("modal");
         const bodyEl = this.shadowRoot.getElementById("body");
         bodyEl.innerHTML = "";
         this.#containerEl = els.getElementById("elements");
         bodyEl.append(this.#containerEl);
-        windowEl.append(els.getElementById("footer"));
+        modalEl.append(els.getElementById("footer"));
         /* --- */
         const cancelEl = this.shadowRoot.getElementById("cancel");
         cancelEl.addEventListener("click", () => {

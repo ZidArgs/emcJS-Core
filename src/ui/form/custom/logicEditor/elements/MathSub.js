@@ -30,4 +30,4 @@ export default class MathSub extends AbstractInfChildrenElement {
 }
 
 AbstractElement.registerReference(REFERENCE, MathSub);
-customElements.define(`jse-logic-${REFERENCE}`, MathSub);
+customElements.define(`emc-logic-${REFERENCE}`, MathSub);
