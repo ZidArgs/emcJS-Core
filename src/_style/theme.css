@@ -42,8 +42,8 @@
     --input-focus-color: #06b5ff;
     --input-placeholder-text-color: #757575;
 
-    --input-invalid-back-color: #ffcccc;
-    --input-invalid-border-color: #b93d3d; /* all; top_bottom right_left; top right bottom left*/
+    --input-invalid-back-color: #ffebeb;
+    --input-invalid-border-color: #ff2500; /* all; top_bottom right_left; top right bottom left*/
     --input-invalid-focus-color: #ff2500;
 
     --input-disabled-text-color: #424242;
@@ -57,16 +57,16 @@
     --switch-unchecked-back-color: #ffffff;
 
     /* === range === */
-    --range-track-back-color: #f5f5f5;
-    --range-track-front-color: #9ee1ec;
+    --range-track-back-color: #00000000;
+    --range-track-front-color: #000000;
 
     --range-track-disabled-back-color: #b5b5b5;
     --range-track-disabled-front-color: #464646;
 
-    --range-track-back-top-color: var(--range-track-back-color, #f5f5f5);
-    --range-track-back-bottom-color: var(--range-track-back-color, #f5f5f5);
-    --range-track-front-top-color: var(--range-track-front-color, #9ee1ec);
-    --range-track-front-bottom-color: var(--range-track-front-color, #9ee1ec);
+    --range-track-back-top-color: var(--range-track-back-color, #00000000);
+    --range-track-back-bottom-color: var(--range-track-back-color, #00000000);
+    --range-track-front-top-color: var(--range-track-front-color, #000000);
+    --range-track-front-bottom-color: var(--range-track-front-color, #000000);
 
     --range-track-disabled-back-top-color: var(--range-track-disabled-back-color, #b5b5b5);
     --range-track-disabled-back-bottom-color: var(--range-track-disabled-back-color, #b5b5b5);

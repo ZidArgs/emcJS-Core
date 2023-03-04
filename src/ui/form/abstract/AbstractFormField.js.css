@@ -57,7 +57,7 @@
     min-width: 100px;
 }
 #field-container input:invalid {
-    background-color: var(--input-invalid-back-color, #ffcccc);
+    background-color: var(--input-invalid-back-color, #ffebeb);
 }
 #error {
     display: block;

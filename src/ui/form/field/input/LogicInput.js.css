@@ -18,8 +18,8 @@
     z-index: 1;
 }
 :host(:invalid) #input {
-    background-color: var(--input-invalid-back-color, #ffcccc);
-    border-color: var(--input-invalid-border-color, #b93d3d);
+    background-color: var(--input-invalid-back-color, #ffebeb);
+    border-color: var(--input-invalid-border-color, #ff4444);
 }
 :host(:invalid) #input:focus {
     box-shadow: 0 0 2px 3px var(--input-invalid-focus-color, #ff2500);

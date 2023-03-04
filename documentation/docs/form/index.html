@@ -1,11 +1,11 @@
-<html>
+<html lang="en">
 
 <head>
     <title>emcJS sandbox</title>
     <meta charset="UTF-8">
     <meta name="description" content="Test for emcJS components">
     <meta name="robots" content="none">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#000000">
     <style>
         :root {
@@ -146,12 +146,17 @@
         formContext.addValidator((data) => {
             for (const name in data) {
                 const value = data[name];
-                // if (name.endsWith("required") && (value === "" || (typeof value === "number" && isNaN(value)))) {
-                const errorFields = formContext.findFieldsByName(name);
-                for (const errorField of errorFields) {
-                    errorField.addError("This is a global custom error shown if the field is empty");
+                if (value === "" || (typeof value === "number" && isNaN(value))) {
+                    const errorFields = formContext.findFieldsByName(name);
+                    for (const errorField of errorFields) {
+                        errorField.addError("This is a global custom error shown if the field is empty");
+                    }
+                } else if (value === "0" || value === 0) {
+                    const errorFields = formContext.findFieldsByName(name);
+                    for (const errorField of errorFields) {
+                        errorField.addError("This is a global custom error shown if the value is 0");
+                    }
                 }
-                // }
             }
         });
 
