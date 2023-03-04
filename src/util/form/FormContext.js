@@ -18,6 +18,8 @@ const MUTATION_CONFIG = {
     subtree: true
 };
 
+const REGISTERED_FORMS = new WeakMap();
+
 export default class FormContext extends EventTarget {
 
     #dataStorage = new ObservableStorage();
@@ -201,12 +203,18 @@ export default class FormContext extends EventTarget {
         if (!(formEl instanceof HTMLFormElement)) {
             throw new TypeError("HTMLFormElement expected");
         }
-        this.#formElList.add(formEl);
-        this.#formEventManager.addTarget(formEl);
-        this.#mutationObserver.observe(formEl);
-        const all = formEl.querySelectorAll("[name]");
-        for (const node of all) {
-            this.#registerNode(node);
+        if (!this.#formElList.has(formEl)) {
+            if (REGISTERED_FORMS.has(formEl)) {
+                throw new Error("form is already registered to another FormContext");
+            }
+            REGISTERED_FORMS.set(formEl, this);
+            this.#formElList.add(formEl);
+            this.#formEventManager.addTarget(formEl);
+            this.#mutationObserver.observe(formEl);
+            const all = formEl.querySelectorAll("[name]");
+            for (const node of all) {
+                this.#registerNode(node);
+            }
         }
     }
 
@@ -214,13 +222,17 @@ export default class FormContext extends EventTarget {
         if (!(formEl instanceof HTMLFormElement)) {
             throw new TypeError("HTMLFormElement expected");
         }
-        this.#formElList.delete(formEl);
+        if (!this.#formElList.has(formEl)) {
+            throw new Error("form is not registered to this FormContext");
+        }
         this.#formEventManager.removeTarget(formEl);
         this.#mutationObserver.unobserve(formEl);
         const all = formEl.querySelectorAll("[name]");
         for (const node of all) {
             this.#unregisterNode(node);
         }
+        REGISTERED_FORMS.delete(formEl, this);
+        this.#formElList.delete(formEl);
     }
 
     loadData(data) {
@@ -321,6 +333,7 @@ export default class FormContext extends EventTarget {
             context.ghostInvisible = this.#ghostInvisible;
             this.#formFieldContextList.add(context);
             node.addValidator(this.#doGlobalValidationFromField);
+            node.formContextAssociatedCallback(this);
         } else {
             const context = FormElementContext.getContext(node);
             context.storage = this.#dataStorage;

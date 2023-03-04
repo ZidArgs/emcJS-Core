@@ -169,8 +169,12 @@ export default class LogicEditor extends BaseClass {
         }
     }
 
-    loadOperators(operators) {
-        this.#logicElementModal.loadOperators(operators);
+    addOperatorGroup(group) {
+        this.#logicElementModal.addOperatorGroup(group);
+    }
+
+    removeOperatorGroup(group) {
+        this.#logicElementModal.removeOperatorGroup(group);
     }
 
     #removeElement(id) {

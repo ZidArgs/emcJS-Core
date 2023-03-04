@@ -119,4 +119,8 @@ export default class AbstractFormField extends CustomFormElement {
         }
     }
 
+    formContextAssociatedCallback(/* formContext */) {
+        // ignore
+    }
+
 }

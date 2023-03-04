@@ -27,6 +27,7 @@
         import i18n from "/emcJS/util/I18n.js";
         import FileLoader from "/emcJS/util/file/FileLoader.js";
         import CustomActionRegistry from "/emcJS/data/registry/CustomActionRegistry.js";
+        import LogicOperatorRegistry from "/emcJS/data/registry/LogicOperatorRegistry.js";
         import "/emcJS/ui/Page.js";
         // form
         import FormBuilder from "/emcJS/util/form/FormBuilder.js";
@@ -207,29 +208,20 @@
         });
 
         const logicTestEl = document.getElementById("logicTest");
-        logicTestEl.loadOperators([
-            {
-                "type": "group",
-                "caption": "settings",
-                "compact": false,
-                "children": [
-                    {
-                        "type": "value",
-                        "ref": "test"
-                    },
-                    {
-                        "type": "state",
-                        "ref": "test",
-                        "options": {
-                            "test": "Test",
-                            "foobar": "Foobar",
-                            "barfoo": "Barfoo"
-                        },
-                        "value": "test"
-                    }
-                ]
-            }
-        ]);
+        logicTestEl.addOperatorGroup("custom-settings");
+        LogicOperatorRegistry.setCaption("custom-settings", "custom settings");
+        LogicOperatorRegistry.setOperator("custom-settings", "value.test", {
+            "type": "value"
+        });
+        LogicOperatorRegistry.setOperator("custom-settings", "state.test", {
+            "type": "state",
+            "options": {
+                "test": "Test",
+                "foobar": "Foobar",
+                "barfoo": "Barfoo"
+            },
+            "value": "test"
+        });
     </script>
 </head>
 

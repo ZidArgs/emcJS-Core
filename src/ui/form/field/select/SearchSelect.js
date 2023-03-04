@@ -6,7 +6,7 @@ import {
 import {
     saveSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
-import "../../../i18n/I18nLabel.js";
+import "../../../i18n/builtin/I18nOption.js";
 import "../../element/select/SearchSelect.js";
 import TPL from "./SearchSelect.js.html" assert {type: "html"};
 import STYLE from "./SearchSelect.js.css" assert {type: "css"};
@@ -95,18 +95,14 @@ export default class SearchSelect extends AbstractFormInput {
                 selectEl.setAttribute(name, value);
             }
         }
-        for (const name in options) {
-            const optionEl = document.createElement("emc-option");
-            optionEl.setAttribute("value", name);
-            const textValue = options[name];
-            if (typeof textValue === "string" && textValue !== "") {
-                const labelEl = document.createElement("emc-i18n-label");
-                labelEl.i18nValue = textValue;
-                optionEl.append(labelEl);
-            } else if (name !== "") {
-                const labelEl = document.createElement("emc-i18n-label");
-                labelEl.i18nValue = name;
-                optionEl.append(labelEl);
+        for (const value in options) {
+            const optionEl = document.createElement("option", {is: "emc-i18n-option"});
+            optionEl.setAttribute("value", value);
+            const label = options[value];
+            if (typeof label === "string" && label !== "") {
+                optionEl.i18nValue = label;
+            } else if (value !== "") {
+                optionEl.i18nValue = value;
             }
             selectEl.append(optionEl);
         }

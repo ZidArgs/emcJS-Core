@@ -1,5 +1,4 @@
 import AbstractFormInput from "../../abstract/AbstractFormInput.js";
-import "../../../i18n/builtin/I18nOption.js";
 import {
     deepClone
 } from "../../../../util/helper/DeepClone.js";
@@ -7,6 +6,7 @@ import FormElementRegistry from "../../../../data/registry/FormElementRegistry.j
 import {
     saveSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
+import "../../../i18n/builtin/I18nOption.js";
 import TPL from "./SimpleSelect.js.html" assert {type: "html"};
 import STYLE from "./SimpleSelect.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./SimpleSelect.js.form-config.json" assert {type: "json"};
@@ -93,14 +93,14 @@ export default class SimpleSelect extends AbstractFormInput {
             }
         }
         const inputEl = selectEl.shadowRoot.getElementById("input");
-        for (const name in options) {
+        for (const value in options) {
             const optionEl = document.createElement("option", {is: "emc-i18n-option"});
-            optionEl.setAttribute("value", name);
-            const textValue = options[name];
-            if (typeof textValue === "string" && textValue !== "") {
-                optionEl.i18nValue = textValue;
-            } else if (name !== "") {
-                optionEl.i18nValue = name;
+            optionEl.setAttribute("value", value);
+            const label = options[value];
+            if (typeof label === "string" && label !== "") {
+                optionEl.i18nValue = label;
+            } else if (value !== "") {
+                optionEl.i18nValue = value;
             }
             inputEl.append(optionEl);
         }

@@ -10,7 +10,7 @@ import FormElementRegistry from "../../../../data/registry/FormElementRegistry.j
 import {
     saveSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
-import "../../element/logicEditor/LogicEditor.js";
+import "../../element/logic/LogicEditor.js";
 import TPL from "./LogicInput.js.html" assert {type: "html"};
 import STYLE from "./LogicInput.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./LogicInput.js.form-config.json" assert {type: "json"};
@@ -75,8 +75,12 @@ export default class LogicInput extends AbstractFormInput {
         this.#inputEl.focus(options);
     }
 
-    loadOperators(operators) {
-        this.#logicEl.loadOperators(operators);
+    addOperatorGroup(group) {
+        this.#logicEl.addOperatorGroup(group);
+    }
+
+    removeOperatorGroup(group) {
+        this.#logicEl.removeOperatorGroup(group);
     }
 
     get defaultValue() {

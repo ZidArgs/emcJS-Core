@@ -1,5 +1,6 @@
 import Modal from "../../../../modal/Modal.js";
 import AbstractElement from "../elements/abstract/AbstractElement.js";
+import LogicOperatorRegistry from "../../../../../data/registry/LogicOperatorRegistry.js";
 import "../../../../FilteredList.js";
 import "../../../../container/CollapsePanel.js";
 import "../elements/ComparatorEqual.js";
@@ -47,6 +48,8 @@ export default class LogicElementModal extends Modal {
 
     #containerEl;
 
+    #operatorGroups = new Set();
+
     constructor() {
         super("Choose Logic Element...");
         const els = TPL.generate();
@@ -76,27 +79,76 @@ export default class LogicElementModal extends Modal {
             }
         });
         /* --- */
-        this.#loadOperators({
-            "type": "group",
-            "caption": "default",
-            "compact": true,
-            children: DEFAULT_LOGIC_OPERATORS.map((type) => {
-                return {type};
-            })
-        }, this.#containerEl);
+        LogicOperatorRegistry.addEventListener("change", (event) => {
+            const {group} = event;
+            if (this.#operatorGroups.has(group)) {
+                this.#refreshOperatorGroup(group);
+            }
+        });
+        LogicOperatorRegistry.addEventListener("caption", (event) => {
+            const {group, caption} = event;
+            if (this.#operatorGroups.has(group)) {
+                const groupEl = this.#containerEl.querySelector(`emc-collapsepanel[data-group="${group}"]`);
+                if (groupEl != null) {
+                    groupEl.caption = caption;
+                }
+            }
+        });
+        /* --- */
+        this.#refreshOperators();
     }
 
-    loadOperators(config) {
+    addOperatorGroup(group) {
+        if (!(typeof group === "string") || group === "") {
+            throw new TypeError("group name must be a non empty string");
+        }
+        if (!this.#operatorGroups.has(group)) {
+            this.#operatorGroups.add(group);
+            this.#refreshOperators();
+        }
+    }
+
+    removeOperatorGroup(group) {
+        if (!(typeof group === "string") || group === "") {
+            throw new TypeError("group name must be a non empty string");
+        }
+        if (this.#operatorGroups.has(group)) {
+            this.#operatorGroups.delete(group);
+            this.#refreshOperators();
+        }
+    }
+
+    #refreshOperators() {
         this.#containerEl.innerHTML = "";
-        this.#loadOperators({
-            "type": "group",
-            "caption": "default",
-            "compact": true,
-            "children": DEFAULT_LOGIC_OPERATORS.map((type) => {
-                return {type};
-            })
-        }, this.#containerEl);
-        this.#loadOperators(config, this.#containerEl);
+        // load default operators
+        const operators = DEFAULT_LOGIC_OPERATORS.map((type) => {
+            return {type};
+        });
+        this.#loadOperatorGroup("", "default", operators, true);
+        // load custom operators
+        for (const group of this.#operatorGroups) {
+            const caption = LogicOperatorRegistry.getCaption(group);
+            const operators = LogicOperatorRegistry.get(group);
+            this.#loadOperatorGroup(group, caption, operators);
+        }
+    }
+
+    #loadOperatorGroup(group, caption = group, operators = [], compact = false) {
+        const groupEl = document.createElement("emc-collapsepanel");
+        groupEl.dataset.group = group;
+        groupEl.caption = caption;
+        groupEl.compact = !!compact;
+        this.#loadOperators(operators, groupEl);
+        this.#containerEl.append(groupEl);
+    }
+
+    #refreshOperatorGroup(group) {
+        const groupEl = this.#containerEl.querySelector(`emc-collapsepanel[data-group="${group}"]`);
+        if (groupEl != null) {
+            groupEl.innerHTML = "";
+            const operators = LogicOperatorRegistry.get(group);
+            this.#loadOperators(operators, groupEl);
+        }
     }
 
     #loadOperators(config, containerEl) {
@@ -110,7 +162,6 @@ export default class LogicElementModal extends Modal {
         } else if (config.type === "group") {
             const newConteinerEl = document.createElement("emc-collapsepanel");
             newConteinerEl.caption = config.caption;
-            newConteinerEl.compact = config.compact ?? false;
             this.#loadOperators(config.children, newConteinerEl);
             containerEl.append(newConteinerEl);
         } else {

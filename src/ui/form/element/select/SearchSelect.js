@@ -11,8 +11,7 @@ import {
 } from "../../../../util/Debouncer.js";
 import Comparator from "../../../../util/helper/Comparator.js";
 import ElementListCache from "../../../../util/html/ElementListCache.js";
-import "../../../i18n/I18nLabel.js";
-import "./Option.js";
+import "../../../i18n/builtin/I18nOption.js";
 import TPL from "./SearchSelect.js.html" assert {type: "html"};
 import STYLE from "./SearchSelect.js.css" assert {type: "css"};
 
