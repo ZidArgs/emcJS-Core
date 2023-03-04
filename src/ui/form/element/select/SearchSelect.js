@@ -1,17 +1,17 @@
-import CustomFormElementDelegating from "../../element/CustomFormElementDelegating.js";
-import EventTargetManager from "../../../util/event/EventTargetManager.js";
-import EventMultiTargetManager from "../../../util/event/EventMultiTargetManager.js";
-import i18n from "../../../util/I18n.js";
-import CharacterSearch from "../../../util/search/CharacterSearch.js";
+import CustomFormElementDelegating from "../../../element/CustomFormElementDelegating.js";
+import EventTargetManager from "../../../../util/event/EventTargetManager.js";
+import EventMultiTargetManager from "../../../../util/event/EventMultiTargetManager.js";
+import i18n from "../../../../util/I18n.js";
+import CharacterSearch from "../../../../util/search/CharacterSearch.js";
 import {
     sortNodeList
-} from "../../../util/helper/ui/NodeListSort.js";
+} from "../../../../util/helper/ui/NodeListSort.js";
 import {
     debounce
-} from "../../../util/Debouncer.js";
-import Comparator from "../../../util/helper/Comparator.js";
-import ElementListCache from "../../../util/html/ElementListCache.js";
-import "../../i18n/I18nLabel.js";
+} from "../../../../util/Debouncer.js";
+import Comparator from "../../../../util/helper/Comparator.js";
+import ElementListCache from "../../../../util/html/ElementListCache.js";
+import "../../../i18n/I18nLabel.js";
 import "./Option.js";
 import TPL from "./SearchSelect.js.html" assert {type: "html"};
 import STYLE from "./SearchSelect.js.css" assert {type: "css"};

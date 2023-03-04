@@ -7,7 +7,7 @@ import {
     saveSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
 import "../../../i18n/I18nLabel.js";
-import "../../custom/SearchSelect.js";
+import "../../element/select/SearchSelect.js";
 import TPL from "./SearchSelect.js.html" assert {type: "html"};
 import STYLE from "./SearchSelect.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./SearchSelect.js.form-config.json" assert {type: "json"};

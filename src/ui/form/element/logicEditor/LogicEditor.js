@@ -11,8 +11,8 @@ import {
     reduceLogic
 } from "../../../../util/logic/LogicReducer.js";
 import LogicEditorContextMenuElement from "./contexmenu/LogicEditorContextMenuElement.js";
-import LogicElementModal from "./components/LogicElementModal.js";
-import LogicJSONModal from "./components/LogicJSONModal.js";
+import LogicElementModal from "./modal/LogicElementModal.js";
+import LogicJSONModal from "./modal/LogicJSONModal.js";
 import LogicAbstractElement from "./elements/abstract/AbstractElement.js";
 import "../../FormButtonRow.js";
 import "../../button/Button.js";

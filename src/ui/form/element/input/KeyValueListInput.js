@@ -1,5 +1,5 @@
-import CustomFormElementDelegating from "../../element/CustomFormElementDelegating.js";
-import ElementListCache from "../../../util/html/ElementListCache.js";
+import CustomFormElementDelegating from "../../../element/CustomFormElementDelegating.js";
+import ElementListCache from "../../../../util/html/ElementListCache.js";
 import TPL from "./SearchSelect.js.html" assert {type: "html"};
 import STYLE from "./SearchSelect.js.css" assert {type: "css"};
 

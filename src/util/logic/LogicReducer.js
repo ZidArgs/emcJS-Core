@@ -11,7 +11,7 @@ function filterFalse(input) {
 }
 
 export function reduceLogic(input) {
-    switch (input.type) {
+    switch (input?.type) {
         case "and": {
             const output = {
                 type: input.type,

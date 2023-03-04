@@ -1,6 +1,6 @@
 import CustomElement from "../../../../../element/CustomElement.js";
-import DragDropMemory from "/emcJS/util/DragDropMemory.js";
-import UGen from "/emcJS/util/UniqueGenerator.js";
+import DragDropMemory from "../../../../../../util/DragDropMemory.js";
+import UGen from "../../../../../../util/UniqueGenerator.js";
 import TPL from "./AbstractElement.js.html" assert {type: "html"};
 import STYLE from "./AbstractElement.js.css" assert {type: "css"};
 import STYLE_ERROR from "./AbstractElement.js.ErrorElement.css" assert {type: "css"};

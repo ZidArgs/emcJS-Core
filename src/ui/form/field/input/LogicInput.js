@@ -10,7 +10,7 @@ import FormElementRegistry from "../../../../data/registry/FormElementRegistry.j
 import {
     saveSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
-import "../../custom/logicEditor/LogicEditor.js";
+import "../../element/logicEditor/LogicEditor.js";
 import TPL from "./LogicInput.js.html" assert {type: "html"};
 import STYLE from "./LogicInput.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./LogicInput.js.form-config.json" assert {type: "json"};
