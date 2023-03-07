@@ -69,6 +69,10 @@ export default class SearchSelect extends CustomFormElementDelegating {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
+        this.#optionSelectEventManager.set("mousedown", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+        });
         this.#optionSelectEventManager.set("click", (event) => {
             this.#choose(event.currentTarget.getAttribute("value"));
             event.preventDefault();
@@ -176,8 +180,8 @@ export default class SearchSelect extends CustomFormElementDelegating {
                 this.#cancelSelection();
             }
         }, {passive: true});
-        window.addEventListener("click", () => {
-            if (this.#isEditMode) {
+        window.addEventListener("mousedown", (event) => {
+            if (this.#isEditMode && !this.contains(event.target)) {
                 this.#cancelSelection();
             }
         }, {passive: true});

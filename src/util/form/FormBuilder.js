@@ -66,10 +66,8 @@ class FormBuilder {
 
         const {
             allowsInvalid = false,
-            submitButton,
-            resetButton,
-            values = {},
-            data = {}
+            data = {},
+            ...formParams
         } = params ?? {};
 
         if (allowsInvalid) {
@@ -79,6 +77,33 @@ class FormBuilder {
         for (const key in data) {
             formEl.dataset[key] = data[key];
         }
+
+        this.replaceForm(formEl, elements, formParams);
+
+        return formEl;
+    }
+
+    replaceForm(formEl, elements, defaultValues, params) {
+        if (!(formEl instanceof HTMLFormElement)) {
+            throw new TypeError("formEl must be of type HTMLFormElement");
+        }
+        if (elements != null && !(typeof elements === "object")) {
+            throw new TypeError("elements must be an object or an array or null");
+        }
+        if (defaultValues != null && !(typeof defaultValues === "object") || Array.isArray(defaultValues)) {
+            throw new TypeError("values must be an object or null");
+        }
+        if (params != null && !(typeof params === "object") || Array.isArray(params)) {
+            throw new TypeError("params must be an object or null");
+        }
+
+        formEl.innerHTML = "";
+
+        const {
+            submitButton,
+            resetButton,
+            values = {}
+        } = params ?? {};
 
         for (const key in values) {
             const value = values[key];
@@ -135,8 +160,6 @@ class FormBuilder {
             }
             formEl.append(buttonRowEl);
         }
-
-        return formEl;
     }
 
     #createOption(option = {}, defaultValues = {}) {

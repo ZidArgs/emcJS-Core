@@ -11,6 +11,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    min-height: 100%;
 }
 ::slotted(form) {
     min-height: 2em;
@@ -43,6 +44,9 @@
     bottom: 0px;
     box-shadow: var(--page-back-color, #ffffff) 0px var(--form-border-radius, 0.25em) 0px 0px;
     z-index: 100;
+}
+::slotted(form:focus-within) {
+    z-index: 101 !important;
 }
 ::slotted(form > .unknown-form-element) {
     padding: 10px;
