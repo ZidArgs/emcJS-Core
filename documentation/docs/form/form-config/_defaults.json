@@ -3,8 +3,8 @@
     "color.readonly": "#00ffff",
     "hotkey.default": "ctrl h",
     "hotkey.readonly": "ctrl h",
-    "logic.default": false,
-    "logic.resettable": {
+    "boolorlogic.default": false,
+    "boolorlogic.resettable": {
         "type": "nand",
         "el": [
             {

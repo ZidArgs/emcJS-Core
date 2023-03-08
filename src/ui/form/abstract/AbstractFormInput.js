@@ -78,7 +78,7 @@ export default class AbstractFormInput extends AbstractFormField {
     }
 
     formResetCallback() {
-        this.#value = null;
+        this.#value = undefined;
         const value = this.value;
         if (typeof value === "object") {
             this.internals.setFormValue(JSON.stringify(value));
@@ -103,7 +103,7 @@ export default class AbstractFormInput extends AbstractFormField {
     }
 
     get isChanged() {
-        return this.#value != null;
+        return this.#value !== undefined;
     }
 
     set value(value) {
@@ -127,7 +127,10 @@ export default class AbstractFormInput extends AbstractFormField {
     }
 
     get value() {
-        return this.#value ?? super.value;
+        if (this.#value === undefined) {
+            return super.value
+        }
+        return this.#value;
     }
 
     set resettable(value) {
@@ -187,22 +190,6 @@ export default class AbstractFormInput extends AbstractFormField {
                     this.revalidate();
                 }
             } break;
-        }
-    }
-
-    setCustomValidity(message) {
-        if (typeof message !== "string") {
-            message = "";
-        }
-        if (this.validationMessage != message) {
-            super.setCustomValidity(message);
-            const event = new Event("validity", {bubbles: true, cancelable: true});
-            event.value = this.value;
-            event.valid = message === "";
-            event.error = message;
-            event.name = this.name;
-            event.fieldId = this.id;
-            this.dispatchEvent(event);
         }
     }
 

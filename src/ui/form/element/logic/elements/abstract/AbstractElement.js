@@ -43,6 +43,9 @@ export default class AbstractElement extends CustomElement {
     }
 
     connectedCallback() {
+        if (this.getAttribute("tabindex") !== "0") {
+            this.setAttribute("tabindex", "0");
+        }
         if (this.draggable) {
             this.setAttribute("draggable", "true");
         } else {
@@ -50,6 +53,10 @@ export default class AbstractElement extends CustomElement {
         }
         this.setAttribute("id", this.#id);
         this.addEventListener("dragstart", dragStart);
+    }
+
+    disconnectedCallback() {
+        this.removeEventListener("dragstart", dragStart);
     }
 
     get draggable() {
@@ -62,10 +69,6 @@ export default class AbstractElement extends CustomElement {
 
     get id() {
         return this.#id;
-    }
-
-    disconnectedCallback() {
-        this.removeEventListener("dragstart", dragStart);
     }
 
     getHeader() {

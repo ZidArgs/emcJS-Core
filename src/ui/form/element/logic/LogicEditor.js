@@ -149,6 +149,7 @@ export default class LogicEditor extends BaseClass {
                     resultEl.setAttribute("slot", slotName);
                 }
                 targetEl.append(resultEl);
+                resultEl.focus();
             };
             this.#logicElementModal.show();
         });
@@ -180,7 +181,9 @@ export default class LogicEditor extends BaseClass {
     #removeElement(id) {
         const el = this.querySelector(`#${id}`);
         if (el != null && (typeof el.template != "string" || el.template == "false")) {
-            el.parentElement.removeChild(el);
+            const parentEl = el.parentElement;
+            parentEl.removeChild(el);
+            parentEl.focus();
         }
     }
 

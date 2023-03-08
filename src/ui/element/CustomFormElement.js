@@ -28,6 +28,10 @@ export default class CustomFormElement extends CustomElement {
         // ignore
     }
 
+    validityCallback(/* message */) {
+        // ignore
+    }
+
     get form() {
         return this.#internals.form;
     }
@@ -85,10 +89,24 @@ export default class CustomFormElement extends CustomElement {
     }
 
     setCustomValidity(message) {
-        if (typeof message === "string" && message !== "") {
-            this.internals.setValidity({customError: true}, message);
-        } else {
-            this.internals.setValidity({}, "");
+        if (typeof message !== "string") {
+            message = "";
+        }
+        if (this.validationMessage != message) {
+            if (message !== "") {
+                this.internals.setValidity({customError: true}, message);
+                this.validityCallback(message);
+            } else {
+                this.internals.setValidity({}, "");
+                this.validityCallback("");
+            }
+            const event = new Event("validity", {bubbles: true, cancelable: true});
+            event.value = this.value;
+            event.valid = message === "";
+            event.error = message;
+            event.name = this.name;
+            event.fieldId = this.id;
+            this.dispatchEvent(event);
         }
     }
 

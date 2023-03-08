@@ -11,11 +11,11 @@ import {
     saveSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
 import "../../element/logic/LogicEditor.js";
-import TPL from "./LogicInput.js.html" assert {type: "html"};
-import STYLE from "./LogicInput.js.css" assert {type: "css"};
-import CONFIG_FIELDS from "./LogicInput.js.form-config.json" assert {type: "json"};
+import TPL from "./BoolOrLogicInput.js.html" assert {type: "html"};
+import STYLE from "./BoolOrLogicInput.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./BoolOrLogicInput.js.form-config.json" assert {type: "json"};
 
-export default class LogicInput extends AbstractFormInput {
+export default class BoolOrLogicInput extends AbstractFormInput {
 
     static get formConfigurationFields() {
         return deepClone(CONFIG_FIELDS);
@@ -69,6 +69,10 @@ export default class LogicInput extends AbstractFormInput {
         super.formResetCallback();
         const value = this.value;
         this.#applyValue(value);
+    }
+
+    validityCallback(message) {
+        this.#logicEl.setCustomValidity(message);
     }
 
     focus(options) {
@@ -144,7 +148,15 @@ export default class LogicInput extends AbstractFormInput {
         }
     }
 
+    checkValid() {
+        const value = this.value;
+        if (value == null) {
+            return "Logic must not be empty";
+        }
+        return super.checkValid();
+    }
+
 }
 
-FormElementRegistry.register("LogicInput", LogicInput);
-customElements.define("emc-field-input-logic", LogicInput);
+FormElementRegistry.register("BoolOrLogicInput", BoolOrLogicInput);
+customElements.define("emc-field-input-boolorlogic", BoolOrLogicInput);

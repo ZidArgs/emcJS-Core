@@ -1,7 +1,7 @@
 // field input
 import "./input/ColorInput.js";
 import "./input/HotkeyInput.js";
-import "./input/LogicInput.js";
+import "./input/BoolOrLogicInput.js";
 import "./input/NumberInput.js";
 import "./input/PasswordInput.js";
 import "./input/RangeInput.js";

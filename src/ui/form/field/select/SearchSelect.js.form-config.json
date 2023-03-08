@@ -70,13 +70,13 @@
         }
     },
     {
-        "type": "LogicInput",
+        "type": "BoolOrLogicInput",
         "name": "enabled",
         "label": "Enabled",
         "value": true
     },
     {
-        "type": "LogicInput",
+        "type": "BoolOrLogicInput",
         "name": "visible",
         "label": "Visible",
         "value": true
