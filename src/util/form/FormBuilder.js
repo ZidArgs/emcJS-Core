@@ -2,6 +2,7 @@ import FormElementRegistry from "../../data/registry/FormElementRegistry.js";
 import {
     isNullOrFalse
 } from "../helper/Comparator.js";
+import "../../ui/form/FormContainer.js";
 import "../../ui/form/FormFieldset.js";
 import "../../ui/form/FormButtonRow.js";
 import "../../ui/form/button/SubmitButton.js";
