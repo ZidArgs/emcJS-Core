@@ -48,6 +48,3 @@
 ::slotted(form:focus-within) {
     z-index: 101 !important;
 }
-::slotted(form > .unknown-form-element) {
-    padding: 10px;
-}

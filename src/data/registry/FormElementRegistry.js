@@ -52,7 +52,6 @@ class FormElementRegistry {
         hiddenWrapperEl.style.background = "#fff5d5";
         hiddenWrapperEl.style.padding = "10px";
         hiddenWrapperEl.style.margin = "6px";
-        hiddenWrapperEl.style.fontStyle = "italic";
 
         const hiddenEl = document.createElement("input");
         hiddenEl.dataset.elementRef = ref;
