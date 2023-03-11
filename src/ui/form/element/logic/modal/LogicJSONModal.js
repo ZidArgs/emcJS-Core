@@ -3,6 +3,7 @@ import {
     debounce
 } from "../../../../../util/Debouncer.js";
 import LogicAbstractElement from "../elements/abstract/AbstractElement.js";
+import "../../../button/Button.js";
 import TPL from "./LogicJSONModal.js.html" assert {type: "html"};
 import STYLE from "./LogicJSONModal.js.css" assert {type: "css"};
 
@@ -19,16 +20,21 @@ export default class LogicJSONModal extends Modal {
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const modalEl = this.shadowRoot.getElementById("modal");
-        const bodyEl = this.shadowRoot.getElementById("body");
-        bodyEl.innerHTML = "";
+        const footerEl = this.shadowRoot.getElementById("footer");
+        const contentEl = this.shadowRoot.getElementById("content");
+        contentEl.innerHTML = "";
         this.#jsonEl = els.getElementById("json");
         this.#errorEl = els.getElementById("error");
-        bodyEl.append(this.#jsonEl);
-        bodyEl.append(this.#errorEl);
-        modalEl.append(els.getElementById("footer"));
+        contentEl.append(this.#jsonEl);
+        contentEl.append(this.#errorEl);
         /* --- */
-        this.#submitEl = this.shadowRoot.getElementById("submit");
+        const cancelEl = els.getElementById("cancel");
+        cancelEl.addEventListener("click", () => {
+            this.close();
+        });
+        footerEl.append(cancelEl);
+        /* --- */
+        this.#submitEl = els.getElementById("submit");
         this.#submitEl.addEventListener("click", () => {
             if (this.#jsonEl.validationMessage === "") {
                 const build = LogicAbstractElement.buildLogic(this.value);
@@ -41,6 +47,7 @@ export default class LogicJSONModal extends Modal {
                 }
             }
         });
+        footerEl.append(this.#submitEl);
         /* --- */
         this.#jsonEl.addEventListener("input", () => {
             this.#validateInput();

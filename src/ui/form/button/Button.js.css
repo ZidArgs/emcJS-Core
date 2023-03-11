@@ -3,16 +3,11 @@
     width: min-content;
     height: 2em;
     margin: 10px;
-    border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
-    border-radius: var(--form-border-radius, 0.25em);
+    user-select: none;
     overflow: hidden;
     font-size: 1rem;
 }
-:host(:disabled) {
-    border-color: var(--input-disabled-border-color, #6a6a6a);
-}
 :host(:focus) {
-    box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
     outline: none;
     z-index: 1;
 }
@@ -26,8 +21,9 @@
     margin: 0px;
     appearance: none;
     color: var(--button-text-color, #000000);
-    background-color: var(--button-back-color, #cccccc);
-    border: none;
+    background-color: var(--button-back-color, #eaeaea);
+    border: solid var(--form-border-width, 2px) var(--button-border-color, #000000);
+    border-radius: var(--form-border-radius, 0.25em);
     font-size: 1em;
     font-weight: bold;
     line-height: 1em;
@@ -35,17 +31,28 @@
     word-break: keep-all;
     cursor: pointer;
 }
+:host([primary]:not([primary="false"])) #button {
+    color: var(--button-primary-text-color, #002a84);
+    background-color: var(--button-primary-back-color, #c8e4ff);
+    border-color: var(--button-primary-border-color, #002a84);
+}
 #button:hover {
     color: var(--button-hover-text-color, #ffffff);
-    background-color: var(--button-hover-back-color, #000000);
+    background-color: var(--button-hover-back-color, #353935);
 }
-#button:disabled {
+:host([primary]:not([primary="false"])) #button:hover {
+    color: var(--button-primary-hover-text-color, #ffffff);
+    background-color: var(--button-primary-hover-back-color, #2734ba);
+}
+#button:disabled,
+:host([primary]:not([primary="false"])) #button:disabled {
     color: var(--input-disabled-text-color, #424242);
     background-color: var(--input-disabled-back-color, #999999);
+    border-color: var(--input-disabled-border-color, #6a6a6a);
     cursor: default;
 }
 #button:focus {
-    box-shadow: none;
+    box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
     outline: none;
 }
 #button[icon]:not([icon=""])::before {

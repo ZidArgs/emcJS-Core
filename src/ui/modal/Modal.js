@@ -59,23 +59,23 @@ export default class Modal extends CustomElement {
         this.dispatchEvent(new Event("close"));
     }
 
-    #getAllFocusable() {
+    #getModalFocusable() {
         const els = Array.from(this.shadowRoot.querySelectorAll(Q_TAB));
         return els.slice(1, -1);
     }
 
-    #getBodyFocusable() {
+    #getContentFocusable() {
         return Array.from(this.querySelectorAll(Q_TAB));
     }
 
     initialFocus() {
-        const bodyEls = this.#getBodyFocusable();
-        if (bodyEls.length) {
-            bodyEls[0].focus();
+        const contentEls = this.#getContentFocusable();
+        if (contentEls.length) {
+            contentEls[0].focus();
         } else {
-            const windowEls = this.#getAllFocusable();
-            if (windowEls.length) {
-                windowEls[0].focus();
+            const modalEls = this.#getModalFocusable();
+            if (modalEls.length) {
+                modalEls[0].focus();
             } else {
                 const closeEl = this.shadowRoot.getElementById("close");
                 closeEl.focus();
@@ -84,13 +84,13 @@ export default class Modal extends CustomElement {
     }
 
     focusFirst() {
-        const windowEls = this.#getAllFocusable();
-        if (windowEls.length) {
-            windowEls[0].focus();
+        const modalEls = this.#getModalFocusable();
+        if (modalEls.length) {
+            modalEls[0].focus();
         } else {
-            const bodyEls = this.#getBodyFocusable();
-            if (bodyEls.length) {
-                bodyEls[0].focus();
+            const contentEls = this.#getContentFocusable();
+            if (contentEls.length) {
+                contentEls[0].focus();
             } else {
                 const closeEl = this.shadowRoot.getElementById("close");
                 closeEl.focus();
@@ -99,13 +99,13 @@ export default class Modal extends CustomElement {
     }
 
     focusLast() {
-        const windowEls = this.#getAllFocusable();
-        if (windowEls.length) {
-            windowEls[windowEls.length - 1].focus();
+        const modalEls = this.#getModalFocusable();
+        if (modalEls.length) {
+            modalEls[modalEls.length - 1].focus();
         } else {
-            const bodyEls = this.#getBodyFocusable();
-            if (bodyEls.length) {
-                bodyEls[bodyEls.length - 1].focus();
+            const contentEls = this.#getContentFocusable();
+            if (contentEls.length) {
+                contentEls[contentEls.length - 1].focus();
             } else {
                 const closeEl = this.shadowRoot.getElementById("close");
                 closeEl.focus();

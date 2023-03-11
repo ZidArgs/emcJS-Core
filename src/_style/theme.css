@@ -50,7 +50,6 @@
     --input-disabled-back-color: #999999;
     --input-disabled-border-color: #6a6a6a; /* all; top_bottom right_left; top right bottom left*/
 
-
     /* === switch === */
     --switch-checked-back-color: #9ee1ec;
     --switch-indeterminate-back-color: #ffffff;
@@ -83,10 +82,16 @@
 
     /* === button === */
     --button-text-color: #000000;
-    --button-back-color: #cccccc;
+    --button-back-color: #eaeaea;
+    --button-border-color: var(--form-border-color, #000000);
+    --button-primary-text-color: #002a84;
+    --button-primary-back-color: #c8e4ff;
+    --button-primary-border-color: #002a84; /* all; top_bottom right_left; top right bottom left*/
 
     --button-hover-text-color: #ffffff;
-    --button-hover-back-color: #000000;
+    --button-hover-back-color: #353935;
+    --button-primary-hover-text-color: #ffffff;
+    --button-primary-hover-back-color: #2734ba;
 
     /* === tree === */
     --tree-text-color: #000000;

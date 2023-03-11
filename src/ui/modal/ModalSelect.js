@@ -1,13 +1,15 @@
 import ModalLayer from "./ModalLayer.js";
 import Modal from "./Modal.js";
 import "../form/button/Button.js";
-import TPL from "./ModalDialog.js.html" assert {type: "html"};
-import STYLE from "./ModalDialog.js.css" assert {type: "css"};
+import TPL from "./ModalSelect.js.html" assert {type: "html"};
+import STYLE from "./ModalSelect.js.css" assert {type: "css"};
 
-export default class ModalDialog extends Modal {
+// TODO
+
+export default class ModalSelect extends Modal {
 
     constructor(options = {}) {
-        super(options.title, options.close);
+        super(options.title ?? "Select option...");
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
@@ -64,7 +66,7 @@ export default class ModalDialog extends Modal {
 
     static alert(ttl, msg) {
         return new Promise(function(resolve) {
-            const dialogEl = new ModalDialog({
+            const dialogEl = new ModalSelect({
                 title: ttl,
                 text: msg,
                 submit: "ok"
@@ -85,7 +87,7 @@ export default class ModalDialog extends Modal {
 
     static confirm(ttl, msg) {
         return new Promise(function(resolve) {
-            const dialogEl = new ModalDialog({
+            const dialogEl = new ModalSelect({
                 title: ttl,
                 text: msg,
                 submit: "yes",
@@ -107,7 +109,7 @@ export default class ModalDialog extends Modal {
 
     static prompt(ttl, msg, def) {
         return new Promise(function(resolve) {
-            const dialogEl = new ModalDialog({
+            const dialogEl = new ModalSelect({
                 title: ttl,
                 text: msg,
                 submit: true,
@@ -145,7 +147,7 @@ export default class ModalDialog extends Modal {
 
     static error(ttl = "Error", msg = "An error occured", errors = []) {
         return new Promise(function(resolve) {
-            const dialogEl = new ModalDialog({
+            const dialogEl = new ModalSelect({
                 title: ttl,
                 text: msg,
                 submit: "ok"
@@ -181,4 +183,4 @@ export default class ModalDialog extends Modal {
 
 }
 
-customElements.define("emc-modal-dialog", ModalDialog);
+customElements.define("emc-modal-select", ModalSelect);

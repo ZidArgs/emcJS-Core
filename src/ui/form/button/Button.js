@@ -70,6 +70,14 @@ export default class Button extends CustomFormElementDelegating {
         return this.getAttribute("tooltip");
     }
 
+    set primary(value) {
+        this.setBooleanAttribute("primary", value);
+    }
+
+    get primary() {
+        return this.getBooleanAttribute("primary");
+    }
+
     static get observedAttributes() {
         return ["text", "icon", "tooltip"];
     }

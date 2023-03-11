@@ -3,6 +3,7 @@ import AbstractElement from "../elements/abstract/AbstractElement.js";
 import LogicOperatorRegistry from "../../../../../data/registry/LogicOperatorRegistry.js";
 import "../../../../FilteredList.js";
 import "../../../../container/CollapsePanel.js";
+import "../../../button/Button.js";
 import "../elements/ComparatorEqual.js";
 import "../elements/ComparatorGreaterThan.js";
 import "../elements/ComparatorGreaterThanEqual.js";
@@ -55,17 +56,17 @@ export default class LogicElementModal extends Modal {
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const modalEl = this.shadowRoot.getElementById("modal");
-        const bodyEl = this.shadowRoot.getElementById("body");
-        bodyEl.innerHTML = "";
+        const footerEl = this.shadowRoot.getElementById("footer");
+        const contentEl = this.shadowRoot.getElementById("content");
+        contentEl.innerHTML = "";
         this.#containerEl = els.getElementById("elements");
-        bodyEl.append(this.#containerEl);
-        modalEl.append(els.getElementById("footer"));
+        contentEl.append(this.#containerEl);
         /* --- */
-        const cancelEl = this.shadowRoot.getElementById("cancel");
+        const cancelEl = els.getElementById("cancel");
         cancelEl.addEventListener("click", () => {
             this.close();
         });
+        footerEl.append(cancelEl);
         /* --- */
         this.#containerEl.addEventListener("click", (event) => {
             const targetEl = event.target;

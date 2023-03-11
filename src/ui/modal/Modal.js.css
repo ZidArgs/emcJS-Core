@@ -50,13 +50,34 @@
     font-size: 1em;
     line-height: 1em;
 }
-#body {
+#content {
     display: flex;
     flex-direction: column;
     padding: 5px;
     min-height: 10vh;
     max-height: 50vh;
     overflow: auto;
+}
+#text {
+    display: block;
+    margin: 8px 0px;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    resize: none;
+}
+#text:empty {
+    display: none;
+}
+#footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-height: 50px;
+    padding: 5px;
+    border-top: solid 2px #cccccc;
+}
+#footer:empty {
+    display: none;
 }
 :focus {
     box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
