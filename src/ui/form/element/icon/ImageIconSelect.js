@@ -464,4 +464,4 @@ export default class ImageIconSelect extends CustomFormElementDelegating {
 
 }
 
-customElements.define("emc-select-imageicon", ImageIconSelect);
+customElements.define("emc-select-icon-image", ImageIconSelect);

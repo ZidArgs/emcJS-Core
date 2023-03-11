@@ -1,0 +1,18 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    color: var(--button-text-color, #000000);
+    background-color: var(--button-back-color, #eaeaea);
+    border: solid var(--form-border-width, 2px) var(--button-border-color, #000000);
+    border-radius: var(--form-border-radius, 0.25em);
+    user-select: none;
+}
+#icon {
+    width: 20px;
+    height: 20px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    background-origin: content-box;
+    pointer-events: none;
+}

@@ -1,5 +1,6 @@
 import ModalLayer from "./ModalLayer.js";
 import Modal from "./Modal.js";
+import CharacterSearch from "../../util/search/CharacterSearch.js";
 import "../form/button/Button.js";
 import TPL from "./ModalSelect.js.html" assert {type: "html"};
 import STYLE from "./ModalSelect.js.css" assert {type: "css"};
@@ -14,6 +15,27 @@ export default class ModalSelect extends Modal {
         STYLE.apply(this.shadowRoot);
         /* --- */
         const footerEl = this.shadowRoot.getElementById("footer");
+        const contentEl = this.shadowRoot.getElementById("content");
+
+        const searchEl = els.getElementById("search");
+        contentEl.before(searchEl);
+        searchEl.addEventListener("change", (event) => {
+            const all = this.children;
+            if (event.value) {
+                const regEx = new CharacterSearch(event.value);
+                for (const el of all) {
+                    if (el.innerText.match(regEx)) {
+                        el.style.display = "";
+                    } else {
+                        el.style.display = "none";
+                    }
+                }
+            } else {
+                for (const el of all) {
+                    el.style.display = "";
+                }
+            }
+        });
 
         if (!!options.text && typeof options.text === "string") {
             const textEl = this.shadowRoot.getElementById("text");

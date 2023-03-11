@@ -109,10 +109,13 @@ export default class AbstractElement extends CustomElement {
     }
 
     prepend(el) {
-        if (Array.isArray(el)) {
-            el.forEach((e) => this.insertBefore(e, this.firstChild));
+        const firstEl = this.firstChild;
+        if (firstEl == null) {
+            this.append(el);
+        } else if (Array.isArray(el)) {
+            el.forEach((e) => firstEl.before(e));
         } else {
-            this.insertBefore(el, this.firstChild);
+            firstEl.before(el);
         }
     }
 
@@ -151,6 +154,42 @@ export default class AbstractElement extends CustomElement {
             }
 
             return r;
+        }
+    }
+
+    before(el) {
+        const parentEl = this.parentElement;
+        if (el instanceof AbstractElement && parentEl.editable) {
+            super.before(el);
+
+            if (parentEl.hasAttribute("visualize")) {
+                el.setAttribute("visualize", parentEl.getAttribute("visualize"));
+            } else {
+                el.removeAttribute("visualize");
+            }
+            if (parentEl.hasAttribute("readonly")) {
+                el.setAttribute("readonly", parentEl.getAttribute("readonly"));
+            } else {
+                el.removeAttribute("readonly");
+            }
+        }
+    }
+
+    after(el) {
+        const parentEl = this.parentElement;
+        if (el instanceof AbstractElement && parentEl.editable) {
+            super.after(el);
+
+            if (parentEl.hasAttribute("visualize")) {
+                el.setAttribute("visualize", parentEl.getAttribute("visualize"));
+            } else {
+                el.removeAttribute("visualize");
+            }
+            if (parentEl.hasAttribute("readonly")) {
+                el.setAttribute("readonly", parentEl.getAttribute("readonly"));
+            } else {
+                el.removeAttribute("readonly");
+            }
         }
     }
 
