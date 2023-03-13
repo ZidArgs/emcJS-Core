@@ -6,5 +6,7 @@
     justify-content: center;
 }
 #target {
-    display: inline-flex;
+    display: inline;
+    overflow: inherit;
+    text-overflow: inherit;
 }

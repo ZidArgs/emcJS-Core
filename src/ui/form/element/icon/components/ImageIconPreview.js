@@ -1,4 +1,4 @@
-import CustomElement from "./element/CustomElement.js";
+import CustomElement from "../../../../element/CustomElement.js";
 import TPL from "./ImageIconPreview.js.html" assert {type: "html"};
 import STYLE from "./ImageIconPreview.js.css" assert {type: "css"};
 
@@ -8,6 +8,8 @@ export default class ImageIconPreview extends CustomElement {
 
     #textEl;
 
+    #tooltipEl;
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
@@ -15,14 +17,7 @@ export default class ImageIconPreview extends CustomElement {
         /* --- */
         this.#iconEl = this.shadowRoot.getElementById("icon");
         this.#textEl = this.shadowRoot.getElementById("text");
-    }
-
-    get src() {
-        return this.getAttribute("src");
-    }
-
-    set src(val) {
-        this.setAttribute("src", val);
+        this.#tooltipEl = this.shadowRoot.getElementById("tooltip");
     }
 
     set text(value) {
@@ -33,13 +28,21 @@ export default class ImageIconPreview extends CustomElement {
         return this.getAttribute("text");
     }
 
+    set value(value) {
+        this.setAttribute("value", value);
+    }
+
+    get value() {
+        return this.getAttribute("value");
+    }
+
     static get observedAttributes() {
-        return ["src", "text"];
+        return ["value", "text"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
-            case "src": {
+            case "value": {
                 if (oldValue != newValue) {
                     this.#iconEl.style.backgroundImage = `url("${newValue}")`;
                 }
@@ -47,6 +50,7 @@ export default class ImageIconPreview extends CustomElement {
             case "text": {
                 if (oldValue != newValue) {
                     this.#textEl.i18nValue = newValue;
+                    this.#tooltipEl.i18nTooltip = newValue;
                 }
             } break;
         }

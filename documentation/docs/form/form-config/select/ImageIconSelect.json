@@ -1,0 +1,28 @@
+{
+    "type": "Fieldset",
+    "label": "image-icon-select",
+    "children": [
+        {
+            "type": "ImageIconSelect",
+            "label": "image-icon-select default",
+            "name": "image-icon-select.default",
+            "options": {
+                "": "",
+                "/icons/area.svg": "Area",
+                "/icons/bean.svg": "Bean",
+                "/icons/chest.svg": "Chest",
+                "/icons/cow.svg": "Cow",
+                "/icons/dungeon_boss.svg": "Dungeon Boss",
+                "/icons/dungeon.svg": "Dungeon",
+                "/icons/entrance.svg": "Entrance",
+                "/icons/fairy_fountain.svg": "Fairy Fountain",
+                "/icons/gossipstone.svg": "Gossipstone",
+                "/icons/grotto.svg": "Grotto",
+                "/icons/interior.svg": "Interior",
+                "/icons/location.svg": "Location",
+                "/icons/scrub.svg": "Scrub",
+                "/icons/skulltula.svg": "Skulltula"
+            }
+        }
+    ]
+}

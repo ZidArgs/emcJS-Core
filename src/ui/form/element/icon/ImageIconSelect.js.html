@@ -1,10 +1,3 @@
-<input is="emc-i18n-input" id="input" i18n-placeholder="Search..." autocomplete="off" name="internal_search">
-<div id="view" mode="view">
-    <emc-i18n-label id="placeholder"></emc-i18n-label>
-</div>
-<div id="button"></div>
-<div id="scroll-container">
-    <slot id="options-container">
-        <div id="empty">no entries</div>
-    </slot>
-</div>
+<emc-select-icon-image-preview id="preview"></emc-select-icon-image-preview>
+<emc-button id="button" text="choose" tooltip="choose"></emc-button>
+<slot id="options-container"></slot>

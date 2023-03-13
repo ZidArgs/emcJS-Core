@@ -1,7 +1,5 @@
 :host {
     display: flex;
-    height: 2em;
-    min-width: 200px;
     padding: 0px calc(7px + 2em) 0px 7px;
     color: var(--input-text-color, #000000);
     background-color: var(--input-back-color, #ffffff);
@@ -25,31 +23,6 @@
 }
 :host(:invalid:focus) {
     box-shadow: 0 0 2px 3px var(--input-invalid-focus-color, #ff2500);
-}
-#input {
-    position: absolute;
-    flex-grow: 1;
-    height: 100%;
-    width: 0px;
-    background-color: transparent;
-    border: none;
-    font-size: 1em;
-    opacity: 0;
-    z-index: -100;
-}
-#input.active {
-    position: relative;
-    opacity: 1;
-    z-index: 0;
-}
-#input:focus {
-    outline: none;
-}
-#input[readonly] {
-    cursor: pointer;
-}
-#input::placeholder {
-    color: var(--input-placeholder-text-color, #757575);
 }
 #view {
     display: flex;
@@ -81,80 +54,10 @@
     justify-content: center;
     align-items: center;
     right: 0px;
-    width: 2em;
     height: 100%;
     line-height: 1.2em;
     cursor: pointer;
 }
-#button.disabled {
-    color: var(--input-disabled-text-color, #424242);
-    background-color: var(--input-disabled-back-color, #999999);
-    cursor: default;
-    pointer-events: none;
-}
-#input:focus + #button {
-    outline: none;
-    z-index: 1;
-}
-#button:after {
-    position: relative;
-    display: block;
-    border: solid 0.25em transparent;
-    border-bottom-color: var(--input-text-color, #000000);
-    border-right-color: var(--input-text-color, #000000);
-    transform: translateY(-0.125em) rotate(45deg);
-    content: " ";
-}
-#scroll-container {
-    position: fixed;
-    display: none;
-    max-height: 300px;
-    margin: 4px 0px;
-    overflow-x: hidden;
-    overflow-y: auto;
-    color: var(--input-text-color, #000000);
-    background-color: var(--input-back-color, #ffffff);
-    border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
-    border-radius: var(--form-border-radius, 0.25em);
-    z-index: 1000;
-    box-shadow: #000000 4px 4px 8px -4px;
-}
 #options-container {
-    display: block;
-    width: 100%;
-}
-::slotted([value]) {
-    display: flex;
-    align-items: center;
-    min-height: 2rem;
-    padding: 5px;
-    white-space: normal;
-    color: var(--select-option-text-color, #000000);
-    background-color: var(--select-option-back-color, #ffffff);
-    border-bottom: solid 1px var(--select-option-divider-color, #949494);
-    font-size: 1rem;
-}
-::slotted([value][disabled]) {
     display: none;
-}
-::slotted([value]:hover),
-::slotted([value].marked) {
-    color: var(--select-option-marked-text-color, #000000);
-    background-color: var(--select-option-marked-back-color, #9ee1ec);
-}
-:host(:not([readonly])) ::slotted([value]:not(.active)),
-:host([readonly="false"]) ::slotted([value]:not(.active)),
-:host([multiple]:not([multiple="false"]):not([readonly])) ::slotted([value].active),
-:host([readonly="false"][multiple]:not([multiple="false"])) ::slotted([value].active) {
-    cursor: pointer;
-}
-#empty {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-style: italic;
-    min-height: 2rem;
-    padding: 5px;
-    margin: 5px 2px;
-    white-space: normal;
 }
