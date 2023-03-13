@@ -25,10 +25,10 @@ export default class ModalDialog extends Modal {
         if (options.cancel) {
             const cancelEl = els.getElementById("cancel");
             if (options.cancel instanceof HTMLElement) {
-                cancelEl.innerHTML = "";
+                cancelEl.text = undefined;
                 cancelEl.append(options.cancel);
             } else if (typeof options.cancel === "string") {
-                cancelEl.innerHTML = options.cancel;
+                cancelEl.text = options.cancel;
             }
             cancelEl.addEventListener("click", () => this.cancel());
             footerEl.append(cancelEl);
@@ -37,10 +37,10 @@ export default class ModalDialog extends Modal {
         if (options.submit) {
             const submitEl = els.getElementById("submit");
             if (options.submit instanceof HTMLElement) {
-                submitEl.innerHTML = "";
+                submitEl.text = undefined;
                 submitEl.append(options.submit);
             } else if (typeof options.submit === "string") {
-                submitEl.innerHTML = options.submit;
+                submitEl.text = options.submit;
             }
             submitEl.addEventListener("click", () => this.submit());
             footerEl.append(submitEl);
