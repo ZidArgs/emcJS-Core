@@ -50,6 +50,8 @@ export default class SearchSelect extends CustomFormElementDelegating {
 
     #viewEl;
 
+    #valueEl;
+
     #buttonEl;
 
     #placeholderEl;
@@ -86,14 +88,14 @@ export default class SearchSelect extends CustomFormElementDelegating {
         });
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
+        this.#valueEl = this.shadowRoot.getElementById("value");
         this.#viewEl = this.shadowRoot.getElementById("view");
         this.#placeholderEl = this.shadowRoot.getElementById("placeholder");
         this.#scrollContainerEl = this.shadowRoot.getElementById("scroll-container");
         this.#buttonEl = this.shadowRoot.getElementById("button");
         this.#optionsContainerEl = this.shadowRoot.getElementById("options-container");
         this.#optionsContainerEl.addEventListener("slotchange", () => {
-            this.#resolveSlottedElements();
-            this.#applyValue(this.value);
+            this.#onSlotChange();
         });
         /* --- */
         this.#buttonEl.addEventListener("click", (event) => {
@@ -359,15 +361,24 @@ export default class SearchSelect extends CustomFormElementDelegating {
     }
 
     #applyValue(value) {
-        const el = this.#optionNodeList.querySelector(`[value="${value}"]`);
-        if (el != null) {
-            value = el.innerHTML;
-        }
         if (value !== "") {
-            this.#viewEl.innerHTML = value;
+            const selectedEl = this.#optionNodeList.querySelector(`[value="${value}"]`);
+            if (selectedEl != null) {
+                if (selectedEl.i18nValue != null) {
+                    this.#valueEl.i18nValue = selectedEl.i18nValue;
+                } else {
+                    this.#valueEl.i18nValue = "";
+                    this.#valueEl.innerHTML = selectedEl.innerHTML;
+                }
+            } else {
+                this.#valueEl.i18nValue = value;
+            }
+            this.#valueEl.classList.remove("hidden");
+            this.#placeholderEl.classList.add("hidden");
         } else {
-            this.#viewEl.innerHTML = "";
-            this.#viewEl.append(this.#placeholderEl);
+            this.#valueEl.i18nValue = "";
+            this.#valueEl.classList.add("hidden");
+            this.#placeholderEl.classList.remove("hidden");
         }
     }
 
@@ -472,6 +483,10 @@ export default class SearchSelect extends CustomFormElementDelegating {
         }
         this.#applyValue(this.#value);
     }
+
+    #onSlotChange = debounce(() => {
+        this.#resolveSlottedElements();
+    });
 
 }
 

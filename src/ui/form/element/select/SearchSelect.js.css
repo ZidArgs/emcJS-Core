@@ -158,3 +158,6 @@
     margin: 5px 2px;
     white-space: normal;
 }
+.hidden {
+    display: none !important;
+}
