@@ -4,16 +4,18 @@ import {
 } from "../../../../util/Debouncer.js";
 import ElementListCache from "../../../../util/html/ElementListCache.js";
 import ImageIconModal from "./modal/ImageIconModal.js";
+import "../../../i18n/I18nLabel.js";
+import "../../../i18n/I18nTooltip.js";
 import TPL from "./ImageIconSelect.js.html" assert {type: "html"};
 import STYLE from "./ImageIconSelect.js.css" assert {type: "css"};
-
-// TODO dont use ImageIconPreview but build a sideways view [icon|label|...] where "..." is the choose button
 
 export default class ImageIconSelect extends CustomFormElementDelegating {
 
     #value;
 
-    #previewEl;
+    #iconEl;
+
+    #textEl;
 
     #buttonEl;
 
@@ -28,7 +30,8 @@ export default class ImageIconSelect extends CustomFormElementDelegating {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.#previewEl = this.shadowRoot.getElementById("preview");
+        this.#iconEl = this.shadowRoot.getElementById("icon");
+        this.#textEl = this.shadowRoot.getElementById("text");
         this.#buttonEl = this.shadowRoot.getElementById("button");
         this.#optionsContainerEl = this.shadowRoot.getElementById("options-container");
         this.#buttonEl.addEventListener("click", () => {
@@ -94,17 +97,17 @@ export default class ImageIconSelect extends CustomFormElementDelegating {
     }
 
     #applyValue(value) {
-        if (value !== "") {
-            this.#previewEl.value = value;
+        if (value != null && value !== "") {
+            this.#iconEl.style.backgroundImage = `url(${value})`;
             const selectedEl = this.#optionNodeList.querySelector(`[value="${value}"]`);
             if (selectedEl != null) {
-                this.#previewEl.text = selectedEl.i18nValue ?? selectedEl.innerHTML;
+                this.#textEl.i18nValue = selectedEl.i18nValue ?? selectedEl.innerHTML;
             } else {
-                this.#previewEl.text = value;
+                this.#textEl.i18nValue = value;
             }
         } else {
-            this.#previewEl.value = "";
-            this.#previewEl.text = "";
+            this.#iconEl.style.backgroundImage = "";
+            this.#textEl.i18nValue = "";
         }
     }
 

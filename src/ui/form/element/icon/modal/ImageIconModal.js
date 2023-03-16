@@ -12,6 +12,7 @@ import {
 } from "../../../../../util/helper/ui/NodeListSort.js";
 import Comparator from "../../../../../util/helper/Comparator.js";
 import "../../../button/Button.js";
+import "../../input/internal/SearchField.js";
 import "../components/ImageIconPreview.js";
 import TPL from "./ImageIconModal.js.html" assert {type: "html"};
 import STYLE from "./ImageIconModal.js.css" assert {type: "css"};
@@ -36,10 +37,10 @@ export default class ImageIconModal extends Modal {
 
         const searchEl = els.getElementById("search");
         contentEl.before(searchEl);
-        searchEl.addEventListener("change", (event) => {
+        searchEl.addEventListener("change", () => {
             const all = this.children;
-            if (event.value) {
-                const regEx = new CharacterSearch(event.value);
+            if (searchEl.value) {
+                const regEx = new CharacterSearch(searchEl.value);
                 for (const el of all) {
                     if (el.innerText.match(regEx)) {
                         el.style.display = "";

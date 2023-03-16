@@ -1,3 +1,10 @@
-<emc-select-icon-image-preview id="preview"></emc-select-icon-image-preview>
-<emc-button id="button" text="choose" tooltip="choose"></emc-button>
-<slot id="options-container"></slot>
+<div id="container">
+    <div id="icon-background">
+        <div id="icon"></div>
+    </div>
+    <emc-i18n-label id="text"></emc-i18n-label>
+    <emc-i18n-tooltip i18n-tooltip="choose">
+        <button id="button"><span class="button-text">...</span></button>
+    </emc-i18n-tooltip>
+    <slot id="options-container"></slot>
+</div>

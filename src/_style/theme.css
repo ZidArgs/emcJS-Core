@@ -83,15 +83,17 @@
     /* === button === */
     --button-text-color: #000000;
     --button-back-color: #eaeaea;
-    --button-border-color: var(--form-border-color, #000000);
-    --button-primary-text-color: #002a84;
-    --button-primary-back-color: #c8e4ff;
-    --button-primary-border-color: #002a84; /* all; top_bottom right_left; top right bottom left*/
-
+    --button-border-color: #000000; /* all; top_bottom right_left; top right bottom left*/
     --button-hover-text-color: #ffffff;
     --button-hover-back-color: #353935;
+    --button-hover-border-color: #000000; /* all; top_bottom right_left; top right bottom left*/
+
+    --button-primary-text-color: #000000;
+    --button-primary-back-color: #00dbd0;
+    --button-primary-border-color: #007b75; /* all; top_bottom right_left; top right bottom left*/
     --button-primary-hover-text-color: #ffffff;
-    --button-primary-hover-back-color: #2734ba;
+    --button-primary-hover-back-color: #353935;
+    --button-primary-hover-border-color: #000000; /* all; top_bottom right_left; top right bottom left*/
 
     /* === tree === */
     --tree-text-color: #000000;

@@ -32,17 +32,19 @@
     cursor: pointer;
 }
 :host([primary]:not([primary="false"])) #button {
-    color: var(--button-primary-text-color, #002a84);
-    background-color: var(--button-primary-back-color, #c8e4ff);
-    border-color: var(--button-primary-border-color, #002a84);
+    color: var(--button-primary-text-color, #000000);
+    background-color: var(--button-primary-back-color, #00dbd0);
+    border-color: var(--button-primary-border-color, #007b75);
 }
 #button:hover {
     color: var(--button-hover-text-color, #ffffff);
     background-color: var(--button-hover-back-color, #353935);
+    border-color: var(--button-border-color, #000000);
 }
 :host([primary]:not([primary="false"])) #button:hover {
     color: var(--button-primary-hover-text-color, #ffffff);
-    background-color: var(--button-primary-hover-back-color, #2734ba);
+    background-color: var(--button-primary-hover-back-color, #353935);
+    border-color: var(--button-primary-hover-border-color, #000000);
 }
 #button:disabled,
 :host([primary]:not([primary="false"])) #button:disabled {
@@ -63,4 +65,13 @@
     line-height: 1em;
     font-weight: bold;
     content: attr(icon);
+}
+:host([text-transform="lowercase"]) #button {
+    text-transform: lowercase;
+}
+:host([text-transform="uppercase"]) #button {
+    text-transform: uppercase;
+}
+:host([text-transform="capitalize"]) #button {
+    text-transform: capitalize;
 }

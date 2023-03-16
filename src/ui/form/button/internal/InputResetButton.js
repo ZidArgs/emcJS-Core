@@ -23,13 +23,8 @@ export default class InputResetButton extends CustomElementDelegating {
         });
     }
 
-    set disabled(value) {
-        this.#buttonEl.disabled = value;
-        this.setBooleanAttribute("disabled", value);
-    }
-
-    get disabled() {
-        return this.getBooleanAttribute("disabled");
+    formDisabledCallback(disabled) {
+        this.#buttonEl.disabled = disabled;
     }
 
 }

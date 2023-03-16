@@ -45,6 +45,10 @@ export default class ImageIconSelect extends AbstractFormInput {
         this.#inputEl.value = this.value;
     }
 
+    validityCallback(message) {
+        this.#inputEl.setCustomValidity(message);
+    }
+
     focus(options) {
         this.#inputEl.focus(options);
     }

@@ -22,7 +22,16 @@
     color: var(--button-hover-text-color, #ffffff);
     background-color: var(--button-hover-back-color, #353935);
 }
+::slotted(emc-select-icon-image-preview.selected) {
+    color: var(--button-primary-text-color, #000000);
+    background-color: var(--button-primary-back-color, #00dbd0);
+    border-color: var(--button-primary-border-color, #007b75);
+}
 ::slotted(emc-select-icon-image-preview.selected:hover) {
     color: var(--button-primary-hover-text-color, #ffffff);
-    background-color: var(--button-primary-hover-back-color, #2734ba);
+    background-color: var(--button-primary-hover-back-color, #353935);
+}
+#submit,
+#cancel {
+    margin: 2px;
 }
