@@ -28,6 +28,7 @@
         import FileLoader from "/emcJS/util/file/FileLoader.js";
         import CustomActionRegistry from "/emcJS/data/registry/CustomActionRegistry.js";
         import LogicOperatorRegistry from "/emcJS/data/registry/LogicOperatorRegistry.js";
+        import OptionGroupRegistry from "/emcJS/data/registry/OptionGroupRegistry.js";
         import "/emcJS/ui/Page.js";
         // form
         import FormBuilder from "/emcJS/util/form/FormBuilder.js";
@@ -78,8 +79,9 @@
         })
         i18n.language = "en";
 
-        const [defaultValues, buttonConfig, ...formConfig] = await Promise.all([
+        const [defaultValues, optionGroups, buttonConfig, ...formConfig] = await Promise.all([
             FileLoader.json("./form/form-config/_defaults.json"),
+            FileLoader.json("./form/form-config/OptionGroups.json"),
             FileLoader.json("./form/form-config/Buttons.json"),
             FileLoader.json("./form/form-config/select/ImageIconSelect.json"),
             FileLoader.json("./form/form-config/input/BoolOrLogicInput.json"),
@@ -94,6 +96,8 @@
             FileLoader.json("./form/form-config/input/HotkeyInput.json"),
             FileLoader.json("./form/form-config/input/SwitchInput.json")
         ]);
+
+        OptionGroupRegistry.load(optionGroups);
 
         const pageEl = document.getElementById("page");
 

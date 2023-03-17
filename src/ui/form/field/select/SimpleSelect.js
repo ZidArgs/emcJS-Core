@@ -1,8 +1,10 @@
 import AbstractFormInput from "../../abstract/AbstractFormInput.js";
+import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
+import OptionGroupRegistry from "../../../../data/registry/OptionGroupRegistry.js";
+import EventTargetManager from "../../../../util/event/EventTargetManager.js";
 import {
     deepClone
 } from "../../../../util/helper/DeepClone.js";
-import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
 import {
     saveSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
@@ -19,6 +21,10 @@ export default class SimpleSelect extends AbstractFormInput {
 
     #inputEl;
 
+    #optionGroup = null;
+
+    #optionGroupEventTargetManager = new EventTargetManager();
+
     constructor() {
         super();
         this.shadowRoot.getElementById("field").append(TPL.generate());
@@ -28,6 +34,10 @@ export default class SimpleSelect extends AbstractFormInput {
         this.#inputEl.addEventListener("change", () => {
             this.value = this.#inputEl.value;
             this.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
+        });
+        /* --- */
+        this.#optionGroupEventTargetManager.set("change", () => {
+            this.#loadOptionsFromGroup();
         });
     }
 
@@ -59,8 +69,16 @@ export default class SimpleSelect extends AbstractFormInput {
         return super.value;
     }
 
+    set optiongroup(value) {
+        this.setAttribute("optiongroup", value);
+    }
+
+    get optiongroup() {
+        return this.getAttribute("optiongroup");
+    }
+
     static get observedAttributes() {
-        return [...super.observedAttributes, "value", "readonly"];
+        return [...super.observedAttributes, "value", "readonly", "optiongroup"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -80,31 +98,62 @@ export default class SimpleSelect extends AbstractFormInput {
                     saveSetAttribute(this.#inputEl, name, newValue);
                 }
             } break;
+            case "optiongroup": {
+                if (oldValue != newValue) {
+                    if (newValue == null || newValue === "") {
+                        this.#optionGroup = null;
+                    } else {
+                        this.#optionGroup = new OptionGroupRegistry(newValue);
+                    }
+                    this.#optionGroupEventTargetManager.switchTarget(this.#optionGroup);
+                    this.#loadOptionsFromGroup();
+                }
+            } break;
         }
     }
 
     static fromConfig(config) {
         const selectEl = new SimpleSelect();
-        const {options = {}, ...params} = config;
+        const {options = {}, optiongroup, ...params} = config;
         for (const name in params) {
             const value = params[name];
             if (value != null) {
                 selectEl.setAttribute(name, value);
             }
         }
-        const inputEl = selectEl.shadowRoot.getElementById("input");
-        for (const value in options) {
-            const optionEl = document.createElement("option", {is: "emc-i18n-option"});
-            optionEl.setAttribute("value", value);
-            const label = options[value];
-            if (typeof label === "string" && label !== "") {
-                optionEl.i18nValue = label;
-            } else if (value !== "") {
-                optionEl.i18nValue = value;
+        if (typeof optiongroup === "string" && optiongroup !== "") {
+            selectEl.setAttribute("optiongroup", optiongroup);
+        } else {
+            const inputEl = selectEl.shadowRoot.getElementById("input");
+            for (const value in options) {
+                const optionEl = document.createElement("option", {is: "emc-i18n-option"});
+                optionEl.setAttribute("value", value);
+                const label = options[value];
+                if (typeof label === "string" && label !== "") {
+                    optionEl.i18nValue = label;
+                } else if (value !== "") {
+                    optionEl.i18nValue = value;
+                }
+                inputEl.append(optionEl);
             }
-            inputEl.append(optionEl);
         }
         return selectEl;
+    }
+
+    #loadOptionsFromGroup() {
+        this.#inputEl.innerHTML = "";
+        if (this.#optionGroup != null) {
+            for (const [value, label] of this.#optionGroup) {
+                const optionEl = document.createElement("option", {is: "emc-i18n-option"});
+                optionEl.setAttribute("value", value);
+                if (typeof label === "string" && label !== "") {
+                    optionEl.i18nValue = label;
+                } else if (value !== "") {
+                    optionEl.i18nValue = value;
+                }
+                this.#inputEl.append(optionEl);
+            }
+        }
     }
 
 }

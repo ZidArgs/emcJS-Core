@@ -3,7 +3,7 @@ let CURRENT_REGISTRY = null;
 
 export default class CustomActionRegistry {
 
-    actions = new Map();
+    #actions = new Map();
 
     constructor(name) {
         if (name != null && typeof name !== "string" || name === "") {
@@ -20,15 +20,15 @@ export default class CustomActionRegistry {
         if (typeof fn !== "function") {
             throw new TypeError("only functions can be registered as custom action");
         }
-        this.actions.set(ref, fn);
+        this.#actions.set(ref, fn);
     }
 
     has(ref) {
-        return this.actions.has(ref);
+        return this.#actions.has(ref);
     }
 
     get(ref) {
-        return this.actions.get(ref);
+        return this.#actions.get(ref);
     }
 
     activate() {

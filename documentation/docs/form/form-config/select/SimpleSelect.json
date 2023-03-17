@@ -6,36 +6,21 @@
             "type": "SimpleSelect",
             "label": "simple-select default",
             "name": "simple-select.default",
-            "options": {
-                "": "Select entry...",
-                "test": "Test",
-                "foobar": "Foobar",
-                "barfoo": "Barfoo"
-            },
+            "optiongroup": "SimpleSelect",
             "sorted": true
         },
         {
             "type": "SimpleSelect",
             "label": "simple-select default (duplicate)",
             "name": "simple-select.default",
-            "options": {
-                "": "Select entry...",
-                "test": "Test",
-                "foobar": "Foobar",
-                "barfoo": "Barfoo"
-            },
+            "optiongroup": "SimpleSelect",
             "sorted": true
         },
         {
             "type": "SimpleSelect",
             "label": "simple-select resettable",
             "name": "simple-select.resettable",
-            "options": {
-                "": "Select entry...",
-                "test": "Test",
-                "foobar": "Foobar",
-                "barfoo": "Barfoo"
-            },
+            "optiongroup": "SimpleSelect",
             "sorted": true,
             "resettable": true
         },
@@ -43,12 +28,7 @@
             "type": "SimpleSelect",
             "label": "simple-select required",
             "name": "simple-select.required",
-            "options": {
-                "": "Select entry...",
-                "test": "Test",
-                "foobar": "Foobar",
-                "barfoo": "Barfoo"
-            },
+            "optiongroup": "SimpleSelect",
             "sorted": true,
             "required": true
         },
@@ -56,12 +36,7 @@
             "type": "SimpleSelect",
             "label": "simple-select disabled",
             "name": "simple-select.disabled",
-            "options": {
-                "": "Select entry...",
-                "test": "Test",
-                "foobar": "Foobar",
-                "barfoo": "Barfoo"
-            },
+            "optiongroup": "SimpleSelect",
             "sorted": true,
             "disabled": true
         }

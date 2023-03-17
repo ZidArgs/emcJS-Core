@@ -6,11 +6,10 @@
             "type": "SearchSelect",
             "label": "search-select default",
             "name": "search-select.default",
+            "optiongroup": "SearchSelect",
             "options": {
                 "": "",
-                "test": "Test",
-                "foobar": "Foobar",
-                "barfoo": "Barfoo"
+                "nana": "Nana"
             },
             "placeholder": "Select entry...",
             "sorted": true
@@ -19,12 +18,7 @@
             "type": "SearchSelect",
             "label": "search-select default (duplicate)",
             "name": "search-select.default",
-            "options": {
-                "": "",
-                "test": "Test",
-                "foobar": "Foobar",
-                "barfoo": "Barfoo"
-            },
+            "optiongroup": "SearchSelect",
             "placeholder": "Select entry...",
             "sorted": true
         },
@@ -32,12 +26,7 @@
             "type": "SearchSelect",
             "label": "search-select resettable",
             "name": "search-select.resettable",
-            "options": {
-                "": "",
-                "test": "Test",
-                "foobar": "Foobar",
-                "barfoo": "Barfoo"
-            },
+            "optiongroup": "SearchSelect",
             "placeholder": "Select entry...",
             "sorted": true,
             "resettable": true
@@ -46,12 +35,7 @@
             "type": "SearchSelect",
             "label": "search-select required",
             "name": "search-select.required",
-            "options": {
-                "": "",
-                "test": "Test",
-                "foobar": "Foobar",
-                "barfoo": "Barfoo"
-            },
+            "optiongroup": "SearchSelect",
             "placeholder": "Select entry...",
             "sorted": true,
             "required": true
@@ -60,12 +44,7 @@
             "type": "SearchSelect",
             "label": "search-select disabled",
             "name": "search-select.disabled",
-            "options": {
-                "": "",
-                "test": "Test",
-                "foobar": "Foobar",
-                "barfoo": "Barfoo"
-            },
+            "optiongroup": "SearchSelect",
             "placeholder": "Select entry...",
             "sorted": true,
             "disabled": true

@@ -31,9 +31,15 @@
         "directory": true
     },
     {
+        "type": "StringInput",
+        "name": "optiongroup",
+        "label": "Option Group",
+        "value": ""
+    },
+    {
         "type": "KeyValueListInput",
         "name": "options",
-        "label": "Options",
+        "label": "Options (ignored if Option Group is set)",
         "value": ""
     },
     {
