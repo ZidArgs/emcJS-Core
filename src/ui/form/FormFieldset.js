@@ -5,7 +5,7 @@ import {
 import "../i18n/I18nLabel.js";
 import "../i18n/I18nTextbox.js";
 import {
-    saveSetAttribute
+    safeSetAttribute
 } from "../../util/helper/ui/NodeAttributes.js";
 import TPL from "./FormFieldset.js.html" assert {type: "html"};
 import STYLE from "./FormFieldset.js.css" assert {type: "css"};
@@ -75,7 +75,7 @@ export default class FormFieldset extends CustomElement {
             } break;
             case "disabled": {
                 if (oldValue != newValue) {
-                    saveSetAttribute(this.shadowRoot.getElementById("fieldset"), "disabled", newValue);
+                    safeSetAttribute(this.shadowRoot.getElementById("fieldset"), "disabled", newValue);
                 }
             } break;
         }

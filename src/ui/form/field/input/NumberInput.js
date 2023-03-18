@@ -8,7 +8,7 @@ import {
 } from "../../../../util/helper/DeepClone.js";
 import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
 import {
-    saveSetAttribute
+    safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
 import TPL from "./NumberInput.js.html" assert {type: "html"};
 import STYLE from "./NumberInput.js.css" assert {type: "css"};
@@ -97,7 +97,7 @@ export default class NumberInput extends AbstractFormInput {
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
-                    saveSetAttribute(this.#inputEl, "value", newValue);
+                    safeSetAttribute(this.#inputEl, "value", newValue);
                     if (!this.isChanged) {
                         const value = this.value;
                         this.#inputEl.value = value;
@@ -107,12 +107,12 @@ export default class NumberInput extends AbstractFormInput {
             case "readonly":
             case "autocomplete": {
                 if (oldValue != newValue) {
-                    saveSetAttribute(this.#inputEl, name, newValue);
+                    safeSetAttribute(this.#inputEl, name, newValue);
                 }
             } break;
             case "placeholder": {
                 if (oldValue != newValue) {
-                    saveSetAttribute(this.#inputEl, "i18n-placeholder", newValue);
+                    safeSetAttribute(this.#inputEl, "i18n-placeholder", newValue);
                 }
             } break;
         }

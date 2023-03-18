@@ -12,3 +12,4 @@ import "./input/TextInput.js";
 import "./select/ImageIconSelect.js";
 import "./select/SearchSelect.js";
 import "./select/SimpleSelect.js";
+import "./select/TokenSelect.js";

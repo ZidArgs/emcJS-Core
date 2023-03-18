@@ -1,4 +1,5 @@
 import CustomFormElementDelegating from "../../../element/CustomFormElementDelegating.js";
+import TokenRegistry from "../../../../data/registry/TokenRegistry.js";
 import EventTargetManager from "../../../../util/event/EventTargetManager.js";
 import EventMultiTargetManager from "../../../../util/event/EventMultiTargetManager.js";
 import i18n from "../../../../util/I18n.js";
@@ -9,19 +10,39 @@ import {
 import {
     debounce
 } from "../../../../util/Debouncer.js";
-import Comparator from "../../../../util/helper/Comparator.js";
+import Comparator, {
+    isEqual
+} from "../../../../util/helper/Comparator.js";
 import ElementListCache from "../../../../util/html/ElementListCache.js";
+import ElementManager from "../../../../util/html/ElementManager.js";
 import "../../../i18n/builtin/I18nOption.js";
-import TPL from "./SearchSelect.js.html" assert {type: "html"};
-import STYLE from "./SearchSelect.js.css" assert {type: "css"};
+import TPL from "./TokenSelect.js.html" assert {type: "html"};
+import STYLE from "./TokenSelect.js.css" assert {type: "css"};
 
 const ESCAPE_KEYS = [
     "Tab",
-    "Escape",
-    "Enter"
+    "Escape"
 ];
 
-export default class SearchSelect extends CustomFormElementDelegating {
+function tokenComposer(key, params) {
+    const el = document.createElement("div");
+    el.className = "token";
+    el.innerHTML = key;
+    el.dataset.value = key;
+    el.addEventListener("click", (event) => {
+        params.tokenAction(event);
+    });
+    return el;
+}
+
+// TODO add manage token option (?)
+// TODO add token usage detection (?)
+
+export default class TokenSelect extends CustomFormElementDelegating {
+
+    #tokenRegistry = null;
+
+    #tokenRegistryEventTargetManager = new EventTargetManager();
 
     #isEditMode = false;
 
@@ -41,6 +62,8 @@ export default class SearchSelect extends CustomFormElementDelegating {
 
     #optionsContainerEl;
 
+    #elManager;
+
     #optionNodeList = new ElementListCache();
 
     #optionSelectEventManager = new EventMultiTargetManager();
@@ -57,7 +80,10 @@ export default class SearchSelect extends CustomFormElementDelegating {
             event.stopPropagation();
         });
         this.#optionSelectEventManager.set("click", (event) => {
-            this.#choose(event.currentTarget.getAttribute("value"));
+            const el = event.currentTarget;
+            el.classList.toggle("selected");
+            const value = el.getAttribute("value");
+            this.#toggleToken(value);
             event.preventDefault();
             event.stopPropagation();
         });
@@ -99,15 +125,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
             if (!this.getBooleanAttribute("readonly")) {
                 if (!this.#isEditMode) {
                     const {key} = event;
-                    if (key === "ArrowUp") {
-                        this.#switchSelected(true);
-                        event.preventDefault();
-                        event.stopPropagation();
-                    } else if (key === "ArrowDown") {
-                        this.#switchSelected(false);
-                        event.preventDefault();
-                        event.stopPropagation();
-                    } else if (key === "Enter" || key === " ") {
+                    if (key === "Enter") {
                         this.#startEditMode();
                         event.preventDefault();
                         event.stopPropagation();
@@ -120,6 +138,14 @@ export default class SearchSelect extends CustomFormElementDelegating {
                         event.stopPropagation();
                     } else if (key === "ArrowDown") {
                         this.#moveMarker(false);
+                        event.preventDefault();
+                        event.stopPropagation();
+                    } else if (key === "Enter") {
+                        this.#createToken();
+                        event.preventDefault();
+                        event.stopPropagation();
+                    } else if (key === " ") {
+                        this.#toggleMarkedToken();
                         event.preventDefault();
                         event.stopPropagation();
                     } else if (ESCAPE_KEYS.includes(key)) {
@@ -167,7 +193,14 @@ export default class SearchSelect extends CustomFormElementDelegating {
             }
         }, {passive: true});
         /* --- */
-        this.#i18nEventManager.setActive(this.getBooleanAttribute("sorted"));
+        this.#elManager = new ElementManager(this.#valueEl, {
+            composer: tokenComposer
+        });
+        /* --- */
+        this.#tokenRegistryEventTargetManager.set("change", () => {
+            this.#loadTokenFromGroup();
+        });
+        /* --- */
         this.#i18nEventManager.set("language", () => {
             this.#sort();
         });
@@ -177,7 +210,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
     }
 
     connectedCallback() {
-        const value = this.value ?? this.#optionNodeList.first?.value;
+        const value = this.value;
         this.#value = value;
         this.#applyValue(value);
         this.internals.setFormValue(value);
@@ -200,17 +233,40 @@ export default class SearchSelect extends CustomFormElementDelegating {
     }
 
     set value(value) {
-        if (this.#value != value) {
+        if (!isEqual(this.#value, value)) {
+            if (value == null || value === "") {
+                value = [];
+            } else if (!Array.isArray(value)) {
+                value = [value];
+            } else {
+                value = [...value]
+            }
+            if (!this.chooseonly && this.#tokenRegistry != null) {
+                for (const token of value) {
+                    this.#tokenRegistry.add(token)
+                }
+            }
             this.#value = value;
             this.#applyValue(value);
-            this.internals.setFormValue(value);
+            this.internals.setFormValue(JSON.stringify(value));
             /* --- */
             this.dispatchEvent(new Event("change"));
         }
     }
 
     get value() {
-        return this.#value ?? this.getAttribute("value");
+        if (this.#value != null) {
+            return this.#value;
+        }
+        try {
+            const value = JSON.parse(this.getAttribute("value"));
+            if (!Array.isArray(value)) {
+                return [value];
+            }
+            return value;
+        } catch {
+            return [];
+        }
     }
 
     set readonly(value) {
@@ -237,16 +293,32 @@ export default class SearchSelect extends CustomFormElementDelegating {
         return this.getAttribute("placeholder");
     }
 
-    set sorted(value) {
-        this.setBooleanAttribute("sorted", value);
+    set multiple(value) {
+        this.setBooleanAttribute("multiple", value);
     }
 
-    get sorted() {
-        return this.getBooleanAttribute("sorted");
+    get multiple() {
+        return this.getBooleanAttribute("multiple");
+    }
+
+    set tokengroup(value) {
+        this.setAttribute("tokengroup", value);
+    }
+
+    get tokengroup() {
+        return this.getAttribute("tokengroup");
+    }
+
+    set chooseonly(value) {
+        this.setBooleanAttribute("chooseonly", value);
+    }
+
+    get chooseonly() {
+        return this.getBooleanAttribute("chooseonly");
     }
 
     static get observedAttributes() {
-        return ["value", "placeholder", "sorted"];
+        return ["value", "placeholder", "multiple", "tokengroup"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -261,26 +333,28 @@ export default class SearchSelect extends CustomFormElementDelegating {
                     this.#placeholderEl.setAttribute("i18n-value", newValue)
                 }
             } break;
-            case "sorted": {
+            case "multiple": {
                 if (oldValue != newValue) {
-                    const sorted = this.sorted;
-                    this.#i18nEventManager.setActive(sorted);
-                    if (sorted) {
-                        this.#sort();
+                    if (!this.multiple) {
+                        const value = this.value;
+                        if (value.length > 1) {
+                            this.value = [value[0]];
+                        }
                     }
                 }
             } break;
+            case "tokengroup": {
+                if (oldValue != newValue) {
+                    if (newValue == null || newValue === "") {
+                        this.#tokenRegistry = null;
+                    } else {
+                        this.#tokenRegistry = new TokenRegistry(newValue);
+                    }
+                    this.#tokenRegistryEventTargetManager.switchTarget(this.#tokenRegistry);
+                    this.#loadTokenFromGroup();
+                }
+            } break;
         }
-    }
-
-    #choose(value) {
-        if (!this.getBooleanAttribute("readonly")) {
-            if (this.#value != value) {
-                this.value = value;
-            }
-            this.focus();
-        }
-        this.#stopEditMode();
     }
 
     #cancelSelection() {
@@ -306,15 +380,48 @@ export default class SearchSelect extends CustomFormElementDelegating {
                 this.#scrollContainerEl.style.top = `${thisRect.bottom}px`;
             }
             const all = this.#optionNodeList.querySelectorAll(`[value]`);
+            const valueBuffer = new Set(this.value);
             for (const el of all) {
                 el.style.display = "";
-                if (el.value === this.#value) {
-                    el.classList.add("marked");
+                if (valueBuffer.has(el.value)) {
+                    el.classList.add("selected");
                 } else {
-                    el.classList.remove("marked");
+                    el.classList.remove("selected");
                 }
             }
         }
+    }
+
+    #createToken() {
+        const value = this.#inputEl.value;
+        if (value != null && value !== "") {
+            const valueBuffer = new Set(this.value);
+            if (this.chooseonly) {
+                const el = this.#optionNodeList.querySelector(`[value="${value}"]`);
+                if (el != null) {
+                    if (this.multiple) {
+                        valueBuffer.add(value);
+                    } else {
+                        valueBuffer.clear();
+                        valueBuffer.add(value);
+                    }
+                }
+            } else {
+                if (this.#tokenRegistry != null) {
+                    this.#tokenRegistry.add(value)
+                }
+                if (this.multiple) {
+                    valueBuffer.add(value);
+                } else {
+                    valueBuffer.clear();
+                    valueBuffer.add(value);
+                }
+            }
+            this.value = Array.from(valueBuffer);
+            this.#applyValue(this.value);
+        }
+        this.focus();
+        this.#stopEditMode();
     }
 
     #stopEditMode() {
@@ -332,40 +439,19 @@ export default class SearchSelect extends CustomFormElementDelegating {
         const marked = this.#optionNodeList.querySelector(".marked");
         if (marked != null) {
             marked.classList.remove("marked");
-            this.value = marked.value;
-        } else {
-            this.#applyValue(this.#value);
         }
+        this.#applyValue(this.value);
     }
 
     #applyValue(value) {
-        if (value !== "") {
-            const selectedEl = this.#optionNodeList.querySelector(`[value="${value}"]`);
-            if (selectedEl != null) {
-                if (selectedEl.i18nValue != null) {
-                    this.#valueEl.i18nValue = selectedEl.i18nValue;
-                } else {
-                    this.#valueEl.i18nValue = "";
-                    this.#valueEl.innerHTML = selectedEl.innerHTML;
-                }
-            } else {
-                this.#valueEl.i18nValue = value;
-            }
-            this.#valueEl.classList.remove("hidden");
-            this.#placeholderEl.classList.add("hidden");
-        } else {
-            this.#valueEl.i18nValue = "";
-            this.#valueEl.classList.add("hidden");
-            this.#placeholderEl.classList.remove("hidden");
+        const data = [];
+        for (const val of value) {
+            data.push({
+                key: val,
+                tokenAction: this.#tokenAction
+            });
         }
-    }
-
-    #switchSelected(modeUp = false) {
-        const marked = this.#optionNodeList.querySelector(`[value="${this.#value}"]`);
-        const el = this.#switchOption(marked, modeUp);
-        if (el != null) {
-            this.value = el.value;
-        }
+        this.#elManager.manage(data);
     }
 
     #moveMarker(modeUp = false) {
@@ -456,9 +542,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
             this.#optionSelectEventManager.addTarget(el);
         }
         /* --- */
-        if (this.sorted) {
-            this.#sort();
-        }
+        this.#sort();
         this.#applyValue(this.#value);
     }
 
@@ -466,6 +550,54 @@ export default class SearchSelect extends CustomFormElementDelegating {
         this.#resolveSlottedElements();
     });
 
+    #tokenAction = (event) => {
+        const el = event.currentTarget;
+        if (el != null) {
+            const value = el.dataset.value;
+            this.#toggleToken(value);
+        }
+        event.stopPropagation();
+    }
+
+    #toggleMarkedToken() {
+        const el = this.#optionNodeList.querySelector(".marked");
+        if (el != null) {
+            el.classList.toggle("selected");
+            const value = el.getAttribute("value");
+            this.#toggleToken(value);
+        }
+    }
+
+    #toggleToken(value) {
+        if (!this.readonly) {
+            const valueBuffer = new Set(this.value);
+            if (this.multiple) {
+                if (valueBuffer.has(value)) {
+                    valueBuffer.delete(value);
+                } else {
+                    valueBuffer.add(value);
+                }
+            } else {
+                valueBuffer.clear();
+                valueBuffer.add(value);
+            }
+            this.value = Array.from(valueBuffer);
+            this.#applyValue(this.value);
+        }
+    }
+
+    #loadTokenFromGroup() {
+        this.innerHTML = "";
+        if (this.#tokenRegistry != null) {
+            for (const value of this.#tokenRegistry) {
+                const optionEl = document.createElement("option");
+                optionEl.setAttribute("value", value);
+                optionEl.innerHTML = value;
+                this.append(optionEl);
+            }
+        }
+    }
+
 }
 
-customElements.define("emc-select-search", SearchSelect);
+customElements.define("emc-select-token", TokenSelect);

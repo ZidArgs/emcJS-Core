@@ -17,13 +17,39 @@ export default class TokenRegistry extends EventTarget {
     }
 
     add(token) {
-        this.#token.add(token);
-        const event = new Event("change");
-        this.dispatchEvent(event);
+        if (!this.#token.has(token)) {
+            this.#token.add(token);
+            const event = new Event("change");
+            this.dispatchEvent(event);
+        }
     }
 
     has(ref) {
         return this.#token.has(ref);
+    }
+
+    delete(token) {
+        if (this.#token.has(token)) {
+            this.#token.delete(token);
+            const event = new Event("change");
+            this.dispatchEvent(event);
+        }
+    }
+
+    clear() {
+        if (this.#token.size > 0) {
+            this.#token.clear();
+            const event = new Event("change");
+            this.dispatchEvent(event);
+        }
+    }
+
+    setAll(options) {
+        for (const value of options) {
+            this.#token.add(value);
+        }
+        const event = new Event("change");
+        this.dispatchEvent(event);
     }
 
     getAll() {
@@ -36,6 +62,14 @@ export default class TokenRegistry extends EventTarget {
 
     [Symbol.iterator]() {
         return this.#token[Symbol.iterator]()
+    }
+
+    static load(config) {
+        for (const name in config) {
+            const options = config[name];
+            const registry = new TokenRegistry(name);
+            registry.setAll(options);
+        }
     }
 
 }

@@ -6,7 +6,7 @@ import {
 } from "../../../../util/Debouncer.js";
 import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
 import {
-    saveSetAttribute
+    safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
 import "../../../i18n/I18nTooltip.js";
 import TPL from "./PasswordInput.js.html" assert {type: "html"};
@@ -79,7 +79,7 @@ export default class PasswordInput extends AbstractFormInput {
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
-                    saveSetAttribute(this.#inputEl, "value", newValue);
+                    safeSetAttribute(this.#inputEl, "value", newValue);
                     if (!this.isChanged) {
                         const value = this.value;
                         this.#inputEl.value = value;
@@ -88,12 +88,12 @@ export default class PasswordInput extends AbstractFormInput {
             } break;
             case "placeholder": {
                 if (oldValue != newValue) {
-                    saveSetAttribute(this.#inputEl, "i18n-placeholder", newValue);
+                    safeSetAttribute(this.#inputEl, "i18n-placeholder", newValue);
                 }
             } break;
             case "readonly": {
                 if (oldValue != newValue) {
-                    saveSetAttribute(this.#inputEl, "readonly", newValue);
+                    safeSetAttribute(this.#inputEl, "readonly", newValue);
                 }
             } break;
         }

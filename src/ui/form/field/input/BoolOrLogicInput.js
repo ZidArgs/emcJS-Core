@@ -8,7 +8,7 @@ import {
 } from "../../../../util/helper/Comparator.js";
 import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
 import {
-    saveSetAttribute
+    safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
 import "../../element/logic/LogicEditor.js";
 import TPL from "./BoolOrLogicInput.js.html" assert {type: "html"};
@@ -117,7 +117,7 @@ export default class BoolOrLogicInput extends AbstractFormInput {
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
-                    saveSetAttribute(this.#inputEl, "value", newValue);
+                    safeSetAttribute(this.#inputEl, "value", newValue);
                     if (!this.isChanged) {
                         const value = this.value;
                         this.#inputEl.value = value;
@@ -126,7 +126,7 @@ export default class BoolOrLogicInput extends AbstractFormInput {
             } break;
             case "readonly": {
                 if (oldValue != newValue) {
-                    saveSetAttribute(this.#inputEl, name, newValue);
+                    safeSetAttribute(this.#inputEl, name, newValue);
                 }
             } break;
         }

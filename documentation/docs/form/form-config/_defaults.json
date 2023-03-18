@@ -42,5 +42,10 @@
     "search-select.default": "test",
     "search-select.resettable": "foobar",
     "simple-select.default": "test",
-    "simple-select.resettable": "foobar"
+    "simple-select.resettable": "foobar",
+    "token-select.default": [
+        "argh",
+        "foobar",
+        "barfoo"
+    ]
 }

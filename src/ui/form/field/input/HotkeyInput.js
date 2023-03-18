@@ -9,7 +9,7 @@ import {
 import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
 import EventTargetManager from "../../../../util/event/EventTargetManager.js";
 import {
-    saveSetAttribute
+    safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
 import TPL from "./HotkeyInput.js.html" assert {type: "html"};
 import STYLE from "./HotkeyInput.js.css" assert {type: "css"};
@@ -152,7 +152,7 @@ export default class HotkeyInput extends AbstractFormInput {
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
-                    saveSetAttribute(this.#inputEl, "value", newValue);
+                    safeSetAttribute(this.#inputEl, "value", newValue);
                     if (!this.isChanged) {
                         const value = this.#parseKeys(this.value);
                         this.#handleReadOnlyDisabled();
@@ -162,7 +162,7 @@ export default class HotkeyInput extends AbstractFormInput {
             } break;
             case "placeholder": {
                 if (oldValue != newValue) {
-                    saveSetAttribute(this.#inputEl, "i18n-placeholder", newValue);
+                    safeSetAttribute(this.#inputEl, "i18n-placeholder", newValue);
                 }
             } break;
             case "readonly": {

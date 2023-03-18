@@ -3,6 +3,9 @@ import CustomFormElementDelegating from "../../ui/element/CustomFormElementDeleg
 import {
     instanceOfOne
 } from "../../util/helper/Class.js";
+import {
+    safeSetAttribute
+} from "../../util/helper/ui/NodeAttributes.js";
 
 const EXPECTED_CLASSES = [
     HTMLInputElement,
@@ -24,21 +27,7 @@ class FormElementRegistry {
             const el = new Clazz();
             for (const name in params) {
                 const value = params[name];
-                if (value != null) {
-                    if (typeof value === "object") {
-                        el.setAttribute(name, JSON.stringify(value));
-                    } else if (typeof value === "boolean") {
-                        if (value) {
-                            el.setAttribute(name, "");
-                        } else {
-                            el.removeAttribute(name);
-                        }
-                    } else {
-                        el.setAttribute(name, value);
-                    }
-                } else {
-                    el.removeAttribute(name);
-                }
+                safeSetAttribute(el, name, value);
             }
             return el;
         }

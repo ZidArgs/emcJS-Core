@@ -1,7 +1,5 @@
 import AbstractFormInput from "../../abstract/AbstractFormInput.js";
 import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
-import OptionGroupRegistry from "../../../../data/registry/OptionGroupRegistry.js";
-import EventTargetManager from "../../../../util/event/EventTargetManager.js";
 import {
     deepClone
 } from "../../../../util/helper/DeepClone.js";
@@ -9,22 +7,18 @@ import {
     safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
 import "../../../i18n/builtin/I18nOption.js";
-import "../../element/select/SearchSelect.js";
-import TPL from "./SearchSelect.js.html" assert {type: "html"};
-import STYLE from "./SearchSelect.js.css" assert {type: "css"};
-import CONFIG_FIELDS from "./SearchSelect.js.form-config.json" assert {type: "json"};
+import "../../element/select/TokenSelect.js";
+import TPL from "./TokenSelect.js.html" assert {type: "html"};
+import STYLE from "./TokenSelect.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./TokenSelect.js.form-config.json" assert {type: "json"};
 
-export default class SearchSelect extends AbstractFormInput {
+export default class TokenSelect extends AbstractFormInput {
 
     static get formConfigurationFields() {
         return deepClone(CONFIG_FIELDS);
     }
 
     #inputEl;
-
-    #optionGroup = null;
-
-    #optionGroupEventTargetManager = new EventTargetManager();
 
     constructor() {
         super();
@@ -34,10 +28,6 @@ export default class SearchSelect extends AbstractFormInput {
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#inputEl.addEventListener("change", () => {
             this.value = this.#inputEl.value
-        });
-        /* --- */
-        this.#optionGroupEventTargetManager.set("change", () => {
-            this.#loadOptionsFromGroup();
         });
     }
 
@@ -69,24 +59,32 @@ export default class SearchSelect extends AbstractFormInput {
         return super.value;
     }
 
-    set sorted(value) {
-        this.setBooleanAttribute("sorted", value);
+    set multiple(value) {
+        this.setBooleanAttribute("multiple", value);
     }
 
-    get sorted() {
-        return this.getBooleanAttribute("sorted");
+    get multiple() {
+        return this.getBooleanAttribute("multiple");
     }
 
-    set optiongroup(value) {
-        this.setAttribute("optiongroup", value);
+    set tokengroup(value) {
+        this.setAttribute("tokengroup", value);
     }
 
-    get optiongroup() {
-        return this.getAttribute("optiongroup");
+    get tokengroup() {
+        return this.getAttribute("tokengroup");
+    }
+
+    set chooseonly(value) {
+        this.setBooleanAttribute("chooseonly", value);
+    }
+
+    get chooseonly() {
+        return this.getBooleanAttribute("chooseonly");
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "value", "placeholder", "readonly", "autocomplete", "sorted", "optiongroup"];
+        return [...super.observedAttributes, "value", "placeholder", "readonly", "multiple", "tokengroup", "chooseonly"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -96,42 +94,40 @@ export default class SearchSelect extends AbstractFormInput {
                 if (oldValue != newValue) {
                     safeSetAttribute(this.#inputEl, "value", newValue);
                     if (!this.isChanged) {
-                        const value = this.value;
-                        this.#inputEl.value = value;
+                        try {
+                            const value = JSON.parse(this.value);
+                            if (!Array.isArray(value)) {
+                                this.#inputEl.value = [value];
+                            } else {
+                                this.#inputEl.value = value;
+                            }
+                        } catch {
+                            this.#inputEl.value = [];
+                        }
                     }
                 }
             } break;
             case "readonly":
-            case "autocomplete":
             case "placeholder":
-            case "sorted": {
+            case "multiple":
+            case "tokengroup":
+            case "chooseonly": {
                 if (oldValue != newValue) {
                     safeSetAttribute(this.#inputEl, name, newValue);
-                }
-            } break;
-            case "optiongroup": {
-                if (oldValue != newValue) {
-                    if (newValue == null || newValue === "") {
-                        this.#optionGroup = null;
-                    } else {
-                        this.#optionGroup = new OptionGroupRegistry(newValue);
-                    }
-                    this.#optionGroupEventTargetManager.switchTarget(this.#optionGroup);
-                    this.#loadOptionsFromGroup();
                 }
             } break;
         }
     }
 
     static fromConfig(config) {
-        const selectEl = new SearchSelect();
-        const {options = {}, optiongroup, ...params} = config;
+        const selectEl = new TokenSelect();
+        const {options = {}, tokengroup, ...params} = config;
         for (const name in params) {
             const value = params[name];
             safeSetAttribute(selectEl, name, value);
         }
-        if (typeof optiongroup === "string" && optiongroup !== "") {
-            selectEl.setAttribute("optiongroup", optiongroup);
+        if (typeof tokengroup === "string" && tokengroup !== "") {
+            selectEl.setAttribute("tokengroup", tokengroup);
         } else {
             for (const value in options) {
                 const optionEl = document.createElement("option", {is: "emc-i18n-option"});
@@ -148,23 +144,7 @@ export default class SearchSelect extends AbstractFormInput {
         return selectEl;
     }
 
-    #loadOptionsFromGroup() {
-        this.innerHTML = "";
-        if (this.#optionGroup != null) {
-            for (const [value, label] of this.#optionGroup) {
-                const optionEl = document.createElement("option", {is: "emc-i18n-option"});
-                optionEl.setAttribute("value", value);
-                if (typeof label === "string" && label !== "") {
-                    optionEl.i18nValue = label;
-                } else if (value !== "") {
-                    optionEl.i18nValue = value;
-                }
-                this.append(optionEl);
-            }
-        }
-    }
-
 }
 
-FormElementRegistry.register("SearchSelect", SearchSelect);
-customElements.define("emc-field-select-search", SearchSelect);
+FormElementRegistry.register("TokenSelect", TokenSelect);
+customElements.define("emc-field-select-token", TokenSelect);

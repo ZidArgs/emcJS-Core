@@ -6,7 +6,7 @@ import {
     deepClone
 } from "../../../../util/helper/DeepClone.js";
 import {
-    saveSetAttribute
+    safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
 import "../../element/icon/ImageIconSelect.js";
 import TPL from "./ImageIconSelect.js.html" assert {type: "html"};
@@ -89,7 +89,7 @@ export default class ImageIconSelect extends AbstractFormInput {
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
-                    saveSetAttribute(this.#inputEl, "value", newValue);
+                    safeSetAttribute(this.#inputEl, "value", newValue);
                     if (!this.isChanged) {
                         const value = this.value;
                         this.#inputEl.value = value;
@@ -98,7 +98,7 @@ export default class ImageIconSelect extends AbstractFormInput {
             } break;
             case "readonly": {
                 if (oldValue != newValue) {
-                    saveSetAttribute(this.#inputEl, name, newValue);
+                    safeSetAttribute(this.#inputEl, name, newValue);
                 }
             } break;
             case "optiongroup": {
@@ -120,9 +120,7 @@ export default class ImageIconSelect extends AbstractFormInput {
         const {options = {}, optiongroup, ...params} = config;
         for (const name in params) {
             const value = params[name];
-            if (value != null) {
-                selectEl.setAttribute(name, value);
-            }
+            safeSetAttribute(selectEl, name, value);
         }
         if (typeof optiongroup === "string" && optiongroup !== "") {
             selectEl.setAttribute("optiongroup", optiongroup);

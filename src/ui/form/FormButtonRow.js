@@ -3,7 +3,7 @@ import {
     deepClone
 } from "../../util/helper/DeepClone.js"
 import {
-    saveSetAttribute
+    safeSetAttribute
 } from "../../util/helper/ui/NodeAttributes.js";
 import TPL from "./FormButtonRow.js.html" assert {type: "html"};
 import STYLE from "./FormButtonRow.js.css" assert {type: "css"};
@@ -34,7 +34,7 @@ export default class FormButtonRow extends CustomElement {
         switch (name) {
             case "disabled": {
                 if (oldValue != newValue) {
-                    saveSetAttribute(this.shadowRoot.getElementById("fieldset"), "disabled", newValue);
+                    safeSetAttribute(this.shadowRoot.getElementById("fieldset"), "disabled", newValue);
                 }
             } break;
         }

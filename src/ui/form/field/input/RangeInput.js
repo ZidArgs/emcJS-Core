@@ -8,7 +8,7 @@ import {
 } from "../../../../util/helper/DeepClone.js";
 import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
 import {
-    saveSetAttribute
+    safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
 import TPL from "./RangeInput.js.html" assert {type: "html"};
 import STYLE from "./RangeInput.js.css" assert {type: "css"};
@@ -104,8 +104,8 @@ export default class RangeInput extends AbstractFormInput {
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
-                    saveSetAttribute(this.#inputEl, "value", newValue);
-                    saveSetAttribute(this.#numberEl, "value", newValue);
+                    safeSetAttribute(this.#inputEl, "value", newValue);
+                    safeSetAttribute(this.#numberEl, "value", newValue);
                     if (!this.isChanged) {
                         const value = this.value;
                         this.#inputEl.value = value;
@@ -117,8 +117,8 @@ export default class RangeInput extends AbstractFormInput {
             case "min":
             case "max": {
                 if (oldValue != newValue) {
-                    saveSetAttribute(this.#inputEl, name, newValue);
-                    saveSetAttribute(this.#numberEl, name, newValue);
+                    safeSetAttribute(this.#inputEl, name, newValue);
+                    safeSetAttribute(this.#numberEl, name, newValue);
                     this.#setRange();
                     this.#applyValueToBar(this.value);
                 }

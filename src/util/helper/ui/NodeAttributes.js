@@ -1,6 +1,16 @@
-export function saveSetAttribute(node, name, value) {
+export function safeSetAttribute(node, name, value) {
     if (value != null) {
-        node.setAttribute(name, value);
+        if (typeof value === "object") {
+            node.setAttribute(name, JSON.stringify(value));
+        } else if (typeof value === "boolean") {
+            if (value) {
+                node.setAttribute(name, "");
+            } else {
+                node.removeAttribute(name);
+            }
+        } else {
+            node.setAttribute(name, value);
+        }
     } else {
         node.removeAttribute(name);
     }
