@@ -83,7 +83,7 @@ export default class TokenSelect extends CustomFormElementDelegating {
             const el = event.currentTarget;
             el.classList.toggle("selected");
             const value = el.getAttribute("value");
-            this.#toggleToken(value);
+            this.#toggleToken(value, el);
             event.preventDefault();
             event.stopPropagation();
         });
@@ -554,7 +554,7 @@ export default class TokenSelect extends CustomFormElementDelegating {
         const el = event.currentTarget;
         if (el != null) {
             const value = el.dataset.value;
-            this.#toggleToken(value);
+            this.#toggleToken(value, el);
         }
         event.stopPropagation();
     }
@@ -562,24 +562,33 @@ export default class TokenSelect extends CustomFormElementDelegating {
     #toggleMarkedToken() {
         const el = this.#optionNodeList.querySelector(".marked");
         if (el != null) {
-            el.classList.toggle("selected");
             const value = el.getAttribute("value");
-            this.#toggleToken(value);
+            this.#toggleToken(value, el);
         }
     }
 
-    #toggleToken(value) {
+    #toggleToken(value, toggledEl) {
         if (!this.readonly) {
             const valueBuffer = new Set(this.value);
             if (this.multiple) {
                 if (valueBuffer.has(value)) {
                     valueBuffer.delete(value);
+                    toggledEl.classList.remove("selected");
                 } else {
                     valueBuffer.add(value);
+                    toggledEl.classList.add("selected");
                 }
+            } else if (valueBuffer.has(value)) {
+                valueBuffer.delete(value);
+                toggledEl.classList.remove("selected");
             } else {
                 valueBuffer.clear();
                 valueBuffer.add(value);
+                const currentEls = this.#optionNodeList.querySelectorAll(".selected");
+                for (const el of currentEls) {
+                    el.classList.remove("selected");
+                }
+                toggledEl.classList.add("selected");
             }
             this.value = Array.from(valueBuffer);
             this.#applyValue(this.value);

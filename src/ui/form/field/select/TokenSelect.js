@@ -50,6 +50,10 @@ export default class TokenSelect extends AbstractFormInput {
         this.#inputEl.focus(options);
     }
 
+    get defaultValue() {
+        return [];
+    }
+
     set value(value) {
         this.#inputEl.value = value ?? this.defaultValue;
         super.value = value;
