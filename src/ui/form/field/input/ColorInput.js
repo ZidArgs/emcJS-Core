@@ -13,7 +13,7 @@ import {
 import "../../../i18n/I18nTooltip.js";
 import TPL from "./ColorInput.js.html" assert {type: "html"};
 import STYLE from "./ColorInput.js.css" assert {type: "css"};
-import CONFIG_FIELDS from "./ColorInput.js.form-config.json" assert {type: "json"};
+import CONFIG_FIELDS from "./ColorInput.js.json" assert {type: "json"};
 
 const REGEX_HEX = /^#[0-9a-f]{6}$/;
 

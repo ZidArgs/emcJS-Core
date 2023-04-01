@@ -11,7 +11,7 @@ import {
 import "../../../i18n/builtin/I18nOption.js";
 import TPL from "./SimpleSelect.js.html" assert {type: "html"};
 import STYLE from "./SimpleSelect.js.css" assert {type: "css"};
-import CONFIG_FIELDS from "./SimpleSelect.js.form-config.json" assert {type: "json"};
+import CONFIG_FIELDS from "./SimpleSelect.js.json" assert {type: "json"};
 
 export default class SimpleSelect extends AbstractFormInput {
 

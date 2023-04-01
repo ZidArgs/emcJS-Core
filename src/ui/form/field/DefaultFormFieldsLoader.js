@@ -9,7 +9,7 @@ import "./input/StringInput.js";
 import "./input/SwitchInput.js";
 import "./input/TextInput.js";
 // field select
-import "./select/ImageIconSelect.js";
+import "./select/ImageSelect.js";
 import "./select/SearchSelect.js";
 import "./select/SimpleSelect.js";
 import "./select/TokenSelect.js";

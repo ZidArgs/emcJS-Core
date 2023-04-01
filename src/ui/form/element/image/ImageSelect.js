@@ -3,13 +3,13 @@ import {
     debounce
 } from "../../../../util/Debouncer.js";
 import ElementListCache from "../../../../util/html/ElementListCache.js";
-import ImageIconModal from "./modal/ImageIconModal.js";
+import ImageSelectModal from "./modal/ImageSelectModal.js";
 import "../../../i18n/I18nLabel.js";
 import "../../../i18n/I18nTooltip.js";
-import TPL from "./ImageIconSelect.js.html" assert {type: "html"};
-import STYLE from "./ImageIconSelect.js.css" assert {type: "css"};
+import TPL from "./ImageSelect.js.html" assert {type: "html"};
+import STYLE from "./ImageSelect.js.css" assert {type: "css"};
 
-export default class ImageIconSelect extends CustomFormElementDelegating {
+export default class ImageSelect extends CustomFormElementDelegating {
 
     #value;
 
@@ -21,7 +21,7 @@ export default class ImageIconSelect extends CustomFormElementDelegating {
 
     #optionsContainerEl;
 
-    #imageIconModal = new ImageIconModal();
+    #imageIconModal = new ImageSelectModal();
 
     #optionNodeList = new ElementListCache();
 
@@ -129,4 +129,4 @@ export default class ImageIconSelect extends CustomFormElementDelegating {
 
 }
 
-customElements.define("emc-select-icon-image", ImageIconSelect);
+customElements.define("emc-select-image", ImageSelect);

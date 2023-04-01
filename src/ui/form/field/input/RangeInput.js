@@ -12,7 +12,7 @@ import {
 } from "../../../../util/helper/ui/NodeAttributes.js";
 import TPL from "./RangeInput.js.html" assert {type: "html"};
 import STYLE from "./RangeInput.js.css" assert {type: "css"};
-import CONFIG_FIELDS from "./RangeInput.js.form-config.json" assert {type: "json"};
+import CONFIG_FIELDS from "./RangeInput.js.json" assert {type: "json"};
 
 export default class RangeInput extends AbstractFormInput {
 

@@ -10,7 +10,7 @@ import "../../i18n/I18nLabel.js";
 import "../../i18n/I18nTextbox.js";
 import TPL from "../abstract/AbstractFormInput.js.html" assert {type: "html"};
 import STYLE from "../abstract/AbstractFormInput.js.css" assert {type: "css"};
-import CONFIG_FIELDS from "./AbstractFormInput.js.form-config.json" assert {type: "json"};
+import CONFIG_FIELDS from "./AbstractFormInput.js.json" assert {type: "json"};
 
 // https://web.dev/more-capable-form-controls/#form-associated-custom-elements
 

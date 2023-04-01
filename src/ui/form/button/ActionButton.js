@@ -3,7 +3,7 @@ import CustomActionRegistry from "../../../data/registry/CustomActionRegistry.js
 import {
     deepClone
 } from "../../../util/helper/DeepClone.js";
-import CONFIG_FIELDS from "./ActionButton.js.form-config.json" assert {type: "json"};
+import CONFIG_FIELDS from "./ActionButton.js.json" assert {type: "json"};
 
 export default class ActionButton extends Button {
 

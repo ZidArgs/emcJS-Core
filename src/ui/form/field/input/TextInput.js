@@ -12,7 +12,7 @@ import {
 } from "../../../../util/helper/ui/NodeAttributes.js";
 import TPL from "./TextInput.js.html" assert {type: "html"};
 import STYLE from "./TextInput.js.css" assert {type: "css"};
-import CONFIG_FIELDS from "./TextInput.js.form-config.json" assert {type: "json"};
+import CONFIG_FIELDS from "./TextInput.js.json" assert {type: "json"};
 
 export default class TextInput extends AbstractFormInput {
 

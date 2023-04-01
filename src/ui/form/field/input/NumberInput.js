@@ -12,7 +12,7 @@ import {
 } from "../../../../util/helper/ui/NodeAttributes.js";
 import TPL from "./NumberInput.js.html" assert {type: "html"};
 import STYLE from "./NumberInput.js.css" assert {type: "css"};
-import CONFIG_FIELDS from "./NumberInput.js.form-config.json" assert {type: "json"};
+import CONFIG_FIELDS from "./NumberInput.js.json" assert {type: "json"};
 
 export default class NumberInput extends AbstractFormInput {
 

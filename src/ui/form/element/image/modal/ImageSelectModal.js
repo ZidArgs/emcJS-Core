@@ -13,11 +13,11 @@ import {
 import Comparator from "../../../../../util/helper/Comparator.js";
 import "../../../button/Button.js";
 import "../../input/internal/SearchField.js";
-import "../components/ImageIconPreview.js";
-import TPL from "./ImageIconModal.js.html" assert {type: "html"};
-import STYLE from "./ImageIconModal.js.css" assert {type: "css"};
+import "../components/ImageSelectPreview.js";
+import TPL from "./ImageSelectModal.js.html" assert {type: "html"};
+import STYLE from "./ImageSelectModal.js.css" assert {type: "css"};
 
-export default class ImageIconModal extends Modal {
+export default class ImageSelectModal extends Modal {
 
     #slotEl;
 
@@ -104,7 +104,7 @@ export default class ImageIconModal extends Modal {
     loadOptions(options) {
         this.innerHTML = "";
         for (const value in options) {
-            const optionEl = document.createElement("emc-select-icon-image-preview");
+            const optionEl = document.createElement("emc-select-image-preview");
             optionEl.value = value;
             optionEl.src = value;
             optionEl.text = options[value];
@@ -171,4 +171,4 @@ export default class ImageIconModal extends Modal {
 
 }
 
-customElements.define("emc-select-icon-image-modal", ImageIconModal);
+customElements.define("emc-select-image-modal", ImageSelectModal);

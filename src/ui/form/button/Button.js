@@ -6,7 +6,7 @@ import "../../i18n/I18nTooltip.js";
 import "../../i18n/builtin/I18nInput.js";
 import TPL from "./Button.js.html" assert {type: "html"};
 import STYLE from "./Button.js.css" assert {type: "css"};
-import CONFIG_FIELDS from "./Button.js.form-config.json" assert {type: "json"};
+import CONFIG_FIELDS from "./Button.js.json" assert {type: "json"};
 
 export default class Button extends CustomFormElementDelegating {
 

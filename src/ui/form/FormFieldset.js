@@ -9,7 +9,7 @@ import {
 } from "../../util/helper/ui/NodeAttributes.js";
 import TPL from "./FormFieldset.js.html" assert {type: "html"};
 import STYLE from "./FormFieldset.js.css" assert {type: "css"};
-import CONFIG_FIELDS from "./FormFieldset.js.form-config.json" assert {type: "json"};
+import CONFIG_FIELDS from "./FormFieldset.js.json" assert {type: "json"};
 
 export default class FormFieldset extends CustomElement {
 

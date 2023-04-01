@@ -9,7 +9,7 @@ import "../../i18n/I18nLabel.js";
 import "../../i18n/I18nTextbox.js";
 import TPL from "./AbstractFormField.js.html" assert {type: "html"};
 import STYLE from "./AbstractFormField.js.css" assert {type: "css"};
-import CONFIG_FIELDS from "./AbstractFormField.js.form-config.json" assert {type: "json"};
+import CONFIG_FIELDS from "./AbstractFormField.js.json" assert {type: "json"};
 
 function getTopScrollOffset(formHost) {
     if (formHost.classList.contains("has-header")) {

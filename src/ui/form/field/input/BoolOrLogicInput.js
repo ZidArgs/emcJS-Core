@@ -13,7 +13,7 @@ import {
 import "../../element/logic/LogicEditor.js";
 import TPL from "./BoolOrLogicInput.js.html" assert {type: "html"};
 import STYLE from "./BoolOrLogicInput.js.css" assert {type: "css"};
-import CONFIG_FIELDS from "./BoolOrLogicInput.js.form-config.json" assert {type: "json"};
+import CONFIG_FIELDS from "./BoolOrLogicInput.js.json" assert {type: "json"};
 
 export default class BoolOrLogicInput extends AbstractFormInput {
 

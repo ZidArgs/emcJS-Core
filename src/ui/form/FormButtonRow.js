@@ -7,7 +7,7 @@ import {
 } from "../../util/helper/ui/NodeAttributes.js";
 import TPL from "./FormButtonRow.js.html" assert {type: "html"};
 import STYLE from "./FormButtonRow.js.css" assert {type: "css"};
-import CONFIG_FIELDS from "./FormButtonRow.js.form-config.json" assert {type: "json"};
+import CONFIG_FIELDS from "./FormButtonRow.js.json" assert {type: "json"};
 
 export default class FormButtonRow extends CustomElement {
 

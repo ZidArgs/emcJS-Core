@@ -8,12 +8,12 @@ import {
 import {
     safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
-import "../../element/icon/ImageIconSelect.js";
-import TPL from "./ImageIconSelect.js.html" assert {type: "html"};
-import STYLE from "./ImageIconSelect.js.css" assert {type: "css"};
-import CONFIG_FIELDS from "./ImageIconSelect.js.form-config.json" assert {type: "json"};
+import "../../element/image/ImageSelect.js";
+import TPL from "./ImageSelect.js.html" assert {type: "html"};
+import STYLE from "./ImageSelect.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./ImageSelect.js.json" assert {type: "json"};
 
-export default class ImageIconSelect extends AbstractFormInput {
+export default class ImageSelect extends AbstractFormInput {
 
     static get formConfigurationFields() {
         return deepClone(CONFIG_FIELDS);
@@ -116,7 +116,7 @@ export default class ImageIconSelect extends AbstractFormInput {
     }
 
     static fromConfig(config) {
-        const selectEl = new ImageIconSelect();
+        const selectEl = new ImageSelect();
         const {options = {}, optiongroup, ...params} = config;
         for (const name in params) {
             const value = params[name];
@@ -158,5 +158,5 @@ export default class ImageIconSelect extends AbstractFormInput {
 
 }
 
-FormElementRegistry.register("ImageIconSelect", ImageIconSelect);
-customElements.define("emc-field-select-icon-image", ImageIconSelect);
+FormElementRegistry.register("ImageSelect", ImageSelect);
+customElements.define("emc-field-select-image", ImageSelect);

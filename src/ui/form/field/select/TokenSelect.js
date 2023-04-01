@@ -10,7 +10,7 @@ import "../../../i18n/builtin/I18nOption.js";
 import "../../element/select/TokenSelect.js";
 import TPL from "./TokenSelect.js.html" assert {type: "html"};
 import STYLE from "./TokenSelect.js.css" assert {type: "css"};
-import CONFIG_FIELDS from "./TokenSelect.js.form-config.json" assert {type: "json"};
+import CONFIG_FIELDS from "./TokenSelect.js.json" assert {type: "json"};
 
 export default class TokenSelect extends AbstractFormInput {
 

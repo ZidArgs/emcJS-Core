@@ -1,8 +1,8 @@
 import CustomElement from "../../../../element/CustomElement.js";
-import TPL from "./ImageIconPreview.js.html" assert {type: "html"};
-import STYLE from "./ImageIconPreview.js.css" assert {type: "css"};
+import TPL from "./ImageSelectPreview.js.html" assert {type: "html"};
+import STYLE from "./ImageSelectPreview.js.css" assert {type: "css"};
 
-export default class ImageIconPreview extends CustomElement {
+export default class ImageSelectPreview extends CustomElement {
 
     #iconEl;
 
@@ -62,4 +62,4 @@ export default class ImageIconPreview extends CustomElement {
 
 }
 
-customElements.define("emc-select-icon-image-preview", ImageIconPreview);
+customElements.define("emc-select-image-preview", ImageSelectPreview);
