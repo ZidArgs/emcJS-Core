@@ -3,7 +3,7 @@ import {
     debounce
 } from "../../../../util/Debouncer.js";
 import ElementListCache from "../../../../util/html/ElementListCache.js";
-import ImageSelectModal from "./modal/ImageSelectModal.js";
+import ImageSelectModal from "./imageselect/ImageSelectModal.js";
 import "../../../i18n/I18nLabel.js";
 import "../../../i18n/I18nTooltip.js";
 import TPL from "./ImageSelect.js.html" assert {type: "html"};
