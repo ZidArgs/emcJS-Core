@@ -1,6 +1,9 @@
 import {
     scrollIntoView, scrollIntoViewIfNeeded
 } from "../../util/helper/ui/Scroll.js";
+import {
+    getInnerText
+} from "../../util/helper/ui/ExtractText.js";
 // import TPL from "./CustomElement.js.html" assert {type: "html"};
 import STYLE from "./CustomElement.js.css" assert {type: "css"};
 
@@ -22,6 +25,10 @@ export default class CustomElement extends HTMLElement {
 
     disconnectedCallback() {
         // ignore
+    }
+
+    getText() {
+        return getInnerText(this);
     }
 
     setBooleanAttribute(name, value) {

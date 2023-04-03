@@ -1,5 +1,8 @@
 import CustomElement from "./element/CustomElement.js";
-import SearchAnd from "../util/search/SearchAnd.js";
+import CharacterSearch from "../util/search/CharacterSearch.js";
+import {
+    getInnerText
+} from "../util/helper/ui/ExtractText.js";
 import "./header/SearchHeader.js";
 import TPL from "./FilteredList.js.html" assert {type: "html"};
 import STYLE from "./FilteredList.js.css" assert {type: "css"};
@@ -19,24 +22,23 @@ export default class FilteredList extends CustomElement {
         });
         /* header */
         header.addEventListener("search", (event) => {
-            const all = this.querySelectorAll(`[data-filtervalue]`);
-            const panels = this.querySelectorAll(`emc-collapsepanel`);
+            const all = this.querySelectorAll(":host > :not(emc-collapsepanel), emc-collapsepanel > :not(emc-collapsepanel)");
+            const panels = this.querySelectorAll("emc-collapsepanel");
             if (event.value) {
-                const regEx = new SearchAnd(event.value);
+                const regEx = new CharacterSearch(event.value);
                 for (const el of all) {
-                    if (el.dataset.filtervalue.match(regEx)) {
+                    const value = el.dataset.filtervalue ?? getInnerText(el);
+                    if (value.match(regEx)) {
                         el.style.display = "";
                     } else {
                         el.style.display = "none";
                     }
                 }
                 for (const el of panels) {
-                    const children = el.querySelectorAll(`[data-filtervalue]`);
-                    for (const ch of children) {
-                        if (ch.style.display == "") {
-                            el.style.display = "";
-                            return;
-                        }
+                    const children = el.querySelectorAll(":host :not(emc-collapsepanel)");
+                    if (Array.from(children).some((ch) => ch.style.display == "")) {
+                        el.style.display = "";
+                        continue;
                     }
                     el.style.display = "none";
                 }
