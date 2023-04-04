@@ -65,6 +65,9 @@ export default createMixin((superclass) => class ContextMenuManagerMixin extends
 
     #createMenu(name) {
         const MenuClass = this.#menuClasses.get(name);
+        if (MenuClass == null) {
+            return;
+        }
         const ctxMnu = new MenuClass();
         this.#menus.set(name, ctxMnu);
         /* --- */

@@ -6,7 +6,7 @@ import {
 import {
     safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
-import "../../../i18n/builtin/I18nOption.js";
+import I18nOption from "../../../i18n/builtin/I18nOption.js";
 import "../../element/select/TokenSelect.js";
 import TPL from "./TokenSelect.js.html" assert {type: "html"};
 import STYLE from "./TokenSelect.js.css" assert {type: "css"};
@@ -134,7 +134,7 @@ export default class TokenSelect extends AbstractFormInput {
             selectEl.setAttribute("tokengroup", tokengroup);
         } else {
             for (const value in options) {
-                const optionEl = document.createElement("option", {is: "emc-i18n-option"});
+                const optionEl = I18nOption.create();
                 optionEl.setAttribute("value", value);
                 const label = options[value];
                 if (typeof label === "string" && label !== "") {

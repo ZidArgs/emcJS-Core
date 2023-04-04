@@ -56,7 +56,7 @@ export default class ImageSelectPreview extends CustomElement {
         }
     }
 
-    get innerText() {
+    get comparatorText() {
         return this.#textEl.innerText;
     }
 

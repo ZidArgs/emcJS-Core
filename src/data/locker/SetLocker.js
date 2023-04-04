@@ -25,6 +25,10 @@ export default class SetLocker {
         return this.#inst.has(key);
     }
 
+    keys() {
+        return this.#inst.keys();
+    }
+
     values() {
         return this.#inst.values();
     }

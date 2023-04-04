@@ -26,6 +26,10 @@ export default class I18nOption extends I18nMixin(HTMLOptionElement) {
         }
     }
 
+    static create() {
+        return document.createElement("option", {is: "emc-i18n-option"});
+    }
+
 }
 
 customElements.define("emc-i18n-option", I18nOption, {extends: "option"});

@@ -8,7 +8,7 @@ import {
 import {
     safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
-import "../../../i18n/builtin/I18nOption.js";
+import I18nOption from "../../../i18n/builtin/I18nOption.js";
 import TPL from "./SimpleSelect.js.html" assert {type: "html"};
 import STYLE from "./SimpleSelect.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./SimpleSelect.js.json" assert {type: "json"};
@@ -124,7 +124,7 @@ export default class SimpleSelect extends AbstractFormInput {
         } else {
             const inputEl = selectEl.shadowRoot.getElementById("input");
             for (const value in options) {
-                const optionEl = document.createElement("option", {is: "emc-i18n-option"});
+                const optionEl = I18nOption.create();
                 optionEl.setAttribute("value", value);
                 const label = options[value];
                 if (typeof label === "string" && label !== "") {
@@ -142,7 +142,7 @@ export default class SimpleSelect extends AbstractFormInput {
         this.#inputEl.innerHTML = "";
         if (this.#optionGroup != null) {
             for (const [value, label] of this.#optionGroup) {
-                const optionEl = document.createElement("option", {is: "emc-i18n-option"});
+                const optionEl = I18nOption.create();
                 optionEl.setAttribute("value", value);
                 if (typeof label === "string" && label !== "") {
                     optionEl.i18nValue = label;

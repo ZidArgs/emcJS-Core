@@ -1,7 +1,12 @@
 import Comparator from "../Comparator.js";
+import {
+    getInnerText
+} from "./ExtractText.js";
 
 function nodeTextComparator(a, b) {
-    return a.innerText.toLowerCase().localeCompare(b.innerText.toLowerCase());
+    const textA = a.comparatorText ?? getInnerText(a);
+    const textB = b.comparatorText ?? getInnerText(b);
+    return textA.toLowerCase().localeCompare(textB.toLowerCase());
 }
 
 export function sortChildren(containerEl, selector = "*") {

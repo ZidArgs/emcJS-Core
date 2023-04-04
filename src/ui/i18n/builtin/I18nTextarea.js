@@ -26,6 +26,10 @@ export default class I18nTextarea extends I18nMixin(HTMLTextAreaElement) {
         }
     }
 
+    static create() {
+        return document.createElement("textarea", {is: "emc-i18n-textarea"});
+    }
+
 }
 
 customElements.define("emc-i18n-textarea", I18nTextarea, {extends: "textarea"});

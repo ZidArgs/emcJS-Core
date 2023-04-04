@@ -8,7 +8,7 @@ import {
 import {
     safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
-import "../../../i18n/builtin/I18nOption.js";
+import I18nOption from "../../../i18n/builtin/I18nOption.js";
 import "../../element/select/SearchSelect.js";
 import TPL from "./SearchSelect.js.html" assert {type: "html"};
 import STYLE from "./SearchSelect.js.css" assert {type: "css"};
@@ -134,7 +134,7 @@ export default class SearchSelect extends AbstractFormInput {
             selectEl.setAttribute("optiongroup", optiongroup);
         } else {
             for (const value in options) {
-                const optionEl = document.createElement("option", {is: "emc-i18n-option"});
+                const optionEl = I18nOption.create();
                 optionEl.setAttribute("value", value);
                 const label = options[value];
                 if (typeof label === "string" && label !== "") {
@@ -152,7 +152,7 @@ export default class SearchSelect extends AbstractFormInput {
         this.innerHTML = "";
         if (this.#optionGroup != null) {
             for (const [value, label] of this.#optionGroup) {
-                const optionEl = document.createElement("option", {is: "emc-i18n-option"});
+                const optionEl = I18nOption.create();
                 optionEl.setAttribute("value", value);
                 if (typeof label === "string" && label !== "") {
                     optionEl.i18nValue = label;

@@ -1,5 +1,4 @@
 import CustomElement from "../element/CustomElement.js";
-import ModalLayer from "./ModalLayer.js";
 import I18nLabel from "../i18n/I18nLabel.js";
 import "../symbols/CloseSymbol.js";
 import TPL from "./Modal.js.html" assert {type: "html"};
@@ -13,6 +12,8 @@ const Q_TAB = [
     "textarea:not([tabindex=\"-1\"])",
     "[tabindex]:not([tabindex=\"-1\"])"
 ].join(",");
+
+const visibleModals = new Set();
 
 export default class Modal extends CustomElement {
 
@@ -50,12 +51,23 @@ export default class Modal extends CustomElement {
     }
 
     show() {
-        ModalLayer.append(this);
+        document.body.append(this);
+        visibleModals.delete(this);
+        for (const modal of visibleModals) {
+            modal.classList.add("inactive");
+        }
+        this.classList.remove("inactive");
+        visibleModals.add(this);
         this.initialFocus();
     }
 
     close() {
         this.remove();
+        visibleModals.delete(this);
+        const lastModal = Array.from(visibleModals).at(-1);
+        if (lastModal != null) {
+            lastModal.classList.remove("inactive");
+        }
         this.dispatchEvent(new Event("close"));
     }
 
