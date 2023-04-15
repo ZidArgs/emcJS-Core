@@ -24,15 +24,19 @@ const ESCAPE_KEYS = [
     "Escape"
 ];
 
-function tokenComposer(key, params) {
-    const el = document.createElement("div");
-    el.className = "token";
-    el.innerHTML = key;
-    el.dataset.value = key;
-    el.addEventListener("click", (event) => {
-        params.tokenAction(event);
-    });
-    return el;
+class TokenElementManager extends ElementManager {
+
+    composer(key, params) {
+        const el = document.createElement("div");
+        el.className = "token";
+        el.innerHTML = key;
+        el.dataset.value = key;
+        el.addEventListener("click", (event) => {
+            params.tokenAction(event);
+        });
+        return el;
+    }
+
 }
 
 // TODO add manage token option (?)
@@ -193,9 +197,7 @@ export default class TokenSelect extends CustomFormElementDelegating {
             }
         }, {passive: true});
         /* --- */
-        this.#elManager = new ElementManager(this.#valueEl, {
-            composer: tokenComposer
-        });
+        this.#elManager = new TokenElementManager(this.#valueEl);
         /* --- */
         this.#tokenRegistryEventTargetManager.set("change", () => {
             this.#loadTokenFromGroup();

@@ -14,74 +14,54 @@ import STYLE from "./TreeNode.js.css" assert {type: "css"};
 
 const NODE_TYPES = new Map();
 
-function treeComposer(key, params) {
-    const {nodeType, label = key, data = {}, sorted = false, startCollapsed = false, children, ...attr} = params;
-    const el = TreeNode.createNodeType(nodeType);
-    el.ref = key;
-    el.label = label;
-    el.sorted = sorted;
-    for (const name in data) {
-        el.dataset[name] = data[name];
-    }
-    if (children != null) {
-        el.loadConfig(children);
-        el.forceCollapsible = true;
-        el.toggleCollapsed(!!startCollapsed);
-    } else {
-        el.forceCollapsible = false;
-    }
-    for (const name in attr) {
-        const value = attr[name];
-        if (value != null) {
-            if (typeof value === "object") {
-                el.setAttribute(name, JSON.stringify(value));
-            } else if (typeof value === "boolean") {
-                if (value) {
-                    el.setAttribute(name, "");
-                } else {
-                    el.removeAttribute(name);
-                }
-            } else {
-                el.setAttribute(name, value);
-            }
-        } else {
-            el.removeAttribute(name);
-        }
-    }
-    return el;
-}
+class TreeNodeElementManager extends ElementManager {
 
-function treeMutator(el, key, params) {
-    const {label = key, data = {}, sorted = false, children, ...attr} = params;
-    el.label = label;
-    el.sorted = sorted;
-    for (const name in data) {
-        el.dataset[name] = data[name];
+    composer(key, params) {
+        const {nodeType, startCollapsed = false, children} = params;
+        const el = TreeNode.createNodeType(nodeType);
+        el.ref = key;
+        if (children != null) {
+            el.forceCollapsible = true;
+            el.toggleCollapsed(!!startCollapsed);
+        } else {
+            el.forceCollapsible = false;
+        }
+        return el;
     }
-    if (children != null) {
-        el.loadConfig(children);
-        el.forceCollapsible = true;
-    } else {
-        el.forceCollapsible = false;
-    }
-    for (const name in attr) {
-        const value = attr[name];
-        if (value != null) {
-            if (typeof value === "object") {
-                el.setAttribute(name, JSON.stringify(value));
-            } else if (typeof value === "boolean") {
-                if (value) {
-                    el.setAttribute(name, "");
+
+    mutator(el, key, params) {
+        const {label = key, data = {}, sorted = false, children, ...attr} = params;
+        el.label = label;
+        el.sorted = sorted;
+        for (const name in data) {
+            el.dataset[name] = data[name];
+        }
+        if (children != null) {
+            el.loadConfig(children);
+            el.forceCollapsible = true;
+        } else {
+            el.forceCollapsible = false;
+        }
+        for (const name in attr) {
+            const value = attr[name];
+            if (value != null) {
+                if (typeof value === "object") {
+                    el.setAttribute(name, JSON.stringify(value));
+                } else if (typeof value === "boolean") {
+                    if (value) {
+                        el.setAttribute(name, "");
+                    } else {
+                        el.removeAttribute(name);
+                    }
                 } else {
-                    el.removeAttribute(name);
+                    el.setAttribute(name, value);
                 }
             } else {
-                el.setAttribute(name, value);
+                el.removeAttribute(name);
             }
-        } else {
-            el.removeAttribute(name);
         }
     }
+
 }
 
 export default class TreeNode extends CustomElement {
@@ -304,10 +284,7 @@ export default class TreeNode extends CustomElement {
     }
 
     static getTreeElementManager(container) {
-        return new ElementManager(container, {
-            composer: treeComposer,
-            mutator: treeMutator
-        });
+        return new TreeNodeElementManager(container);
     }
 
 }

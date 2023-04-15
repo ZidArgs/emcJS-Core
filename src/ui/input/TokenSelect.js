@@ -17,20 +17,24 @@ import "../symbols/ChevronDownSymbol.js";
 import TPL from "./TokenSelect.js.html" assert {type: "html"};
 import STYLE from "./TokenSelect.js.css" assert {type: "css"};
 
-function tokenComposer(key, params) {
-    const el = document.createElement("div");
-    el.className = "token";
-    const label = document.createElement("emc-i18n-label");
-    label.i18nValue = key;
-    el.addEventListener("click", (event) => {
-        params.onClick(event);
-    });
-    el.append(label);
-    return el;
-}
+class TokenElementManager extends ElementManager {
 
-function tokenMutator(el, key, params) {
-    el.setAttribute("value", params.value);
+    composer(key, params) {
+        const el = document.createElement("div");
+        el.className = "token";
+        const label = document.createElement("emc-i18n-label");
+        label.i18nValue = key;
+        el.addEventListener("click", (event) => {
+            params.onClick(event);
+        });
+        el.append(label);
+        return el;
+    }
+
+    mutator(el, key, params) {
+        el.setAttribute("value", params.value);
+    }
+
 }
 
 export default class TokenSelect extends CustomElementDelegating {
@@ -228,10 +232,7 @@ export default class TokenSelect extends CustomElementDelegating {
             }
         }, true);
         /* --- */
-        this.#elManager = new ElementManager(view, {
-            composer: tokenComposer,
-            mutator: tokenMutator
-        });
+        this.#elManager = new TokenElementManager(view);
         /* --- */
         this.#i18nEventManager.setActive(this.getBooleanAttribute("sort"));
         this.#i18nEventManager.set("language", () => {

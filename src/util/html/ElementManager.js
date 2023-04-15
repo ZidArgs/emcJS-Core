@@ -13,42 +13,13 @@ export default class ElementManager {
 
     #cache = new Map();
 
-    #composer;
-
-    #mutator;
-
-    #cleanup;
-
     #args;
 
-    constructor(target, options, ...args) {
+    constructor(target, ...args) {
         if (!(target instanceof HTMLElement)) {
             throw new TypeError("target must be of type HTMLElement");
         }
         this.#target = target;
-        if (typeof options === "function") {
-            this.#composer = options;
-        } else if (typeof options === "object" && !Array.isArray(options)) {
-            const {composer, mutator, cleanup} = options;
-            if (typeof composer != "function") {
-                throw new TypeError("composer must be a function");
-            }
-            this.#composer = composer;
-            if (mutator) {
-                if (typeof mutator != "function") {
-                    throw new TypeError("mutator must be a function or undefined");
-                }
-                this.#mutator = mutator;
-            }
-            if (cleanup) {
-                if (typeof cleanup != "function") {
-                    throw new TypeError("cleanup must be a function or undefined");
-                }
-                this.#cleanup = cleanup;
-            }
-        } else {
-            throw new TypeError("second argument must be a composer function or an options object containing at least a composer function");
-        }
         this.#args = args;
     }
 
@@ -74,17 +45,15 @@ export default class ElementManager {
             const key = params.key || index;
             if (this.#elements.has(key)) {
                 const el = this.#elements.get(key);
-                if (this.#mutator && this.#checkChange(params)) {
-                    this.#mutator(el, key, params, ...this.#args);
+                if (this.#checkChange(params)) {
+                    this.mutator(el, key, params, ...this.#args);
                 }
                 unused.delete(key);
                 this.#target.append(el);
             } else {
-                const el = this.#composer(key, params, ...this.#args);
+                const el = this.composer(key, params, ...this.#args);
                 if (el != null) {
-                    if (this.#mutator) {
-                        this.#mutator(el, key, params, ...this.#args);
-                    }
+                    this.mutator(el, key, params, ...this.#args);
                     this.#elements.set(key, el);
                     this.#target.append(el);
                 }
@@ -95,10 +64,23 @@ export default class ElementManager {
             el.remove();
             this.#elements.delete(key);
             this.#cache.delete(key);
-            if (this.#cleanup) {
-                this.#cleanup(el, key, ...this.#args);
-            }
+            this.cleanup(el, key, ...this.#args);
         }
+    }
+
+    // eslint-disable-next-line no-unused-vars
+    composer(key, params, ...args) {
+        // ignore
+    }
+
+    // eslint-disable-next-line no-unused-vars
+    mutator(el, key, params, ...args) {
+        // ignore
+    }
+
+    // eslint-disable-next-line no-unused-vars
+    cleanup(el, key, ...args) {
+        // ignore
     }
 
 }
