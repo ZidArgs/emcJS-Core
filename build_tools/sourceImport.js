@@ -57,6 +57,9 @@ function augmentFile(emcJSPrefix, sourcePath, fileContent) {
             const name = isScriptImport[1];
             const filePath = isScriptImport[2];
             if (!filePath.endsWith(".js")) {
+                // TODO check if folder of file
+                // - file relative check if starting with "."
+                // - project relative check if starting with "/"
                 if (name == null) {
                     return `import "${filePath}/index.js";`;
                 }
