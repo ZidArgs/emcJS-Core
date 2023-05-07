@@ -128,7 +128,7 @@ export default class ContextMenu extends CustomElement {
         this.setAttribute("active", val);
     }
 
-    show(posX, posY, props) {
+    show(posX, posY, ...props) {
         this.#calculatePostition(posX, posY);
         this.#props = deepClone(props);
         /* --- */
@@ -253,7 +253,7 @@ export default class ContextMenu extends CustomElement {
         if (this.active) {
             const posY = this.#top;
             const posX = this.#left;
-            this.show(posX, posY, this.#props);
+            this.show(posX, posY, ...this.#props);
         }
     });
 
