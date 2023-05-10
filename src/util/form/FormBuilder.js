@@ -79,7 +79,7 @@ class FormBuilder {
             formEl.dataset[key] = data[key];
         }
 
-        this.replaceForm(formEl, elements, formParams);
+        this.replaceForm(formEl, elements, defaultValues, formParams);
 
         return formEl;
     }
