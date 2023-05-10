@@ -51,19 +51,19 @@ function augmentFile(emcJSPrefix, sourcePath, fileContent) {
             }
             return string;
         }
-        // check folder import
+        // check missing .js file extension
         const isScriptImport = IMPORT_SCRIPT.exec(string);
         if (isScriptImport != null) {
             const name = isScriptImport[1];
             const filePath = isScriptImport[2];
             if (!filePath.endsWith(".js")) {
-                // TODO check if folder of file
+                // TODO check if folder or file
                 // - file relative check if starting with "."
                 // - project relative check if starting with "/"
                 if (name == null) {
-                    return `import "${filePath}/index.js";`;
+                    return `import "${filePath}.js";`;
                 }
-                return `import ${name} from "${filePath}/index.js";`;
+                return `import ${name} from "${filePath}.js";`;
             }
         }
         return string;
