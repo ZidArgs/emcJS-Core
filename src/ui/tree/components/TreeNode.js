@@ -84,13 +84,15 @@ export default class TreeNode extends CustomElement {
             event.preventDefault();
             const targetIndex = Array.from(this.parentElement.children).indexOf(this);
             const ev = new Event("select", {bubbles: true, cancelable: true});
-            ev.element = this;
-            ev.ref = this.ref;
-            ev.isSelected = this.classList.contains("marked");
-            ev.path = [targetIndex];
-            ev.refPath = [this.ref];
-            ev.left = event.clientX;
-            ev.top = event.clientY;
+            ev.data = {
+                element: this,
+                ref: this.ref,
+                isSelected: this.classList.contains("marked"),
+                path: [targetIndex],
+                refPath: [this.ref],
+                left: event.clientX,
+                top: event.clientY
+            };
             this.dispatchEvent(ev);
             if (event.pointerType && !ev.defaultPrevented) {
                 this.toggleCollapsed();
@@ -101,27 +103,33 @@ export default class TreeNode extends CustomElement {
             event.preventDefault();
             const targetIndex = Array.from(this.parentElement.children).indexOf(this);
             const ev = new Event("menu", {bubbles: true, cancelable: true});
-            ev.element = this;
-            ev.ref = this.ref;
-            ev.path = [targetIndex];
-            ev.refPath = [this.ref];
-            ev.left = event.clientX;
-            ev.top = event.clientY;
+            ev.data = {
+                element: this,
+                ref: this.ref,
+                isSelected: this.classList.contains("marked"),
+                path: [targetIndex],
+                refPath: [this.ref],
+                left: event.clientX,
+                top: event.clientY
+            };
             this.dispatchEvent(ev);
         });
         /* --- */
         const subTreeEl = this.shadowRoot.getElementById("tree");
         subTreeEl.addEventListener("select", (event) => {
             event.stopPropagation();
+            const {element, ref, isSelected, path, refPath, left, top} = event.data;
             const targetIndex = Array.from(this.parentElement.children).indexOf(this);
             const ev = new Event("select", {bubbles: true, cancelable: true});
-            ev.element = event.element;
-            ev.ref = event.ref;
-            ev.isSelected = event.isSelected;
-            ev.path = [targetIndex, ...event.path ?? []];
-            ev.refPath = [this.ref, ...event.refPath ?? []];
-            ev.left = event.left;
-            ev.top = event.top;
+            ev.data = {
+                element,
+                ref,
+                isSelected,
+                path: [targetIndex, ...path ?? []],
+                refPath: [this.ref, ...refPath ?? []],
+                left,
+                top
+            };
             this.dispatchEvent(ev);
             if (ev.defaultPrevented) {
                 event.preventDefault();
@@ -129,14 +137,18 @@ export default class TreeNode extends CustomElement {
         });
         subTreeEl.addEventListener("menu", (event) => {
             event.stopPropagation();
+            const {element, ref, isSelected, path, refPath, left, top} = event.data;
             const targetIndex = Array.from(this.parentElement.children).indexOf(this);
             const ev = new Event("menu", {bubbles: true, cancelable: true});
-            ev.element = event.element;
-            ev.ref = event.ref;
-            ev.path = [targetIndex, ...event.path ?? []];
-            ev.refPath = [this.ref, ...event.refPath ?? []];
-            ev.left = event.left;
-            ev.top = event.top;
+            ev.data = {
+                element,
+                ref,
+                isSelected,
+                path: [targetIndex, ...path ?? []],
+                refPath: [this.ref, ...refPath ?? []],
+                left,
+                top
+            };
             this.dispatchEvent(ev);
         });
         /* --- */

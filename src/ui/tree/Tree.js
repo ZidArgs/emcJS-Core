@@ -24,8 +24,8 @@ export default class Tree extends CustomElement {
         /* --- */
         const treeEl = this.shadowRoot.getElementById("tree");
         treeEl.addEventListener("select", (event) => {
-            if (!event.isSelected) {
-                const {element} = event;
+            if (!event.data.isSelected) {
+                const {element} = event.data;
                 const keyboardMarked = this.querySelector(".keyboard-marked");
                 if (keyboardMarked != null) {
                     keyboardMarked.classList.remove("keyboard-marked");
@@ -45,8 +45,7 @@ export default class Tree extends CustomElement {
                 keyboardMarked.classList.remove("keyboard-marked");
             }
         });
-        treeEl.addEventListener("focus", (event) => {
-            console.log(event)
+        treeEl.addEventListener("focus", () => {
             const currentEl = this.querySelector(".keyboard-marked") ?? this.querySelector(".marked");
             if (currentEl == null) {
                 const element = this.#getElementByPath([0]);
@@ -141,11 +140,15 @@ export default class Tree extends CustomElement {
                 oldMarked.classList.remove("marked");
             }
             const ev = new Event("select", {bubbles: true, cancelable: true});
-            ev.element = null;
-            ev.path = [];
-            ev.refPath = [];
-            ev.left = 0;
-            ev.top = 0;
+            ev.data = {
+                element: null,
+                ref: undefined,
+                isSelected: false,
+                path: [],
+                refPath: [],
+                left: 0,
+                top: 0
+            };
             this.dispatchEvent(ev);
         }
     }
