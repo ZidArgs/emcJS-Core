@@ -2,7 +2,7 @@
     flex-grow: 1;
     height: 2em;
     padding: 0px 7px;
-    margin: 5px;
+    margin: 0.2em;
     color: var(--input-text-color, #000000);
     background-color: var(--input-back-color, #ffffff);
     border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);

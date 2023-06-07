@@ -1,7 +1,7 @@
 :host {
     position: relative;
     display: table;
-    margin: 5px;
+    margin: 0.2em;
     color: var(--logic-color-text, black);
     background: var(--logic-color-back, white);
     border: solid 2px var(--logic-color-border, black);
@@ -22,8 +22,8 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    height: 35px;
-    padding: 5px 15px;
+    height: 2em;
+    padding: 0.5em 1em;
     font-weight: bold;
     user-select: none;
     text-transform: uppercase;
@@ -47,7 +47,7 @@
 }
 #body {
     display: block;
-    padding: 5px;
+    padding: 0.2em;
     border-top-width: 2px;
     border-top-style: solid;
     border-color: var(--logic-color-border, black);
@@ -57,8 +57,8 @@
 }
 .placeholder {
     display: table;
-    margin: 5px;
-    padding: 5px 20px;
+    margin: 0.2em;
+    padding: 0.2em 1.5em;
     color: var(--button-text-color, #000000);
     background-color: var(--button-back-color, #cccccc);
     border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
