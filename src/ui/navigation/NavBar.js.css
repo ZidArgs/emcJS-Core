@@ -89,7 +89,7 @@ ul li > emc-navbar-button {
     }
     #hamburger-button {
         display: inline-block;
-        z-index: 100;
+        z-index: 99;
     }
     ul li {
         width: 100%;
@@ -99,6 +99,7 @@ ul li > emc-navbar-button {
         width: 100%;
         max-height: 100%;
         overflow-y: auto;
+        box-shadow: var(--navigation-shadow-color, #000000) 2px 4px 8px 2px;
     }
     ul#content > li > ul {
         display: none;
@@ -107,11 +108,12 @@ ul li > emc-navbar-button {
     }
     ul#content > li.open > ul {
         display: table;
+        box-shadow: none;
     }
     ul#content > li > ul:not(:last-child) {
         padding-bottom: 4px;
     }
-    emc-navbar-button {
+    ul li > emc-navbar-button {
         height: 40px;
         --justify-content: flex-start;
     }
