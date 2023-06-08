@@ -17,12 +17,16 @@
 }
 ::-webkit-scrollbar-track {
     background-color: var(--scrollbar-track-color, #eeeeee);
-    border: solid var(--scrollbar-track-border-width, 0px) var(--scrollbar-track-border-color, #00000000);
+    border-style: var(--scrollbar-track-border-style, solid);
+    border-width: var(--scrollbar-track-border-width, 0px);
+    border-color: var(--scrollbar-track-border-color, #00000000);
     border-radius: var(--scrollbar-track-border-radius, 6px);
 }
 ::-webkit-scrollbar-corner {
     background-color: var(--scrollbar-corner-color, #00000000);
-    border: solid var(--scrollbar-corner-border-width, 0px) var(--scrollbar-corner-border-color, #00000000);
+    border-style: var(--scrollbar-corner-border-style, solid);
+    border-width: var(--scrollbar-corner-border-width, 0px);
+    border-color: var(--scrollbar-corner-border-color, #00000000);
     border-radius: var(--scrollbar-corner-border-radius, 0px);
 }
 ::-webkit-resizer {
@@ -30,14 +34,20 @@
 }
 ::-webkit-scrollbar-thumb {
     background-color: var(--scrollbar-thumb-color, #cccccc);
-    border: solid var(--scrollbar-thumb-border-width, 2px) var(--scrollbar-thumb-border-color, #eeeeee);
+    border-style: var(--scrollbar-thumb-border-style, solid);
+    border-width: var(--scrollbar-thumb-border-width, 2px);
+    border-color: var(--scrollbar-thumb-border-color, #eeeeee);
     border-radius: var(--scrollbar-thumb-border-radius, 6px);
 }
 ::-webkit-scrollbar-thumb:hover {
     background-color: var(--scrollbar-thumb-hover-color, #999999);
-    border: solid var(--scrollbar-thumb-hover-border-width, 2px) var(--scrollbar-thumb-hover-border-color, #eeeeee);
+    border-style: var(--scrollbar-thumb-hover-border-style, solid);
+    border-width: var(--scrollbar-thumb-hover-border-width, 2px);
+    border-color: var(--scrollbar-thumb-hover-border-color, #eeeeee);
 }
 ::-webkit-scrollbar-thumb:active {
     background-color: var(--scrollbar-thumb-active-color, #000000);
-    border: solid var(--scrollbar-thumb-active-border-width, 2px) var(--scrollbar-thumb-active-border-color, #eeeeee);
+    border-style: var(--scrollbar-thumb-active-border-style, solid);
+    border-width: var(--scrollbar-thumb-active-border-width, 2px);
+    border-color: var(--scrollbar-thumb-active-border-color, #eeeeee);
 }

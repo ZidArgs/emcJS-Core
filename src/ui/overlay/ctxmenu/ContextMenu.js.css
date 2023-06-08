@@ -14,8 +14,8 @@
     position: relative;
     display: inline-block;
     overflow: auto;
-    max-width: calc(100vw - 50px);
-    max-height: calc(100vh - 50px);
+    max-width: calc(100dvw - 50px);
+    max-height: calc(100dvh - 50px);
     background: var(--contextmenu-background, #ffffff);
     border: solid 2px var(--contextmenu-border, #cccccc);
 }

@@ -7,6 +7,11 @@
     --page-border-width: 2px;
     --page-border-radius: 0.25em;
 
+    /* === navigation === */
+    --navigation-text-color: #000000;
+    --navigation-back-color: #ffffff;
+    --navigation-shadow-color: #000000;
+
     /* === panel === */
     --panel-text-color: var(--page-text-color, #000000);
     --panel-back-color: var(--page-back-color, #ffffff);
@@ -109,11 +114,13 @@
     --scrollbar-size: 12px;
 
     --scrollbar-track-color: #eeeeee;
+    --scrollbar-track-border-style: solid;
     --scrollbar-track-border-width: 0px;
     --scrollbar-track-border-color: #00000000;
     --scrollbar-track-border-radius: 6px;
 
     --scrollbar-corner-color: #00000000;
+    --scrollbar-corner-border-style: solid;
     --scrollbar-corner-border-width: 0px;
     --scrollbar-corner-border-color: #00000000;
     --scrollbar-corner-border-radius: 0px;
@@ -121,15 +128,18 @@
     --scrollbar-resizer-color: #000000;
 
     --scrollbar-thumb-color: #cccccc;
+    --scrollbar-thumb-border-style: solid;
     --scrollbar-thumb-border-width: 2px;
     --scrollbar-thumb-border-color: #eeeeee;
     --scrollbar-thumb-border-radius: 6px;
 
     --scrollbar-thumb-hover-color: #999999;
+    --scrollbar-thumb-hover-border-style: var(--scrollbar-thumb-border-style, solid);
     --scrollbar-thumb-hover-border-width: var(--scrollbar-thumb-border-width, 2px);
     --scrollbar-thumb-hover-border-color: var(--scrollbar-thumb-border-color, #eeeeee);
 
     --scrollbar-thumb-active-color: #000000;
+    --scrollbar-thumb-active-border-style: var(--scrollbar-thumb-hover-border-style, solid);
     --scrollbar-thumb-active-border-width: var(--scrollbar-thumb-hover-border-width, 2px);;
     --scrollbar-thumb-active-border-color: var(--scrollbar-thumb-hover-border-color, #eeeeee);
 

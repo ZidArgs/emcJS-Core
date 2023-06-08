@@ -12,7 +12,7 @@ button {
     height: 100%;
     border: none;
     border-radius: 0;
-    background-color: var(--navigation-background-color, #ffffff);
+    background-color: var(--navigation-back-color, #ffffff);
     cursor: pointer;
     outline: none;
     appearance: none;

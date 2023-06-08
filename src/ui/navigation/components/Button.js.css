@@ -10,7 +10,7 @@ button {
     padding: 0 10px;
     border: none;
     border-radius: 0;
-    background-color: var(--navigation-background-color, #ffffff);
+    background-color: var(--navigation-back-color, #ffffff);
     color: var(--navigation-text-color, #000000);
     font-weight: bold;
     font-size: 1em;
