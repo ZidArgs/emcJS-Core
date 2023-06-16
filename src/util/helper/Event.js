@@ -18,3 +18,15 @@ export function isEventSupported(eventName) {
     }
     return isSupported;
 }
+
+export function addEventListenerForMultiType(target, types, listener, options) {
+    for (const type of types) {
+        target.addEventListener(type, listener, options);
+    }
+}
+
+export function removeEventListenerForMultiType(target, types, listener, options) {
+    for (const type of types) {
+        target.removeEventListener(type, listener, options);
+    }
+}
