@@ -28,6 +28,14 @@ export default class CustomFormElement extends CustomElement {
         // ignore
     }
 
+    formResetCallback() {
+        // ignore
+    }
+
+    formStateRestoreCallback(/* state, mode */) {
+        // ignore
+    }
+
     validityCallback(/* message */) {
         // ignore
     }

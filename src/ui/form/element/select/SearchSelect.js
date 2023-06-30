@@ -192,7 +192,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
     }
 
     formResetCallback() {
-        this.value = this.getAttribute("value") || "";
+        this.value = super.value || "";
     }
 
     formStateRestoreCallback(state/* , mode */) {
@@ -210,7 +210,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
     }
 
     get value() {
-        return this.#value ?? this.getAttribute("value");
+        return this.#value ?? super.value;
     }
 
     set readonly(value) {

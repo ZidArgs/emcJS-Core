@@ -98,15 +98,20 @@ export default class TokenSelect extends AbstractFormInput {
                 if (oldValue != newValue) {
                     safeSetAttribute(this.#inputEl, "value", newValue);
                     if (!this.isChanged) {
-                        try {
-                            const value = JSON.parse(this.value);
-                            if (!Array.isArray(value)) {
-                                this.#inputEl.value = [value];
-                            } else {
-                                this.#inputEl.value = value;
+                        const value = this.value;
+                        if (Array.isArray(value)) {
+                            this.#inputEl.value = value;
+                        } else {
+                            try {
+                                const resolvedValue = JSON.parse(value);
+                                if (!Array.isArray(resolvedValue)) {
+                                    this.#inputEl.value = [resolvedValue];
+                                } else {
+                                    this.#inputEl.value = resolvedValue;
+                                }
+                            } catch {
+                                this.#inputEl.value = [];
                             }
-                        } catch {
-                            this.#inputEl.value = [];
                         }
                     }
                 }

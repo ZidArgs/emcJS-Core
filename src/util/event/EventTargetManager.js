@@ -2,6 +2,8 @@ export default class EventTargetManager {
 
     #subs = new Map();
 
+    #captures = new Map();
+
     #target;
 
     #active;
@@ -21,10 +23,16 @@ export default class EventTargetManager {
                 this.#active = value;
                 if (value) {
                     for (const [name, handler] of this.#subs.entries()) {
+                        this.#target.addEventListener(name, handler, {capture: false});
+                    }
+                    for (const [name, handler] of this.#captures.entries()) {
                         this.#target.addEventListener(name, handler, {capture: true});
                     }
                 } else {
                     for (const [name, handler] of this.#subs.entries()) {
+                        this.#target.removeEventListener(name, handler, {capture: false});
+                    }
+                    for (const [name, handler] of this.#captures.entries()) {
                         this.#target.removeEventListener(name, handler, {capture: true});
                     }
                 }
@@ -38,12 +46,18 @@ export default class EventTargetManager {
         }
         if (this.#target != null) {
             for (const [name, handler] of this.#subs.entries()) {
+                this.#target.removeEventListener(name, handler, {capture: false});
+            }
+            for (const [name, handler] of this.#captures.entries()) {
                 this.#target.removeEventListener(name, handler, {capture: true});
             }
         }
         this.#target = target;
         if (this.#active && target != null) {
             for (const [name, handler] of this.#subs.entries()) {
+                target.addEventListener(name, handler, {capture: false});
+            }
+            for (const [name, handler] of this.#captures.entries()) {
                 target.addEventListener(name, handler, {capture: true});
             }
         }
@@ -68,11 +82,34 @@ export default class EventTargetManager {
             if (this.#active && this.#target != null) {
                 if (this.#subs.has(name)) {
                     const oldhandler = this.#subs.get(name);
+                    this.#target.removeEventListener(name, oldhandler, {capture: false});
+                }
+                this.#target.addEventListener(name, handler, {capture: false});
+            }
+            this.#subs.set(name, handler);
+        }
+    }
+
+    setCapture(name, handler) {
+        if (typeof handler != "function") {
+            throw new TypeError(`handler parameter must be of type "function" but was "${typeof handler}"`);
+        }
+        if (Array.isArray(name)) {
+            for (const n of name) {
+                this.set(n, handler)
+            }
+        } else {
+            if (typeof name != "string") {
+                throw new TypeError(`name parameter must be of type "string" but was "${typeof name}"`);
+            }
+            if (this.#active && this.#target != null) {
+                if (this.#subs.has(name)) {
+                    const oldhandler = this.#subs.get(name);
                     this.#target.removeEventListener(name, oldhandler, {capture: true});
                 }
                 this.#target.addEventListener(name, handler, {capture: true});
             }
-            this.#subs.set(name, handler);
+            this.#captures.set(name, handler);
         }
     }
 
@@ -88,20 +125,43 @@ export default class EventTargetManager {
             if (this.#target != null) {
                 if (this.#subs.has(name)) {
                     const oldhandler = this.#subs.get(name);
-                    this.#target.removeEventListener(name, oldhandler, {capture: true});
+                    this.#target.removeEventListener(name, oldhandler, {capture: false});
                 }
             }
             this.#subs.delete(name);
         }
     }
 
+    deleteCapture(name) {
+        if (Array.isArray(name)) {
+            for (const n of name) {
+                this.delete(n)
+            }
+        } else {
+            if (typeof name != "string") {
+                throw new TypeError(`name parameter must be of type "string" but was "${typeof name}"`);
+            }
+            if (this.#target != null) {
+                if (this.#captures.has(name)) {
+                    const oldhandler = this.#captures.get(name);
+                    this.#target.removeEventListener(name, oldhandler, {capture: true});
+                }
+            }
+            this.#captures.delete(name);
+        }
+    }
+
     clear() {
         if (this.#target != null) {
             for (const [name, handler] of this.#subs.entries()) {
+                this.#target.removeEventListener(name, handler, {capture: false});
+            }
+            for (const [name, handler] of this.#captures.entries()) {
                 this.#target.removeEventListener(name, handler, {capture: true});
             }
         }
         this.#subs.clear();
+        this.#captures.clear();
     }
 
 }

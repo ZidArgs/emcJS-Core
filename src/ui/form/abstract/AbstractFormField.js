@@ -35,6 +35,10 @@ export default class AbstractFormField extends CustomFormElement {
         return false;
     }
 
+    static get suppressScrollIntoView() {
+        return false;
+    }
+
     constructor() {
         if (new.target === AbstractFormField) {
             throw new Error("can not construct abstract class");
@@ -47,20 +51,22 @@ export default class AbstractFormField extends CustomFormElement {
             this.shadowRoot.getElementById("error").i18nContent = event.target.validationMessage ?? "";
         });
         this.addEventListener("focus", () => {
-            const scrollParent = getScrollParent(this);
-            const formHost = scrollParent.getRootNode().host;
-            if (formHost.matches("emc-form-container")) {
-                this.scrollIntoViewIfNeeded({
-                    behavior: "instant",
-                    block: "center",
-                    offsetTop: getTopScrollOffset(formHost),
-                    offsetBottom: getBottomScrollOffset(formHost)
-                });
-            } else {
-                this.scrollIntoViewIfNeeded({
-                    behavior: "instant",
-                    block: "center"
-                });
+            if (!this.constructor.suppressScrollIntoView) {
+                const scrollParent = getScrollParent(this);
+                const formHost = scrollParent.getRootNode().host;
+                if (formHost.matches("emc-form-container")) {
+                    this.scrollIntoViewIfNeeded({
+                        behavior: "instant",
+                        block: "center",
+                        offsetTop: getTopScrollOffset(formHost),
+                        offsetBottom: getBottomScrollOffset(formHost)
+                    });
+                } else {
+                    this.scrollIntoViewIfNeeded({
+                        behavior: "instant",
+                        block: "center"
+                    });
+                }
             }
         });
         /* --- */

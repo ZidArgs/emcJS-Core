@@ -28,6 +28,14 @@ export default class CustomFormElementDelegating extends CustomElementDelegating
         // ignore
     }
 
+    formResetCallback() {
+        // ignore
+    }
+
+    formStateRestoreCallback(/* state, mode */) {
+        // ignore
+    }
+
     validityCallback(/* message */) {
         // ignore
     }

@@ -227,7 +227,7 @@ export default class TokenSelect extends CustomFormElementDelegating {
     }
 
     formResetCallback() {
-        this.value = this.getAttribute("value") || "";
+        this.value = super.value || "";
     }
 
     formStateRestoreCallback(state/* , mode */) {
@@ -261,7 +261,7 @@ export default class TokenSelect extends CustomFormElementDelegating {
             return this.#value;
         }
         try {
-            const value = JSON.parse(this.getAttribute("value"));
+            const value = JSON.parse(super.value);
             if (!Array.isArray(value)) {
                 return [value];
             }

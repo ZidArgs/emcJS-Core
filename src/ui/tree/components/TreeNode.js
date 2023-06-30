@@ -79,13 +79,15 @@ export default class TreeNode extends CustomElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.addEventListener("click", (event) => {
+        const contentEl = this.shadowRoot.getElementById("content");
+        contentEl.addEventListener("click", (event) => {
             event.stopPropagation();
             event.preventDefault();
             const targetIndex = Array.from(this.parentElement.children).indexOf(this);
-            const ev = new Event("select", {bubbles: true, cancelable: true});
-            ev.data = {
+            const selectEvent = new Event("select", {bubbles: true, cancelable: true});
+            selectEvent.data = {
                 element: this,
+                index: targetIndex,
                 ref: this.ref,
                 isSelected: this.classList.contains("marked"),
                 path: [targetIndex],
@@ -93,18 +95,21 @@ export default class TreeNode extends CustomElement {
                 left: event.clientX,
                 top: event.clientY
             };
-            this.dispatchEvent(ev);
-            if (event.pointerType && !ev.defaultPrevented) {
+            this.dispatchEvent(selectEvent);
+            const contentClickEvent = new MouseEvent("contentclick", event);
+            this.dispatchEvent(contentClickEvent);
+            if (event.pointerType && !selectEvent.defaultPrevented && !contentClickEvent.defaultPrevented) {
                 this.toggleCollapsed();
             }
         });
-        this.addEventListener("contextmenu", (event) => {
+        contentEl.addEventListener("contextmenu", (event) => {
             event.stopPropagation();
             event.preventDefault();
             const targetIndex = Array.from(this.parentElement.children).indexOf(this);
-            const ev = new Event("menu", {bubbles: true, cancelable: true});
-            ev.data = {
+            const menuEvent = new Event("menu", {bubbles: true, cancelable: true});
+            menuEvent.data = {
                 element: this,
+                index: targetIndex,
                 ref: this.ref,
                 isSelected: this.classList.contains("marked"),
                 path: [targetIndex],
@@ -112,17 +117,20 @@ export default class TreeNode extends CustomElement {
                 left: event.clientX,
                 top: event.clientY
             };
-            this.dispatchEvent(ev);
+            const contentContextmenuEvent = new MouseEvent("contentcontextmenu", event);
+            this.dispatchEvent(contentContextmenuEvent);
+            this.dispatchEvent(menuEvent);
         });
         /* --- */
         const subTreeEl = this.shadowRoot.getElementById("tree");
         subTreeEl.addEventListener("select", (event) => {
             event.stopPropagation();
-            const {element, ref, isSelected, path, refPath, left, top} = event.data;
+            const {element, index, ref, isSelected, path, refPath, left, top} = event.data;
             const targetIndex = Array.from(this.parentElement.children).indexOf(this);
-            const ev = new Event("select", {bubbles: true, cancelable: true});
-            ev.data = {
+            const selectEvent = new Event("select", {bubbles: true, cancelable: true});
+            selectEvent.data = {
                 element,
+                index,
                 ref,
                 isSelected,
                 path: [targetIndex, ...path ?? []],
@@ -130,18 +138,19 @@ export default class TreeNode extends CustomElement {
                 left,
                 top
             };
-            this.dispatchEvent(ev);
-            if (ev.defaultPrevented) {
+            this.dispatchEvent(selectEvent);
+            if (selectEvent.defaultPrevented) {
                 event.preventDefault();
             }
         });
         subTreeEl.addEventListener("menu", (event) => {
             event.stopPropagation();
-            const {element, ref, isSelected, path, refPath, left, top} = event.data;
+            const {element, index, ref, isSelected, path, refPath, left, top} = event.data;
             const targetIndex = Array.from(this.parentElement.children).indexOf(this);
-            const ev = new Event("menu", {bubbles: true, cancelable: true});
-            ev.data = {
+            const menuEvent = new Event("menu", {bubbles: true, cancelable: true});
+            menuEvent.data = {
                 element,
+                index,
                 ref,
                 isSelected,
                 path: [targetIndex, ...path ?? []],
@@ -149,7 +158,7 @@ export default class TreeNode extends CustomElement {
                 left,
                 top
             };
-            this.dispatchEvent(ev);
+            this.dispatchEvent(menuEvent);
         });
         /* --- */
         this.#nodeEl = this.shadowRoot.getElementById("node");

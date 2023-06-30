@@ -3,11 +3,39 @@
     width: min-content;
     height: 2em;
     margin: 10px;
+    color: var(--button-text-color, #000000);
+    background-color: var(--button-back-color, #eaeaea);
+    border: solid var(--form-border-width, 2px) var(--button-border-color, #000000);
+    border-radius: var(--form-border-radius, 0.25em);
     user-select: none;
     overflow: hidden;
     font-size: 1rem;
+    cursor: pointer;
+}
+:host([primary]:not([primary="false"])) {
+    color: var(--button-primary-text-color, #000000);
+    background-color: var(--button-primary-back-color, #00dbd0);
+    border-color: var(--button-primary-border-color, #007b75);
+}
+:host(:hover) {
+    color: var(--button-hover-text-color, #ffffff);
+    background-color: var(--button-hover-back-color, #353935);
+    border-color: var(--button-border-color, #000000);
+}
+:host([primary]:not([primary="false"]):hover) {
+    color: var(--button-primary-hover-text-color, #ffffff);
+    background-color: var(--button-primary-hover-back-color, #353935);
+    border-color: var(--button-primary-hover-border-color, #000000);
+}
+:host(:disabled),
+:host([primary]:not([primary="false"]):disabled) {
+    color: var(--input-disabled-text-color, #424242);
+    background-color: var(--input-disabled-back-color, #999999);
+    border-color: var(--input-disabled-border-color, #6a6a6a);
+    cursor: default;
 }
 :host(:focus) {
+    box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
     outline: none;
     z-index: 1;
 }
@@ -19,42 +47,18 @@
     width: 100%;
     padding: 0px 10px;
     margin: 0px;
+    color: inherit;
+    background-color: transparent;
+    border: none;
     appearance: none;
-    color: var(--button-text-color, #000000);
-    background-color: var(--button-back-color, #eaeaea);
-    border: solid var(--form-border-width, 2px) var(--button-border-color, #000000);
-    border-radius: var(--form-border-radius, 0.25em);
     font-size: 1em;
     font-weight: bold;
     line-height: 1em;
     white-space: pre;
     word-break: keep-all;
-    cursor: pointer;
-}
-:host([primary]:not([primary="false"])) #button {
-    color: var(--button-primary-text-color, #000000);
-    background-color: var(--button-primary-back-color, #00dbd0);
-    border-color: var(--button-primary-border-color, #007b75);
-}
-#button:hover {
-    color: var(--button-hover-text-color, #ffffff);
-    background-color: var(--button-hover-back-color, #353935);
-    border-color: var(--button-border-color, #000000);
-}
-:host([primary]:not([primary="false"])) #button:hover {
-    color: var(--button-primary-hover-text-color, #ffffff);
-    background-color: var(--button-primary-hover-back-color, #353935);
-    border-color: var(--button-primary-hover-border-color, #000000);
-}
-#button:disabled,
-:host([primary]:not([primary="false"])) #button:disabled {
-    color: var(--input-disabled-text-color, #424242);
-    background-color: var(--input-disabled-back-color, #999999);
-    border-color: var(--input-disabled-border-color, #6a6a6a);
-    cursor: default;
+    cursor: inherit;
 }
 #button:focus {
-    box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
     outline: none;
 }
 #button[icon]:not([icon=""])::before {
