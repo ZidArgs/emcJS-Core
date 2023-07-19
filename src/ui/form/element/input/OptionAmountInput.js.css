@@ -1,0 +1,43 @@
+:host {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.wrapper {
+    position: relative;
+    height: 600px;
+    background-color: #000000;
+    overflow: scroll;
+    user-select: none;
+}
+#map {
+    display: block;
+    width: 0px;
+    height: 0px;
+    flex-shrink: 0;
+    background-color: black;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-position: center;
+    background-origin: content-box;
+}
+::slotted(*) {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0.5;
+}
+::slotted(.active) {
+    opacity: 1;
+    z-index: 1000;
+}
+.position-input-wrapper {
+    display: flex;
+    justify-content: center;
+}
+.position-label {
+    margin: 5px;
+}
+.position-input {
+    width: 100px;
+}
