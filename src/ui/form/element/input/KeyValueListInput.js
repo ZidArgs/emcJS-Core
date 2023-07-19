@@ -1,14 +1,38 @@
 import CustomFormElementDelegating from "../../../element/CustomFormElementDelegating.js";
 import ElementListCache from "../../../../util/html/ElementListCache.js";
-import TPL from "./SearchSelect.js.html" assert {type: "html"};
-import STYLE from "./SearchSelect.js.css" assert {type: "css"};
+import TPL from "./KeyValueListInput.js.html" assert {type: "html"};
+import STYLE from "./KeyValueListInput.js.css" assert {type: "css"};
 
-/*
-TODO target value output:
-{
-    [string=key]: [string=value]
-}
-*/
+/** visualization:
+ * +--------------------------------------------------+
+ * | Search...                                        | <-- filter list by key and value; always show empty
+ * +--------------------------------------------------+
+ * | +--------------------+-------------------+-----+ |
+ * | | Key 1              | value 1           | DEL | | <-- string input for "key" & "value"; keys must be unique; key edit optional -> key readonly
+ * | +--------------------+-------------------+-----+ |
+ * | | Key 2              | value 2           | DEL | | <-- DEL is optional (one option for "DEL" and "Add new" -> list readonly)
+ * | +--------------------+-------------------+-----+ |
+ * | |                    |                   | DEL | | <-- initial "key" & "value" is ""
+ * | +--------------------+-------------------+-----+ |
+ * +--------------------------------------------------+
+ * | +---------+                                      |
+ * | | Add new |                                      | <-- optional; on add scroll to new entry and focus new "key" input; use dialog if keys not editable
+ * | +---------+                                      |
+ * +--------------------------------------------------+
+ */
+
+/** target value output:
+ * {
+ *     [string=key]: [string=value]
+ * }
+ */
+
+/** readonly option: (search never readonly)
+ * - false [default] -> no readonly
+ * - key -> keys can not be edited
+ * - list -> deactivate add & delete; keys can not be edited
+ * - true -> deactivate add & delete; keys & values can not be edited
+ */
 
 export default class KeyValueListInput extends CustomFormElementDelegating {
 

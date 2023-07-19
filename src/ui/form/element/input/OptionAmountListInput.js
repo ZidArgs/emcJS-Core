@@ -6,11 +6,12 @@ import "./components/AreaMarker.js";
 import "./components/ConnectionMarker.js";
 import "./components/ExitMarker.js";
 import "./components/LocationMarker.js";
-import TPL from "./OptionAmountInput.js.html" assert {type: "html"};
-import STYLE from "./OptionAmountInput.js.css" assert {type: "css"};
+import TPL from "./OptionAmountListInput.js.html" assert {type: "html"};
+import STYLE from "./OptionAmountListInput.js.css" assert {type: "css"};
 
-/**
- * visualization:
+/** visualization:
+ * +---------------------------------+
+ * | Search...                       | <-- filter list
  * +---------------------------------+
  * | +--------------------+--------+ |
  * | | Option 1           |      3 | | <-- interger input per option
@@ -18,9 +19,17 @@ import STYLE from "./OptionAmountInput.js.css" assert {type: "css"};
  * | | Option 2           |      0 | | <-- initial value is 0
  * | +--------------------+--------+ |
  * +---------------------------------+
+ *
+ * <option value="foobar">Foobar</option> substitution see "ImageSelect"
  */
 
-export default class OptionAmountInput extends CustomElement {
+/** target value output:
+ * {
+ *     [string=key]: [number=value]
+ * }
+ */
+
+export default class OptionAmountListInput extends CustomElement {
 
     #xValue;
 
@@ -211,4 +220,4 @@ export default class OptionAmountInput extends CustomElement {
 
 }
 
-customElements.define("emc-input-option-amount", OptionAmountInput);
+customElements.define("emc-input-option-amount", OptionAmountListInput);
