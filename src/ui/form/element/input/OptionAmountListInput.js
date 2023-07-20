@@ -1,11 +1,15 @@
-import CustomElement from "/emcJS/ui/element/CustomElement.js";
+import CustomFormElementDelegating from "../../../element/CustomFormElementDelegating.js";
 import {
     debounce
-} from "/emcJS/util/Debouncer.js";
-import "./components/AreaMarker.js";
-import "./components/ConnectionMarker.js";
-import "./components/ExitMarker.js";
-import "./components/LocationMarker.js";
+} from "../../../../util/Debouncer.js";
+import EventMultiTargetManager from "../../../../util/event/EventMultiTargetManager.js";
+import EventTargetManager from "../../../../util/event/EventTargetManager.js";
+import i18n from "../../../../util/I18n.js";
+import CharacterSearch from "../../../../util/search/CharacterSearch.js";
+import {
+    sortNodeList
+} from "../../../../util/helper/ui/NodeListSort.js";
+import Comparator from "../../../../util/helper/Comparator.js";
 import TPL from "./OptionAmountListInput.js.html" assert {type: "html"};
 import STYLE from "./OptionAmountListInput.js.css" assert {type: "css"};
 
@@ -29,195 +33,195 @@ import STYLE from "./OptionAmountListInput.js.css" assert {type: "css"};
  * }
  */
 
-export default class OptionAmountListInput extends CustomElement {
+export default class OptionAmountListInput extends CustomFormElementDelegating {
 
-    #xValue;
+    #value = {};
 
-    #yValue;
+    #inputEl;
 
-    #mapElement;
+    #containerEl;
 
-    #posXInputElement;
+    #optionsContainerEl;
 
-    #posYInputElement;
+    #optionChangeEventManager = new EventMultiTargetManager();
 
-    #currentMarkerType;
-
-    #currentMarkerIndex;
-
-    #currentMarkerLabel;
-
-    #currentMarkerEl;
+    #i18nEventManager = new EventTargetManager(i18n);
 
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.#mapElement = this.shadowRoot.getElementById("map");
-        this.#posXInputElement = this.shadowRoot.getElementById("pos-x");
-        this.#posYInputElement = this.shadowRoot.getElementById("pos-y");
-        this.#mapElement.addEventListener("click", (event) => {
-            const {offsetX, offsetY} = event;
-            this.#posXInputElement.value = offsetX;
-            this.#posYInputElement.value = offsetY;
-            this.#xValue = offsetX;
-            this.#yValue = offsetY;
-            this.#handleCurrentMarker();
+        this.#optionChangeEventManager.set("change", (event) => {
+            const {name, value} = event.target;
+            this.value = {
+                ...this.#value,
+                [name]: value
+            };
+            event.preventDefault();
+            event.stopPropagation();
         });
-        this.#posXInputElement.addEventListener("input", () => {
-            const value = this.#posXInputElement.value;
-            const xValue = parseInt(value);
-            if (!isNaN(xValue)) {
-                this.#xValue = xValue;
-            } else {
-                this.#xValue = null;
+        /* --- */
+        this.#inputEl = this.shadowRoot.getElementById("input");
+        this.#containerEl = this.shadowRoot.getElementById("container");
+        this.#optionsContainerEl = this.shadowRoot.getElementById("options-container");
+        this.#optionsContainerEl.addEventListener("slotchange", () => {
+            this.#onSlotChange();
+        });
+        /* --- */
+        this.#inputEl.addEventListener("input", () => {
+            const all = this.#containerEl.children;
+            const regEx = new CharacterSearch(this.#inputEl.value);
+            for (const el of all) {
+                if (el.innerText.trim().match(regEx)) {
+                    el.style.display = "";
+                } else {
+                    el.style.display = "none";
+                }
             }
-            this.#handleCurrentMarker();
-        });
-        this.#posYInputElement.addEventListener("input", () => {
-            const value = this.#posYInputElement.value;
-            const yValue = parseInt(value);
-            if (!isNaN(yValue)) {
-                this.#yValue = yValue;
-            } else {
-                this.#yValue = null;
-            }
-            this.#handleCurrentMarker();
-        });
-        const removeButtonEl = this.shadowRoot.getElementById("remove");
-        removeButtonEl.addEventListener("click", () => {
-            this.#posXInputElement.value = "";
-            this.#posYInputElement.value = "";
-            this.#xValue = null;
-            this.#yValue = null;
-            this.#handleCurrentMarker();
-        });
+        }, true);
     }
 
-    #onChange = debounce(() => {
-        this.dispatchEvent(new Event("change"));
-    });
+    connectedCallback() {
+        this.internals.setFormValue(this.#value);
+        this.#resolveSlottedElements();
+    }
+
+    formDisabledCallback(disabled) {
+        super.formDisabledCallback(disabled);
+        this.#inputEl.disabled = disabled;
+        // this.#buttonEl.classList.toggle("disabled", disabled);
+    }
+
+    formResetCallback() {
+        this.value = super.value || "";
+    }
+
+    formStateRestoreCallback(state/* , mode */) {
+        this.value = state;
+    }
 
     set value(value) {
-        const {x, y} = value;
-        const xValue = parseInt(x);
-        const yValue = parseInt(y);
-        if (!isNaN(xValue)) {
-            this.#posXInputElement.value = x;
-            this.#xValue = xValue;
-        } else {
-            this.#posXInputElement.value = "";
-            this.#xValue = null;
+        if (this.#value != value) {
+            this.#value = value;
+            this.#applyValue(value);
+            this.internals.setFormValue(value);
+            /* --- */
+            this.dispatchEvent(new Event("change"));
         }
-        if (!isNaN(yValue)) {
-            this.#posYInputElement.value = y;
-            this.#yValue = yValue;
-        } else {
-            this.#posYInputElement.value = "";
-            this.#yValue = null;
-        }
-        this.#handleCurrentMarker();
     }
 
     get value() {
-        if (this.#xValue != null && this.#yValue != null) {
-            return {
-                x: this.#xValue,
-                y: this.#yValue
-            };
-        } else if (this.#xValue != null) {
-            return {
-                x: this.#xValue
-            };
-        } else if (this.#yValue != null) {
-            return {
-                y: this.#yValue
-            };
-        }
-        return {};
+        return this.#value ?? super.value;
     }
 
-    loadData(map, connections, entries, currentType, currentIndex, currentLabel) {
-        this.#currentMarkerType = currentType;
-        this.#currentMarkerIndex = currentIndex;
-        this.#currentMarkerLabel = currentLabel;
-        this.innerHTML = "";
-        if (map != null) {
-            const {color, background, width, height} = map;
-            this.#mapElement.style.backgroundColor = color;
-            this.#mapElement.style.backgroundImage = `url("${background}")`;
-            this.#mapElement.style.width = `${width}px`;
-            this.#mapElement.style.height = `${height}px`;
-            this.#posXInputElement.max = width;
-            this.#posYInputElement.max = height;
-            for (const index in connections ?? []) {
-                const entry = connections[index];
-                const {label, posA, posB} = entry;
-                if (posA != null) {
-                    this.#createMarker("connection", `${index}_0`, posA.x, posA.y, label);
+    set readonly(value) {
+        this.setBooleanAttribute("readonly", value);
+    }
+
+    get readonly() {
+        return this.getBooleanAttribute("readonly");
+    }
+
+    set sorted(value) {
+        this.setBooleanAttribute("sorted", value);
+    }
+
+    get sorted() {
+        return this.getBooleanAttribute("sorted");
+    }
+
+    static get observedAttributes() {
+        return ["value", "sorted"];
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        switch (name) {
+            case "value": {
+                if (oldValue != newValue) {
+                    this.#inputEl.setAttribute(name, newValue);
                 }
-                if (posB != null) {
-                    this.#createMarker("connection", `${index}_1`, posB.x, posB.y, label);
+            } break;
+            case "sorted": {
+                if (oldValue != newValue) {
+                    const sorted = this.sorted;
+                    this.#i18nEventManager.setActive(sorted);
+                    if (sorted) {
+                        this.#sort();
+                    }
                 }
-            }
-            for (const index in entries ?? []) {
-                const entry = entries[index];
-                const {pos, category} = entry;
-                if (category != null && pos != null) {
-                    this.#createMarker(category, index, pos.x, pos.y);
-                }
-            }
-            this.#currentMarkerEl = this.querySelector(`[data-ref="${currentType}__${currentIndex}"]`);
-            if (this.#currentMarkerEl) {
-                this.#currentMarkerEl.classList.add("active");
+            } break;
+        }
+    }
+
+    #applyValue(value) {
+        if (value != null && typeof value === "object") {
+            for (const name in value) {
+                const amount = value[name];
+                const inputEl = this.#containerEl.querySelector(`input[name="${name}"]`);
+                inputEl.value = amount;
             }
         } else {
-            this.#mapElement.style.backgroundColor = "";
-            this.#mapElement.style.backgroundImage = "";
-            this.#mapElement.style.width = "0px";
-            this.#mapElement.style.height = "0px";
-            this.#posXInputElement.max = 0;
-            this.#posYInputElement.max = 0;
+            const inputElList = this.#containerEl.querySelectorAll(`input[name]`);
+            for (const el of inputElList) {
+                el.value = 0;
+            }
         }
     }
 
-    #createMarker(type, index, x, y, label) {
-        if (!isNaN(x) && !isNaN(y)) {
-            const el = document.createElement(`jse-world-editor-input-position-marker-${type}`);
-            el.x = x;
-            el.y = y;
-            el.dataset.ref = `${type}__${index}`;
-            if (label != null) {
-                el.label = label;
+    #sort = debounce(() => {
+        const optionNodeList = this.#containerEl.children;
+        const sortedNodeList = sortNodeList(optionNodeList);
+        if (!Comparator.isEqual(optionNodeList, sortedNodeList)) {
+            for (const el of sortedNodeList) {
+                (el.parentElement ?? el.getRootNode() ?? document).append(el);
             }
-            this.append(el);
-            return el;
+        }
+    });
+
+    #resolveSlottedElements() {
+        const optionNodeList = this.#optionsContainerEl.assignedElements({flatten: true}).filter((el) => el.matches("[value]"));
+        /* --- */
+        const options = {};
+        for (const el of optionNodeList) {
+            options[el.value] = el.i18nValue ?? el.innerHTML;
+        }
+        /* --- */
+        this.#inputEl.value = "";
+        this.#containerEl.innerHTML = "";
+        this.#optionChangeEventManager.clearTargets();
+        if (Object.keys(options).length === 0) {
+            const emptyEl = document.createElement("div");
+            emptyEl.id = "empty";
+            emptyEl.innerHTML = "no entries";
+            this.#containerEl.append(emptyEl);
+        } else {
+            for (const name in options) {
+                const label = options[name];
+                const optionEl = document.createElement("label");
+                optionEl.className = "option";
+                const labelEl = document.createElement("emc-i18n-label");
+                labelEl.i18nValue = label;
+                optionEl.append(labelEl);
+                const inputEl = document.createElement("input");
+                inputEl.type = "number";
+                inputEl.name = name;
+                optionEl.append(inputEl);
+                this.#containerEl.append(optionEl);
+                this.#optionChangeEventManager.addTarget(inputEl);
+            }
+            /* --- */
+            if (this.sorted) {
+                this.#sort();
+            }
+            this.#applyValue(this.#value);
         }
     }
 
-    #handleCurrentMarker() {
-        if (this.#xValue != null && this.#yValue != null) {
-            if (this.#currentMarkerEl) {
-                if (this.#currentMarkerEl.x != this.#xValue || this.#currentMarkerEl.y != this.#yValue) {
-                    this.#currentMarkerEl.x = this.#xValue;
-                    this.#currentMarkerEl.y = this.#yValue;
-                    this.#onChange();
-                }
-            } else {
-                this.#currentMarkerEl = this.#createMarker(this.#currentMarkerType, this.#currentMarkerIndex, this.#xValue, this.#yValue, this.#currentMarkerLabel);
-                if (this.#currentMarkerEl) {
-                    this.#currentMarkerEl.classList.add("active");
-                    this.#onChange();
-                }
-            }
-        } else if (this.#currentMarkerEl) {
-            this.#currentMarkerEl.remove();
-            this.#currentMarkerEl = null;
-            this.#onChange();
-        }
-    }
+    #onSlotChange = debounce(() => {
+        this.#resolveSlottedElements();
+    });
 
 }
 
-customElements.define("emc-input-option-amount", OptionAmountListInput);
+customElements.define("emc-input-option-amount-list", OptionAmountListInput);

@@ -1,43 +1,45 @@
 :host {
-    position: relative;
     display: flex;
-    flex-direction: column;
-    overflow: hidden;
+    height: 2em;
+    min-width: 200px;
+    padding: 0px calc(7px + 2em) 0px 7px;
+    color: var(--input-text-color, #000000);
+    background-color: var(--input-back-color, #ffffff);
+    border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
+    border-radius: var(--form-border-radius, 0.25em);
 }
-.wrapper {
+:host(:disabled) {
+    color: var(--input-disabled-text-color, #424242) !important;
+    background-color: var(--input-disabled-back-color, #999999) !important;
+    border-color: var(--input-disabled-border-color, #6a6a6a) !important;
+    cursor: default !important;
+}
+:host(:focus) {
+    box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
+    outline: none;
+    z-index: 1;
+}
+:host(:invalid) {
+    background-color: var(--input-invalid-back-color, #ffebeb);
+    border-color: var(--input-invalid-border-color, #ff4444);
+}
+:host(:invalid:focus) {
+    box-shadow: 0 0 2px 3px var(--input-invalid-focus-color, #ff2500);
+}
+#scroll-container {
     position: relative;
-    height: 600px;
-    background-color: #000000;
-    overflow: scroll;
-    user-select: none;
-}
-#map {
     display: block;
-    width: 0px;
-    height: 0px;
-    flex-shrink: 0;
-    background-color: black;
-    background-repeat: no-repeat;
-    background-size: 100%;
-    background-position: center;
-    background-origin: content-box;
-}
-::slotted(*) {
-    position: absolute;
-    pointer-events: none;
-    opacity: 0.5;
-}
-::slotted(.active) {
-    opacity: 1;
+    max-height: 300px;
+    margin: 4px 0px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    color: var(--input-text-color, #000000);
+    background-color: var(--input-back-color, #ffffff);
+    border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
+    border-radius: var(--form-border-radius, 0.25em);
     z-index: 1000;
+    box-shadow: #000000 4px 4px 8px -4px;
 }
-.position-input-wrapper {
-    display: flex;
-    justify-content: center;
-}
-.position-label {
-    margin: 5px;
-}
-.position-input {
-    width: 100px;
+#options-container {
+    display: none;
 }

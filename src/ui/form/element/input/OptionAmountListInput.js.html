@@ -1,6 +1,7 @@
-<emc-header-selection id="header"></emc-header-selection>
+<input is="emc-i18n-input" id="input" i18n-placeholder="Search..." autocomplete="off" name="internal_search">
 <div id="scroll-container">
-    <slot id="container">
+    <div id="container">
         <div id="empty">no entries</div>
-    </slot>
+    </div>
 </div>
+<slot id="options-container"></slot>
