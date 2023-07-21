@@ -5,12 +5,12 @@ import STYLE from "./KeyValueListInput.js.css" assert {type: "css"};
 
 /** visualization:
  * +--------------------------------------------------+
- * | Search...                                        | <-- filter list by key and value; always show empty
+ * | Search...                                        | <-- filter list by key and value; always show empty keys / values
  * +--------------------------------------------------+
  * | +--------------------+-------------------+-----+ |
- * | | Key 1              | value 1           | DEL | | <-- string input for "key" & "value"; keys must be unique; key edit optional -> key readonly
+ * | | key 1              | value 1           | DEL | | <-- string input for "key" & "value"; keys must be unique; key edit optional -> key readonly
  * | +--------------------+-------------------+-----+ |
- * | | Key 2              | value 2           | DEL | | <-- DEL is optional (one option for "DEL" and "Add new" -> list readonly)
+ * | | key 2              | value 2           | DEL | | <-- DEL is optional (one option for "DEL" and "Add new" -> list readonly)
  * | +--------------------+-------------------+-----+ |
  * | |                    |                   | DEL | | <-- initial "key" & "value" is ""
  * | +--------------------+-------------------+-----+ |
