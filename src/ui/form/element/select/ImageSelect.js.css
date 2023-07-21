@@ -79,7 +79,7 @@
     box-shadow: 0 0 2px 3px var(--input-invalid-focus-color, #ff2500);
 }
 #button:disabled {
-    color: var(--input-disabled-text-color, #424242);
+    color: var(--input-disabled-text-color, #757575);
     background-color: var(--input-disabled-back-color, #999999);
     border-color: var(--input-disabled-border-color, #6a6a6a);
     cursor: default;

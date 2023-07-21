@@ -41,7 +41,7 @@
     background-color: var(--button-hover-back-color, #000000);
 }
 #button[disabled]:not([disabled="false"]) {
-    color: var(--input-disabled-text-color, #424242);
+    color: var(--input-disabled-text-color, #757575);
     background-color: var(--input-disabled-back-color, #999999);
     cursor: default;
 }
@@ -60,8 +60,8 @@
     fill: var(--input-back-color, #ffffff);
 }
 #button[disabled]:not([disabled="false"]) #link-icon path {
-    stroke: var(--input-disabled-text-color, #424242);
-    fill: var(--input-disabled-text-color, #424242);
+    stroke: var(--input-disabled-text-color, #757575);
+    fill: var(--input-disabled-text-color, #757575);
 }
 #button[icon]:not([icon=""])::before {
     display: inline-flex;

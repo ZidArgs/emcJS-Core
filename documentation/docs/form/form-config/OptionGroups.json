@@ -27,5 +27,10 @@
         "test": "Test",
         "foobar": "Foobar",
         "barfoo": "Barfoo"
+    },
+    "OptionAmountListInput": {
+        "test": "Test",
+        "foobar": "Foobar",
+        "barfoo": "Barfoo"
     }
 }

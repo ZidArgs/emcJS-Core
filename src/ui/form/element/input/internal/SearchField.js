@@ -10,6 +10,8 @@ export default class SearchField extends CustomElementDelegating {
 
     #inputEl;
 
+    #resetEl;
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
@@ -19,8 +21,8 @@ export default class SearchField extends CustomElementDelegating {
         this.#inputEl.addEventListener("input", () => {
             this.#onInput();
         });
-        const resetEl = this.shadowRoot.getElementById("reset");
-        resetEl.addEventListener("click", () => {
+        this.#resetEl = this.shadowRoot.getElementById("reset");
+        this.#resetEl.addEventListener("click", () => {
             this.value = "";
         });
     }
@@ -38,6 +40,16 @@ export default class SearchField extends CustomElementDelegating {
 
     get value() {
         return this.#inputEl.value;
+    }
+
+    set disabled(value) {
+        this.setBooleanAttribute("disabled", value);
+        this.#inputEl.disabled = value;
+        this.#resetEl.disabled = value;
+    }
+
+    get disabled() {
+        return this.getBooleanAttribute("disabled");
     }
 
 }

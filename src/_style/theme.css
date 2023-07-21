@@ -51,7 +51,7 @@
     --input-invalid-border-color: #ff2500; /* all; top_bottom right_left; top right bottom left*/
     --input-invalid-focus-color: #ff2500;
 
-    --input-disabled-text-color: #424242;
+    --input-disabled-text-color: #757575;
     --input-disabled-back-color: #999999;
     --input-disabled-border-color: #6a6a6a; /* all; top_bottom right_left; top right bottom left*/
 
@@ -143,6 +143,14 @@
     --scrollbar-thumb-active-border-width: var(--scrollbar-thumb-hover-border-width, 2px);;
     --scrollbar-thumb-active-border-color: var(--scrollbar-thumb-hover-border-color, #eeeeee);
 
+    --scrollbar-disabled-track-color: #6a6a6a;
+    --scrollbar-disabled-track-border-color: #00000000;
+    --scrollbar-disabled-corner-color: #00000000;
+    --scrollbar-disabled-corner-border-color: #00000000;
+    --scrollbar-disabled-resizer-color: #757575;
+    --scrollbar-disabled-thumb-color: #757575;
+    --scrollbar-disabled-thumb-border-color: #999999;
+
 }
 body {
     color: var(--page-text-color, #000000);
@@ -187,4 +195,19 @@ form {
 ::-webkit-scrollbar-thumb:active {
     background-color: var(--scrollbar-thumb-active-color, #000000);
     border: solid var(--scrollbar-thumb-active-border-width, 2px) var(--scrollbar-thumb-active-border-color, #eeeeee);
+}
+.scroll-disabled::-webkit-scrollbar-track {
+    background-color: var(--scrollbar-disabled-track-color, #6a6a6a);
+    border-color: var(--scrollbar-disabled-track-border-color, #00000000);
+}
+.scroll-disabled::-webkit-scrollbar-corner {
+    background-color: var(--scrollbar-disabled-corner-color, #00000000);
+    border-color: var(--scrollbar-disabled-corner-border-color, #00000000);
+}
+.scroll-disabled::-webkit-resizer {
+    background: radial-gradient(var(--scrollbar-disabled-resizer-color, #757575) calc(var(--scrollbar-size, 12px) / 2 - 2px), transparent calc(var(--scrollbar-size, 12px) / 2 - 1px));
+}
+.scroll-disabled::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-disabled-thumb-color, #757575);
+    border-color: var(--scrollbar-disabled-thumb-border-color, #999999);
 }

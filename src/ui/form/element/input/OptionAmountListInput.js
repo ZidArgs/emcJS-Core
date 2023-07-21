@@ -10,36 +10,19 @@ import {
     sortNodeList
 } from "../../../../util/helper/ui/NodeListSort.js";
 import Comparator from "../../../../util/helper/Comparator.js";
+import "./internal/SearchField.js";
 import TPL from "./OptionAmountListInput.js.html" assert {type: "html"};
 import STYLE from "./OptionAmountListInput.js.css" assert {type: "css"};
-
-/** visualization:
- * +---------------------------------+
- * | Search...                       | <-- filter list
- * +---------------------------------+
- * | +--------------------+--------+ |
- * | | Option 1           |      3 | | <-- interger input per option
- * | +--------------------+--------+ |
- * | | Option 2           |      0 | | <-- initial value is 0
- * | +--------------------+--------+ |
- * +---------------------------------+
- *
- * <option value="foobar">Foobar</option> substitution see "ImageSelect"
- */
-
-/** target value output:
- * {
- *     [string=key]: [number=value]
- * }
- */
 
 export default class OptionAmountListInput extends CustomFormElementDelegating {
 
     #value = {};
 
-    #inputEl;
+    #searchEl;
 
     #containerEl;
+
+    #scrollContainerEl;
 
     #optionsContainerEl;
 
@@ -56,22 +39,23 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
             const {name, value} = event.target;
             this.value = {
                 ...this.#value,
-                [name]: value
+                [name]: parseInt(value) || 0
             };
             event.preventDefault();
             event.stopPropagation();
         });
         /* --- */
-        this.#inputEl = this.shadowRoot.getElementById("input");
+        this.#searchEl = this.shadowRoot.getElementById("search");
         this.#containerEl = this.shadowRoot.getElementById("container");
+        this.#scrollContainerEl = this.shadowRoot.getElementById("scroll-container");
         this.#optionsContainerEl = this.shadowRoot.getElementById("options-container");
         this.#optionsContainerEl.addEventListener("slotchange", () => {
             this.#onSlotChange();
         });
         /* --- */
-        this.#inputEl.addEventListener("input", () => {
+        this.#searchEl.addEventListener("change", () => {
             const all = this.#containerEl.children;
-            const regEx = new CharacterSearch(this.#inputEl.value);
+            const regEx = new CharacterSearch(this.#searchEl.value);
             for (const el of all) {
                 if (el.innerText.trim().match(regEx)) {
                     el.style.display = "";
@@ -89,8 +73,12 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
-        this.#inputEl.disabled = disabled;
-        // this.#buttonEl.classList.toggle("disabled", disabled);
+        this.#searchEl.disabled = disabled;
+        this.#scrollContainerEl.classList.toggle("scroll-disabled", disabled);
+        const inputElList = this.#containerEl.querySelectorAll(`input[name]`);
+        for (const el of inputElList) {
+            el.disabled = disabled;
+        }
     }
 
     formResetCallback() {
@@ -139,7 +127,7 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
-                    this.#inputEl.setAttribute(name, newValue);
+                    this.#searchEl.setAttribute(name, newValue);
                 }
             } break;
             case "sorted": {
@@ -187,7 +175,7 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
             options[el.value] = el.i18nValue ?? el.innerHTML;
         }
         /* --- */
-        this.#inputEl.value = "";
+        this.#searchEl.value = "";
         this.#containerEl.innerHTML = "";
         this.#optionChangeEventManager.clearTargets();
         if (Object.keys(options).length === 0) {
@@ -206,6 +194,7 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
                 const inputEl = document.createElement("input");
                 inputEl.type = "number";
                 inputEl.name = name;
+                inputEl.disabled = this.disabled;
                 optionEl.append(inputEl);
                 this.#containerEl.append(optionEl);
                 this.#optionChangeEventManager.addTarget(inputEl);

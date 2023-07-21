@@ -328,6 +328,9 @@ export default class TokenSelect extends CustomFormElementDelegating {
             case "value": {
                 if (oldValue != newValue) {
                     this.#inputEl.setAttribute(name, newValue);
+                    if (!this.isChanged) {
+                        this.#applyValue(this.value);
+                    }
                 }
             } break;
             case "placeholder": {

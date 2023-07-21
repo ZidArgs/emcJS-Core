@@ -80,6 +80,8 @@ export default class LogicEditor extends BaseClass {
 
     #placeholderEl;
 
+    #logicContainerEl;
+
     #logicElementModal = new LogicElementModal();
 
     #logicJSONModal = new LogicJSONModal();
@@ -91,7 +93,7 @@ export default class LogicEditor extends BaseClass {
         /* --- */
         this.setContextMenu("element", LogicEditorContextMenuElement);
         this.addContextMenuHandler("element", "remove", (event) => {
-            const {id} = event.props;
+            const {id} = event.props[0];
             this.#removeElement(id);
         });
         this.addEventListener("menu", (event) => {
@@ -101,6 +103,7 @@ export default class LogicEditor extends BaseClass {
         });
         /* --- */
         mutationObserver.observe(this, MUTATION_CONFIG);
+        this.#logicContainerEl = this.shadowRoot.getElementById("logic-container");
         this.#optimizeButtonEl = this.shadowRoot.getElementById("optimize");
         this.#jsonButtonEl = this.shadowRoot.getElementById("json");
         this.#placeholderEl = this.shadowRoot.getElementById("droptarget");
@@ -129,15 +132,30 @@ export default class LogicEditor extends BaseClass {
             this.dispatchEvent(e);
             event.stopPropagation();
         });
-        this.#optimizeButtonEl.addEventListener("click", () => {
+        this.#optimizeButtonEl.addEventListener("click", (event) => {
             this.value = reduceLogic(this.value);
+            event.stopPropagation();
         });
-        this.#jsonButtonEl.addEventListener("click", () => {
+        this.#jsonButtonEl.addEventListener("click", (event) => {
             this.#logicJSONModal.value = this.value;
             this.#logicJSONModal.show();
+            event.stopPropagation();
         });
         this.#logicJSONModal.addEventListener("submit", () => {
             this.value = this.#logicJSONModal.value;
+        });
+        this.addEventListener("click", (event) => {
+            event.stopImmediatePropagation();
+            event.preventDefault();
+            const targetEl = event.target;
+            setTimeout(() => {
+                if (targetEl instanceof LogicAbstractElement) {
+                    targetEl.focus();
+                } else {
+                    const firstEl = this.children[0] ?? this.#placeholderEl;
+                    firstEl.focus();
+                }
+            }, 0);
         });
         /* --- */
         this.addEventListener("placeholderclicked", (event) => {
@@ -159,11 +177,21 @@ export default class LogicEditor extends BaseClass {
         });
     }
 
+    connectedCallback() {
+        const data = this.value;
+        if (data == null) {
+            this.innerHTML = "";
+        } else {
+            this.#buildLogic(data);
+        }
+    }
+
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
         this.#optimizeButtonEl.disabled = disabled;
         this.#jsonButtonEl.disabled = disabled;
         this.#placeholderEl.disabled = disabled;
+        this.#logicContainerEl.classList.toggle("scroll-disabled", disabled);
         const el = this.children[0];
         if (el) {
             return el.disabled = disabled;
@@ -191,9 +219,7 @@ export default class LogicEditor extends BaseClass {
         if (data == null) {
             this.innerHTML = "";
         } else if (!isEqual(this.value, data)) {
-            this.innerHTML = "";
-            const buildLogic = LogicAbstractElement.buildLogic(data);
-            this.append(buildLogic);
+            this.#buildLogic(data);
         }
     }
 
@@ -219,6 +245,34 @@ export default class LogicEditor extends BaseClass {
 
     get disabled() {
         return this.getBooleanAttribute("disabled");
+    }
+
+    static get observedAttributes() {
+        return ["value"];
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback(name, oldValue, newValue);
+        switch (name) {
+            case "value": {
+                if (oldValue != newValue) {
+                    if (!this.isChanged) {
+                        const data = this.value;
+                        if (data == null) {
+                            this.innerHTML = "";
+                        } else {
+                            this.#buildLogic(data);
+                        }
+                    }
+                }
+            } break;
+        }
+    }
+
+    #buildLogic(data) {
+        this.innerHTML = "";
+        const logicEl = LogicAbstractElement.buildLogic(data);
+        super.append(logicEl);
     }
 
     append(el) {

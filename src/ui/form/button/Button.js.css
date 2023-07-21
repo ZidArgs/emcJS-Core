@@ -29,7 +29,7 @@
 }
 :host(:disabled),
 :host([primary]:not([primary="false"]):disabled) {
-    color: var(--input-disabled-text-color, #424242);
+    color: var(--input-disabled-text-color, #757575);
     background-color: var(--input-disabled-back-color, #999999);
     border-color: var(--input-disabled-border-color, #6a6a6a);
     cursor: default;

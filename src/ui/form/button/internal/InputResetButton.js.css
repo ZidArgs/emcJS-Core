@@ -35,7 +35,7 @@
     background-color: var(--button-hover-back-color, #000000);
 }
 #button:disabled {
-    color: var(--input-disabled-text-color, #424242);
+    color: var(--input-disabled-text-color, #757575);
     background-color: var(--input-disabled-back-color, #999999);
     cursor: default;
 }

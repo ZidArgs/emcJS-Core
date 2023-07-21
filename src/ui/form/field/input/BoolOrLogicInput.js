@@ -117,10 +117,9 @@ export default class BoolOrLogicInput extends AbstractFormInput {
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, "value", newValue);
+                    this.#applyValueAttribute(newValue);
                     if (!this.isChanged) {
-                        const value = this.value;
-                        this.#inputEl.value = value;
+                        this.#applyValue(this.value);
                     }
                 }
             } break;
@@ -145,6 +144,19 @@ export default class BoolOrLogicInput extends AbstractFormInput {
             this.#inputEl.value = "true";
             this.#logicEl.classList.remove("active");
             this.#logicEl.value = null;
+        }
+    }
+
+    #applyValueAttribute(value) {
+        if (typeof value === "object") {
+            this.#inputEl.setAttribute("value", "logic");
+            safeSetAttribute(this.#logicEl, "value", value);
+        } else if (value === false) {
+            this.#inputEl.setAttribute("value", "false");
+            this.#logicEl.removeAttribute("value");
+        } else {
+            this.#inputEl.setAttribute("value", "true");
+            this.#logicEl.removeAttribute("value");
         }
     }
 

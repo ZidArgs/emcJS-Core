@@ -24,6 +24,24 @@
         "value": ""
     },
     {
+        "type": "StringInput",
+        "name": "optiongroup",
+        "label": "Option Group",
+        "value": ""
+    },
+    {
+        "type": "KeyValueListInput",
+        "name": "options",
+        "label": "Options (ignored if Option Group is set)",
+        "value": ""
+    },
+    {
+        "type": "SwitchInput",
+        "name": "sorted",
+        "label": "Sorted",
+        "value": false
+    },
+    {
         "type": "SwitchInput",
         "name": "resettable",
         "label": "Resettable",

@@ -9,7 +9,7 @@
     border-radius: var(--form-border-radius, 0.25em);
 }
 :host(:disabled) {
-    color: var(--input-disabled-text-color, #424242) !important;
+    color: var(--input-disabled-text-color, #757575) !important;
     background-color: var(--input-disabled-back-color, #999999) !important;
     border-color: var(--input-disabled-border-color, #6a6a6a) !important;
     cursor: default !important;
@@ -89,7 +89,7 @@
     cursor: pointer;
 }
 #button.disabled {
-    color: var(--input-disabled-text-color, #424242);
+    color: var(--input-disabled-text-color, #757575);
     background-color: var(--input-disabled-back-color, #999999);
     cursor: default;
     pointer-events: none;
@@ -133,8 +133,10 @@
     white-space: normal;
     color: var(--select-option-text-color, #000000);
     background-color: var(--select-option-back-color, #ffffff);
-    border-bottom: solid 1px var(--select-option-divider-color, #949494);
     font-size: 1rem;
+}
+::slotted([value]:not(:last-child)) {
+    border-bottom: solid 1px var(--select-option-divider-color, #949494);
 }
 ::slotted([value][disabled]) {
     display: none;

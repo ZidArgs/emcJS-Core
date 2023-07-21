@@ -127,7 +127,7 @@
     background-color: var(--button-hover-back-color, #000000);
 }
 #input:disabled::-webkit-slider-thumb {
-    color: var(--input-disabled-text-color, #424242) !important;
+    color: var(--input-disabled-text-color, #757575) !important;
     background-color: var(--input-disabled-back-color, #999999) !important;
     border-color: var(--input-disabled-border-color, #6a6a6a) !important;
     cursor: default !important;
@@ -162,7 +162,7 @@
     background-color: var(--button-hover-back-color, #000000);
 }
 #input:disabled::-moz-range-thumb {
-    color: var(--input-disabled-text-color, #424242) !important;
+    color: var(--input-disabled-text-color, #757575) !important;
     background-color: var(--input-disabled-back-color, #999999) !important;
     border-color: var(--input-disabled-border-color, #6a6a6a) !important;
     cursor: default !important;
@@ -197,7 +197,7 @@
     background-color: var(--button-hover-back-color, #000000);
 }
 #input:disabled::-ms-thumb {
-    color: var(--input-disabled-text-color, #424242) !important;
+    color: var(--input-disabled-text-color, #757575) !important;
     background-color: var(--input-disabled-back-color, #999999) !important;
     border-color: var(--input-disabled-border-color, #6a6a6a) !important;
     cursor: default !important;

@@ -14,6 +14,9 @@
     outline: none;
     z-index: 1;
 }
+#input:disabled {
+    opacity: 1;
+}
 :host(:invalid) #input {
     background-color: var(--input-invalid-back-color, #ffebeb);
     border-color: var(--input-invalid-border-color, #ff4444);

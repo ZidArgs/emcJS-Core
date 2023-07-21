@@ -1,6 +1,6 @@
 {
     "type": "Fieldset",
-    "label": "image-icon-select",
+    "label": "token-select",
     "children": [
         {
             "type": "TokenSelect",
@@ -8,7 +8,7 @@
             "name": "token-select.default",
             "tokengroup": "TokenSelect",
             "multiple": true,
-            "placeholder": "Select token..."
+            "placeholder": "Select or create token..."
         },
         {
             "type": "TokenSelect",
@@ -16,7 +16,8 @@
             "name": "token-select.chooseonly",
             "tokengroup": "TokenSelect",
             "multiple": true,
-            "chooseonly": true
+            "chooseonly": true,
+            "placeholder": "Select token..."
         }
     ]
 }
