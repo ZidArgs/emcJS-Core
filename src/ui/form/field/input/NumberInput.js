@@ -36,7 +36,9 @@ export default class NumberInput extends AbstractFormInput {
     connectedCallback() {
         super.connectedCallback();
         const value = this.value;
-        this.#inputEl.value = value;
+        if (!isNaN(value)) {
+            this.#inputEl.value = value;
+        }
     }
 
     formDisabledCallback(disabled) {
@@ -47,7 +49,7 @@ export default class NumberInput extends AbstractFormInput {
     formResetCallback() {
         super.formResetCallback();
         const value = this.value;
-        this.#inputEl.value = isNaN(value) ? "" : value;
+        this.#inputEl.value = !isNaN(value) ? value : "";
     }
 
     focus(options) {
@@ -100,7 +102,7 @@ export default class NumberInput extends AbstractFormInput {
                     safeSetAttribute(this.#inputEl, "value", newValue);
                     if (!this.isChanged) {
                         const value = this.value;
-                        this.#inputEl.value = value;
+                        this.#inputEl.value = !isNaN(value) ? value : "";
                     }
                 }
             } break;
