@@ -29,6 +29,6 @@
     "lintfix": "yarn eslint --fix .",
     "build": "gulp build",
     "test": "mocha \"./test/**/*.js\"",
-    "doc": "gulp buildDoc -rebuild && serve ./documentation -p 12000"
+    "doc": "gulp buildDoc -rebuild && serve ./webtest -p 12000"
   }
 }

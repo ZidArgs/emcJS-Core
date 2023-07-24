@@ -1,8 +1,9 @@
 :host {
     display: flex;
-    height: 2em;
+    flex-direction: column;
+    height: 300px;
     min-width: 200px;
-    padding: 0px calc(7px + 2em) 0px 7px;
+    padding: 0px;
     color: var(--input-text-color, #000000);
     background-color: var(--input-back-color, #ffffff);
     border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
@@ -15,7 +16,91 @@
     cursor: default !important;
 }
 :host(:focus) {
-    box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
     outline: none;
     z-index: 1;
+}
+.header {
+    display: flex;
+    border-bottom: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
+}
+:host([disabled]:not([disabled="false"])) .header {
+    border-color: var(--input-disabled-border-color, #6a6a6a) !important;
+}
+#search {
+    flex-grow: 1;
+}
+#search.disabled {
+    flex-grow: 1;
+}
+#options-container {
+    display: none;
+}
+#scroll-container {
+    position: relative;
+    display: block;
+    flex: 1;
+    margin: 0px;
+    padding: 0px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+:host([disabled]:not([disabled="false"]))  #scroll-container {
+    pointer-events: none;
+}
+#container {
+    display: flex;
+    flex-direction: column;
+}
+#container .option {
+    display: flex;
+    padding: 7px;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--select-option-text-color, #000000);
+    background-color: var(--select-option-back-color, #ffffff);
+    cursor: pointer;
+}
+#container .option:not(:last-child) {
+    border-bottom: solid 1px var(--select-option-divider-color, #949494);
+}
+#container .option:hover {
+    color: var(--select-option-marked-text-color, #000000);
+    background-color: var(--select-option-marked-back-color, #9ee1ec);
+}
+#container .option > input[type="number"] {
+    width: 100px;
+    height: 2em;
+    padding: 0px 7px;
+    color: var(--input-text-color, #000000);
+    background-color: var(--input-back-color, #ffffff);
+    border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
+    border-radius: var(--form-border-radius, 0.25em);
+    font-size: 1em;
+}
+#container .option > input[type="number"]:focus {
+    box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
+    outline: none;
+    z-index: 1;
+}
+:host([disabled]:not([disabled="false"]))  #container .option {
+    color: var(--input-disabled-text-color, #757575) !important;
+    background-color: var(--input-disabled-back-color, #999999) !important;
+    cursor: default !important;
+}
+#container .option > input[type="number"]:disabled {
+    color: var(--input-disabled-text-color, #757575) !important;
+    background-color: var(--input-disabled-back-color, #999999) !important;
+    border-color: var(--input-disabled-border-color, #6a6a6a) !important;
+    cursor: default !important;
+}
+.footer {
+    display: flex;
+    padding: 5px;
+    border-top: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
+}
+:host(:invalid) .footer {
+    border-top-color: var(--input-invalid-border-color, #ff4444);
+}
+:host(:disabled) .footer {
+    border-top-color: var(--input-disabled-border-color, #6a6a6a) !important;
 }

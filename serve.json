@@ -12,19 +12,19 @@
         },
         {
             "source": "/",
-            "destination": "/documentation/index.html"
+            "destination": "/webtest/index.html"
         },
         {
             "source": "/:file",
-            "destination": "/documentation/:file"
+            "destination": "/webtest/:file"
         },
         {
             "source": "/docs/:name/:file",
-            "destination": "/documentation/docs/:name/:file"
+            "destination": "/webtest/docs/:name/:file"
         },
         {
             "source": "/home/:file",
-            "destination": "/documentation/home/:file"
+            "destination": "/webtest/home/:file"
         }
     ]
 }

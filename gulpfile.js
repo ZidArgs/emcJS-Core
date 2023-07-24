@@ -7,7 +7,7 @@ const __dirname = path.resolve();
 
 const IN_PATH = path.resolve(__dirname, "src");
 const OUT_PATH = path.resolve(__dirname, "lib");
-const DOC_PATH = path.resolve(__dirname, "documentation/emcJS");
+const DOC_PATH = path.resolve(__dirname, "webtest/emcJS");
 
 const REBUILD = process.argv.indexOf("-rebuild") >= 0;
 

@@ -5,7 +5,7 @@ const config = await FileLoader.json("./index.json");
 const listEl = document.getElementById("list");
 const viewEl = document.getElementById("view");
 
-const SRC_PREFIX = "/docs/";
+const SRC_PREFIX = "/pages/";
 const SRC_SUFFIX = "/index.html";
 const NAME_PREFIX = "page=";
 const VIEW_MAP = new Map();
