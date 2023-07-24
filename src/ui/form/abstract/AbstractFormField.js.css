@@ -4,7 +4,8 @@
     align-items: stretch;
     justify-content: flex-start;
     flex-direction: column;
-    min-width: 30em;
+    min-width: min-content;
+    width: 100%;
     box-sizing: border-box;
 }
 * {
@@ -87,4 +88,7 @@
 }
 #description:empty {
     display: none;
+}
+#field > * {
+    width: auto;
 }
