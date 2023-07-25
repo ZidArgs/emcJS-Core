@@ -10,9 +10,21 @@ const SRC_SUFFIX = "/index.html";
 const NAME_PREFIX = "page=";
 const VIEW_MAP = new Map();
 
+let targetLinkEl = null;
+
 if (location.hash == "") {
     location.hash = "home";
 }
+
+document.getElementById("menu").addEventListener("click", () => {
+    document.body.classList.remove("view");
+    document.body.classList.add("menu");
+});
+
+document.getElementById("back").addEventListener("click", () => {
+    document.body.classList.remove("menu");
+    document.body.classList.add("view");
+});
 
 viewEl.addEventListener("load", () => {
     // load default theme
@@ -30,6 +42,8 @@ viewEl.addEventListener("load", () => {
 });
 
 window.addEventListener("hashchange", (event) => {
+    document.body.classList.remove("menu");
+    document.body.classList.add("view");
     const url = new URL(event.newURL);
     const hash = url.hash.slice(1);
     if (hash.startsWith(NAME_PREFIX)) {
@@ -37,9 +51,17 @@ window.addEventListener("hashchange", (event) => {
         const entryEl = document.getElementById(hash);
         scrollIntoViewIfNeeded(entryEl);
     } else {
-        viewEl.contentWindow.location.replace("home/index.html");
+        viewEl.contentWindow.location.replace("/home/index.html");
         const entryEl = document.getElementById("home");
         scrollIntoViewIfNeeded(entryEl);
+    }
+    // ---
+    if (targetLinkEl != null) {
+        targetLinkEl.classList.remove("target");
+    }
+    targetLinkEl = document.getElementById(hash);
+    if (targetLinkEl != null) {
+        targetLinkEl.classList.add("target");
     }
 }, false);
 
@@ -82,6 +104,8 @@ function addEntry(targetEl, src, {label, children}, hashPrefix = "") {
         viewEl.src = preSrc;
         entryEl.focus();
         scrollIntoViewIfNeeded(entryEl);
+        targetLinkEl = linkEl;
+        linkEl.classList.add("target");
     }
 }
 

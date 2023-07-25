@@ -1,0 +1,215 @@
+// main
+import i18n from "/emcJS/util/I18n.js";
+import FileLoader from "/emcJS/util/file/FileLoader.js";
+import CustomActionRegistry from "/emcJS/data/registry/CustomActionRegistry.js";
+import LogicOperatorRegistry from "/emcJS/data/registry/LogicOperatorRegistry.js";
+import OptionGroupRegistry from "/emcJS/data/registry/OptionGroupRegistry.js";
+import TokenRegistry from "/emcJS/data/registry/TokenRegistry.js";
+import "/emcJS/ui/Page.js";
+// form
+import FormBuilder from "/emcJS/util/form/FormBuilder.js";
+import FormContext from "/emcJS/util/form/FormContext.js";
+import "/emcJS/ui/form/FormContainer.js";
+import "/emcJS/ui/form/FormFieldset.js";
+import "/emcJS/ui/form/FormButtonRow.js";
+import "/emcJS/ui/form/button/SubmitButton.js";
+import "/emcJS/ui/form/button/ResetButton.js";
+import "/emcJS/ui/form/button/ActionButton.js";
+import "/emcJS/ui/form/button/LinkButton.js";
+import "/emcJS/ui/form/field/DefaultFormFieldsLoader.js";
+
+/*
+       NOW                  |    BEFORE
+    "Fieldset"              | new (structural only)
+    "ButtonRow"             | new (structural only)
+    "SubmitButton"          | new
+    "ResetButton"           | new
+    "ActionButton"          | "button"
+    "LinkButton"            | new
+    "SwitchInput"           | "check"
+    "StringInput"           | "string"
+    "NumberInput"           | "number"
+    "RangeInput"            | "range"
+    "ColorInput"            | "color"
+    "PasswordInput"         | "password"
+    "HotkeyInput"           | "hotkey"
+    "TextInput"             | new
+    "BoolOrLogicInput"      | new
+    "SearchSelect"          | "choice"
+    "SimpleSelect"          | new
+    "ImageSelect"           | new
+    "TokenSelect"           | new
+    "OptionAmountListInput" | new
+    todo                    | "list"
+
+    MISSING
+    "KeyValueListInput"
+    "CharInput"
+    "FileInput"
+    "Heading-{1-6}" - predefined in formbuilder
+    "Text" - predefined in formbuilder
+
+*/
+
+const ALLOW_INVALID = false;
+
+i18n.setTranslation("en", {
+    "test.desc": "this is a test"
+})
+i18n.language = "en";
+
+const [defaultValues, optionGroups, tokenGroups, buttonConfig, ...formConfig] = await Promise.all([
+    FileLoader.json("./form-config/_defaults.json"),
+    FileLoader.json("./form-config/OptionGroups.json"),
+    FileLoader.json("./form-config/TokenGroups.json"),
+    FileLoader.json("./form-config/Buttons.json"),
+    FileLoader.json("./form-config/input/OptionAmountListInput.json"),
+    FileLoader.json("./form-config/select/TokenSelect.json"),
+    FileLoader.json("./form-config/select/ImageIconSelect.json"),
+    FileLoader.json("./form-config/input/BoolOrLogicInput.json"),
+    FileLoader.json("./form-config/select/SearchSelect.json"),
+    FileLoader.json("./form-config/select/SimpleSelect.json"),
+    FileLoader.json("./form-config/input/TextInput.json"),
+    FileLoader.json("./form-config/input/StringInput.json"),
+    FileLoader.json("./form-config/input/NumberInput.json"),
+    FileLoader.json("./form-config/input/RangeInput.json"),
+    FileLoader.json("./form-config/input/PasswordInput.json"),
+    FileLoader.json("./form-config/input/ColorInput.json"),
+    FileLoader.json("./form-config/input/HotkeyInput.json"),
+    FileLoader.json("./form-config/input/SwitchInput.json")
+]);
+
+OptionGroupRegistry.load(optionGroups);
+TokenRegistry.load(tokenGroups);
+
+const pageEl = document.getElementById("page");
+
+const formContext = new FormContext(defaultValues);
+
+const config = {
+    hasHeader: true,
+    hasFooter: true,
+    forms: []
+};
+
+/* add buttons in seperate form */
+config.forms.push({
+    config: {
+        values: {
+            test: "foobar"
+        },
+        allowsInvalid: ALLOW_INVALID
+    },
+    elements: buttonConfig
+});
+
+for (const elements of formConfig) {
+    config.forms.push({
+        config: {
+            submitButton: true,
+            resetButton: true,
+            allowsInvalid: ALLOW_INVALID
+        },
+        elements
+    });
+}
+
+/* add seperate submit */
+config.forms.push({
+    config: {
+        submitButton: true,
+        resetButton: true,
+        allowsInvalid: ALLOW_INVALID
+    }
+});
+
+const formContainerEl = FormBuilder.build(config);
+formContext.registerFormContainer(formContainerEl);
+pageEl.append(formContainerEl);
+
+const stringRequiredFields = formContext.findFieldsByName("string.required");
+for (const stringRequiredField of stringRequiredFields) {
+    stringRequiredField.addValidator((value) => {
+        if (value === "") {
+            return "This is a custom error shown if the field is empty";
+        }
+    });
+}
+formContext.addValidator((data) => {
+    for (const name in data) {
+        const value = data[name];
+        if (value === "" || (typeof value === "number" && isNaN(value))) {
+            const errorFields = formContext.findFieldsByName(name);
+            for (const errorField of errorFields) {
+                errorField.addError("This is a global custom error shown if the field is empty");
+            }
+        } else if (value === "0" || value === 0) {
+            const errorFields = formContext.findFieldsByName(name);
+            for (const errorField of errorFields) {
+                errorField.addError("This is a global custom error shown if the value is 0");
+            }
+        }
+    }
+});
+
+console.group("init context");
+console.log("loaded data", defaultValues);
+console.log("changed data", formContext.getChanges());
+console.groupEnd("init context");
+
+formContext.addEventListener("submit", (event) => {
+    const {errors, changes, data, formData, hiddenData} = event;
+    const valid = formContext.getFormValidity() ? "valid" : "invalid";
+    console.group(`submit (${valid})`);
+    console.log("errors", errors);
+    console.log("changed data", changes);
+    console.log("all data", data);
+    console.log("form data", formData);
+    console.log("hidden form data", hiddenData);
+    console.groupEnd(`submit (${valid})`);
+});
+
+formContext.addEventListener("error", (event) => {
+    const {errors} = event;
+    console.group("error");
+    console.log("errors", errors);
+    console.groupEnd("error");
+});
+
+CustomActionRegistry.current.set("soup", () => {
+    alert("only soup");
+});
+
+CustomActionRegistry.current.set("cheese", () => {
+    alert("more cheese");
+    formContext.loadData({
+        "search-select.required": "foobar",
+        "text.required": "nice",
+        "number.required": 69,
+        "password.required": "password",
+        "color.default": "#ff0000",
+        "color.resettable": "#00ff00",
+        "color.required": "#0000ff",
+        "hotkey.default": "ctrl w",
+        "hotkey.resettable": "ctrl a",
+        "hotkey.required": "ctrl s",
+        "hotkey.readonly": "ctrl d",
+        "switch.required": true
+    });
+});
+
+const logicTestEl = document.getElementById("logicTest");
+logicTestEl.addOperatorGroup("custom-settings");
+LogicOperatorRegistry.setCaption("custom-settings", "custom settings");
+LogicOperatorRegistry.setOperator("custom-settings", "value.test", {
+    "type": "value"
+});
+LogicOperatorRegistry.setOperator("custom-settings", "state.test", {
+    "type": "state",
+    "options": {
+        "test": "Test",
+        "foobar": "Foobar",
+        "barfoo": "Barfoo"
+    },
+    "value": "test"
+});

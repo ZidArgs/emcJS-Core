@@ -15,8 +15,9 @@ div#list div > div {
 
 a {
     color: #000000;
-    text-decoration: none;
+    font-size: 1rem;
     font-family: Arial, Helvetica, sans-serif;
+    text-decoration: none;
 }
 
 .sidebar {
@@ -30,15 +31,16 @@ a {
     padding: 8px;
     margin: 4px;
     color: #000000;
-    text-decoration: none;
+    font-size: 1rem;
     font-family: Arial, Helvetica, sans-serif;
+    text-decoration: none;
 }
 
 .sidebar a:hover {
     background-color: #ffc649;
 }
 
-.sidebar a:target {
+.sidebar a.target {
     color: #ffe6af;
     background-color: #000000;
 }
@@ -52,7 +54,59 @@ a {
     resize: horizontal;
 }
 
+.content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+#menu,
+#back {
+    display: none;
+    padding: 8px;
+    margin: 4px;
+    color: #000000;
+    background-color: #ffe6af;
+    border: none;
+    text-decoration: none;
+    font-size: 1rem;
+    font-family: Arial, Helvetica, sans-serif;
+    appearance: none;
+}
+
+#menu:hover,
+#back:hover {
+    background-color: #ffc649;
+}
+
 #view {
     flex: 1;
     border: none;
+}
+
+@media (max-width: 550px) {
+
+    body.view .sidebar {
+        display: none;
+    }
+
+    body.menu .content {
+        display: none;
+    }
+
+    .sidebar {
+        width: 100%;
+    }
+    
+    #list {
+        flex: 1;
+        width: 100%;
+        overflow: scroll;
+        resize: none;
+    }
+
+    #menu,
+    #back {
+        display: block;
+    }
 }

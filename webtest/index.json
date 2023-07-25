@@ -1,19 +1,10 @@
 {
     "form": {
-        "label": "Form"
-    },
-    "input": {
-        "label": "Input"
-    },
-    "observable": {
-        "label": "Observable",
+        "label": "Form",
         "children": {
-            "full": {
-                "label": "Full Observable"
+            "boolorlogic": {
+                "label": "BoolOrLogicInput"
             }
         }
-    },
-    "mutation": {
-        "label": "Mutation Observer"
     }
 }

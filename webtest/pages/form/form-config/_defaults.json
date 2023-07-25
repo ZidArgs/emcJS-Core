@@ -26,6 +26,9 @@
             }
         ]
     },
+    "boolorlogic.disabled": {
+        "type": "true"
+    },
     "number.default": 42,
     "number.readonly": 42,
     "password.default": "password",
