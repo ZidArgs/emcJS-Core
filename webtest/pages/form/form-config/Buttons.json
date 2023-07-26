@@ -1,5 +1,5 @@
 {
-    "type": "ButtonRow",
+    "type": "Row",
     "children": [
         {
             "type": "LinkButton",

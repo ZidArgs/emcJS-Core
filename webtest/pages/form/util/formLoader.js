@@ -9,7 +9,7 @@ import FormBuilder from "/emcJS/util/form/FormBuilder.js";
 import FormContext from "/emcJS/util/form/FormContext.js";
 import "/emcJS/ui/form/FormContainer.js";
 import "/emcJS/ui/form/FormFieldset.js";
-import "/emcJS/ui/form/FormButtonRow.js";
+import "/emcJS/ui/form/FormRow.js";
 import "/emcJS/ui/form/button/SubmitButton.js";
 import "/emcJS/ui/form/button/ResetButton.js";
 import "/emcJS/ui/form/button/ActionButton.js";
@@ -24,20 +24,18 @@ export async function init() {
     }
     i18n.language = "en";
     const [optionGroups, tokenGroups] = await Promise.all([
-        FileLoader.json("../form-config/OptionGroups.json"),
-        FileLoader.json("../form-config/TokenGroups.json")
+        FileLoader.json("/pages/form/_config/OptionGroups.json"),
+        FileLoader.json("/pages/form/_config/TokenGroups.json")
     ]);
     OptionGroupRegistry.load(optionGroups);
     TokenRegistry.load(tokenGroups);
     initFlag = true;
 }
 
-export async function buildForm(callerPath, allowsInvalid) {
-    const dir = new URL("./", callerPath);
-
+export async function loadForm(allowsInvalid) {
     const [defaultValues, formElements] = await Promise.all([
-        FileLoader.json("../form-config/_defaults.json"),
-        FileLoader.json(`${dir}/config.json`)
+        FileLoader.json("/pages/form/_config/defaults.json"),
+        FileLoader.json(`./config.json`)
     ]);
 
     const pageEl = document.getElementById("page");
@@ -46,24 +44,39 @@ export async function buildForm(callerPath, allowsInvalid) {
     const formConfig = {
         hasHeader: false,
         hasFooter: true,
-        forms: [{
-            config: {
-                values: {
-                    test: "foobar"
+        forms: []
+    };
+
+    // --- fill the forms
+    if (Array.isArray(formElements)) {
+        for (const formEls of formElements) {
+            formConfig.forms.push({
+                config: {
+                    allowsInvalid
                 },
+                elements: formEls
+            });
+        }
+    } else {
+        formConfig.forms.push({
+            config: {
                 allowsInvalid
             },
             elements: formElements
-        }, {
-            config: {
-                submitButton: true,
-                resetButton: true,
-                allowsInvalid
-            }
-        }]
-    };
+        });
+    }
 
-    formConfig.forms.push();
+    formConfig.forms.push({
+        config: {
+            submitButton: true,
+            resetButton: true,
+            allowsInvalid,
+            values: {
+                test: "foobar"
+            }
+        }
+    });
+    // ---
 
     const formContainerEl = FormBuilder.build(formConfig);
     formContext.registerFormContainer(formContainerEl);

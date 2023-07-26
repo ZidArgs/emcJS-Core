@@ -1,0 +1,52 @@
+[
+    {
+        "type": "Fieldset",
+        "label": "switch",
+        "children": [
+            {
+                "type": "SwitchInput",
+                "label": "switch default",
+                "name": "switch.default"
+            },
+            {
+                "type": "SwitchInput",
+                "label": "switch resettable",
+                "name": "switch.resettable",
+                "resettable": true
+            },
+            {
+                "type": "SwitchInput",
+                "label": "switch required",
+                "name": "switch.required",
+                "required": true
+            },
+            {
+                "type": "SwitchInput",
+                "label": "switch disabled",
+                "name": "switch.disabled",
+                "disabled": true
+            }
+        ]
+    },
+    {
+        "type": "Fieldset",
+        "label": "switch row",
+        "children": [
+            {
+                "type": "Row",
+                "children": [
+                    {
+                        "type": "SwitchInput",
+                        "label": "switch 0",
+                        "name": "switch_row.0"
+                    },
+                    {
+                        "type": "SwitchInput",
+                        "label": "switch 1",
+                        "name": "switch_row.1"
+                    }
+                ]
+            }
+        ]
+    }
+]

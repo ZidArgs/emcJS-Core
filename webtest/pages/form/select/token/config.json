@@ -1,0 +1,23 @@
+{
+    "type": "Fieldset",
+    "label": "token-select",
+    "children": [
+        {
+            "type": "TokenSelect",
+            "label": "token-select default",
+            "name": "token-select.default",
+            "tokengroup": "TokenSelect",
+            "multiple": true,
+            "placeholder": "Select or create token..."
+        },
+        {
+            "type": "TokenSelect",
+            "label": "token-select choose only",
+            "name": "token-select.chooseonly",
+            "tokengroup": "TokenSelect",
+            "multiple": true,
+            "chooseonly": true,
+            "placeholder": "Select token..."
+        }
+    ]
+}

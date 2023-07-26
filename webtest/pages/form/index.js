@@ -11,7 +11,7 @@ import FormBuilder from "/emcJS/util/form/FormBuilder.js";
 import FormContext from "/emcJS/util/form/FormContext.js";
 import "/emcJS/ui/form/FormContainer.js";
 import "/emcJS/ui/form/FormFieldset.js";
-import "/emcJS/ui/form/FormButtonRow.js";
+import "/emcJS/ui/form/FormRow.js";
 import "/emcJS/ui/form/button/SubmitButton.js";
 import "/emcJS/ui/form/button/ResetButton.js";
 import "/emcJS/ui/form/button/ActionButton.js";
@@ -58,11 +58,12 @@ i18n.setTranslation("en", {
 })
 i18n.language = "en";
 
-const [defaultValues, optionGroups, tokenGroups, buttonConfig, ...formConfig] = await Promise.all([
-    FileLoader.json("./form-config/_defaults.json"),
-    FileLoader.json("./form-config/OptionGroups.json"),
-    FileLoader.json("./form-config/TokenGroups.json"),
+const [defaultValues, optionGroups, tokenGroups, buttonConfig, extraConfig, ...formConfig] = await Promise.all([
+    FileLoader.json("./_config/defaults.json"),
+    FileLoader.json("./_config/OptionGroups.json"),
+    FileLoader.json("./_config/TokenGroups.json"),
     FileLoader.json("./form-config/Buttons.json"),
+    FileLoader.json("./form-config/extra.json"),
     FileLoader.json("./form-config/input/OptionAmountListInput.json"),
     FileLoader.json("./form-config/select/TokenSelect.json"),
     FileLoader.json("./form-config/select/ImageIconSelect.json"),
@@ -101,6 +102,15 @@ config.forms.push({
         allowsInvalid: ALLOW_INVALID
     },
     elements: buttonConfig
+});
+config.forms.push({
+    config: {
+        values: {
+            test: "foobar"
+        },
+        allowsInvalid: ALLOW_INVALID
+    },
+    elements: extraConfig
 });
 
 for (const elements of formConfig) {

@@ -14,7 +14,7 @@ import LogicEditorContextMenuElement from "./contexmenu/LogicEditorContextMenuEl
 import LogicElementModal from "./modal/LogicElementModal.js";
 import LogicJSONModal from "./modal/LogicJSONModal.js";
 import LogicAbstractElement from "./elements/abstract/AbstractElement.js";
-import "../../FormButtonRow.js";
+import "../../FormRow.js";
 import "../../button/Button.js";
 import "./elements/ComparatorEqual.js";
 import "./elements/ComparatorGreaterThan.js";

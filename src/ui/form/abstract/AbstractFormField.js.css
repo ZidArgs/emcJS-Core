@@ -17,7 +17,6 @@
     align-items: flex-start;
     justify-content: flex-start;
     flex-direction: column;
-    padding: 4px;
     margin: 6px;
     color: var(--form-text-color, #000000);
     /* background-color: var(--form-back-color, #ffffff); */
@@ -32,6 +31,7 @@
     justify-content: flex-start;
     flex-direction: column;
     flex-shrink: 0;
+    padding: 4px;
     cursor: pointer;
     user-select: none;
 }

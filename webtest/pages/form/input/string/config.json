@@ -1,0 +1,52 @@
+{
+    "type": "Fieldset",
+    "label": "string",
+    "desc": "test.desc",
+    "tooltip": "lorem ipsum dolor sit amet",
+    "children": [
+        {
+            "type": "StringInput",
+            "label": "string default",
+            "desc": "test.desc",
+            "name": "string.default",
+            "tooltip": "lorem ipsum dolor sit amet",
+            "placeholder": "Enter text..."
+        },
+        {
+            "type": "StringInput",
+            "label": "string resettable",
+            "name": "string.resettable",
+            "placeholder": "Enter text...",
+            "resettable": true
+        },
+        {
+            "type": "StringInput",
+            "label": "string required",
+            "name": "string.required",
+            "placeholder": "Enter text...",
+            "required": true
+        },
+        {
+            "type": "StringInput",
+            "label": "string readonly",
+            "name": "string.readonly",
+            "placeholder": "Enter text...",
+            "readonly": true
+        },
+        {
+            "type": "StringInput",
+            "label": "string disabled",
+            "name": "string.disabled",
+            "placeholder": "Enter text...",
+            "disabled": true
+        },
+        {
+            "type": "StringInput",
+            "label": "string resettable disabled",
+            "name": "string.resettable_disabled",
+            "placeholder": "Enter text...",
+            "resettable": true,
+            "disabled": true
+        }
+    ]
+}

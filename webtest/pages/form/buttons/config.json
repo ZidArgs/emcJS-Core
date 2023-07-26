@@ -1,0 +1,106 @@
+[
+    {
+        "type": "Fieldset",
+        "label": "link button",
+        "children": [
+            {
+                "type": "LinkButton",
+                "name": "button.link_noicon",
+                "text": "no icon",
+                "href": "/#page=Form"
+            },
+            {
+                "type": "LinkButton",
+                "name": "button.link_disabled",
+                "text": "cookie",
+                "icon": "🍪",
+                "href": "/#page=Form",
+                "disabled": true
+            },
+            {
+                "type": "LinkButton",
+                "name": "button.link",
+                "text": "hotdog",
+                "icon": "🌭",
+                "href": "/#page=Form"
+            }
+        ]
+    },
+    {
+        "type": "Fieldset",
+        "label": "action button",
+        "children": [
+            {
+                "type": "ActionButton",
+                "name": "button.action_noicon",
+                "text": "no icon"
+            },
+            {
+                "type": "ActionButton",
+                "name": "button.action_disabled",
+                "text": "soup",
+                "icon": "🍲",
+                "disabled": true
+            },
+            {
+                "type": "ActionButton",
+                "name": "button.action",
+                "text": "cheese",
+                "icon": "🧀"
+            }
+        ]
+    },
+    {
+        "type": "Fieldset",
+        "label": "buttons in row",
+        "children": [
+            {
+                "type": "Row",
+                "children": [
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.0",
+                        "text": "button 0"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.1",
+                        "text": "button 1"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.2",
+                        "text": "button 2"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "Fieldset",
+        "label": "buttons in row (left aligned)",
+        "children": [
+            {
+                "type": "Row",
+                "align": "left",
+                "children": [
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row_l.0",
+                        "text": "button 0"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row_l.1",
+                        "text": "button 1"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row_l.2",
+                        "text": "button 2"
+                    }
+                ]
+            }
+        ]
+    }
+]

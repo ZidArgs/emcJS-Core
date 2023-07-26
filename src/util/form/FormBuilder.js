@@ -4,7 +4,7 @@ import {
 } from "../helper/Comparator.js";
 import "../../ui/form/FormContainer.js";
 import "../../ui/form/FormFieldset.js";
-import "../../ui/form/FormButtonRow.js";
+import "../../ui/form/FormRow.js";
 import "../../ui/form/button/SubmitButton.js";
 import "../../ui/form/button/ResetButton.js";
 import "../../ui/form/button/ActionButton.js";
@@ -136,7 +136,8 @@ class FormBuilder {
         }
 
         if (!isNullOrFalse(submitButton) || !isNullOrFalse(resetButton)) {
-            const buttonRowEl = document.createElement("emc-form-buttonrow");
+            const buttonRowEl = document.createElement("emc-form-row");
+            buttonRowEl.align = "end";
             if (!isNullOrFalse(resetButton)) {
                 if (typeof resetButton === "object") {
                     buttonRowEl.append(this.#createResetButton(null, true, true, resetButton));
@@ -184,8 +185,8 @@ class FormBuilder {
             case "Fieldset": {
                 return this.#createFieldset(id, visible, enabled, params, data, defaultValues);
             }
-            case "ButtonRow": {
-                return this.#createButtonRow(id, visible, enabled, params, data);
+            case "Row": {
+                return this.#createRow(id, visible, enabled, params, data, defaultValues);
             }
             default: {
                 return this.#createField(type, id, visible, enabled, params, data, defaultValues);
@@ -422,8 +423,8 @@ class FormBuilder {
         return el;
     }
 
-    #createButtonRow(id, visible, enabled, params = {}, data = {}) {
-        const el = document.createElement("emc-form-buttonrow");
+    #createRow(id, visible, enabled, params = {}, data = {}, defaultValues = {}) {
+        const el = document.createElement("emc-form-row");
         if (id != null) {
             el.id = id;
         }
@@ -436,8 +437,11 @@ class FormBuilder {
         if (enabled != null) {
             el.setAttribute("enabled", JSON.stringify(enabled));
         }
+        if (params.align != null) {
+            el.align = params.align;
+        }
         for (const op of params.children) {
-            el.append(this.#createOption(op));
+            el.append(this.#createOption(op, defaultValues));
         }
         return el;
     }

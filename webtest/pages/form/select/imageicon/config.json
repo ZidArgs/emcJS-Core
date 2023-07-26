@@ -1,0 +1,12 @@
+{
+    "type": "Fieldset",
+    "label": "image-icon-select",
+    "children": [
+        {
+            "type": "ImageSelect",
+            "label": "image-icon-select default",
+            "name": "image-icon-select.default",
+            "optiongroup": "ImageSelect"
+        }
+    ]
+}

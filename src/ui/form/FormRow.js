@@ -5,11 +5,11 @@ import {
 import {
     safeSetAttribute
 } from "../../util/helper/ui/NodeAttributes.js";
-import TPL from "./FormButtonRow.js.html" assert {type: "html"};
-import STYLE from "./FormButtonRow.js.css" assert {type: "css"};
-import CONFIG_FIELDS from "./FormButtonRow.js.json" assert {type: "json"};
+import TPL from "./FormRow.js.html" assert {type: "html"};
+import STYLE from "./FormRow.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./FormRow.js.json" assert {type: "json"};
 
-export default class FormButtonRow extends CustomElement {
+export default class FormRow extends CustomElement {
 
     static get formConfigurationFields() {
         return deepClone(CONFIG_FIELDS);
@@ -24,6 +24,22 @@ export default class FormButtonRow extends CustomElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
+    }
+
+    set align(value) {
+        this.setAttribute("align", value);
+    }
+
+    get align() {
+        return this.getAttribute("align");
+    }
+
+    set stretchContent(value) {
+        this.setBooleanAttribute("stretch-content", value);
+    }
+
+    get stretchContent() {
+        return this.getBooleanAttribute("stretch-content");
     }
 
     static get observedAttributes() {
@@ -42,4 +58,4 @@ export default class FormButtonRow extends CustomElement {
 
 }
 
-customElements.define("emc-form-buttonrow", FormButtonRow);
+customElements.define("emc-form-row", FormRow);

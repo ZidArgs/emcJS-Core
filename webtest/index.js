@@ -12,6 +12,8 @@ const VIEW_MAP = new Map();
 
 let targetLinkEl = null;
 
+listEl.style.width = innerWidth * 0.2;
+
 if (location.hash == "") {
     location.hash = "home";
 }

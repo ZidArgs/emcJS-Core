@@ -2,8 +2,50 @@
     "form": {
         "label": "Form",
         "children": {
-            "boolorlogic": {
+            "buttons": {
+                "label": "Buttons"
+            },
+            "input/boolorlogic": {
                 "label": "BoolOrLogicInput"
+            },
+            "input/color": {
+                "label": "ColorInput"
+            },
+            "input/hotkey": {
+                "label": "HotkeyInput"
+            },
+            "input/number": {
+                "label": "NumberInput"
+            },
+            "input/optionamountlist": {
+                "label": "OptionAmountListInput"
+            },
+            "input/password": {
+                "label": "PasswordInput"
+            },
+            "input/range": {
+                "label": "RangeInput"
+            },
+            "input/string": {
+                "label": "StringInput"
+            },
+            "input/switch": {
+                "label": "SwitchInput"
+            },
+            "input/text": {
+                "label": "TextInput"
+            },
+            "select/imageicon": {
+                "label": "ImageIconSelect"
+            },
+            "select/searchselect": {
+                "label": "SearchSelect"
+            },
+            "select/simpleselect": {
+                "label": "SimpleSelect"
+            },
+            "select/token": {
+                "label": "TokenSelect"
             }
         }
     }

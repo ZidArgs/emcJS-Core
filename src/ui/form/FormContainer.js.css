@@ -34,20 +34,26 @@
     margin-top: calc(-1 * var(--form-border-width, 2px));
 }
 ::slotted(form:last-child) {
+    flex-grow: 1;
     border-bottom-left-radius: var(--form-border-radius, 0.25em) !important;
     border-bottom-right-radius: var(--form-border-radius, 0.25em) !important;
 }
 :host(.has-header) ::slotted(form:first-child) {
     position: sticky;
+    flex-grow: 0;
     top: 0px;
     box-shadow: var(--page-back-color, #ffffff) 0px calc(-1 * var(--form-border-radius, 0.25em)) 0px 0px;
     z-index: 100;
 }
 :host(.has-footer) ::slotted(form:last-child) {
     position: sticky;
+    flex-grow: 0;
     bottom: 0px;
     box-shadow: var(--page-back-color, #ffffff) 0px var(--form-border-radius, 0.25em) 0px 0px;
     z-index: 100;
+}
+:host(.has-footer) ::slotted(form:nth-last-child(2)) {
+    flex-grow: 1;
 }
 ::slotted(form:focus-within) {
     z-index: 99 !important;
