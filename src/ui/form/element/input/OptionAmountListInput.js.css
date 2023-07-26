@@ -93,3 +93,13 @@
     border-color: var(--input-disabled-border-color, #6a6a6a) !important;
     cursor: default !important;
 }
+#empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-style: italic;
+    min-height: 2rem;
+    padding: 5px;
+    margin: 5px 2px;
+    white-space: normal;
+}

@@ -105,4 +105,6 @@ export async function loadForm(allowsInvalid) {
         console.log("errors", errors);
         console.groupEnd("error");
     });
+
+    return formContext;
 }

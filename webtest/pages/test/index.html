@@ -1,0 +1,190 @@
+<html lang="en">
+
+<head>
+    <title>emcJS sandbox</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Test for emcJS components">
+    <meta name="robots" content="none">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#000000">
+    <style>
+        :root {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 16px;
+        }
+
+        * {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        emc-form-container {
+            height: 100%;
+        }
+
+        div.table {
+            height: 200px;
+            width: 300px;
+            margin: 8px;
+            border: solid 2px black;
+            overflow: auto;
+        }
+
+        table {
+            width: 100%;
+            border-spacing: 0px;
+        }
+
+        table thead th {
+            position: sticky;
+            top: 0px;
+            padding: 8px;
+            color: white;
+            background-color: black;
+        }
+
+        table thead th:not(:first-child) {
+            border-left: solid 1px white;
+        }
+
+        table thead th:not(:last-child) {
+            border-right: solid 1px white;
+        }
+
+        table thead th {
+            min-width: 50px;
+            padding: 8px;
+            color: white;
+            background-color: black;
+        }
+
+        table tbody tr:not(:last-child) {
+            border-bottom: solid 2px black;
+        }
+
+        table td {
+            padding: 8px;
+        }
+
+        #empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-style: italic;
+            min-height: 2rem;
+            padding: 5px;
+            margin: 5px 2px;
+            white-space: normal;
+        }
+    </style>
+</head>
+
+<body style="display: flex; flex-direction: column;">
+    <emc-page id="page" style="padding: 8px;">
+        <div class="table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>A</th>
+                        <th>B</th>
+                        <th>C</th>
+                        <th>D</th>
+                        <th>E</th>
+                        <th>F</th>
+                        <th>G</th>
+                        <th>H</th>
+                        <th>I</th>
+                        <th>J</th>
+                        <th>K</th>
+                        <th>L</th>
+                        <th>M</th>
+                        <th>N</th>
+                        <th>O</th>
+                        <th>P</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="100%">
+                            <div id="empty">no entries</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>A</th>
+                        <th>B</th>
+                        <th>C</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>A</th>
+                        <th>B</th>
+                        <th>C</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </emc-page>
+</body>
+
+</html>

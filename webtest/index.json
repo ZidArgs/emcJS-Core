@@ -1,4 +1,7 @@
 {
+    "test": {
+        "label": "^Test"
+    },
     "form": {
         "label": "Form",
         "children": {
