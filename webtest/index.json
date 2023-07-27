@@ -1,6 +1,6 @@
 {
     "test": {
-        "label": "^Test"
+        "label": "Test"
     },
     "form": {
         "label": "Form",

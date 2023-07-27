@@ -78,11 +78,92 @@
     },
     {
         "type": "Fieldset",
-        "label": "buttons in row (left aligned)",
+        "label": "buttons in row (right aligned)",
         "children": [
             {
                 "type": "Row",
-                "align": "left",
+                "align": "end",
+                "children": [
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row_l.0",
+                        "text": "button 0"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row_l.1",
+                        "text": "button 1"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row_l.2",
+                        "text": "button 2"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "Fieldset",
+        "label": "buttons in row (center aligned)",
+        "children": [
+            {
+                "type": "Row",
+                "align": "center",
+                "children": [
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row_l.0",
+                        "text": "button 0"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row_l.1",
+                        "text": "button 1"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row_l.2",
+                        "text": "button 2"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "Fieldset",
+        "label": "buttons in row (space even aligned)",
+        "children": [
+            {
+                "type": "Row",
+                "align": "even",
+                "children": [
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row_l.0",
+                        "text": "button 0"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row_l.1",
+                        "text": "button 1"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row_l.2",
+                        "text": "button 2"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "Fieldset",
+        "label": "buttons in row (space between aligned)",
+        "children": [
+            {
+                "type": "Row",
+                "align": "between",
                 "children": [
                     {
                         "type": "ActionButton",

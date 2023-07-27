@@ -27,11 +27,16 @@
         }
 
         div.table {
+            display: flex;
+            flex-direction: column;
+            min-height: 100px;
+            min-width: 200px;
             height: 200px;
             width: 300px;
             margin: 8px;
             border: solid 2px black;
             overflow: auto;
+            resize: both;
         }
 
         table {
@@ -71,14 +76,19 @@
         }
 
         #empty {
+            position: sticky;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-style: italic;
+            flex: 1;
+            left: 0px;
+            min-height: 100px;
+            min-width: 200px;
+            width: inherit;
             min-height: 2rem;
-            padding: 5px;
-            margin: 5px 2px;
+            max-height: 200px;
             white-space: normal;
+            font-style: italic;
         }
     </style>
 </head>
@@ -108,13 +118,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td colspan="100%">
-                            <div id="empty">no entries</div>
-                        </td>
-                    </tr>
                 </tbody>
             </table>
+            <div id="empty">no entries</div>
         </div>
 
         <div class="table">
