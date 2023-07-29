@@ -1,5 +1,7 @@
 import CustomFormElementDelegating from "../../../element/CustomFormElementDelegating.js";
-import ElementListCache from "../../../../util/html/ElementListCache.js";
+import {
+    isEqual
+} from "../../../../util/helper/Comparator.js";
 import TPL from "./KeyValueListInput.js.html" assert {type: "html"};
 import STYLE from "./KeyValueListInput.js.css" assert {type: "css"};
 
@@ -75,7 +77,7 @@ export default class KeyValueListInput extends CustomFormElementDelegating {
     }
 
     set value(value) {
-        if (this.#value != value) {
+        if (!isEqual(this.#value, value)) {
             this.#value = value;
             this.#applyValue(value);
             this.internals.setFormValue(value);
@@ -104,7 +106,12 @@ export default class KeyValueListInput extends CustomFormElementDelegating {
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
-                    // TODO build internal structure
+                    if (this.#value === undefined) {
+                        this.#applyValue(this.value);
+                        this.internals.setFormValue(this.value);
+                        /* --- */
+                        this.dispatchEvent(new Event("change"));
+                    }
                 }
             } break;
             case "readonly": {

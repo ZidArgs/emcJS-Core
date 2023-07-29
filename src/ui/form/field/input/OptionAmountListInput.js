@@ -54,11 +54,20 @@ export default class OptionAmountListInput extends AbstractFormInput {
 
     formResetCallback() {
         super.formResetCallback();
-        this.#inputEl.value = this.value;
+        const resolvedValue = this.value;
+        if (typeof resolvedValue !== "object") {
+            this.#inputEl.value = null;
+        } else {
+            this.#inputEl.value = resolvedValue;
+        }
     }
 
     focus(options) {
         this.#inputEl.focus(options);
+    }
+
+    get defaultValue() {
+        return this.getJSONAttribute("value");
     }
 
     set value(value) {
@@ -90,7 +99,20 @@ export default class OptionAmountListInput extends AbstractFormInput {
                     safeSetAttribute(this.#inputEl, "value", newValue);
                     if (!this.isChanged) {
                         const value = this.value;
-                        this.#inputEl.value = value;
+                        if (typeof value === "object") {
+                            this.#inputEl.value = value;
+                        } else {
+                            try {
+                                const resolvedValue = JSON.parse(value);
+                                if (typeof resolvedValue !== "object") {
+                                    this.#inputEl.value = null;
+                                } else {
+                                    this.#inputEl.value = resolvedValue;
+                                }
+                            } catch {
+                                this.#inputEl.value = null;
+                            }
+                        }
                     }
                 }
             } break;

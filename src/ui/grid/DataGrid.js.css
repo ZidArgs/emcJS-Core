@@ -1,0 +1,53 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100px;
+    min-width: 200px;
+    height: 200px;
+    width: 300px;
+    margin: 8px;
+    border: solid 2px black;
+    overflow: scroll;
+    resize: both;
+}
+.table {
+    width: 100%;
+    border-spacing: 0px;
+}
+.head th {
+    position: sticky;
+    top: 0px;
+    min-width: 50px;
+    padding: 8px;
+    color: white;
+    background-color: black;
+}
+.head th:not(:first-child) {
+    border-left: solid 1px white;
+}
+.head th:not(:last-child) {
+    border-right: solid 1px white;
+}
+#body tr:not(:last-child) {
+    border-bottom: solid 2px black;
+}
+.table td {
+    padding: 8px;
+}
+#empty {
+    position: sticky;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    left: 0px;
+    min-width: calc(200px - var(--scrollbar-size, 0px) - 4px); /* --datagrid-border-width * 2 */
+    min-height: 2rem;
+    max-height: 200px;
+    width: 100%;
+    white-space: normal;
+    font-style: italic;
+}
+#empty.hidden {
+    display: none;
+}

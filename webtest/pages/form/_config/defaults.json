@@ -50,5 +50,8 @@
         "argh",
         "foobar",
         "barfoo"
-    ]
+    ],
+    "optionamount.resettable": {
+        "foobar": 4
+    }
 }

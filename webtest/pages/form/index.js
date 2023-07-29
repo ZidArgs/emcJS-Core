@@ -140,7 +140,9 @@ pageEl.append(formContainerEl);
 const stringRequiredFields = formContext.findFieldsByName("string.required");
 for (const stringRequiredField of stringRequiredFields) {
     stringRequiredField.addValidator((value) => {
-        if (value === "") {
+        if (value == null) {
+            return "This is a custom error shown if the field is not set";
+        } else if (value === "") {
             return "This is a custom error shown if the field is empty";
         }
     });
@@ -148,7 +150,12 @@ for (const stringRequiredField of stringRequiredFields) {
 formContext.addValidator((data) => {
     for (const name in data) {
         const value = data[name];
-        if (value === "" || (typeof value === "number" && isNaN(value))) {
+        if (value == null) {
+            const errorFields = formContext.findFieldsByName(name);
+            for (const errorField of errorFields) {
+                errorField.addError("This is a global custom error shown if the field is not set");
+            }
+        } else if (value === "" || (typeof value === "number" && isNaN(value))) {
             const errorFields = formContext.findFieldsByName(name);
             for (const errorField of errorFields) {
                 errorField.addError("This is a global custom error shown if the field is empty");

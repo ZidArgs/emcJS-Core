@@ -13,6 +13,8 @@ import TPL from "./SimpleSelect.js.html" assert {type: "html"};
 import STYLE from "./SimpleSelect.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./SimpleSelect.js.json" assert {type: "json"};
 
+// TODO create custom simple select
+
 export default class SimpleSelect extends AbstractFormInput {
 
     static get formConfigurationFields() {

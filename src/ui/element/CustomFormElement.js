@@ -118,4 +118,12 @@ export default class CustomFormElement extends CustomElement {
         }
     }
 
+    getFormValue() {
+        const value = this.value;
+        if (typeof value === "object" && value != null) {
+            return JSON.stringify(value);
+        }
+        return value;
+    }
+
 }

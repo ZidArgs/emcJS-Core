@@ -9,7 +9,9 @@ import {
 import {
     debounce
 } from "../../../../util/Debouncer.js";
-import Comparator from "../../../../util/helper/Comparator.js";
+import Comparator, {
+    isEqual
+} from "../../../../util/helper/Comparator.js";
 import ElementListCache from "../../../../util/html/ElementListCache.js";
 import "../../../i18n/builtin/I18nOption.js";
 import TPL from "./SearchSelect.js.html" assert {type: "html"};
@@ -200,7 +202,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
     }
 
     set value(value) {
-        if (this.#value != value) {
+        if (!isEqual(this.#value, value)) {
             this.#value = value;
             this.#applyValue(value);
             this.internals.setFormValue(value);
@@ -253,7 +255,12 @@ export default class SearchSelect extends CustomFormElementDelegating {
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
-                    this.#inputEl.setAttribute(name, newValue);
+                    if (this.#value === undefined) {
+                        this.#applyValue(this.value);
+                        this.internals.setFormValue(this.value);
+                        /* --- */
+                        this.dispatchEvent(new Event("change"));
+                    }
                 }
             } break;
             case "placeholder": {
@@ -339,7 +346,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
     }
 
     #applyValue(value) {
-        if (value !== "") {
+        if (value != null && value !== "") {
             const selectedEl = this.#optionNodeList.querySelector(`[value="${value}"]`);
             if (selectedEl != null) {
                 if (selectedEl.i18nValue != null) {

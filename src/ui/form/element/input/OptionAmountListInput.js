@@ -9,14 +9,18 @@ import CharacterSearch from "../../../../util/search/CharacterSearch.js";
 import {
     sortNodeList
 } from "../../../../util/helper/ui/NodeListSort.js";
-import Comparator from "../../../../util/helper/Comparator.js";
+import Comparator, {
+    isEqual
+} from "../../../../util/helper/Comparator.js";
 import "./internal/SearchField.js";
 import TPL from "./OptionAmountListInput.js.html" assert {type: "html"};
 import STYLE from "./OptionAmountListInput.js.css" assert {type: "css"};
 
 export default class OptionAmountListInput extends CustomFormElementDelegating {
 
-    #value = {};
+    #value;
+
+    #options = [];
 
     #searchEl;
 
@@ -37,10 +41,12 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
         /* --- */
         this.#optionChangeEventManager.set("change", (event) => {
             const {name, value} = event.target;
-            this.value = {
-                ...this.#value,
-                [name]: parseInt(value) || 0
-            };
+            const res = {...this.#value};
+            for (const option of this.#options) {
+                res[option] = this.#value?.[option] ?? 0;
+            }
+            res[name] = parseInt(value) || 0;
+            this.value = res;
             event.preventDefault();
             event.stopPropagation();
         });
@@ -67,7 +73,6 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
     }
 
     connectedCallback() {
-        this.internals.setFormValue(this.#value);
         this.#resolveSlottedElements();
     }
 
@@ -82,25 +87,43 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
     }
 
     formResetCallback() {
-        this.value = super.value || "";
+        try {
+            this.value = JSON.parse(super.value);
+        } catch {
+            this.value = null;
+        }
     }
 
     formStateRestoreCallback(state/* , mode */) {
         this.value = state;
     }
 
+    get defaultValue() {
+        return this.getJSONAttribute("value");
+    }
+
     set value(value) {
-        if (this.#value != value) {
+        if (!isEqual(this.#value, value)) {
             this.#value = value;
             this.#applyValue(value);
-            this.internals.setFormValue(value);
             /* --- */
             this.dispatchEvent(new Event("change"));
         }
     }
 
     get value() {
-        return this.#value ?? super.value;
+        if (this.#value !== undefined) {
+            return {...this.#value};
+        }
+        try {
+            const value = JSON.parse(super.value);
+            if (value == null) {
+                return null;
+            }
+            return {...value};
+        } catch {
+            return null;
+        }
     }
 
     set readonly(value) {
@@ -127,7 +150,11 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
-                    this.#searchEl.setAttribute(name, newValue);
+                    if (this.#value === undefined) {
+                        this.#applyValue(this.value);
+                        /* --- */
+                        this.dispatchEvent(new Event("change"));
+                    }
                 }
             } break;
             case "sorted": {
@@ -143,18 +170,24 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
     }
 
     #applyValue(value) {
+        const formValue = {};
         if (value != null && typeof value === "object") {
-            for (const name in value) {
-                const amount = value[name];
-                const inputEl = this.#containerEl.querySelector(`input[name="${name}"]`);
-                inputEl.value = amount;
+            const inputElList = this.#containerEl.querySelectorAll(`input[name]`);
+            for (const el of inputElList) {
+                const name = el.name;
+                const amount = value[name] ?? 0;
+                el.value = amount;
+                formValue[name] = amount;
             }
         } else {
             const inputElList = this.#containerEl.querySelectorAll(`input[name]`);
             for (const el of inputElList) {
+                const name = el.name;
                 el.value = 0;
+                formValue[name] = 0;
             }
         }
+        this.internals.setFormValue(JSON.stringify(formValue));
     }
 
     #sort = debounce(() => {
@@ -178,12 +211,14 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
         this.#searchEl.value = "";
         this.#containerEl.innerHTML = "";
         this.#optionChangeEventManager.clearTargets();
-        if (Object.keys(options).length === 0) {
+        this.#options = Object.keys(options);
+        if (this.#options.length === 0) {
             const emptyEl = document.createElement("div");
             emptyEl.id = "empty";
             emptyEl.innerHTML = "no entries";
             this.#containerEl.append(emptyEl);
         } else {
+            const value = this.value;
             for (const name in options) {
                 const label = options[name];
                 const optionEl = document.createElement("label");
@@ -195,6 +230,7 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
                 inputEl.type = "number";
                 inputEl.name = name;
                 inputEl.disabled = this.disabled;
+                inputEl.value = value?.[name] ?? 0;
                 optionEl.append(inputEl);
                 this.#containerEl.append(optionEl);
                 this.#optionChangeEventManager.addTarget(inputEl);

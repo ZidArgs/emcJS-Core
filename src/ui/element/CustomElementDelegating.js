@@ -83,7 +83,11 @@ export default class CustomElementDelegating extends HTMLElement {
     }
 
     getJSONAttribute(name) {
-        return JSON.parse(this.getAttribute(name));
+        try {
+            return JSON.parse(this.getAttribute(name));
+        } catch {
+            return null;
+        }
     }
 
     scrollIntoViewIfNeeded(options) {

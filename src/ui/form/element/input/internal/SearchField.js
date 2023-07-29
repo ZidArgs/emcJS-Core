@@ -2,6 +2,9 @@ import CustomElementDelegating from "../../../../element/CustomElementDelegating
 import {
     debounce
 } from "../../../../../util/Debouncer.js";
+import {
+    isEqual
+} from "../../../../../util/helper/Comparator.js";
 import "../../../../i18n/I18nTooltip.js";
 import TPL from "./SearchField.js.html" assert {type: "html"};
 import STYLE from "./SearchField.js.css" assert {type: "css"};
@@ -33,9 +36,11 @@ export default class SearchField extends CustomElementDelegating {
     }, 300);
 
     set value(value) {
-        this.#inputEl.value = value;
-        const event = new Event("change", {bubbles: true, cancelable: true});
-        this.dispatchEvent(event);
+        if (!isEqual(this.#inputEl.value, value)) {
+            this.#inputEl.value = value;
+            const event = new Event("change", {bubbles: true, cancelable: true});
+            this.dispatchEvent(event);
+        }
     }
 
     get value() {

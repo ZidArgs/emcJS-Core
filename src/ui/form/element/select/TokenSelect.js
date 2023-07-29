@@ -262,6 +262,9 @@ export default class TokenSelect extends CustomFormElementDelegating {
         }
         try {
             const value = JSON.parse(super.value);
+            if (value == null) {
+                return [];
+            }
             if (!Array.isArray(value)) {
                 return [value];
             }
@@ -327,9 +330,11 @@ export default class TokenSelect extends CustomFormElementDelegating {
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
-                    this.#inputEl.setAttribute(name, newValue);
-                    if (!this.isChanged) {
+                    if (this.#value === undefined) {
                         this.#applyValue(this.value);
+                        this.internals.setFormValue(this.value);
+                        /* --- */
+                        this.dispatchEvent(new Event("change"));
                     }
                 }
             } break;

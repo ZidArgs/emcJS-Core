@@ -4,6 +4,9 @@ import {
 } from "../../../../util/Debouncer.js";
 import ElementListCache from "../../../../util/html/ElementListCache.js";
 import ImageSelectModal from "./imageselect/ImageSelectModal.js";
+import {
+    isEqual
+} from "../../../../util/helper/Comparator.js";
 import "../../../i18n/I18nLabel.js";
 import "../../../i18n/I18nTooltip.js";
 import TPL from "./ImageSelect.js.html" assert {type: "html"};
@@ -67,7 +70,7 @@ export default class ImageSelect extends CustomFormElementDelegating {
     }
 
     set value(value) {
-        if (this.#value != value) {
+        if (!isEqual(this.#value, value)) {
             this.#value = value;
             this.#applyValue(value);
             this.internals.setFormValue(value);
@@ -94,6 +97,30 @@ export default class ImageSelect extends CustomFormElementDelegating {
 
     get required() {
         return this.getBooleanAttribute("required");
+    }
+
+    static get observedAttributes() {
+        return ["value", "placeholder", "sorted"];
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        switch (name) {
+            case "value": {
+                if (oldValue != newValue) {
+                    if (this.#value === undefined) {
+                        this.#applyValue(this.value);
+                        this.internals.setFormValue(this.value);
+                        /* --- */
+                        this.dispatchEvent(new Event("change"));
+                    }
+                }
+            } break;
+            // case "placeholder": {
+            //     if (oldValue != newValue) {
+            //         this.#placeholderEl.setAttribute("i18n-value", newValue)
+            //     }
+            // } break;
+        }
     }
 
     #applyValue(value) {

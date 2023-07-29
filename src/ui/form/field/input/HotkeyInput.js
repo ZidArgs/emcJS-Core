@@ -194,7 +194,7 @@ export default class HotkeyInput extends AbstractFormInput {
     }
 
     #parseKeys(string) {
-        const res = VALUE_PARSE.exec(string);
+        const res = VALUE_PARSE.exec(string ?? "");
         return {
             ctrlKey: res[1] != null,
             shiftKey: res[2] != null,

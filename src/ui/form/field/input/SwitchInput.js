@@ -57,7 +57,7 @@ export default class SwitchInput extends AbstractFormInput {
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
-                    if (newValue === "") {
+                    if (newValue == null || newValue === "") {
                         this.#inputEl.removeAttribute("checked");
                         this.#inputEl.setAttribute("indeterminate", "");
                     } else if (!newValue || newValue === "false") {
@@ -77,7 +77,7 @@ export default class SwitchInput extends AbstractFormInput {
     }
 
     #applyValue(value) {
-        if (value === "") {
+        if (value == null || value === "") {
             this.#inputEl.checked = false;
             this.#inputEl.indeterminate = true;
             return null;

@@ -45,5 +45,9 @@ export function setJSONAttribute(node, name, value) {
 }
 
 export function getJSONAttribute(node, name) {
-    return JSON.parse(node.getAttribute(name));
+    try {
+        return JSON.parse(node.getAttribute(name));
+    } catch {
+        return null;
+    }
 }

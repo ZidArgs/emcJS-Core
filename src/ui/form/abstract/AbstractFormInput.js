@@ -5,6 +5,9 @@ import {
 import {
     debounce
 } from "../../../util/Debouncer.js";
+import {
+    isEqual
+} from "../../../util/helper/Comparator.js";
 import "../button/internal/InputResetButton.js";
 import "../../i18n/I18nLabel.js";
 import "../../i18n/I18nTextbox.js";
@@ -64,12 +67,7 @@ export default class AbstractFormInput extends AbstractFormField {
     }
 
     connectedCallback() {
-        const value = this.value;
-        if (typeof value === "object") {
-            this.internals.setFormValue(JSON.stringify(value));
-        } else {
-            this.internals.setFormValue(value);
-        }
+        this.internals.setFormValue(this.getFormValue());
         this.revalidate();
     }
 
@@ -79,16 +77,11 @@ export default class AbstractFormInput extends AbstractFormField {
 
     formResetCallback() {
         this.#value = undefined;
-        const value = this.value;
-        if (typeof value === "object") {
-            this.internals.setFormValue(JSON.stringify(value));
-        } else {
-            this.internals.setFormValue(value);
-        }
+        this.internals.setFormValue(this.getFormValue());
         this.revalidate();
         /* --- */
         const event = new Event("default", {bubbles: true, cancelable: true});
-        event.value = value;
+        event.value = this.value;
         event.name = this.name;
         event.fieldId = this.id;
         this.dispatchEvent(event);
@@ -98,22 +91,14 @@ export default class AbstractFormInput extends AbstractFormField {
         this.value = state;
     }
 
-    get defaultValue() {
-        return super.defaultValue ?? "";
-    }
-
     get isChanged() {
         return this.#value !== undefined;
     }
 
     set value(value) {
-        if (this.#value != value) {
+        if (!isEqual(this.#value, value)) {
             this.#value = value;
-            if (typeof value === "object") {
-                this.internals.setFormValue(JSON.stringify(value));
-            } else {
-                this.internals.setFormValue(value);
-            }
+            this.internals.setFormValue(this.getFormValue());
             this.revalidate();
             if (!this.#errorList.size) {
                 const event = new Event("value", {bubbles: true, cancelable: true});
@@ -175,12 +160,7 @@ export default class AbstractFormInput extends AbstractFormField {
             case "value": {
                 if (oldValue != newValue) {
                     if (!this.isChanged) {
-                        const value = this.value;
-                        if (typeof value === "object") {
-                            this.internals.setFormValue(JSON.stringify(value));
-                        } else {
-                            this.internals.setFormValue(value);
-                        }
+                        this.internals.setFormValue(this.getFormValue());
                         this.revalidate();
                     }
                 }
