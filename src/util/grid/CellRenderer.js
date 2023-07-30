@@ -76,6 +76,17 @@ class CellRendererManager extends EventTarget {
 
 const CellRenderer = new CellRendererManager();
 
+CellRenderer.registerCellRenderer("empty", (cellEl) => {
+    cellEl.innerText = "";
+});
+
+CellRenderer.registerHeaderRenderer("empty", (cellEl) => {
+    cellEl.style.padding = "0px";
+    cellEl.style.minWidth = "8px";
+    cellEl.style.width = "8px";
+    cellEl.innerText = "";
+});
+
 CellRenderer.registerCellRenderer("boolean", (cellEl, value) => {
     cellEl.style.textAlign = "center";
     if (value != null) {

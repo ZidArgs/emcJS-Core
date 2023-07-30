@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     border: solid var(--panel-border-width, 2px) var(--panel-border-color, #000000);
-    border-radius: var(--panel-border-radius, 0.25em);
+    border-radius: var(--panel-border-radius, 6px);
     overflow: hidden;
     user-select: none;
 }

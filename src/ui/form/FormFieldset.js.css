@@ -18,7 +18,7 @@
     margin: 5px;
     background-color: var(--fieldset-back-color, #ffffff);
     border: solid var(--fieldset-border-width, 2px) var(--form-border-color, #000000);
-    border-radius: var(--fieldset-border-radius, 0.25em);
+    border-radius: var(--fieldset-border-radius, 6px);
 }
 #legend {
     min-width: 50%;
@@ -26,7 +26,7 @@
     color: var(--form-text-color, #000000);
     background-color: var(--fieldset-back-color, #ffffff);
     border: solid var(--fieldset-border-width, 2px) var(--form-border-color, #000000);
-    border-radius: var(--fieldset-border-radius, 0.25em);
+    border-radius: var(--fieldset-border-radius, 6px);
 }
 #description {
     display: block;

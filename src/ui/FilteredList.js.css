@@ -15,7 +15,7 @@
     overflow-y: auto;
     background-color: var(--panel-back-color, #ffffff);
     border: solid var(--panel-border-width, 2px) var(--panel-border-color, #000000);
-    border-radius: 0px 0px var(--panel-border-radius, 0.25em) var(--panel-border-radius, 0.25em);
+    border-radius: 0px 0px var(--panel-border-radius, 6px) var(--panel-border-radius, 6px);
 }
 slot {
     display: block;
@@ -36,5 +36,5 @@ slot {
     --input-back-color : var(--panel-input-back-color, #ffffff);
     --form-border-color: var(--panel-border-color, #000000);
     --form-border-width: var(--panel-border-width, 2px);
-    --form-border-radius: var(--panel-border-radius, 0.25em);
+    --form-border-radius: var(--panel-border-radius, 6px);
 }

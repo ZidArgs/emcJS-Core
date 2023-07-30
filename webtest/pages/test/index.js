@@ -63,3 +63,45 @@ grid0El.setData([
         E: new Date()
     }
 ]);
+
+const grid1El = document.getElementById("grid1");
+grid1El.setData([
+    {
+        A: 1,
+        B: "Cheese",
+        C: 3,
+        E: "2.3.16 12:34:51"
+    }, {
+        A: 2,
+        B: "Pizza",
+        D: true,
+        E: "12.28.2022 16:27:19"
+    },
+    {
+        A: 3,
+        C: -15,
+        D: false,
+        E: new Date()
+    }
+]);
+
+const grid2El = document.getElementById("grid2");
+grid2El.setData([
+    {
+        A: 1,
+        B: "Cheese",
+        C: 3,
+        E: "2.3.16 12:34:51"
+    }, {
+        A: 2,
+        B: "Pizza",
+        D: true,
+        E: "12.28.2022 16:27:19"
+    },
+    {
+        A: 3,
+        C: -15,
+        D: false,
+        E: new Date()
+    }
+]);

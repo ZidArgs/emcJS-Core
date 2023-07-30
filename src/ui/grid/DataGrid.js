@@ -16,7 +16,7 @@ import Column from "./Column.js";
 import TPL from "./DataGrid.js.html" assert {type: "html"};
 import STYLE from "./DataGrid.js.css" assert {type: "css"};
 
-/** TODO detect slotted attribute changes
+/** TODO detect child attribute changes
  *  - if the content of child or the attributes change, react accordingly
  */
 
@@ -90,7 +90,6 @@ export default class DataGrid extends CustomElement {
             const headerCellEl = document.createElement("th");
             const {type, name, label, ...options} = columnData;
             CellRendererManager.renderHeader(headerCellEl, type, name, label, options);
-            headerCellEl.innerText = columnData.label ?? columnData.name;
             this.#headerEl.append(headerCellEl);
         }
         if (this.#data.length > 0) {
