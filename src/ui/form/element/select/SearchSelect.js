@@ -23,6 +23,10 @@ const ESCAPE_KEYS = [
     "Enter"
 ];
 
+/** TODO detect slotted attribute changes
+ *  - if the content of child or the attributes change, react accordingly
+ */
+
 export default class SearchSelect extends CustomFormElementDelegating {
 
     #isEditMode = false;

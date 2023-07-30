@@ -5,8 +5,20 @@ import {
 import {
     deepClone
 } from "../../util/helper/DeepClone.js";
+import {
+    debounce
+} from "../../util/Debouncer.js";
+import {
+    getAllAttributes
+} from "../../util/helper/ui/NodeAttributes.js";
+import CellRendererManager from "../../util/grid/CellRenderer.js";
+import Column from "./Column.js";
 import TPL from "./DataGrid.js.html" assert {type: "html"};
 import STYLE from "./DataGrid.js.css" assert {type: "css"};
+
+/** TODO detect slotted attribute changes
+ *  - if the content of child or the attributes change, react accordingly
+ */
 
 export default class DataGrid extends CustomElement {
 
@@ -15,6 +27,10 @@ export default class DataGrid extends CustomElement {
     #bodyEl;
 
     #emptyEl;
+
+    #columnContainerEl;
+
+    #columns = [];
 
     #data = [];
 
@@ -26,6 +42,22 @@ export default class DataGrid extends CustomElement {
         this.#headerEl = this.shadowRoot.getElementById("header");
         this.#bodyEl = this.shadowRoot.getElementById("body");
         this.#emptyEl = this.shadowRoot.getElementById("empty");
+        /* --- */
+        this.#columnContainerEl = this.shadowRoot.getElementById("column-container");
+        this.#columnContainerEl.addEventListener("slotchange", () => {
+            this.#onSlotChange();
+        });
+        /* --- */
+        CellRendererManager.addEventListener("header", (event) => {
+            if (this.#columns.some((el) => el.type === event.data.type)) {
+                this.#refreshHeader()
+            }
+        });
+        CellRendererManager.addEventListener("cell", (event) => {
+            if (this.#columns.some((el) => el.type === event.data.type)) {
+                this.#refreshCells()
+            }
+        });
     }
 
     setData(rows = []) {
@@ -39,7 +71,7 @@ export default class DataGrid extends CustomElement {
                 this.#emptyEl.classList.remove("hidden");
             } else {
                 this.#data = deepClone(rows);
-                this.#refresh(this.columns, rows);
+                this.#refreshCells();
             }
         }
     }
@@ -48,64 +80,45 @@ export default class DataGrid extends CustomElement {
         this.setJSONAttribute("columns", value);
     }
 
-    get columns() { // XXX is this better defined by slots? -> for (const v of node.attributes) console.log(v.name, v.value)
-        return this.getJSONAttribute("columns");
-    }
-
-    static get observedAttributes() {
-        return ["columns"];
-    }
-
-    attributeChangedCallback(name, oldValue, newValue) {
-        switch (name) {
-            case "columns": {
-                if (oldValue != newValue) {
-                    const columns = this.columns ?? [];
-                    this.#headerEl.innerHTML = "";
-                    for (const column of columns) {
-                        const headerCellEl = document.createElement("th");
-                        if (typeof column === "object") {
-                            // TODO use cell renderer
-                            // struct definition
-                            headerCellEl.innerText = column.label ?? column.name;
-                        } else {
-                            // TODO use cell renderer
-                            headerCellEl.innerText = column;
-                        }
-                        this.#headerEl.append(headerCellEl);
-                    }
-                    if (this.#data.length > 0) {
-                        this.#refresh(columns, this.#data);
-                    }
-                }
-            } break;
+    #generateColumns() {
+        const columnNodeList = this.#columnContainerEl.assignedElements({flatten: true}).filter((el) => el instanceof Column);
+        this.#columns = [];
+        this.#headerEl.innerHTML = "";
+        for (const columnEl of columnNodeList) {
+            const columnData = getAllAttributes(columnEl);
+            this.#columns.push(columnData);
+            const headerCellEl = document.createElement("th");
+            const {type, name, label, ...options} = columnData;
+            CellRendererManager.renderHeader(headerCellEl, type, name, label, options);
+            headerCellEl.innerText = columnData.label ?? columnData.name;
+            this.#headerEl.append(headerCellEl);
+        }
+        if (this.#data.length > 0) {
+            this.#refreshCells();
         }
     }
 
-    #refresh(columns, data) { // XXX element manager?
-        this.#bodyEl.innerHTML = "";
-        if (data.length > 0) {
-            this.#emptyEl.classList.add("hidden");
+    #refreshHeader() {
+        this.#headerEl.innerHTML = "";
+        for (const columnData of this.#columns) {
+            const headerCellEl = document.createElement("th");
+            const {type, name, label, ...options} = columnData;
+            CellRendererManager.renderHeader(headerCellEl, type, name, label, options);
+            headerCellEl.innerText = columnData.label ?? columnData.name;
+            this.#headerEl.append(headerCellEl);
+        }
+    }
 
-            for (const rowData of data) {
+    #refreshCells() { // XXX element manager?
+        this.#bodyEl.innerHTML = "";
+        if (this.#data.length > 0) {
+            this.#emptyEl.classList.add("hidden");
+            for (const rowData of this.#data) {
                 const rowEl = document.createElement("tr");
-                for (const column of columns) {
+                for (const column of this.#columns) {
+                    const {type, name, ...options} = column;
                     const cellEl = document.createElement("td");
-                    if (typeof column === "object") {
-                        if (column.name in rowData) {
-                            // TODO use cell renderer
-                            cellEl.innerText = rowData[column.name];
-                        } else { // empty
-                            // TODO use cell renderer
-                            cellEl.innerText = "---";
-                        }
-                    } else if (column in rowData) {
-                        // TODO use cell renderer
-                        cellEl.innerText = rowData[column];
-                    } else { // empty
-                        // TODO use cell renderer
-                        cellEl.innerText = "---";
-                    }
+                    CellRendererManager.renderCell(cellEl, type, name, rowData, options);
                     rowEl.append(cellEl);
                 }
                 this.#bodyEl.append(rowEl);
@@ -114,6 +127,10 @@ export default class DataGrid extends CustomElement {
             this.#emptyEl.classList.remove("hidden");
         }
     }
+
+    #onSlotChange = debounce(() => {
+        this.#generateColumns();
+    });
 
 }
 

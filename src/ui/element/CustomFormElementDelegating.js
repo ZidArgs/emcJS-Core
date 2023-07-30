@@ -61,7 +61,23 @@ export default class CustomFormElementDelegating extends CustomElementDelegating
     }
 
     get value() {
+        return this.defaultValue;
+    }
+
+    get defaultValue() {
         return this.getAttribute("value");
+    }
+
+    getFormValue() {
+        const value = this.getSubmitValue();
+        if (typeof value === "object" && value != null) {
+            return JSON.stringify(value);
+        }
+        return value;
+    }
+
+    getSubmitValue() {
+        return this.value;
     }
 
     set disabled(value) {
@@ -112,6 +128,10 @@ export default class CustomFormElementDelegating extends CustomElementDelegating
             event.fieldId = this.id;
             this.dispatchEvent(event);
         }
+    }
+
+    refreshFormValue() {
+        this.internals.setFormValue(this.getFormValue());
     }
 
 }

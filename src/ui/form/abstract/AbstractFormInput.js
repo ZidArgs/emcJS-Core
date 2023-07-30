@@ -67,7 +67,7 @@ export default class AbstractFormInput extends AbstractFormField {
     }
 
     connectedCallback() {
-        this.internals.setFormValue(this.getFormValue());
+        this.refreshFormValue();
         this.revalidate();
     }
 
@@ -77,7 +77,7 @@ export default class AbstractFormInput extends AbstractFormField {
 
     formResetCallback() {
         this.#value = undefined;
-        this.internals.setFormValue(this.getFormValue());
+        this.refreshFormValue();
         this.revalidate();
         /* --- */
         const event = new Event("default", {bubbles: true, cancelable: true});
@@ -91,6 +91,10 @@ export default class AbstractFormInput extends AbstractFormField {
         this.value = state;
     }
 
+    getSubmitValue() {
+        return this.value;
+    }
+
     get isChanged() {
         return this.#value !== undefined;
     }
@@ -98,7 +102,7 @@ export default class AbstractFormInput extends AbstractFormField {
     set value(value) {
         if (!isEqual(this.#value, value)) {
             this.#value = value;
-            this.internals.setFormValue(this.getFormValue());
+            this.refreshFormValue();
             this.revalidate();
             if (!this.#errorList.size) {
                 const event = new Event("value", {bubbles: true, cancelable: true});
@@ -160,7 +164,7 @@ export default class AbstractFormInput extends AbstractFormField {
             case "value": {
                 if (oldValue != newValue) {
                     if (!this.isChanged) {
-                        this.internals.setFormValue(this.getFormValue());
+                        this.refreshFormValue();
                         this.revalidate();
                     }
                 }

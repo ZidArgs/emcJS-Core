@@ -59,6 +59,10 @@ export default class TokenSelect extends AbstractFormInput {
         return super.value;
     }
 
+    getSubmitValue() {
+        return this.#inputEl.getSubmitValue();
+    }
+
     set multiple(value) {
         this.setBooleanAttribute("multiple", value);
     }

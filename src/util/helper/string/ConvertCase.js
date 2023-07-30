@@ -11,3 +11,10 @@ export function toStartUppercaseEndLowercase(string) {
     }
     return "";
 }
+
+export function dashedToCamelCase(string) {
+    if (typeof string === "string" && string) {
+        return string.replace(/-(.)/g, (_, m1) => m1.toUpperCase());
+    }
+    return "";
+}

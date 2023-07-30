@@ -99,6 +99,14 @@ export default class ColorInput extends AbstractFormInput {
         return super.value;
     }
 
+    getSubmitValue() {
+        const value = this.value;
+        if (value == null) {
+            return "";
+        }
+        return value;
+    }
+
     static get observedAttributes() {
         return [...super.observedAttributes, "value", "placeholder", "readonly", "autocomplete"];
     }

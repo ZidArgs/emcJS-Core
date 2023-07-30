@@ -31,10 +31,12 @@
 
 <body style="display: flex; flex-direction: column;">
     <emc-page id="page" style="padding: 8px;">
-        <emc-grid-datagrid id="grid0" columns='["A", {"name": "B", "label": "Brie"}, "C"]'>
-            <emc-grid-column name="A" label="" type="number"></emc-grid-column>
-            <emc-grid-column name="B" label="Brie" type="string"></emc-grid-column>
-            <emc-grid-column name="C" type="number" decimals="2" postfix=" €"></emc-grid-column>
+        <emc-grid-datagrid id="grid0">
+            <emc-grid-column name="A" label="" type="number" width="50"></emc-grid-column>
+            <emc-grid-column name="B" label="Product" type="string" width="120"></emc-grid-column>
+            <emc-grid-column name="C" label="Price" type="currency" decimals="2" postfix=" €" width="100" negative-color="red"></emc-grid-column>
+            <emc-grid-column name="D" type="boolean"></emc-grid-column>
+            <emc-grid-column name="E" label="Since" type="datetime"></emc-grid-column>
         </emc-grid-datagrid>
     </emc-page>
 </body>

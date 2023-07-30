@@ -57,14 +57,14 @@ export default class FormElementContext {
         this.#element = node;
         CONTEXTS.set(node, this);
         /* --- */
-        mutationObserver.observe(node, MUTATION_CONFIG);
+        mutationObserver.observe(this.#element, MUTATION_CONFIG);
         /* --- */
         this.#storageEventManager.set(["load", "clear", "change"], () => {
             this.#callUpdateVisible();
             this.#callUpdateEnabled();
         });
         /* --- */
-        const visibleValue = node.getAttribute("visible");
+        const visibleValue = this.#element.getAttribute("visible");
         this.setVisibleLogic(JSON.parse(visibleValue));
     }
 

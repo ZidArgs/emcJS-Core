@@ -88,14 +88,14 @@ export async function loadForm(allowsInvalid) {
     console.groupEnd("init context");
 
     formContext.addEventListener("submit", (event) => {
-        const {errors, changes, data, formData, hiddenData} = event;
+        const {errors, data, hiddenData, changes} = event;
         const valid = formContext.getFormValidity() ? "valid" : "invalid";
         console.group(`submit (${valid})`);
-        console.log("errors", errors);
-        console.log("changed data", changes);
-        console.log("all data", data);
-        console.log("form data", formData);
-        console.log("hidden form data", hiddenData);
+        console.log("[E] errors", errors);
+        console.log("[E] data", data);
+        console.log("[E] hiddenData", hiddenData);
+        console.log("[E] changes", changes);
+        console.log("formData", formContext.getInternalFormData());
         console.groupEnd(`submit (${valid})`);
     });
 

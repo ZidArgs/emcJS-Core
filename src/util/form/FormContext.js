@@ -98,10 +98,9 @@ export default class FormContext extends EventTarget {
         /* --- */
         const ev = new Event("submit");
         ev.errors = this.getErrors();
+        ev.data = this.getFormFieldsData();
+        ev.hiddenData = this.getFormHiddenData();
         ev.changes = this.#dataStorage.getChanges();
-        ev.data = this.#dataStorage.getAll();
-        ev.formData = this.getFormData();
-        ev.hiddenData = this.getHiddenFormData();
         this.dispatchEvent(ev);
     }
 
@@ -144,7 +143,7 @@ export default class FormContext extends EventTarget {
     }
 
     async #doGlobalValidation(validator) {
-        const message = await validator(this.getFieldData());
+        const message = await validator(this.getFormFieldsData());
         if (typeof message === "string" && message !== "") {
             return {
                 name: null,
@@ -263,7 +262,7 @@ export default class FormContext extends EventTarget {
         return this.#dataStorage.getAll();
     }
 
-    getFormData() {
+    getInternalFormData() {
         const res = {};
         for (const formEl of this.#formElList) {
             const data = extractFormData(formEl);
@@ -274,15 +273,17 @@ export default class FormContext extends EventTarget {
         return res;
     }
 
-    getFieldData() {
+    getFormFieldsData() {
         const res = {};
         for (const fieldEl of this.#formFieldContextList) {
-            res[fieldEl.node.name] = fieldEl.node.value;
+            if (!fieldEl.node.disabled) {
+                res[fieldEl.node.name] = fieldEl.node.getSubmitValue();
+            }
         }
         return res;
     }
 
-    getHiddenFormData() {
+    getFormHiddenData() {
         const res = {};
         for (const formEl of this.#formElList) {
             const all = formEl.querySelectorAll("input[type=\"hidden\"][name]")

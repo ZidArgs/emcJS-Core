@@ -16,6 +16,10 @@ import "./internal/SearchField.js";
 import TPL from "./OptionAmountListInput.js.html" assert {type: "html"};
 import STYLE from "./OptionAmountListInput.js.css" assert {type: "css"};
 
+/** TODO detect slotted attribute changes
+ *  - if the content of child or the attributes change, react accordingly
+ */
+
 export default class OptionAmountListInput extends CustomFormElementDelegating {
 
     #value;
@@ -41,12 +45,9 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
         /* --- */
         this.#optionChangeEventManager.set("change", (event) => {
             const {name, value} = event.target;
-            const res = {...this.#value};
-            for (const option of this.#options) {
-                res[option] = this.#value?.[option] ?? 0;
-            }
-            res[name] = parseInt(value) || 0;
-            this.value = res;
+            const newValue = {...this.value};
+            newValue[name] = parseInt(value) || 0;
+            this.value = newValue;
             event.preventDefault();
             event.stopPropagation();
         });
@@ -87,11 +88,7 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
     }
 
     formResetCallback() {
-        try {
-            this.value = JSON.parse(super.value);
-        } catch {
-            this.value = null;
-        }
+        this.value = super.value;
     }
 
     formStateRestoreCallback(state/* , mode */) {
@@ -103,27 +100,41 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
     }
 
     set value(value) {
-        if (!isEqual(this.#value, value)) {
-            this.#value = value;
-            this.#applyValue(value);
-            /* --- */
-            this.dispatchEvent(new Event("change"));
+        if (!isEqual(this.value, value)) {
+            this.#value = {...value};
+            this.#applyValue(this.#value);
         }
     }
 
     get value() {
-        if (this.#value !== undefined) {
-            return {...this.#value};
-        }
-        try {
-            const value = JSON.parse(super.value);
-            if (value == null) {
-                return null;
+        const defValue = super.value;
+        const curValue = this.#value;
+        if (curValue != null) {
+            if (defValue != null) {
+                return {
+                    ...defValue,
+                    ...curValue
+                };
+            } else {
+                return {
+                    ...curValue
+                };
             }
-            return {...value};
-        } catch {
-            return null;
+        } else if (defValue != null) {
+            return {
+                ...defValue
+            };
         }
+        return null;
+    }
+
+    getSubmitValue() {
+        const res = {};
+        const value = this.value;
+        for (const option of this.#options) {
+            res[option] = value?.[option] ?? 0;
+        }
+        return res;
     }
 
     set readonly(value) {
@@ -152,8 +163,6 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
                 if (oldValue != newValue) {
                     if (this.#value === undefined) {
                         this.#applyValue(this.value);
-                        /* --- */
-                        this.dispatchEvent(new Event("change"));
                     }
                 }
             } break;
@@ -171,23 +180,16 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
 
     #applyValue(value) {
         const formValue = {};
-        if (value != null && typeof value === "object") {
-            const inputElList = this.#containerEl.querySelectorAll(`input[name]`);
-            for (const el of inputElList) {
-                const name = el.name;
-                const amount = value[name] ?? 0;
-                el.value = amount;
-                formValue[name] = amount;
-            }
-        } else {
-            const inputElList = this.#containerEl.querySelectorAll(`input[name]`);
-            for (const el of inputElList) {
-                const name = el.name;
-                el.value = 0;
-                formValue[name] = 0;
-            }
+        const inputElList = this.#containerEl.querySelectorAll(`input[name]`);
+        for (const el of inputElList) {
+            const name = el.name;
+            const amount = value?.[name] ?? 0;
+            el.value = amount;
+            formValue[name] = amount;
         }
         this.internals.setFormValue(JSON.stringify(formValue));
+        /* --- */
+        this.dispatchEvent(new Event("change"));
     }
 
     #sort = debounce(() => {
@@ -208,6 +210,7 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
             options[el.value] = el.i18nValue ?? el.innerHTML;
         }
         /* --- */
+        const formValue = {};
         this.#searchEl.value = "";
         this.#containerEl.innerHTML = "";
         this.#optionChangeEventManager.clearTargets();
@@ -221,6 +224,7 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
             const value = this.value;
             for (const name in options) {
                 const label = options[name];
+                const amount = value?.[name] ?? 0;
                 const optionEl = document.createElement("label");
                 optionEl.className = "option";
                 const labelEl = document.createElement("emc-i18n-label");
@@ -230,17 +234,20 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
                 inputEl.type = "number";
                 inputEl.name = name;
                 inputEl.disabled = this.disabled;
-                inputEl.value = value?.[name] ?? 0;
+                inputEl.value = amount;
                 optionEl.append(inputEl);
                 this.#containerEl.append(optionEl);
                 this.#optionChangeEventManager.addTarget(inputEl);
+                formValue[name] = amount;
             }
             /* --- */
             if (this.sorted) {
                 this.#sort();
             }
-            this.#applyValue(this.#value);
         }
+        this.internals.setFormValue(JSON.stringify(formValue));
+        /* --- */
+        this.dispatchEvent(new Event("options"));
     }
 
     #onSlotChange = debounce(() => {

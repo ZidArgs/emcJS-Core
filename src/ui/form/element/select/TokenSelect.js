@@ -24,6 +24,10 @@ const ESCAPE_KEYS = [
     "Escape"
 ];
 
+/** TODO detect slotted attribute changes
+ *  - if the content of child or the attributes change, react accordingly
+ */
+
 class TokenElementManager extends ElementManager {
 
     composer(key, params) {
@@ -234,6 +238,10 @@ export default class TokenSelect extends CustomFormElementDelegating {
         this.value = state;
     }
 
+    get defaultValue() {
+        return this.getJSONAttribute("value");
+    }
+
     set value(value) {
         if (!isEqual(this.#value, value)) {
             if (value == null || value === "") {
@@ -260,18 +268,14 @@ export default class TokenSelect extends CustomFormElementDelegating {
         if (this.#value != null) {
             return this.#value;
         }
-        try {
-            const value = JSON.parse(super.value);
-            if (value == null) {
-                return [];
-            }
-            if (!Array.isArray(value)) {
-                return [value];
-            }
-            return value;
-        } catch {
+        const value = super.value;
+        if (value == null) {
             return [];
         }
+        if (!Array.isArray(value)) {
+            return [value];
+        }
+        return value;
     }
 
     set readonly(value) {

@@ -36,6 +36,9 @@ export default class OptionAmountListInput extends AbstractFormInput {
         this.#inputEl.addEventListener("change", () => {
             this.value = this.#inputEl.value;
         });
+        this.#inputEl.addEventListener("options", () => {
+            this.refreshFormValue();
+        });
         /* --- */
         this.#optionGroupEventTargetManager.set("change", () => {
             this.#loadOptionsFromGroup();
@@ -77,6 +80,10 @@ export default class OptionAmountListInput extends AbstractFormInput {
 
     get value() {
         return super.value;
+    }
+
+    getSubmitValue() {
+        return this.#inputEl.getSubmitValue();
     }
 
     set optiongroup(value) {

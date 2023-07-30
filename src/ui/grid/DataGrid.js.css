@@ -12,6 +12,7 @@
 }
 .table {
     width: 100%;
+    max-width: max-content;
     border-spacing: 0px;
 }
 .head th {
@@ -21,6 +22,7 @@
     padding: 8px;
     color: white;
     background-color: black;
+    white-space: pre;
 }
 .head th:not(:first-child) {
     border-left: solid 1px white;
@@ -31,8 +33,12 @@
 #body tr:not(:last-child) {
     border-bottom: solid 2px black;
 }
-.table td {
+#body td {
     padding: 8px;
+    white-space: pre;
+}
+#body td.empty {
+    opacity: 0.1;
 }
 #empty {
     position: sticky;
@@ -48,6 +54,7 @@
     white-space: normal;
     font-style: italic;
 }
+#options-container,
 #empty.hidden {
     display: none;
 }

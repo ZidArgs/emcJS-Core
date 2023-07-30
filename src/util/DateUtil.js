@@ -1,6 +1,6 @@
 const FORMATTER_REGEX = /[YMDhmsz]/g;
 
-class DateUtil {
+export default class DateUtil {
 
     #date;
 
@@ -92,5 +92,3 @@ class DateUtil {
     }
 
 }
-
-export default DateUtil;

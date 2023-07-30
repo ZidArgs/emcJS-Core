@@ -12,6 +12,10 @@ import "../../../i18n/I18nTooltip.js";
 import TPL from "./ImageSelect.js.html" assert {type: "html"};
 import STYLE from "./ImageSelect.js.css" assert {type: "css"};
 
+/** TODO detect slotted attribute changes
+ *  - if the content of child or the attributes change, react accordingly
+ */
+
 export default class ImageSelect extends CustomFormElementDelegating {
 
     #value;

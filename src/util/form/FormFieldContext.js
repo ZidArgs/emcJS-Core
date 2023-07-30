@@ -75,8 +75,8 @@ export default class FormFieldContext {
         this.#element = node;
         CONTEXTS.set(node, this);
         /* --- */
-        mutationObserver.observe(node, MUTATION_CONFIG);
-        this.#elementEventManager.switchTarget(node);
+        mutationObserver.observe(this.#element, MUTATION_CONFIG);
+        this.#elementEventManager.switchTarget(this.#element);
         this.#elementEventManager.set("change", () => {
             this.#storageEventManager.setActive(false);
             this.#storage.set(this.#element.name, this.#element.value);
@@ -91,8 +91,8 @@ export default class FormFieldContext {
         /* --- */
         this.#storageEventManager.set("change", (event) => {
             this.#elementEventManager.setActive(false);
-            if (node.name in event.data) {
-                node.value = event.data[node.name];
+            if (this.#element.name in event.data) {
+                this.#element.value = event.data[this.#element.name];
             }
             this.#callUpdateVisible();
             this.#callUpdateEnabled();
@@ -100,26 +100,26 @@ export default class FormFieldContext {
         });
         this.#storageEventManager.set(["load", "clear"], (event) => {
             this.#elementEventManager.setActive(false);
-            const value = event.data[node.name];
+            const value = event.data[this.#element.name];
             if (value != null) {
                 if (typeof value === "object") {
-                    node.setAttribute("value", JSON.stringify(value));
+                    this.#element.setAttribute("value", JSON.stringify(value));
                 } else {
-                    node.setAttribute("value", value);
+                    this.#element.setAttribute("value", value);
                 }
             } else {
-                node.removeAttribute("value");
+                this.#element.removeAttribute("value");
             }
-            node.value = value;
+            this.#element.value = value;
             this.#callUpdateVisible();
             this.#callUpdateEnabled();
             this.#elementEventManager.setActive(true);
         });
         /* --- */
-        const visibleValue = node.getAttribute("visible");
+        const visibleValue = this.#element.getAttribute("visible");
         this.setVisibleLogic(JSON.parse(visibleValue));
         /* --- */
-        const enabledValue = node.getAttribute("enabled");
+        const enabledValue = this.#element.getAttribute("enabled");
         this.setEnabledLogic(JSON.parse(enabledValue));
     }
 

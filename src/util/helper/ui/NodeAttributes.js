@@ -1,3 +1,7 @@
+import {
+    dashedToCamelCase
+} from "../string/ConvertCase.js";
+
 export function safeSetAttribute(node, name, value) {
     if (value != null) {
         if (typeof value === "object") {
@@ -50,4 +54,12 @@ export function getJSONAttribute(node, name) {
     } catch {
         return null;
     }
+}
+
+export function getAllAttributes(node) {
+    const res = {};
+    for (const attr of node.attributes) {
+        res[dashedToCamelCase(attr.name)] = attr.value;
+    }
+    return res;
 }

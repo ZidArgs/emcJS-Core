@@ -45,7 +45,7 @@ export default class CustomFormElement extends CustomElement {
     }
 
     get type() {
-        return this.constructor.name;
+        return this.localName;
     }
 
     set name(value) {
@@ -66,6 +66,18 @@ export default class CustomFormElement extends CustomElement {
 
     get defaultValue() {
         return this.getAttribute("value");
+    }
+
+    getFormValue() {
+        const value = this.getSubmitValue();
+        if (typeof value === "object" && value != null) {
+            return JSON.stringify(value);
+        }
+        return value;
+    }
+
+    getSubmitValue() {
+        return this.value;
     }
 
     set disabled(value) {
@@ -118,12 +130,8 @@ export default class CustomFormElement extends CustomElement {
         }
     }
 
-    getFormValue() {
-        const value = this.value;
-        if (typeof value === "object" && value != null) {
-            return JSON.stringify(value);
-        }
-        return value;
+    refreshFormValue() {
+        this.internals.setFormValue(this.getFormValue());
     }
 
 }

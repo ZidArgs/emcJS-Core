@@ -143,6 +143,14 @@ export default class HotkeyInput extends AbstractFormInput {
         return super.value;
     }
 
+    getSubmitValue() {
+        const value = this.value;
+        if (value == null) {
+            return "";
+        }
+        return value;
+    }
+
     static get observedAttributes() {
         return [...super.observedAttributes, "value", "placeholder"];
     }
