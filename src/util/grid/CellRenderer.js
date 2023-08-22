@@ -1,4 +1,4 @@
-import DateUtil from "../DateUtil.js";
+import DateUtil from "../date/DateUtil.js";
 
 function getStyleLengthValue(value) {
     if (!isNaN(parseFloat(value))) {
