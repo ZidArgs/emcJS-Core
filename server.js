@@ -6,3 +6,9 @@ const port = process.argv.indexOf("-port") >= 1 ? process.argv[process.argv.inde
 
 const service = new WebService(port, cors);
 service.registerService(StaticService, "", {serveFolder: "./webtest"});
+
+console.log(``);
+console.log(`=================================`);
+console.log(`=     http://localhost:${port}\t=`);
+console.log(`=================================`);
+console.log(``);

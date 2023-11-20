@@ -2,6 +2,7 @@
 import CellRenderer from "/emcJS/util/grid/CellRenderer.js";
 import "/emcJS/ui/Page.js";
 import "/emcJS/ui/grid/DataGrid.js";
+import TypeValidator from "/emcJS/util/TypeValidator.js";
 
 CellRenderer.registerCellRenderer("currency", (cellEl, value, options) => {
     cellEl.style.textAlign = "end";
@@ -105,3 +106,101 @@ grid2El.setData([
         E: new Date()
     }
 ]);
+
+TypeValidator.registerType("Coordinates", {
+    "x": {
+        "@type": "Number",
+        "optional": false,
+        "default": -1,
+        "decimalPlaces": 0
+    },
+    "y": {
+        "@type": "Number",
+        "optional": false,
+        "default": -1,
+        "decimalPlaces": 0
+    },
+    "target": {
+        "@type": "Relation",
+        "optional": true,
+        "types": [
+            "Exit"
+        ]
+    }
+});
+
+TypeValidator.registerType("Connection", {
+    "label": {
+        "@type": "String",
+        "optional": false,
+        "default": "",
+        "pattern": ".+"
+    },
+    "posA": {
+        "@type": "Coordinates",
+        "optional": false
+    },
+    "posB": {
+        "@type": "Coordinates",
+        "optional": false
+    },
+    "target": {
+        "@type": "AssociativeList",
+        "optional": false,
+        "children": {
+            "@type": "Relation",
+            "optional": true,
+            "types": [
+                "Exit"
+            ]
+        }
+    }
+});
+
+try {
+    TypeValidator.validate("Connection", {
+        "label": "A",
+        "posA": {
+            "x": 898,
+            "y": 683
+        },
+        "posB": {
+            "x": 506,
+            "y": 474,
+            "target": {
+                "value": "test",
+                "type": "Area"
+            }
+        },
+        "target": {
+            "A": {
+                "value": "test",
+                "type": "Exit"
+            }
+        }
+    }, true, "A");
+} catch (err) {
+    console.error(err);
+}
+
+try {
+    TypeValidator.validate("Connection", {
+        "label": "B",
+        "posA": {
+            "x": 898,
+            "y": 683
+        },
+        "posB": {
+            "x": 506,
+            "y": 474
+        },
+        "target": [
+            {
+                "value": "test",
+                "type": "Exit"
+            }
+        ]
+    }, true, "B");
+} catch (err) {
+    console.error(err);
+}

@@ -6,6 +6,15 @@ export function isStringNonEmpty(a) {
     return typeof a === "string" && a !== "";
 }
 
+export function isJSON(input) {
+    try {
+        JSON.parse(input);
+    } catch {
+        return false;
+    }
+    return true;
+}
+
 export function compareVersions(a = "", b = "", s = ".") {
     const c = a.split(s);
     const d = b.split(s);
