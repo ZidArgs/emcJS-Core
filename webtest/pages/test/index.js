@@ -2,6 +2,7 @@
 import CellRenderer from "/emcJS/util/grid/CellRenderer.js";
 import "/emcJS/ui/Page.js";
 import "/emcJS/ui/grid/DataGrid.js";
+import TypeConfigMap from "/emcJS/data/TypeConfigMap.js";
 import TypeValidator from "/emcJS/util/TypeValidator.js";
 
 CellRenderer.registerCellRenderer("currency", (cellEl, value, options) => {
@@ -107,7 +108,7 @@ grid2El.setData([
     }
 ]);
 
-TypeValidator.registerType("Coordinates", {
+TypeConfigMap.register("Coordinates", {
     "x": {
         "@type": "Number",
         "optional": false,
@@ -129,7 +130,7 @@ TypeValidator.registerType("Coordinates", {
     }
 });
 
-TypeValidator.registerType("Connection", {
+TypeConfigMap.register("Connection", {
     "label": {
         "@type": "String",
         "optional": false,

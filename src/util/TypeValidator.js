@@ -1,18 +1,12 @@
 import {
     isEqual
 } from "./helper/Comparator.js";
+import TypeConfigMap from "../data/TypeConfigMap.js";
 
-const IMAGE_PATTERN = /.+\\.(apng|avif|gif|jpg|jpeg|jfif|pjpeg|pjp|png|svg|webp|bmp|ico|tiff)/i;
-const COLOR_PATTERN = /#(0-9a-f){6}/i;
-
-const TypeDefinitions = new Map();
+const IMAGE_PATTERN = /.+\\.(?:apng|avif|gif|jpg|jpeg|jfif|pjpeg|pjp|png|svg|webp|bmp|ico|tiff)/i;
+const COLOR_PATTERN = /#(?:0-9a-f){6}/i;
 
 class TypeValidator {
-
-    registerType(typeName, typeConfig) {
-        // TODO validate type definition
-        TypeDefinitions.set(typeName, typeConfig);
-    }
 
     validate(typeName, data, strict, label) {
         if (typeof label === "string" && label !== "") {
@@ -23,9 +17,12 @@ class TypeValidator {
     }
 
     #validate(typeName, data, strict = true, path = []) {
-        const typeConfig = TypeDefinitions.get(typeName);
+        const typeConfig = TypeConfigMap.get(typeName);
         if (typeConfig == null) {
             throw new Error(`TypeValidator - type "${typeName}" unknown [ ${path.join(" > ")} ]`);
+        }
+        if (typeof data !== "object" || Array.isArray(data)) {
+            throw new Error(`TypeValidator - data has to be a dictionary [ ${path.join(" > ")} ]`);
         }
         if (strict) {
             for (const name in data) {
@@ -95,9 +92,9 @@ class TypeValidator {
         if (typeof value !== "string") {
             throw new Error(`TypeValidator::String - string expected [ ${path.join(" > ")} ]`);
         }
-        const r = new RegExp(def.pattern);
+        const r = def.pattern;
         if (!r.test(value)) {
-            throw new Error(`TypeValidator::String - does not match pattern /${def.pattern}/ [ ${path.join(" > ")} ]`);
+            throw new Error(`TypeValidator::String - does not match pattern /${def.pattern.source}/ [ ${path.join(" > ")} ]`);
         }
     }
 
@@ -139,15 +136,17 @@ class TypeValidator {
             throw new Error(`TypeValidator::Color - string expected [ ${path.join(" > ")} ]`);
         }
         if (!COLOR_PATTERN.test(value)) {
-            throw new Error(`TypeValidator::Color - does not match pattern (#000000 - #ffffff) [ ${path.join(" > ")} ]`);
+            throw new Error(`TypeValidator::Color - does not match color definition (#000000 - #ffffff) [ ${path.join(" > ")} ]`);
         }
     }
 
     #validateLogic(path, value) {
-        if (typeof value !== "boolean" && (typeof value !== "object" || Array.isArray(value))) {
-            throw new Error(`TypeValidator::Logic - boolean or logic definition expected [ ${path.join(" > ")} ]`);
+        if (typeof value !== "boolean") {
+            if (typeof value !== "object" || Array.isArray(value)) {
+                throw new Error(`TypeValidator::Logic - boolean or logic definition expected [ ${path.join(" > ")} ]`);
+            }
+            // TODO validate logic structure
         }
-        // TODO validate logic structure
     }
 
     #validateList(path, value, def, strict) {
@@ -197,58 +196,3 @@ class TypeValidator {
 }
 
 export default new TypeValidator();
-
-/*
-for validation (remember to ignore a possible "default" value):
-{
-    "Boolean": {
-        "__type__": "!String",
-        "optional": "!Boolean"
-    },
-    "String": {
-        "__type__": "!String",
-        "optional": "!Boolean",
-        "pattern": "RegExp"
-    },
-    "Number": {
-        "__type__": "!String",
-        "optional": "!Boolean",
-        "decimalPlaces": "Number",
-        "min": "Number",
-        "max": "Number"
-    },
-    "Choice": {
-        "__type__": "!String",
-        "optional": "!Boolean",
-        "choices": "![String]"
-    },
-    "Image": {
-        "__type__": "!String",
-        "optional": "!Boolean"
-    },
-    "Color": {
-        "__type__": "!String",
-        "optional": "!Boolean"
-    },
-    "Logic": {
-        "__type__": "!String",
-        "optional": "!Boolean"
-    },
-    "List": {
-        "__type__": "!String",
-        "optional": "!Boolean"
-        "children": "!Type"
-    },
-    "AssociativeList": {
-        "__type__": "!String",
-        "optional": "!Boolean"
-        "children": "!Type"
-    },
-    "Relation": {
-        "__type__": "!String",
-        "optional": "!Boolean"
-        "types": "![String]"
-    }
-}
-
-*/
