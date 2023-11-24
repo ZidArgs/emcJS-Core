@@ -41,8 +41,8 @@ const dependencies = new Set();
 
 /* STRINGS */
 function escapeString(str) {
-    if (typeof str != "string") {
-        if (typeof str == "number" && !isNaN(str)) {
+    if (typeof str !== "string") {
+        if (typeof str === "number" && !isNaN(str)) {
             return `"${str}"`;
         }
         return `""`;
@@ -53,8 +53,8 @@ function escapeString(str) {
 
 /* VALUE */
 function escapeValue(str) {
-    if (typeof str != "string") {
-        if (typeof str == "number") {
+    if (typeof str !== "string") {
+        if (typeof str === "number") {
             if (isNaN(str)) {
                 return 0;
             }
@@ -69,11 +69,11 @@ function escapeValue(str) {
 
 /* ELEMENTS */
 function twoElementOperation(els, join) {
-    return mathMultiElementOperation(els.slice(0, 2), join);
+    return multiElementOperation(els.slice(0, 2), join);
 }
 
 function multiElementOperation(els, join) {
-    if (els.length == 0) {
+    if (els.length === 0) {
         return 0;
     }
     return `(${els.map(buildLogic).join(join)})`;
@@ -97,7 +97,7 @@ function mathTwoElementOperation(els, join) {
 }
 
 function mathMultiElementOperation(els, join) {
-    if (els.length == 0) {
+    if (els.length === 0) {
         return 0;
     }
     return `${els.map(buildLogic).map(toNumber).join(join)}`;
@@ -105,7 +105,7 @@ function mathMultiElementOperation(els, join) {
 
 /* INITIATOR */
 function buildLogic(logic) {
-    if (typeof logic != "object") {
+    if (typeof logic !== "object") {
         logic = {type: logic};
     }
     if (TRANSPILERS[logic.type] != null) {

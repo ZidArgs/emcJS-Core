@@ -2,6 +2,7 @@ import {
     isEqual
 } from "./helper/Comparator.js";
 import TypeConfigMap from "../data/TypeConfigMap.js";
+import LogicValidator from "./logic/LogicValidator.js";
 
 const IMAGE_PATTERN = /.+\\.(?:apng|avif|gif|jpg|jpeg|jfif|pjpeg|pjp|png|svg|webp|bmp|ico|tiff)/i;
 const COLOR_PATTERN = /#(?:0-9a-f){6}/i;
@@ -145,7 +146,11 @@ class TypeValidator {
             if (typeof value !== "object" || Array.isArray(value)) {
                 throw new Error(`TypeValidator::Logic - boolean or logic definition expected [ ${path.join(" > ")} ]`);
             }
-            // TODO validate logic structure
+            try {
+                LogicValidator.validate(value);
+            } catch (err) {
+                throw new Error(`TypeValidator::Logic - not a valid logic [ ${path.join(" > ")} ]`, {cause: err});
+            }
         }
     }
 
@@ -158,7 +163,7 @@ class TypeValidator {
         }
         for (const key in value) {
             const entry = value[key];
-            this.#validateType([...path, `${key}`], entry, def.children, strict);
+            this.#validateType([...path, `${key} {${entry["@type"]}}`], entry, def.children, strict);
         }
     }
 
@@ -171,7 +176,7 @@ class TypeValidator {
         }
         for (const key in value) {
             const entry = value[key];
-            this.#validateType([...path, `"${key}"`], entry, def.children, strict);
+            this.#validateType([...path, `"${key}" {${entry["@type"]}}`], entry, def.children, strict);
         }
     }
 

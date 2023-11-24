@@ -27,6 +27,7 @@ const writeTargets = new Set;
 const writeLevel = new Set(["ERROR", "WARN", "INFO", "LOG"]);
 let reportTarget = null;
 const reportLevel = new Set(["ERROR", "WARN"]);
+let globalOmitStack = true;
 
 function formatStyle(style) {
     const result = [];
@@ -42,21 +43,43 @@ function setStyle(el, style) {
     }
 }
 
-function formatError(err) {
+function extractError(err) {
+    if (err.cause != null) {
+        return {
+            message: err.message,
+            stack: err.stack.split("\n").slice(1).join("\n"),
+            cause: extractError(err.cause)
+        };
+    }
     return {
         message: err.message,
         stack: err.stack.split("\n").slice(1).join("\n")
     };
 }
 
-function formatMessage(data) {
+function formatMessage(data, omitStack) {
     const {type, time, target, message} = data;
     if (message instanceof Error) {
-        const {message: msg, stack} = formatError(message);
-        return `[ ${type} | ${time} ] <${target}> ${msg}\n${stack}`;
+        const msg = formatError(message, omitStack).split("\n").map((l) => `\t${l}`).join("\n");
+        return `[ ${type} | ${time} ] <${target}>\n${msg}`;
     } else {
-        return `[ ${type} | ${time} ] <${target}>\n${message}`;
+        const msg = message.split("\n").map((l) => `\t${l}`).join("\n");
+        return `[ ${type} | ${time} ] <${target}>\n${msg}`;
     }
+}
+
+function formatError(err, omitStack) {
+    const msg = err.message;
+    const stack = err.stack.split("\n").slice(1).join("\n");
+    const cause = err.cause;
+    const result = [msg];
+    if (!globalOmitStack && !omitStack) {
+        result.push(stack);
+    }
+    if (cause != null) {
+        result.push(`\ncaused by:\n${formatError(cause, omitStack)}`);
+    }
+    return result.join("\n");
 }
 
 export default class Logger {
@@ -64,6 +87,8 @@ export default class Logger {
     static #instances = new Map();
 
     #clazzName = "";
+
+    #omitStack = true;
 
     constructor(clazz) {
         if (clazz != null) {
@@ -77,29 +102,37 @@ export default class Logger {
         this.#clazzName = clazz.name;
     }
 
+    set omitStack(value) {
+        this.#omitStack = !!value;
+    }
+
+    get omitStack() {
+        return this.#omitStack;
+    }
+
     error(message) {
-        Logger.error(message, this.#clazzName);
+        Logger.error(message, this.#clazzName, this.#omitStack);
     }
 
     warn(message) {
-        Logger.warn(message, this.#clazzName);
+        Logger.warn(message, this.#clazzName, this.#omitStack);
     }
 
     info(message) {
-        Logger.info(message, this.#clazzName);
+        Logger.info(message, this.#clazzName, this.#omitStack);
     }
 
     log(message) {
-        Logger.log(message, this.#clazzName);
+        Logger.log(message, this.#clazzName, this.#omitStack);
     }
 
     message(type, message) {
-        Logger.message(type, message, this.#clazzName);
+        Logger.message(type, message, this.#clazzName, this.#omitStack);
     }
 
-    static #write(data) {
+    static #write(data, omitStack) {
         if (!!writeTargets.size && writeLevel.has(data.type)) {
-            const msg = formatMessage(data);
+            const msg = formatMessage(data, omitStack);
             for (const out of writeTargets) {
                 if (out instanceof HTMLTextAreaElement) {
                     out.value += msg + "\n";
@@ -120,7 +153,7 @@ export default class Logger {
             if (data.message instanceof Error) {
                 Rest.post(reportTarget, {
                     ...data,
-                    message: formatError(data.message)
+                    message: extractError(data.message)
                 });
             } else {
                 Rest.post(reportTarget, data);
@@ -128,49 +161,49 @@ export default class Logger {
         }
     }
 
-    static error(message, target = null) {
+    static error(message, target = null, omitStack = true) {
         this.#write({
             target: target,
             type: LogLevel.ERROR,
             time: (new Date).toJSON().replace(TIME_FND, TIME_REP),
             message: message
-        });
+        }, omitStack);
     }
 
-    static warn(message, target = null) {
+    static warn(message, target = null, omitStack = true) {
         this.#write({
             target: target,
             type: LogLevel.WARN,
             time: (new Date).toJSON().replace(TIME_FND, TIME_REP),
             message: message
-        });
+        }, omitStack);
     }
 
-    static info(message, target = null) {
+    static info(message, target = null, omitStack = true) {
         this.#write({
             target: target,
             type: LogLevel.INFO,
             time: (new Date).toJSON().replace(TIME_FND, TIME_REP),
             message: message
-        });
+        }, omitStack);
     }
 
-    static log(message, target = null) {
+    static log(message, target = null, omitStack = true) {
         this.#write({
             target: target,
             type: LogLevel.LOG,
             time: (new Date).toJSON().replace(TIME_FND, TIME_REP),
             message: message
-        });
+        }, omitStack);
     }
 
-    static message(type, message, target = null) {
+    static message(type, message, target = null, omitStack = true) {
         this.#write({
             target: target,
             type: type,
             time: (new Date).toJSON().replace(TIME_FND, TIME_REP),
             message: message
-        });
+        }, omitStack);
     }
 
     static addLevel(value) {
@@ -207,6 +240,14 @@ export default class Logger {
         } else {
             reportTarget = null;
         }
+    }
+
+    static set omitStack(value) {
+        globalOmitStack = !!value;
+    }
+
+    static get omitStack() {
+        return globalOmitStack;
     }
 
     static logWindowErrorEvents(value) {

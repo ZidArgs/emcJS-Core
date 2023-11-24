@@ -4,6 +4,7 @@ import "/emcJS/ui/Page.js";
 import "/emcJS/ui/grid/DataGrid.js";
 import TypeConfigMap from "/emcJS/data/TypeConfigMap.js";
 import TypeValidator from "/emcJS/util/TypeValidator.js";
+import Logger from "/emcJS/util/log/Logger.js";
 
 CellRenderer.registerCellRenderer("currency", (cellEl, value, options) => {
     cellEl.style.textAlign = "end";
@@ -155,6 +156,10 @@ TypeConfigMap.register("Connection", {
                 "Exit"
             ]
         }
+    },
+    "logic": {
+        "@type": "Logic",
+        "optional": true
     }
 });
 
@@ -170,7 +175,7 @@ try {
             "y": 474,
             "target": {
                 "value": "test",
-                "type": "Area"
+                "type": "Exit"
             }
         },
         "target": {
@@ -178,10 +183,24 @@ try {
                 "value": "test",
                 "type": "Exit"
             }
+        },
+        "logic": {
+            "type": "not",
+            "el": {
+                "type": "and",
+                "el": [
+                    {
+                        "type": "true"
+                    },
+                    {
+                        "type": "sdaggasdg"
+                    }
+                ]
+            }
         }
     }, true, "A");
 } catch (err) {
-    console.error(err);
+    Logger.error(err);
 }
 
 try {
@@ -203,5 +222,5 @@ try {
         ]
     }, true, "B");
 } catch (err) {
-    console.error(err);
+    Logger.error(err);
 }
