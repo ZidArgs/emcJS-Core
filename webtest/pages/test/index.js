@@ -6,7 +6,7 @@ import TypeConfigMap from "/emcJS/data/TypeConfigMap.js";
 import TypeValidator from "/emcJS/util/TypeValidator.js";
 import Logger from "/emcJS/util/log/Logger.js";
 
-CellRenderer.registerCellRenderer("currency", (cellEl, value, options) => {
+CellRenderer.registerCellRenderer("currency", (gridEl, cellEl, value, options) => {
     cellEl.style.textAlign = "end";
     /* --- */
     if (value == null) {
@@ -36,7 +36,7 @@ CellRenderer.registerCellRenderer("currency", (cellEl, value, options) => {
     cellEl.innerText = text;
 });
 
-CellRenderer.registerCellRenderer(null, (cellEl, value) => {
+CellRenderer.registerCellRenderer(null, (gridEl, cellEl, value) => {
     if (value != null) {
         cellEl.classList.remove("empty");
         cellEl.innerText = value;

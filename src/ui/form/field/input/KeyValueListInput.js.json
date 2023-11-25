@@ -50,6 +50,12 @@
     },
     {
         "type": "SwitchInput",
+        "name": "sorted",
+        "label": "Sorted",
+        "value": false
+    },
+    {
+        "type": "SwitchInput",
         "name": "resettable",
         "label": "Resettable",
         "value": false
@@ -58,12 +64,6 @@
         "type": "SwitchInput",
         "name": "readonly",
         "label": "Readonly",
-        "value": false
-    },
-    {
-        "type": "SwitchInput",
-        "name": "required",
-        "label": "Required",
         "value": false
     },
     {

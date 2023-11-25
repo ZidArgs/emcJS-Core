@@ -1,8 +1,11 @@
 import DateUtil from "../date/DateUtil.js";
+import "../../ui/form/button/Button.js";
+
+const PX_REGEXP = /^[0-9]+(?:\.[0-9]+)?$/;
 
 function getStyleLengthValue(value) {
-    if (!isNaN(parseFloat(value))) {
-        return `${value}px`;
+    if (PX_REGEXP.test(value)) {
+        return `${Math.max(parseFloat(value), 50)}px`;
     }
     return value;
 }
@@ -39,13 +42,13 @@ class CellRendererManager extends EventTarget {
         this.dispatchEvent(ev);
     }
 
-    renderCell(cellEl, type, name, data = {}, options = {}) {
+    renderCell(gridEl, cellEl, type, name, data = {}, options = {}) {
         if (this.#cellRendererStorage.has(type)) {
             const renderFn = this.#cellRendererStorage.get(type);
-            renderFn(cellEl, data[name], options);
+            renderFn(gridEl, cellEl, data[name], options, name, data);
         } else if (this.#cellRendererStorage.has(null)) {
             const renderFn = this.#cellRendererStorage.get(null);
-            renderFn(cellEl, data[name], options);
+            renderFn(gridEl, cellEl, data[name], options, name, data);
         } else if (name in data) {
             cellEl.classList.remove("empty");
             cellEl.innerText = data[name];
@@ -55,13 +58,13 @@ class CellRendererManager extends EventTarget {
         }
     }
 
-    renderHeader(headerEl, type, name, label, options = {}) {
+    renderHeader(gridEl, headerEl, type, name, label, options = {}) {
         if (this.#headerRendererStorage.has(type)) {
             const renderFn = this.#headerRendererStorage.get(type);
-            renderFn(headerEl, label ?? name, options);
+            renderFn(gridEl, headerEl, label ?? name, options);
         } else if (this.#headerRendererStorage.has(null)) {
             const renderFn = this.#headerRendererStorage.get(null);
-            renderFn(headerEl, label ?? name, options);
+            renderFn(gridEl, headerEl, label ?? name, options);
         } else {
             headerEl.innerText = label ?? name;
         }
@@ -76,18 +79,18 @@ class CellRendererManager extends EventTarget {
 
 const CellRenderer = new CellRendererManager();
 
-CellRenderer.registerCellRenderer("empty", (cellEl) => {
+CellRenderer.registerCellRenderer("empty", (gridEl, cellEl) => {
     cellEl.innerText = "";
 });
 
-CellRenderer.registerHeaderRenderer("empty", (cellEl) => {
+CellRenderer.registerHeaderRenderer("empty", (gridEl, cellEl) => {
     cellEl.style.padding = "0px";
     cellEl.style.minWidth = "8px";
     cellEl.style.width = "8px";
     cellEl.innerText = "";
 });
 
-CellRenderer.registerCellRenderer("boolean", (cellEl, value) => {
+CellRenderer.registerCellRenderer("boolean", (gridEl, cellEl, value) => {
     cellEl.style.textAlign = "center";
     if (value != null) {
         cellEl.classList.remove("empty");
@@ -98,7 +101,7 @@ CellRenderer.registerCellRenderer("boolean", (cellEl, value) => {
     }
 });
 
-CellRenderer.registerCellRenderer("number", (cellEl, value, options) => {
+CellRenderer.registerCellRenderer("number", (gridEl, cellEl, value, options) => {
     cellEl.style.textAlign = "end";
     /* --- */
     if (value == null) {
@@ -120,7 +123,7 @@ CellRenderer.registerCellRenderer("number", (cellEl, value, options) => {
     }
 });
 
-CellRenderer.registerCellRenderer("datetime", (cellEl, value) => {
+CellRenderer.registerCellRenderer("datetime", (gridEl, cellEl, value) => {
     cellEl.style.textAlign = "right";
     if (value != null) {
         if (!(value instanceof Date)) {
@@ -134,7 +137,7 @@ CellRenderer.registerCellRenderer("datetime", (cellEl, value) => {
     }
 });
 
-CellRenderer.registerCellRenderer("date", (cellEl, value) => {
+CellRenderer.registerCellRenderer("date", (gridEl, cellEl, value) => {
     cellEl.style.textAlign = "right";
     if (value != null) {
         if (!(value instanceof Date)) {
@@ -148,7 +151,7 @@ CellRenderer.registerCellRenderer("date", (cellEl, value) => {
     }
 });
 
-CellRenderer.registerCellRenderer("time", (cellEl, value) => {
+CellRenderer.registerCellRenderer("time", (gridEl, cellEl, value) => {
     cellEl.style.textAlign = "right";
     if (value != null) {
         if (!(value instanceof Date)) {
@@ -160,6 +163,27 @@ CellRenderer.registerCellRenderer("time", (cellEl, value) => {
         cellEl.classList.add("empty");
         cellEl.innerText = "n/a";
     }
+});
+
+CellRenderer.registerCellRenderer("button", (gridEl, cellEl, value, options, name, data) => {
+    cellEl.style.textAlign = "right";
+    const buttonEl = document.createElement("emc-button");
+    if (options.text != null) {
+        buttonEl.text = options.text;
+    } else if (value != null) {
+        buttonEl.text = value;
+    } else {
+        buttonEl.text = "...";
+    }
+    if (options.action != null) {
+        const actionFn = gridEl.getCustomAction(options.action);
+        if (actionFn != null) {
+            buttonEl.addEventListener("click", () => {
+                actionFn(buttonEl, name, data);
+            });
+        }
+    }
+    cellEl.appendChild(buttonEl);
 });
 
 export default CellRenderer;

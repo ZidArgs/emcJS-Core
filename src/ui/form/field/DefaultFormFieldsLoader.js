@@ -9,6 +9,7 @@ import "./input/SwitchInput.js";
 import "./input/TextInput.js";
 // field special input
 import "./input/BoolOrLogicInput.js";
+import "./input/KeyValueListInput.js";
 import "./input/OptionAmountListInput.js";
 // field select
 import "./select/ImageSelect.js";

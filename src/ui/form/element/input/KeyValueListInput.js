@@ -2,8 +2,10 @@ import CustomFormElementDelegating from "../../../element/CustomFormElementDeleg
 import {
     isEqual
 } from "../../../../util/helper/Comparator.js";
+import "../../../grid/DataGrid.js";
 import TPL from "./KeyValueListInput.js.html" assert {type: "html"};
 import STYLE from "./KeyValueListInput.js.css" assert {type: "css"};
+import ModalDialog from "../../../modal/ModalDialog.js";
 
 /** visualization:
  * +--------------------------------------------------+
@@ -36,7 +38,12 @@ import STYLE from "./KeyValueListInput.js.css" assert {type: "css"};
  * - true -> deactivate add & delete; keys & values can not be edited
  */
 
+// TODO make values editable
+// TODO add readonly mode
+
 export default class KeyValueListInput extends CustomFormElementDelegating {
+
+    #gridEl;
 
     #value;
 
@@ -51,6 +58,33 @@ export default class KeyValueListInput extends CustomFormElementDelegating {
         this.addEventListener("blur", (event) => {
             // TODO
             event.stopPropagation();
+        });
+        /* --- */
+        this.#gridEl = this.shadowRoot.getElementById("grid");
+        const addEl = this.shadowRoot.getElementById("add");
+        addEl.addEventListener("click", async () => {
+            console.log("add item");
+            let key = null;
+            const value = this.value ?? {};
+            while (key == null) {
+                key = await ModalDialog.prompt("Add item", "Please enter a new key");
+                if (typeof key !== "string") {
+                    return;
+                }
+                if (key in value) {
+                    await ModalDialog.alert("Key already exists", `The key "${key}" does already exist. Please enter another one!`);
+                    key = null;
+                }
+            }
+            this.value = {...value, [key]: ""};
+        });
+        this.#gridEl.registerCustomAction("delete", (buttonEl, name, data) => {
+            const value = {...this.value};
+            const key = data["key"];
+            if (key in value) {
+                delete value[key];
+            }
+            this.value = value;
         });
     }
 
@@ -123,7 +157,13 @@ export default class KeyValueListInput extends CustomFormElementDelegating {
     }
 
     #applyValue() {
-        // TODO build internal structure
+        const data = Object.entries(this.#value ?? {}).map((row) => {
+            return {
+                key: row[0],
+                value: row[1]
+            }
+        });
+        this.#gridEl.setData(data);
     }
 
     checkValid() {
@@ -133,4 +173,4 @@ export default class KeyValueListInput extends CustomFormElementDelegating {
 
 }
 
-customElements.define("emc-input-keyvaluelist", KeyValueListInput);
+customElements.define("emc-input-key-value-list", KeyValueListInput);

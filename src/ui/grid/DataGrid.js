@@ -1,4 +1,5 @@
 import CustomElement from "../element/CustomElement.js";
+import CustomActionRegistry from "../../data/registry/CustomActionRegistry.js";
 import {
     isEqual
 } from "../../util/helper/Comparator.js";
@@ -33,6 +34,8 @@ export default class DataGrid extends CustomElement {
     #columns = [];
 
     #data = [];
+
+    #customActionRegistry = new CustomActionRegistry();
 
     constructor() {
         super();
@@ -89,9 +92,12 @@ export default class DataGrid extends CustomElement {
             this.#columns.push(columnData);
             const headerCellEl = document.createElement("th");
             const {type, name, label, ...options} = columnData;
-            CellRendererManager.renderHeader(headerCellEl, type, name, label, options);
+            CellRendererManager.renderHeader(this, headerCellEl, type, name, label, options);
             this.#headerEl.append(headerCellEl);
         }
+        const lastHeaderCellEl = document.createElement("th");
+        lastHeaderCellEl.classList.add("lastCell");
+        this.#headerEl.append(lastHeaderCellEl);
         if (this.#data.length > 0) {
             this.#refreshCells();
         }
@@ -102,10 +108,13 @@ export default class DataGrid extends CustomElement {
         for (const columnData of this.#columns) {
             const headerCellEl = document.createElement("th");
             const {type, name, label, ...options} = columnData;
-            CellRendererManager.renderHeader(headerCellEl, type, name, label, options);
+            CellRendererManager.renderHeader(this, headerCellEl, type, name, label, options);
             headerCellEl.innerText = columnData.label ?? columnData.name;
             this.#headerEl.append(headerCellEl);
         }
+        const lastHeaderCellEl = document.createElement("th");
+        lastHeaderCellEl.classList.add("lastCell");
+        this.#headerEl.append(lastHeaderCellEl);
     }
 
     #refreshCells() { // XXX element manager?
@@ -117,9 +126,12 @@ export default class DataGrid extends CustomElement {
                 for (const column of this.#columns) {
                     const {type, name, ...options} = column;
                     const cellEl = document.createElement("td");
-                    CellRendererManager.renderCell(cellEl, type, name, rowData, options);
+                    CellRendererManager.renderCell(this, cellEl, type, name, rowData, options);
                     rowEl.append(cellEl);
                 }
+                const lastCellEl = document.createElement("td");
+                lastCellEl.classList.add("lastCell");
+                rowEl.append(lastCellEl);
                 this.#bodyEl.append(rowEl);
             }
         } else {
@@ -130,6 +142,15 @@ export default class DataGrid extends CustomElement {
     #onSlotChange = debounce(() => {
         this.#generateColumns();
     });
+
+    registerCustomAction(name, fn) {
+        this.#customActionRegistry.set(name, fn);
+        this.#refreshCells(); // TODO add better refresh for only custom action related cells
+    }
+
+    getCustomAction(name) {
+        return this.#customActionRegistry.get(name);
+    }
 
 }
 

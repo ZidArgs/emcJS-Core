@@ -144,7 +144,7 @@ export default createMixin((superclass) => class ContextMenuManagerMixin extends
             if (event instanceof MouseEvent) {
                 mnu_ctx.show(event.clientX, event.clientY, ...props);
             } else {
-                mnu_ctx.show(event?.left ?? 0, event?.top ?? 0, ...props);
+                mnu_ctx.show(event?.left ?? event?.data?.left ?? 0, event?.top ?? event?.data?.top ?? 0, ...props);
             }
         }
     }

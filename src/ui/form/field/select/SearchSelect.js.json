@@ -39,7 +39,20 @@
         "type": "KeyValueListInput",
         "name": "options",
         "label": "Options (ignored if Option Group is set)",
-        "value": ""
+        "value": {},
+        "visible": {
+            "type": "eq",
+            "el": [
+                {
+                    "type": "value",
+                    "el": "optiongroup"
+                },
+                {
+                    "type": "string",
+                    "el": ""
+                }
+            ]
+        }
     },
     {
         "type": "SwitchInput",

@@ -12,10 +12,6 @@
     border: solid var(--grid-border-width, 2px) var(--grid-border-color, #000000);
     border-radius: var(--grid-border-radius, 6px);
     overflow: auto;
-    background-image: linear-gradient(0deg, var(--grid-header-back-color, #000000), var(--grid-header-back-color, #000000)), linear-gradient(0deg, transparent calc(var(--grid-row-height, 34px) - 1px), var(--grid-row-seperator-color, #b4b4b4) calc(var(--grid-row-height, 34px) - 1px));
-    background-repeat: no-repeat, repeat-y;
-    background-size: 100% var(--grid-header-height, 40px), 100% var(--grid-row-height, 34px);
-    background-position-y: 0px, calc(var(--grid-header-height, 40px) - 1px);
 }
 .table {
     width: 100%;
@@ -39,24 +35,29 @@
     width: 100%;
 }
 .head th:not(:first-child) {
-    border-left: solid calc(var(--grid-column-seperator-width, 2px) / 2) var(--grid-header-seperator-color, #ffffff);
+    border-left: solid var(--grid-column-seperator-width, 2px) var(--grid-header-seperator-color, #ffffff);
 }
-.head th:not(:last-child) {
-    border-right: solid calc(var(--grid-column-seperator-width, 2px) / 2) var(--grid-header-seperator-color, #ffffff);
+.head th.lastCell {
+    padding: 0px;
+    min-width: 0px;
+    width: 100%;
 }
 #body td {
     height: var(--grid-row-height, 34px);
     padding: 0px 8px;
     white-space: pre;
-}
-#body td:not(:first-child) {
-    border-left: solid calc(var(--grid-column-seperator-width, 2px) / 2) var(--grid-column-seperator-color, #ffffff);
-}
-#body td:not(:last-child) {
-    border-right: solid calc(var(--grid-column-seperator-width, 2px) / 2) var(--grid-column-seperator-color, #ffffff);
+    border-bottom: solid var(--grid-row-seperator-width, 1px) var(--grid-row-seperator-color, #696969);
 }
 #body td.empty {
     color: #00000019;
+}
+#body td.lastCell {
+    padding: 0px;
+}
+#body td emc-button {
+    height: 1.5em;
+    width: 100%;
+    margin: 0;
 }
 #empty {
     position: sticky;

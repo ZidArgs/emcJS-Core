@@ -120,13 +120,15 @@
     --grid-empty-text-color: #666666;
     --grid-empty-back-color: #dadada;
 
+    --grid-column-seperator-width: 2px;
+
     --grid-header-height: 40px;
     --grid-header-text-color: #ffffff;
     --grid-header-back-color: #000000;
     --grid-header-seperator-color: #ffffff;
-    
-    --grid-column-seperator-color: var(--grid-header-seperator-color, #ffffff);
-    --grid-column-seperator-width: 2px;
+
+    --grid-row-seperator-width: 1px;
+    --grid-row-seperator-color: #696969;
 
     --grid-row-height: 34px;
 
