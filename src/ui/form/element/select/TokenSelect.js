@@ -1,5 +1,5 @@
 import CustomFormElementDelegating from "../../../element/CustomFormElementDelegating.js";
-import TokenRegistry from "../../../../data/registry/TokenRegistry.js";
+import TokenRegistry from "../../../../data/registry/form/TokenRegistry.js";
 import EventTargetManager from "../../../../util/event/EventTargetManager.js";
 import EventMultiTargetManager from "../../../../util/event/EventMultiTargetManager.js";
 import i18n from "../../../../util/I18n.js";

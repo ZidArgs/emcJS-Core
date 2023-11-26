@@ -1,6 +1,6 @@
 import AbstractFormInput from "../../abstract/AbstractFormInput.js";
 import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
-import OptionGroupRegistry from "../../../../data/registry/OptionGroupRegistry.js";
+import OptionGroupRegistry from "../../../../data/registry/form/OptionGroupRegistry.js";
 import EventTargetManager from "../../../../util/event/EventTargetManager.js";
 import {
     deepClone

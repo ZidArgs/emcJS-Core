@@ -21,6 +21,10 @@
 :host([stretch]:not([stretch="false"])) .table {
     max-width: initial;
 }
+:host([nohead]:not([nohead="false"])) .head th {
+    height: 0px;
+    font-size: 0px;
+}
 .head th {
     position: sticky;
     top: 0px;
@@ -34,8 +38,11 @@
 :host([stretch="last"]) th:last-child {
     width: 100%;
 }
-.head th:not(:first-child) {
+.head th:not(:first-child):not(:last-child) {
     border-left: solid var(--grid-column-seperator-width, 2px) var(--grid-header-seperator-color, #ffffff);
+}
+.head th:last-child {
+    box-shadow: inset white 2px 0px 0px;
 }
 .head th.lastCell {
     padding: 0px;
@@ -58,6 +65,10 @@
     height: 1.5em;
     width: 100%;
     margin: 0;
+}
+#body td input.input {
+    width: 100%;
+    font-size: inherit;
 }
 #empty {
     position: sticky;

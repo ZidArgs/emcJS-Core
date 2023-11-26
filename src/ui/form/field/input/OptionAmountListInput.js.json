@@ -25,15 +25,28 @@
     },
     {
         "type": "StringInput",
-        "name": "optiongroup",
-        "label": "Option Group",
+        "name": "listgroup",
+        "label": "List Group",
         "value": ""
     },
     {
-        "type": "KeyValueListInput",
-        "name": "options",
-        "label": "Options (ignored if Option Group is set)",
-        "value": ""
+        "type": "ListInput",
+        "name": "list",
+        "label": "List (ignored if List Group is set)",
+        "value": [],
+        "visible": {
+            "type": "eq",
+            "el": [
+                {
+                    "type": "value",
+                    "el": "listgroup"
+                },
+                {
+                    "type": "string",
+                    "el": ""
+                }
+            ]
+        }
     },
     {
         "type": "SwitchInput",

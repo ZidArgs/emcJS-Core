@@ -4,44 +4,10 @@ import {
 } from "../../../../util/helper/Comparator.js";
 import ModalDialog from "../../../modal/ModalDialog.js";
 import "../../../grid/DataGrid.js";
-import TPL from "./KeyValueListInput.js.html" assert {type: "html"};
-import STYLE from "./KeyValueListInput.js.css" assert {type: "css"};
+import TPL from "./ListInput.js.html" assert {type: "html"};
+import STYLE from "./ListInput.js.css" assert {type: "css"};
 
-/** visualization:
- * +--------------------------------------------------+
- * | Search...                                        | <-- filter list by key and value; always show empty keys / values
- * +--------------------------------------------------+
- * | +--------------------+-------------------+-----+ |
- * | | key 1              | value 1           | DEL | | <-- string input for "key" & "value"; keys must be unique; key edit optional -> key readonly
- * | +--------------------+-------------------+-----+ |
- * | | key 2              | value 2           | DEL | | <-- DEL is optional (one option for "DEL" and "Add new" -> list readonly)
- * | +--------------------+-------------------+-----+ |
- * | |                    |                   | DEL | | <-- initial "key" & "value" is ""
- * | +--------------------+-------------------+-----+ |
- * +--------------------------------------------------+
- * | +---------+                                      |
- * | | Add new |                                      | <-- optional; on add scroll to new entry and focus new "key" input; use dialog if keys not editable
- * | +---------+                                      |
- * +--------------------------------------------------+
- */
-
-/** target value output:
- * {
- *     [string=key]: [string=value]
- * }
- */
-
-/** readonly option: (search never readonly)
- * - false [default] -> no readonly
- * - key -> keys can not be edited
- * - list -> deactivate add & delete; keys can not be edited
- * - true -> deactivate add & delete; keys & values can not be edited
- */
-
-// TODO make values editable
-// TODO add readonly mode
-
-export default class KeyValueListInput extends CustomFormElementDelegating {
+export default class ListInput extends CustomFormElementDelegating {
 
     #gridEl;
 
@@ -64,34 +30,21 @@ export default class KeyValueListInput extends CustomFormElementDelegating {
         const addEl = this.shadowRoot.getElementById("add");
         addEl.addEventListener("click", async () => {
             let key = null;
-            const value = this.value ?? {};
+            const value = this.value ?? [];
             while (key == null) {
                 key = await ModalDialog.prompt("Add item", "Please enter a new key");
                 if (typeof key !== "string") {
                     return;
                 }
-                if (key in value) {
+                if (value.includes(key)) {
                     await ModalDialog.alert("Key already exists", `The key "${key}" does already exist. Please enter another one!`);
                     key = null;
                 }
             }
-            this.value = {...value, [key]: ""};
+            this.value = [...value, key];
         });
         this.#gridEl.registerCustomAction("delete", (buttonEl, name, data) => {
-            const currentValue = {...this.value};
-            const key = data["key"];
-            if (key in currentValue) {
-                delete currentValue[key];
-            }
-            this.value = currentValue;
-        });
-        this.#gridEl.registerCustomAction("edit", (fieldEl, value, name, data) => {
-            const currentValue = {...this.value};
-            const key = data["key"];
-            if (key in currentValue) {
-                currentValue[key] = value;
-            }
-            this.value = currentValue;
+            this.value = this.value.filter((key) => key === data["key"]);
         });
     }
 
@@ -164,10 +117,9 @@ export default class KeyValueListInput extends CustomFormElementDelegating {
     }
 
     #applyValue() {
-        const data = Object.entries(this.#value ?? {}).map((row) => {
+        const data = (this.#value ?? []).map((row) => {
             return {
-                key: row[0],
-                value: row[1]
+                key: row
             }
         });
         this.#gridEl.setData(data);
@@ -180,4 +132,4 @@ export default class KeyValueListInput extends CustomFormElementDelegating {
 
 }
 
-customElements.define("emc-input-key-value-list", KeyValueListInput);
+customElements.define("emc-input-list", ListInput);

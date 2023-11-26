@@ -1,5 +1,8 @@
 import DateUtil from "../date/DateUtil.js";
 import "../../ui/form/button/Button.js";
+import {
+    debounce
+} from "../Debouncer.js";
 
 const PX_REGEXP = /^[0-9]+(?:\.[0-9]+)?$/;
 
@@ -101,9 +104,33 @@ CellRenderer.registerCellRenderer("boolean", (gridEl, cellEl, value) => {
     }
 });
 
+CellRenderer.registerCellRenderer("string", (gridEl, cellEl, value, options, name, data) => {
+    if (options.editable != null && options.editable !== "false") {
+        const fieldEl = document.createElement("input", {is: "emc-i18n-input"});
+        fieldEl.type = "text";
+        fieldEl.classList.add("input");
+        if (value != null) {
+            fieldEl.value = value;
+        }
+        if (options.action != null) {
+            const actionFn = gridEl.getCustomAction(options.action);
+            if (actionFn != null) {
+                fieldEl.addEventListener("input", debounce(() => {
+                    actionFn(fieldEl, fieldEl.value, name, data);
+                }, 300));
+            }
+        }
+        cellEl.appendChild(fieldEl);
+    } else if (value == null) {
+        cellEl.classList.add("empty");
+    } else {
+        cellEl.classList.remove("empty");
+        cellEl.innerText = value;
+    }
+});
+
 CellRenderer.registerCellRenderer("number", (gridEl, cellEl, value, options) => {
-    cellEl.style.textAlign = "end";
-    /* --- */
+    cellEl.style.textAlign = "right";
     if (value == null) {
         cellEl.classList.add("empty");
     } else {

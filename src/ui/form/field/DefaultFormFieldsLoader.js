@@ -10,6 +10,7 @@ import "./input/TextInput.js";
 // field special input
 import "./input/BoolOrLogicInput.js";
 import "./input/KeyValueListInput.js";
+import "./input/ListInput.js";
 import "./input/OptionAmountListInput.js";
 // field select
 import "./select/ImageSelect.js";

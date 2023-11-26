@@ -21,6 +21,8 @@ import STYLE from "./OptionAmountListInput.js.css" assert {type: "css"};
  *  - if the content of child or the attributes change, react accordingly
  */
 
+// TODO use DataGrid
+
 export default class OptionAmountListInput extends CustomFormElementDelegating {
 
     #value;

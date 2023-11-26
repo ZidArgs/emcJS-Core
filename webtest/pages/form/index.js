@@ -3,8 +3,8 @@ import i18n from "/emcJS/util/I18n.js";
 import FileLoader from "/emcJS/util/file/FileLoader.js";
 import CustomActionRegistry from "/emcJS/data/registry/CustomActionRegistry.js";
 import LogicOperatorRegistry from "/emcJS/data/registry/LogicOperatorRegistry.js";
-import OptionGroupRegistry from "/emcJS/data/registry/OptionGroupRegistry.js";
-import TokenRegistry from "/emcJS/data/registry/TokenRegistry.js";
+import OptionGroupRegistry from "/emcJS/data/registry/form/OptionGroupRegistry.js";
+import TokenRegistry from "/emcJS/data/registry/form/TokenRegistry.js";
 import "/emcJS/ui/Page.js";
 // form
 import FormBuilder from "/emcJS/util/form/FormBuilder.js";

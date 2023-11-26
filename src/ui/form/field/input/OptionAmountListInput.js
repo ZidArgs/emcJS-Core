@@ -9,7 +9,7 @@ import {
 } from "../../../../util/helper/ui/NodeAttributes.js";
 import EventTargetManager from "../../../../util/event/EventTargetManager.js";
 import I18nOption from "../../../i18n/builtin/I18nOption.js";
-import OptionGroupRegistry from "../../../../data/registry/OptionGroupRegistry.js";
+import ListGroupRegistry from "../../../../data/registry/form/ListGroupRegistry.js";
 import "../../element/input/OptionAmountListInput.js";
 import TPL from "./OptionAmountListInput.js.html" assert {type: "html"};
 import STYLE from "./OptionAmountListInput.js.css" assert {type: "css"};
@@ -23,9 +23,9 @@ export default class OptionAmountListInput extends AbstractFormInput {
 
     #inputEl;
 
-    #optionGroup = null;
+    #listGroup = null;
 
-    #optionGroupEventTargetManager = new EventTargetManager();
+    #listGroupEventTargetManager = new EventTargetManager();
 
     constructor() {
         super();
@@ -36,12 +36,12 @@ export default class OptionAmountListInput extends AbstractFormInput {
         this.#inputEl.addEventListener("change", () => {
             this.value = this.#inputEl.value;
         });
-        this.#inputEl.addEventListener("options", () => {
+        this.#inputEl.addEventListener("list", () => {
             this.refreshFormValue();
         });
         /* --- */
-        this.#optionGroupEventTargetManager.set("change", () => {
-            this.#loadOptionsFromGroup();
+        this.#listGroupEventTargetManager.set("change", () => {
+            this.#loadListFromGroup();
         });
     }
 
@@ -86,16 +86,16 @@ export default class OptionAmountListInput extends AbstractFormInput {
         return this.#inputEl.getSubmitValue();
     }
 
-    set optiongroup(value) {
-        this.setAttribute("optiongroup", value);
+    set listgroup(value) {
+        this.setAttribute("listgroup", value);
     }
 
-    get optiongroup() {
-        return this.getAttribute("optiongroup");
+    get listgroup() {
+        return this.getAttribute("listgroup");
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "value", "readonly", "optiongroup"];
+        return [...super.observedAttributes, "value", "readonly", "listgroup"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -128,31 +128,48 @@ export default class OptionAmountListInput extends AbstractFormInput {
                     safeSetAttribute(this.#inputEl, name, newValue);
                 }
             } break;
-            case "optiongroup": {
+            case "listgroup": {
                 if (oldValue != newValue) {
                     if (newValue == null || newValue === "") {
-                        this.#optionGroup = null;
+                        this.#listGroup = null;
                     } else {
-                        this.#optionGroup = new OptionGroupRegistry(newValue);
+                        this.#listGroup = new ListGroupRegistry(newValue);
                     }
-                    this.#optionGroupEventTargetManager.switchTarget(this.#optionGroup);
-                    this.#loadOptionsFromGroup();
+                    this.#listGroupEventTargetManager.switchTarget(this.#listGroup);
+                    this.#loadListFromGroup();
                 }
             } break;
         }
     }
 
-    #loadOptionsFromGroup() {
-        this.innerHTML = "";
-        if (this.#optionGroup != null) {
-            for (const [value, label] of this.#optionGroup) {
+    static fromConfig(config) {
+        const inputEl = new OptionAmountListInput();
+        const {list = [], listgroup, ...params} = config;
+        for (const name in params) {
+            const value = params[name];
+            safeSetAttribute(inputEl, name, value);
+        }
+        if (typeof listgroup === "string" && listgroup !== "") {
+            inputEl.setAttribute("listgroup", listgroup);
+        } else {
+            for (const value of list) {
                 const optionEl = I18nOption.create();
                 optionEl.setAttribute("value", value);
-                if (typeof label === "string" && label !== "") {
-                    optionEl.i18nValue = label;
-                } else if (value !== "") {
-                    optionEl.i18nValue = value;
-                }
+                optionEl.i18nValue = value;
+                inputEl.append(optionEl);
+            }
+        }
+        return inputEl;
+    }
+
+    #loadListFromGroup() {
+        this.innerHTML = "";
+        if (this.#listGroup != null) {
+            const list = this.#listGroup.getAll();
+            for (const value of list) {
+                const optionEl = I18nOption.create();
+                optionEl.setAttribute("value", value);
+                optionEl.i18nValue = value;
                 this.append(optionEl);
             }
         }

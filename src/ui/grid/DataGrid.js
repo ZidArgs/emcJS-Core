@@ -63,6 +63,14 @@ export default class DataGrid extends CustomElement {
         });
     }
 
+    set nohead(value) {
+        this.setAttribute("nohead", value);
+    }
+
+    get nohead() {
+        return this.getAttribute("nohead");
+    }
+
     setData(rows = []) {
         if (rows != null && !Array.isArray(rows)) {
             throw new TypeError("Data must be an array or null");

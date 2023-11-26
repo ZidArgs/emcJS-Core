@@ -7,12 +7,12 @@ import FormElementRegistry from "../../../../data/registry/FormElementRegistry.j
 import {
     safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
-import "../../element/input/KeyValueListInput.js";
-import TPL from "./KeyValueListInput.js.html" assert {type: "html"};
-import STYLE from "./KeyValueListInput.js.css" assert {type: "css"};
-import CONFIG_FIELDS from "./KeyValueListInput.js.json" assert {type: "json"};
+import "../../element/input/ListInput.js";
+import TPL from "./ListInput.js.html" assert {type: "html"};
+import STYLE from "./ListInput.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./ListInput.js.json" assert {type: "json"};
 
-export default class KeyValueListInput extends AbstractFormInput {
+export default class ListInput extends AbstractFormInput {
 
     static get formConfigurationFields() {
         return deepClone(CONFIG_FIELDS);
@@ -114,5 +114,5 @@ export default class KeyValueListInput extends AbstractFormInput {
 
 }
 
-FormElementRegistry.register("KeyValueListInput", KeyValueListInput);
-customElements.define("emc-field-input-key-value-list", KeyValueListInput);
+FormElementRegistry.register("ListInput", ListInput);
+customElements.define("emc-field-input-list", ListInput);
