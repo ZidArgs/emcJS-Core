@@ -43,8 +43,16 @@ export default class ListInput extends CustomFormElementDelegating {
             }
             this.value = [...value, key];
         });
-        this.#gridEl.registerCustomAction("delete", (buttonEl, name, data) => {
-            this.value = this.value.filter((key) => key === data["key"]);
+        this.#gridEl.addEventListener("delete", (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            const {data} = event.data;
+            const currentValue = {...this.#value};
+            const key = data["key"];
+            if (key in currentValue) {
+                delete currentValue[key];
+            }
+            this.value = currentValue;
         });
     }
 

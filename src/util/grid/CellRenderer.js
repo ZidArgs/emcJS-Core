@@ -1,8 +1,5 @@
 import DateUtil from "../date/DateUtil.js";
 import "../../ui/form/button/Button.js";
-import {
-    debounce
-} from "../Debouncer.js";
 
 const PX_REGEXP = /^[0-9]+(?:\.[0-9]+)?$/;
 
@@ -112,14 +109,19 @@ CellRenderer.registerCellRenderer("string", (gridEl, cellEl, value, options, nam
         if (value != null) {
             fieldEl.value = value;
         }
-        if (options.action != null) {
-            const actionFn = gridEl.getCustomAction(options.action);
-            if (actionFn != null) {
-                fieldEl.addEventListener("input", debounce(() => {
-                    actionFn(fieldEl, fieldEl.value, name, data);
-                }, 300));
-            }
-        }
+        const eventName = options.action;
+        fieldEl.addEventListener("input", (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            const ev = new Event(eventName ?? "input");
+            ev.data = {
+                fieldEl,
+                value: fieldEl.value,
+                name,
+                data
+            };
+            gridEl.dispatchEvent(ev);
+        });
         cellEl.appendChild(fieldEl);
     } else if (value == null) {
         cellEl.classList.add("empty");
@@ -202,14 +204,18 @@ CellRenderer.registerCellRenderer("button", (gridEl, cellEl, value, options, nam
     } else {
         buttonEl.text = "...";
     }
-    if (options.action != null) {
-        const actionFn = gridEl.getCustomAction(options.action);
-        if (actionFn != null) {
-            buttonEl.addEventListener("click", () => {
-                actionFn(buttonEl, name, data);
-            });
-        }
-    }
+    const eventName = options.action;
+    buttonEl.addEventListener("click", (event) => {
+        event.stopPropagation();
+        event.preventDefault();
+        const ev = new Event(eventName ?? "click");
+        ev.data = {
+            buttonEl,
+            name,
+            data
+        };
+        gridEl.dispatchEvent(ev);
+    });
     cellEl.appendChild(buttonEl);
 });
 

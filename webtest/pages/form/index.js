@@ -64,6 +64,7 @@ const [defaultValues, optionGroups, tokenGroups, buttonConfig, extraConfig, ...f
     FileLoader.json("./_config/TokenGroups.json"),
     FileLoader.json("./form-config/Buttons.json"),
     FileLoader.json("./form-config/extra.json"),
+    FileLoader.json("./form-config/input/KeyValueListInput.json"),
     FileLoader.json("./form-config/input/OptionAmountListInput.json"),
     FileLoader.json("./form-config/select/TokenSelect.json"),
     FileLoader.json("./form-config/select/ImageIconSelect.json"),

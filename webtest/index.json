@@ -20,6 +20,9 @@
             "input/number": {
                 "label": "NumberInput"
             },
+            "input/keyvaluelistinput": {
+                "label": "KeyValueListInput"
+            },
             "input/optionamountlist": {
                 "label": "OptionAmountListInput"
             },

@@ -1,5 +1,4 @@
 import CustomElement from "../element/CustomElement.js";
-import CustomActionRegistry from "../../data/registry/CustomActionRegistry.js";
 import {
     isEqual
 } from "../../util/helper/Comparator.js";
@@ -34,8 +33,6 @@ export default class DataGrid extends CustomElement {
     #columns = [];
 
     #data = [];
-
-    #customActionRegistry = new CustomActionRegistry();
 
     constructor() {
         super();
@@ -150,15 +147,6 @@ export default class DataGrid extends CustomElement {
     #onSlotChange = debounce(() => {
         this.#generateColumns();
     });
-
-    registerCustomAction(name, fn) {
-        this.#customActionRegistry.set(name, fn);
-        this.#refreshCells(); // TODO add better refresh for only custom action related cells
-    }
-
-    getCustomAction(name) {
-        return this.#customActionRegistry.get(name);
-    }
 
 }
 

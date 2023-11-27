@@ -6,6 +6,9 @@ import ModalDialog from "../../../modal/ModalDialog.js";
 import "../../../grid/DataGrid.js";
 import TPL from "./KeyValueListInput.js.html" assert {type: "html"};
 import STYLE from "./KeyValueListInput.js.css" assert {type: "css"};
+import {
+    debounce
+} from "../../../../util/Debouncer.js";
 
 /** visualization:
  * +--------------------------------------------------+
@@ -64,35 +67,42 @@ export default class KeyValueListInput extends CustomFormElementDelegating {
         const addEl = this.shadowRoot.getElementById("add");
         addEl.addEventListener("click", async () => {
             let key = null;
-            const value = this.value ?? {};
+            const currentValue = {...this.#value};
             while (key == null) {
                 key = await ModalDialog.prompt("Add item", "Please enter a new key");
                 if (typeof key !== "string") {
                     return;
                 }
-                if (key in value) {
+                if (key in currentValue) {
                     await ModalDialog.alert("Key already exists", `The key "${key}" does already exist. Please enter another one!`);
                     key = null;
                 }
             }
-            this.value = {...value, [key]: ""};
+            currentValue[key] = "";
+            this.value = currentValue;
         });
-        this.#gridEl.registerCustomAction("delete", (buttonEl, name, data) => {
-            const currentValue = {...this.value};
+        this.#gridEl.addEventListener("delete", (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            const {data} = event.data;
+            const currentValue = {...this.#value};
             const key = data["key"];
             if (key in currentValue) {
                 delete currentValue[key];
             }
             this.value = currentValue;
         });
-        this.#gridEl.registerCustomAction("edit", (fieldEl, value, name, data) => {
-            const currentValue = {...this.value};
+        this.#gridEl.addEventListener("edit", debounce((event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            const {value, data} = event.data;
+            const currentValue = {...this.#value};
             const key = data["key"];
             if (key in currentValue) {
                 currentValue[key] = value;
             }
             this.value = currentValue;
-        });
+        }, 300));
     }
 
     connectedCallback() {
