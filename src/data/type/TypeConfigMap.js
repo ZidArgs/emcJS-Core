@@ -1,6 +1,6 @@
 import {
     immute
-} from "./Immutable.js";
+} from "../Immutable.js";
 
 const TypeDefinitions = new Map();
 

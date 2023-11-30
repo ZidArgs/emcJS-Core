@@ -46,9 +46,9 @@ import {
 
 export default class KeyValueListInput extends CustomFormElementDelegating {
 
-    #gridEl;
-
     #value;
+
+    #gridEl;
 
     constructor() {
         super();

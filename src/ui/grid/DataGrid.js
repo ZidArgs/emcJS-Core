@@ -11,7 +11,8 @@ import {
 import {
     getAllAttributes
 } from "../../util/helper/ui/NodeAttributes.js";
-import CellRendererManager from "../../util/grid/CellRenderer.js";
+import HeaderRenderer from "../../util/grid/renderer/HeaderRenderer.js";
+import CellRenderer from "../../util/grid/renderer/CellRenderer.js";
 import Column from "./Column.js";
 import TPL from "./DataGrid.js.html" assert {type: "html"};
 import STYLE from "./DataGrid.js.css" assert {type: "css"};
@@ -48,12 +49,12 @@ export default class DataGrid extends CustomElement {
             this.#onSlotChange();
         });
         /* --- */
-        CellRendererManager.addEventListener("header", (event) => {
+        CellRenderer.addEventListener("header", (event) => {
             if (this.#columns.some((el) => el.type === event.data.type)) {
                 this.#refreshHeader()
             }
         });
-        CellRendererManager.addEventListener("cell", (event) => {
+        CellRenderer.addEventListener("cell", (event) => {
             if (this.#columns.some((el) => el.type === event.data.type)) {
                 this.#refreshCells()
             }
@@ -97,7 +98,7 @@ export default class DataGrid extends CustomElement {
             this.#columns.push(columnData);
             const headerCellEl = document.createElement("th");
             const {type, name, label, ...options} = columnData;
-            CellRendererManager.renderHeader(this, headerCellEl, type, name, label, options);
+            HeaderRenderer.render(this, headerCellEl, type, name, label, options);
             this.#headerEl.append(headerCellEl);
         }
         const lastHeaderCellEl = document.createElement("th");
@@ -113,7 +114,7 @@ export default class DataGrid extends CustomElement {
         for (const columnData of this.#columns) {
             const headerCellEl = document.createElement("th");
             const {type, name, label, ...options} = columnData;
-            CellRendererManager.renderHeader(this, headerCellEl, type, name, label, options);
+            HeaderRenderer.render(this, headerCellEl, type, name, label, options);
             headerCellEl.innerText = columnData.label ?? columnData.name;
             this.#headerEl.append(headerCellEl);
         }
@@ -131,7 +132,7 @@ export default class DataGrid extends CustomElement {
                 for (const column of this.#columns) {
                     const {type, name, ...options} = column;
                     const cellEl = document.createElement("td");
-                    CellRendererManager.renderCell(this, cellEl, type, name, rowData, options);
+                    CellRenderer.render(this, cellEl, type, name, rowData, options);
                     rowEl.append(cellEl);
                 }
                 const lastCellEl = document.createElement("td");

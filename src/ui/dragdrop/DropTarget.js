@@ -1,4 +1,4 @@
-import DragDropMemory from "../../util/DragDropMemory.js";
+import DragDropMemory from "../../data/DragDropMemory.js";
 import CustomElement from "../element/CustomElement.js";
 import TPL from "./DropTarget.js.html" assert {type: "html"};
 import STYLE from "./DropTarget.js.css" assert {type: "css"};

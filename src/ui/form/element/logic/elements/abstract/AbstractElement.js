@@ -1,6 +1,8 @@
 import CustomElement from "../../../../../element/CustomElement.js";
-import DragDropMemory from "../../../../../../util/DragDropMemory.js";
-import UGen from "../../../../../../util/UniqueGenerator.js";
+import DragDropMemory from "../../../../../../data/DragDropMemory.js";
+import {
+    appUID
+} from "../../../../../../util/helper/UniqueGenerator.js";
 import TPL from "./AbstractElement.js.html" assert {type: "html"};
 import STYLE from "./AbstractElement.js.css" assert {type: "css"};
 import STYLE_ERROR from "./AbstractElement.js.ErrorElement.css" assert {type: "css"};
@@ -27,7 +29,7 @@ export default class AbstractElement extends CustomElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.shadowRoot.getElementById("header").innerText = caption;
-        this.#id = UGen.appUID("logic-element");
+        this.#id = appUID("logic-element");
         /* --- */
         this.addEventListener("contextmenu", (event) => {
             event.stopPropagation();

@@ -1,12 +1,12 @@
 // main
-import CellRenderer from "/emcJS/util/grid/CellRenderer.js";
+import CellRenderer from "/emcJS/util/grid/renderer/CellRenderer.js";
 import "/emcJS/ui/Page.js";
 import "/emcJS/ui/grid/DataGrid.js";
-import TypeConfigMap from "/emcJS/data/TypeConfigMap.js";
-import TypeValidator from "/emcJS/util/TypeValidator.js";
+import TypeConfigMap from "/emcJS/data/type/TypeConfigMap.js";
+import TypeValidator from "/emcJS/util/type/TypeValidator.js";
 import Logger from "/emcJS/util/log/Logger.js";
 
-CellRenderer.registerCellRenderer("currency", (gridEl, cellEl, value, options) => {
+CellRenderer.registerRenderer("currency", (gridEl, cellEl, value, options) => {
     cellEl.style.textAlign = "end";
     /* --- */
     if (value == null) {
@@ -36,7 +36,7 @@ CellRenderer.registerCellRenderer("currency", (gridEl, cellEl, value, options) =
     cellEl.innerText = text;
 });
 
-CellRenderer.registerCellRenderer(null, (gridEl, cellEl, value) => {
+CellRenderer.registerRenderer(null, (gridEl, cellEl, value) => {
     if (value != null) {
         cellEl.classList.remove("empty");
         cellEl.innerText = value;

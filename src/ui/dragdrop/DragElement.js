@@ -1,5 +1,7 @@
-import DragDropMemory from "../../util/DragDropMemory.js";
-import UniqueGenerator from "../../util/UniqueGenerator.js";
+import DragDropMemory from "../../data/DragDropMemory.js";
+import {
+    appUID
+} from "../../util/helper/UniqueGenerator.js";
 import CustomElement from "../element/CustomElement.js";
 import TPL from "./DragElement.js.html" assert {type: "html"};
 import STYLE from "./DragElement.js.css" assert {type: "css"};
@@ -17,7 +19,7 @@ export default class DragElement extends CustomElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.id = UniqueGenerator.appUID("draggable");
+        this.id = appUID("draggable");
         this.setAttribute("draggable", true);
         this.addEventListener("dragstart", dragElement);
     }

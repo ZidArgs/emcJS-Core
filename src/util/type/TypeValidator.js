@@ -1,8 +1,8 @@
 import {
     isEqual
-} from "./helper/Comparator.js";
-import TypeConfigMap from "../data/TypeConfigMap.js";
-import LogicValidator from "./logic/LogicValidator.js";
+} from "../helper/Comparator.js";
+import TypeConfigMap from "../../data/type/TypeConfigMap.js";
+import LogicValidator from "../logic/LogicValidator.js";
 
 const IMAGE_PATTERN = /.+\\.(?:apng|avif|gif|jpg|jpeg|jfif|pjpeg|pjp|png|svg|webp|bmp|ico|tiff)/i;
 const COLOR_PATTERN = /#(?:0-9a-f){6}/i;

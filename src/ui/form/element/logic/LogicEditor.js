@@ -3,7 +3,7 @@ import ContextMenuManagerMixin from "../../../mixin/ContextMenuManagerMixin.js";
 import {
     mix
 } from "../../../../util/Mixin.js";
-import DragDropMemory from "../../../../util/DragDropMemory.js";
+import DragDropMemory from "../../../../data/DragDropMemory.js";
 import {
     isEqual
 } from "../../../../util/helper/Comparator.js";
