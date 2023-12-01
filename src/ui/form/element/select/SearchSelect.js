@@ -1,4 +1,5 @@
 import CustomFormElementDelegating from "../../../element/CustomFormElementDelegating.js";
+import "../../../i18n/builtin/I18nInput.js";
 import EventTargetManager from "../../../../util/event/EventTargetManager.js";
 import EventMultiTargetManager from "../../../../util/event/EventMultiTargetManager.js";
 import i18n from "../../../../util/I18n.js";
