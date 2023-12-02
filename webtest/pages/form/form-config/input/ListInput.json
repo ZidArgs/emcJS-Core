@@ -1,0 +1,26 @@
+{
+    "type": "Fieldset",
+    "label": "list",
+    "children": [
+        {
+            "type": "ListInput",
+            "label": "list default",
+            "name": "keylist.default",
+            "sorted": true
+        },
+        {
+            "type": "ListInput",
+            "label": "list resettable",
+            "name": "keylist.resettable",
+            "sorted": true,
+            "resettable": true
+        },
+        {
+            "type": "ListInput",
+            "label": "list disabled",
+            "name": "keylist.disabled",
+            "sorted": true,
+            "disabled": true
+        }
+    ]
+}

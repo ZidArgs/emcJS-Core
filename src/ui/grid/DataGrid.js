@@ -11,17 +11,27 @@ import {
 import {
     getAllAttributes
 } from "../../util/helper/ui/NodeAttributes.js";
-import HeaderRenderer from "../../util/grid/renderer/HeaderRenderer.js";
-import CellRenderer from "../../util/grid/renderer/CellRenderer.js";
 import Column from "./Column.js";
+import "./cell/DataGridCell.js";
+import "./cell/DataGridCellButton.js";
+import "./cell/DataGridCellBoolean.js";
+import "./cell/DataGridCellString.js";
+import "./cell/DataGridCellNumber.js";
+import "./cell/DataGridCellDate.js";
+import "./cell/DataGridCellDateTime.js";
+import "./cell/DataGridCellTime.js";
 import TPL from "./DataGrid.js.html" assert {type: "html"};
 import STYLE from "./DataGrid.js.css" assert {type: "css"};
+import HeaderManager from "../../util/grid/HeaderManager.js";
+import RowManager from "../../util/grid/RowManager.js";
 
 /** TODO detect child attribute changes
  *  - if the content of child or the attributes change, react accordingly
  */
 
 export default class DataGrid extends CustomElement {
+
+    #tableEl;
 
     #headerEl;
 
@@ -31,15 +41,20 @@ export default class DataGrid extends CustomElement {
 
     #columnContainerEl;
 
-    #columns = [];
+    #columnDefinition = [];
 
     #data = [];
+
+    #headerManager;
+
+    #rowManager;
 
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
+        this.#tableEl = this.shadowRoot.getElementById("table");
         this.#headerEl = this.shadowRoot.getElementById("header");
         this.#bodyEl = this.shadowRoot.getElementById("body");
         this.#emptyEl = this.shadowRoot.getElementById("empty");
@@ -48,16 +63,33 @@ export default class DataGrid extends CustomElement {
         this.#columnContainerEl.addEventListener("slotchange", () => {
             this.#onSlotChange();
         });
+        this.#onSlotChange();
         /* --- */
-        CellRenderer.addEventListener("header", (event) => {
-            if (this.#columns.some((el) => el.type === event.data.type)) {
-                this.#refreshHeader()
-            }
+        this.#headerManager = new HeaderManager(this.#headerEl);
+        this.#rowManager = new RowManager(this.#bodyEl);
+        /* --- */
+        this.#tableEl.addEventListener("action", (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            const {action, columnName, rowName} = event.data;
+            const ev = new Event(action ?? "action");
+            ev.data = {
+                columnName,
+                rowName
+            };
+            this.dispatchEvent(ev);
         });
-        CellRenderer.addEventListener("cell", (event) => {
-            if (this.#columns.some((el) => el.type === event.data.type)) {
-                this.#refreshCells()
-            }
+        this.#tableEl.addEventListener("edit", (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            const {value, action, columnName, rowName} = event.data;
+            const ev = new Event(action ?? "edit");
+            ev.data = {
+                value,
+                columnName,
+                rowName
+            };
+            this.dispatchEvent(ev);
         });
     }
 
@@ -76,77 +108,36 @@ export default class DataGrid extends CustomElement {
         if (!isEqual(this.#data, rows)) {
             if (rows == null) {
                 this.#data = [];
-                this.#bodyEl.innerHTML = "";
+                this.#rowManager.purge();
                 this.#emptyEl.classList.remove("hidden");
             } else {
                 this.#data = deepClone(rows);
-                this.#refreshCells();
+                this.#rowManager.manage(this.#data, this.#columnDefinition);
+                if (this.#bodyEl.childNodes.length > 0) {
+                    this.#emptyEl.classList.add("hidden");
+                }
             }
         }
     }
 
-    set columns(value) {
-        this.setJSONAttribute("columns", value);
-    }
-
-    #generateColumns() {
+    #applyColumnDefinition() {
         const columnNodeList = this.#columnContainerEl.assignedElements({flatten: true}).filter((el) => el instanceof Column);
-        this.#columns = [];
-        this.#headerEl.innerHTML = "";
+        const newColumnDefinition = [];
+
         for (const columnEl of columnNodeList) {
             const columnData = getAllAttributes(columnEl);
-            this.#columns.push(columnData);
-            const headerCellEl = document.createElement("th");
-            const {type, name, label, ...options} = columnData;
-            HeaderRenderer.render(this, headerCellEl, type, name, label, options);
-            this.#headerEl.append(headerCellEl);
+            newColumnDefinition.push(columnData);
         }
-        const lastHeaderCellEl = document.createElement("th");
-        lastHeaderCellEl.classList.add("lastCell");
-        this.#headerEl.append(lastHeaderCellEl);
-        if (this.#data.length > 0) {
-            this.#refreshCells();
-        }
-    }
 
-    #refreshHeader() {
-        this.#headerEl.innerHTML = "";
-        for (const columnData of this.#columns) {
-            const headerCellEl = document.createElement("th");
-            const {type, name, label, ...options} = columnData;
-            HeaderRenderer.render(this, headerCellEl, type, name, label, options);
-            headerCellEl.innerText = columnData.label ?? columnData.name;
-            this.#headerEl.append(headerCellEl);
-        }
-        const lastHeaderCellEl = document.createElement("th");
-        lastHeaderCellEl.classList.add("lastCell");
-        this.#headerEl.append(lastHeaderCellEl);
-    }
-
-    #refreshCells() { // XXX element manager?
-        this.#bodyEl.innerHTML = "";
-        if (this.#data.length > 0) {
-            this.#emptyEl.classList.add("hidden");
-            for (const rowData of this.#data) {
-                const rowEl = document.createElement("tr");
-                for (const column of this.#columns) {
-                    const {type, name, ...options} = column;
-                    const cellEl = document.createElement("td");
-                    CellRenderer.render(this, cellEl, type, name, rowData, options);
-                    rowEl.append(cellEl);
-                }
-                const lastCellEl = document.createElement("td");
-                lastCellEl.classList.add("lastCell");
-                rowEl.append(lastCellEl);
-                this.#bodyEl.append(rowEl);
-            }
-        } else {
-            this.#emptyEl.classList.remove("hidden");
+        if (!isEqual(this.#columnDefinition, newColumnDefinition)) {
+            this.#columnDefinition = newColumnDefinition;
+            this.#headerManager.manage(newColumnDefinition);
+            this.#rowManager.manage(this.#data, newColumnDefinition);
         }
     }
 
     #onSlotChange = debounce(() => {
-        this.#generateColumns();
+        this.#applyColumnDefinition();
     });
 
 }

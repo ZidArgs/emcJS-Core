@@ -3,6 +3,7 @@ import i18n from "/emcJS/util/I18n.js";
 import FileLoader from "/emcJS/util/file/FileLoader.js";
 import OptionGroupRegistry from "/emcJS/data/registry/form/OptionGroupRegistry.js";
 import TokenRegistry from "/emcJS/data/registry/form/TokenRegistry.js";
+import ListGroupRegistry from "/emcJS/data/registry/form/ListGroupRegistry.js";
 import "/emcJS/ui/Page.js";
 // form
 import FormBuilder from "/emcJS/util/form/FormBuilder.js";
@@ -23,12 +24,14 @@ export async function init() {
         return;
     }
     i18n.language = "en";
-    const [optionGroups, tokenGroups] = await Promise.all([
+    const [optionGroups, tokenGroups, listGroups] = await Promise.all([
         FileLoader.json("/pages/form/_config/OptionGroups.json"),
-        FileLoader.json("/pages/form/_config/TokenGroups.json")
+        FileLoader.json("/pages/form/_config/TokenGroups.json"),
+        FileLoader.json("/pages/form/_config/ListGroups.json")
     ]);
     OptionGroupRegistry.load(optionGroups);
     TokenRegistry.load(tokenGroups);
+    ListGroupRegistry.load(listGroups);
     initFlag = true;
 }
 

@@ -9,9 +9,13 @@ import STYLE from "./ListInput.js.css" assert {type: "css"};
 
 export default class ListInput extends CustomFormElementDelegating {
 
+    #value;
+
+    #searchEl;
+
     #gridEl;
 
-    #value;
+    #addEl;
 
     constructor() {
         super();
@@ -26,34 +30,38 @@ export default class ListInput extends CustomFormElementDelegating {
             event.stopPropagation();
         });
         /* --- */
+        this.#searchEl = this.shadowRoot.getElementById("search");
         this.#gridEl = this.shadowRoot.getElementById("grid");
-        const addEl = this.shadowRoot.getElementById("add");
-        addEl.addEventListener("click", async () => {
-            let key = null;
+        this.#addEl = this.shadowRoot.getElementById("add");
+        this.#addEl.addEventListener("click", async () => {
+            let rowName = null;
             const value = this.value ?? [];
-            while (key == null) {
-                key = await ModalDialog.prompt("Add item", "Please enter a new key");
-                if (typeof key !== "string") {
+            while (rowName == null) {
+                rowName = await ModalDialog.prompt("Add item", "Please enter a new key");
+                if (typeof rowName !== "string") {
                     return;
                 }
-                if (value.includes(key)) {
-                    await ModalDialog.alert("Key already exists", `The key "${key}" does already exist. Please enter another one!`);
-                    key = null;
+                if (value.includes(rowName)) {
+                    await ModalDialog.alert("Key already exists", `The key "${rowName}" does already exist. Please enter another one!`);
+                    rowName = null;
                 }
             }
-            this.value = [...value, key];
+            this.value = [...value, rowName];
         });
         this.#gridEl.addEventListener("delete", (event) => {
             event.stopPropagation();
             event.preventDefault();
-            const {data} = event.data;
+            const {rowName} = event.data;
             const currentValue = {...this.#value};
-            const key = data["key"];
-            if (key in currentValue) {
-                delete currentValue[key];
+            if (rowName in currentValue) {
+                delete currentValue[rowName];
             }
             this.value = currentValue;
         });
+        /* --- */
+        this.#searchEl.addEventListener("change", () => {
+
+        }, true);
     }
 
     connectedCallback() {
@@ -66,8 +74,9 @@ export default class ListInput extends CustomFormElementDelegating {
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
-        // TODO disable all inputs and buttons
-        // this.#inputEl.disabled = disabled;
+        this.#searchEl.disabled = disabled;
+        this.#addEl.disabled = disabled;
+        // TODO disable grid
     }
 
     formResetCallback() {
@@ -127,7 +136,7 @@ export default class ListInput extends CustomFormElementDelegating {
     #applyValue() {
         const data = (this.#value ?? []).map((row) => {
             return {
-                key: row
+                name: row
             }
         });
         this.#gridEl.setData(data);

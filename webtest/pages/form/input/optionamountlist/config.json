@@ -6,14 +6,14 @@
             "type": "OptionAmountListInput",
             "label": "option amount default",
             "name": "optionamount.default",
-            "optiongroup": "OptionAmountListInput",
+            "listgroup": "OptionAmountListInput",
             "sorted": true
         },
         {
             "type": "OptionAmountListInput",
             "label": "option amount resettable",
             "name": "optionamount.resettable",
-            "optiongroup": "OptionAmountListInput",
+            "listgroup": "OptionAmountListInput",
             "sorted": true,
             "resettable": true
         },
@@ -21,7 +21,7 @@
             "type": "OptionAmountListInput",
             "label": "option amount disabled",
             "name": "optionamount.disabled",
-            "optiongroup": "OptionAmountListInput",
+            "listgroup": "OptionAmountListInput",
             "sorted": true,
             "disabled": true
         }

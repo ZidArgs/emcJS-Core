@@ -25,45 +25,29 @@ export default class ElementManager {
         this.#args = args;
     }
 
-    #checkChange(data) {
-        if (typeof data?.key !== "string") {
-            return true;
-        }
-        const cachedData = this.#cache.get(data.key);
-        if (cachedData == null || !isEqual(cachedData, data)) {
-            this.#cache.set(data.key, deepClone(data));
-            return true;
-        }
-        return false;
-    }
-
     manage(data) {
         if (!Array.isArray(data)) {
             throw new TypeError("data must be an array");
         }
+
         const unused = new Set(this.#elements.keys());
         const changes = {added: [], updated: [], deleted: [], moved: []};
         const newOrder = [];
+
         for (const index in data) {
             const params = data[index];
             if (typeof params !== "object" || Array.isArray(params)) {
                 throw new TypeError("data entries must be objects");
             }
+
             const {key = index, ...options} = params;
             const oldIndex = this.#order.indexOf(key);
             if (oldIndex > 0 && oldIndex !== index) {
                 changes.moved.push(key);
             }
             newOrder.push(key);
-            if (this.#elements.has(key)) {
-                const el = this.#elements.get(key);
-                if (this.#checkChange(params)) {
-                    this.mutator(el, key, options, ...this.#args);
-                    changes.updated.push(key);
-                }
-                unused.delete(key);
-                this.#target.append(el);
-            } else {
+
+            if (!this.#elements.has(key)) {
                 const el = this.composer(key, options, ...this.#args);
                 if (el != null) {
                     el.setAttribute("em-key", key);
@@ -72,9 +56,18 @@ export default class ElementManager {
                     changes.added.push(key);
                     this.#target.append(el);
                 }
+            } else {
+                const el = this.#elements.get(key);
+                if (this.#checkChange(params)) {
+                    this.mutator(el, key, options, ...this.#args);
+                    changes.updated.push(key);
+                }
+                unused.delete(key);
+                this.#target.append(el);
             }
         }
         this.#order = newOrder;
+
         for (const key of unused) {
             const el = this.#elements.get(key);
             el.remove();
@@ -83,7 +76,20 @@ export default class ElementManager {
             changes.deleted.push(key);
             this.cleanup(el, key, ...this.#args);
         }
+
         return changes;
+    }
+
+    #checkChange(data) {
+        if (typeof data?.key !== "string") {
+            return true;
+        }
+        const cachedData = this.#cache.get(data.key);
+        if (!isEqual(cachedData, data)) {
+            this.#cache.set(data.key, deepClone(data));
+            return true;
+        }
+        return false;
     }
 
     // eslint-disable-next-line no-unused-vars

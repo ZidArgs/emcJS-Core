@@ -1,65 +1,28 @@
 // main
-import CellRenderer from "/emcJS/util/grid/renderer/CellRenderer.js";
 import "/emcJS/ui/Page.js";
 import "/emcJS/ui/grid/DataGrid.js";
 import TypeConfigMap from "/emcJS/data/type/TypeConfigMap.js";
 import TypeValidator from "/emcJS/util/type/TypeValidator.js";
 import Logger from "/emcJS/util/log/Logger.js";
 
-CellRenderer.registerRenderer("currency", (gridEl, cellEl, value, options) => {
-    cellEl.style.textAlign = "end";
-    /* --- */
-    if (value == null) {
-        cellEl.classList.add("empty");
-    } else {
-        cellEl.classList.remove("empty");
-    }
-    value = parseFloat(value) || 0;
-    const {negativeColor, prefix, postfix, decimals} = options;
-    if (negativeColor != null && value < 0) {
-        cellEl.style.color = negativeColor;
-    } else {
-        cellEl.style.color = "";
-    }
-    let text = "";
-    if (prefix != null) {
-        text += prefix;
-    }
-    if (decimals != null) {
-        text += value.toFixed(parseInt(decimals) || undefined);
-    } else {
-        text += value;
-    }
-    if (postfix != null) {
-        text += postfix;
-    }
-    cellEl.innerText = text;
-});
-
-CellRenderer.registerRenderer(null, (gridEl, cellEl, value) => {
-    if (value != null) {
-        cellEl.classList.remove("empty");
-        cellEl.innerText = value;
-    } else {
-        cellEl.classList.add("empty");
-        cellEl.innerText = "(---)";
-    }
-});
-
 const grid0El = document.getElementById("grid0");
 grid0El.setData([
     {
+        name: "0",
         A: 1,
         B: "Cheese",
         C: 3,
-        E: "2.3.16 12:34:51"
-    }, {
+        E: "2016-03-02T12:34:51"
+    },
+    {
+        name: "1",
         A: 2,
         B: "Pizza",
         D: true,
-        E: "12.28.2022 16:27:19"
+        E: "2022-12-28T16:27:19"
     },
     {
+        name: "2",
         A: 3,
         C: -15,
         D: false,
@@ -70,17 +33,21 @@ grid0El.setData([
 const grid1El = document.getElementById("grid1");
 grid1El.setData([
     {
+        name: "0",
         A: 1,
         B: "Cheese",
         C: 3,
-        E: "2.3.16 12:34:51"
-    }, {
+        E: "2016-03-02T12:34:51"
+    },
+    {
+        name: "1",
         A: 2,
         B: "Pizza",
         D: true,
-        E: "12.28.2022 16:27:19"
+        E: "2022-12-28T16:27:19"
     },
     {
+        name: "2",
         A: 3,
         C: -15,
         D: false,
@@ -91,21 +58,27 @@ grid1El.setData([
 const grid2El = document.getElementById("grid2");
 grid2El.setData([
     {
+        name: "0",
         A: 1,
         B: "Cheese",
         C: 3,
-        E: "2.3.16 12:34:51"
-    }, {
+        E: "2016-03-02T12:34:51"
+    },
+    {
+        name: "1",
         A: 2,
         B: "Pizza",
         D: true,
-        E: "12.28.2022 16:27:19"
+        E: "2022-12-28T16:27:19"
     },
     {
+        name: "2",
         A: 3,
         C: -15,
         D: false,
-        E: new Date()
+        E: new Date(),
+        F: new Date(),
+        G: new Date()
     }
 ]);
 

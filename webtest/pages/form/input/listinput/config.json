@@ -1,23 +1,23 @@
 {
     "type": "Fieldset",
-    "label": "key value list",
+    "label": "list",
     "children": [
         {
-            "type": "KeyValueListInput",
-            "label": "key value list default",
+            "type": "ListInput",
+            "label": "list default",
             "name": "keyvaluelist.default",
             "sorted": true
         },
         {
-            "type": "KeyValueListInput",
-            "label": "key value list resettable",
+            "type": "ListInput",
+            "label": "list resettable",
             "name": "keyvaluelist.resettable",
             "sorted": true,
             "resettable": true
         },
         {
-            "type": "KeyValueListInput",
-            "label": "key value list disabled",
+            "type": "ListInput",
+            "label": "list disabled",
             "name": "keyvaluelist.disabled",
             "sorted": true,
             "disabled": true

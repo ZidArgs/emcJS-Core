@@ -1,16 +1,11 @@
 <div class="header">
     <emc-search-field id="search"></emc-search-field>
 </div>
-<div id="scroll-container">
-    <div id="container">
-        <emc-grid-datagrid id="grid" stretch="last" nohead>
-            <emc-grid-column name="key" label="Key" type="string" width="200"></emc-grid-column>
-            <emc-grid-column name="value" label="Value" type="string" width="100%" editable action="edit"></emc-grid-column>
-            <emc-grid-column name="delete" label="Delete" type="button" width="100" text="Delete" action="delete"></emc-grid-column>
-        </emc-grid-datagrid>
-    </div>
-</div>
+<emc-grid-datagrid id="grid" stretch="last" nohead>
+    <emc-grid-column name="name" label="Key" type="string" width="200"></emc-grid-column>
+    <emc-grid-column name="value" label="Value" type="string" width="100%" editable action="editValue"></emc-grid-column>
+    <emc-grid-column name="delete" label="Delete" type="button" width="100" text="Delete" action="delete"></emc-grid-column>
+</emc-grid-datagrid>
 <emc-form-row class="footer" align="end">
     <emc-button id="add" text="+ Add entry"></emc-button>
 </emc-form-row>
-<slot id="options-container"></slot>

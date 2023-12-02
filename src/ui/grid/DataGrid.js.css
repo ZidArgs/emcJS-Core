@@ -13,12 +13,12 @@
     border-radius: var(--grid-border-radius, 6px);
     overflow: auto;
 }
-.table {
+#table {
     width: 100%;
     max-width: max-content;
     border-spacing: 0px;
 }
-:host([stretch]:not([stretch="false"])) .table {
+:host([stretch]:not([stretch="false"])) #table {
     max-width: initial;
 }
 :host([nohead]:not([nohead="false"])) .head th {
@@ -34,41 +34,32 @@
     color: var(--grid-header-text-color, #ffffff);
     background-color: var(--grid-header-back-color, #000000);
     white-space: pre;
+    z-index: 1;
 }
 :host([stretch="last"]) th:last-child {
     width: 100%;
 }
-.head th:not(:first-child):not(:last-child) {
+.head th:not(:first-child):not(.lastCell) {
     border-left: solid var(--grid-column-seperator-width, 2px) var(--grid-header-seperator-color, #ffffff);
-}
-.head th:last-child {
-    box-shadow: inset white 2px 0px 0px;
 }
 .head th.lastCell {
     padding: 0px;
     min-width: 0px;
     width: 100%;
 }
-#body td {
+.head th.lastCell:not(:first-child) {
+    box-shadow: inset white 2px 0px 0px;
+}
+#body tr > * {
     height: var(--grid-row-height, 34px);
     padding: 0px 8px;
-    white-space: pre;
     border-bottom: solid var(--grid-row-seperator-width, 1px) var(--grid-row-seperator-color, #696969);
 }
-#body td.empty {
+#body tr > *.empty {
     color: #00000019;
 }
-#body td.lastCell {
+#body tr > *.lastCell {
     padding: 0px;
-}
-#body td emc-button {
-    height: 1.5em;
-    width: 100%;
-    margin: 0;
-}
-#body td input.input {
-    width: 100%;
-    font-size: inherit;
 }
 #empty {
     position: sticky;

@@ -32,7 +32,7 @@ export default class ListGroupRegistry extends EventTarget {
 
     setAll(list) {
         for (const value of list) {
-            this.#options.set(value);
+            this.#options.add(value);
         }
         const event = new Event("change");
         this.dispatchEvent(event);

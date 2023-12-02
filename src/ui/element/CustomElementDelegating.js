@@ -74,6 +74,26 @@ export default class CustomElementDelegating extends HTMLElement {
         return null;
     }
 
+    setIntAttribute(name, value) {
+        const parsedValue = parseInt(value);
+        if (!isNaN(parsedValue)) {
+            this.setAttribute(name, parsedValue);
+        } else {
+            this.removeAttribute(name);
+        }
+    }
+
+    getIntAttribute(name) {
+        const value = this.getAttribute(name);
+        if (value != null) {
+            const parsedValue = parseInt(value);
+            if (!isNaN(parsedValue)) {
+                return parsedValue;
+            }
+        }
+        return null;
+    }
+
     setJSONAttribute(name, value) {
         if (value != null) {
             this.setAttribute(name, JSON.stringify(value));
