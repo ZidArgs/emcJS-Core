@@ -4,7 +4,7 @@ import {
 import TypeConfigMap from "../../data/type/TypeConfigMap.js";
 import LogicValidator from "../logic/LogicValidator.js";
 
-const IMAGE_PATTERN = /.+\\.(?:apng|avif|gif|jpg|jpeg|jfif|pjpeg|pjp|png|svg|webp|bmp|ico|tiff)/i;
+const IMAGE_PATTERN = /\.(?:apng|avif|gif|jpg|jpeg|jfif|pjpeg|pjp|png|svg|webp|bmp|ico|tiff)$/i;
 const COLOR_PATTERN = /#(?:0-9a-f){6}/i;
 
 class TypeValidator {
@@ -94,7 +94,7 @@ class TypeValidator {
             throw new Error(`TypeValidator::String - string expected [ ${path.join(" > ")} ]`);
         }
         const r = def.pattern;
-        if (!r.test(value)) {
+        if (r != null && !r.test(value)) {
             throw new Error(`TypeValidator::String - does not match pattern /${def.pattern.source}/ [ ${path.join(" > ")} ]`);
         }
     }
@@ -163,7 +163,7 @@ class TypeValidator {
         }
         for (const key in value) {
             const entry = value[key];
-            this.#validateType([...path, `${key} {${entry["@type"]}}`], entry, def.children, strict);
+            this.#validateType([...path, `${key} {${def.children["@type"]}}`], entry, def.children, strict);
         }
     }
 
@@ -176,7 +176,7 @@ class TypeValidator {
         }
         for (const key in value) {
             const entry = value[key];
-            this.#validateType([...path, `"${key}" {${entry["@type"]}}`], entry, def.children, strict);
+            this.#validateType([...path, `"${key}" {${def.children["@type"]}}`], entry, def.children, strict);
         }
     }
 
@@ -184,14 +184,14 @@ class TypeValidator {
         if (typeof value !== "object" || Array.isArray(value)) {
             throw new Error(`TypeValidator::Relation - dictionary expected [ ${path.join(" > ")} ]`);
         }
-        if (!isEqual(Object.keys(value).sort(), ["type", "value"])) {
-            throw new Error(`TypeValidator::Relation - attrbutes restricted to "type" and "value" [ ${path.join(" > ")} ]`);
+        if (!isEqual(Object.keys(value).sort(), ["name", "type"])) {
+            throw new Error(`TypeValidator::Relation - attrbutes restricted to "type" and "name" [ ${path.join(" > ")} ]`);
         }
         if (typeof value.type !== "string") {
             throw new Error(`TypeValidator::Relation - type expected to be a string [ ${path.join(" > ")} ]`);
         }
-        if (typeof value.value !== "string") {
-            throw new Error(`TypeValidator::Relation - value expected to be a string [ ${path.join(" > ")} ]`);
+        if (typeof value.name !== "string") {
+            throw new Error(`TypeValidator::Relation - name expected to be a string [ ${path.join(" > ")} ]`);
         }
         if (!def.types.includes(value.type)) {
             throw new Error(`TypeValidator::Relation - type "${value.type}" not in accepted types [ ${path.join(" > ")} ]`);

@@ -10,6 +10,15 @@ class TypeConfigMap {
         TypeDefinitions.set(typeName, this.#convertConfig(typeName, typeConfig));
     }
 
+    registerAll(typeConfigs) {
+        if (typeof typeConfigs !== "object" || Array.isArray(typeConfigs)) {
+            throw new Error(`TypeConfigMap - typeConfigs has to be a dictionary`);
+        }
+        for (const [typeName, typeConfig] of Object.entries(typeConfigs)) {
+            this.register(typeName, typeConfig);
+        }
+    }
+
     get(typeName) {
         const typeConfig = TypeDefinitions.get(typeName);
         if (typeConfig == null) {
@@ -21,7 +30,7 @@ class TypeConfigMap {
     #convertConfig(typeName, typeConfig) {
         const result = {};
         if (typeof typeConfig !== "object" || Array.isArray(typeConfig)) {
-            throw new Error(`TypeConfigMap - config has to be dictionary`);
+            throw new Error(`TypeConfigMap - config has to be a dictionary [ ${typeName} ]`);
         }
         for (const [currentName, definition] of Object.entries(typeConfig)) {
             result[currentName] = this.#convertType(typeName, currentName, definition);
