@@ -178,7 +178,7 @@ export default class SearchSelect extends CustomElementDelegating {
             const all = this.querySelectorAll(`[value]`);
             const regEx = new SearchAnd(inputEl.value);
             for (const el of all) {
-                if (el.innerText.trim().match(regEx)) {
+                if (regEx.test(el.innerText.trim())) {
                     el.style.display = "";
                 } else {
                     el.style.display = "none";

@@ -5,12 +5,18 @@ import {
 const LNBR_SEQ = /(?:\r\n|\n|\r)/g;
 const COMMENT = /^(?:!|#).*$/;
 
+const ESCAPE_PATTERN_0 = /\\ /g;
+const ESCAPE_PATTERN_1 = /\\=/g;
+const ESCAPE_PATTERN_2 = /\\:/g;
+const VALUE_PATTERN_0 = /(.*?)(?:=|:)(.*)/;
+const VALUE_PATTERN_1 = /(.*?)(?: )(.*)/;
+
 function processLine(line) {
     const escaped = line.trim()
-        .replace(/\\ /g, "\\u0020")
-        .replace(/\\=/g, "\\u003D")
-        .replace(/\\:/g, "\\u003A");
-    const [, key = "", value = ""] = escaped.match(/(.*?)(?:=|:)(.*)/) ?? escaped.match(/(.*?)(?: )(.*)/) ?? [];
+        .replace(ESCAPE_PATTERN_0, "\\u0020")
+        .replace(ESCAPE_PATTERN_1, "\\u003D")
+        .replace(ESCAPE_PATTERN_2, "\\u003A");
+    const [, key = "", value = ""] = escaped.match(VALUE_PATTERN_0) ?? escaped.match(VALUE_PATTERN_1) ?? [];
     return [unescapeUnicode(key.trim()), unescapeUnicode(value.trim())];
 }
 

@@ -1,6 +1,9 @@
 import {
     isEqual
 } from "../../../util/helper/Comparator.js";
+import {
+    deepClone
+} from "../../../util/helper/DeepClone.js";
 
 export default class ObservableStorage extends EventTarget {
 
@@ -58,13 +61,13 @@ export default class ObservableStorage extends EventTarget {
     }
 
     get(key) {
-        return this.#buffer.get(key) ?? this.getDefault();
+        return deepClone(this.#buffer.get(key) ?? this.getDefault());
     }
 
     getAll() {
         const res = {};
         for (const [key, value] of this.#buffer) {
-            res[key] = value;
+            res[key] = deepClone(value);
         }
         return res;
     }

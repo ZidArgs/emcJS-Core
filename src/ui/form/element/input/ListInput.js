@@ -2,6 +2,7 @@ import CustomFormElementDelegating from "../../../element/CustomFormElementDeleg
 import {
     isEqual
 } from "../../../../util/helper/Comparator.js";
+import SimpleDataManager from "../../../../util/grid/data/SimpleDataManager.js";
 import ModalDialog from "../../../modal/ModalDialog.js";
 import "../../../grid/DataGrid.js";
 import TPL from "./ListInput.js.html" assert {type: "html"};
@@ -16,6 +17,8 @@ export default class ListInput extends CustomFormElementDelegating {
     #gridEl;
 
     #addEl;
+
+    #dataManager = new SimpleDataManager();
 
     constructor() {
         super();
@@ -60,7 +63,7 @@ export default class ListInput extends CustomFormElementDelegating {
         });
         /* --- */
         this.#searchEl.addEventListener("change", () => {
-
+            this.#fillGrid();
         }, true);
     }
 
@@ -139,12 +142,20 @@ export default class ListInput extends CustomFormElementDelegating {
                 name: row
             }
         });
-        this.#gridEl.setData(data);
+        this.#dataManager.setSource(data);
+        this.#fillGrid();
     }
 
-    checkValid() {
-        // TODO validate unique key
-        return super.checkValid();
+    #fillGrid() {
+        const options = {
+            sort: ["name"]
+        };
+        if (this.#searchEl.value != "") {
+            options.filter = {
+                name: this.#searchEl.value
+            };
+        }
+        this.#gridEl.setData(this.#dataManager.getData(options));
     }
 
 }

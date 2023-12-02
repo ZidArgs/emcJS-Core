@@ -42,7 +42,7 @@ export default class ImageSelectModal extends Modal {
             if (searchEl.value) {
                 const regEx = new CharacterSearch(searchEl.value);
                 for (const el of all) {
-                    if (el.innerText.match(regEx)) {
+                    if (regEx.test(el.innerText.trim())) {
                         el.style.display = "";
                     } else {
                         el.style.display = "none";

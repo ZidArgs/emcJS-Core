@@ -75,7 +75,7 @@ export default class ListSelect extends CustomElementDelegating {
                     this.style.height = `${rect.height}px`;
                 }
                 for (const el of all) {
-                    if (el.innerText.match(regEx)) {
+                    if (regEx.test(el.innerText)) {
                         el.style.display = "";
                         if (el.classList.contains("active")) {
                             checked = true;

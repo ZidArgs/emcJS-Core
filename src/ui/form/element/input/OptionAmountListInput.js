@@ -8,6 +8,7 @@ import i18n from "../../../../util/I18n.js";
 import {
     isEqual
 } from "../../../../util/helper/Comparator.js";
+import SimpleDataManager from "../../../../util/grid/data/SimpleDataManager.js";
 import "./internal/SearchField.js";
 import "../../../grid/DataGrid.js";
 import TPL from "./OptionAmountListInput.js.html" assert {type: "html"};
@@ -33,6 +34,8 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
 
     #i18nEventManager = new EventTargetManager(i18n);
 
+    #dataManager = new SimpleDataManager();
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
@@ -57,7 +60,7 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
         }, 300));
         /* --- */
         this.#searchEl.addEventListener("change", () => {
-
+            this.#fillGrid();
         }, true);
     }
 
@@ -198,11 +201,24 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
             newValue[option] = amount;
         }
         /* --- */
-        this.#gridEl.setData(rows);
+        this.#dataManager.setSource(rows);
+        this.#fillGrid();
         this.#options = options;
         this.value = newValue;
         /* --- */
         this.dispatchEvent(new Event("options"));
+    }
+
+    #fillGrid() {
+        const options = {
+            sort: ["name"]
+        };
+        if (this.#searchEl.value != "") {
+            options.filter = {
+                name: this.#searchEl.value
+            };
+        }
+        this.#gridEl.setData(this.#dataManager.getData(options));
     }
 
     #onSlotChange = debounce(() => {

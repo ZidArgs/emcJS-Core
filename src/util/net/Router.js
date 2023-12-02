@@ -62,7 +62,7 @@ function callRoute(loc) {
     const path = loc.pathname;
     for (const [uri, callback] of ROUTES) {
         const regEx = new RegExp(`^${uri}$`);
-        if (path.match(regEx)) {
+        if (regEx.test(path)) {
             callback(uri, resolveParams(loc.search));
         }
     }

@@ -1,4 +1,7 @@
 
+import {
+    deepClone
+} from "../../../util/helper/DeepClone.js";
 import ObservableStorage from "./ObservableStorage.js";
 
 export default class ObservableDefaultingStorage extends ObservableStorage {
@@ -73,7 +76,7 @@ export default class ObservableDefaultingStorage extends ObservableStorage {
     getAll() {
         const res = {};
         for (const [key, value] of this.#defaults) {
-            res[key] = super.get(key) ?? value;
+            res[key] = super.get(key) ?? deepClone(value);
         }
         return res;
     }

@@ -28,7 +28,7 @@ export default class FilteredList extends CustomElement {
                 const regEx = new CharacterSearch(event.value);
                 for (const el of all) {
                     const value = el.dataset.filtervalue ?? getInnerText(el);
-                    if (value.match(regEx)) {
+                    if (regEx.test(value)) {
                         el.style.display = "";
                     } else {
                         el.style.display = "none";
