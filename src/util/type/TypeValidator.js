@@ -5,7 +5,7 @@ import TypeConfigMap from "../../data/type/TypeConfigMap.js";
 import LogicValidator from "../logic/LogicValidator.js";
 
 const IMAGE_PATTERN = /\.(?:apng|avif|gif|jpg|jpeg|jfif|pjpeg|pjp|png|svg|webp|bmp|ico|tiff)$/i;
-const COLOR_PATTERN = /#(?:0-9a-f){6}/i;
+const COLOR_PATTERN = /#[0-9a-f]{6}/i;
 
 class TypeValidator {
 
@@ -127,7 +127,7 @@ class TypeValidator {
         if (typeof value !== "string") {
             throw new Error(`TypeValidator::Image - string expected [ ${path.join(" > ")} ]`);
         }
-        if (!IMAGE_PATTERN.test(value)) {
+        if (value !== "" && !IMAGE_PATTERN.test(value)) {
             throw new Error(`TypeValidator::Image - does not match file extension (apng, avif, gif, jpg, jpeg, jfif, pjpeg, pjp, png, svg, webp, bmp, ico, tiff) [ ${path.join(" > ")} ]`);
         }
     }
