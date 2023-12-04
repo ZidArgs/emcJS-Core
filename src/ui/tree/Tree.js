@@ -111,18 +111,31 @@ export default class Tree extends CustomElement {
             }
         });
         /* --- */
-        this.#elManager = TreeNode.getTreeElementManager(this);
+        this.#elManager = TreeNode.createTreeElementManager(this);
     }
 
-    loadConfig(structure) {
+    loadConfig(config) {
         const data = [];
-        for (const key in structure) {
-            const config = structure[key];
-            data.push({...config, key});
+        for (const key in config) {
+            const options = config[key];
+            data.push({...options, key});
         }
         this.#elManager.manage(data);
         if (this.sorted) {
             sortChildren(this);
+        }
+    }
+
+    loadConfigAtPath(path, config) {
+        if (!Array.isArray(path)) {
+            throw new Error("path must be an array");
+        }
+        if (path.length == 0) {
+            this.loadConfig(config);
+        } else {
+            const [key, ...nextPath] = path;
+            const target = this.querySelector(`[ref="${key}"]`);
+            target.loadConfigAtPath(nextPath, config);
         }
     }
 

@@ -169,7 +169,7 @@ export default class TreeNode extends CustomElement {
             this.toggleCollapsed();
         });
         /* --- */
-        this.#elManager = TreeNode.getTreeElementManager(this);
+        this.#elManager = TreeNode.createTreeElementManager(this);
         /* --- */
         this.#i18nEventManager.setActive(this.getBooleanAttribute("sorted"));
         this.#i18nEventManager.set("language", () => {
@@ -282,6 +282,19 @@ export default class TreeNode extends CustomElement {
         }
     }
 
+    loadConfigAtPath(path, structure) {
+        if (!Array.isArray(path)) {
+            throw new Error("path must be an array");
+        }
+        if (path.length == 0) {
+            this.loadConfig(structure);
+        } else {
+            const [key, ...nextPath] = path;
+            const target = this.querySelector(`[ref="${key}"]`);
+            target.loadConfigAtPath(nextPath, structure);
+        }
+    }
+
     static registerNodeType(type, TreeNodeClass) {
         if (typeof type !== "string" || type === "") {
             throw new TypeError("type must be a non empty string");
@@ -304,7 +317,7 @@ export default class TreeNode extends CustomElement {
         return new TreeNodeClass();
     }
 
-    static getTreeElementManager(container) {
+    static createTreeElementManager(container) {
         return new TreeNodeElementManager(container);
     }
 
