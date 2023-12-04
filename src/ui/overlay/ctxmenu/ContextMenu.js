@@ -33,6 +33,14 @@ function getLayerBounds(source) {
 
 export default class ContextMenu extends CustomElement {
 
+    #menuEl;
+
+    #initFocusEl;
+
+    #topFocusEl;
+
+    #bottomFocusEl;
+
     #top = 0;
 
     #left = 0;
@@ -50,10 +58,13 @@ export default class ContextMenu extends CustomElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const menuEl = this.shadowRoot.getElementById("menu");
-        menuEl.style.left = `${LAYER_MARGIN}px`;
-        menuEl.style.top = `${LAYER_MARGIN}px`;
-        menuEl.addEventListener("click", (event) => {
+        this.#menuEl = this.shadowRoot.getElementById("menu");
+        this.#initFocusEl = this.shadowRoot.getElementById("init_focus");
+        this.#topFocusEl = this.shadowRoot.getElementById("focus_catcher_top");
+        this.#bottomFocusEl = this.shadowRoot.getElementById("focus_catcher_bottom");
+        this.#menuEl.style.left = `${LAYER_MARGIN}px`;
+        this.#menuEl.style.top = `${LAYER_MARGIN}px`;
+        this.#menuEl.addEventListener("click", (event) => {
             this.close();
             event.preventDefault();
             event.stopPropagation();
@@ -80,17 +91,14 @@ export default class ContextMenu extends CustomElement {
             }
         });
         /* --- */
-        const focusTopEl = this.shadowRoot.getElementById("focus_catcher_top");
-        focusTopEl.onfocus = () => {
+        this.#topFocusEl.onfocus = () => {
             this.focusLast();
         };
-        const focusBottomEl = this.shadowRoot.getElementById("focus_catcher_bottom");
-        focusBottomEl.onfocus = () => {
+        this.#bottomFocusEl.onfocus = () => {
             this.focusFirst();
         };
-        const focusEl = this.shadowRoot.getElementById("init_focus");
-        focusEl.onblur = () => {
-            focusEl.setAttribute("tabindex", "");
+        this.#initFocusEl.onblur = () => {
+            this.#initFocusEl.setAttribute("tabindex", "");
         }
     }
 
@@ -129,7 +137,8 @@ export default class ContextMenu extends CustomElement {
     }
 
     show(posX, posY, ...props) {
-        this.#calculatePostition(posX, posY);
+        this.#top = posY;
+        this.#left = posX;
         this.#props = deepClone(props);
         /* --- */
         if (!this.active) {
@@ -138,33 +147,33 @@ export default class ContextMenu extends CustomElement {
         }
         /* --- */
         setTimeout(() => {
+            this.#calculatePostition();
             this.initFocus();
         }, 0);
     }
 
-    #calculatePostition(posX, posY) {
+    #calculatePostition() {
         const pRect = getLayerBounds(this);
-        this.#top = posY;
-        this.#left = posX;
-        const menuEl = this.shadowRoot.getElementById("menu");
+        let posY = this.#top;
+        let posX = this.#left;
         if (pRect.x >= 0 && posX < pRect.x + LAYER_MARGIN) {
             posX = pRect.x + LAYER_MARGIN;
         } else {
             const bWidth = Math.min(pRect.width + pRect.x, window.innerWidth);
-            if (menuEl.offsetWidth + posX > bWidth - LAYER_MARGIN) {
-                posX = bWidth - menuEl.offsetWidth - LAYER_MARGIN;
+            if (this.#menuEl.offsetWidth + posX > bWidth - LAYER_MARGIN) {
+                posX = bWidth - this.#menuEl.offsetWidth - LAYER_MARGIN;
             }
         }
         if (pRect.y >= 0 && posY < pRect.y + LAYER_MARGIN) {
             posY = pRect.y + LAYER_MARGIN;
         } else {
             const bHeight = Math.min(pRect.height + pRect.y, window.innerHeight);
-            if (menuEl.offsetHeight + posY > bHeight - LAYER_MARGIN) {
-                posY = bHeight - menuEl.offsetHeight - LAYER_MARGIN;
+            if (this.#menuEl.offsetHeight + posY > bHeight - LAYER_MARGIN) {
+                posY = bHeight - this.#menuEl.offsetHeight - LAYER_MARGIN;
             }
         }
-        menuEl.style.left = `${posX}px`;
-        menuEl.style.top = `${posY}px`;
+        this.#menuEl.style.left = `${posX}px`;
+        this.#menuEl.style.top = `${posY}px`;
     }
 
     close() {
@@ -173,15 +182,13 @@ export default class ContextMenu extends CustomElement {
             this.dispatchEvent(new Event("close"));
         }
         /* --- */
-        const menuEl = this.shadowRoot.getElementById("menu");
-        menuEl.style.left = `${LAYER_MARGIN}px`;
-        menuEl.style.top = `${LAYER_MARGIN}px`;
+        this.#menuEl.style.left = `${LAYER_MARGIN}px`;
+        this.#menuEl.style.top = `${LAYER_MARGIN}px`;
     }
 
     initFocus() {
-        const focusEl = this.shadowRoot.getElementById("init_focus");
-        focusEl.setAttribute("tabindex", "0");
-        focusEl.focus();
+        this.#initFocusEl.setAttribute("tabindex", "0");
+        this.#initFocusEl.focus();
     }
 
     focusFirst() {
@@ -251,9 +258,8 @@ export default class ContextMenu extends CustomElement {
             }
         }
         if (this.active) {
-            const posY = this.#top;
-            const posX = this.#left;
-            this.show(posX, posY, ...this.#props);
+            this.#calculatePostition();
+            this.initFocus();
         }
     });
 
