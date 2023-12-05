@@ -282,19 +282,6 @@ export default class TreeNode extends CustomElement {
         }
     }
 
-    loadConfigAtPath(path, structure) {
-        if (!Array.isArray(path)) {
-            throw new Error("path must be an array");
-        }
-        if (path.length == 0) {
-            this.loadConfig(structure);
-        } else {
-            const [key, ...nextPath] = path;
-            const target = this.querySelector(`[ref="${key}"]`);
-            target.loadConfigAtPath(nextPath, structure);
-        }
-    }
-
     static registerNodeType(type, TreeNodeClass) {
         if (typeof type !== "string" || type === "") {
             throw new TypeError("type must be a non empty string");

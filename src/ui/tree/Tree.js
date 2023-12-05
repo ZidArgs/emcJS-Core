@@ -133,9 +133,24 @@ export default class Tree extends CustomElement {
         if (path.length == 0) {
             this.loadConfig(config);
         } else {
-            const [key, ...nextPath] = path;
-            const target = this.querySelector(`[ref="${key}"]`);
-            target.loadConfigAtPath(nextPath, config);
+            const node = this.#getElementByPath(path);
+            if (node != null) {
+                node.loadConfig(config);
+            }
+        }
+    }
+
+    loadConfigAtRefPath(path, config) {
+        if (!Array.isArray(path)) {
+            throw new Error("path must be an array");
+        }
+        if (path.length == 0) {
+            this.loadConfig(config);
+        } else {
+            const node = this.#getElementByRefPath(path);
+            if (node != null) {
+                node.loadConfig(config);
+            }
         }
     }
 
@@ -210,13 +225,28 @@ export default class Tree extends CustomElement {
     }
 
     #getElementByPath(path) {
-        if (path == null || !path.length) {
+        if (path == null || !Array.isArray(path) || !path.length) {
             return null;
         }
         const p = [...path];
         let res = this;
         while (p.length) {
             res = res.children[p.shift()];
+            if (res == null) {
+                return null;
+            }
+        }
+        return res;
+    }
+
+    #getElementByRefPath(path) {
+        if (path == null || !Array.isArray(path) || !path.length) {
+            return null;
+        }
+        const p = [...path];
+        let res = this;
+        while (p.length) {
+            res = res.querySelector(`[ref="${p.shift()}"]`);
             if (res == null) {
                 return null;
             }

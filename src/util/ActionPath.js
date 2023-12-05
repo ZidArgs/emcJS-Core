@@ -37,6 +37,14 @@ export default class ActionPath {
         return this.#actions[this.#pointer];
     }
 
+    peek(offset) {
+        const pos = this.#pointer + offset;
+        if (pos < 0 || pos >= this.#actions.length) {
+            return null;
+        }
+        return this.#actions[pos];
+    }
+
     getState() {
         const res = [];
         for (const entry of this.#actions) {
