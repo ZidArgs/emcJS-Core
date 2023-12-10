@@ -198,19 +198,33 @@ CustomActionRegistry.current.set("soup", () => {
 CustomActionRegistry.current.set("cheese", () => {
     alert("more cheese");
     formContext.loadData({
-        "search-select.required": "foobar",
-        "text.required": "nice",
-        "number.required": 69,
-        "password.required": "password",
-        "color.default": "#ff0000",
-        "color.resettable": "#00ff00",
-        "color.required": "#0000ff",
-        "hotkey.default": "ctrl w",
-        "hotkey.resettable": "ctrl a",
-        "hotkey.required": "ctrl s",
-        "hotkey.readonly": "ctrl d",
-        "switch.required": true
-    });
+        "search-select": {
+            "required": "foobar"
+        },
+        "text": {
+            "required": "nice"
+        },
+        "number": {
+            "required": 69
+        },
+        "password": {
+            "required": "password"
+        },
+        "color": {
+            "default": "#ff0000",
+            "resettable": "#00ff00",
+            "required": "#0000ff"
+        },
+        "hotkey": {
+            "default": "ctrl w",
+            "resettable": "ctrl a",
+            "required": "ctrl s",
+            "readonly": "ctrl d"
+        },
+        "switch": {
+            "required": true
+        }
+    }, true);
 });
 
 const logicTestEl = document.getElementById("logicTest");

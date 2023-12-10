@@ -7,7 +7,7 @@ import {
 import EventMultiTargetManager from "../event/EventMultiTargetManager.js";
 import EventTargetManager from "../event/EventTargetManager.js";
 import {
-    elevateObject, flattenObject
+    elevateObject, getFromObjectByPath
 } from "../helper/collection/ObjectContent.js";
 import {
     extractFormData
@@ -238,13 +238,27 @@ export default class FormContext extends EventTarget {
         this.#formElList.delete(formEl);
     }
 
-    loadData(data) {
-        this.loadDataFlat(flattenObject(data));
+    loadData(data, merge = false) {
+        const res = {};
+        for (const formEl of this.#formFieldContextList) {
+            const name = formEl.node.name;
+            if (name != null) {
+                const value = getFromObjectByPath(data, name.split("."));
+                if (value != null) {
+                    res[name] = value;
+                }
+            }
+        }
+        this.loadDataFlat(res, merge);
     }
 
-    loadDataFlat(data) {
+    loadDataFlat(data, merge = false) {
         this.#formEventManager.setActive(false);
-        this.#dataStorage.deserialize(data);
+        if (merge) {
+            this.#dataStorage.setAll(data);
+        } else {
+            this.#dataStorage.deserialize(data);
+        }
         this.#formEventManager.setActive(true);
     }
 

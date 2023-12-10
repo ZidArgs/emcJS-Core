@@ -70,7 +70,7 @@ export default class OptionAmountListInput extends AbstractFormInput {
     }
 
     get defaultValue() {
-        return this.getJSONAttribute("value");
+        return this.getJSONAttribute("value") ?? {};
     }
 
     set value(value) {
