@@ -71,7 +71,7 @@ export default class ListInput extends CustomFormElementDelegating {
         super.connectedCallback();
         const value = this.value;
         this.#value = value;
-        this.#applyValue(value);
+        this.#applyValue(value ?? []);
         this.internals.setFormValue(value);
     }
 
@@ -93,7 +93,7 @@ export default class ListInput extends CustomFormElementDelegating {
     set value(value) {
         if (!isEqual(this.#value, value)) {
             this.#value = value;
-            this.#applyValue(value);
+            this.#applyValue(value ?? []);
             this.internals.setFormValue(value);
             /* --- */
             this.dispatchEvent(new Event("change"));
@@ -120,11 +120,12 @@ export default class ListInput extends CustomFormElementDelegating {
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
-                    if (this.#value === undefined) {
-                        this.#applyValue(this.value);
-                        this.internals.setFormValue(this.value);
-                        /* --- */
-                        this.dispatchEvent(new Event("change"));
+                    if (this.#value == null) {
+                        try {
+                            this.#applyValue(JSON.parse(newValue));
+                        } catch {
+                            this.#applyValue([]);
+                        }
                     }
                 }
             } break;
@@ -136,8 +137,8 @@ export default class ListInput extends CustomFormElementDelegating {
         }
     }
 
-    #applyValue() {
-        const data = (this.#value ?? []).map((row) => {
+    #applyValue(value) {
+        const data = value.map((row) => {
             return {
                 name: row
             }

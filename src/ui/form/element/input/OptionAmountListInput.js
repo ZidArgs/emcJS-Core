@@ -150,8 +150,12 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
-                    if (this.#value === undefined) {
-                        this.#applyValue(this.value);
+                    if (this.#value == null) {
+                        try {
+                            this.#applyValue(JSON.parse(newValue));
+                        } catch {
+                            this.#applyValue({});
+                        }
                     }
                 }
             } break;
@@ -165,16 +169,6 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
                 }
             } break;
         }
-    }
-
-    #applyValue() {
-        const data = Object.entries(this.#value ?? {}).map((row) => {
-            return {
-                name: row[0],
-                value: row[1]
-            }
-        });
-        this.#gridEl.setData(data);
     }
 
     #sort = debounce(() => {
@@ -207,6 +201,18 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
         this.value = newValue;
         /* --- */
         this.dispatchEvent(new Event("options"));
+    }
+
+    #applyValue() {
+        const curValue = this.#value;
+        const data = this.#options.map((name) => {
+            return {
+                name,
+                value: curValue[name] ?? 0
+            }
+        });
+        this.#dataManager.setSource(data);
+        this.#fillGrid();
     }
 
     #fillGrid() {

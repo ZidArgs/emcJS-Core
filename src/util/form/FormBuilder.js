@@ -9,12 +9,13 @@ import "../../ui/form/button/SubmitButton.js";
 import "../../ui/form/button/ResetButton.js";
 import "../../ui/form/button/ActionButton.js";
 import "../../ui/form/button/LinkButton.js";
+import "../../ui/form/field/DefaultFormFieldsLoader.js";
 
 class FormBuilder {
 
     build(config) {
         if (config != null && !(typeof config === "object")) {
-            throw new TypeError("config must be an object or an array or null");
+            throw new TypeError("config must be an Object or an array or null");
         }
 
         const formContainerEl = document.createElement("emc-form-container");
@@ -52,15 +53,15 @@ class FormBuilder {
         return formContainerEl;
     }
 
-    buildForm(elements, defaultValues, params) {
-        if (elements != null && !(typeof elements === "object")) {
-            throw new TypeError("elements must be an object or an array or null");
+    buildForm(content, defaultValues, params) {
+        if (content != null && typeof content !== "object") {
+            throw new TypeError("content must be an HTMLElement, Object, Array or null");
         }
-        if (defaultValues != null && !(typeof defaultValues === "object") || Array.isArray(defaultValues)) {
-            throw new TypeError("values must be an object or null");
+        if (defaultValues != null && typeof defaultValues !== "object" || Array.isArray(defaultValues)) {
+            throw new TypeError("defaultValues must be an Object or null");
         }
         if (params != null && !(typeof params === "object") || Array.isArray(params)) {
-            throw new TypeError("params must be an object or null");
+            throw new TypeError("params must be an Object or null");
         }
 
         const formEl = document.createElement("form");
@@ -79,23 +80,23 @@ class FormBuilder {
             formEl.dataset[key] = data[key];
         }
 
-        this.replaceForm(formEl, elements, defaultValues, formParams);
+        this.replaceForm(formEl, content, defaultValues, formParams);
 
         return formEl;
     }
 
-    replaceForm(formEl, elements, defaultValues, params) {
+    replaceForm(formEl, content, defaultValues, params) {
         if (!(formEl instanceof HTMLFormElement)) {
             throw new TypeError("formEl must be of type HTMLFormElement");
         }
-        if (elements != null && !(typeof elements === "object")) {
-            throw new TypeError("elements must be an object or an array or null");
+        if (content != null && typeof content !== "object") {
+            throw new TypeError("content must be an HTMLElement, Object, Array or null");
         }
-        if (defaultValues != null && !(typeof defaultValues === "object") || Array.isArray(defaultValues)) {
-            throw new TypeError("values must be an object or null");
+        if (defaultValues != null && typeof defaultValues !== "object" || Array.isArray(defaultValues)) {
+            throw new TypeError("defaultValues must be an Object or null");
         }
         if (params != null && !(typeof params === "object") || Array.isArray(params)) {
-            throw new TypeError("params must be an object or null");
+            throw new TypeError("params must be an Object or null");
         }
 
         formEl.innerHTML = "";
@@ -106,34 +107,8 @@ class FormBuilder {
             values = {}
         } = params ?? {};
 
-        for (const key in values) {
-            const value = values[key];
-            const hiddenEl = document.createElement("input");
-            hiddenEl.setAttribute("type", "hidden");
-            hiddenEl.setAttribute("name", key);
-            if (typeof value === "object") {
-                hiddenEl.setAttribute("value", JSON.stringify(value ?? ""));
-            } else {
-                hiddenEl.setAttribute("value", value ?? "");
-            }
-            formEl.append(hiddenEl);
-        }
-
-        if (elements != null) {
-            if (Array.isArray(elements)) {
-                for (const option of elements) {
-                    if (option instanceof HTMLElement) {
-                        formEl.append(option);
-                    } else {
-                        formEl.append(this.#createOption(option, defaultValues ?? {}));
-                    }
-                }
-            } else if (elements instanceof HTMLElement) {
-                formEl.append(elements);
-            } else {
-                formEl.append(this.#createOption(elements, defaultValues ?? {}));
-            }
-        }
+        this.#applyHiddenValues(formEl, values);
+        this.#fillFormElements(formEl, content, defaultValues);
 
         if (!isNullOrFalse(submitButton) || !isNullOrFalse(resetButton)) {
             const buttonRowEl = document.createElement("emc-form-row");
@@ -164,8 +139,56 @@ class FormBuilder {
         }
     }
 
-    #createOption(option = {}, defaultValues = {}) {
-        const {type, id, visible, enabled, data, ...params} = option;
+    #applyHiddenValues(containerEl, values) {
+        if (!(containerEl instanceof HTMLElement)) {
+            throw new TypeError("containerEl must be of type HTMLElement");
+        }
+        if (typeof values !== "object" || Array.isArray(values)) {
+            throw new TypeError("values must be an Object");
+        }
+        for (const key in values) {
+            const value = values[key];
+            const hiddenEl = document.createElement("input");
+            hiddenEl.setAttribute("type", "hidden");
+            hiddenEl.setAttribute("name", key);
+            if (typeof value === "object") {
+                hiddenEl.setAttribute("value", JSON.stringify(value ?? ""));
+            } else {
+                hiddenEl.setAttribute("value", value ?? "");
+            }
+            containerEl.append(hiddenEl);
+        }
+    }
+
+    #fillFormElements(containerEl, content, defaultValues) {
+        if (!(containerEl instanceof HTMLElement)) {
+            throw new TypeError("containerEl must be of type HTMLElement");
+        }
+        if (content != null && typeof content !== "object") {
+            throw new TypeError("content must be an HTMLElement, Object, Array or null");
+        }
+        if (defaultValues != null && typeof defaultValues !== "object" || Array.isArray(defaultValues)) {
+            throw new TypeError("defaultValues must be an Object or null");
+        }
+        if (content != null) {
+            if (Array.isArray(content)) {
+                for (const config of content) {
+                    if (config instanceof HTMLElement) {
+                        containerEl.append(config);
+                    } else {
+                        containerEl.append(this.#createFormElement(config, defaultValues ?? {}));
+                    }
+                }
+            } else if (content instanceof HTMLElement) {
+                containerEl.append(content);
+            } else {
+                containerEl.append(this.#createFormElement(content, defaultValues ?? {}));
+            }
+        }
+    }
+
+    #createFormElement(config = {}, defaultValues = {}) {
+        const {type, id, visible, enabled, data, ...params} = config;
         switch (type) {
             case "SubmitButton": {
                 return this.#createSubmitButton(id, visible, enabled, params, data);
@@ -417,9 +440,7 @@ class FormBuilder {
         if (params.tooltip != null) {
             el.tooltip = params.tooltip;
         }
-        for (const op of params.children) {
-            el.append(this.#createOption(op, defaultValues));
-        }
+        this.#fillFormElements(el, params.children, defaultValues);
         return el;
     }
 
@@ -440,9 +461,7 @@ class FormBuilder {
         if (params.align != null) {
             el.align = params.align;
         }
-        for (const op of params.children) {
-            el.append(this.#createOption(op, defaultValues));
-        }
+        this.#fillFormElements(el, params.children, defaultValues);
         return el;
     }
 

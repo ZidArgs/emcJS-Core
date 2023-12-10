@@ -10,14 +10,6 @@ import "/emcJS/ui/Page.js";
 // form
 import FormBuilder from "/emcJS/util/form/FormBuilder.js";
 import FormContext from "/emcJS/util/form/FormContext.js";
-import "/emcJS/ui/form/FormContainer.js";
-import "/emcJS/ui/form/FormFieldset.js";
-import "/emcJS/ui/form/FormRow.js";
-import "/emcJS/ui/form/button/SubmitButton.js";
-import "/emcJS/ui/form/button/ResetButton.js";
-import "/emcJS/ui/form/button/ActionButton.js";
-import "/emcJS/ui/form/button/LinkButton.js";
-import "/emcJS/ui/form/field/DefaultFormFieldsLoader.js";
 
 /*
        NOW                  |    BEFORE
@@ -41,10 +33,11 @@ import "/emcJS/ui/form/field/DefaultFormFieldsLoader.js";
     "ImageSelect"           | new
     "TokenSelect"           | new
     "OptionAmountListInput" | new
+    "KeyValueListInput"     | new
+    "ListInput"             | new
     todo                    | "list"
 
     MISSING
-    "KeyValueListInput"
     "CharInput"
     "FileInput"
     "Heading-{1-6}" - predefined in formbuilder

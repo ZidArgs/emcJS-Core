@@ -77,16 +77,21 @@ export default class DataGridCellNumber extends DataGridCell {
     }
 
     onValueChange(value) {
-        value = parseFloat(value) || 0;
-        value = parseFloat(value.toFixed(this.decimals ?? undefined));
+        if (this.decimals != null && this.decimals >= 0) {
+            value = parseFloat(value) || 0;
+            value = value.toFixed(this.decimals);
+        }
         this.#valueEl.innerText = value;
-        this.#inputEl.value = value;
+        this.#inputEl.value = parseFloat(value);
     }
 
     #onInput = debounce((event) => {
         event.stopPropagation();
         event.preventDefault();
-        const value = parseFloat(this.#inputEl.value.toFixed(this.decimals ?? undefined));
+        let value = parseFloat(this.#inputEl.value);
+        if (this.decimals != null && this.decimals >= 0) {
+            value = parseFloat(value.toFixed(this.decimals));
+        }
         this.value = value;
         const ev = new Event("edit", {bubbles: true});
         ev.data = {

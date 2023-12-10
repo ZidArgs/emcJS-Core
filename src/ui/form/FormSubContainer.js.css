@@ -1,0 +1,62 @@
+:host {
+    display: flex;
+    max-height: 100%;
+    max-width: 100%;
+}
+.container {
+    flex: 1;
+    padding: 2px;
+    overflow: auto;
+}
+.content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    width: min-content;
+    min-width: max(100%, 500px);
+    max-width: min(100%, 500px);
+}
+::slotted(form) {
+    position: relative;
+    min-height: 2em;
+    min-width: min-content;
+    margin: 0px;
+    padding: 0px;
+    color: var(--form-text-color, #000000);
+    background-color: var(--form-back-color, #cccccc);
+    border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
+    border-radius: 0px !important;
+}
+::slotted(form:first-child) {
+    border-top-left-radius: var(--form-border-radius, 6px) !important;
+    border-top-right-radius: var(--form-border-radius, 6px) !important;
+}
+::slotted(form:not(:first-child)) {
+    margin-top: calc(-1 * var(--form-border-width, 2px));
+}
+::slotted(form:last-child) {
+    flex-grow: 1;
+    border-bottom-left-radius: var(--form-border-radius, 6px) !important;
+    border-bottom-right-radius: var(--form-border-radius, 6px) !important;
+}
+:host(.has-header) ::slotted(form:first-child) {
+    position: sticky;
+    flex-grow: 0;
+    top: 0px;
+    box-shadow: var(--page-back-color, #ffffff) 0px calc(-1 * var(--form-border-radius, 6px)) 0px 0px;
+    z-index: 100;
+}
+:host(.has-footer) ::slotted(form:last-child) {
+    position: sticky;
+    flex-grow: 0;
+    bottom: 0px;
+    box-shadow: var(--page-back-color, #ffffff) 0px var(--form-border-radius, 6px) 0px 0px;
+    z-index: 100;
+}
+:host(.has-footer) ::slotted(form:nth-last-child(2)) {
+    flex-grow: 1;
+}
+::slotted(form:focus-within) {
+    z-index: 99 !important;
+}

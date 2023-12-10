@@ -7,6 +7,9 @@ import {
 import EventMultiTargetManager from "../event/EventMultiTargetManager.js";
 import EventTargetManager from "../event/EventTargetManager.js";
 import {
+    elevateObject, flattenObject
+} from "../helper/collection/ObjectContent.js";
+import {
     extractFormData
 } from "../helper/ui/Form.js";
 import MutationObserverManager from "../observer/MutationObserverManager.js";
@@ -97,10 +100,11 @@ export default class FormContext extends EventTarget {
         }
         /* --- */
         const ev = new Event("submit");
-        ev.errors = this.getErrors();
-        ev.data = this.getFormFieldsData();
+        ev.data = this.getData();
+        ev.formData = this.getFormFieldsData();
         ev.hiddenData = this.getFormHiddenData();
         ev.changes = this.#dataStorage.getChanges();
+        ev.errors = this.getErrors();
         this.dispatchEvent(ev);
     }
 
@@ -235,30 +239,20 @@ export default class FormContext extends EventTarget {
     }
 
     loadData(data) {
+        this.loadDataFlat(flattenObject(data));
+    }
+
+    loadDataFlat(data) {
         this.#formEventManager.setActive(false);
         this.#dataStorage.deserialize(data);
         this.#formEventManager.setActive(true);
     }
 
-    getErrors() {
-        const res = [];
-        for (const fieldEl of this.#formFieldContextList) {
-            if (fieldEl.errors.length) {
-                res.push({
-                    name: fieldEl.node.name,
-                    errors: fieldEl.errors,
-                    element: fieldEl.node
-                });
-            }
-        }
-        return res;
-    }
-
-    getChanges() {
-        return this.#dataStorage.getChanges();
-    }
-
     getData() {
+        return elevateObject(this.getDataFlat());
+    }
+
+    getDataFlat() {
         return this.#dataStorage.getAll();
     }
 
@@ -298,6 +292,10 @@ export default class FormContext extends EventTarget {
         return res;
     }
 
+    getChanges() {
+        return this.#dataStorage.getChanges();
+    }
+
     getFormValidity() {
         for (const formEl of this.#formElList) {
             if (!formEl.checkValidity()) {
@@ -305,6 +303,20 @@ export default class FormContext extends EventTarget {
             }
         }
         return true;
+    }
+
+    getErrors() {
+        const res = [];
+        for (const fieldEl of this.#formFieldContextList) {
+            if (fieldEl.errors.length) {
+                res.push({
+                    name: fieldEl.node.name,
+                    errors: fieldEl.errors,
+                    element: fieldEl.node
+                });
+            }
+        }
+        return res;
     }
 
     #registerNodeMutation(node) {

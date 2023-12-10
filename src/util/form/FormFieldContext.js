@@ -78,15 +78,18 @@ export default class FormFieldContext {
         mutationObserver.observe(this.#element, MUTATION_CONFIG);
         this.#elementEventManager.switchTarget(this.#element);
         this.#elementEventManager.set("change", () => {
-            this.#storageEventManager.setActive(false);
-            this.#storage.set(this.#element.name, this.#element.value);
-            this.#storageEventManager.setActive(true);
+            if (this.#storage != null) {
+                this.#storageEventManager.setActive(false);
+                this.#storage.set(this.#element.name, this.#element.value);
+                this.#storageEventManager.setActive(true);
+            }
         });
-        this.#elementEventManager.set("default", (event) => {
-            this.#storageEventManager.setActive(false);
-            const {name} = event;
-            this.#storage.resetValueChange(name);
-            this.#storageEventManager.setActive(true);
+        this.#elementEventManager.set("default", () => {
+            if (this.#storage != null) {
+                this.#storageEventManager.setActive(false);
+                this.#storage.resetValueChange(this.#element.name);
+                this.#storageEventManager.setActive(true);
+            }
         });
         /* --- */
         this.#storageEventManager.set("change", (event) => {
