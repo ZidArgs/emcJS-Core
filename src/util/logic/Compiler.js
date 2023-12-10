@@ -2,44 +2,44 @@ const TRANSPILERS = {
     /* literals */
     "true":     () => "1",
     "false":    () => "0",
-    "string":   (logic) => escape(logic.el),
-    "number":   (logic) => toNumber(logic.el),
-    "value":    (logic) => `(val("${escape(logic.el)}")||0)`,
-    "pointer":  (logic) => `(val(val("${escape(logic.el)}")||"")||0)`,
-    "state":    (logic) => `(val("${escape(logic.el)}")||"")=="${escape(logic.value)}"`,
+    "string":   (logic) => escape(logic.content),
+    "number":   (logic) => toNumber(logic.content),
+    "value":    (logic) => `(val("${escape(logic.content)}")||0)`,
+    "pointer":  (logic) => `(val(val("${escape(logic.content)}")||"")||0)`,
+    "state":    (logic) => `(val("${escape(logic.content)}")||"")=="${escape(logic.value)}"`,
 
     /* operators */
-    "and":      (logic) => `${multiElementOperation(logic.el, "&&")}`,
-    "nand":     (logic) => `!${multiElementOperation(logic.el, "&&")}`,
-    "or":       (logic) => `${multiElementOperation(logic.el, "||")}`,
-    "nor":      (logic) => `!${multiElementOperation(logic.el, "||")}`,
-    "not":      (logic) => `!(${buildLogic(logic.el)})`,
-    "xor":      (logic) => `${twoElementOperation(logic.el, "^") || 1}`,
-    "xnor":     (logic) => `!${twoElementOperation(logic.el, "^") || 1}`,
+    "and":      (logic) => `${multiElementOperation(logic.content, "&&")}`,
+    "nand":     (logic) => `!${multiElementOperation(logic.content, "&&")}`,
+    "or":       (logic) => `${multiElementOperation(logic.content, "||")}`,
+    "nor":      (logic) => `!${multiElementOperation(logic.content, "||")}`,
+    "not":      (logic) => `!(${buildLogic(logic.content)})`,
+    "xor":      (logic) => `${twoElementOperation(logic.content, "^") || 1}`,
+    "xnor":     (logic) => `!${twoElementOperation(logic.content, "^") || 1}`,
 
     /* restrictors */
-    "min":      (logic) => `(${buildLogic(logic.el)}>=${escape(logic.value, 0)})`,
-    "max":      (logic) => `(${buildLogic(logic.el)}<=${escape(logic.value, 0)})`,
+    "min":      (logic) => `(${buildLogic(logic.content)}>=${escape(logic.value, 0)})`,
+    "max":      (logic) => `(${buildLogic(logic.content)}<=${escape(logic.value, 0)})`,
 
     /* comparators */
-    "eq":       (logic) => twoElementOperation(logic.el, "=="),
-    "neq":      (logic) => twoElementOperation(logic.el, "!="),
-    "lt":       (logic) => twoElementOperation(logic.el, "<"),
-    "lte":      (logic) => twoElementOperation(logic.el, "<="),
-    "gt":       (logic) => twoElementOperation(logic.el, ">"),
-    "gte":      (logic) => twoElementOperation(logic.el, ">="),
+    "eq":       (logic) => twoElementOperation(logic.content, "=="),
+    "neq":      (logic) => twoElementOperation(logic.content, "!="),
+    "lt":       (logic) => twoElementOperation(logic.content, "<"),
+    "lte":      (logic) => twoElementOperation(logic.content, "<="),
+    "gt":       (logic) => twoElementOperation(logic.content, ">"),
+    "gte":      (logic) => twoElementOperation(logic.content, ">="),
 
     /* math */
-    "add":      (logic) => mathMultiElementOperation(logic.el, "+"),
-    "sub":      (logic) => mathMultiElementOperation(logic.el, "-"),
-    "mul":      (logic) => mathMultiElementOperation(logic.el, "*"),
-    "div":      (logic) => mathMultiElementOperation(logic.el, "/"),
-    "mod":      (logic) => mathMultiElementOperation(logic.el, "%"),
-    "pow":      (logic) => mathTwoElementOperation(logic.el, "**"),
+    "add":      (logic) => mathMultiElementOperation(logic.content, "+"),
+    "sub":      (logic) => mathMultiElementOperation(logic.content, "-"),
+    "mul":      (logic) => mathMultiElementOperation(logic.content, "*"),
+    "div":      (logic) => mathMultiElementOperation(logic.content, "/"),
+    "mod":      (logic) => mathMultiElementOperation(logic.content, "%"),
+    "pow":      (logic) => mathTwoElementOperation(logic.content, "**"),
 
     /* special */
-    "at":       (logic) => logic.el ? `((val("${escape(logic.node)}")||0)&&${buildLogic(logic.el)})` : `(val("${escape(logic.node)}")||0)`,
-    "mixin":    (logic) => `(val("${escape(logic.el)}")||0)`
+    "at":       (logic) => logic.content ? `((val("${escape(logic.node)}")||0)&&${buildLogic(logic.content)})` : `(val("${escape(logic.node)}")||0)`,
+    "mixin":    (logic) => `(val("${escape(logic.content)}")||0)`
 };
 
 const dependencies = new Set();

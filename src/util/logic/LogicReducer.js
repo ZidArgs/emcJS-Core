@@ -15,15 +15,15 @@ export function reduceLogic(input) {
         case "and": {
             const output = {
                 type: input.type,
-                el: input.el.map(reduceLogic).filter(filterNull).filter(filterTrue)
+                content: input.content.map(reduceLogic).filter(filterNull).filter(filterTrue)
             };
-            if (output.el.length == 0) {
+            if (output.content.length == 0) {
                 return;
             }
-            if (output.el.length == 1) {
-                return output.el[0];
+            if (output.content.length == 1) {
+                return output.content[0];
             }
-            if (output.el.some((e) => e.type == "false")) {
+            if (output.content.some((e) => e.type == "false")) {
                 return {type: "false"}
             }
             return output;
@@ -31,15 +31,15 @@ export function reduceLogic(input) {
         case "nand": {
             const output = {
                 type: input.type,
-                el: input.el.map(reduceLogic).filter(filterNull).filter(filterTrue)
+                content: input.content.map(reduceLogic).filter(filterNull).filter(filterTrue)
             };
-            if (output.el.length == 0) {
+            if (output.content.length == 0) {
                 return;
             }
-            if (output.el.length == 1) {
-                return output.el[0];
+            if (output.content.length == 1) {
+                return output.content[0];
             }
-            if (output.el.some((e) => e.type == "false")) {
+            if (output.content.some((e) => e.type == "false")) {
                 return {type: "true"}
             }
             return output;
@@ -47,15 +47,15 @@ export function reduceLogic(input) {
         case "or": {
             const output = {
                 type: input.type,
-                el: input.el.map(reduceLogic).filter(filterNull).filter(filterFalse)
+                content: input.content.map(reduceLogic).filter(filterNull).filter(filterFalse)
             };
-            if (output.el.length == 0) {
+            if (output.content.length == 0) {
                 return;
             }
-            if (output.el.length == 1) {
-                return output.el[0];
+            if (output.content.length == 1) {
+                return output.content[0];
             }
-            if (output.el.some((e) => e.type == "true")) {
+            if (output.content.some((e) => e.type == "true")) {
                 return {type: "true"}
             }
             return output;
@@ -63,15 +63,15 @@ export function reduceLogic(input) {
         case "nor": {
             const output = {
                 type: input.type,
-                el: input.el.map(reduceLogic).filter(filterNull).filter(filterFalse)
+                content: input.content.map(reduceLogic).filter(filterNull).filter(filterFalse)
             };
-            if (output.el.length == 0) {
+            if (output.content.length == 0) {
                 return;
             }
-            if (output.el.length == 1) {
-                return output.el[0];
+            if (output.content.length == 1) {
+                return output.content[0];
             }
-            if (output.el.some((e) => e.type == "true")) {
+            if (output.content.some((e) => e.type == "true")) {
                 return {type: "false"}
             }
             return output;
@@ -79,18 +79,18 @@ export function reduceLogic(input) {
         case "xor": {
             const output = {
                 type: input.type,
-                el: input.el.map(reduceLogic).filter(filterNull)
+                content: input.content.map(reduceLogic).filter(filterNull)
             };
-            if (output.el.length == 0) {
+            if (output.content.length == 0) {
                 return;
             }
-            if (output.el.length == 1) {
-                return output.el[0];
+            if (output.content.length == 1) {
+                return output.content[0];
             }
-            if (output.el[0].type == "true" && output.el[1].type == "true" || output.el[0].type == "false" && output.el[1].type == "false") {
+            if (output.content[0].type == "true" && output.content[1].type == "true" || output.content[0].type == "false" && output.content[1].type == "false") {
                 return {type: "false"}
             }
-            if (output.el[0].type == "false" && output.el[1].type == "true" || output.el[0].type == "true" && output.el[1].type == "false") {
+            if (output.content[0].type == "false" && output.content[1].type == "true" || output.content[0].type == "true" && output.content[1].type == "false") {
                 return {type: "true"}
             }
             return output;
@@ -98,18 +98,18 @@ export function reduceLogic(input) {
         case "xnor": {
             const output = {
                 type: input.type,
-                el: input.el.map(reduceLogic).filter(filterNull)
+                content: input.content.map(reduceLogic).filter(filterNull)
             };
-            if (output.el.length == 0) {
+            if (output.content.length == 0) {
                 return;
             }
-            if (output.el.length == 1) {
-                return output.el[0];
+            if (output.content.length == 1) {
+                return output.content[0];
             }
-            if (output.el[0].type == "true" && output.el[1].type == "true" || output.el[0].type == "false" && output.el[1].type == "false") {
+            if (output.content[0].type == "true" && output.content[1].type == "true" || output.content[0].type == "false" && output.content[1].type == "false") {
                 return {type: "true"}
             }
-            if (output.el[0].type == "false" && output.el[1].type == "true" || output.el[0].type == "true" && output.el[1].type == "false") {
+            if (output.content[0].type == "false" && output.content[1].type == "true" || output.content[0].type == "true" && output.content[1].type == "false") {
                 return {type: "false"}
             }
             return output;
@@ -128,13 +128,13 @@ export function reduceLogic(input) {
         case "lte": {
             const output = {
                 type: input.type,
-                el: input.el.map(reduceLogic).filter(filterNull)
+                content: input.content.map(reduceLogic).filter(filterNull)
             };
-            if (output.el.length == 0) {
+            if (output.content.length == 0) {
                 return;
             }
-            if (output.el.length == 1) {
-                return output.el[0];
+            if (output.content.length == 1) {
+                return output.content[0];
             }
             return output;
         }
@@ -142,10 +142,10 @@ export function reduceLogic(input) {
         case "max": {
             const output = {
                 type: input.type,
-                el: reduceLogic(input.el),
+                content: reduceLogic(input.content),
                 value: input.value
             };
-            if (output.el == null) {
+            if (output.content == null) {
                 return;
             }
             return output;
@@ -153,19 +153,19 @@ export function reduceLogic(input) {
         case "not": {
             const output = {
                 "type": "not",
-                "el": reduceLogic(input.el)
+                "el": reduceLogic(input.content)
             }
-            if (output.el == null) {
+            if (output.content == null) {
                 return;
             }
-            if (output.el.type == "false") {
+            if (output.content.type == "false") {
                 return {type: "true"}
             }
-            if (output.el.type == "true") {
+            if (output.content.type == "true") {
                 return {type: "false"}
             }
-            if (output.el.type == "not") {
-                return output.el.el
+            if (output.content.type == "not") {
+                return output.content.content
             }
             return output;
         }

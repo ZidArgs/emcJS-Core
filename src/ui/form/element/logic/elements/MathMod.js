@@ -13,7 +13,7 @@ export default class MathMod extends AbstractInfChildrenElement {
     }
 
     calculate(state = {}) {
-        const ch = this.childList.map((el) => el.calculate(state));
+        const ch = this.childList.map((node) => node.calculate(state));
         let value = ch.shift() ?? 0;
         for (const val of ch) {
             const v = parseFloat(val);

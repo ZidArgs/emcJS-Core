@@ -27,10 +27,10 @@ export default class AbstractLiteralStateElement extends AbstractElement {
 
     getElement(forceCopy = false) {
         if (forceCopy || this.template) {
-            const el = this.cloneNode(true);
-            el.removeAttribute("template");
-            el.setOptions(this.#options);
-            return el;
+            const node = this.cloneNode(true);
+            node.removeAttribute("template");
+            node.setOptions(this.#options);
+            return node;
         } else {
             return this;
         }
@@ -92,7 +92,7 @@ export default class AbstractLiteralStateElement extends AbstractElement {
     }
 
     loadLogic(logic) {
-        this.ref = logic.ref ?? logic.el;
+        this.ref = logic.ref ?? logic.content;
         this.value = logic.value;
     }
 

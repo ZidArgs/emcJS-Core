@@ -53,36 +53,36 @@ export default class AbstractRestrictorElement extends AbstractElement {
     }
 
     getElement(forceCopy = false) {
-        const el = super.getElement(forceCopy);
-        el.value = this.value;
-        return el;
+        const node = super.getElement(forceCopy);
+        node.value = this.value;
+        return node;
     }
 
     toJSON() {
         return {
             type: this.#type,
-            el: this.childList.map((e) => e.toJSON())[0],
+            content: this.childList.map((e) => e.toJSON())[0],
             value: parseInt(this.value) || 0
         };
     }
 
     loadLogic(logic) {
-        if (!!logic && !!logic.el) {
+        if (!!logic && !!logic.content) {
             this.value = parseInt(logic.value) || 0;
             let cl;
-            if (logic.el.category) {
-                cl = AbstractElement.getReference(logic.el.category, logic.el.type);
+            if (logic.content.category) {
+                cl = AbstractElement.getReference(logic.content.category, logic.content.type);
             } else {
-                cl = AbstractElement.getReference(logic.el.type);
+                cl = AbstractElement.getReference(logic.content.type);
             }
-            const el = new cl;
-            el.loadLogic(logic.el);
-            this.append(el);
+            const node = new cl;
+            node.loadLogic(logic.content);
+            this.append(node);
         }
     }
 
     get childList() {
-        const ch = Array.from(this.children).filter((el) => el instanceof AbstractElement);
+        const ch = Array.from(this.children).filter((node) => node instanceof AbstractElement);
         if (ch.length) {
             return [ch[0]];
         }

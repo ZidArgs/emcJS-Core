@@ -2,7 +2,8 @@ import Modal from "../../../../modal/Modal.js";
 import {
     debounce
 } from "../../../../../util/Debouncer.js";
-import LogicAbstractElement from "../elements/abstract/AbstractElement.js";
+import LogicValidator from "../../../../../util/logic/LogicValidator.js";
+import Logger from "../../../../../util/log/Logger.js";
 import "../../../button/Button.js";
 import TPL from "./LogicJSONModal.js.html" assert {type: "html"};
 import STYLE from "./LogicJSONModal.js.css" assert {type: "css"};
@@ -37,10 +38,11 @@ export default class LogicJSONModal extends Modal {
         this.#submitEl = els.getElementById("submit");
         this.#submitEl.addEventListener("click", () => {
             if (this.#jsonEl.validationMessage === "") {
-                const build = LogicAbstractElement.buildLogic(this.value);
-                if (build.matches("emc-logic-error") || build.querySelector("emc-logic-error") != null) {
+                const errors = LogicValidator.validate(this.value);
+                if (errors.length > 0) {
                     this.#jsonEl.setCustomValidity("Invalid Logic");
                     this.#errorEl.i18nContent = "Invalid Logic";
+                    Logger.error(`Invalid Logic\n${errors.map((s) => `\t${s}`).join("\n")}`);
                 } else {
                     this.dispatchEvent(new Event("submit"));
                     this.close();

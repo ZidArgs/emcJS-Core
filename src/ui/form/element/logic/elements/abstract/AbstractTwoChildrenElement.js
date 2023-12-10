@@ -33,14 +33,14 @@ export default class AbstractTwoChildrenElement extends AbstractElement {
     toJSON() {
         return {
             type: this.#type,
-            el: this.childList.map((e) => e.toJSON())
+            content: this.childList.map((e) => e.toJSON())
         };
     }
 
     loadLogic(logic) {
-        if (!!logic && Array.isArray(logic.el)) {
-            for (let i = 0; i < logic.el.length && i < 2; ++i) {
-                const ch = logic.el[i];
+        if (!!logic && Array.isArray(logic.content)) {
+            for (let i = 0; i < logic.content.length && i < 2; ++i) {
+                const ch = logic.content[i];
                 if (ch) {
                     let cl;
                     if (ch.category) {
@@ -48,10 +48,10 @@ export default class AbstractTwoChildrenElement extends AbstractElement {
                     } else {
                         cl = AbstractElement.getReference(ch.type);
                     }
-                    const el = new cl;
-                    el.setAttribute("slot", `slot${i}`);
-                    el.loadLogic(ch);
-                    this.append(el);
+                    const nnode = new cl;
+                    nnode.setAttribute("slot", `slot${i}`);
+                    nnode.loadLogic(ch);
+                    this.append(nnode);
                 }
             }
         }

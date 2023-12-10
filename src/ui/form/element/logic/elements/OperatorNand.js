@@ -13,7 +13,7 @@ export default class OperatorNand extends AbstractInfChildrenElement {
     }
 
     calculate(state = {}) {
-        const ch = this.childList.map((el) => el.calculate(state));
+        const ch = this.childList.map((ndoe) => ndoe.calculate(state));
         for (const val of ch) {
             if (!val) {
                 this.shadowRoot.getElementById("header").setAttribute("value", "1");

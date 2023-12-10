@@ -27,13 +27,13 @@ export default class AbstractInfChildrenElement extends AbstractElement {
     toJSON() {
         return {
             type: this.#type,
-            el: this.childList.map((e) => e.toJSON())
+            content: this.childList.map((e) => e.toJSON())
         };
     }
 
     loadLogic(logic) {
-        if (!!logic && Array.isArray(logic.el)) {
-            logic.el.forEach((ch) => {
+        if (!!logic && Array.isArray(logic.content)) {
+            logic.content.forEach((ch) => {
                 if (ch) {
                     let cl;
                     if (ch.category) {
@@ -41,16 +41,16 @@ export default class AbstractInfChildrenElement extends AbstractElement {
                     } else {
                         cl = AbstractElement.getReference(ch.type);
                     }
-                    const el = new cl;
-                    el.loadLogic(ch);
-                    this.append(el);
+                    const node = new cl;
+                    node.loadLogic(ch);
+                    this.append(node);
                 }
             });
         }
     }
 
     get childList() {
-        return Array.from(this.children).filter((el) => el instanceof AbstractElement);
+        return Array.from(this.children).filter((node) => node instanceof AbstractElement);
     }
 
     attributeChangedCallback(name, oldValue, newValue) {

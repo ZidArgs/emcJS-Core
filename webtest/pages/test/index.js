@@ -171,7 +171,11 @@ try {
                 ]
             }
         }
-    }, true, "A");
+    }, {
+        label: "A",
+        throwErrors: true,
+        strict: true
+    });
 } catch (err) {
     Logger.error(err);
 }
@@ -192,8 +196,16 @@ try {
                 "value": "test",
                 "type": "Exit"
             }
-        ]
-    }, true, "B");
+        ],
+        "logic": {
+            "type": "not",
+            "el": null
+        }
+    }, {
+        label: "B",
+        throwErrors: true,
+        strict: true
+    });
 } catch (err) {
     Logger.error(err);
 }

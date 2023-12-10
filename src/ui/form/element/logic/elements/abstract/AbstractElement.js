@@ -82,9 +82,9 @@ export default class AbstractElement extends CustomElement {
 
     getElement(forceCopy = false) {
         if (forceCopy || this.template) {
-            const el = this.cloneNode(true);
-            el.removeAttribute("template");
-            return el;
+            const node = this.cloneNode(true);
+            node.removeAttribute("template");
+            return node;
         } else {
             return this;
         }
@@ -102,28 +102,28 @@ export default class AbstractElement extends CustomElement {
         throw new Error("can not call abstract method");
     }
 
-    append(el) {
-        if (Array.isArray(el)) {
-            el.forEach((e) => this.appendChild(e));
+    append(node) {
+        if (Array.isArray(node)) {
+            node.forEach((e) => this.appendChild(e));
         } else {
-            this.appendChild(el);
+            this.appendChild(node);
         }
     }
 
-    prepend(el) {
+    prepend(node) {
         const firstEl = this.firstChild;
         if (firstEl == null) {
-            this.append(el);
-        } else if (Array.isArray(el)) {
-            el.forEach((e) => firstEl.before(e));
+            this.append(node);
+        } else if (Array.isArray(node)) {
+            node.forEach((e) => firstEl.before(e));
         } else {
-            firstEl.before(el);
+            firstEl.before(node);
         }
     }
 
-    appendChild(el) {
-        if (el instanceof AbstractElement && this.editable) {
-            const r = super.appendChild(el);
+    appendChild(node) {
+        if (node instanceof AbstractElement && this.editable) {
+            const r = super.appendChild(node);
 
             if (this.hasAttribute("visualize")) {
                 r.setAttribute("visualize", this.getAttribute("visualize"));
@@ -140,9 +140,9 @@ export default class AbstractElement extends CustomElement {
         }
     }
 
-    insertBefore(el, ref) {
-        if (el instanceof AbstractElement && this.editable) {
-            const r = super.insertBefore(el, ref);
+    insertBefore(node, ref) {
+        if (node instanceof AbstractElement && this.editable) {
+            const r = super.insertBefore(node, ref);
 
             if (this.hasAttribute("visualize")) {
                 r.setAttribute("visualize", this.getAttribute("visualize"));
@@ -159,38 +159,38 @@ export default class AbstractElement extends CustomElement {
         }
     }
 
-    before(el) {
+    before(node) {
         const parentEl = this.parentElement;
-        if (el instanceof AbstractElement && parentEl.editable) {
-            super.before(el);
+        if (node instanceof AbstractElement && parentEl.editable) {
+            super.before(node);
 
             if (parentEl.hasAttribute("visualize")) {
-                el.setAttribute("visualize", parentEl.getAttribute("visualize"));
+                node.setAttribute("visualize", parentEl.getAttribute("visualize"));
             } else {
-                el.removeAttribute("visualize");
+                node.removeAttribute("visualize");
             }
             if (parentEl.hasAttribute("readonly")) {
-                el.setAttribute("readonly", parentEl.getAttribute("readonly"));
+                node.setAttribute("readonly", parentEl.getAttribute("readonly"));
             } else {
-                el.removeAttribute("readonly");
+                node.removeAttribute("readonly");
             }
         }
     }
 
-    after(el) {
+    after(node) {
         const parentEl = this.parentElement;
-        if (el instanceof AbstractElement && parentEl.editable) {
-            super.after(el);
+        if (node instanceof AbstractElement && parentEl.editable) {
+            super.after(node);
 
             if (parentEl.hasAttribute("visualize")) {
-                el.setAttribute("visualize", parentEl.getAttribute("visualize"));
+                node.setAttribute("visualize", parentEl.getAttribute("visualize"));
             } else {
-                el.removeAttribute("visualize");
+                node.removeAttribute("visualize");
             }
             if (parentEl.hasAttribute("readonly")) {
-                el.setAttribute("readonly", parentEl.getAttribute("readonly"));
+                node.setAttribute("readonly", parentEl.getAttribute("readonly"));
             } else {
-                el.removeAttribute("readonly");
+                node.removeAttribute("readonly");
             }
         }
     }
@@ -334,17 +334,17 @@ export default class AbstractElement extends CustomElement {
                 } else {
                     cl = AbstractElement.getReference(logic.type);
                 }
-                const el = new cl();
-                el.loadLogic(logic);
-                return el;
+                const node = new cl();
+                node.loadLogic(logic);
+                return node;
             }
         }
         return new (AbstractElement.getReference(`${logic}`));
     }
 
     static allowDrop(event) {
-        const el = event.target.getRootNode().host;
-        if (el.editable) {
+        const node = event.target.getRootNode().host;
+        if (node.editable) {
             event.preventDefault();
             event.stopPropagation();
             return false;
@@ -352,11 +352,11 @@ export default class AbstractElement extends CustomElement {
     }
 
     static dropOnPlaceholder(event) {
-        const els = DragDropMemory.get();
-        if (els.length) {
-            const el = els[0];
-            if (!!el && el instanceof AbstractElement) {
-                const ne = el.getElement(event.ctrlKey);
+        const nodes = DragDropMemory.get();
+        if (nodes.length) {
+            const node = nodes[0];
+            if (!!node && node instanceof AbstractElement) {
+                const ne = node.getElement(event.ctrlKey);
                 if (ne) {
                     event.target.getRootNode().host.append(ne);
                     const slot = event.target.parentNode;

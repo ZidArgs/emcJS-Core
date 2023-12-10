@@ -2,39 +2,39 @@ const TRANSPILERS = {
     /* literals */
     "true":     () => "1",
     "false":    () => "0",
-    "string":   (logic) => `${escapeString(logic.el)}`,
-    "number":   (logic) => `${escapeNumber(logic.el)}`,
-    "value":    (logic) => `(val(${escapeString(logic.el)})??0)`,
-    "state":    (logic) => `(val(${escapeString(logic.el)})??0)==${escapeValue(logic.value)}`,
+    "string":   (logic) => `${escapeString(logic.content)}`,
+    "number":   (logic) => `${escapeNumber(logic.content)}`,
+    "value":    (logic) => `(val(${escapeString(logic.content)})??0)`,
+    "state":    (logic) => `(val(${escapeString(logic.content)})??0)==${escapeValue(logic.value)}`,
 
     /* operators */
-    "and":      (logic) => `${multiElementOperation(logic.el, "&&")}`,
-    "nand":     (logic) => `!${multiElementOperation(logic.el, "&&")}`,
-    "or":       (logic) => `${multiElementOperation(logic.el, "||")}`,
-    "nor":      (logic) => `!${multiElementOperation(logic.el, "||")}`,
-    "not":      (logic) => `!(${buildLogic(logic.el)})`,
-    "xor":      (logic) => `${twoElementOperation(logic.el, "^") || 1}`,
-    "xnor":     (logic) => `!${twoElementOperation(logic.el, "^") || 1}`,
+    "and":      (logic) => `${multiElementOperation(logic.content, "&&")}`,
+    "nand":     (logic) => `!${multiElementOperation(logic.content, "&&")}`,
+    "or":       (logic) => `${multiElementOperation(logic.content, "||")}`,
+    "nor":      (logic) => `!${multiElementOperation(logic.content, "||")}`,
+    "not":      (logic) => `!(${buildLogic(logic.content)})`,
+    "xor":      (logic) => `${twoElementOperation(logic.content, "^") || 1}`,
+    "xnor":     (logic) => `!${twoElementOperation(logic.content, "^") || 1}`,
 
     /* restrictors */
-    "min":      (logic) => `(${buildLogic(logic.el)}>=${escapeNumber(logic.value)})`,
-    "max":      (logic) => `(${buildLogic(logic.el)}<=${escapeNumber(logic.value)})`,
+    "min":      (logic) => `(${buildLogic(logic.content)}>=${escapeNumber(logic.value)})`,
+    "max":      (logic) => `(${buildLogic(logic.content)}<=${escapeNumber(logic.value)})`,
 
     /* comparators */
-    "eq":       (logic) => twoElementOperation(logic.el, "=="),
-    "neq":      (logic) => twoElementOperation(logic.el, "!="),
-    "lt":       (logic) => twoElementOperation(logic.el, "<"),
-    "lte":      (logic) => twoElementOperation(logic.el, "<="),
-    "gt":       (logic) => twoElementOperation(logic.el, ">"),
-    "gte":      (logic) => twoElementOperation(logic.el, ">="),
+    "eq":       (logic) => twoElementOperation(logic.content, "=="),
+    "neq":      (logic) => twoElementOperation(logic.content, "!="),
+    "lt":       (logic) => twoElementOperation(logic.content, "<"),
+    "lte":      (logic) => twoElementOperation(logic.content, "<="),
+    "gt":       (logic) => twoElementOperation(logic.content, ">"),
+    "gte":      (logic) => twoElementOperation(logic.content, ">="),
 
     /* math */
-    "add":      (logic) => mathMultiElementOperation(logic.el, "+"),
-    "sub":      (logic) => mathMultiElementOperation(logic.el, "-"),
-    "mul":      (logic) => mathMultiElementOperation(logic.el, "*"),
-    "div":      (logic) => mathMultiElementOperation(logic.el, "/"),
-    "mod":      (logic) => mathMultiElementOperation(logic.el, "%"),
-    "pow":      (logic) => mathTwoElementOperation(logic.el, "**")
+    "add":      (logic) => mathMultiElementOperation(logic.content, "+"),
+    "sub":      (logic) => mathMultiElementOperation(logic.content, "-"),
+    "mul":      (logic) => mathMultiElementOperation(logic.content, "*"),
+    "div":      (logic) => mathMultiElementOperation(logic.content, "/"),
+    "mod":      (logic) => mathMultiElementOperation(logic.content, "%"),
+    "pow":      (logic) => mathTwoElementOperation(logic.content, "**")
 };
 
 const dependencies = new Set();
