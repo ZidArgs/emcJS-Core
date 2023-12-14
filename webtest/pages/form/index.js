@@ -35,6 +35,7 @@ import FormContext from "/emcJS/util/form/FormContext.js";
     "OptionAmountListInput" | new
     "KeyValueListInput"     | new
     "ListInput"             | new
+    "RelationSelect"        | new
     todo                    | "list"
 
     MISSING

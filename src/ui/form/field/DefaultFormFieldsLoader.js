@@ -17,3 +17,4 @@ import "./select/ImageSelect.js";
 import "./select/SearchSelect.js";
 import "./select/SimpleSelect.js";
 import "./select/TokenSelect.js";
+import "./select/RelationSelect.js";

@@ -1,13 +1,39 @@
+import IndexedSet from "../../data/collection/IndexedSet.js";
+
 export default class ElementListCache {
 
-    #elementList = [];
+    #elementList = new IndexedSet();
 
     setNodeList(list) {
-        this.#elementList = list.filter((el) => el instanceof Element);
+        this.#elementList = new IndexedSet(list.filter((node) => node instanceof Element));
+    }
+
+    addNode(node) {
+        if (node instanceof Element) {
+            this.#elementList.add(node);
+        }
+    }
+
+    removeNode(node) {
+        if (node instanceof Element) {
+            this.#elementList.delete(node);
+        }
+    }
+
+    purge() {
+        this.#elementList.clear();
+    }
+
+    forEach(callback, thisArg) {
+        this.#elementList.forEach(callback, thisArg);
+    }
+
+    filter(callback, thisArg) {
+        this.#elementList = this.#elementList.filter(callback, thisArg);
     }
 
     get first() {
-        return this.#elementList[0];
+        return this.#elementList.at(0);
     }
 
     get last() {
@@ -37,28 +63,19 @@ export default class ElementListCache {
     getPrev(element) {
         const pos = this.#elementList.indexOf(element);
         if (pos > 0) {
-            return this.#elementList[pos - 1];
+            return this.#elementList.at(pos - 1);
         }
     }
 
     getNext(element) {
         const pos = this.#elementList.indexOf(element);
         if (pos >= 0 && pos < this.#elementList.length - 1) {
-            return this.#elementList[pos + 1];
+            return this.#elementList.at(pos + 1);
         }
     }
 
     [Symbol.iterator]() {
-        let index = 0;
-        return {
-            next: () => {
-                if (index < this.#elementList.length) {
-                    return {value: this.#elementList[index++], done: false};
-                } else {
-                    return {done: true};
-                }
-            }
-        }
+        return this.#elementList[Symbol.iterator]();
     }
 
 }

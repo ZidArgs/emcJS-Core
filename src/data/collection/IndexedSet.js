@@ -2,18 +2,29 @@ class IndexedSetIterator {
 
     #values;
 
-    #pseudoKey;
+    #withKey;
 
-    constructor(values, pseudoKey = false) {
+    constructor(values, withKey = false) {
         this.#values = Array.from(values);
-        this.#pseudoKey = pseudoKey;
+        this.#withKey = withKey;
+    }
+
+    static {
+        Object.defineProperty(this.prototype, Symbol.toStringTag, {
+            value: "Indexed Set Iterator",
+            configurable: true,
+            enumerable: false,
+            writable: false
+        });
+
+        delete this.prototype.constructor;
     }
 
     next() {
         if (this.#values.length) {
             const value = this.#values.shift();
             return {
-                value: this.#pseudoKey ? [value, value] : value,
+                value: this.#withKey ? [value, value] : value,
                 done: false
             }
         }
@@ -31,8 +42,8 @@ export default class IndexedSet {
 
     constructor(iterable) {
         if (iterable != null) {
-            if (typeof iterable[Symbol.iterator] !== "function") {
-                throw new TypeError("parameter must be iterable or undefined");
+            if (!Array.isArray(iterable) && typeof iterable[Symbol.iterator] !== "function") {
+                throw new TypeError("parameter must be array, iterable or undefined");
             }
             for (const value of iterable) {
                 this.#values.push(value);
@@ -65,17 +76,21 @@ export default class IndexedSet {
                 ...this.#values.slice(0, index),
                 ...this.#values.slice(index + 1)
             ];
-            return true;
         }
-        return false;
+        return this;
     }
 
     clear() {
         this.#values = [];
+        return this;
     }
 
     has(value) {
         return this.#values.includes(value);
+    }
+
+    keys() {
+        return new IndexedSetIterator(this.#values);
     }
 
     values() {
@@ -86,13 +101,22 @@ export default class IndexedSet {
         return new IndexedSetIterator(this.#values, true);
     }
 
-    forEach(callback, thisArg = this) {
+    forEach(callback, thisArg) {
         if (typeof callback !== "function") {
             throw new TypeError("callback must be a function");
         }
-        for (const value of this.#values) {
-            callback.call(thisArg, value, value, this);
+        this.#values.forEach((value, index) => {
+            callback.call(thisArg, value, index, this);
+        });
+    }
+
+    filter(callback, thisArg) {
+        if (typeof callback !== "function") {
+            throw new TypeError("callback must be a function");
         }
+        return new IndexedSet(this.#values.filter((value, index) => {
+            return callback.call(thisArg, value, index, this);
+        }));
     }
 
     at(index) {
@@ -124,8 +148,12 @@ export default class IndexedSet {
         return new IndexedSet(this.#values.slice(start, end));
     }
 
+    indexOf(value) {
+        return this.#values.indexOf(value);
+    }
+
     [Symbol.iterator]() {
-        return this.#values[Symbol.iterator]();
+        return new IndexedSetIterator(this.#values);
     }
 
 }
