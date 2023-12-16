@@ -4,8 +4,8 @@
     "children": [
         {
             "type": "RelationSelect",
-            "label": "relatiion-select default",
-            "name": "relatiion-select.default",
+            "label": "relation-select default",
+            "name": "relation-select.default",
             "types": [
                 "A",
                 "B",
@@ -13,6 +13,45 @@
             ],
             "placeholder": "Select entry...",
             "sorted": true
+        },
+        {
+            "type": "RelationSelect",
+            "label": "relation-select resettable",
+            "name": "relation-select.resettable",
+            "types": [
+                "A",
+                "B",
+                "D"
+            ],
+            "placeholder": "Select entry...",
+            "sorted": true,
+            "resettable": true
+        },
+        {
+            "type": "RelationSelect",
+            "label": "relation-select required",
+            "name": "relation-select.required",
+            "types": [
+                "A",
+                "B",
+                "D"
+            ],
+            "placeholder": "Select entry...",
+            "sorted": true,
+            "required": true
+        },
+        {
+            "type": "RelationSelect",
+            "label": "relation-select disabled",
+            "name": "relation-select.disabled",
+            "types": [
+                "A",
+                "B",
+                "D"
+            ],
+            "placeholder": "Select entry...",
+            "sorted": true,
+            "disabled": true
         },
         {
             "type": "ActionButton",

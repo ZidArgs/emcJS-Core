@@ -147,7 +147,8 @@ export default class SearchSelect extends CustomFormElementDelegating {
             const all = this.#optionNodeList.getNodeList();
             const regEx = new CharacterSearch(this.#inputEl.value);
             for (const el of all) {
-                if (regEx.test((el.comparatorText ?? el.innerText).trim())) {
+                const testText = el.comparatorText ?? el.innerText;
+                if (regEx.test(testText.trim())) {
                     el.style.display = "";
                 } else {
                     el.style.display = "none";

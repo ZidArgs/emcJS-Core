@@ -64,6 +64,9 @@ export default class RelationSelectEntry extends CustomElement {
     }
 
     get comparatorText() {
+        if (!this.name || !this.type) {
+            return "";
+        }
         return `${this.#nameEl.innerText}\n${this.#typeEl.innerText}`;
     }
 

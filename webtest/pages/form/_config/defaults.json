@@ -53,5 +53,9 @@
     ],
     "optionamount.resettable": {
         "foobar": 4
+    },
+    "relation-select.default": {
+        "type": "A",
+        "name": "test"
     }
 }

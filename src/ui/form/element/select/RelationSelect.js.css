@@ -142,10 +142,6 @@
     width: 100%;
 }
 ::slotted(emc-select-relation-entry) {
-    display: flex;
-    align-items: center;
-    min-height: 2rem;
-    white-space: normal;
     color: var(--select-option-text-color, #000000);
     background-color: var(--select-option-back-color, #ffffff);
     font-size: 1rem;

@@ -42,7 +42,8 @@ export default class ImageSelectModal extends Modal {
             if (searchEl.value) {
                 const regEx = new CharacterSearch(searchEl.value);
                 for (const el of all) {
-                    if (regEx.test(el.innerText.trim())) {
+                    const testText = el.comparatorText ?? el.innerText;
+                    if (regEx.test(testText.trim())) {
                         el.style.display = "";
                     } else {
                         el.style.display = "none";
