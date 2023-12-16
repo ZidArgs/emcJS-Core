@@ -13,6 +13,13 @@
             ],
             "placeholder": "Select entry...",
             "sorted": true
+        },
+        {
+            "type": "ActionButton",
+            "name": "button.action_addEntries",
+            "text": "add entries",
+            "icon": "⚡",
+            "action": "addEntries"
         }
     ]
 }

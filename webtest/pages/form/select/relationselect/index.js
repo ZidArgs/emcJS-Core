@@ -1,5 +1,7 @@
 import TypeConfigMap from "/emcJS/data/type/TypeConfigMap.js";
 import TypeStorage from "/emcJS/data/type/TypeStorage.js";
+import CustomActionRegistry from "/emcJS/data/registry/CustomActionRegistry.js";
+import Logger from "/emcJS/util/log/Logger.js";
 import {
     loadForm, init
 } from "../../util/formLoader.js";
@@ -42,3 +44,24 @@ c.set("spinat", {baba: "spinat"});
 
 await init();
 await loadForm(false);
+
+CustomActionRegistry.current.set("addEntries", () => {
+    try {
+        a.setAll({
+            "ananas": {foobar: "ananas"},
+            "apfel": {foobar: "apfel"}
+        });
+    } catch (err) {
+        Logger.error(err);
+    }
+    try {
+        b.setAll({
+            "knoblauch": {barfoo: "knoblauch"},
+            "brot": {barfoo: "brot", argh: "fehler"},
+            "tretmühle": {barfoo: 2, argh: "fehler"},
+            "sahne": {barfoo: "sahne"}
+        });
+    } catch (err) {
+        Logger.error(err);
+    }
+});

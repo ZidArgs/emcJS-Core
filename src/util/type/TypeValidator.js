@@ -24,15 +24,17 @@ class TypeValidator {
     #validate(typeName, data, strict, path, errors) {
         const typeConfig = TypeConfigMap.get(typeName);
         if (typeConfig == null) {
-            return [`error resolving type "${typeName}": unknown [ ${path.join(" > ")} ]`];
+            errors.push(`error resolving type "${typeName}": unknown [ ${path.join(" > ")} ]`);
+            return;
         }
         if (typeof data !== "object" || Array.isArray(data)) {
-            return [`data has to be a dictionary [ ${path.join(" > ")} ]`];
+            errors.push(`data has to be a dictionary [ ${path.join(" > ")} ]`);
+            return;
         }
         if (strict) {
             for (const name in data) {
                 if (!(name in typeConfig)) {
-                    return [`type "${typeName}" does not include attribute "${name}" (strict) [ ${path.join(" > ")} ]`];
+                    errors.push(`type "${typeName}" does not include attribute "${name}" (strict) [ ${path.join(" > ")} ]`);
                 }
             }
         }

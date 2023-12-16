@@ -32,7 +32,7 @@ export default class TypeStorage extends EventTarget {
     set(key, value) {
         // validation
         const validationErrors = TypeValidator.validate(this.#typeName, value, {
-            label: this.#typeName,
+            label: `${this.#typeName} -> ${key}`,
             strict: true
         });
         if (validationErrors.length > 0) {
@@ -52,18 +52,19 @@ export default class TypeStorage extends EventTarget {
     }
 
     setAll(data) {
+        const allErrors = [];
         const values = {};
         const changes = {};
         for (const key in data) {
             // validation
             const newValue = data[key];
             const validationErrors = TypeValidator.validate(this.#typeName, newValue, {
-                label: this.#typeName,
+                label: `${this.#typeName} -> ${key}`,
                 strict: true
             });
             if (validationErrors.length > 0) {
-                const msg = validationErrors.map((s) => s.split("\n").join("\n\t")).join("\n\t");
-                throw new Error(`Error validating type:\n\t${msg}`);
+                allErrors.push(validationErrors.map((s) => s.split("\n").join("\n\t")).join("\n\t"));
+                continue;
             }
             // write
             const oldValue = this.get(key);
@@ -79,6 +80,10 @@ export default class TypeStorage extends EventTarget {
             ev.data = values;
             ev.changes = changes;
             this.dispatchEvent(ev);
+        }
+        // errors
+        if (allErrors.length) {
+            throw new Error(`Error validating type:\n\t${allErrors.join("\n\t")}`);
         }
     }
 
@@ -128,17 +133,18 @@ export default class TypeStorage extends EventTarget {
     }
 
     deserialize(data = {}) {
+        const allErrors = [];
         this.#buffer.clear();
         for (const key in data) {
             // validation
             const newValue = data[key];
             const validationErrors = TypeValidator.validate(this.#typeName, newValue, {
-                label: this.#typeName,
+                label: `${this.#typeName} -> ${key}`,
                 strict: true
             });
             if (validationErrors.length > 0) {
-                const msg = validationErrors.map((s) => s.split("\n").join("\n\t")).join("\n\t");
-                throw new Error(`Error validating type:\n\t${msg}`);
+                allErrors.push(validationErrors.map((s) => s.split("\n").join("\n\t")).join("\n\t"));
+                continue;
             }
             // write
             if (newValue != null) {
@@ -149,21 +155,26 @@ export default class TypeStorage extends EventTarget {
         const ev = new Event("load");
         ev.data = this.getAll();
         this.dispatchEvent(ev);
+        // errors
+        if (allErrors.length) {
+            throw new Error(`Error validating type:\n\t${allErrors.join("\n\t")}`);
+        }
     }
 
     overwrite(data = {}) {
+        const allErrors = [];
         const values = {};
         const changes = {};
         for (const key in data) {
             // validation
             const newValue = data[key];
             const validationErrors = TypeValidator.validate(this.#typeName, newValue, {
-                label: this.#typeName,
+                label: `${this.#typeName} -> ${key}`,
                 strict: true
             });
             if (validationErrors.length > 0) {
-                const msg = validationErrors.map((s) => s.split("\n").join("\n\t")).join("\n\t");
-                throw new Error(`Error validating type:\n\t${msg}`);
+                allErrors.push(validationErrors.map((s) => s.split("\n").join("\n\t")).join("\n\t"));
+                continue;
             }
             // write
             const oldValue = this.get(key);
@@ -185,6 +196,10 @@ export default class TypeStorage extends EventTarget {
             ev.data = values;
             ev.changes = changes;
             this.dispatchEvent(ev);
+        }
+        // errors
+        if (allErrors.length) {
+            throw new Error(`Error validating type:\n\t${allErrors.join("\n\t")}`);
         }
     }
 

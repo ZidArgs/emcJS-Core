@@ -496,6 +496,7 @@ export default class RelationSelect extends CustomFormElementDelegating {
     });
 
     #fillSelectElements() {
+        this.innerHTML = "";
         const acceptedTypes = this.types;
         this.#optionNodeList.purge();
         /* --- */
