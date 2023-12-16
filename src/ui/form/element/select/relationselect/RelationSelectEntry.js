@@ -36,6 +36,13 @@ export default class RelationSelectEntry extends CustomElement {
         return this.getAttribute("type");
     }
 
+    get value() {
+        return {
+            "type": this.type ?? "",
+            "name": this.name ?? ""
+        };
+    }
+
     static get observedAttributes() {
         return ["name", "type"];
     }
@@ -57,7 +64,7 @@ export default class RelationSelectEntry extends CustomElement {
     }
 
     get comparatorText() {
-        return this.#nameEl.innerText;
+        return `${this.#nameEl.innerText}\n${this.#typeEl.innerText}`;
     }
 
 }

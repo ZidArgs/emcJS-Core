@@ -1,6 +1,6 @@
 import CustomFormElementDelegating from "../../../element/CustomFormElementDelegating.js";
-import AppState from "../../../../data/state/AppState.js";
 import "../../../i18n/builtin/I18nInput.js";
+import TypeStorage from "../../../../data/type/TypeStorage.js";
 import EventTargetManager from "../../../../util/event/EventTargetManager.js";
 import EventMultiTargetManager from "../../../../util/event/EventMultiTargetManager.js";
 import i18n from "../../../../util/I18n.js";
@@ -27,10 +27,10 @@ const ESCAPE_KEYS = [
 ];
 
 /** TODO detect if bound storages change
- * - ObservableStorage change event -> event.changes[key].oldValue == null || event.changes[key].newValue == null)
- * - ObservableStorage clear event
- * - ObservableStorage load event
- * - AppState register event
+ * - TypeStorage change event -> event.changes[key].oldValue == null || event.changes[key].newValue == null)
+ * - TypeStorage clear event
+ * - TypeStorage load event
+ * - TypeStorage register event
  */
 export default class RelationSelect extends CustomFormElementDelegating {
 
@@ -44,11 +44,17 @@ export default class RelationSelect extends CustomFormElementDelegating {
 
     #valueEl;
 
+    #nameEl;
+
+    #typeEl;
+
     #buttonEl;
 
     #placeholderEl;
 
     #scrollContainerEl;
+
+    #typeStorageEventManager = new EventMultiTargetManager();
 
     #optionNodeList = new ElementListCache();
 
@@ -66,7 +72,7 @@ export default class RelationSelect extends CustomFormElementDelegating {
             event.stopPropagation();
         });
         this.#optionSelectEventManager.set("click", (event) => {
-            this.#choose(event.currentTarget.getAttribute("value"));
+            this.#choose(event.currentTarget.value);
             event.preventDefault();
             event.stopPropagation();
         });
@@ -77,8 +83,20 @@ export default class RelationSelect extends CustomFormElementDelegating {
             }
         });
         /* --- */
+        this.#typeStorageEventManager.set("change", () => {
+            this.#fillSelectElements();
+        });
+        this.#typeStorageEventManager.set("change", () => {
+            this.#fillSelectElements();
+        });
+        this.#typeStorageEventManager.set("change", () => {
+            this.#fillSelectElements();
+        });
+        /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#valueEl = this.shadowRoot.getElementById("value");
+        this.#nameEl = this.shadowRoot.getElementById("name");
+        this.#typeEl = this.shadowRoot.getElementById("type");
         this.#viewEl = this.shadowRoot.getElementById("view");
         this.#placeholderEl = this.shadowRoot.getElementById("placeholder");
         this.#scrollContainerEl = this.shadowRoot.getElementById("scroll-container");
@@ -145,7 +163,7 @@ export default class RelationSelect extends CustomFormElementDelegating {
             const all = this.#optionNodeList.getNodeList();
             const regEx = new CharacterSearch(this.#inputEl.value);
             for (const el of all) {
-                if (regEx.test(el.innerText.trim())) {
+                if (regEx.test((el.comparatorText ?? el.innerText).trim())) {
                     el.style.display = "";
                 } else {
                     el.style.display = "none";
@@ -180,8 +198,8 @@ export default class RelationSelect extends CustomFormElementDelegating {
             this.#sort();
         });
         /* --- */
-        AppState.onDefaultChange(() => {
-            this.#fillSelectElements();
+        TypeStorage.onStorageRegister((typeNames) => {
+            this.#fillAfterStorageRegister(typeNames);
         });
     }
 
@@ -309,9 +327,7 @@ export default class RelationSelect extends CustomFormElementDelegating {
 
     #choose(value) {
         if (!this.getBooleanAttribute("readonly")) {
-            if (this.#value != value) {
-                this.value = value;
-            }
+            this.value = value;
             this.focus();
         }
         this.#stopEditMode();
@@ -339,8 +355,7 @@ export default class RelationSelect extends CustomFormElementDelegating {
             } else {
                 this.#scrollContainerEl.style.top = `${thisRect.bottom}px`;
             }
-            const all = this.#optionNodeList.querySelectorAll(`[value]`);
-            for (const el of all) {
+            for (const el of this.#optionNodeList) {
                 el.style.display = "";
                 if (el.value === this.#value) {
                     el.classList.add("marked");
@@ -359,7 +374,7 @@ export default class RelationSelect extends CustomFormElementDelegating {
         this.#scrollContainerEl.style.display = "";
         this.#scrollContainerEl.style.bottom = "";
         this.#scrollContainerEl.style.top = "";
-        const all = this.querySelectorAll(`[value]`);
+        const all = this.querySelectorAll(`emc-select-relation-entry`);
         for (const el of all) {
             el.style.display = "";
         }
@@ -374,16 +389,13 @@ export default class RelationSelect extends CustomFormElementDelegating {
 
     #applyValue(value) {
         if (value != null && value !== "") {
-            const selectedEl = this.#optionNodeList.querySelector(`[value="${value}"]`);
+            const selectedEl = this.#optionNodeList.querySelector(`[type="${value.type}"][name="${value.name}"]`);
             if (selectedEl != null) {
-                if (selectedEl.i18nValue != null) {
-                    this.#valueEl.i18nValue = selectedEl.i18nValue;
-                } else {
-                    this.#valueEl.i18nValue = "";
-                    this.#valueEl.innerHTML = selectedEl.innerHTML;
-                }
+                this.#nameEl.i18nValue = selectedEl.name;
+                this.#typeEl.i18nValue = selectedEl.type;
             } else {
-                this.#valueEl.i18nValue = value;
+                this.#nameEl.i18nValue = "";
+                this.#typeEl.i18nValue = "";
             }
             this.#valueEl.classList.remove("hidden");
             this.#placeholderEl.classList.add("hidden");
@@ -395,19 +407,20 @@ export default class RelationSelect extends CustomFormElementDelegating {
     }
 
     #switchSelected(modeUp = false) {
-        const marked = this.#optionNodeList.querySelector(`[value="${this.#value}"]`);
-        const el = this.#switchOption(marked, modeUp);
+        const value = this.#value;
+        const currentEl = this.#optionNodeList.querySelector(`[type="${value.type}"][name="${value.name}"]`);
+        const el = this.#switchOption(currentEl, modeUp);
         if (el != null) {
             this.value = el.value;
         }
     }
 
     #moveMarker(modeUp = false) {
-        const marked = this.#optionNodeList.querySelector(".marked");
-        const el = this.#switchOption(marked, modeUp);
+        const markedEl = this.#optionNodeList.querySelector(".marked");
+        const el = this.#switchOption(markedEl, modeUp);
         if (el != null) {
-            if (marked != null) {
-                marked.classList.remove("marked");
+            if (markedEl != null) {
+                markedEl.classList.remove("marked");
             }
             el.classList.add("marked");
             const targetScroll = el.offsetTop - 20;
@@ -432,7 +445,8 @@ export default class RelationSelect extends CustomFormElementDelegating {
                 }
             }
         } else {
-            nextEl = this.#optionNodeList.querySelector(`[value="${this.#value}"]`);
+            const value = this.#value;
+            nextEl = this.#optionNodeList.querySelector(`[type="${value.type}"][name="${value.name}"]`);
             if (nextEl == null) {
                 nextEl = this.#getFirstOption();
             }
@@ -442,30 +456,30 @@ export default class RelationSelect extends CustomFormElementDelegating {
 
     #getFirstOption() {
         let nextEl = this.#optionNodeList.first;
-        while (nextEl != null && (nextEl.style.display == "none" || !nextEl.matches("[value]"))) {
+        while (nextEl != null && (nextEl.style.display == "none" || !nextEl.matches("emc-select-relation-entry"))) {
             nextEl = this.#optionNodeList.getNext(nextEl);
         }
-        if (nextEl != null && nextEl.style.display != "none" && nextEl.matches("[value]")) {
+        if (nextEl != null && nextEl.style.display != "none" && nextEl.matches("emc-select-relation-entry")) {
             return nextEl;
         }
     }
 
     #getPrevOption(oldEl) {
         let nextEl = this.#optionNodeList.getPrev(oldEl);
-        while (nextEl != null && (nextEl.style.display == "none" || !nextEl.matches("[value]"))) {
+        while (nextEl != null && (nextEl.style.display == "none" || !nextEl.matches("emc-select-relation-entry"))) {
             nextEl = this.#optionNodeList.getPrev(nextEl);
         }
-        if (nextEl != null && nextEl.style.display != "none" && nextEl.matches("[value]")) {
+        if (nextEl != null && nextEl.style.display != "none" && nextEl.matches("emc-select-relation-entry")) {
             return nextEl;
         }
     }
 
     #getNextOption(oldEl) {
         let nextEl = this.#optionNodeList.getNext(oldEl);
-        while (nextEl != null && (nextEl.style.display == "none" || !nextEl.matches("[value]"))) {
+        while (nextEl != null && (nextEl.style.display == "none" || !nextEl.matches("emc-select-relation-entry"))) {
             nextEl = this.#optionNodeList.getNext(nextEl);
         }
-        if (nextEl != null && nextEl.style.display != "none" && nextEl.matches("[value]")) {
+        if (nextEl != null && nextEl.style.display != "none" && nextEl.matches("emc-select-relation-entry")) {
             return nextEl;
         }
     }
@@ -475,7 +489,7 @@ export default class RelationSelect extends CustomFormElementDelegating {
         const sortedNodeList = sortNodeList(optionNodeList);
         if (!Comparator.isEqual(optionNodeList, sortedNodeList)) {
             for (const el of sortedNodeList) {
-                (el.parentElement ?? el.getRootNode() ?? document).append(el);
+                this.append(el);
             }
         }
         this.#optionNodeList.setNodeList(sortedNodeList);
@@ -485,11 +499,11 @@ export default class RelationSelect extends CustomFormElementDelegating {
         const acceptedTypes = this.types;
         this.#optionNodeList.purge();
         /* --- */
-        const defaultAppState = AppState.getDefault();
         this.#optionSelectEventManager.clearTargets();
         for (const acceptedType of acceptedTypes) {
-            const storage = defaultAppState.getStorage(acceptedType);
+            const storage = TypeStorage.getStorage(acceptedType);
             if (storage != null) {
+                this.#typeStorageEventManager.addTarget(storage);
                 for (const name of storage.keys()) {
                     const el = document.createElement("emc-select-relation-entry");
                     el.name = name;
@@ -504,6 +518,16 @@ export default class RelationSelect extends CustomFormElementDelegating {
             this.#sort();
         }
         this.#applyValue(this.#value);
+    }
+
+    #fillAfterStorageRegister(typeNames) {
+        const acceptedTypes = this.types;
+        for (const type of acceptedTypes) {
+            if (typeNames.includes(type)) {
+                this.#fillSelectElements();
+                break;
+            }
+        }
     }
 
 }

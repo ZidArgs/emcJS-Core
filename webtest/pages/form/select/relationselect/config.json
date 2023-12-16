@@ -1,0 +1,18 @@
+{
+    "type": "Fieldset",
+    "label": "relation-select",
+    "children": [
+        {
+            "type": "RelationSelect",
+            "label": "relatiion-select default",
+            "name": "relatiion-select.default",
+            "types": [
+                "A",
+                "B",
+                "D"
+            ],
+            "placeholder": "Select entry...",
+            "sorted": true
+        }
+    ]
+}

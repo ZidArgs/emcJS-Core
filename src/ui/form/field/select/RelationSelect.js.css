@@ -1,6 +1,6 @@
 #input {
     flex-grow: 1;
-    height: 2em;
+    height: 3em;
     padding: 0px 7px;
     color: var(--input-text-color, #000000);
     background-color: var(--input-back-color, #ffffff);

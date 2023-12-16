@@ -1,9 +1,5 @@
 import ObservableStorage from "../storage/observable/ObservableStorage.js";
 
-const CHANGE_LISTENER = new Set();
-
-let DEFAULT_STATE = null;
-
 export default class AppState extends EventTarget {
 
     #storageChangeHandler = new Map();
@@ -256,32 +252,6 @@ export default class AppState extends EventTarget {
         const dataStorage = this.getStorage(category);
         if (dataStorage.has(key)) {
             dataStorage.delete(key);
-        }
-    }
-
-    setDefault() {
-        DEFAULT_STATE = this;
-        for (const listener of CHANGE_LISTENER) {
-            listener();
-        }
-    }
-
-    static getDefault() {
-        if (DEFAULT_STATE == null) {
-            DEFAULT_STATE = new AppState();
-        }
-        return DEFAULT_STATE;
-    }
-
-    static onDefaultChange(callback) {
-        if (typeof callback === "function") {
-            CHANGE_LISTENER.add(callback);
-        }
-    }
-
-    static unDefaultChange(callback) {
-        if (typeof callback === "function") {
-            CHANGE_LISTENER.delete(callback);
         }
     }
 

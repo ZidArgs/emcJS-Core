@@ -56,8 +56,8 @@ export default class ElementListCache {
         return [...this.#elementList].filter((el) => el.matches(selector))
     }
 
-    get length() {
-        return this.#elementList.length;
+    get size() {
+        return this.#elementList.size;
     }
 
     getPrev(element) {
@@ -69,7 +69,7 @@ export default class ElementListCache {
 
     getNext(element) {
         const pos = this.#elementList.indexOf(element);
-        if (pos >= 0 && pos < this.#elementList.length - 1) {
+        if (pos >= 0 && pos < this.#elementList.size - 1) {
             return this.#elementList.at(pos + 1);
         }
     }

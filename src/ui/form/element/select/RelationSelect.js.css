@@ -1,6 +1,6 @@
 :host {
     display: flex;
-    height: 2em;
+    height: 3em;
     min-width: 200px;
     padding: 0px calc(7px + 2em) 0px 7px;
     color: var(--input-text-color, #000000);
@@ -72,6 +72,24 @@
 #input.active + #view {
     display: none;
 }
+#value {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-start;
+}
+#value #name {
+    overflow: hidden;
+    white-space: pre;
+    text-overflow: ellipsis;
+    font-size: 1em;
+}
+#value #type {
+    overflow: hidden;
+    white-space: pre;
+    text-overflow: ellipsis;
+    font-size: 0.7em;
+}
 #placeholder {
     color: var(--input-placeholder-text-color, #757575);
 }
@@ -123,31 +141,31 @@
     display: block;
     width: 100%;
 }
-#options-container [value] {
+::slotted(emc-select-relation-entry) {
     display: flex;
     align-items: center;
     min-height: 2rem;
-    padding: 5px;
     white-space: normal;
     color: var(--select-option-text-color, #000000);
     background-color: var(--select-option-back-color, #ffffff);
     font-size: 1rem;
 }
-#options-container [value]:not(:last-child) {
+::slotted(emc-select-relation-entry:not(:last-child)) {
     border-bottom: solid 1px var(--select-option-divider-color, #949494);
 }
-#options-container [value][disabled] {
+::slotted(emc-select-relation-entry[disabled]),
+::slotted(:not(emc-select-relation-entry)) {
     display: none;
 }
-#options-container [value]:hover,
-#options-container [value].marked {
+::slotted(emc-select-relation-entry:hover),
+::slotted(emc-select-relation-entry.marked) {
     color: var(--select-option-marked-text-color, #000000);
     background-color: var(--select-option-marked-back-color, #9ee1ec);
 }
-:host(:not([readonly])) #options-container [value]:not(.active),
-:host([readonly="false"]) #options-container [value]:not(.active),
-:host([multiple]:not([multiple="false"]):not([readonly])) #options-container [value].active,
-:host([readonly="false"][multiple]:not([multiple="false"])) #options-container [value].active {
+:host(:not([readonly])) ::slotted(emc-select-relation-entry:not(.active)),
+:host([readonly="false"]) ::slotted(emc-select-relation-entry:not(.active)),
+:host([multiple]:not([multiple="false"]):not([readonly])) ::slotted(emc-select-relation-entry.active),
+:host([readonly="false"][multiple]:not([multiple="false"])) ::slotted(emc-select-relation-entry.active) {
     cursor: pointer;
 }
 #empty {

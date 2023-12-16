@@ -175,7 +175,7 @@ export default class TokenSelect extends CustomFormElementDelegating {
             const all = this.#optionNodeList.getNodeList();
             const regEx = new CharacterSearch(this.#inputEl.value);
             for (const el of all) {
-                if (regEx.test(el.innerText.trim())) {
+                if (regEx.test((el.comparatorText ?? el.innerText).trim())) {
                     el.style.display = "";
                 } else {
                     el.style.display = "none";
