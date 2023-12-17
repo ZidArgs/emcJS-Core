@@ -8,9 +8,15 @@ export default class ElementListCache {
         this.#elementList = new IndexedSet(list.filter((node) => node instanceof Element));
     }
 
-    addNode(node) {
+    append(node) {
         if (node instanceof Element) {
             this.#elementList.add(node);
+        }
+    }
+
+    prepend(node) {
+        if (node instanceof Element) {
+            this.#elementList.addAt(node, 0);
         }
     }
 

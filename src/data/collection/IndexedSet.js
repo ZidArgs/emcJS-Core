@@ -69,6 +69,23 @@ export default class IndexedSet {
         return this;
     }
 
+    addAt(value, pos) {
+        const index = this.#values.indexOf(value);
+        let values = this.#values;
+        if (index >= 0) {
+            values = [
+                ...values.slice(0, index),
+                ...values.slice(index + 1)
+            ];
+        }
+        this.#values = [
+            ...values.slice(0, pos - 1),
+            value,
+            ...values.slice(pos)
+        ];
+        return this;
+    }
+
     delete(value) {
         const index = this.#values.indexOf(value);
         if (index >= 0) {

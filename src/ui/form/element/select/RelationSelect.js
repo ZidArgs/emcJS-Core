@@ -95,6 +95,9 @@ export default class RelationSelect extends CustomFormElementDelegating {
             this.#fillSelectElements();
         });
         /* --- */
+        this.#emptyEl.name = "";
+        this.#emptyEl.type = "";
+        /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#valueEl = this.shadowRoot.getElementById("value");
         this.#nameEl = this.shadowRoot.getElementById("name");
@@ -528,12 +531,6 @@ export default class RelationSelect extends CustomFormElementDelegating {
         this.#optionNodeList.purge();
         this.#optionSelectEventManager.clearTargets();
         /* --- */
-        this.#emptyEl.name = "";
-        this.#emptyEl.type = "";
-        this.#optionNodeList.addNode(this.#emptyEl);
-        this.#optionSelectEventManager.addTarget(this.#emptyEl);
-        this.append(this.#emptyEl);
-        /* --- */
         for (const acceptedType of acceptedTypes) {
             const storage = TypeStorage.getStorage(acceptedType);
             if (storage != null) {
@@ -542,12 +539,19 @@ export default class RelationSelect extends CustomFormElementDelegating {
                     const el = document.createElement("emc-select-relation-entry");
                     el.name = name;
                     el.type = acceptedType;
-                    this.#optionNodeList.addNode(el);
+                    this.#optionNodeList.append(el);
                     this.#optionSelectEventManager.addTarget(el);
                     this.append(el);
                 }
             }
         }
+        /* --- */
+        if (this.#optionNodeList.size > 0) {
+            this.#optionNodeList.prepend(this.#emptyEl);
+            this.#optionSelectEventManager.addTarget(this.#emptyEl);
+            this.prepend(this.#emptyEl);
+        }
+        /* --- */
         /* --- */
         if (this.sorted) {
             this.#sort();
