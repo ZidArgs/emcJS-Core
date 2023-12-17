@@ -239,17 +239,19 @@ export default class FormContext extends EventTarget {
     }
 
     loadData(data, merge = false) {
-        const res = {};
-        for (const formEl of this.#formFieldContextList) {
-            const name = formEl.node.name;
-            if (name != null) {
-                const value = getFromObjectByPath(data, name.split("."));
-                if (value != null) {
-                    res[name] = value;
+        setTimeout(() => {
+            const res = {};
+            for (const formEl of this.#formFieldContextList) {
+                const name = formEl.node.name;
+                if (name != null) {
+                    const value = getFromObjectByPath(data, name.split("."));
+                    if (value != null) {
+                        res[name] = value;
+                    }
                 }
             }
-        }
-        this.loadDataFlat(res, merge);
+            this.loadDataFlat(res, merge);
+        }, 0);
     }
 
     loadDataFlat(data, merge = false) {
