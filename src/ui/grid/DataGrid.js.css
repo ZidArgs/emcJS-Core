@@ -39,7 +39,7 @@
 :host([stretch="last"]) th:last-child {
     width: 100%;
 }
-.head th:not(:first-child):not(.lastCell) {
+.head th:not(:first-child):not(:nth-child(2)):not(.lastCell) {
     border-left: solid var(--grid-column-seperator-width, 2px) var(--grid-header-seperator-color, #ffffff);
 }
 .head th.lastCell {
@@ -91,4 +91,46 @@
 #options-container,
 #empty.hidden {
     display: none;
+}
+.select-cell {
+    display: none;
+    text-align: center;
+}
+#body tr > .select-cell {
+    padding: 0px;
+}
+.head th.select-cell {
+    min-width: 30px;
+    padding: 0px;
+}
+.select-cell:not(:nth-last-child(2)) {
+    border-right: solid var(--grid-column-seperator-width, 2px) var(--grid-header-seperator-color, #ffffff);
+}
+:host([selectable]:not([selectable="false"])) .select-cell {
+    display: table-cell;
+}
+:host([selectable="single"]) .head th.select-cell input[type="checkbox"],
+:host([nohead]:not([nohead="false"])) .head th.select-cell input[type="checkbox"] {
+    display: none;
+}
+.select-cell input[type="checkbox"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0px;
+    color: inherit;
+    cursor: pointer;
+    appearance: none;
+    outline: none;
+}
+.select-cell input[type="checkbox"]::before {
+    font-size: 1.5rem;
+    line-height: 1em;
+    content: "☐";
+}
+.select-cell input[type="checkbox"]:indeterminate::before {
+    content: "⮽";
+}
+.select-cell input[type="checkbox"]:checked::before {
+    content: "☑";
 }

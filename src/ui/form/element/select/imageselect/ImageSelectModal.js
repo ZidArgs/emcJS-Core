@@ -12,7 +12,7 @@ import {
 } from "../../../../../util/helper/ui/NodeListSort.js";
 import Comparator from "../../../../../util/helper/Comparator.js";
 import "../../../button/Button.js";
-import "../../input/internal/SearchField.js";
+import "../../input/SearchField.js";
 import "./ImageSelectPreview.js";
 import TPL from "./ImageSelectModal.js.html" assert {type: "html"};
 import STYLE from "./ImageSelectModal.js.css" assert {type: "css"};

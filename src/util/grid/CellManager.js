@@ -10,6 +10,8 @@ export default class CellManager {
 
     #target;
 
+    #rowName;
+
     #elements = new Map();
 
     #order = [];
@@ -20,6 +22,10 @@ export default class CellManager {
 
     #valueCache = new Map();
 
+    #selectCellEl;
+
+    #selectCheckboxEl;
+
     #lastCellEl;
 
     constructor(target) {
@@ -27,6 +33,20 @@ export default class CellManager {
             throw new TypeError("target must be of type HTMLTableRowElement");
         }
         this.#target = target;
+
+        this.#selectCellEl = document.createElement("td");
+        this.#selectCheckboxEl = document.createElement("input");
+        this.#selectCheckboxEl.type = "checkbox";
+        this.#selectCheckboxEl.addEventListener("change", () => {
+            const ev = new Event("selection", {bubbles: true, cancelable: true});
+            ev.data = {
+                value: this.#selectCheckboxEl.checked,
+                rowName: this.#rowName
+            };
+            this.#selectCheckboxEl.dispatchEvent(ev);
+        });
+        this.#selectCellEl.className = "select-cell";
+        this.#selectCellEl.append(this.#selectCheckboxEl);
 
         this.#lastCellEl = document.createElement("th")
         this.#lastCellEl.classList.add("lastCell");
@@ -39,7 +59,7 @@ export default class CellManager {
         this.#columnDefinitionCache.clear();
     }
 
-    manage(columnDefinition, rowData) {
+    manage(columnDefinition, rowData, isSelected) {
         if (!Array.isArray(columnDefinition)) {
             throw new TypeError("data must be an array");
         }
@@ -47,8 +67,8 @@ export default class CellManager {
         const unused = new Set(this.#elements.keys());
         const changes = {added: [], updated: [], deleted: [], moved: []};
         const newOrder = [];
-        const rowName = rowData.name;
-        if (typeof rowName !== "string") {
+        this.#rowName = rowData.name;
+        if (typeof this.#rowName !== "string") {
             throw new TypeError("row name must be a string");
         }
 
@@ -73,9 +93,10 @@ export default class CellManager {
             newOrder.push(name);
 
             if (!this.#elements.has(name)) {
-                const cellEl = this.composer(name, rowName, type, columnData, value);
+                const cellEl = this.composer(name, this.#rowName, type, columnData, value);
                 if (cellEl != null) {
-                    cellEl.setAttribute("em-key", name);
+                    cellEl.setAttribute("col-name", name);
+                    cellEl.setAttribute("row-name", this.#rowName);
                     this.mutator(cellEl, columnData, value);
                     this.#elements.set(name, cellEl);
                     changes.added.push(name);
@@ -87,9 +108,10 @@ export default class CellManager {
             } else if (this.#types.get(name) !== type) {
                 const oldEl = this.#elements.get(name);
                 oldEl.remove();
-                const cellEl = this.composer(name, rowName, type, columnData, value);
+                const cellEl = this.composer(name, this.#rowName, type, columnData, value);
                 if (cellEl != null) {
-                    cellEl.setAttribute("em-key", name);
+                    cellEl.setAttribute("col-name", name);
+                    cellEl.setAttribute("row-name", this.#rowName);
                     this.mutator(cellEl, columnData, value);
                     this.#elements.set(name, cellEl);
                     changes.added.push(name);
@@ -125,6 +147,11 @@ export default class CellManager {
             this.#columnDefinitionCache.delete(name);
             changes.deleted.push(name);
         }
+
+        // add select element
+        this.#selectCheckboxEl.checked = isSelected;
+        this.#selectCheckboxEl.setAttribute("row-name", this.#rowName);
+        this.#target.prepend(this.#selectCellEl);
 
         return changes;
     }

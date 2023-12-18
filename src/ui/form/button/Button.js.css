@@ -2,6 +2,7 @@
     display: flex;
     width: min-content;
     height: 2em;
+    padding: 0px 10px;
     margin: 10px;
     color: var(--button-text-color, #000000);
     background-color: var(--button-back-color, #eaeaea);
@@ -37,7 +38,6 @@
 :host(:focus) {
     box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
     outline: none;
-    z-index: 1;
 }
 #button {
     display: flex;
@@ -45,7 +45,7 @@
     justify-content: center;
     height: 100%;
     width: 100%;
-    padding: 0px 10px;
+    padding: 0px;
     margin: 0px;
     color: inherit;
     background-color: transparent;
@@ -58,18 +58,6 @@
     word-break: keep-all;
     cursor: inherit;
 }
-#button:focus {
-    outline: none;
-}
-#button[icon]:not([icon=""])::before {
-    display: inline-flex;
-    align-items: center;
-    margin-right: 5px;
-    font-size: 1.3em;
-    line-height: 1em;
-    font-weight: bold;
-    content: attr(icon);
-}
 :host([text-transform="lowercase"]) #button {
     text-transform: lowercase;
 }
@@ -78,4 +66,19 @@
 }
 :host([text-transform="capitalize"]) #button {
     text-transform: capitalize;
+}
+#button:focus {
+    outline: none;
+}
+#button[icon]:not([icon=""])::before {
+    display: inline-flex;
+    align-items: center;
+    font-size: 1.3em;
+    line-height: 1em;
+    font-family: monospace;
+    font-weight: bold;
+    content: attr(icon);
+}
+:host([text]:not([text=""])) #button::before {
+    margin-right: 5px;
 }

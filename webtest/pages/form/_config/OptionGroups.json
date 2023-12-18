@@ -27,5 +27,10 @@
         "test": "Test",
         "foobar": "Foobar",
         "barfoo": "Barfoo"
+    },
+    "ListSelect": {
+        "test": "Test",
+        "foobar": "Foobar",
+        "barfoo": "Barfoo"
     }
 }

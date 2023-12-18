@@ -50,4 +50,4 @@ export default class SearchField extends CustomElementDelegating {
 
 }
 
-customElements.define("emc-input-search", SearchField);
+customElements.define("emc-searchinput", SearchField);

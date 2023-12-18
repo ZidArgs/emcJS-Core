@@ -49,10 +49,33 @@ export default class DataGrid extends CustomElement {
 
     #rowManager;
 
+    #headerSelectEl;
+
+    #selected = new Set();
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
+        /* --- */
+        this.#headerSelectEl = document.createElement("input");
+        this.#headerSelectEl.type = "checkbox";
+        this.#headerSelectEl.addEventListener("change", () => {
+            const value = this.#headerSelectEl.checked;
+            const selectEls = this.shadowRoot.querySelectorAll(`td.select-cell input[type="checkbox"]`);
+            for (const selectEl of selectEls) {
+                selectEl.checked = value;
+                const rowName = selectEl.getAttribute("row-name");
+                if (value) {
+                    this.#selected.add(rowName);
+                } else {
+                    this.#selected.delete(rowName);
+                }
+            }
+            const ev = new Event("selection");
+            ev.data = [...this.#selected].sort();
+            this.dispatchEvent(ev);
+        });
         /* --- */
         this.#tableEl = this.shadowRoot.getElementById("table");
         this.#headerEl = this.shadowRoot.getElementById("header");
@@ -65,7 +88,7 @@ export default class DataGrid extends CustomElement {
         });
         this.#onSlotChange();
         /* --- */
-        this.#headerManager = new HeaderManager(this.#headerEl);
+        this.#headerManager = new HeaderManager(this.#headerEl, this.#headerSelectEl);
         this.#rowManager = new RowManager(this.#bodyEl);
         /* --- */
         this.#tableEl.addEventListener("action", (event) => {
@@ -91,6 +114,28 @@ export default class DataGrid extends CustomElement {
             };
             this.dispatchEvent(ev);
         });
+        this.#tableEl.addEventListener("selection", (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            const {value, rowName} = event.data;
+            if (this.selectable === "single") {
+                const oldRowName = [...this.#selected][0];
+                const selectEl = this.shadowRoot.querySelectorAll(`.select-cell input[type="checkbox"][row-name="${oldRowName}"]`);
+                if (selectEl != null) {
+                    selectEl.checked = false;
+                }
+                this.#selected.clear();
+                this.#selected.add(rowName);
+            } else if (value) {
+                this.#selected.add(rowName);
+            } else {
+                this.#selected.delete(rowName);
+            }
+            this.#updateSelectHeader();
+            const ev = new Event("selection");
+            ev.data = [...this.#selected].sort();
+            this.dispatchEvent(ev);
+        });
     }
 
     set nohead(value) {
@@ -99,6 +144,68 @@ export default class DataGrid extends CustomElement {
 
     get nohead() {
         return this.getAttribute("nohead");
+    }
+
+    set selectable(value) {
+        this.setAttribute("selectable", value);
+    }
+
+    get selectable() {
+        return this.getAttribute("selectable");
+    }
+
+    static get observedAttributes() {
+        return ["selectable"];
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (oldValue != newValue) {
+            switch (name) {
+                case "selectable": {
+                    if (newValue == null || newValue === "false" || newValue === "single" || oldValue === "single") {
+                        this.clearSelected()
+                    }
+                } break;
+            }
+        }
+    }
+
+    setSelected(selected) {
+        if (this.selectable != null && this.selectable !== "false") {
+            this.#selected.clear();
+            if (this.selectable !== "single") {
+                for (const entry of selected) {
+                    this.#selected.add(entry);
+                }
+            } else {
+                this.#selected.add(selected[0]);
+            }
+            const selectEls = this.shadowRoot.querySelectorAll(`.select-cell input[type="checkbox"]`);
+            for (const selectEl of selectEls) {
+                selectEl.checked = this.#selected.has(selectEl.getAttribute("row-name"));
+            }
+            this.#updateSelectHeader();
+            const ev = new Event("selection");
+            ev.data = [...this.#selected].sort();
+            this.dispatchEvent(ev);
+        }
+    }
+
+    getSelected() {
+        return [...this.#selected].sort();
+    }
+
+    clearSelected() {
+        this.#selected.clear();
+        const selectEls = this.shadowRoot.querySelectorAll(`.select-cell input[type="checkbox"]`);
+        for (const selectEl of selectEls) {
+            selectEl.checked = false;
+        }
+        if (this.selectable != null && this.selectable !== "false") {
+            const ev = new Event("selection");
+            ev.data = [];
+            this.dispatchEvent(ev);
+        }
     }
 
     setData(rows = []) {
@@ -112,12 +219,13 @@ export default class DataGrid extends CustomElement {
                 this.#emptyEl.classList.remove("hidden");
             } else {
                 this.#data = deepClone(rows);
-                this.#rowManager.manage(this.#data, this.#columnDefinition);
+                this.#rowManager.manage(this.#data, this.#columnDefinition, this.#selected);
                 if (this.#bodyEl.childNodes.length > 0) {
                     this.#emptyEl.classList.add("hidden");
                 }
             }
         }
+        this.#updateSelectHeader();
     }
 
     #applyColumnDefinition() {
@@ -133,6 +241,24 @@ export default class DataGrid extends CustomElement {
             this.#columnDefinition = newColumnDefinition;
             this.#headerManager.manage(newColumnDefinition);
             this.#rowManager.manage(this.#data, newColumnDefinition);
+        }
+    }
+
+    #updateSelectHeader() {
+        let value = 0;
+        const selectEls = this.shadowRoot.querySelectorAll(`td.select-cell input[type="checkbox"]`);
+        for (const selectEl of selectEls) {
+            value |= selectEl.checked ? 2 : 1;
+        }
+        if (value === 2) {
+            this.#headerSelectEl.checked = true;
+            this.#headerSelectEl.indeterminate = false;
+        } else if (value === 3) {
+            this.#headerSelectEl.checked = true;
+            this.#headerSelectEl.indeterminate = true;
+        } else {
+            this.#headerSelectEl.checked = false;
+            this.#headerSelectEl.indeterminate = false;
         }
     }
 

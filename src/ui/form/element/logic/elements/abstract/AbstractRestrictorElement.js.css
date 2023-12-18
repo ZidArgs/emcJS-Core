@@ -12,7 +12,6 @@
 #input:focus {
     box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
     outline: none;
-    z-index: 1;
 }
 #input:disabled {
     color: var(--input-disabled-text-color, #757575) !important;

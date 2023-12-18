@@ -1,0 +1,120 @@
+[
+    {
+        "type": "StringInput",
+        "name": "name",
+        "label": "Name",
+        "value": ""
+    },
+    {
+        "type": "StringInput",
+        "name": "label",
+        "label": "Label",
+        "value": ""
+    },
+    {
+        "type": "TextInput",
+        "name": "desc",
+        "label": "Description",
+        "value": ""
+    },
+    {
+        "type": "TextInput",
+        "name": "tooltip",
+        "label": "Tooltip",
+        "value": ""
+    },
+    {
+        "type": "StringInput",
+        "name": "placeholder",
+        "label": "Placeholder",
+        "value": ""
+    },
+    {
+        "type": "StringInput",
+        "name": "optiongroup",
+        "label": "Option Group",
+        "value": ""
+    },
+    {
+        "type": "ListInput",
+        "name": "options",
+        "label": "Options (ignored if Option Group is set)",
+        "value": [],
+        "visible": {
+            "type": "eq",
+            "el": [
+                {
+                    "type": "value",
+                    "el": "optiongroup"
+                },
+                {
+                    "type": "string",
+                    "el": ""
+                }
+            ]
+        }
+    },
+    {
+        "type": "SwitchInput",
+        "name": "multiple",
+        "label": "Allow multiple values",
+        "value": false
+    },
+    {
+        "type": "SimpleSelect",
+        "name": "header",
+        "label": "Header behaviour",
+        "value": "",
+        "options": {
+            "": "default",
+            "hide": "hide",
+            "show": "show"
+        }
+    },
+    {
+        "type": "SwitchInput",
+        "name": "sorted",
+        "label": "Sorted",
+        "value": false
+    },
+    {
+        "type": "SwitchInput",
+        "name": "resettable",
+        "label": "Resettable",
+        "value": false
+    },
+    {
+        "type": "SwitchInput",
+        "name": "readonly",
+        "label": "Readonly",
+        "value": false
+    },
+    {
+        "type": "SwitchInput",
+        "name": "required",
+        "label": "Required",
+        "value": false
+    },
+    {
+        "type": "SimpleSelect",
+        "name": "autocomplete",
+        "label": "Autocomplete",
+        "value": "off",
+        "options": {
+            "off": "off",
+            "on": "on"
+        }
+    },
+    {
+        "type": "BoolOrLogicInput",
+        "name": "enabled",
+        "label": "Enabled",
+        "value": true
+    },
+    {
+        "type": "BoolOrLogicInput",
+        "name": "visible",
+        "label": "Visible",
+        "value": true
+    }
+]

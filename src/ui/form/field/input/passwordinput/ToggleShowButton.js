@@ -1,5 +1,5 @@
-import CustomElementDelegating from "../../../element/CustomElementDelegating.js";
-import "../../../i18n/I18nTooltip.js";
+import CustomElementDelegating from "../../../../element/CustomElementDelegating.js";
+import "../../../../i18n/I18nTooltip.js";
 import TPL from "./ToggleShowButton.js.html" assert {type: "html"};
 import STYLE from "./ToggleShowButton.js.css" assert {type: "css"};
 

@@ -11,6 +11,7 @@ import {
 import SimpleDataManager from "../../../../util/grid/data/SimpleDataManager.js";
 import "./internal/SearchField.js";
 import "../../../grid/DataGrid.js";
+import "./SearchField.js";
 import TPL from "./OptionAmountListInput.js.html" assert {type: "html"};
 import STYLE from "./OptionAmountListInput.js.css" assert {type: "css"};
 

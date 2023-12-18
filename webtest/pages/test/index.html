@@ -31,7 +31,7 @@
 
 <body style="display: flex; flex-direction: column;">
     <emc-page id="page" style="padding: 8px;">
-        <emc-grid-datagrid id="grida" style="resize: both;">
+        <emc-grid-datagrid id="grida" style="resize: both;" selectable>
             <emc-grid-column name="A" label="" type="number" width="50"></emc-grid-column>
             <emc-grid-column name="B" label="Product" type="string" width="120"></emc-grid-column>
             <emc-grid-column name="C" label="Price" type="currency" decimals="2" postfix=" €" width="100" negative-color="red"></emc-grid-column>
@@ -40,7 +40,7 @@
             <emc-grid-column name="E" label="Since" type="datetime" width="170"></emc-grid-column>
             <emc-grid-column name="-1-" type="empty" width="10"></emc-grid-column>
         </emc-grid-datagrid>
-        <emc-grid-datagrid id="grid0" style="resize: both;">
+        <emc-grid-datagrid id="grid0" style="resize: both;" selectable>
             <emc-grid-column name="A" label="" type="number" width="50"></emc-grid-column>
             <emc-grid-column name="B" label="Product" type="string" width="120"></emc-grid-column>
             <emc-grid-column name="C" label="Price" type="currency" decimals="2" postfix=" €" width="100" negative-color="red"></emc-grid-column>
@@ -48,14 +48,14 @@
             <emc-grid-column name="E" label="Since" type="datetime" width="170"></emc-grid-column>
             <emc-grid-column name="-0-" type="empty" width="10"></emc-grid-column>
         </emc-grid-datagrid>
-        <emc-grid-datagrid id="grid1" stretch style="width: 1000px;">
+        <emc-grid-datagrid id="grid1" style="width: 1000px;" selectable>
             <emc-grid-column name="A" label="" type="number" width="50"></emc-grid-column>
             <emc-grid-column name="B" label="Product" type="string" width="120"></emc-grid-column>
             <emc-grid-column name="C" label="Price" type="currency" decimals="2" postfix=" €" width="100" negative-color="red"></emc-grid-column>
             <emc-grid-column name="D" type="boolean"></emc-grid-column>
             <emc-grid-column name="E" label="Since" type="datetime" width="170"></emc-grid-column>
         </emc-grid-datagrid>
-        <emc-grid-datagrid id="grid2" stretch="last" style="width: 1000px;" nohead>
+        <emc-grid-datagrid id="grid2" style="width: 1000px;" nohead selectable>
             <emc-grid-column name="A" label="" type="number" editable width="50"></emc-grid-column>
             <emc-grid-column name="B" label="Product" type="string" editable width="120"></emc-grid-column>
             <emc-grid-column name="C" label="Price" type="currency" decimals="2" postfix=" €" width="100" negative-color="red"></emc-grid-column>

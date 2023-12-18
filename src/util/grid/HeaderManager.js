@@ -24,13 +24,22 @@ export default class HeaderManager {
 
     #columnDefinitionCache = new Map();
 
+    #selectHeaderCellEl;
+
     #lastHeaderCellEl;
 
-    constructor(target) {
+    constructor(target, headerSelectEl) {
         if (!(target instanceof HTMLTableRowElement)) {
             throw new TypeError("target must be of type HTMLTableRowElement");
         }
+        if (!(headerSelectEl instanceof HTMLInputElement)) {
+            throw new TypeError("headerSelectEl must be of type HTMLInputElement");
+        }
         this.#target = target;
+
+        this.#selectHeaderCellEl = document.createElement("th");
+        this.#selectHeaderCellEl.className = "select-cell";
+        this.#selectHeaderCellEl.append(headerSelectEl);
 
         this.#lastHeaderCellEl = document.createElement("th")
         this.#lastHeaderCellEl.classList.add("lastCell");
@@ -73,7 +82,7 @@ export default class HeaderManager {
             if (!this.#elements.has(name)) {
                 const headerCellEl = this.composer(name, columnData);
                 if (headerCellEl != null) {
-                    headerCellEl.setAttribute("em-key", name);
+                    headerCellEl.setAttribute("col-name", name);
                     this.mutator(headerCellEl, name, columnData);
                     this.#elements.set(name, headerCellEl);
                     changes.added.push(name);
@@ -101,6 +110,9 @@ export default class HeaderManager {
             this.#columnDefinitionCache.delete(name);
             changes.deleted.push(name);
         }
+
+        // add select element
+        this.#target.prepend(this.#selectHeaderCellEl);
 
         return changes;
     }

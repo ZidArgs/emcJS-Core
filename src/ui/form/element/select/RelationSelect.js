@@ -378,6 +378,7 @@ export default class RelationSelect extends CustomFormElementDelegating {
             this.#scrollContainerEl.style.display = "block";
             this.#scrollContainerEl.style.left = `${thisRect.left}px`;
             this.#scrollContainerEl.style.width = `${thisRect.width}px`;
+            this.#scrollContainerEl.style.zIndex = 200;
             const containerRect = this.#scrollContainerEl.getBoundingClientRect();
             if (thisRect.bottom + containerRect.height > window.innerHeight - 25) {
                 this.#scrollContainerEl.style.bottom = `${window.innerHeight - thisRect.top}px`;
@@ -403,6 +404,7 @@ export default class RelationSelect extends CustomFormElementDelegating {
         this.#scrollContainerEl.style.display = "";
         this.#scrollContainerEl.style.bottom = "";
         this.#scrollContainerEl.style.top = "";
+        this.#scrollContainerEl.style.zIndex = "";
         const all = this.querySelectorAll(`emc-select-relation-entry`);
         for (const el of all) {
             el.style.display = "";

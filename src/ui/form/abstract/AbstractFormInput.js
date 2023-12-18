@@ -8,7 +8,7 @@ import {
 import {
     isEqual
 } from "../../../util/helper/Comparator.js";
-import "../button/internal/InputResetButton.js";
+import "../button/Button.js";
 import "../../i18n/I18nLabel.js";
 import "../../i18n/I18nTextbox.js";
 import TPL from "../abstract/AbstractFormInput.js.html" assert {type: "html"};

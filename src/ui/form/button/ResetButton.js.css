@@ -4,6 +4,7 @@
     margin-right: 5px;
     font-size: 1.3em;
     line-height: 1em;
+    font-family: monospace;
     font-weight: bold;
     content: "↺";
 }

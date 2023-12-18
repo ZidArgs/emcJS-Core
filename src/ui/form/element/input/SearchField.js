@@ -1,9 +1,9 @@
-import CustomElementDelegating from "../../../../element/CustomElementDelegating.js";
-import "../../../../i18n/builtin/I18nInput.js";
+import CustomElementDelegating from "../../../element/CustomElementDelegating.js";
+import "../../../i18n/builtin/I18nInput.js";
 import {
     debounce
-} from "../../../../../util/Debouncer.js";
-import "../../../../i18n/I18nTooltip.js";
+} from "../../../../util/Debouncer.js";
+import "../../../i18n/I18nTooltip.js";
 import TPL from "./SearchField.js.html" assert {type: "html"};
 import STYLE from "./SearchField.js.css" assert {type: "css"};
 
@@ -69,4 +69,4 @@ export default class SearchField extends CustomElementDelegating {
 
 }
 
-customElements.define("emc-search-field", SearchField);
+customElements.define("emc-input-search", SearchField);

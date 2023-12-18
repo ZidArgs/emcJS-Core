@@ -59,6 +59,6 @@
     border: none;
     border-radius: 0;
 }
-#add {
-    margin: 0px;
+#options-container {
+    display: none;
 }

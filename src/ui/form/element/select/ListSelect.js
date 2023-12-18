@@ -5,17 +5,14 @@ import {
 import {
     debounce
 } from "../../../../util/Debouncer.js";
+import ElementListCache from "../../../../util/html/ElementListCache.js";
 import SimpleDataManager from "../../../../util/grid/data/SimpleDataManager.js";
-import ModalDialog from "../../../modal/ModalDialog.js";
 import "../../../grid/DataGrid.js";
-import "./SearchField.js";
-import TPL from "./KeyValueListInput.js.html" assert {type: "html"};
-import STYLE from "./KeyValueListInput.js.css" assert {type: "css"};
+import "../input/SearchField.js";
+import TPL from "./ListSelect.js.html" assert {type: "html"};
+import STYLE from "./ListSelect.js.css" assert {type: "css"};
 
-// TODO make values editable
-// TODO add readonly mode
-
-export default class KeyValueListInput extends CustomFormElementDelegating {
+export default class ListSelect extends CustomFormElementDelegating {
 
     #value;
 
@@ -23,9 +20,11 @@ export default class KeyValueListInput extends CustomFormElementDelegating {
 
     #gridEl;
 
-    #addEl;
-
     #dataManager = new SimpleDataManager();
+
+    #optionsContainerEl;
+
+    #optionNodeList = new ElementListCache();
 
     constructor() {
         super();
@@ -41,62 +40,42 @@ export default class KeyValueListInput extends CustomFormElementDelegating {
         });
         /* --- */
         this.#searchEl = this.shadowRoot.getElementById("search");
-        this.#gridEl = this.shadowRoot.getElementById("grid");
-        this.#addEl = this.shadowRoot.getElementById("add");
-        this.#addEl.addEventListener("click", async () => {
-            let rowName = null;
-            const currentValue = {...this.#value};
-            while (rowName == null) {
-                rowName = await ModalDialog.prompt("Add item", "Please enter a new key");
-                if (typeof rowName !== "string") {
-                    return;
-                }
-                if (rowName in currentValue) {
-                    await ModalDialog.alert("Key already exists", `The key "${rowName}" does already exist. Please enter another one!`);
-                    rowName = null;
-                }
-            }
-            currentValue[rowName] = "";
-            this.value = currentValue;
-        });
-        this.#gridEl.addEventListener("delete", (event) => {
-            event.stopPropagation();
-            event.preventDefault();
-            const {rowName} = event.data;
-            const currentValue = {...this.#value};
-            if (rowName in currentValue) {
-                delete currentValue[rowName];
-            }
-            this.value = currentValue;
-        });
-        this.#gridEl.addEventListener("editValue", debounce((event) => {
-            event.stopPropagation();
-            event.preventDefault();
-            const {value, rowName} = event.data;
-            const currentValue = {...this.#value};
-            if (rowName in currentValue) {
-                currentValue[rowName] = value;
-            }
-            this.value = currentValue;
-        }, 300));
-        /* --- */
         this.#searchEl.addEventListener("change", () => {
             this.#fillGrid();
         }, true);
+        /* --- */
+        this.#gridEl = this.shadowRoot.getElementById("grid");
+        this.#gridEl.addEventListener("selection", (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            this.value = event.data;
+        });
+        /* --- */
+        this.#optionsContainerEl = this.shadowRoot.getElementById("options-container");
+        this.#optionsContainerEl.addEventListener("slotchange", () => {
+            this.#onSlotChange();
+        });
     }
 
     connectedCallback() {
         super.connectedCallback();
         const value = this.value;
         this.#value = value;
-        this.#applyValue(value ?? {});
+        this.#applyValue(value ?? []);
         this.internals.setFormValue(value);
+        this.#gridEl.selectable = this.multi ? "multi" : "single";
+        if (this.header === "show") {
+            this.#gridEl.nohead = "false";
+        } else if (this.header === "hide") {
+            this.#gridEl.nohead = "true";
+        } else {
+            this.#gridEl.nohead = this.multi ? "false" : "true";
+        }
     }
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
         this.#searchEl.disabled = disabled;
-        this.#addEl.disabled = disabled;
         // TODO disable grid
     }
 
@@ -111,7 +90,7 @@ export default class KeyValueListInput extends CustomFormElementDelegating {
     set value(value) {
         if (!isEqual(this.#value, value)) {
             this.#value = value;
-            this.#applyValue(value ?? {});
+            this.#applyValue(value ?? []);
             this.internals.setFormValue(value);
             /* --- */
             this.dispatchEvent(new Event("change"));
@@ -130,8 +109,24 @@ export default class KeyValueListInput extends CustomFormElementDelegating {
         return this.getBooleanAttribute("readonly");
     }
 
+    set multi(val) {
+        this.setBooleanAttribute("multi", val);
+    }
+
+    get multi() {
+        return this.getBooleanAttribute("multi");
+    }
+
+    set header(val) {
+        this.setAttribute("header", val);
+    }
+
+    get header() {
+        return this.getAttribute("header");
+    }
+
     static get observedAttributes() {
-        return ["value", "readonly"];
+        return ["value", "readonly", "multi", "header"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -142,7 +137,7 @@ export default class KeyValueListInput extends CustomFormElementDelegating {
                         try {
                             this.#applyValue(JSON.parse(newValue));
                         } catch {
-                            this.#applyValue({});
+                            this.#applyValue([]);
                         }
                     }
                 }
@@ -152,18 +147,30 @@ export default class KeyValueListInput extends CustomFormElementDelegating {
                     // TODO make everything readonly
                 }
             } break;
+            case "multi": {
+                if (oldValue != newValue) {
+                    this.#gridEl.selectable = this.multi ? "multi" : "single";
+                    if (this.header !== "hide" && this.header !== "show") {
+                        this.#gridEl.nohead = this.multi ? "false" : "true";
+                    }
+                }
+            } break;
+            case "header": {
+                if (oldValue != newValue) {
+                    if (newValue === "show") {
+                        this.#gridEl.nohead = "false";
+                    } else if (newValue === "hide") {
+                        this.#gridEl.nohead = "true";
+                    } else {
+                        this.#gridEl.nohead = this.multi ? "false" : "true";
+                    }
+                }
+            } break;
         }
     }
 
     #applyValue(value) {
-        const data = Object.entries(value).map((row) => {
-            return {
-                name: row[0],
-                value: row[1]
-            }
-        });
-        this.#dataManager.setSource(data);
-        this.#fillGrid();
+        this.#gridEl.setSelected(value);
     }
 
     #fillGrid() {
@@ -178,6 +185,20 @@ export default class KeyValueListInput extends CustomFormElementDelegating {
         this.#gridEl.setData(this.#dataManager.getData(options));
     }
 
+    #onSlotChange = debounce(() => {
+        const data = [];
+        const optionNodeList = this.#optionsContainerEl.assignedElements({flatten: true}).filter((el) => el.matches("[value]"));
+        this.#optionNodeList.setNodeList(optionNodeList);
+        /* --- */
+        for (const el of optionNodeList) {
+            data.push({
+                name: el.value
+            });
+        }
+        this.#dataManager.setSource(data);
+        this.#fillGrid();
+    });
+
 }
 
-customElements.define("emc-input-key-value-list", KeyValueListInput);
+customElements.define("emc-select-list", ListSelect);

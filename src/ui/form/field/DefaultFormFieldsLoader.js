@@ -14,6 +14,7 @@ import "./input/KeyValueListInput.js";
 import "./input/OptionAmountListInput.js";
 // field select
 import "./select/ImageSelect.js";
+import "./select/ListSelect.js";
 import "./select/SearchSelect.js";
 import "./select/SimpleSelect.js";
 import "./select/TokenSelect.js";

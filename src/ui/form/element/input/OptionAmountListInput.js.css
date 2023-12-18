@@ -17,7 +17,6 @@
 }
 :host(:focus) {
     outline: none;
-    z-index: 1;
 }
 .header {
     display: flex;

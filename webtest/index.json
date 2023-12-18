@@ -47,6 +47,9 @@
             "select/imageicon": {
                 "label": "ImageIconSelect"
             },
+            "select/listselect": {
+                "label": "ListSelect"
+            },
             "select/searchselect": {
                 "label": "SearchSelect"
             },

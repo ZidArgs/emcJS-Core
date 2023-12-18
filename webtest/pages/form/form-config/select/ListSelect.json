@@ -1,0 +1,66 @@
+{
+    "type": "Fieldset",
+    "label": "list-select",
+    "children": [
+        {
+            "type": "ListSelect",
+            "label": "list-select default",
+            "name": "list-select.default",
+            "optiongroup": "ListSelect",
+            "options": [
+                "Nana",
+                "Foobar"
+            ],
+            "placeholder": "Select entry...",
+            "multi": true,
+            "sorted": true
+        },
+        {
+            "type": "ListSelect",
+            "label": "list-select default (duplicate)",
+            "name": "list-select.default",
+            "optiongroup": "ListSelect",
+            "placeholder": "Select entry...",
+            "multi": true,
+            "sorted": true
+        },
+        {
+            "type": "ListSelect",
+            "label": "list-select resettable",
+            "name": "list-select.resettable",
+            "optiongroup": "ListSelect",
+            "placeholder": "Select entry...",
+            "multi": true,
+            "sorted": true,
+            "resettable": true
+        },
+        {
+            "type": "ListSelect",
+            "label": "list-select required",
+            "name": "list-select.required",
+            "optiongroup": "ListSelect",
+            "placeholder": "Select entry...",
+            "multi": true,
+            "sorted": true,
+            "required": true
+        },
+        {
+            "type": "ListSelect",
+            "label": "list-select disabled",
+            "name": "list-select.disabled",
+            "optiongroup": "ListSelect",
+            "placeholder": "Select entry...",
+            "multi": true,
+            "sorted": true,
+            "disabled": true
+        },
+        {
+            "type": "ListSelect",
+            "label": "list-select single",
+            "name": "list-select.single",
+            "optiongroup": "ListSelect",
+            "placeholder": "Select entry...",
+            "sorted": true
+        }
+    ]
+}

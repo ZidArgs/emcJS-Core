@@ -36,7 +36,7 @@ import FormContext from "/emcJS/util/form/FormContext.js";
     "KeyValueListInput"     | new
     "ListInput"             | new
     "RelationSelect"        | new
-    todo                    | "list"
+    "ListSelect"            | "list"
 
     MISSING
     "CharInput"
@@ -66,6 +66,7 @@ const [defaultValues, optionGroups, tokenGroups, listGroups, buttonConfig, extra
     FileLoader.json("./form-config/select/TokenSelect.json"),
     FileLoader.json("./form-config/select/ImageIconSelect.json"),
     FileLoader.json("./form-config/input/BoolOrLogicInput.json"),
+    FileLoader.json("./form-config/select/ListSelect.json"),
     FileLoader.json("./form-config/select/SearchSelect.json"),
     FileLoader.json("./form-config/select/SimpleSelect.json"),
     FileLoader.json("./form-config/input/TextInput.json"),

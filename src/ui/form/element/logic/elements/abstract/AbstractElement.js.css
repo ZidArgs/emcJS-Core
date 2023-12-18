@@ -16,7 +16,6 @@
 :host(:focus) {
     box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
     outline: none;
-    z-index: 1;
 }
 #header {
     display: flex;
@@ -78,7 +77,6 @@
 .placeholder:focus {
     box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
     outline: none;
-    z-index: 1;
 }
 :host([disabled]:not([disabled="false"])),
 :host([readonly]:not([readonly="false"])) {

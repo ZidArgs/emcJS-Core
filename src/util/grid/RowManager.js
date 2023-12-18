@@ -35,7 +35,7 @@ export default class RowManager {
         this.#cellManagers.clear();
     }
 
-    manage(rowDataList, columnDefinition) {
+    manage(rowDataList, columnDefinition, selectedRows) {
         if (!Array.isArray(rowDataList)) {
             throw new TypeError("data must be an array");
         }
@@ -51,6 +51,7 @@ export default class RowManager {
                 throw new TypeError("data entries must be objects");
             }
             const name = rowData.name;
+            const isSelected = selectedRows?.has(name) ?? false;
             if (typeof name !== "string") {
                 throw new TypeError("row name must be a string");
             }
@@ -62,10 +63,10 @@ export default class RowManager {
             newOrder.push(name);
 
             if (!this.#elements.has(name)) {
-                const rowEl = this.composer(name, columnDefinition, rowData);
+                const rowEl = this.composer(name, columnDefinition, rowData, isSelected);
                 if (rowEl != null) {
-                    rowEl.setAttribute("em-key", name);
-                    this.mutator(rowEl, name, columnDefinition, rowData);
+                    rowEl.setAttribute("row-name", name);
+                    this.mutator(rowEl, name, columnDefinition, rowData, isSelected);
                     this.#elements.set(name, rowEl);
                     changes.added.push(name);
                     this.#target.append(rowEl);
@@ -75,7 +76,7 @@ export default class RowManager {
             } else {
                 const rowEl = this.#elements.get(name);
                 if (columnDataChanged || this.#checkRowDataChange(name, rowData)) {
-                    this.mutator(rowEl, name, columnDefinition, rowData);
+                    this.mutator(rowEl, name, columnDefinition, rowData, isSelected);
                     changes.updated.push(name);
                 }
                 unused.delete(name);
@@ -115,19 +116,19 @@ export default class RowManager {
         return false;
     }
 
-    composer(name, columnData, rowData) {
+    composer(name, columnData, rowData, isSelected) {
         const rowEl = document.createElement("tr");
 
         const cellManager = new CellManager(rowEl);
         this.#cellManagers.set(name, cellManager);
-        cellManager.manage(columnData, rowData);
+        cellManager.manage(columnData, rowData, isSelected);
 
         return rowEl;
     }
 
-    mutator(rowEl, name, columnData, rowData) {
+    mutator(rowEl, name, columnData, rowData, isSelected) {
         const cellManager = this.#cellManagers.get(name);
-        cellManager.manage(columnData, rowData);
+        cellManager.manage(columnData, rowData, isSelected);
     }
 
 }

@@ -16,7 +16,6 @@
 :host(:focus) {
     box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
     outline: none;
-    z-index: 1;
 }
 #button {
     display: flex;
@@ -36,6 +35,15 @@
     text-decoration: none;
     white-space: nowrap;
     cursor: pointer;
+}
+:host([text-transform="lowercase"]) #button {
+    text-transform: lowercase;
+}
+:host([text-transform="uppercase"]) #button {
+    text-transform: uppercase;
+}
+:host([text-transform="capitalize"]) #button {
+    text-transform: capitalize;
 }
 #button:hover {
     color: var(--button-hover-text-color, #ffffff);
@@ -67,9 +75,12 @@
 #button[icon]:not([icon=""])::before {
     display: inline-flex;
     align-items: center;
-    margin-right: 5px;
     font-size: 1.3em;
     line-height: 1em;
+    font-family: monospace;
     font-weight: bold;
     content: attr(icon);
+}
+:host([text]:not([text=""])) #button::before {
+    margin-right: 5px;
 }
