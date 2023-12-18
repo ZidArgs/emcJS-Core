@@ -4,10 +4,6 @@ export default class ElementListCache {
 
     #elementList = new IndexedSet();
 
-    setNodeList(list) {
-        this.#elementList = new IndexedSet(list.filter((node) => node instanceof Element));
-    }
-
     append(node) {
         if (node instanceof Element) {
             this.#elementList.add(node);
@@ -16,7 +12,7 @@ export default class ElementListCache {
 
     prepend(node) {
         if (node instanceof Element) {
-            this.#elementList.addAt(node, 0);
+            this.#elementList.insert(node, 0);
         }
     }
 
@@ -44,6 +40,10 @@ export default class ElementListCache {
 
     get last() {
         return this.#elementList.at(-1);
+    }
+
+    setNodeList(list) {
+        this.#elementList = new IndexedSet(list.filter((node) => node instanceof Element));
     }
 
     getNodeList() {

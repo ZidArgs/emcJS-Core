@@ -69,7 +69,7 @@ export default class IndexedSet {
         return this;
     }
 
-    addAt(value, pos) {
+    insert(value, pos) {
         const index = this.#values.indexOf(value);
         let values = this.#values;
         if (index >= 0) {
@@ -78,11 +78,23 @@ export default class IndexedSet {
                 ...values.slice(index + 1)
             ];
         }
-        this.#values = [
-            ...values.slice(0, pos - 1),
-            value,
-            ...values.slice(pos)
-        ];
+        if (pos === 0) {
+            this.#values = [
+                value,
+                ...values
+            ];
+        } else if (pos >= values.length) {
+            this.#values = [
+                ...values,
+                value
+            ];
+        } else {
+            this.#values = [
+                ...values.slice(0, pos - 1),
+                value,
+                ...values.slice(pos)
+            ];
+        }
         return this;
     }
 
