@@ -100,7 +100,7 @@
     padding: 0px;
 }
 .head th.select-cell {
-    min-width: 30px;
+    min-width: 40px;
     padding: 0px;
 }
 .select-cell:not(:nth-last-child(2)) {
@@ -123,14 +123,43 @@
     appearance: none;
     outline: none;
 }
+.select-cell input[type="checkbox"] {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    appearance: none;
+    flex-grow: 0;
+    width: 1.4em;
+    height: 1.4em;
+    padding: 2px;
+    margin: 0px;
+    margin-right: auto;
+    color: var(--grid-text-color, #000000);
+    background-color: var(--grid-back-color, #ffffff);
+    border: solid 2px var(--grid-text-color, #000000);
+    border-radius: 0.3em;
+    font-size: 16px;
+    cursor: pointer;
+}
+th.select-cell input[type="checkbox"] {
+    color: var(--grid-header-text-color, #ffffff);
+    background-color: var(--grid-header-back-color, #000000);
+    border-color: var(--grid-header-text-color, #ffffff);
+}
+.select-cell input[type="checkbox"]:focus {
+    box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
+    outline: none;
+}
 .select-cell input[type="checkbox"]::before {
-    font-size: 1.5rem;
+    font-size: 1.1em;
     line-height: 1em;
-    content: "☐";
+    font-family: monospace;
+    font-weight: bold;
+    content: " ";
 }
 .select-cell input[type="checkbox"]:indeterminate::before {
-    content: "⮽";
+    content: "•";
 }
 .select-cell input[type="checkbox"]:checked::before {
-    content: "☑";
+    content: "✓";
 }
