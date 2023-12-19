@@ -1,3 +1,5 @@
+const NUMBERED_STRING_REGEX = /(.*?)([0-9]*)$/;
+
 export function isNullOrFalse(a) {
     return a == null || a === false;
 }
@@ -66,6 +68,21 @@ export function isEqual(a, b) {
         return false;
     }
     return c.every((i) => isEqual(a[i], b[i]));
+}
+
+export function numberedStringComparator(a, b) {
+    if (a.localeCompare(b) === 0) {
+        return 0;
+    }
+    const [, sA, nA] = NUMBERED_STRING_REGEX.exec(a);
+    const [, sB, nB] = NUMBERED_STRING_REGEX.exec(b);
+    const sCompare = sA.localeCompare(sB);
+    if (sCompare === 0) {
+        const iA = parseInt(nA);
+        const iB = parseInt(nB);
+        return iA - iB;
+    }
+    return sCompare;
 }
 
 class Comparator {
