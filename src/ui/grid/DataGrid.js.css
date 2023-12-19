@@ -44,7 +44,10 @@
     width: 100%;
 }
 .head th.lastCell:not(:first-child) {
-    box-shadow: inset white 2px 0px 0px;
+    box-shadow: inset var(--grid-header-seperator-color, #ffffff) var(--grid-column-seperator-width, 2px) 0px 0px;
+}
+#body tr:hover {
+    background-color: var(--grid-row-hover-back-color, #e3f6fc);
 }
 #body tr > * {
     height: var(--grid-row-height, 34px);
@@ -99,7 +102,7 @@
     min-width: 40px;
     padding: 0px;
 }
-.select-cell:not(:nth-last-child(2)) {
+.head th.select-cell:not(:nth-last-child(2)) {
     border-right: solid var(--grid-column-seperator-width, 2px) var(--grid-header-seperator-color, #ffffff);
 }
 :host([selectable]:not([selectable="false"])) .select-cell {

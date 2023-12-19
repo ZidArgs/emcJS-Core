@@ -134,6 +134,7 @@
 
     --grid-row-seperator-color: #b4b4b4;
     --grid-row-seperator-height: 1px;
+    --grid-row-hover-back-color: #e3f6fc;
 
     /* === scrollbar === */
     --scrollbar-size: 10px;
