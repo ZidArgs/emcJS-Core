@@ -157,9 +157,9 @@ th.select-cell input[type="checkbox"] {
     font-weight: bold;
     content: " ";
 }
-.select-cell input[type="checkbox"]:indeterminate::before {
-    content: "•";
-}
 .select-cell input[type="checkbox"]:checked::before {
     content: "✓";
+}
+.select-cell input[type="checkbox"]:indeterminate::before {
+    content: "•";
 }
