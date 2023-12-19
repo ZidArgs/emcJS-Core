@@ -2,7 +2,7 @@ import CustomFormElementDelegating from "../../../element/CustomFormElementDeleg
 import {
     isEqual
 } from "../../../../util/helper/Comparator.js";
-import SimpleDataManager from "../../../../util/grid/data/SimpleDataManager.js";
+import SimpleDataProvider from "../../../../util/grid/provider/SimpleDataProvider.js";
 import ModalDialog from "../../../modal/ModalDialog.js";
 import "../../../grid/DataGrid.js";
 import "./SearchField.js";
@@ -19,7 +19,7 @@ export default class ListInput extends CustomFormElementDelegating {
 
     #addEl;
 
-    #dataManager = new SimpleDataManager();
+    #dataManager = new SimpleDataProvider();
 
     constructor() {
         super();

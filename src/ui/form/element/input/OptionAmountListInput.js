@@ -8,7 +8,7 @@ import i18n from "../../../../util/I18n.js";
 import {
     isEqual
 } from "../../../../util/helper/Comparator.js";
-import SimpleDataManager from "../../../../util/grid/data/SimpleDataManager.js";
+import SimpleDataProvider from "../../../../util/grid/provider/SimpleDataProvider.js";
 import "./internal/SearchField.js";
 import "../../../grid/DataGrid.js";
 import "./SearchField.js";
@@ -35,7 +35,7 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
 
     #i18nEventManager = new EventTargetManager(i18n);
 
-    #dataManager = new SimpleDataManager();
+    #dataManager = new SimpleDataProvider();
 
     constructor() {
         super();

@@ -1,9 +1,9 @@
 import {
     isEqual
-} from "../helper/Comparator.js";
+} from "../../helper/Comparator.js";
 import {
     deepClone
-} from "../helper/DeepClone.js";
+} from "../../helper/DeepClone.js";
 
 const PX_REGEXP = /^[0-9]+(?:\.[0-9]+)?$/;
 

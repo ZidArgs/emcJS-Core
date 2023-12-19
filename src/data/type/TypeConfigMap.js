@@ -4,18 +4,29 @@ import {
 
 const TypeDefinitions = new Map();
 
-class TypeConfigMap {
+class TypeConfigMap extends EventTarget {
 
     register(typeName, typeConfig) {
         TypeDefinitions.set(typeName, this.#convertConfig(typeName, typeConfig));
+        const ev = new Event("register");
+        ev.data = {typeName};
+        this.dispatchEvent(ev);
     }
 
     registerAll(typeConfigs) {
         if (typeof typeConfigs !== "object" || Array.isArray(typeConfigs)) {
             throw new Error(`TypeConfigMap - typeConfigs has to be a dictionary`);
         }
+        const errors = [];
         for (const [typeName, typeConfig] of Object.entries(typeConfigs)) {
-            this.register(typeName, typeConfig);
+            try {
+                this.register(typeName, typeConfig);
+            } catch (err) {
+                errors.push(err);
+            }
+        }
+        if (errors.length) {
+            throw new Error(`TypeConfigMap - bulk registration failed for some types`, {cause: errors});
         }
     }
 

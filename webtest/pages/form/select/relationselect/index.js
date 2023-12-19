@@ -49,6 +49,7 @@ CustomActionRegistry.current.set("addEntries", () => {
     try {
         a.setAll({
             "ananas": {foobar: "ananas"},
+            "brot": {barfoo: "brot", argh: "fehler"},
             "apfel": {foobar: "apfel"}
         });
     } catch (err) {

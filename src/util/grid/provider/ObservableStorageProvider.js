@@ -3,7 +3,7 @@ import CharacterSearch from "../../search/CharacterSearch.js";
 
 const SORT_PATTERN = /^(!?)(.+)$/;
 
-export default class StorageDataManager {
+export default class ObservableStorageProvider {
 
     #source;
 

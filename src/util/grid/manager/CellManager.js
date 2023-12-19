@@ -1,10 +1,10 @@
 import {
     isEqual
-} from "../helper/Comparator.js";
+} from "../../helper/Comparator.js";
 import {
     deepClone
-} from "../helper/DeepClone.js";
-import DataGridCell from "../../ui/grid/cell/DataGridCell.js";
+} from "../../helper/DeepClone.js";
+import DataGridCell from "../../../ui/grid/cell/DataGridCell.js";
 
 export default class CellManager {
 

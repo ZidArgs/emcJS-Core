@@ -9,14 +9,14 @@ const COLOR_PATTERN = /#[0-9a-f]{6}/i;
 
 class TypeValidator {
 
-    validate(typeName, data, {label, throwErrors = false, strict = false} = {}) {
+    validate(typeName, value, {label, throwErrors = false, strict = false} = {}) {
         label = typeof label === "string" && label !== "" ? `| ${label} |` : "|";
 
         const err = [];
-        this.#validate(typeName, data, strict, [label], err);
+        this.#validate(typeName, value, strict, [label], err);
         if (throwErrors && err.length > 0) {
-            const msg = err.map((s) => s.split("\n").join("\n\t")).join("\n\t");
-            throw new Error(`Error validating type:\n\t${msg}`);
+            const msg = err.map((s) => s.split("\n").join("\n    ")).join("\n    ");
+            throw new Error(`Error validating value as "${typeName}"\n    ${msg}`);
         }
         return err;
     }

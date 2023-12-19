@@ -6,7 +6,7 @@ import {
     debounce
 } from "../../../../util/Debouncer.js";
 import ElementListCache from "../../../../util/html/ElementListCache.js";
-import SimpleDataManager from "../../../../util/grid/data/SimpleDataManager.js";
+import SimpleDataProvider from "../../../../util/grid/provider/SimpleDataProvider.js";
 import "../../../grid/DataGrid.js";
 import "../input/SearchField.js";
 import TPL from "./ListSelect.js.html" assert {type: "html"};
@@ -20,7 +20,7 @@ export default class ListSelect extends CustomFormElementDelegating {
 
     #gridEl;
 
-    #dataManager = new SimpleDataManager();
+    #dataManager = new SimpleDataProvider();
 
     #optionsContainerEl;
 

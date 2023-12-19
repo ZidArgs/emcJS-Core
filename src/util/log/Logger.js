@@ -60,11 +60,10 @@ function extractError(err) {
 function formatMessage(data, omitStack) {
     const {type, time, target, message} = data;
     if (message instanceof Error) {
-        const msg = formatError(message, omitStack).split("\n").map((l) => `\t${l}`).join("\n");
-        return `[ ${type} | ${time} ] <${target}>\n${msg}`;
+        const msg = formatError(message, omitStack);
+        return `[ ${type} | ${time} ] <${target}> ${msg}`;
     } else {
-        const msg = message.split("\n").map((l) => `\t${l}`).join("\n");
-        return `[ ${type} | ${time} ] <${target}>\n${msg}`;
+        return `[ ${type} | ${time} ] <${target}> ${message}`;
     }
 }
 
@@ -73,11 +72,17 @@ function formatError(err, omitStack) {
     const stack = err.stack.split("\n").slice(1).join("\n");
     const cause = err.cause;
     const result = [msg];
-    if (!globalOmitStack && !omitStack) {
+    if ((omitStack != null && !omitStack) || !globalOmitStack) {
         result.push(stack);
     }
     if (cause != null) {
-        result.push(`\ncaused by:\n${formatError(cause, omitStack)}`);
+        if (Array.isArray(cause)) {
+            result.push(`    ↳ ${cause.map((c) => {
+                return formatError(c, omitStack).split("\n").map((l) => `    ${l}`).join("\n").slice(4);
+            }).join("\n    ↳ ")}`);
+        } else {
+            result.push(`    ↳ ${formatError(cause, omitStack).split("\n").map((l) => `    ${l}`).join("\n").slice(4)}`);
+        }
     }
     return result.join("\n");
 }
@@ -161,7 +166,7 @@ export default class Logger {
         }
     }
 
-    static error(message, target = null, omitStack = true) {
+    static error(message, target = null, omitStack = undefined) {
         this.#write({
             target: target,
             type: LogLevel.ERROR,
@@ -170,7 +175,7 @@ export default class Logger {
         }, omitStack);
     }
 
-    static warn(message, target = null, omitStack = true) {
+    static warn(message, target = null, omitStack = undefined) {
         this.#write({
             target: target,
             type: LogLevel.WARN,
@@ -179,7 +184,7 @@ export default class Logger {
         }, omitStack);
     }
 
-    static info(message, target = null, omitStack = true) {
+    static info(message, target = null, omitStack = undefined) {
         this.#write({
             target: target,
             type: LogLevel.INFO,
@@ -188,7 +193,7 @@ export default class Logger {
         }, omitStack);
     }
 
-    static log(message, target = null, omitStack = true) {
+    static log(message, target = null, omitStack = undefined) {
         this.#write({
             target: target,
             type: LogLevel.LOG,
@@ -197,7 +202,7 @@ export default class Logger {
         }, omitStack);
     }
 
-    static message(type, message, target = null, omitStack = true) {
+    static message(type, message, target = null, omitStack = undefined) {
         this.#write({
             target: target,
             type: type,

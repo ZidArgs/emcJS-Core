@@ -5,7 +5,7 @@ import CharacterSearch from "../../search/CharacterSearch.js";
 
 const SORT_PATTERN = /^(!?)(.+)$/;
 
-export default class SimpleDataManager {
+export default class SimpleDataProvider {
 
     #source;
 

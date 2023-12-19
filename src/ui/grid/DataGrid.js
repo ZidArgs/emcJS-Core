@@ -11,6 +11,8 @@ import {
 import {
     getAllAttributes
 } from "../../util/helper/ui/NodeAttributes.js";
+import HeaderManager from "../../util/grid/manager/HeaderManager.js";
+import RowManager from "../../util/grid/manager/RowManager.js";
 import Column from "./Column.js";
 import "./cell/DataGridCell.js";
 import "./cell/DataGridCellButton.js";
@@ -22,8 +24,6 @@ import "./cell/DataGridCellDateTime.js";
 import "./cell/DataGridCellTime.js";
 import TPL from "./DataGrid.js.html" assert {type: "html"};
 import STYLE from "./DataGrid.js.css" assert {type: "css"};
-import HeaderManager from "../../util/grid/HeaderManager.js";
-import RowManager from "../../util/grid/RowManager.js";
 
 /** TODO detect child attribute changes
  *  - if the content of child or the attributes change, react accordingly

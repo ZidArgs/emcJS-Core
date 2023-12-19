@@ -32,12 +32,12 @@ export default class TypeStorage extends EventTarget {
     set(key, value) {
         // validation
         const validationErrors = TypeValidator.validate(this.#typeName, value, {
-            label: `${this.#typeName} -> ${key}`,
+            label: key,
             strict: true
         });
         if (validationErrors.length > 0) {
-            const msg = validationErrors.map((s) => s.split("\n").join("\n\t")).join("\n\t");
-            throw new Error(`Error validating type:\n\t${msg}`);
+            const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
+            throw new Error(`Error validating value as "${this.#typeName}"\n    ${msg}`);
         }
         // write
         const oldValue = this.get(key);
@@ -59,11 +59,12 @@ export default class TypeStorage extends EventTarget {
             // validation
             const newValue = data[key];
             const validationErrors = TypeValidator.validate(this.#typeName, newValue, {
-                label: `${this.#typeName} -> ${key}`,
+                label: key,
                 strict: true
             });
             if (validationErrors.length > 0) {
-                allErrors.push(validationErrors.map((s) => s.split("\n").join("\n\t")).join("\n\t"));
+                const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
+                allErrors.push(`Error validating value as "${this.#typeName}"\n    ${msg}`);
                 continue;
             }
             // write
@@ -83,7 +84,8 @@ export default class TypeStorage extends EventTarget {
         }
         // errors
         if (allErrors.length) {
-            throw new Error(`Error validating type:\n\t${allErrors.join("\n\t")}`);
+            const msg = allErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
+            throw new Error(`Error validating data\n    ${msg}`);
         }
     }
 
@@ -139,11 +141,12 @@ export default class TypeStorage extends EventTarget {
             // validation
             const newValue = data[key];
             const validationErrors = TypeValidator.validate(this.#typeName, newValue, {
-                label: `${this.#typeName} -> ${key}`,
+                label: key,
                 strict: true
             });
             if (validationErrors.length > 0) {
-                allErrors.push(validationErrors.map((s) => s.split("\n").join("\n\t")).join("\n\t"));
+                const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
+                allErrors.push(`Error validating value as "${this.#typeName}"\n    ${msg}`);
                 continue;
             }
             // write
@@ -157,7 +160,8 @@ export default class TypeStorage extends EventTarget {
         this.dispatchEvent(ev);
         // errors
         if (allErrors.length) {
-            throw new Error(`Error validating type:\n\t${allErrors.join("\n\t")}`);
+            const msg = allErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
+            throw new Error(`Error validating data\n    ${msg}`);
         }
     }
 
@@ -169,11 +173,12 @@ export default class TypeStorage extends EventTarget {
             // validation
             const newValue = data[key];
             const validationErrors = TypeValidator.validate(this.#typeName, newValue, {
-                label: `${this.#typeName} -> ${key}`,
+                label: key,
                 strict: true
             });
             if (validationErrors.length > 0) {
-                allErrors.push(validationErrors.map((s) => s.split("\n").join("\n\t")).join("\n\t"));
+                const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
+                allErrors.push(`Error validating value as "${this.#typeName}"\n    ${msg}`);
                 continue;
             }
             // write
@@ -199,7 +204,8 @@ export default class TypeStorage extends EventTarget {
         }
         // errors
         if (allErrors.length) {
-            throw new Error(`Error validating type:\n\t${allErrors.join("\n\t")}`);
+            const msg = allErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
+            throw new Error(`Error validating data\n    ${msg}`);
         }
     }
 
