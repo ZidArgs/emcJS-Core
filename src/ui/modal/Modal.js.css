@@ -90,14 +90,6 @@
 #footer:empty {
     display: none;
 }
-:focus {
-    box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
-    outline: none;
-}
-:focus:not(:focus-visible) {
-    box-shadow: none;
-    outline: none;
-}
 #close {
     display: flex;
     width: 40px;
@@ -116,9 +108,5 @@
 }
 #close:focus {
     box-shadow: inset red 0 0px 3px 4px;
-    outline: none;
-}
-#close:focus:not(:focus-visible) {
-    box-shadow: none;
     outline: none;
 }

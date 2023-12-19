@@ -110,8 +110,6 @@ export default class CellManager {
                 oldEl.remove();
                 const cellEl = this.composer(name, this.#rowName, type, columnData, value);
                 if (cellEl != null) {
-                    cellEl.setAttribute("col-name", name);
-                    cellEl.setAttribute("row-name", this.#rowName);
                     this.mutator(cellEl, columnData, value);
                     this.#elements.set(name, cellEl);
                     changes.added.push(name);

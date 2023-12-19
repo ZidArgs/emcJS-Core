@@ -17,19 +17,19 @@ export default class DataGridCell extends CustomElement {
     }
 
     get columnName() {
-        return this.getAttribute("column");
+        return this.getAttribute("col-name");
     }
 
     set columnName(val) {
-        this.setAttribute("column", val);
+        this.setAttribute("col-name", val);
     }
 
     get rowName() {
-        return this.getAttribute("row");
+        return this.getAttribute("row-name");
     }
 
     set rowName(val) {
-        this.setAttribute("row", val);
+        this.setAttribute("row-name", val);
     }
 
     get value() {

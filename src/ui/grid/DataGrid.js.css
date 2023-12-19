@@ -14,12 +14,8 @@
     overflow: auto;
 }
 #table {
-    width: 100%;
-    max-width: max-content;
+    min-width: 100%;
     border-spacing: 0px;
-}
-:host([stretch]:not([stretch="false"])) #table {
-    max-width: initial;
 }
 :host([nohead]:not([nohead="false"])) .head th {
     height: 0px;
@@ -145,6 +141,14 @@ th.select-cell input[type="checkbox"] {
     color: var(--grid-header-text-color, #ffffff);
     background-color: var(--grid-header-back-color, #000000);
     border-color: var(--grid-header-text-color, #ffffff);
+}
+.select-cell input[type="checkbox"]:checked:not(:indeterminate) {
+    color: var(--grid-back-color, #ffffff);
+    background-color: var(--grid-text-color, #000000);
+}
+th.select-cell input[type="checkbox"]:checked:not(:indeterminate) {
+    color: var(--grid-header-back-color, #000000);
+    background-color: var(--grid-header-text-color, #ffffff);
 }
 .select-cell input[type="checkbox"]:focus {
     box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);

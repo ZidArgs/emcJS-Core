@@ -42,11 +42,6 @@
     box-shadow: inset 0 0 2px 2px var(--input-focus-color, #06b5ff);
     outline: none;
 }
-::slotted(.item:focus:not(:focus-visible)),
-::slotted([menu-action]:focus:not(:focus-visible)) {
-    box-shadow: none;
-    outline: none;
-}
 ::slotted(.splitter) {
     display: block;
     margin: 10px 5px;

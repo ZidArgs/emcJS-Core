@@ -22,6 +22,7 @@ import "./cell/DataGridCellNumber.js";
 import "./cell/DataGridCellDate.js";
 import "./cell/DataGridCellDateTime.js";
 import "./cell/DataGridCellTime.js";
+import "./cell/DataGridCellI18n.js";
 import TPL from "./DataGrid.js.html" assert {type: "html"};
 import STYLE from "./DataGrid.js.css" assert {type: "css"};
 

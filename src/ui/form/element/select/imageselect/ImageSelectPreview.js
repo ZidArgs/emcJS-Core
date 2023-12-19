@@ -1,8 +1,8 @@
-import CustomElement from "../../../../element/CustomElement.js";
+import CustomFormElementDelegating from "../../../../element/CustomFormElementDelegating.js";
 import TPL from "./ImageSelectPreview.js.html" assert {type: "html"};
 import STYLE from "./ImageSelectPreview.js.css" assert {type: "css"};
 
-export default class ImageSelectPreview extends CustomElement {
+export default class ImageSelectPreview extends CustomFormElementDelegating {
 
     #iconEl;
 

@@ -4,11 +4,19 @@ import "/emcJS/ui/grid/DataGrid.js";
 import TypeConfigMap from "/emcJS/data/type/TypeConfigMap.js";
 import TypeValidator from "/emcJS/util/type/TypeValidator.js";
 import Logger from "/emcJS/util/log/Logger.js";
+import i18n from "/emcJS/util/I18n.js";
+
+i18n.setTranslation("de", {
+    "test.blablabla": "Delphin",
+    "test.bluiuiui": "Schmetterling",
+    "test.blöbliblup": "Silberfuchs"
+});
 
 const grid0El = document.getElementById("grid0");
 grid0El.setData([
     {
         name: "0",
+        i18n: "test.blablabla",
         A: 1,
         B: "Cheese",
         C: 3,
@@ -16,6 +24,7 @@ grid0El.setData([
     },
     {
         name: "1",
+        i18n: "test.bluiuiui",
         A: 2,
         B: "Pizza",
         D: true,
@@ -23,6 +32,7 @@ grid0El.setData([
     },
     {
         name: "2",
+        i18n: "test.blöbliblup",
         A: 3,
         C: -15,
         D: false,
@@ -34,6 +44,7 @@ const grid1El = document.getElementById("grid1");
 grid1El.setData([
     {
         name: "0",
+        i18n: "test.blablabla",
         A: 1,
         B: "Cheese",
         C: 3,
@@ -41,6 +52,7 @@ grid1El.setData([
     },
     {
         name: "1",
+        i18n: "test.bluiuiui",
         A: 2,
         B: "Pizza",
         D: true,
@@ -48,6 +60,7 @@ grid1El.setData([
     },
     {
         name: "2",
+        i18n: "test.blöbliblup",
         A: 3,
         C: -15,
         D: false,
@@ -59,6 +72,7 @@ const grid2El = document.getElementById("grid2");
 grid2El.setData([
     {
         name: "0",
+        i18n: "test.blablabla",
         A: 1,
         B: "Cheese",
         C: 3,
@@ -66,6 +80,7 @@ grid2El.setData([
     },
     {
         name: "1",
+        i18n: "test.bluiuiui",
         A: 2,
         B: "Pizza",
         D: true,
@@ -73,6 +88,7 @@ grid2El.setData([
     },
     {
         name: "2",
+        i18n: "test.blöbliblup",
         A: 3,
         C: -15,
         D: false,
