@@ -38,6 +38,8 @@ export default class RelationSelect extends CustomFormElementDelegating {
 
     #value;
 
+    #typesWildcarded = false;
+
     #inputEl;
 
     #viewEl;
@@ -214,6 +216,7 @@ export default class RelationSelect extends CustomFormElementDelegating {
         this.#value = value;
         this.#applyValue(value);
         this.internals.setFormValue(value);
+        this.#typesWildcarded = this.types.includes("*");
         this.#fillSelectElements();
     }
 
@@ -348,6 +351,7 @@ export default class RelationSelect extends CustomFormElementDelegating {
             } break;
             case "types": {
                 if (oldValue != newValue) {
+                    this.#typesWildcarded = this.types.includes("*");
                     this.#fillSelectElements();
                 }
             } break;
@@ -529,21 +533,39 @@ export default class RelationSelect extends CustomFormElementDelegating {
 
     #fillSelectElements() {
         this.innerHTML = "";
-        const acceptedTypes = this.types;
         this.#optionNodeList.purge();
         this.#optionSelectEventManager.clearTargets();
         /* --- */
-        for (const acceptedType of acceptedTypes) {
-            const storage = TypeStorage.getStorage(acceptedType);
-            if (storage != null) {
-                this.#typeStorageEventManager.addTarget(storage);
-                for (const name of storage.keys()) {
-                    const el = document.createElement("emc-select-relation-entry");
-                    el.name = name;
-                    el.type = acceptedType;
-                    this.#optionNodeList.append(el);
-                    this.#optionSelectEventManager.addTarget(el);
-                    this.append(el);
+        if (this.#typesWildcarded) {
+            const allTypes = TypeStorage.getAllStorageNames();
+            for (const acceptedType of allTypes) {
+                const storage = TypeStorage.getStorage(acceptedType);
+                if (storage != null) {
+                    this.#typeStorageEventManager.addTarget(storage);
+                    for (const name of storage.keys()) {
+                        const el = document.createElement("emc-select-relation-entry");
+                        el.name = name;
+                        el.type = acceptedType;
+                        this.#optionNodeList.append(el);
+                        this.#optionSelectEventManager.addTarget(el);
+                        this.append(el);
+                    }
+                }
+            }
+        } else {
+            const acceptedTypes = this.types;
+            for (const acceptedType of acceptedTypes) {
+                const storage = TypeStorage.getStorage(acceptedType);
+                if (storage != null) {
+                    this.#typeStorageEventManager.addTarget(storage);
+                    for (const name of storage.keys()) {
+                        const el = document.createElement("emc-select-relation-entry");
+                        el.name = name;
+                        el.type = acceptedType;
+                        this.#optionNodeList.append(el);
+                        this.#optionSelectEventManager.addTarget(el);
+                        this.append(el);
+                    }
                 }
             }
         }
@@ -562,11 +584,15 @@ export default class RelationSelect extends CustomFormElementDelegating {
     }
 
     #fillAfterStorageRegister(typeNames) {
-        const acceptedTypes = this.types;
-        for (const type of acceptedTypes) {
-            if (typeNames.includes(type)) {
-                this.#fillSelectElements();
-                break;
+        if (this.#typesWildcarded) {
+            this.#fillSelectElements();
+        } else {
+            const acceptedTypes = this.types;
+            for (const type of typeNames) {
+                if (acceptedTypes.includes(type)) {
+                    this.#fillSelectElements();
+                    break;
+                }
             }
         }
     }

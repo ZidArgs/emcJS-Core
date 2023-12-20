@@ -7,6 +7,12 @@ const TypeDefinitions = new Map();
 class TypeConfigMap extends EventTarget {
 
     register(typeName, typeConfig) {
+        if (typeof typeName !== "string" || typeName === "" || typeName === "*") {
+            throw new Error(`TypeConfigMap - typeName has to be a string that is not empty and not "*"`);
+        }
+        if (typeof typeConfig !== "object" || Array.isArray(typeConfig)) {
+            throw new Error(`TypeConfigMap - config has to be a dictionary [ ${typeName} ]`);
+        }
         TypeDefinitions.set(typeName, this.#convertConfig(typeName, typeConfig));
         const ev = new Event("register");
         ev.data = {typeName};
@@ -40,9 +46,6 @@ class TypeConfigMap extends EventTarget {
 
     #convertConfig(typeName, typeConfig) {
         const result = {};
-        if (typeof typeConfig !== "object" || Array.isArray(typeConfig)) {
-            throw new Error(`TypeConfigMap - config has to be a dictionary [ ${typeName} ]`);
-        }
         for (const [currentName, definition] of Object.entries(typeConfig)) {
             result[currentName] = this.#convertType(typeName, currentName, definition);
         }
@@ -124,8 +127,8 @@ class TypeConfigMap extends EventTarget {
                 if (!("types" in definition) || !Array.isArray(definition["types"])) {
                     throw new Error(`TypeConfigMap - types has to be an array [ ${typeName} > ${currentName} ]`);
                 }
-                if (definition["types"].some((entry) => typeof entry !== "string")) {
-                    throw new Error(`TypeConfigMap - types can only contain strings [ ${typeName} > ${currentName} ]`);
+                if (definition["types"].some((entry) => typeof entry !== "string" || entry === "")) {
+                    throw new Error(`TypeConfigMap - types can only contain non empty strings [ ${typeName} > ${currentName} ]`);
                 }
                 currentResult["types"] = definition["types"];
             } break;

@@ -12,6 +12,9 @@ class TypeValidator {
     validate(typeName, value, {label, throwErrors = false, strict = false} = {}) {
         label = typeof label === "string" && label !== "" ? `| ${label} |` : "|";
 
+        if (typeof typeName !== "string" || typeName === "" || typeName === "*") {
+            throw new Error(`Error validating value\n    typeName has to be a string that is not empty and not "*"`);
+        }
         const err = [];
         this.#validate(typeName, value, strict, [label], err);
         if (throwErrors && err.length > 0) {
@@ -191,7 +194,7 @@ class TypeValidator {
             errors.push(`type expected to be a string [ ${path.join(" > ")} ]`);
         } else if (typeof value.name !== "string") {
             errors.push(`name expected to be a string [ ${path.join(" > ")} ]`);
-        } else if (!def.types.includes(value.type)) {
+        } else if (!def.types.includes("*") && !def.types.includes(value.type)) {
             errors.push(`type "${value.type}" not in accepted types [ ${path.join(" > ")} ]`);
         }
     }

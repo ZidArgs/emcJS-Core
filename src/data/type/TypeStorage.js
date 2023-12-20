@@ -20,6 +20,9 @@ export default class TypeStorage extends EventTarget {
     #buffer = new Map();
 
     constructor(typeName) {
+        if (typeof typeName !== "string" || typeName === "" || typeName === "*") {
+            throw new Error(`typeName has to be a string that is not empty and not "*"`);
+        }
         if (STORAGES.has(typeName)) {
             return STORAGES.get(typeName);
         }
@@ -214,9 +217,16 @@ export default class TypeStorage extends EventTarget {
     }
 
     static getStorage(typeName) {
+        if (typeof typeName !== "string" || typeName === "" || typeName === "*") {
+            throw new Error(`typeName has to be a string that is not empty and not "*"`);
+        }
         if (STORAGES.has(typeName)) {
             return STORAGES.get(typeName);
         }
+    }
+
+    static getAllStorageNames() {
+        return [...STORAGES.keys()];
     }
 
     static onStorageRegister(callback) {

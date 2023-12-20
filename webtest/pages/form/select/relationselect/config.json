@@ -59,6 +59,16 @@
             "text": "add entries",
             "icon": "⚡",
             "action": "addEntries"
+        },
+        {
+            "type": "RelationSelect",
+            "label": "relation-select all types",
+            "name": "relation-select.allTypes",
+            "types": [
+                "*"
+            ],
+            "placeholder": "Select entry...",
+            "sorted": true
         }
     ]
 }

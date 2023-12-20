@@ -65,4 +65,14 @@ CustomActionRegistry.current.set("addEntries", () => {
     } catch (err) {
         Logger.error(err);
     }
+    try {
+        c.setAll({
+            "knoblauch": {baba: "knoblauch"},
+            "brot": {baba: "brot", argh: "fehler"},
+            "tretmühle": {baba: 2, argh: "fehler"},
+            "sahne": {baba: "sahne"}
+        });
+    } catch (err) {
+        Logger.error(err);
+    }
 });
