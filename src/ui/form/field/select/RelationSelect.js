@@ -6,7 +6,7 @@ import {
 import {
     safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
-import "../../element/select/RelationSelect.js";
+import "../../element/select/relation/RelationSelect.js";
 import TPL from "./RelationSelect.js.html" assert {type: "html"};
 import STYLE from "./RelationSelect.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./RelationSelect.js.json" assert {type: "json"};

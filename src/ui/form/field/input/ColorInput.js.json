@@ -48,16 +48,6 @@
         "value": false
     },
     {
-        "type": "SimpleSelect",
-        "name": "autocomplete",
-        "label": "Autocomplete",
-        "value": "off",
-        "options": {
-            "off": "off",
-            "on": "on"
-        }
-    },
-    {
         "type": "BoolOrLogicInput",
         "name": "enabled",
         "label": "Enabled",

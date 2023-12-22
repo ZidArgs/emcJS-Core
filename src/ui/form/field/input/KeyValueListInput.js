@@ -7,7 +7,7 @@ import FormElementRegistry from "../../../../data/registry/FormElementRegistry.j
 import {
     safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
-import "../../element/input/KeyValueListInput.js";
+import "../../element/input/keyvaluelist/KeyValueListInput.js";
 import TPL from "./KeyValueListInput.js.html" assert {type: "html"};
 import STYLE from "./KeyValueListInput.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./KeyValueListInput.js.json" assert {type: "json"};

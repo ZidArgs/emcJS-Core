@@ -16,24 +16,24 @@ export default class OptionGroupRegistry extends EventTarget {
         REGISTRY_STORAGE.set(name, this);
     }
 
-    set(value, label) {
-        this.#options.set(value, label);
+    set(key, value) {
+        this.#options.set(key, value);
         const event = new Event("change");
         this.dispatchEvent(event);
     }
 
-    get(value) {
-        return this.#options.get(value);
+    get(key) {
+        return this.#options.get(key);
     }
 
-    has(value) {
-        return this.#options.has(value);
+    has(key) {
+        return this.#options.has(key);
     }
 
     setAll(options) {
-        for (const value in options) {
-            const label = options[value];
-            this.#options.set(value, label);
+        for (const key in options) {
+            const value = options[key];
+            this.#options.set(key, value);
         }
         const event = new Event("change");
         this.dispatchEvent(event);
@@ -41,8 +41,8 @@ export default class OptionGroupRegistry extends EventTarget {
 
     getAll() {
         const res = {};
-        for (const [value, label] of this.#options) {
-            res[value] = label;
+        for (const [key, value] of this.#options) {
+            res[key] = value;
         }
         return res;
     }

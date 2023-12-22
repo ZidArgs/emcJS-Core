@@ -18,7 +18,7 @@ p {
     appearance: none;
     flex-grow: 0;
     width: 3em;
-    height: 1.6em;
+    height: 2em;
     padding: 2px;
     margin: 0px;
     margin-right: auto;
@@ -41,8 +41,8 @@ p {
 }
 :host([editable]:not([editable="false"])) #input::after {
     display: block;
-    width: calc(1.6em - (2 * var(--form-border-width, 2px)));
-    height: calc(1.6em - (4 * var(--form-border-width, 2px)));
+    width: calc(2em - (2 * var(--form-border-width, 2px)));
+    height: calc(2em - (4 * var(--form-border-width, 2px)));
     background-color: var(--button-back-color, #cccccc);
     border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
     border-radius: calc(var(--form-border-radius, 6px) / 2);

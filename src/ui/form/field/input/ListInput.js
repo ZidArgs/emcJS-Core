@@ -7,7 +7,7 @@ import FormElementRegistry from "../../../../data/registry/FormElementRegistry.j
 import {
     safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
-import "../../element/input/ListInput.js";
+import "../../element/input/list/ListInput.js";
 import TPL from "./ListInput.js.html" assert {type: "html"};
 import STYLE from "./ListInput.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./ListInput.js.json" assert {type: "json"};

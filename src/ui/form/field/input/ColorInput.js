@@ -1,9 +1,6 @@
 import AbstractFormInput from "../../abstract/AbstractFormInput.js";
 import "../../../i18n/builtin/I18nInput.js";
 import {
-    debounce
-} from "../../../../util/Debouncer.js";
-import {
     deepClone
 } from "../../../../util/helper/DeepClone.js";
 import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
@@ -11,6 +8,7 @@ import {
     safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
 import "../../../i18n/I18nTooltip.js";
+import "../../element/input/color/ColorInput.js";
 import TPL from "./ColorInput.js.html" assert {type: "html"};
 import STYLE from "./ColorInput.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./ColorInput.js.json" assert {type: "json"};
@@ -25,26 +23,15 @@ export default class ColorInput extends AbstractFormInput {
 
     #inputEl;
 
-    #buttonEl;
-
     constructor() {
         super();
         this.shadowRoot.getElementById("field").append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.#inputEl.addEventListener("input", () => {
-            this.#onInput();
-        });
-        /* --- */
-        this.#buttonEl = this.shadowRoot.getElementById("button");
-        this.#buttonEl.addEventListener("change", () => {
-            this.value = this.#buttonEl.value;
-        });
-        this.#buttonEl.addEventListener("click", () => {
-            if (this.#inputEl.value === "") {
-                this.value = this.#buttonEl.value;
-            }
+        this.#inputEl.addEventListener("change", () => {
+            const value = this.#inputEl.value;
+            this.value = value;
         });
     }
 
@@ -52,47 +39,30 @@ export default class ColorInput extends AbstractFormInput {
         super.connectedCallback();
         const value = this.value;
         this.#inputEl.value = value;
-        if (REGEX_HEX.test(value)) {
-            this.#buttonEl.value = value;
-        } else {
-            this.#buttonEl.value = "#000000";
-        }
     }
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
         this.#inputEl.disabled = disabled;
-        this.#buttonEl.disabled = disabled;
     }
 
     formResetCallback() {
         super.formResetCallback();
         const value = this.value;
         this.#inputEl.value = value;
-        if (REGEX_HEX.test(value)) {
-            this.#buttonEl.value = value;
-        } else {
-            this.#buttonEl.value = "#000000";
-        }
+    }
+
+    validityCallback(message) {
+        this.#inputEl.setCustomValidity(message);
     }
 
     focus(options) {
         this.#inputEl.focus(options);
     }
 
-    #onInput = debounce(() => {
-        const value = this.#inputEl.value;
-        this.value = value;
-    }, 300);
-
     set value(value) {
         this.#inputEl.value = value ?? this.defaultValue;
         super.value = value;
-        if (REGEX_HEX.test(value)) {
-            this.#buttonEl.value = value;
-        } else {
-            this.#buttonEl.value = "#000000";
-        }
     }
 
     get value() {
@@ -117,15 +87,9 @@ export default class ColorInput extends AbstractFormInput {
             case "value": {
                 if (oldValue != newValue) {
                     safeSetAttribute(this.#inputEl, "value", newValue);
-                    safeSetAttribute(this.#buttonEl, "value", newValue);
                     if (!this.isChanged) {
                         const value = this.value;
                         this.#inputEl.value = value;
-                        if (REGEX_HEX.test(value)) {
-                            this.#buttonEl.value = value;
-                        } else {
-                            this.#buttonEl.value = "#000000";
-                        }
                     }
                 }
             } break;
@@ -142,12 +106,6 @@ export default class ColorInput extends AbstractFormInput {
             case "readonly": {
                 if (oldValue != newValue) {
                     safeSetAttribute(this.#inputEl, "readonly", newValue);
-                    safeSetAttribute(this.#buttonEl, "readonly", newValue);
-                    if (newValue != null && newValue != "false") {
-                        this.#buttonEl.setAttribute("tabindex", -1);
-                    } else {
-                        this.#buttonEl.setAttribute("tabindex", 0);
-                    }
                 }
             } break;
         }

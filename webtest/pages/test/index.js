@@ -6,6 +6,25 @@ import TypeEntity from "/emcJS/data/type/TypeEntity.js";
 import TypeValidator from "/emcJS/util/type/TypeValidator.js";
 import Logger from "/emcJS/util/log/Logger.js";
 import i18n from "/emcJS/util/I18n.js";
+import OptionGroupRegistry from "/emcJS/data/registry/form/OptionGroupRegistry.js";
+
+(new OptionGroupRegistry("ImageSelect")).setAll({
+    "": "",
+    "/icons/area.svg": "Area",
+    "/icons/bean.svg": "Bean",
+    "/icons/chest.svg": "Chest",
+    "/icons/cow.svg": "Cow",
+    "/icons/dungeon_boss.svg": "Dungeon Boss",
+    "/icons/dungeon.svg": "Dungeon",
+    "/icons/entrance.svg": "Entrance",
+    "/icons/fairy_fountain.svg": "Fairy Fountain",
+    "/icons/gossipstone.svg": "Gossipstone",
+    "/icons/grotto.svg": "Grotto",
+    "/icons/interior.svg": "Interior",
+    "/icons/location.svg": "Location",
+    "/icons/scrub.svg": "Scrub",
+    "/icons/skulltula.svg": "Skulltula"
+});
 
 i18n.setTranslation("de", {
     "test.blablabla": "Delphin",

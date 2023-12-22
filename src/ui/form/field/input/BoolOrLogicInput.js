@@ -10,7 +10,7 @@ import FormElementRegistry from "../../../../data/registry/FormElementRegistry.j
 import {
     safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
-import "../../element/logic/LogicEditor.js";
+import "../../element/input/logic/LogicInput.js";
 import TPL from "./BoolOrLogicInput.js.html" assert {type: "html"};
 import STYLE from "./BoolOrLogicInput.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./BoolOrLogicInput.js.json" assert {type: "json"};

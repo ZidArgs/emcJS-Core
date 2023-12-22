@@ -8,7 +8,7 @@ import {
 import {
     safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
-import "../../element/select/ImageSelect.js";
+import "../../element/select/image/ImageSelect.js";
 import TPL from "./ImageSelect.js.html" assert {type: "html"};
 import STYLE from "./ImageSelect.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./ImageSelect.js.json" assert {type: "json"};

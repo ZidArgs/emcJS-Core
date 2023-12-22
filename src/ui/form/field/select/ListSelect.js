@@ -9,7 +9,7 @@ import {
     safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
 import I18nOption from "../../../i18n/builtin/I18nOption.js";
-import "../../element/select/ListSelect.js";
+import "../../element/select/list/ListSelect.js";
 import TPL from "./ListSelect.js.html" assert {type: "html"};
 import STYLE from "./ListSelect.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./ListSelect.js.json" assert {type: "json"};

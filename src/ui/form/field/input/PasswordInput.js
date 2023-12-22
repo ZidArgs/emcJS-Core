@@ -1,14 +1,11 @@
 import AbstractFormInput from "../../abstract/AbstractFormInput.js";
-import "./passwordinput/ToggleShowButton.js";
 import "../../../i18n/builtin/I18nInput.js";
-import {
-    debounce
-} from "../../../../util/Debouncer.js";
 import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
 import {
     safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
 import "../../../i18n/I18nTooltip.js";
+import "../../element/input/password/PasswordInput.js";
 import TPL from "./PasswordInput.js.html" assert {type: "html"};
 import STYLE from "./PasswordInput.js.css" assert {type: "css"};
 
@@ -16,22 +13,15 @@ export default class PasswordInput extends AbstractFormInput {
 
     #inputEl;
 
-    #showEl;
-
     constructor() {
         super();
         this.shadowRoot.getElementById("field").append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.#inputEl.addEventListener("input", () => {
-            this.#onInput();
-        });
-        /* --- */
-        this.#showEl = this.shadowRoot.getElementById("show");
-        this.#inputEl.type = this.#showEl.checked ? "text" : "password";
-        this.#showEl.addEventListener("input", () => {
-            this.#inputEl.type = this.#showEl.checked ? "text" : "password";
+        this.#inputEl.addEventListener("change", () => {
+            const value = this.#inputEl.value;
+            this.value = value;
         });
     }
 
@@ -43,8 +33,6 @@ export default class PasswordInput extends AbstractFormInput {
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
         this.#inputEl.disabled = disabled;
-        this.#showEl.disabled = disabled;
-        this.#showEl.checked = false;
     }
 
     formResetCallback() {
@@ -53,13 +41,13 @@ export default class PasswordInput extends AbstractFormInput {
         this.#inputEl.value = value;
     }
 
+    validityCallback(message) {
+        this.#inputEl.setCustomValidity(message);
+    }
+
     focus(options) {
         this.#inputEl.focus(options);
     }
-
-    #onInput = debounce(() => {
-        this.value = this.#inputEl.value;
-    }, 300);
 
     set value(value) {
         this.#inputEl.value = value ?? this.defaultValue;

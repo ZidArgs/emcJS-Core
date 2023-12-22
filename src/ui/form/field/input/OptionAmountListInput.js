@@ -10,7 +10,7 @@ import {
 import EventTargetManager from "../../../../util/event/EventTargetManager.js";
 import I18nOption from "../../../i18n/builtin/I18nOption.js";
 import ListGroupRegistry from "../../../../data/registry/form/ListGroupRegistry.js";
-import "../../element/input/OptionAmountListInput.js";
+import "../../element/input/optionamountlist/OptionAmountListInput.js";
 import TPL from "./OptionAmountListInput.js.html" assert {type: "html"};
 import STYLE from "./OptionAmountListInput.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./OptionAmountListInput.js.json" assert {type: "json"};

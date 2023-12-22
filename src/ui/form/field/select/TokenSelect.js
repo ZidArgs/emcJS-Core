@@ -7,7 +7,7 @@ import {
     safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
 import I18nOption from "../../../i18n/builtin/I18nOption.js";
-import "../../element/select/TokenSelect.js";
+import "../../element/select/token/TokenSelect.js";
 import TPL from "./TokenSelect.js.html" assert {type: "html"};
 import STYLE from "./TokenSelect.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./TokenSelect.js.json" assert {type: "json"};
