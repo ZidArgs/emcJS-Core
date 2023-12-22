@@ -35,20 +35,19 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
 
     #i18nEventManager = new EventTargetManager(i18n);
 
-    #dataManager = new SimpleDataProvider();
+    #dataManager;
 
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.#searchEl = this.shadowRoot.getElementById("search");
-        this.#gridEl = this.shadowRoot.getElementById("grid");
         this.#optionsContainerEl = this.shadowRoot.getElementById("options-container");
         this.#optionsContainerEl.addEventListener("slotchange", () => {
             this.#onSlotChange();
         });
         /* --- */
+        this.#gridEl = this.shadowRoot.getElementById("grid");
         this.#gridEl.addEventListener("editValue", debounce((event) => {
             event.stopPropagation();
             event.preventDefault();
@@ -60,8 +59,20 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
             this.value = currentValue;
         }, 300));
         /* --- */
+        this.#dataManager = new SimpleDataProvider(this.#gridEl);
+        this.#dataManager.setOptions({
+            sort: ["name"]
+        });
+        /* --- */
+        this.#searchEl = this.shadowRoot.getElementById("search");
         this.#searchEl.addEventListener("change", () => {
-            this.#fillGrid();
+            const options = {filter: {}};
+            if (this.#searchEl.value != "") {
+                options.filter = {
+                    name: this.#searchEl.value
+                };
+            }
+            this.#dataManager.updateOptions(options);
         }, true);
     }
 
@@ -197,7 +208,6 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
         }
         /* --- */
         this.#dataManager.setSource(rows);
-        this.#fillGrid();
         this.#options = options;
         this.value = newValue;
         /* --- */
@@ -213,19 +223,6 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
             }
         });
         this.#dataManager.setSource(data);
-        this.#fillGrid();
-    }
-
-    #fillGrid() {
-        const options = {
-            sort: ["name"]
-        };
-        if (this.#searchEl.value != "") {
-            options.filter = {
-                name: this.#searchEl.value
-            };
-        }
-        this.#gridEl.setData(this.#dataManager.getData(options));
     }
 
     #onSlotChange = debounce(() => {

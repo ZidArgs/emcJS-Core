@@ -20,7 +20,7 @@ export default class ListSelect extends CustomFormElementDelegating {
 
     #gridEl;
 
-    #dataManager = new SimpleDataProvider();
+    #dataManager;
 
     #optionsContainerEl;
 
@@ -39,10 +39,10 @@ export default class ListSelect extends CustomFormElementDelegating {
             event.stopPropagation();
         });
         /* --- */
-        this.#searchEl = this.shadowRoot.getElementById("search");
-        this.#searchEl.addEventListener("change", () => {
-            this.#fillGrid();
-        }, true);
+        this.#optionsContainerEl = this.shadowRoot.getElementById("options-container");
+        this.#optionsContainerEl.addEventListener("slotchange", () => {
+            this.#onSlotChange();
+        });
         /* --- */
         this.#gridEl = this.shadowRoot.getElementById("grid");
         this.#gridEl.addEventListener("selection", (event) => {
@@ -51,10 +51,21 @@ export default class ListSelect extends CustomFormElementDelegating {
             this.value = event.data;
         });
         /* --- */
-        this.#optionsContainerEl = this.shadowRoot.getElementById("options-container");
-        this.#optionsContainerEl.addEventListener("slotchange", () => {
-            this.#onSlotChange();
+        this.#dataManager = new SimpleDataProvider(this.#gridEl);
+        this.#dataManager.setOptions({
+            sort: ["name"]
         });
+        /* --- */
+        this.#searchEl = this.shadowRoot.getElementById("search");
+        this.#searchEl.addEventListener("change", () => {
+            const options = {filter: {}};
+            if (this.#searchEl.value != "") {
+                options.filter = {
+                    name: this.#searchEl.value
+                };
+            }
+            this.#dataManager.updateOptions(options);
+        }, true);
     }
 
     connectedCallback() {
@@ -173,18 +184,6 @@ export default class ListSelect extends CustomFormElementDelegating {
         this.#gridEl.setSelected(value);
     }
 
-    #fillGrid() {
-        const options = {
-            sort: ["name"]
-        };
-        if (this.#searchEl.value != "") {
-            options.filter = {
-                name: this.#searchEl.value
-            };
-        }
-        this.#gridEl.setData(this.#dataManager.getData(options));
-    }
-
     #onSlotChange = debounce(() => {
         const data = [];
         const optionNodeList = this.#optionsContainerEl.assignedElements({flatten: true}).filter((el) => el.matches("[value]"));
@@ -196,7 +195,6 @@ export default class ListSelect extends CustomFormElementDelegating {
             });
         }
         this.#dataManager.setSource(data);
-        this.#fillGrid();
     });
 
 }

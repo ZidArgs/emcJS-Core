@@ -1,19 +1,26 @@
 import {
     deepClone
 } from "../../helper/DeepClone.js";
+import {
+    numberedStringComparator
+} from "../../helper/Comparator.js";
 import CharacterSearch from "../../search/CharacterSearch.js";
+import AbstractDataProvider from "./AbstractDataProvider.js";
 
 const SORT_PATTERN = /^(!?)(.+)$/;
 
-export default class SimpleDataProvider {
+export default class SimpleDataProvider extends AbstractDataProvider {
 
-    #source;
+    #source = [];
 
-    constructor(source = []) {
-        if (!Array.isArray(source)) {
-            throw new Error("source must be an Array");
+    constructor(target, source) {
+        super(target);
+        if (source != null) {
+            if (!Array.isArray(source)) {
+                throw new Error("source must be an Array or null");
+            }
+            this.#source = deepClone(source);
         }
-        this.#source = deepClone(source);
     }
 
     setSource(source = []) {
@@ -21,9 +28,10 @@ export default class SimpleDataProvider {
             throw new Error("source must be an Array");
         }
         this.#source = deepClone(source);
+        this.triggerUpdate();
     }
 
-    getData(options = {}) {
+    async getData(options = {}) {
         const {sort = [], page = 0, pageSize = 0, filter = {}} = options;
 
         const convertedFilter = Object.entries(filter).map(([key, value]) => {
@@ -52,7 +60,7 @@ export default class SimpleDataProvider {
                 }
                 const valueA = recordA[key];
                 const valueB = recordB[key];
-                const compareResult = valueA.localeCompare(valueB);
+                const compareResult = numberedStringComparator(valueA, valueB);
                 if (compareResult !== 0) {
                     return !desc ? compareResult : -compareResult;
                 }

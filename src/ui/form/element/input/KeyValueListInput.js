@@ -25,7 +25,7 @@ export default class KeyValueListInput extends CustomFormElementDelegating {
 
     #addEl;
 
-    #dataManager = new SimpleDataProvider();
+    #dataManager;
 
     constructor() {
         super();
@@ -40,8 +40,28 @@ export default class KeyValueListInput extends CustomFormElementDelegating {
             event.stopPropagation();
         });
         /* --- */
-        this.#searchEl = this.shadowRoot.getElementById("search");
         this.#gridEl = this.shadowRoot.getElementById("grid");
+        this.#gridEl.addEventListener("delete", (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            const {rowName} = event.data;
+            const currentValue = {...this.#value};
+            if (rowName in currentValue) {
+                delete currentValue[rowName];
+                this.value = currentValue;
+            }
+        });
+        this.#gridEl.addEventListener("editValue", debounce((event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            const {value, rowName} = event.data;
+            const currentValue = {...this.#value};
+            if (rowName in currentValue) {
+                currentValue[rowName] = value;
+            }
+            this.value = currentValue;
+        }, 300));
+        /* --- */
         this.#addEl = this.shadowRoot.getElementById("add");
         this.#addEl.addEventListener("click", async () => {
             let rowName = null;
@@ -59,29 +79,21 @@ export default class KeyValueListInput extends CustomFormElementDelegating {
             currentValue[rowName] = "";
             this.value = currentValue;
         });
-        this.#gridEl.addEventListener("delete", (event) => {
-            event.stopPropagation();
-            event.preventDefault();
-            const {rowName} = event.data;
-            const currentValue = {...this.#value};
-            if (rowName in currentValue) {
-                delete currentValue[rowName];
-            }
-            this.value = currentValue;
-        });
-        this.#gridEl.addEventListener("editValue", debounce((event) => {
-            event.stopPropagation();
-            event.preventDefault();
-            const {value, rowName} = event.data;
-            const currentValue = {...this.#value};
-            if (rowName in currentValue) {
-                currentValue[rowName] = value;
-            }
-            this.value = currentValue;
-        }, 300));
         /* --- */
+        this.#dataManager = new SimpleDataProvider(this.#gridEl);
+        this.#dataManager.setOptions({
+            sort: ["name"]
+        });
+        /* --- */
+        this.#searchEl = this.shadowRoot.getElementById("search");
         this.#searchEl.addEventListener("change", () => {
-            this.#fillGrid();
+            const options = {filter: {}};
+            if (this.#searchEl.value != "") {
+                options.filter = {
+                    name: this.#searchEl.value
+                };
+            }
+            this.#dataManager.updateOptions(options);
         }, true);
     }
 
@@ -163,19 +175,6 @@ export default class KeyValueListInput extends CustomFormElementDelegating {
             }
         });
         this.#dataManager.setSource(data);
-        this.#fillGrid();
-    }
-
-    #fillGrid() {
-        const options = {
-            sort: ["name"]
-        };
-        if (this.#searchEl.value != "") {
-            options.filter = {
-                name: this.#searchEl.value
-            };
-        }
-        this.#gridEl.setData(this.#dataManager.getData(options));
     }
 
 }

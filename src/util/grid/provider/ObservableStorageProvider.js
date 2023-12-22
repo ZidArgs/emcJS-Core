@@ -1,20 +1,38 @@
 import ObservableStorage from "../../../data/storage/observable/ObservableStorage.js";
+import {
+    deepClone
+} from "../../helper/DeepClone.js";
+import {
+    numberedStringComparator
+} from "../../helper/Comparator.js";
 import CharacterSearch from "../../search/CharacterSearch.js";
+import AbstractDataProvider from "./AbstractDataProvider.js";
 
 const SORT_PATTERN = /^(!?)(.+)$/;
 
-export default class ObservableStorageProvider {
+export default class ObservableStorageProvider extends AbstractDataProvider {
 
     #source;
 
-    constructor(source) {
+    constructor(target, source) {
+        super(target);
         if (!(source instanceof ObservableStorage)) {
             throw new Error("source must be a ObservableStorage");
         }
         this.#source = source;
+        /* --- */
+        source.addEventListener("change", () => {
+            this.triggerUpdate();
+        });
+        source.addEventListener("clear", () => {
+            this.triggerUpdate();
+        });
+        source.addEventListener("load", () => {
+            this.triggerUpdate();
+        });
     }
 
-    getData(options = {}) {
+    async getData(options = {}) {
         const {sort = [], page = 0, pageSize = 0, filter = {}} = options;
 
         const convertedFilter = Object.entries(filter).map(([key, value]) => {
@@ -23,7 +41,7 @@ export default class ObservableStorageProvider {
 
         const result = Object.entries(this.#source.getAll()).map(([key, value]) => {
             return {
-                ...value,
+                ...deepClone(value),
                 name: key
             }
         }).filter((record) => {
@@ -46,7 +64,7 @@ export default class ObservableStorageProvider {
                 }
                 const valueA = recordA[key];
                 const valueB = recordB[key];
-                const compareResult = valueA.localeCompare(valueB);
+                const compareResult = numberedStringComparator(valueA, valueB);
                 if (compareResult !== 0) {
                     return !desc ? compareResult : -compareResult;
                 }

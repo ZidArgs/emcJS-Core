@@ -19,7 +19,7 @@ export default class ListInput extends CustomFormElementDelegating {
 
     #addEl;
 
-    #dataManager = new SimpleDataProvider();
+    #dataManager;
 
     constructor() {
         super();
@@ -34,8 +34,21 @@ export default class ListInput extends CustomFormElementDelegating {
             event.stopPropagation();
         });
         /* --- */
-        this.#searchEl = this.shadowRoot.getElementById("search");
         this.#gridEl = this.shadowRoot.getElementById("grid");
+        this.#gridEl.addEventListener("delete", (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            const {rowName} = event.data;
+            const index = this.#value.indexOf(rowName);
+            if (index >= 0) {
+                const newValue = [
+                    ...this.#value.slice(0, index),
+                    ...this.#value.slice(index + 1)
+                ];
+                this.value = newValue;
+            }
+        });
+        /* --- */
         this.#addEl = this.shadowRoot.getElementById("add");
         this.#addEl.addEventListener("click", async () => {
             let rowName = null;
@@ -52,19 +65,21 @@ export default class ListInput extends CustomFormElementDelegating {
             }
             this.value = [...value, rowName];
         });
-        this.#gridEl.addEventListener("delete", (event) => {
-            event.stopPropagation();
-            event.preventDefault();
-            const {rowName} = event.data;
-            const currentValue = {...this.#value};
-            if (rowName in currentValue) {
-                delete currentValue[rowName];
-            }
-            this.value = currentValue;
+        /* --- */
+        this.#dataManager = new SimpleDataProvider(this.#gridEl);
+        this.#dataManager.setOptions({
+            sort: ["name"]
         });
         /* --- */
+        this.#searchEl = this.shadowRoot.getElementById("search");
         this.#searchEl.addEventListener("change", () => {
-            this.#fillGrid();
+            const options = {filter: {}};
+            if (this.#searchEl.value != "") {
+                options.filter = {
+                    name: this.#searchEl.value
+                };
+            }
+            this.#dataManager.updateOptions(options);
         }, true);
     }
 
@@ -145,19 +160,6 @@ export default class ListInput extends CustomFormElementDelegating {
             }
         });
         this.#dataManager.setSource(data);
-        this.#fillGrid();
-    }
-
-    #fillGrid() {
-        const options = {
-            sort: ["name"]
-        };
-        if (this.#searchEl.value != "") {
-            options.filter = {
-                name: this.#searchEl.value
-            };
-        }
-        this.#gridEl.setData(this.#dataManager.getData(options));
     }
 
 }
