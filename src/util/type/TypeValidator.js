@@ -15,187 +15,217 @@ class TypeValidator {
         if (typeof typeName !== "string" || typeName === "" || typeName === "*") {
             throw new Error(`Error validating value\n    typeName has to be a string that is not empty and not "*"`);
         }
-        const err = [];
-        this.#validate(typeName, value, strict, [label], err);
-        if (throwErrors && err.length > 0) {
-            const msg = err.map((s) => s.split("\n").join("\n    ")).join("\n    ");
+
+        const errors = [];
+        this.#validate(typeName, value, strict, [label], errors);
+        if (throwErrors && errors.length > 0) {
+            const msg = errors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
             throw new Error(`Error validating value as "${typeName}"\n    ${msg}`);
         }
-        return err;
+        return errors;
     }
 
-    #validate(typeName, data, strict, path, errors) {
+    #validate(typeName, data, strict, currentPath, errors) {
         const typeConfig = TypeConfigMap.get(typeName);
         if (typeConfig == null) {
-            errors.push(`error resolving type "${typeName}": unknown [ ${path.join(" > ")} ]`);
+            errors.push(`error resolving type "${typeName}": unknown [ ${currentPath.join(" > ")} ]`);
             return;
         }
         if (typeof data !== "object" || Array.isArray(data)) {
-            errors.push(`data has to be a dictionary [ ${path.join(" > ")} ]`);
+            errors.push(`data has to be a dictionary [ ${currentPath.join(" > ")} ]`);
             return;
         }
+
         if (strict) {
             for (const name in data) {
                 if (!(name in typeConfig)) {
-                    errors.push(`type "${typeName}" does not include attribute "${name}" (strict) [ ${path.join(" > ")} ]`);
+                    errors.push(`type "${typeName}" does not include attribute "${name}" (strict) [ ${currentPath.join(" > ")} ]`);
                 }
             }
         }
 
-        for (const [name, def] of Object.entries(typeConfig)) {
+        for (const [name, definition] of Object.entries(typeConfig)) {
             const value = data[name];
             if (value == null) {
-                if (!def.optional) {
-                    errors.push(`type "${typeName}" is missing required attribute "${name}" [ ${path.join(" > ")} ]`);
+                if (!definition.optional) {
+                    errors.push(`type "${typeName}" is missing required attribute "${name}" [ ${currentPath.join(" > ")} ]`);
                 }
                 continue;
             }
-            this.#validateType([...path, `${name} {${def["@type"]}}`], value, def, strict, errors);
+            this.#validateType([...currentPath, `${name} {${definition["@type"]}}`], value, definition, strict, errors);
         }
     }
 
-    #validateType(path, value, def, strict, errors) {
-        const currentType = def["@type"];
+    validateAtPath(typeName, path, value, {label, throwErrors = false, strict = false} = {}) {
+        label = typeof label === "string" && label !== "" ? `| ${label} |` : "|";
+
+        if (typeof typeName !== "string" || typeName === "" || typeName === "*") {
+            throw new Error(`Error validating value\n    typeName has to be a string that is not empty and not "*"`);
+        }
+        if (typeof path !== "string" || path === "") {
+            throw new Error(`Error validating value\n    path has to be a string that is not empty and not "*"`);
+        }
+
+        const errors = [];
+        path = path.split(".");
+        try {
+            const definition = TypeConfigMap.getAtPath(typeName, path);
+            const name = path.pop();
+
+            this.#validateType([label, ...path, `${name} {${definition["@type"]}}`], value, definition, strict, errors);
+        } catch (err) {
+            errors.push(err.message);
+        }
+
+        if (throwErrors && errors.length > 0) {
+            const msg = errors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
+            throw new Error(`Error validating value as "${typeName}"\n    ${msg}`);
+        }
+        return errors;
+    }
+
+    #validateType(currentPath, value, definition, strict, errors) {
+        const currentType = definition["@type"];
         switch (currentType) {
-            case "Boolean": {
-                this.#validateBoolean(path, value, def, strict, errors);
-            } break;
-            case "String": {
-                this.#validateString(path, value, def, strict, errors);
-            } break;
-            case "Number": {
-                this.#validateNumber(path, value, def, strict, errors);
-            } break;
-            case "Choice": {
-                this.#validateChoice(path, value, def, strict, errors);
-            } break;
-            case "Image": {
-                this.#validateImage(path, value, def, strict, errors);
-            } break;
-            case "Color": {
-                this.#validateColor(path, value, def, strict, errors);
-            } break;
-            case "Logic": {
-                this.#validateLogic(path, value, def, strict, errors);
-            } break;
             case "List": {
-                this.#validateList(path, value, def, strict, errors);
+                this.#validateList(currentPath, value, definition, strict, errors);
             } break;
             case "AssociativeList": {
-                this.#validateAssociativeList(path, value, def, strict, errors);
+                this.#validateAssociativeList(currentPath, value, definition, strict, errors);
             } break;
             case "Relation": {
-                this.#validateRelation(path, value, def, strict, errors);
+                this.#validateRelation(currentPath, value, definition, strict, errors);
+            } break;
+            case "Boolean": {
+                this.#validateBoolean(currentPath, value, definition, strict, errors);
+            } break;
+            case "String": {
+                this.#validateString(currentPath, value, definition, strict, errors);
+            } break;
+            case "Number": {
+                this.#validateNumber(currentPath, value, definition, strict, errors);
+            } break;
+            case "Choice": {
+                this.#validateChoice(currentPath, value, definition, strict, errors);
+            } break;
+            case "Image": {
+                this.#validateImage(currentPath, value, definition, strict, errors);
+            } break;
+            case "Color": {
+                this.#validateColor(currentPath, value, definition, strict, errors);
+            } break;
+            case "Logic": {
+                this.#validateLogic(currentPath, value, definition, strict, errors);
             } break;
             default: {
-                this.#validate(currentType, value, strict, path, errors);
+                this.#validate(currentType, value, strict, currentPath, errors);
             } break;
         }
     }
 
-    #validateBoolean(path, value, def, strict, errors) {
+    #validateBoolean(currentPath, value, definition, strict, errors) {
         if (typeof value !== "boolean") {
-            errors.push(`boolean expected [ ${path.join(" > ")} ]`);
+            errors.push(`boolean expected [ ${currentPath.join(" > ")} ]`);
         }
     }
 
-    #validateString(path, value, def, strict, errors) {
+    #validateString(currentPath, value, definition, strict, errors) {
         if (typeof value !== "string") {
-            errors.push(`string expected [ ${path.join(" > ")} ]`);
+            errors.push(`string expected [ ${currentPath.join(" > ")} ]`);
         } else {
-            const r = def.pattern;
+            const r = definition.pattern;
             if (r != null && !r.test(value)) {
-                errors.push(`does not match pattern /${def.pattern.source}/ [ ${path.join(" > ")} ]`);
+                errors.push(`does not match pattern /${definition.pattern.source}/ [ ${currentPath.join(" > ")} ]`);
             }
         }
     }
 
-    #validateNumber(path, value, def, strict, errors) {
+    #validateNumber(currentPath, value, definition, strict, errors) {
         if (typeof value !== "number") {
-            errors.push(`number expected [ ${path.join(" > ")} ]`);
-        } else if (def.decimalPlaces != null && (value.toString().split(".")[1]?.length ?? 0 > def.decimalPlaces)) {
-            errors.push(`has more than ${def.decimalPlaces} decimals [ ${path.join(" > ")} ]`);
-        } else if (def.min != null && (value < def.min)) {
-            errors.push(`is less than ${def.min} [ ${path.join(" > ")} ]`);
-        } else if (def.max != null && (value > def.max)) {
-            errors.push(`is greater than ${def.max} [ ${path.join(" > ")} ]`);
+            errors.push(`number expected [ ${currentPath.join(" > ")} ]`);
+        } else if (definition.decimalPlaces != null && (value.toString().split(".")[1]?.length ?? 0 > definition.decimalPlaces)) {
+            errors.push(`has more than ${definition.decimalPlaces} decimals [ ${currentPath.join(" > ")} ]`);
+        } else if (definition.min != null && (value < definition.min)) {
+            errors.push(`is less than ${definition.min} [ ${currentPath.join(" > ")} ]`);
+        } else if (definition.max != null && (value > definition.max)) {
+            errors.push(`is greater than ${definition.max} [ ${currentPath.join(" > ")} ]`);
         }
     }
 
-    #validateChoice(path, value, def, strict, errors) {
+    #validateChoice(currentPath, value, definition, strict, errors) {
         if (typeof value !== "string") {
-            errors.push(`string expected [ ${path.join(" > ")} ]`);
-        } else if (!def.choices.includes(value)) {
-            errors.push(`"${value}" not in list [ ${path.join(" > ")} ]`);
+            errors.push(`string expected [ ${currentPath.join(" > ")} ]`);
+        } else if (!definition.choices.includes(value)) {
+            errors.push(`"${value}" not in list [ ${currentPath.join(" > ")} ]`);
         }
     }
 
-    #validateImage(path, value, def, strict, errors) {
+    #validateImage(currentPath, value, definition, strict, errors) {
         if (typeof value !== "string") {
-            errors.push(`string expected [ ${path.join(" > ")} ]`);
+            errors.push(`string expected [ ${currentPath.join(" > ")} ]`);
         } else if (value !== "" && !IMAGE_PATTERN.test(value)) {
-            errors.push(`does not match file extension (apng, avif, gif, jpg, jpeg, jfif, pjpeg, pjp, png, svg, webp, bmp, ico, tiff) [ ${path.join(" > ")} ]`);
+            errors.push(`does not match file extension (apng, avif, gif, jpg, jpeg, jfif, pjpeg, pjp, png, svg, webp, bmp, ico, tiff) [ ${currentPath.join(" > ")} ]`);
         }
     }
 
-    #validateColor(path, value, def, strict, errors) {
+    #validateColor(currentPath, value, definition, strict, errors) {
         if (typeof value !== "string") {
-            errors.push(`string expected [ ${path.join(" > ")} ]`);
+            errors.push(`string expected [ ${currentPath.join(" > ")} ]`);
         } else if (!COLOR_PATTERN.test(value)) {
-            errors.push(`#ffffff) [ ${path.join(" > ")} ]`);
+            errors.push(`does not match color (#000000 - #ffffff) [ ${currentPath.join(" > ")} ]`);
         }
     }
 
-    #validateLogic(path, value, def, strict, errors) {
+    #validateLogic(currentPath, value, definition, strict, errors) {
         if (typeof value !== "boolean") {
             if (typeof value !== "object" || Array.isArray(value)) {
-                errors.push(`boolean or logic definition expected [ ${path.join(" > ")} ]`);
+                errors.push(`boolean or logic definition expected [ ${currentPath.join(" > ")} ]`);
             } else {
                 const logicErrors = LogicValidator.validate(value, {allowEmpty: false});
                 if (logicErrors.length > 0) {
-                    errors.push(`not a valid logic [ ${path.join(" > ")} ]\n${logicErrors.map((s) => `\t${s}`).join("\n")}`);
+                    errors.push(`not a valid logic [ ${currentPath.join(" > ")} ]\n${logicErrors.map((s) => `\t${s}`).join("\n")}`);
                 }
             }
         }
     }
 
-    #validateList(path, value, def, strict, errors) {
+    #validateList(currentPath, value, definition, strict, errors) {
         if (!Array.isArray(value)) {
-            errors.push(`array expected [ ${path.join(" > ")} ]`);
-        } else if (!def.children.optional && value.length <= 0) {
-            errors.push(`must have at least one child [ ${path.join(" > ")} ]`);
+            errors.push(`array expected [ ${currentPath.join(" > ")} ]`);
+        } else if (!definition.children.optional && value.length <= 0) {
+            errors.push(`must have at least one child [ ${currentPath.join(" > ")} ]`);
         } else {
             for (const key in value) {
                 const entry = value[key];
-                this.#validateType([...path, `${key} {${def.children["@type"]}}`], entry, def.children, strict, errors);
+                this.#validateType([...currentPath, `${key} {${definition.children["@type"]}}`], entry, definition.children, strict, errors);
             }
         }
     }
 
-    #validateAssociativeList(path, value, def, strict, errors) {
+    #validateAssociativeList(currentPath, value, definition, strict, errors) {
         if (typeof value !== "object" || Array.isArray(value)) {
-            errors.push(`dictionary expected [ ${path.join(" > ")} ]`);
-        } else if (!def.children.optional && Object.keys(value).length <= 0) {
-            errors.push(`must have at least one child [ ${path.join(" > ")} ]`);
+            errors.push(`dictionary expected [ ${currentPath.join(" > ")} ]`);
+        } else if (!definition.children.optional && Object.keys(value).length <= 0) {
+            errors.push(`must have at least one child [ ${currentPath.join(" > ")} ]`);
         } else {
             for (const key in value) {
                 const entry = value[key];
-                this.#validateType([...path, `"${key}" {${def.children["@type"]}}`], entry, def.children, strict, errors);
+                this.#validateType([...currentPath, `"${key}" {${definition.children["@type"]}}`], entry, definition.children, strict, errors);
             }
         }
     }
 
-    #validateRelation(path, value, def, strict, errors) {
+    #validateRelation(currentPath, value, definition, strict, errors) {
         if (typeof value !== "object" || Array.isArray(value)) {
-            errors.push(`dictionary expected [ ${path.join(" > ")} ]`);
+            errors.push(`dictionary expected [ ${currentPath.join(" > ")} ]`);
         } else if (!isEqual(Object.keys(value).sort(), ["name", "type"])) {
-            errors.push(`attributes restricted to "type" and "name" [ ${path.join(" > ")} ]`);
+            errors.push(`attributes restricted to "type" and "name" [ ${currentPath.join(" > ")} ]`);
         } else if (typeof value.type !== "string") {
-            errors.push(`type expected to be a string [ ${path.join(" > ")} ]`);
+            errors.push(`type expected to be a string [ ${currentPath.join(" > ")} ]`);
         } else if (typeof value.name !== "string") {
-            errors.push(`name expected to be a string [ ${path.join(" > ")} ]`);
-        } else if (!def.types.includes("*") && !def.types.includes(value.type)) {
-            errors.push(`type "${value.type}" not in accepted types [ ${path.join(" > ")} ]`);
+            errors.push(`name expected to be a string [ ${currentPath.join(" > ")} ]`);
+        } else if (!definition.types.includes("*") && !definition.types.includes(value.type)) {
+            errors.push(`type "${value.type}" not in accepted types [ ${currentPath.join(" > ")} ]`);
         }
     }
 

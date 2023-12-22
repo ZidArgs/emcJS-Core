@@ -70,6 +70,10 @@ function deepCloneObject(item, refs) {
             result.push(deepCloneItem(el, refs));
         }
         return result;
+    } else if (typeof item.serialize === "function") {
+        const result = item.serialize();
+        refs.set(item, result);
+        return result;
     }
     const result = {};
     refs.set(item, result);

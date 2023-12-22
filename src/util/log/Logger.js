@@ -1,10 +1,13 @@
 import {
     isClass
 } from "../helper/Class.js";
+import {
+    padEndSlice
+} from "../helper/string/Transform.js";
 import Rest from "../net/Rest.js";
 
 /* LOG LEVEL */
-export const LogLevel = Object.freeze({
+export const LOG_LEVEL = Object.freeze({
     ERROR: "ERROR",
     WARN: "WARN",
     INFO: "INFO",
@@ -13,14 +16,14 @@ export const LogLevel = Object.freeze({
 
 /* LEVEL COLORS */
 const DEFAULT_STYLES = {};
-DEFAULT_STYLES[LogLevel.ERROR] = {"color": "#F59476"};
-DEFAULT_STYLES[LogLevel.WARN] = {"color": "#F5D753"};
-DEFAULT_STYLES[LogLevel.INFO] = {"color": "#84CFE6"};
-DEFAULT_STYLES[LogLevel.LOG] = {"color": "#83EB9E"};
+DEFAULT_STYLES[LOG_LEVEL.ERROR] = {"color": "#F59476"};
+DEFAULT_STYLES[LOG_LEVEL.WARN] = {"color": "#F5D753"};
+DEFAULT_STYLES[LOG_LEVEL.INFO] = {"color": "#84CFE6"};
+DEFAULT_STYLES[LOG_LEVEL.LOG] = {"color": "#83EB9E"};
 const DEFAULT_UNSET_STYLE = {"color": "#B8B8B8"};
 
 const TIME_FND = /(....)-(..)-(..)T(..:..:..\....)Z/;
-const TIME_REP = "$3.$2.$1 - $4";
+const TIME_REP = "$1-$2-$3 $4";
 
 let reportWindowErrorEvents = false;
 const writeTargets = new Set;
@@ -59,11 +62,13 @@ function extractError(err) {
 
 function formatMessage(data, omitStack) {
     const {type, time, target, message} = data;
+    const typeString = padEndSlice(type, 5);
+    const targetString = typeof target === "string" && target !== "" ? target : "···";
     if (message instanceof Error) {
         const msg = formatError(message, omitStack);
-        return `[ ${type} | ${time} ] <${target}> ${msg}`;
+        return `[${time} - ${typeString}] ${targetString} • ${msg}`;
     } else {
-        return `[ ${type} | ${time} ] <${target}> ${message}`;
+        return `[${time} - ${typeString}] ${targetString} • ${message}`;
     }
 }
 
@@ -169,7 +174,7 @@ export default class Logger {
     static error(message, target = null, omitStack = undefined) {
         this.#write({
             target: target,
-            type: LogLevel.ERROR,
+            type: LOG_LEVEL.ERROR,
             time: (new Date).toJSON().replace(TIME_FND, TIME_REP),
             message: message
         }, omitStack);
@@ -178,7 +183,7 @@ export default class Logger {
     static warn(message, target = null, omitStack = undefined) {
         this.#write({
             target: target,
-            type: LogLevel.WARN,
+            type: LOG_LEVEL.WARN,
             time: (new Date).toJSON().replace(TIME_FND, TIME_REP),
             message: message
         }, omitStack);
@@ -187,7 +192,7 @@ export default class Logger {
     static info(message, target = null, omitStack = undefined) {
         this.#write({
             target: target,
-            type: LogLevel.INFO,
+            type: LOG_LEVEL.INFO,
             time: (new Date).toJSON().replace(TIME_FND, TIME_REP),
             message: message
         }, omitStack);
@@ -196,7 +201,7 @@ export default class Logger {
     static log(message, target = null, omitStack = undefined) {
         this.#write({
             target: target,
-            type: LogLevel.LOG,
+            type: LOG_LEVEL.LOG,
             time: (new Date).toJSON().replace(TIME_FND, TIME_REP),
             message: message
         }, omitStack);

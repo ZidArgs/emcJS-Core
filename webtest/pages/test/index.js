@@ -2,6 +2,7 @@
 import "/emcJS/ui/Page.js";
 import "/emcJS/ui/grid/DataGrid.js";
 import TypeConfigMap from "/emcJS/data/type/TypeConfigMap.js";
+import TypeEntity from "/emcJS/data/type/TypeEntity.js";
 import TypeValidator from "/emcJS/util/type/TypeValidator.js";
 import Logger from "/emcJS/util/log/Logger.js";
 import i18n from "/emcJS/util/I18n.js";
@@ -163,21 +164,21 @@ try {
             "x": 506,
             "y": 474,
             "target": {
-                "value": "test",
-                "type": "Exit"
+                "type": "Exit",
+                "name": "test"
             }
         },
         "target": {
             "A": {
-                "value": "test",
-                "type": "Exit"
+                "type": "Exit",
+                "value": "test"
             }
         },
         "logic": {
             "type": "not",
-            "el": {
+            "content": {
                 "type": "and",
-                "el": [
+                "content": [
                     {
                         "type": "true"
                     },
@@ -209,13 +210,13 @@ try {
         },
         "target": [
             {
-                "value": "test",
-                "type": "Exit"
+                "type": "Exit",
+                "name": "test"
             }
         ],
         "logic": {
             "type": "not",
-            "el": null
+            "content": null
         }
     }, {
         label: "B",
@@ -225,3 +226,37 @@ try {
 } catch (err) {
     Logger.error(err);
 }
+
+try {
+    const entity = new TypeEntity("Connection", "foobar", {
+        "label": "B",
+        "posA": {
+            "x": 898,
+            "y": 683
+        },
+        "posB": {
+            "x": 506,
+            "y": 474
+        },
+        "target": {
+            "A": {
+                "type": "Exit",
+                "name": "test"
+            }
+        },
+        "logic": {
+            "type": "true"
+        }
+    });
+    console.log(entity.serialize());
+    entity.set("label", "dafuq");
+    console.log(entity.serialize());
+    entity.set("label", 2);
+} catch (err) {
+    Logger.error(err, "test");
+}
+
+Logger.error("this is a test message", "test");
+Logger.warn("this is a test message", "test");
+Logger.info("this is a test message", "test");
+Logger.log("this is a test message", "test");

@@ -4,7 +4,31 @@ import {
 
 const TypeDefinitions = new Map();
 
+const INTERNAL_TYPES = [
+    "Boolean",
+    "String",
+    "Number",
+    "Choice",
+    "Image",
+    "Color",
+    "Logic",
+    "Relation"
+];
+
+const INTERNAL_LIST_TYPES = [
+    "List",
+    "AssociativeList"
+];
+
 class TypeConfigMap extends EventTarget {
+
+    isInternalType(typeName) {
+        return INTERNAL_TYPES.includes(typeName) || INTERNAL_LIST_TYPES.includes(typeName);
+    }
+
+    isListingType(typeName) {
+        return INTERNAL_LIST_TYPES.includes(typeName);
+    }
 
     register(typeName, typeConfig) {
         if (typeof typeName !== "string" || typeName === "" || typeName === "*") {
@@ -42,6 +66,43 @@ class TypeConfigMap extends EventTarget {
             throw new Error(`TypeConfigMap - no type with name "${typeName}" registered`);
         }
         return typeConfig;
+    }
+
+    getAtPath(typeName, path) {
+        if (!Array.isArray(path)) {
+            throw new Error(`TypeConfigMap - path has to be an array`);
+        }
+        return this.#getAtPath(typeName, path);
+    }
+
+    #getAtPath(typeName, path, currentPath = []) {
+        path = [...path];
+        const typeConfig = this.get(typeName);
+        return this.#getAtPathRecursive(typeName, typeConfig, path, currentPath);
+    }
+
+    #getAtPathRecursive(typeName, typeConfig, path, currentPath) {
+        if (path.length === 0) {
+            return typeConfig;
+        }
+        const currentType = typeConfig["@type"];
+        let name = path.shift();
+        if (this.isListingType(currentType)) {
+            name = "children";
+        }
+        if (!(name in typeConfig)) {
+            throw new Error(`TypeConfigMap - can not resolve attribute "${name}" in "${typeName} [ ${currentPath.join(" > ")} ]"`);
+        }
+        const definition = typeConfig[name];
+        const nextType = definition["@type"];
+        if (this.isInternalType(nextType)) {
+            if (!this.isListingType(nextType) && path.length > 0) {
+                throw new Error(`TypeConfigMap - path overflow, type "${nextType}" can not have children [ ${currentPath.join(" > ")} ]`);
+            }
+            return this.#getAtPathRecursive(typeName, definition, path, [...currentPath, name]);
+        } else {
+            return this.#getAtPath(nextType, path, [...currentPath, name]);
+        }
     }
 
     #convertConfig(typeName, typeConfig) {
