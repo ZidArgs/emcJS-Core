@@ -122,15 +122,12 @@
 
     --grid-column-seperator-width: 2px;
 
-    --grid-header-height: 40px;
     --grid-header-text-color: #ffffff;
     --grid-header-back-color: #000000;
     --grid-header-seperator-color: #ffffff;
 
     --grid-row-seperator-width: 1px;
     --grid-row-seperator-color: #696969;
-
-    --grid-row-height: 34px;
 
     --grid-row-seperator-color: #b4b4b4;
     --grid-row-seperator-height: 1px;

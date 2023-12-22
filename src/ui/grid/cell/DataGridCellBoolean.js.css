@@ -21,7 +21,6 @@ p {
     height: 2em;
     padding: 2px;
     margin: 0px;
-    margin-right: auto;
     color: var(--input-text-color, #000000);
     background-color: var(--switch-unchecked-back-color, #ffd68a);
     border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
