@@ -12,6 +12,11 @@
     border: solid var(--grid-border-width, 2px) var(--grid-border-color, #000000);
     border-radius: var(--grid-border-radius, 6px);
     overflow: auto;
+    scroll-padding-top: 3em;
+    scroll-padding-bottom: 0.5em;
+}
+:host([nohead]:not([nohead="false"])) {
+    scroll-padding-top: 0.5em;
 }
 #table {
     min-width: 100%;
