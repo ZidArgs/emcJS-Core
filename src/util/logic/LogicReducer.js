@@ -153,7 +153,7 @@ export function reduceLogic(input) {
         case "not": {
             const output = {
                 "type": "not",
-                "el": reduceLogic(input.content)
+                "content": reduceLogic(input.content)
             }
             if (output.content == null) {
                 return;

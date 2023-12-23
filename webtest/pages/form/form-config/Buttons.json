@@ -26,9 +26,9 @@
             "tooltip": "invisible if search-select default is empty",
             "visible": {
                 "type": "not",
-                "el": {
+                "content": {
                     "type": "state",
-                    "el": "search-select.default",
+                    "content": "search-select.default",
                     "value": ""
                 }
             }

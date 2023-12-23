@@ -6,7 +6,7 @@
     "boolorlogic.default": false,
     "boolorlogic.resettable": {
         "type": "nand",
-        "el": [
+        "content": [
             {
                 "type": "true"
             },
@@ -15,7 +15,7 @@
             },
             {
                 "type": "nor",
-                "el": [
+                "content": [
                     {
                         "type": "true"
                     },

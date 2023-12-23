@@ -36,14 +36,14 @@
         "value": [],
         "visible": {
             "type": "eq",
-            "el": [
+            "content": [
                 {
                     "type": "value",
-                    "el": "listgroup"
+                    "content": "listgroup"
                 },
                 {
                     "type": "string",
-                    "el": ""
+                    "content": ""
                 }
             ]
         }

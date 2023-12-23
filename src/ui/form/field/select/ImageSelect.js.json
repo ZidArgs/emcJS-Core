@@ -43,14 +43,14 @@
         "value": {},
         "visible": {
             "type": "eq",
-            "el": [
+            "content": [
                 {
                     "type": "value",
-                    "el": "optiongroup"
+                    "content": "optiongroup"
                 },
                 {
                     "type": "string",
-                    "el": ""
+                    "content": ""
                 }
             ]
         }
