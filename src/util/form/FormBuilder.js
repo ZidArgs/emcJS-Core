@@ -28,12 +28,8 @@ class FormBuilder {
                 defaultValues = {}
             } = config;
 
-            if (hasHeader) {
-                formContainerEl.classList.add("has-header");
-            }
-            if (hasFooter) {
-                formContainerEl.classList.add("has-footer");
-            }
+            formContainerEl.hasHeader = hasHeader;
+            formContainerEl.hasFooter = hasFooter;
 
             if (forms != null) {
                 if (Array.isArray(forms)) {

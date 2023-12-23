@@ -3,12 +3,12 @@
     max-height: 100%;
     max-width: 100%;
 }
-.container {
+#container {
     flex: 1;
     padding: 2px;
     overflow: auto;
 }
-.content {
+#content {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -40,20 +40,20 @@
     border-bottom-left-radius: var(--form-border-radius, 6px) !important;
     border-bottom-right-radius: var(--form-border-radius, 6px) !important;
 }
-:host(.has-header) ::slotted(form:first-child) {
+:host([hasheader]:not([hasheader="false"])) ::slotted(form:first-child) {
     position: sticky;
     flex-grow: 0;
     top: 0px;
     box-shadow: var(--page-back-color, #ffffff) 0px calc(-1 * var(--form-border-radius, 6px)) 0px 0px;
     z-index: 100 !important;
 }
-:host(.has-footer) ::slotted(form:last-child) {
+:host([hasfooter]:not([hasfooter="false"])) ::slotted(form:last-child) {
     position: sticky;
     flex-grow: 0;
     bottom: 0px;
     box-shadow: var(--page-back-color, #ffffff) 0px var(--form-border-radius, 6px) 0px 0px;
     z-index: 100 !important;
 }
-:host(.has-footer) ::slotted(form:nth-last-child(2)) {
+:host([hasfooter]:not([hasfooter="false"])) ::slotted(form:nth-last-child(2)) {
     flex-grow: 1;
 }
