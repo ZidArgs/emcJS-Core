@@ -134,9 +134,10 @@ export default class IndexedSet {
         if (typeof callback !== "function") {
             throw new TypeError("callback must be a function");
         }
-        this.#values.forEach((value, index) => {
+        for (let index = 0; index < this.#values.length; ++index) {
+            const value = this.#values[index];
             callback.call(thisArg, value, index, this);
-        });
+        }
     }
 
     filter(callback, thisArg) {

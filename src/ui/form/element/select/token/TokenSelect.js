@@ -19,11 +19,17 @@ import ElementManager from "../../../../../util/html/ElementManager.js";
 import "../../../../i18n/builtin/I18nOption.js";
 import TPL from "./TokenSelect.js.html" assert {type: "html"};
 import STYLE from "./TokenSelect.js.css" assert {type: "css"};
+import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
 
 const ESCAPE_KEYS = [
     "Tab",
     "Escape"
 ];
+
+const MUTATION_CONFIG = {
+    attributes: true,
+    attributeFilter: ["value"]
+};
 
 /** TODO detect slotted attribute changes
  *  - if the content of child or the attributes change, react accordingly
@@ -78,6 +84,14 @@ export default class TokenSelect extends CustomFormElementDelegating {
     #optionSelectEventManager = new EventMultiTargetManager();
 
     #i18nEventManager = new EventTargetManager(i18n);
+
+    #mutationObserver = new MutationObserverManager(MUTATION_CONFIG, (mutationsList) => {
+        for (const mutation of mutationsList) {
+            if (mutation.type === "attributes") {
+                this.#onSlotChange();
+            }
+        }
+    });
 
     constructor() {
         super();
@@ -555,9 +569,22 @@ export default class TokenSelect extends CustomFormElementDelegating {
         const optionNodeList = this.#optionsContainerEl.assignedElements({flatten: true}).filter((el) => el.matches("[value]"));
         this.#optionNodeList.setNodeList(optionNodeList);
         /* --- */
+        const oldNodes = new Set(this.#mutationObserver.getObservedNodes());
+        const newNodes = new Set();
         this.#optionSelectEventManager.clearTargets();
         for (const el of optionNodeList) {
             this.#optionSelectEventManager.addTarget(el);
+            if (oldNodes.has(el)) {
+                oldNodes.delete(el);
+            } else {
+                newNodes.add(el);
+            }
+        }
+        for (const node of oldNodes) {
+            this.#mutationObserver.unobserve(node);
+        }
+        for (const node of newNodes) {
+            this.#mutationObserver.observe(node);
         }
         /* --- */
         this.#sort();
