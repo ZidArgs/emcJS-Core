@@ -7,10 +7,17 @@ import {
 } from "../../../../../util/Debouncer.js";
 import ElementListCache from "../../../../../util/html/ElementListCache.js";
 import SimpleDataProvider from "../../../../../util/grid/provider/SimpleDataProvider.js";
+import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
 import "../../../../grid/DataGrid.js";
 import "../../input/search/SearchInput.js";
 import TPL from "./ListSelect.js.html" assert {type: "html"};
 import STYLE from "./ListSelect.js.css" assert {type: "css"};
+
+const MUTATION_CONFIG = {
+    attributes: true,
+    characterData: true,
+    attributeFilter: ["value"]
+};
 
 export default class ListSelect extends CustomFormElementDelegating {
 
@@ -25,6 +32,10 @@ export default class ListSelect extends CustomFormElementDelegating {
     #optionsContainerEl;
 
     #optionNodeList = new ElementListCache();
+
+    #mutationObserver = new MutationObserverManager(MUTATION_CONFIG, () => {
+        this.#onSlotChange();
+    });
 
     constructor() {
         super();
@@ -189,10 +200,23 @@ export default class ListSelect extends CustomFormElementDelegating {
         const optionNodeList = this.#optionsContainerEl.assignedElements({flatten: true}).filter((el) => el.matches("[value]"));
         this.#optionNodeList.setNodeList(optionNodeList);
         /* --- */
+        const oldNodes = new Set(this.#mutationObserver.getObservedNodes());
+        const newNodes = new Set();
         for (const el of optionNodeList) {
             data.push({
                 name: el.value
             });
+            if (oldNodes.has(el)) {
+                oldNodes.delete(el);
+            } else {
+                newNodes.add(el);
+            }
+        }
+        for (const node of oldNodes) {
+            this.#mutationObserver.unobserve(node);
+        }
+        for (const node of newNodes) {
+            this.#mutationObserver.observe(node);
         }
         this.#dataManager.setSource(data);
     });

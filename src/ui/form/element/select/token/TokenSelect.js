@@ -16,10 +16,11 @@ import Comparator, {
 } from "../../../../../util/helper/Comparator.js";
 import ElementListCache from "../../../../../util/html/ElementListCache.js";
 import ElementManager from "../../../../../util/html/ElementManager.js";
+import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
 import "../../../../i18n/builtin/I18nOption.js";
+import "../../../../i18n/I18nLabel.js";
 import TPL from "./TokenSelect.js.html" assert {type: "html"};
 import STYLE from "./TokenSelect.js.css" assert {type: "css"};
-import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
 
 const ESCAPE_KEYS = [
     "Tab",
@@ -28,19 +29,16 @@ const ESCAPE_KEYS = [
 
 const MUTATION_CONFIG = {
     attributes: true,
+    characterData: true,
     attributeFilter: ["value"]
 };
-
-/** TODO detect slotted attribute changes
- *  - if the content of child or the attributes change, react accordingly
- */
 
 class TokenElementManager extends ElementManager {
 
     composer(key, params) {
-        const el = document.createElement("div");
+        const el = document.createElement("emc-i18n-label");
         el.className = "token";
-        el.innerHTML = key;
+        el.i18nValue = params.content ?? key;
         el.dataset.value = key;
         el.addEventListener("click", (event) => {
             params.tokenAction(event);
@@ -85,12 +83,8 @@ export default class TokenSelect extends CustomFormElementDelegating {
 
     #i18nEventManager = new EventTargetManager(i18n);
 
-    #mutationObserver = new MutationObserverManager(MUTATION_CONFIG, (mutationsList) => {
-        for (const mutation of mutationsList) {
-            if (mutation.type === "attributes") {
-                this.#onSlotChange();
-            }
-        }
+    #mutationObserver = new MutationObserverManager(MUTATION_CONFIG, () => {
+        this.#onSlotChange();
     });
 
     constructor() {
@@ -478,10 +472,14 @@ export default class TokenSelect extends CustomFormElementDelegating {
     #applyValue(value) {
         const data = [];
         for (const val of value) {
-            data.push({
-                key: val,
-                tokenAction: this.#tokenAction
-            });
+            const selectedEl = this.#optionNodeList.querySelector(`[value="${val}"]`);
+            if (selectedEl != null) {
+                data.push({
+                    key: val,
+                    content: selectedEl.i18nValue ?? selectedEl.innerHTML,
+                    tokenAction: this.#tokenAction
+                });
+            }
         }
         this.#elManager.manage(data);
     }

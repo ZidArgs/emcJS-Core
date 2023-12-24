@@ -14,6 +14,7 @@ import Comparator, {
     isEqual
 } from "../../../../../util/helper/Comparator.js";
 import ElementListCache from "../../../../../util/html/ElementListCache.js";
+import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
 import "../../../../i18n/builtin/I18nOption.js";
 import TPL from "./SearchSelect.js.html" assert {type: "html"};
 import STYLE from "./SearchSelect.js.css" assert {type: "css"};
@@ -24,9 +25,11 @@ const ESCAPE_KEYS = [
     "Enter"
 ];
 
-/** TODO detect slotted attribute changes
- *  - if the content of child or the attributes change, react accordingly
- */
+const MUTATION_CONFIG = {
+    attributes: true,
+    characterData: true,
+    attributeFilter: ["value"]
+};
 
 export default class SearchSelect extends CustomFormElementDelegating {
 
@@ -53,6 +56,10 @@ export default class SearchSelect extends CustomFormElementDelegating {
     #optionSelectEventManager = new EventMultiTargetManager();
 
     #i18nEventManager = new EventTargetManager(i18n);
+
+    #mutationObserver = new MutationObserverManager(MUTATION_CONFIG, () => {
+        this.#onSlotChange();
+    });
 
     constructor() {
         super();
@@ -466,9 +473,22 @@ export default class SearchSelect extends CustomFormElementDelegating {
         const optionNodeList = this.#optionsContainerEl.assignedElements({flatten: true}).filter((el) => el.matches("[value]"));
         this.#optionNodeList.setNodeList(optionNodeList);
         /* --- */
+        const oldNodes = new Set(this.#mutationObserver.getObservedNodes());
+        const newNodes = new Set();
         this.#optionSelectEventManager.clearTargets();
         for (const el of optionNodeList) {
             this.#optionSelectEventManager.addTarget(el);
+            if (oldNodes.has(el)) {
+                oldNodes.delete(el);
+            } else {
+                newNodes.add(el);
+            }
+        }
+        for (const node of oldNodes) {
+            this.#mutationObserver.unobserve(node);
+        }
+        for (const node of newNodes) {
+            this.#mutationObserver.observe(node);
         }
         /* --- */
         if (this.sorted) {

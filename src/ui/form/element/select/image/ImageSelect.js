@@ -7,14 +7,17 @@ import ImageSelectModal from "./components/ImageSelectModal.js";
 import {
     isEqual
 } from "../../../../../util/helper/Comparator.js";
+import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
 import "../../../../i18n/I18nLabel.js";
 import "../../../../i18n/I18nTooltip.js";
 import TPL from "./ImageSelect.js.html" assert {type: "html"};
 import STYLE from "./ImageSelect.js.css" assert {type: "css"};
 
-/** TODO detect slotted attribute changes
- *  - if the content of child or the attributes change, react accordingly
- */
+const MUTATION_CONFIG = {
+    attributes: true,
+    characterData: true,
+    attributeFilter: ["value"]
+};
 
 export default class ImageSelect extends CustomFormElementDelegating {
 
@@ -31,6 +34,10 @@ export default class ImageSelect extends CustomFormElementDelegating {
     #imageIconModal = new ImageSelectModal();
 
     #optionNodeList = new ElementListCache();
+
+    #mutationObserver = new MutationObserverManager(MUTATION_CONFIG, () => {
+        this.#onSlotChange();
+    });
 
     constructor() {
         super();
@@ -147,8 +154,21 @@ export default class ImageSelect extends CustomFormElementDelegating {
         const optionNodeList = this.#optionsContainerEl.assignedElements({flatten: true}).filter((el) => el.matches("[value]"));
         this.#optionNodeList.setNodeList(optionNodeList);
         /* --- */
+        const oldNodes = new Set(this.#mutationObserver.getObservedNodes());
+        const newNodes = new Set();
         for (const el of optionNodeList) {
             res[el.value] = el.i18nValue ?? el.innerHTML;
+            if (oldNodes.has(el)) {
+                oldNodes.delete(el);
+            } else {
+                newNodes.add(el);
+            }
+        }
+        for (const node of oldNodes) {
+            this.#mutationObserver.unobserve(node);
+        }
+        for (const node of newNodes) {
+            this.#mutationObserver.observe(node);
         }
         return res;
     }
