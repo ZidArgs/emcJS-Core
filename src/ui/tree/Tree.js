@@ -140,7 +140,7 @@ export default class Tree extends CustomElement {
         }
     }
 
-    loadConfigAtRefPath(path, config) {
+    loadConfigAtPathRef(path, config) {
         if (!Array.isArray(path)) {
             throw new Error("path must be an array");
         }
@@ -181,6 +181,33 @@ export default class Tree extends CustomElement {
         }
     }
 
+    selectItemByPathRef(path) {
+        const element = this.#getElementByRefPath(path);
+        if (element != null) {
+            element.click();
+        } else {
+            const keyboardMarked = this.querySelector(".keyboard-marked");
+            if (keyboardMarked != null) {
+                keyboardMarked.classList.remove("keyboard-marked");
+            }
+            const oldMarked = this.querySelector(".marked");
+            if (oldMarked != null) {
+                oldMarked.classList.remove("marked");
+            }
+            const ev = new Event("select", {bubbles: true, cancelable: true});
+            ev.data = {
+                element: null,
+                ref: undefined,
+                isSelected: false,
+                path: [],
+                refPath: [],
+                left: 0,
+                top: 0
+            };
+            this.dispatchEvent(ev);
+        }
+    }
+
     markItemByPathForMenu(path) {
         const keyboardMarked = this.querySelector(".keyboard-marked");
         if (keyboardMarked != null) {
@@ -196,8 +223,30 @@ export default class Tree extends CustomElement {
         }
     }
 
+    markItemByPathForMenuRef(path) {
+        const keyboardMarked = this.querySelector(".keyboard-marked");
+        if (keyboardMarked != null) {
+            keyboardMarked.classList.remove("keyboard-marked");
+        }
+        const oldMarked = this.querySelector(".ctx-marked");
+        if (oldMarked != null) {
+            oldMarked.classList.remove("ctx-marked");
+        }
+        const element = this.#getElementByRefPath(path);
+        if (element != null) {
+            element.classList.add("ctx-marked");
+        }
+    }
+
     toggleNodeCollapsed(path, force) {
         const element = this.#getElementByPath(path);
+        if (element != null) {
+            element.toggleCollapsed(force);
+        }
+    }
+
+    toggleNodeCollapsedRef(path, force) {
+        const element = this.#getElementByRefPath(path);
         if (element != null) {
             element.toggleCollapsed(force);
         }
@@ -211,6 +260,21 @@ export default class Tree extends CustomElement {
         let res = this;
         while (p.length) {
             res = res.children[p.shift()];
+            if (res == null) {
+                return;
+            }
+            res.toggleCollapsed(false);
+        }
+    }
+
+    forcePathExpandedRef(path) {
+        if (path == null || !path.length) {
+            return;
+        }
+        const p = [...path];
+        let res = this;
+        while (p.length) {
+            res = res.querySelector(`[ref="${p.shift()}"]`);
             if (res == null) {
                 return;
             }

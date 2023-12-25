@@ -224,7 +224,7 @@ class TypeValidator {
             errors.push(`type expected to be a string [ ${currentPath.join(" > ")} ]`);
         } else if (typeof value.name !== "string") {
             errors.push(`name expected to be a string [ ${currentPath.join(" > ")} ]`);
-        } else if (!definition.types.includes("*") && !definition.types.includes(value.type)) {
+        } else if (value.type !== "" && !definition.types.includes("*") && !definition.types.includes(value.type)) {
             errors.push(`type "${value.type}" not in accepted types [ ${currentPath.join(" > ")} ]`);
         }
     }

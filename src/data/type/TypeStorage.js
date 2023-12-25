@@ -33,14 +33,19 @@ export default class TypeStorage extends EventTarget {
     }
 
     set(key, value) {
+        if (value == null) {
+            return;
+        }
         // validation
-        const validationErrors = TypeValidator.validate(this.#typeName, value, {
-            label: key,
-            strict: true
-        });
-        if (validationErrors.length > 0) {
-            const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
-            throw new Error(`Error validating value as "${this.#typeName}"\n    ${msg}`);
+        if (Object.keys(value).length) {
+            const validationErrors = TypeValidator.validate(this.#typeName, value, {
+                label: key,
+                strict: true
+            });
+            if (validationErrors.length > 0) {
+                const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
+                throw new Error(`Error validating value as "${this.#typeName}"\n    ${msg}`);
+            }
         }
         // write
         const oldValue = this.get(key);
@@ -59,16 +64,21 @@ export default class TypeStorage extends EventTarget {
         const values = {};
         const changes = {};
         for (const key in data) {
-            // validation
             const newValue = data[key];
-            const validationErrors = TypeValidator.validate(this.#typeName, newValue, {
-                label: key,
-                strict: true
-            });
-            if (validationErrors.length > 0) {
-                const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
-                allErrors.push(`Error validating value as "${this.#typeName}"\n    ${msg}`);
+            if (newValue == null) {
                 continue;
+            }
+            // validation
+            if (Object.keys(newValue).length) {
+                const validationErrors = TypeValidator.validate(this.#typeName, newValue, {
+                    label: key,
+                    strict: true
+                });
+                if (validationErrors.length > 0) {
+                    const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
+                    allErrors.push(`Error validating value as "${this.#typeName}"\n    ${msg}`);
+                    continue;
+                }
             }
             // write
             const oldValue = this.get(key);
@@ -141,21 +151,24 @@ export default class TypeStorage extends EventTarget {
         const allErrors = [];
         this.#buffer.clear();
         for (const key in data) {
-            // validation
             const newValue = data[key];
-            const validationErrors = TypeValidator.validate(this.#typeName, newValue, {
-                label: key,
-                strict: true
-            });
-            if (validationErrors.length > 0) {
-                const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
-                allErrors.push(`Error validating value as "${this.#typeName}"\n    ${msg}`);
+            if (newValue == null) {
                 continue;
             }
-            // write
-            if (newValue != null) {
-                this.#buffer.set(key, newValue);
+            // validation
+            if (Object.keys(newValue).length) {
+                const validationErrors = TypeValidator.validate(this.#typeName, newValue, {
+                    label: key,
+                    strict: true
+                });
+                if (validationErrors.length > 0) {
+                    const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
+                    allErrors.push(`Error validating value as "${this.#typeName}"\n    ${msg}`);
+                    continue;
+                }
             }
+            // write
+            this.#buffer.set(key, newValue);
         }
         // event
         const ev = new Event("load");
@@ -173,21 +186,23 @@ export default class TypeStorage extends EventTarget {
         const values = {};
         const changes = {};
         for (const key in data) {
-            // validation
             const newValue = data[key];
-            const validationErrors = TypeValidator.validate(this.#typeName, newValue, {
-                label: key,
-                strict: true
-            });
-            if (validationErrors.length > 0) {
-                const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
-                allErrors.push(`Error validating value as "${this.#typeName}"\n    ${msg}`);
-                continue;
+            // validation
+            if (newValue != null && Object.keys(newValue).length) {
+                const validationErrors = TypeValidator.validate(this.#typeName, newValue, {
+                    label: key,
+                    strict: true
+                });
+                if (validationErrors.length > 0) {
+                    const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
+                    allErrors.push(`Error validating value as "${this.#typeName}"\n    ${msg}`);
+                    continue;
+                }
             }
             // write
             const oldValue = this.get(key);
             if (!isEqual(oldValue, newValue)) {
-                if (newValue == null) {
+                if (newValue == undefined) {
                     this.#buffer.delete(key);
                     values[key] = undefined;
                     changes[key] = {oldValue, newValue: undefined};

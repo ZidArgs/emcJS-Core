@@ -12,7 +12,7 @@ export default class TypeEntity extends EventTarget {
 
     #entityName;
 
-    #buffer = new Map();
+    #buffer = null;
 
     constructor(typeName, entityName, data = {}) {
         if (typeof typeName !== "string" || typeName === "" || typeName === "*") {
@@ -34,65 +34,53 @@ export default class TypeEntity extends EventTarget {
             throw new Error(`Error deserializing data as "${this.#typeName}"\n    ${msg}`);
         }
         // write
-        for (const [name, value] of Object.entries(data)) {
-            this.#buffer.set(name, value);
-        }
+        this.#buffer = deepClone(data);
     }
 
     get type() {
         return this.#typeName;
     }
 
-    set(key, value) {
+    set(value) {
+        if (value == null) {
+            return;
+        }
         // validation
-        const validationErrors = TypeValidator.validateAtPath(this.#typeName, key, value, {
-            label: this.#entityName,
-            strict: true
-        });
-        if (validationErrors.length > 0) {
-            const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
-            throw new Error(`Error setting value as "${key}" of "${this.#typeName}"\n    ${msg}`);
+        if (Object.keys(value).length) {
+            const validationErrors = TypeValidator.validate(this.#typeName, value, {
+                label: this.#entityName,
+                strict: true
+            });
+            if (validationErrors.length > 0) {
+                const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
+                throw new Error(`Error validating value as "${this.#typeName}"\n    ${msg}`);
+            }
         }
         // write
-        const oldValue = this.get(key);
+        const oldValue = this.#buffer;
         if (!isEqual(oldValue, value)) {
-            this.#buffer.set(key, value);
+            this.#buffer = deepClone(value);
             // event
             const ev = new Event("change");
-            ev.data = {[key]: value};
-            ev.changes = {[key]: {oldValue, newValue: value}};
+            ev.data = {[this.#entityName]: value};
+            ev.changes = {[this.#entityName]: {oldValue, newValue: value}};
             this.dispatchEvent(ev);
         }
     }
 
-    get(key) {
-        if (this.#buffer.has(key)) {
-            return deepClone(this.#buffer.get(key));
-        }
-        return null;
+    get() {
+        return deepClone(this.#buffer);
     }
 
-    serialize() {
-        const res = {};
-        for (const [name, value] of this.#buffer) {
-            res[name] = deepClone(value);
-        }
-        return res;
-    }
-
-    deserialize(data = {}) {
-        // validation
-        const validationErrors = TypeValidator.validate(this.#typeName, data, {
-            label: this.#entityName,
-            strict: true
-        });
-        if (validationErrors.length > 0) {
-            const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
-            throw new Error(`Error deserializing data as "${this.#typeName}"\n    ${msg}`);
-        }
-        // write
-        for (const [name, value] of Object.entries(data)) {
-            this.#buffer.set(name, value);
+    clear() {
+        const oldValue = this.#buffer;
+        if (!isEqual(oldValue, {})) {
+            this.#buffer = {};
+            // event
+            const ev = new Event("change");
+            ev.data = {[this.#entityName]: {}};
+            ev.changes = {[this.#entityName]: {oldValue, newValue: {}}};
+            this.dispatchEvent(ev);
         }
     }
 
