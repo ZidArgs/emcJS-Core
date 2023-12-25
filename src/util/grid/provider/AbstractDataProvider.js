@@ -9,7 +9,7 @@ import {
 } from "../../Debouncer.js";
 import DataGrid from "../../../ui/grid/DataGrid.js";
 
-const DEFAULT_OPTIONS = {sort: [], page: 0, pageSize: 0, filter: {}};
+const DEFAULT_OPTIONS = {sort: [], page: 0, pageSize: 0, filter: {}, filterFunction: false};
 
 export default class AbstractDataProvider {
 
@@ -33,7 +33,7 @@ export default class AbstractDataProvider {
     }
 
     setOptions(value) {
-        const {sort, page, pageSize, filter} = value;
+        const {sort, page, pageSize, filter, filterFunction} = value;
         const newOptions = deepClone(DEFAULT_OPTIONS);
 
         if (Array.isArray(sort)) {
@@ -48,6 +48,9 @@ export default class AbstractDataProvider {
         if (typeof filter === "object" && !Array.isArray(filter)) {
             newOptions.filter = filter;
         }
+        if (filterFunction === false || typeof filterFunction === "function") {
+            newOptions.filterFunction = filterFunction;
+        }
 
         if (!isEqual(this.#options, newOptions)) {
             this.#options = newOptions;
@@ -56,7 +59,7 @@ export default class AbstractDataProvider {
     }
 
     updateOptions(value) {
-        const {sort, page, pageSize, filter} = value;
+        const {sort, page, pageSize, filter, filterFunction} = value;
         const newOptions = deepClone(this.#options);
 
         if (Array.isArray(sort)) {
@@ -70,6 +73,9 @@ export default class AbstractDataProvider {
         }
         if (typeof filter === "object" && !Array.isArray(filter)) {
             newOptions.filter = filter;
+        }
+        if (filterFunction === false || typeof filterFunction === "function") {
+            newOptions.filterFunction = filterFunction;
         }
 
         if (!isEqual(this.#options, newOptions)) {

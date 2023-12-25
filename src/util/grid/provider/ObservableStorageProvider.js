@@ -33,7 +33,7 @@ export default class ObservableStorageProvider extends AbstractDataProvider {
     }
 
     async getData(options = {}) {
-        const {sort = [], page = 0, pageSize = 0, filter = {}} = options;
+        const {sort = [], page = 0, pageSize = 0, filter = {}, filterFunction = false} = options;
 
         const convertedFilter = Object.entries(filter).map(([key, value]) => {
             return [key, new CharacterSearch(value)];
@@ -54,6 +54,9 @@ export default class ObservableStorageProvider extends AbstractDataProvider {
                 if (!filter.test(value)) {
                     return false;
                 }
+            }
+            if (typeof filterFunction === "function") {
+                return filterFunction(record);
             }
             return true;
         }).sort((recordA, recordB) => {
