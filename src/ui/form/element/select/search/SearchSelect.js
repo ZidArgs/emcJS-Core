@@ -330,9 +330,9 @@ export default class SearchSelect extends CustomFormElementDelegating {
             for (const el of all) {
                 el.style.display = "";
                 if (el.value === this.#value) {
-                    el.classList.add("marked");
+                    el.classList.add("selected");
                 } else {
-                    el.classList.remove("marked");
+                    el.classList.remove("selected");
                 }
             }
         }

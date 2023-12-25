@@ -48,7 +48,7 @@ export default class DataGridCell extends CustomElement {
         if (oldValue != newValue) {
             switch (name) {
                 case "value": {
-                    this.onValueChange(newValue);
+                    this.onValueChange(this.value);
                 } break;
             }
         }

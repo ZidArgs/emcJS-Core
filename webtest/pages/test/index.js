@@ -68,6 +68,7 @@ grid1El.setData([
         A: 1,
         B: "Cheese",
         C: 3,
+        D: {type: "true"},
         E: "2016-03-02T12:34:51"
     },
     {

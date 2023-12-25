@@ -139,6 +139,7 @@ export default class ContextMenu extends CustomElement {
     show(posX, posY, ...props) {
         this.#top = posY;
         this.#left = posX;
+        this.#menuEl.style.visibility = "hidden";
         this.#props = deepClone(props);
         /* --- */
         if (!this.active) {
@@ -172,6 +173,7 @@ export default class ContextMenu extends CustomElement {
                 posY = bHeight - this.#menuEl.offsetHeight - LAYER_MARGIN;
             }
         }
+        this.#menuEl.style.visibility = "";
         this.#menuEl.style.left = `${posX}px`;
         this.#menuEl.style.top = `${posY}px`;
     }

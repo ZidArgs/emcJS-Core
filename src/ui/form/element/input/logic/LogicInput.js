@@ -60,7 +60,7 @@ const MUTATION_CONFIG = {
 const mutationObserver = new MutationObserver((mutationsList) => {
     for (const mutation of mutationsList) {
         if (mutation.type == "childList") {
-            const target = mutation.target.closest("emc-edit-logic");
+            const target = mutation.target.closest("emc-input-logic");
             target.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
         }
     }

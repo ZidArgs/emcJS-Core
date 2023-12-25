@@ -6,6 +6,7 @@
     border: solid var(--form-border-width, 2px) var(--button-border-color, #000000);
     border-radius: var(--form-border-radius, 6px);
     user-select: none;
+    overflow: hidden;
 }
 :host(:focus) {
     box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
@@ -19,7 +20,22 @@
     width: 100%;
     height: 100%;
     outline: none;
+    border: none;
+    appearance: none;
     cursor: pointer;
+}
+#container:hover {
+    color: var(--button-hover-text-color, #ffffff);
+    background-color: var(--button-hover-back-color, #353935);
+}
+:host(.selected) #container {
+    color: var(--button-primary-text-color, #000000);
+    background-color: var(--button-primary-back-color, #00dbd0);
+    border-color: var(--button-primary-border-color, #007b75);
+}
+:host(.selected) #container:hover {
+    color: var(--button-primary-hover-text-color, #ffffff);
+    background-color: var(--button-primary-hover-back-color, #353935);
 }
 #icon-background {
     --checker-color: #8181813d;

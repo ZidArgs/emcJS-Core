@@ -21,6 +21,7 @@ import "./cell/DataGridCellString.js";
 import "./cell/DataGridCellNumber.js";
 import "./cell/DataGridCellImage.js";
 import "./cell/DataGridCellI18n.js";
+import "./cell/DataGridCellBoolOrLogic.js";
 import "./cell/DataGridCellDate.js";
 import "./cell/DataGridCellDateTime.js";
 import "./cell/DataGridCellTime.js";

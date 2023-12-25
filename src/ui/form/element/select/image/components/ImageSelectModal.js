@@ -95,7 +95,11 @@ export default class ImageSelectModal extends Modal {
     }
 
     set value(value) {
-        this.setAttribute("value", value);
+        if (value == null) {
+            this.removeAttribute("value");
+        } else {
+            this.setAttribute("value", value);
+        }
     }
 
     get value() {

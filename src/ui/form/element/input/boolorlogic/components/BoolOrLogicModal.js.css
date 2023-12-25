@@ -9,10 +9,6 @@
     flex-direction: row;
     flex-wrap: wrap;
 }
-::slotted(emc-select-image-preview) {
-    margin: 5px;
-    cursor: pointer;
-}
 #submit,
 #cancel {
     margin: 2px;

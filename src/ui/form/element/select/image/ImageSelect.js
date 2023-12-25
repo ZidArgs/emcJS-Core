@@ -3,11 +3,11 @@ import {
     debounce
 } from "../../../../../util/Debouncer.js";
 import ElementListCache from "../../../../../util/html/ElementListCache.js";
-import ImageSelectModal from "./components/ImageSelectModal.js";
 import {
     isEqual
 } from "../../../../../util/helper/Comparator.js";
 import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
+import ImageSelectModal from "./components/ImageSelectModal.js";
 import "../../../../i18n/I18nLabel.js";
 import "../../../../i18n/I18nTooltip.js";
 import TPL from "./ImageSelect.js.html" assert {type: "html"};

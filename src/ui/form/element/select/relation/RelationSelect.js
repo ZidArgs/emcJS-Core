@@ -391,10 +391,10 @@ export default class RelationSelect extends CustomFormElementDelegating {
             }
             for (const el of this.#optionNodeList) {
                 el.style.display = "";
-                if (el.value === this.#value) {
-                    el.classList.add("marked");
+                if (el.value.type === this.#value.type && el.value.name === this.#value.name) {
+                    el.classList.add("selected");
                 } else {
-                    el.classList.remove("marked");
+                    el.classList.remove("selected");
                 }
             }
         }

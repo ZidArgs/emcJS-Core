@@ -68,6 +68,8 @@
     min-height: 10vh;
     max-height: 50vh;
     overflow: auto;
+    scroll-padding-top: 20px;
+    scroll-padding-bottom: 20px;
 }
 #text {
     display: block;

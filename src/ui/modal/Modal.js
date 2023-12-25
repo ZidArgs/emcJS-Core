@@ -1,5 +1,5 @@
 import CustomElement from "../element/CustomElement.js";
-import I18nLabel from "../i18n/I18nLabel.js";
+import "../i18n/I18nLabel.js";
 import "../symbols/CloseSymbol.js";
 import TPL from "./Modal.js.html" assert {type: "html"};
 import STYLE from "./Modal.js.css" assert {type: "css"};
@@ -17,10 +17,15 @@ const visibleModals = new Set();
 
 export default class Modal extends CustomElement {
 
+    #titleTextEl;
+
     constructor(title = "", close = "close") {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
+        /* --- */
+        this.#titleTextEl = this.shadowRoot.getElementById("title-text");
+        this.#titleTextEl.i18nValue = title;
         /* --- */
         this.addEventListener("keypress", (event) => {
             if (event.key == "Escape") {
@@ -28,8 +33,6 @@ export default class Modal extends CustomElement {
             }
             event.stopPropagation();
         });
-        const titleEl = this.shadowRoot.getElementById("title");
-        titleEl.append(I18nLabel.getLabel(title));
         const closeEl = this.shadowRoot.getElementById("close");
         if (!!close && typeof close === "string") {
             closeEl.setAttribute("title", close);
@@ -50,6 +53,10 @@ export default class Modal extends CustomElement {
         this.classList.remove("inactive");
     }
 
+    setTitle(value) {
+        this.#titleTextEl.i18nValue = value;
+    }
+
     show() {
         document.body.append(this);
         visibleModals.delete(this);
@@ -61,13 +68,17 @@ export default class Modal extends CustomElement {
         this.initialFocus();
     }
 
-    close() {
-        this.remove();
+    remove() {
+        super.remove();
         visibleModals.delete(this);
         const lastModal = Array.from(visibleModals).at(-1);
         if (lastModal != null) {
             lastModal.classList.remove("inactive");
         }
+    }
+
+    close() {
+        this.remove();
         this.dispatchEvent(new Event("close"));
     }
 
