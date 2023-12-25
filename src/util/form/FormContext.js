@@ -7,6 +7,9 @@ import {
 import EventMultiTargetManager from "../event/EventMultiTargetManager.js";
 import EventTargetManager from "../event/EventTargetManager.js";
 import {
+    instanceOfOne
+} from "../helper/Class.js";
+import {
     elevateObject, getFromObjectByPath
 } from "../helper/collection/ObjectContent.js";
 import {
@@ -15,6 +18,13 @@ import {
 import MutationObserverManager from "../observer/MutationObserverManager.js";
 import FormElementContext from "./FormElementContext.js";
 import FormFieldContext from "./FormFieldContext.js";
+
+const FORM_ELEMENTS = [
+    HTMLInputElement,
+    HTMLSelectElement,
+    HTMLTextAreaElement,
+    HTMLButtonElement
+];
 
 const MUTATION_CONFIG = {
     childList: true,
@@ -44,12 +54,12 @@ export default class FormContext extends EventTarget {
             if (mutation.type == "childList") {
                 for (const node of mutation.addedNodes) {
                     if (node instanceof HTMLElement) {
-                        this.#registerNodeMutation(node);
+                        this.#registerNodeRecursive(node);
                     }
                 }
                 for (const node of mutation.removedNodes) {
                     if (node instanceof HTMLElement) {
-                        this.#unregisterNodeMutation(node);
+                        this.#unregisterNodeRecursive(node);
                     }
                 }
             }
@@ -214,9 +224,8 @@ export default class FormContext extends EventTarget {
             this.#formElList.add(formEl);
             this.#formEventManager.addTarget(formEl);
             this.#mutationObserver.observe(formEl);
-            const all = formEl.querySelectorAll("[name]");
-            for (const node of all) {
-                this.#registerNode(node);
+            for (const node of formEl.children) {
+                this.#registerNodeRecursive(node);
             }
         }
     }
@@ -230,9 +239,8 @@ export default class FormContext extends EventTarget {
         }
         this.#formEventManager.removeTarget(formEl);
         this.#mutationObserver.unobserve(formEl);
-        const all = formEl.querySelectorAll("[name]");
-        for (const node of all) {
-            this.#unregisterNode(node);
+        for (const node of formEl.children) {
+            this.#unregisterNodeRecursive(node);
         }
         REGISTERED_FORMS.delete(formEl, this);
         this.#formElList.delete(formEl);
@@ -335,23 +343,17 @@ export default class FormContext extends EventTarget {
         return res;
     }
 
-    #registerNodeMutation(node) {
-        if (node.matches("[name]")) {
-            this.#registerNode(node);
-        }
-        const all = node.querySelectorAll("[name]");
-        for (const subNode of all) {
-            this.#registerNode(subNode);
+    #registerNodeRecursive(node) {
+        this.#registerNode(node);
+        for (const subNode of node.children) {
+            this.#registerNodeRecursive(subNode);
         }
     }
 
-    #unregisterNodeMutation(node) {
-        if (node.matches("[name]")) {
-            this.#unregisterNode(node);
-        }
-        const all = node.querySelectorAll("[name]");
-        for (const subNode of all) {
-            this.#unregisterNode(subNode);
+    #unregisterNodeRecursive(node) {
+        this.#unregisterNode(node);
+        for (const subNode of node.children) {
+            this.#unregisterNodeRecursive(subNode);
         }
     }
 
@@ -363,7 +365,7 @@ export default class FormContext extends EventTarget {
             this.#formFieldContextList.add(context);
             node.addValidator(this.#doGlobalValidationFromField);
             node.formContextAssociatedCallback(this);
-        } else {
+        } else if (instanceOfOne(node, ...FORM_ELEMENTS)) {
             const context = FormElementContext.getContext(node);
             context.storage = this.#dataStorage;
             context.ghostInvisible = this.#ghostInvisible;
@@ -377,7 +379,7 @@ export default class FormContext extends EventTarget {
             context.ghostInvisible = false;
             this.#formFieldContextList.delete(context);
             node.removeValidator(this.#doGlobalValidationFromField);
-        } else {
+        } else if (instanceOfOne(node, ...FORM_ELEMENTS)) {
             const context = FormElementContext.getContext(node);
             context.storage = null;
             context.ghostInvisible = false;

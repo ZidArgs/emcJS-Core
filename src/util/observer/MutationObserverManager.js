@@ -1,7 +1,3 @@
-import {
-    debounceCacheData
-} from "../Debouncer.js";
-
 export default class MutationObserverManager {
 
     #config;
@@ -25,7 +21,7 @@ export default class MutationObserverManager {
             const ref = new WeakRef(node);
             this.#observedNodes.add(ref);
             this.#observerIndex.set(node, ref);
-            this.#addObservable(node);
+            this.#mutationObserver.observe(node, this.#config);
         }
     }
 
@@ -76,15 +72,9 @@ export default class MutationObserverManager {
             if (derefNode == null) {
                 this.#observedNodes.delete(ref);
             } else {
-                this.#addObservable(derefNode);
+                this.#mutationObserver.observe(derefNode, this.#config);
             }
         }
     }
-
-    #addObservable = debounceCacheData((observableList) => {
-        for (const observable of observableList) {
-            this.#mutationObserver.observe(observable, this.#config);
-        }
-    });
 
 }
