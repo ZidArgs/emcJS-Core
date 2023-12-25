@@ -1,4 +1,6 @@
-export default class Column extends HTMLElement {
+import CustomElement from "../element/CustomElement.js";
+
+export default class Column extends CustomElement {
 
     set name(value) {
         this.setAttribute("name", value);
@@ -8,12 +10,12 @@ export default class Column extends HTMLElement {
         return this.getAttribute("name");
     }
 
-    set label(value) {
-        this.setAttribute("label", value);
+    set caption(value) {
+        this.setAttribute("caption", value);
     }
 
-    get label() {
-        return this.getAttribute("label");
+    get caption() {
+        return this.getAttribute("caption");
     }
 
     set type(value) {
@@ -22,6 +24,14 @@ export default class Column extends HTMLElement {
 
     get type() {
         return this.getAttribute("type");
+    }
+
+    set editable(value) {
+        this.setBooleanAttribute("editable", value);
+    }
+
+    get editable() {
+        return this.getBooleanAttribute("editable");
     }
 
 }

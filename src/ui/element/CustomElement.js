@@ -32,7 +32,9 @@ export default class CustomElement extends HTMLElement {
     }
 
     setBooleanAttribute(name, value) {
-        if (typeof value === "boolean") {
+        if (value == null) {
+            this.removeAttribute(name);
+        } else if (typeof value === "boolean") {
             if (value) {
                 this.setAttribute(name, "");
             } else {

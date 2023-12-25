@@ -131,9 +131,9 @@ export default class HeaderManager {
 
     composer(name, columnData) {
         const headerCellEl = document.createElement("th");
-        const {label, width} = columnData;
+        const {caption, width} = columnData;
 
-        headerCellEl.innerText = label ?? name;
+        headerCellEl.innerText = caption ?? name;
         if (width != null) {
             const styleWidth = getStyleLengthValue(width);
             headerCellEl.style.minWidth = styleWidth;
@@ -144,9 +144,9 @@ export default class HeaderManager {
     }
 
     mutator(headerCellEl, name, columnData) {
-        const {label, width} = columnData;
+        const {caption, width} = columnData;
 
-        headerCellEl.innerText = label ?? name;
+        headerCellEl.innerText = caption ?? name;
         if (width != null) {
             const styleWidth = getStyleLengthValue(width);
             headerCellEl.style.minWidth = styleWidth;

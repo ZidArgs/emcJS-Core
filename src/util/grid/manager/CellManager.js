@@ -189,8 +189,21 @@ export default class CellManager {
     }
 
     mutator(cellEl, options, value) {
+        const currentAttributes = new Set([...cellEl.attributes].map((a) => {
+            return a.name;
+        }).filter((a) => {
+            return a !== "class" && a !== "width" && a !== "caption" && a !== "col-name" && a !== "row-name" && a !== "value";
+        }));
         for (const [attrName, attrValue] of Object.entries(options)) {
+            if (attrName === "width" || attrName === "caption" || attrName === "value") {
+                continue;
+            }
+            currentAttributes.delete(attrName);
             cellEl[attrName] = attrValue;
+        }
+
+        for (const attrName of currentAttributes) {
+            cellEl[attrName] = null;
         }
 
         if (value != null) {

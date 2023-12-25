@@ -11,6 +11,7 @@ import {
 import {
     getAllAttributes
 } from "../../util/helper/ui/NodeAttributes.js";
+import MutationObserverManager from "../../util/observer/MutationObserverManager.js";
 import HeaderManager from "../../util/grid/manager/HeaderManager.js";
 import RowManager from "../../util/grid/manager/RowManager.js";
 import Column from "./Column.js";
@@ -28,9 +29,9 @@ import "./cell/DataGridCellTime.js";
 import TPL from "./DataGrid.js.html" assert {type: "html"};
 import STYLE from "./DataGrid.js.css" assert {type: "css"};
 
-/** TODO detect child attribute changes
- *  - if the content of child or the attributes change, react accordingly
- */
+const MUTATION_CONFIG = {
+    attributes: true
+};
 
 export default class DataGrid extends CustomElement {
 
@@ -55,6 +56,10 @@ export default class DataGrid extends CustomElement {
     #headerSelectEl;
 
     #selected = new Set();
+
+    #mutationObserver = new MutationObserverManager(MUTATION_CONFIG, () => {
+        this.#onSlotChange();
+    });
 
     constructor() {
         super();
@@ -234,10 +239,24 @@ export default class DataGrid extends CustomElement {
     #applyColumnDefinition() {
         const columnNodeList = this.#columnContainerEl.assignedElements({flatten: true}).filter((el) => el instanceof Column);
         const newColumnDefinition = [];
+        /* --- */
+        const oldNodes = new Set(this.#mutationObserver.getObservedNodes());
+        const newNodes = new Set();
 
         for (const columnEl of columnNodeList) {
             const columnData = getAllAttributes(columnEl);
             newColumnDefinition.push(columnData);
+            if (oldNodes.has(columnEl)) {
+                oldNodes.delete(columnEl);
+            } else {
+                newNodes.add(columnEl);
+            }
+        }
+        for (const node of oldNodes) {
+            this.#mutationObserver.unobserve(node);
+        }
+        for (const node of newNodes) {
+            this.#mutationObserver.observe(node);
         }
 
         if (!isEqual(this.#columnDefinition, newColumnDefinition)) {
