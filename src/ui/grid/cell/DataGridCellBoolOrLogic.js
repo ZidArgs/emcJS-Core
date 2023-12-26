@@ -52,7 +52,7 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "editable"];
+        return [...super.observedAttributes, "editable", "row-name"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -65,6 +65,9 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
                     } else {
                         this.#inputEventManager.setActive(false);
                     }
+                } break;
+                case "row-name": {
+                    this.#inputEl.setModalRefName(newValue);
                 } break;
             }
         }
