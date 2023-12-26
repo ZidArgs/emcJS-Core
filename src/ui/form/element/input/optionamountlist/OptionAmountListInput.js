@@ -46,7 +46,7 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
         });
         /* --- */
         this.#gridEl = this.shadowRoot.getElementById("grid");
-        this.#gridEl.addEventListener("editValue", debounce((event) => {
+        this.#gridEl.addEventListener("edit::value", debounce((event) => {
             event.stopPropagation();
             event.preventDefault();
             const {value, rowName} = event.data;

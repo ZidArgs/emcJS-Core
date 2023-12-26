@@ -103,7 +103,10 @@ export default class DataGrid extends CustomElement {
             event.stopPropagation();
             event.preventDefault();
             const {action, columnName, rowName} = event.data;
-            const ev = new Event(action ?? "action");
+            if (action == null) {
+                return;
+            }
+            const ev = new Event(`action::${action}`);
             ev.data = {
                 columnName,
                 rowName
@@ -114,7 +117,10 @@ export default class DataGrid extends CustomElement {
             event.stopPropagation();
             event.preventDefault();
             const {value, action, columnName, rowName} = event.data;
-            const ev = new Event(action ?? "edit");
+            if (action == null) {
+                return;
+            }
+            const ev = new Event(`edit::${action}`);
             ev.data = {
                 value,
                 columnName,

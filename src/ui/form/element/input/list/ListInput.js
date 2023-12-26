@@ -35,7 +35,7 @@ export default class ListInput extends CustomFormElementDelegating {
         });
         /* --- */
         this.#gridEl = this.shadowRoot.getElementById("grid");
-        this.#gridEl.addEventListener("delete", (event) => {
+        this.#gridEl.addEventListener("action::delete", (event) => {
             event.stopPropagation();
             event.preventDefault();
             const {rowName} = event.data;
@@ -52,18 +52,21 @@ export default class ListInput extends CustomFormElementDelegating {
         this.#addEl = this.shadowRoot.getElementById("add");
         this.#addEl.addEventListener("click", async () => {
             let rowName = null;
-            const value = this.value ?? [];
+            const currentValue = this.value ?? [];
             while (rowName == null) {
                 rowName = await ModalDialog.prompt("Add item", "Please enter a new key");
                 if (typeof rowName !== "string") {
                     return;
                 }
-                if (value.includes(rowName)) {
+                if (currentValue.includes(rowName)) {
                     await ModalDialog.alert("Key already exists", `The key "${rowName}" does already exist. Please enter another one!`);
                     rowName = null;
                 }
             }
-            this.value = [...value, rowName];
+            this.value = [
+                ...currentValue,
+                rowName
+            ];
         });
         /* --- */
         this.#dataManager = new SimpleDataProvider(this.#gridEl);
