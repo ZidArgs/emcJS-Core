@@ -1,14 +1,14 @@
 import {
     debounce
-} from "../../../util/Debouncer.js";
-import EventTargetManager from "../../../util/event/EventTargetManager.js";
-import DataGridCell from "./DataGridCell.js";
-import "../../i18n/builtin/I18nInput.js";
-import "../../i18n/I18nLabel.js";
-import TPL from "./DataGridCellI18n.js.html" assert {type: "html"};
-import STYLE from "./DataGridCellI18n.js.css" assert {type: "css"};
+} from "../../../../util/Debouncer.js";
+import EventTargetManager from "../../../../util/event/EventTargetManager.js";
+import DateUtil from "../../../../util/date/DateUtil.js";
+import DataGridCell from "../DataGridCell.js";
+import "../../../i18n/builtin/I18nInput.js";
+import TPL from "./DataGridCellDateTime.js.html" assert {type: "html"};
+import STYLE from "./DataGridCellDateTime.js.css" assert {type: "css"};
 
-export default class DataGridCellI18n extends DataGridCell {
+export default class DataGridCellDateTime extends DataGridCell {
 
     #valueEl;
 
@@ -67,12 +67,17 @@ export default class DataGridCellI18n extends DataGridCell {
 
     onValueChange(value) {
         if (value != null && value != "") {
+            if (!(value instanceof Date)) {
+                value = new Date(value);
+            }
+            const viewValue = DateUtil.convertLocal(value, "D.M.Y h:m:s");
+            const editValue = DateUtil.convertLocal(value, "Y-M-DTh:m:s");
             this.classList.remove("empty");
-            this.#valueEl.i18nValue = value;
-            this.#inputEl.value = value;
+            this.#valueEl.innerText = viewValue;
+            this.#inputEl.value = editValue;
         } else {
             this.classList.add("empty");
-            this.#valueEl.i18nValue = "";
+            this.#valueEl.innerText = "";
             this.#inputEl.value = "";
         }
     }
@@ -94,5 +99,5 @@ export default class DataGridCellI18n extends DataGridCell {
 
 }
 
-DataGridCell.registerCellType("i18n", DataGridCellI18n);
-customElements.define("emc-grid-datagrid-cell-i18n", DataGridCellI18n);
+DataGridCell.registerCellType("datetime", DataGridCellDateTime);
+customElements.define("emc-grid-datagrid-cell-datetime", DataGridCellDateTime);

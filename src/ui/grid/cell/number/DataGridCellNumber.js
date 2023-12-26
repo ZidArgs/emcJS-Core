@@ -1,13 +1,14 @@
+
 import {
     debounce
-} from "../../../util/Debouncer.js";
-import EventTargetManager from "../../../util/event/EventTargetManager.js";
-import DataGridCell from "./DataGridCell.js";
-import "../../i18n/builtin/I18nInput.js";
-import TPL from "./DataGridCellString.js.html" assert {type: "html"};
-import STYLE from "./DataGridCellString.js.css" assert {type: "css"};
+} from "../../../../util/Debouncer.js";
+import EventTargetManager from "../../../../util/event/EventTargetManager.js";
+import DataGridCell from "../DataGridCell.js";
+import "../../../i18n/builtin/I18nInput.js";
+import TPL from "./DataGridCellNumber.js.html" assert {type: "html"};
+import STYLE from "./DataGridCellNumber.js.css" assert {type: "css"};
 
-export default class DataGridCellString extends DataGridCell {
+export default class DataGridCellNumber extends DataGridCell {
 
     #valueEl;
 
@@ -37,6 +38,14 @@ export default class DataGridCellString extends DataGridCell {
         this.setAttribute("action", val);
     }
 
+    get decimals() {
+        return this.setIntAttribute("decimals");
+    }
+
+    set decimals(val) {
+        this.getIntAttribute("decimals", val);
+    }
+
     get editable() {
         return this.getBooleanAttribute("editable");
     }
@@ -60,26 +69,29 @@ export default class DataGridCellString extends DataGridCell {
                         this.#inputEventManager.setActive(false);
                     }
                 } break;
+                case "decimals": {
+                    this.onValueChange(this.value);
+                } break;
             }
         }
     }
 
     onValueChange(value) {
-        if (value != null && value != "") {
-            this.classList.remove("empty");
-            this.#valueEl.innerText = value;
-            this.#inputEl.value = value;
-        } else {
-            this.classList.add("empty");
-            this.#valueEl.innerText = "";
-            this.#inputEl.value = "";
+        if (this.decimals != null && this.decimals >= 0) {
+            value = parseFloat(value) || 0;
+            value = value.toFixed(this.decimals);
         }
+        this.#valueEl.innerText = value;
+        this.#inputEl.value = parseFloat(value);
     }
 
     #onInput = debounce((event) => {
         event.stopPropagation();
         event.preventDefault();
-        const value = this.#inputEl.value;
+        let value = parseFloat(this.#inputEl.value);
+        if (this.decimals != null && this.decimals >= 0) {
+            value = parseFloat(value.toFixed(this.decimals));
+        }
         this.value = value;
         const ev = new Event("edit", {bubbles: true});
         ev.data = {
@@ -93,5 +105,5 @@ export default class DataGridCellString extends DataGridCell {
 
 }
 
-DataGridCell.registerCellType("string", DataGridCellString);
-customElements.define("emc-grid-datagrid-cell-string", DataGridCellString);
+DataGridCell.registerCellType("number", DataGridCellNumber);
+customElements.define("emc-grid-datagrid-cell-number", DataGridCellNumber);

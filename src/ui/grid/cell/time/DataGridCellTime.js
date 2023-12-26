@@ -1,10 +1,14 @@
-import EventTargetManager from "../../../util/event/EventTargetManager.js";
-import DataGridCell from "./DataGridCell.js";
-import "../../i18n/builtin/I18nInput.js";
-import TPL from "./DataGridCellBoolean.js.html" assert {type: "html"};
-import STYLE from "./DataGridCellBoolean.js.css" assert {type: "css"};
+import {
+    debounce
+} from "../../../../util/Debouncer.js";
+import EventTargetManager from "../../../../util/event/EventTargetManager.js";
+import DateUtil from "../../../../util/date/DateUtil.js";
+import DataGridCell from "../DataGridCell.js";
+import "../../../i18n/builtin/I18nInput.js";
+import TPL from "./DataGridCellTime.js.html" assert {type: "html"};
+import STYLE from "./DataGridCellTime.js.css" assert {type: "css"};
 
-export default class DataGridCellBoolean extends DataGridCell {
+export default class DataGridCellTime extends DataGridCell {
 
     #valueEl;
 
@@ -21,7 +25,7 @@ export default class DataGridCellBoolean extends DataGridCell {
         this.#inputEl = this.shadowRoot.getElementById("input");
         /* --- */
         this.#inputEventManager = new EventTargetManager(this.#inputEl);
-        this.#inputEventManager.set("change", (event) => {
+        this.#inputEventManager.set("input", (event) => {
             this.#onInput(event);
         });
     }
@@ -62,15 +66,25 @@ export default class DataGridCellBoolean extends DataGridCell {
     }
 
     onValueChange(value) {
-        value = !!value && value !== "false";
-        this.#valueEl.innerText = value ? "☑" : "☐";
-        this.#inputEl.checked = value;
+        if (value != null && value != "") {
+            if (!(value instanceof Date)) {
+                value = new Date(value);
+            }
+            const convertedValue = DateUtil.convertLocal(value, "h:m:s");
+            this.classList.remove("empty");
+            this.#valueEl.innerText = convertedValue;
+            this.#inputEl.value = convertedValue;
+        } else {
+            this.classList.add("empty");
+            this.#valueEl.innerText = "";
+            this.#inputEl.value = "";
+        }
     }
 
-    #onInput(event) {
+    #onInput = debounce((event) => {
         event.stopPropagation();
         event.preventDefault();
-        const value = this.#inputEl.checked;
+        const value = this.#inputEl.value;
         this.value = value;
         const ev = new Event("edit", {bubbles: true});
         ev.data = {
@@ -80,9 +94,9 @@ export default class DataGridCellBoolean extends DataGridCell {
             rowName: this.rowName
         };
         this.dispatchEvent(ev);
-    }
+    }, 300);
 
 }
 
-DataGridCell.registerCellType("boolean", DataGridCellBoolean);
-customElements.define("emc-grid-datagrid-cell-boolean", DataGridCellBoolean);
+DataGridCell.registerCellType("time", DataGridCellTime);
+customElements.define("emc-grid-datagrid-cell-time", DataGridCellTime);

@@ -1,14 +1,10 @@
+import EventTargetManager from "../../../../util/event/EventTargetManager.js";
+import DataGridCell from "../DataGridCell.js";
+import "../../../form/element/input/boolorlogic/BoolOrLogicInput.js";
+import TPL from "./DataGridCellBoolOrLogic.js.html" assert {type: "html"};
+import STYLE from "./DataGridCellBoolOrLogic.js.css" assert {type: "css"};
 
-import {
-    debounce
-} from "../../../util/Debouncer.js";
-import EventTargetManager from "../../../util/event/EventTargetManager.js";
-import DataGridCell from "./DataGridCell.js";
-import "../../i18n/builtin/I18nInput.js";
-import TPL from "./DataGridCellNumber.js.html" assert {type: "html"};
-import STYLE from "./DataGridCellNumber.js.css" assert {type: "css"};
-
-export default class DataGridCellNumber extends DataGridCell {
+export default class DataGridCellBoolOrLogic extends DataGridCell {
 
     #valueEl;
 
@@ -25,9 +21,25 @@ export default class DataGridCellNumber extends DataGridCell {
         this.#inputEl = this.shadowRoot.getElementById("input");
         /* --- */
         this.#inputEventManager = new EventTargetManager(this.#inputEl);
-        this.#inputEventManager.set("input", (event) => {
+        this.#inputEventManager.set("change", (event) => {
             this.#onInput(event);
         });
+    }
+
+    addOperatorGroup(...groupList) {
+        this.#inputEl.addOperatorGroup(...groupList);
+    }
+
+    removeOperatorGroup(...groupList) {
+        this.#inputEl.removeOperatorGroup(...groupList);
+    }
+
+    get value() {
+        return this.getJSONAttribute("value");
+    }
+
+    set value(val) {
+        this.setJSONAttribute("value", val);
     }
 
     get action() {
@@ -36,14 +48,6 @@ export default class DataGridCellNumber extends DataGridCell {
 
     set action(val) {
         this.setAttribute("action", val);
-    }
-
-    get decimals() {
-        return this.setIntAttribute("decimals");
-    }
-
-    set decimals(val) {
-        this.getIntAttribute("decimals", val);
     }
 
     get editable() {
@@ -55,7 +59,7 @@ export default class DataGridCellNumber extends DataGridCell {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "editable"];
+        return [...super.observedAttributes, "editable", "row-name"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -69,29 +73,28 @@ export default class DataGridCellNumber extends DataGridCell {
                         this.#inputEventManager.setActive(false);
                     }
                 } break;
-                case "decimals": {
-                    this.onValueChange(this.value);
+                case "row-name": {
+                    this.#inputEl.setModalRefName(newValue);
                 } break;
             }
         }
     }
 
     onValueChange(value) {
-        if (this.decimals != null && this.decimals >= 0) {
-            value = parseFloat(value) || 0;
-            value = value.toFixed(this.decimals);
+        if (value === true) {
+            this.#valueEl.innerText = "True";
+        } else if (value === false) {
+            this.#valueEl.innerText = "False";
+        } else {
+            this.#valueEl.innerText = "Logic";
         }
-        this.#valueEl.innerText = value;
-        this.#inputEl.value = parseFloat(value);
+        this.#inputEl.value = value;
     }
 
-    #onInput = debounce((event) => {
+    #onInput(event) {
         event.stopPropagation();
         event.preventDefault();
-        let value = parseFloat(this.#inputEl.value);
-        if (this.decimals != null && this.decimals >= 0) {
-            value = parseFloat(value.toFixed(this.decimals));
-        }
+        const value = this.#inputEl.value;
         this.value = value;
         const ev = new Event("edit", {bubbles: true});
         ev.data = {
@@ -101,9 +104,9 @@ export default class DataGridCellNumber extends DataGridCell {
             rowName: this.rowName
         };
         this.dispatchEvent(ev);
-    }, 300);
+    }
 
 }
 
-DataGridCell.registerCellType("number", DataGridCellNumber);
-customElements.define("emc-grid-datagrid-cell-number", DataGridCellNumber);
+DataGridCell.registerCellType("boolorlogic", DataGridCellBoolOrLogic);
+customElements.define("emc-grid-datagrid-cell-boolorlogic", DataGridCellBoolOrLogic);

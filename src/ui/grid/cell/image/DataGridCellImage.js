@@ -1,10 +1,10 @@
 import {
     debounce
-} from "../../../util/Debouncer.js";
-import OptionGroupRegistry from "../../../data/registry/form/OptionGroupRegistry.js";
-import EventTargetManager from "../../../util/event/EventTargetManager.js";
-import DataGridCell from "./DataGridCell.js";
-import "../../form/element/select/image/ImageSelect.js";
+} from "../../../../util/Debouncer.js";
+import OptionGroupRegistry from "../../../../data/registry/form/OptionGroupRegistry.js";
+import EventTargetManager from "../../../../util/event/EventTargetManager.js";
+import DataGridCell from "../DataGridCell.js";
+import "../../../form/element/select/image/ImageSelect.js";
 import TPL from "./DataGridCellImage.js.html" assert {type: "html"};
 import STYLE from "./DataGridCellImage.js.css" assert {type: "css"};
 

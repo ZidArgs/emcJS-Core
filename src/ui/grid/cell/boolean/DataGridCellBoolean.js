@@ -1,14 +1,10 @@
-import {
-    debounce
-} from "../../../util/Debouncer.js";
-import EventTargetManager from "../../../util/event/EventTargetManager.js";
-import DateUtil from "../../../util/date/DateUtil.js";
-import DataGridCell from "./DataGridCell.js";
-import "../../i18n/builtin/I18nInput.js";
-import TPL from "./DataGridCellTime.js.html" assert {type: "html"};
-import STYLE from "./DataGridCellTime.js.css" assert {type: "css"};
+import EventTargetManager from "../../../../util/event/EventTargetManager.js";
+import DataGridCell from "../DataGridCell.js";
+import "../../../i18n/builtin/I18nInput.js";
+import TPL from "./DataGridCellBoolean.js.html" assert {type: "html"};
+import STYLE from "./DataGridCellBoolean.js.css" assert {type: "css"};
 
-export default class DataGridCellTime extends DataGridCell {
+export default class DataGridCellBoolean extends DataGridCell {
 
     #valueEl;
 
@@ -25,7 +21,7 @@ export default class DataGridCellTime extends DataGridCell {
         this.#inputEl = this.shadowRoot.getElementById("input");
         /* --- */
         this.#inputEventManager = new EventTargetManager(this.#inputEl);
-        this.#inputEventManager.set("input", (event) => {
+        this.#inputEventManager.set("change", (event) => {
             this.#onInput(event);
         });
     }
@@ -66,25 +62,15 @@ export default class DataGridCellTime extends DataGridCell {
     }
 
     onValueChange(value) {
-        if (value != null && value != "") {
-            if (!(value instanceof Date)) {
-                value = new Date(value);
-            }
-            const convertedValue = DateUtil.convertLocal(value, "h:m:s");
-            this.classList.remove("empty");
-            this.#valueEl.innerText = convertedValue;
-            this.#inputEl.value = convertedValue;
-        } else {
-            this.classList.add("empty");
-            this.#valueEl.innerText = "";
-            this.#inputEl.value = "";
-        }
+        value = !!value && value !== "false";
+        this.#valueEl.innerText = value ? "☑" : "☐";
+        this.#inputEl.checked = value;
     }
 
-    #onInput = debounce((event) => {
+    #onInput(event) {
         event.stopPropagation();
         event.preventDefault();
-        const value = this.#inputEl.value;
+        const value = this.#inputEl.checked;
         this.value = value;
         const ev = new Event("edit", {bubbles: true});
         ev.data = {
@@ -94,9 +80,9 @@ export default class DataGridCellTime extends DataGridCell {
             rowName: this.rowName
         };
         this.dispatchEvent(ev);
-    }, 300);
+    }
 
 }
 
-DataGridCell.registerCellType("time", DataGridCellTime);
-customElements.define("emc-grid-datagrid-cell-time", DataGridCellTime);
+DataGridCell.registerCellType("boolean", DataGridCellBoolean);
+customElements.define("emc-grid-datagrid-cell-boolean", DataGridCellBoolean);

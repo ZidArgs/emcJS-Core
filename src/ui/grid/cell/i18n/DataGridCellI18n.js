@@ -1,10 +1,14 @@
-import EventTargetManager from "../../../util/event/EventTargetManager.js";
-import DataGridCell from "./DataGridCell.js";
-import "../../form/element/input/boolorlogic/BoolOrLogicInput.js";
-import TPL from "./DataGridCellBoolOrLogic.js.html" assert {type: "html"};
-import STYLE from "./DataGridCellBoolOrLogic.js.css" assert {type: "css"};
+import {
+    debounce
+} from "../../../../util/Debouncer.js";
+import EventTargetManager from "../../../../util/event/EventTargetManager.js";
+import DataGridCell from "../DataGridCell.js";
+import "../../../i18n/builtin/I18nInput.js";
+import "../../../i18n/I18nLabel.js";
+import TPL from "./DataGridCellI18n.js.html" assert {type: "html"};
+import STYLE from "./DataGridCellI18n.js.css" assert {type: "css"};
 
-export default class DataGridCellBoolOrLogic extends DataGridCell {
+export default class DataGridCellI18n extends DataGridCell {
 
     #valueEl;
 
@@ -21,25 +25,9 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
         this.#inputEl = this.shadowRoot.getElementById("input");
         /* --- */
         this.#inputEventManager = new EventTargetManager(this.#inputEl);
-        this.#inputEventManager.set("change", (event) => {
+        this.#inputEventManager.set("input", (event) => {
             this.#onInput(event);
         });
-    }
-
-    addOperatorGroup(...groupList) {
-        this.#inputEl.addOperatorGroup(...groupList);
-    }
-
-    removeOperatorGroup(...groupList) {
-        this.#inputEl.removeOperatorGroup(...groupList);
-    }
-
-    get value() {
-        return this.getJSONAttribute("value");
-    }
-
-    set value(val) {
-        this.setJSONAttribute("value", val);
     }
 
     get action() {
@@ -59,7 +47,7 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "editable", "row-name"];
+        return [...super.observedAttributes, "editable"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -73,25 +61,23 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
                         this.#inputEventManager.setActive(false);
                     }
                 } break;
-                case "row-name": {
-                    this.#inputEl.setModalRefName(newValue);
-                } break;
             }
         }
     }
 
     onValueChange(value) {
-        if (value === true) {
-            this.#valueEl.innerText = "True";
-        } else if (value === false) {
-            this.#valueEl.innerText = "False";
+        if (value != null && value != "") {
+            this.classList.remove("empty");
+            this.#valueEl.i18nValue = value;
+            this.#inputEl.value = value;
         } else {
-            this.#valueEl.innerText = "Logic";
+            this.classList.add("empty");
+            this.#valueEl.i18nValue = "";
+            this.#inputEl.value = "";
         }
-        this.#inputEl.value = value;
     }
 
-    #onInput(event) {
+    #onInput = debounce((event) => {
         event.stopPropagation();
         event.preventDefault();
         const value = this.#inputEl.value;
@@ -104,9 +90,9 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
             rowName: this.rowName
         };
         this.dispatchEvent(ev);
-    }
+    }, 300);
 
 }
 
-DataGridCell.registerCellType("boolorlogic", DataGridCellBoolOrLogic);
-customElements.define("emc-grid-datagrid-cell-boolorlogic", DataGridCellBoolOrLogic);
+DataGridCell.registerCellType("i18n", DataGridCellI18n);
+customElements.define("emc-grid-datagrid-cell-i18n", DataGridCellI18n);

@@ -1,5 +1,5 @@
-import DataGridCell from "./DataGridCell.js";
-import "../../form/button/Button.js";
+import DataGridCell from "../DataGridCell.js";
+import "../../../form/button/Button.js";
 import TPL from "./DataGridCellButton.js.html" assert {type: "html"};
 import STYLE from "./DataGridCellButton.js.css" assert {type: "css"};
 

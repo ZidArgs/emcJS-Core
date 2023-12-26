@@ -1,10 +1,10 @@
 import {
     debounce
-} from "../../../util/Debouncer.js";
-import EventTargetManager from "../../../util/event/EventTargetManager.js";
-import DateUtil from "../../../util/date/DateUtil.js";
-import DataGridCell from "./DataGridCell.js";
-import "../../i18n/builtin/I18nInput.js";
+} from "../../../../util/Debouncer.js";
+import EventTargetManager from "../../../../util/event/EventTargetManager.js";
+import DateUtil from "../../../../util/date/DateUtil.js";
+import DataGridCell from "../DataGridCell.js";
+import "../../../i18n/builtin/I18nInput.js";
 import TPL from "./DataGridCellDate.js.html" assert {type: "html"};
 import STYLE from "./DataGridCellDate.js.css" assert {type: "css"};
 
