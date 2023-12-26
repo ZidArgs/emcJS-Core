@@ -32,5 +32,20 @@
         "test": "Test",
         "foobar": "Foobar",
         "barfoo": "Barfoo"
-    }
+    },
+    "OptionAmountListInput": [
+        "test",
+        "foobar",
+        "barfoo",
+        "barfoo1",
+        "barfoo2",
+        "barfoo3",
+        "barfoo4",
+        "barfoo5",
+        "barfoo6",
+        "barfoo7",
+        "barfoo8",
+        "barfoo9",
+        "barfoo0"
+    ]
 }

@@ -57,5 +57,9 @@
     "relation-select.default": {
         "type": "A",
         "name": "test"
-    }
+    },
+    "keyvaluelist.default": [
+        "foobar",
+        "barfoo"
+    ]
 }

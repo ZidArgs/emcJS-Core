@@ -23,14 +23,12 @@ export async function init() {
         return;
     }
     i18n.language = "en";
-    const [optionGroups, tokenGroups, listGroups] = await Promise.all([
+    const [optionGroups, tokenGroups] = await Promise.all([
         FileLoader.json("/pages/form/_config/OptionGroups.json"),
-        FileLoader.json("/pages/form/_config/TokenGroups.json"),
-        FileLoader.json("/pages/form/_config/ListGroups.json")
+        FileLoader.json("/pages/form/_config/TokenGroups.json")
     ]);
     OptionGroupRegistry.load(optionGroups);
     TokenRegistry.load(tokenGroups);
-    OptionGroupRegistry.load(listGroups);
     initFlag = true;
 }
 

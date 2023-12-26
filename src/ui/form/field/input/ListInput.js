@@ -87,20 +87,7 @@ export default class ListInput extends AbstractFormInput {
                     safeSetAttribute(this.#inputEl, "value", newValue);
                     if (!this.isChanged) {
                         const value = this.value;
-                        if (typeof value === "object") {
-                            this.#inputEl.value = value;
-                        } else {
-                            try {
-                                const resolvedValue = JSON.parse(value);
-                                if (typeof resolvedValue !== "object") {
-                                    this.#inputEl.value = null;
-                                } else {
-                                    this.#inputEl.value = resolvedValue;
-                                }
-                            } catch {
-                                this.#inputEl.value = null;
-                            }
-                        }
+                        this.#inputEl.value = value;
                     }
                 }
             } break;
