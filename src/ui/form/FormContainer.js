@@ -38,6 +38,11 @@ export default class FormContainer extends CustomElement {
         this.#onSlotChange();
     }
 
+    resetScroll() {
+        this.#containerEl.scrollTop = 0;
+        this.#containerEl.scrollLeft = 0;
+    }
+
     set hasHeader(value) {
         this.setBooleanAttribute("hasheader", value);
     }
