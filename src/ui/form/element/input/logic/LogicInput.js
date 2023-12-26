@@ -198,12 +198,12 @@ export default class LogicInput extends BaseClass {
         }
     }
 
-    addOperatorGroup(group) {
-        this.#logicElementModal.addOperatorGroup(group);
+    addOperatorGroup(...groupList) {
+        this.#logicElementModal.addOperatorGroup(...groupList);
     }
 
-    removeOperatorGroup(group) {
-        this.#logicElementModal.removeOperatorGroup(group);
+    removeOperatorGroup(...groupList) {
+        this.#logicElementModal.removeOperatorGroup(...groupList);
     }
 
     #removeElement(id) {

@@ -103,6 +103,7 @@ export default class KeyValueListInput extends CustomFormElementDelegating {
         this.#value = value;
         this.#applyValue(value ?? {});
         this.internals.setFormValue(value);
+        this.#updateSort(this.sorted);
     }
 
     formDisabledCallback(disabled) {
@@ -142,8 +143,16 @@ export default class KeyValueListInput extends CustomFormElementDelegating {
         return this.getBooleanAttribute("readonly");
     }
 
+    set sorted(value) {
+        this.setBooleanAttribute("sorted", value);
+    }
+
+    get sorted() {
+        return this.getBooleanAttribute("sorted");
+    }
+
     static get observedAttributes() {
-        return ["value", "readonly"];
+        return ["value", "readonly", "sorted"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -164,6 +173,23 @@ export default class KeyValueListInput extends CustomFormElementDelegating {
                     // TODO make everything readonly
                 }
             } break;
+            case "sorted": {
+                if (oldValue != newValue) {
+                    this.#updateSort(this.sorted);
+                }
+            } break;
+        }
+    }
+
+    #updateSort(value) {
+        if (value) {
+            this.#dataManager.setOptions({
+                sort: ["name"]
+            });
+        } else {
+            this.#dataManager.setOptions({
+                sort: []
+            });
         }
     }
 

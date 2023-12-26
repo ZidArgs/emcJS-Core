@@ -1,4 +1,7 @@
 import {
+    debounceByType
+} from "../../util/Debouncer.js";
+import {
     isEqual
 } from "../../util/helper/Comparator.js";
 
@@ -16,9 +19,7 @@ class LogicOperatorRegistry extends EventTarget {
         const oldValue = operatorGroup.get(ref);
         if (!isEqual(oldValue, config)) {
             operatorGroup.set(ref, config);
-            const event = new Event("change");
-            event.group = group;
-            this.dispatchEvent(event);
+            this.#notifyChange(group);
         }
     }
 
@@ -27,10 +28,16 @@ class LogicOperatorRegistry extends EventTarget {
             const operatorGroup = this.#operators.get(group);
             if (operatorGroup.get(ref) != null) {
                 operatorGroup.delete(ref);
-                const event = new Event("change");
-                event.group = group;
-                this.dispatchEvent(event);
+                this.#notifyChange(group);
             }
+        }
+    }
+
+    clearGroup(group) {
+        if (this.#operators.has(group)) {
+            const operatorGroup = this.#operators.get(group);
+            operatorGroup.clear();
+            this.#notifyChange(group);
         }
     }
 
@@ -72,6 +79,12 @@ class LogicOperatorRegistry extends EventTarget {
         this.#operators.set(group, operators);
         return operators;
     }
+
+    #notifyChange = debounceByType((group) => {
+        const event = new Event("change");
+        event.group = group;
+        this.dispatchEvent(event);
+    });
 
 }
 

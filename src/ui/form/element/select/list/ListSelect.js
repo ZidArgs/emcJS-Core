@@ -15,7 +15,6 @@ import STYLE from "./ListSelect.js.css" assert {type: "css"};
 
 const MUTATION_CONFIG = {
     attributes: true,
-    characterData: true,
     attributeFilter: ["value"]
 };
 
@@ -93,6 +92,7 @@ export default class ListSelect extends CustomFormElementDelegating {
         } else {
             this.#gridEl.nohead = this.multi ? "false" : "true";
         }
+        this.#updateSort(this.sorted);
     }
 
     formDisabledCallback(disabled) {
@@ -131,6 +131,14 @@ export default class ListSelect extends CustomFormElementDelegating {
         return this.getBooleanAttribute("readonly");
     }
 
+    set sorted(value) {
+        this.setBooleanAttribute("sorted", value);
+    }
+
+    get sorted() {
+        return this.getBooleanAttribute("sorted");
+    }
+
     set multi(val) {
         this.setBooleanAttribute("multi", val);
     }
@@ -148,7 +156,7 @@ export default class ListSelect extends CustomFormElementDelegating {
     }
 
     static get observedAttributes() {
-        return ["value", "readonly", "multi", "header"];
+        return ["value", "readonly", "sorted", "multi", "header"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -167,6 +175,11 @@ export default class ListSelect extends CustomFormElementDelegating {
             case "readonly": {
                 if (oldValue != newValue) {
                     // TODO make everything readonly
+                }
+            } break;
+            case "sorted": {
+                if (oldValue != newValue) {
+                    this.#updateSort(this.sorted);
                 }
             } break;
             case "multi": {
@@ -191,6 +204,18 @@ export default class ListSelect extends CustomFormElementDelegating {
         }
     }
 
+    #updateSort(value) {
+        if (value) {
+            this.#dataManager.setOptions({
+                sort: ["name"]
+            });
+        } else {
+            this.#dataManager.setOptions({
+                sort: []
+            });
+        }
+    }
+
     #applyValue(value) {
         this.#gridEl.setSelected(value);
     }
@@ -206,6 +231,7 @@ export default class ListSelect extends CustomFormElementDelegating {
             data.push({
                 name: el.value
             });
+            /* --- */
             if (oldNodes.has(el)) {
                 oldNodes.delete(el);
             } else {

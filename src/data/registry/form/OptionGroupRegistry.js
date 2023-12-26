@@ -22,6 +22,12 @@ export default class OptionGroupRegistry extends EventTarget {
         this.dispatchEvent(event);
     }
 
+    add(key) {
+        this.#options.set(key, key);
+        const event = new Event("change");
+        this.dispatchEvent(event);
+    }
+
     get(key) {
         return this.#options.get(key);
     }
@@ -31,20 +37,33 @@ export default class OptionGroupRegistry extends EventTarget {
     }
 
     setAll(options) {
-        for (const key in options) {
-            const value = options[key];
-            this.#options.set(key, value);
+        if (options == null || typeof options !== "object") {
+            throw new TypeError("options has to be a dict or an array");
+        }
+        if (Array.isArray(options)) {
+            for (const value of options) {
+                this.#options.set(value, value);
+            }
+        } else {
+            for (const key in options) {
+                const value = options[key];
+                this.#options.set(key, value);
+            }
         }
         const event = new Event("change");
         this.dispatchEvent(event);
     }
 
-    getAll() {
-        const res = {};
-        for (const [key, value] of this.#options) {
-            res[key] = value;
-        }
-        return res;
+    entries() {
+        return this.#options.entries();
+    }
+
+    values() {
+        return this.#options.values();
+    }
+
+    keys() {
+        return this.#options.keys();
     }
 
     [Symbol.iterator]() {

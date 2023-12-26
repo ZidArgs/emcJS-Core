@@ -5,7 +5,6 @@ import CustomActionRegistry from "/emcJS/data/registry/CustomActionRegistry.js";
 import LogicOperatorRegistry from "/emcJS/data/registry/LogicOperatorRegistry.js";
 import OptionGroupRegistry from "/emcJS/data/registry/form/OptionGroupRegistry.js";
 import TokenRegistry from "/emcJS/data/registry/form/TokenRegistry.js";
-import ListGroupRegistry from "/emcJS/data/registry/form/ListGroupRegistry.js";
 import "/emcJS/ui/Page.js";
 // form
 import FormBuilder from "/emcJS/util/form/FormBuilder.js";
@@ -81,7 +80,7 @@ const [defaultValues, optionGroups, tokenGroups, listGroups, buttonConfig, extra
 
 OptionGroupRegistry.load(optionGroups);
 TokenRegistry.load(tokenGroups);
-ListGroupRegistry.load(listGroups);
+OptionGroupRegistry.load(listGroups);
 
 const pageEl = document.getElementById("page");
 

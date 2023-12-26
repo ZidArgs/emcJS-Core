@@ -57,12 +57,12 @@ export default class BoolOrLogicModal extends Modal {
         return this.#inputEl.value;
     }
 
-    addOperatorGroup(group) {
-        this.#inputEl.addOperatorGroup(group);
+    addOperatorGroup(...groupList) {
+        this.#inputEl.addOperatorGroup(...groupList);
     }
 
-    removeOperatorGroup(group) {
-        this.#inputEl.removeOperatorGroup(group);
+    removeOperatorGroup(...groupList) {
+        this.#inputEl.removeOperatorGroup(...groupList);
     }
 
 }

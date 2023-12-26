@@ -104,7 +104,7 @@ export default class Tree extends CustomElement {
             } else if (key === "Enter" || key === " ") {
                 const currentEl = this.querySelector(".keyboard-marked");
                 if (currentEl != null) {
-                    currentEl.click();
+                    currentEl.select();
                 }
                 event.preventDefault();
                 event.stopPropagation();
@@ -157,7 +157,7 @@ export default class Tree extends CustomElement {
     selectItemByPath(path) {
         const element = this.#getElementByPath(path);
         if (element != null) {
-            element.click();
+            element.select();
         } else {
             const keyboardMarked = this.querySelector(".keyboard-marked");
             if (keyboardMarked != null) {
@@ -184,7 +184,7 @@ export default class Tree extends CustomElement {
     selectItemByPathRef(path) {
         const element = this.#getElementByRefPath(path);
         if (element != null) {
-            element.click();
+            element.select();
         } else {
             const keyboardMarked = this.querySelector(".keyboard-marked");
             if (keyboardMarked != null) {
@@ -259,7 +259,8 @@ export default class Tree extends CustomElement {
         const p = [...path];
         let res = this;
         while (p.length) {
-            res = res.children[p.shift()];
+            const i = p.shift();
+            res = res.children[i];
             if (res == null) {
                 return;
             }
@@ -274,7 +275,12 @@ export default class Tree extends CustomElement {
         const p = [...path];
         let res = this;
         while (p.length) {
-            res = res.querySelector(`[ref="${p.shift()}"]`);
+            const i = p.shift();
+            if (typeof i === "string") {
+                res = res.querySelector(`:scope > [ref="${i}"]`);
+            } else {
+                res = res.children[i];
+            }
             if (res == null) {
                 return;
             }
@@ -295,7 +301,8 @@ export default class Tree extends CustomElement {
         const p = [...path];
         let res = this;
         while (p.length) {
-            res = res.children[p.shift()];
+            const i = p.shift();
+            res = res.children[i];
             if (res == null) {
                 return null;
             }
@@ -310,7 +317,12 @@ export default class Tree extends CustomElement {
         const p = [...path];
         let res = this;
         while (p.length) {
-            res = res.querySelector(`[ref="${p.shift()}"]`);
+            const i = p.shift();
+            if (typeof i === "string") {
+                res = res.querySelector(`:scope > [ref="${i}"]`);
+            } else {
+                res = res.children[i];
+            }
             if (res == null) {
                 return null;
             }

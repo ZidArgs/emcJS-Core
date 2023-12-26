@@ -18,7 +18,7 @@ class FormElementRegistry {
 
     #registry = new Map();
 
-    create(ref, params) {
+    create(ref, params, label) {
         const Clazz = this.getRegisteredClass(ref);
         if (Clazz != null) {
             if ("fromConfig" in Clazz) {
@@ -32,7 +32,7 @@ class FormElementRegistry {
             return el;
         }
         /* --- */
-        console.warn(`FormElementRegistry: no form element registered for type "${ref}"`);
+        console.warn(`FormElementRegistry: no form element registered for type "${ref}"${label != null ? ` [${label}]` : ""}`);
 
         const hiddenWrapperEl = document.createElement("div");
         hiddenWrapperEl.classList.add("unknown-form-element");

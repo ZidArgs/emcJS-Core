@@ -10,12 +10,12 @@ import {
 import EventTargetManager from "../../../../util/event/EventTargetManager.js";
 import I18nOption from "../../../i18n/builtin/I18nOption.js";
 import OptionGroupRegistry from "../../../../data/registry/form/OptionGroupRegistry.js";
-import "../../element/input/optionamountlist/OptionAmountListInput.js";
-import TPL from "./OptionAmountListInput.js.html" assert {type: "html"};
-import STYLE from "./OptionAmountListInput.js.css" assert {type: "css"};
-import CONFIG_FIELDS from "./OptionAmountListInput.js.json" assert {type: "json"};
+import "../../element/input/boolorlogiclist/BoolOrLogicListInput.js";
+import TPL from "./BoolOrLogicListInput.js.html" assert {type: "html"};
+import STYLE from "./BoolOrLogicListInput.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./BoolOrLogicListInput.js.json" assert {type: "json"};
 
-export default class OptionAmountListInput extends AbstractFormInput {
+export default class BoolOrLogicListInput extends AbstractFormInput {
 
     static get formConfigurationFields() {
         return deepClone(CONFIG_FIELDS);
@@ -67,6 +67,14 @@ export default class OptionAmountListInput extends AbstractFormInput {
 
     focus(options) {
         this.#inputEl.focus(options);
+    }
+
+    addOperatorGroup(...groupList) {
+        this.#inputEl.addOperatorGroup(...groupList);
+    }
+
+    removeOperatorGroup(...groupList) {
+        this.#inputEl.removeOperatorGroup(...groupList);
     }
 
     get defaultValue() {
@@ -143,7 +151,7 @@ export default class OptionAmountListInput extends AbstractFormInput {
     }
 
     static fromConfig(config) {
-        const inputEl = new OptionAmountListInput();
+        const inputEl = new BoolOrLogicListInput();
         const {list = [], listgroup, ...params} = config;
         for (const name in params) {
             const value = params[name];
@@ -177,5 +185,5 @@ export default class OptionAmountListInput extends AbstractFormInput {
 
 }
 
-FormElementRegistry.register("OptionAmountListInput", OptionAmountListInput);
-customElements.define("emc-field-input-option-amount-list", OptionAmountListInput);
+FormElementRegistry.register("BoolOrLogicListInput", BoolOrLogicListInput);
+customElements.define("emc-field-input-boolorlogic-list", BoolOrLogicListInput);

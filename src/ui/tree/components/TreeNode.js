@@ -68,6 +68,8 @@ export default class TreeNode extends CustomElement {
 
     #nodeEl;
 
+    #contentEl;
+
     #elManager;
 
     #elementData = [];
@@ -79,8 +81,8 @@ export default class TreeNode extends CustomElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const contentEl = this.shadowRoot.getElementById("content");
-        contentEl.addEventListener("click", (event) => {
+        this.#contentEl = this.shadowRoot.getElementById("content");
+        this.#contentEl.addEventListener("click", (event) => {
             event.stopPropagation();
             event.preventDefault();
             const targetIndex = Array.from(this.parentElement.children).indexOf(this);
@@ -102,7 +104,7 @@ export default class TreeNode extends CustomElement {
                 this.toggleCollapsed();
             }
         });
-        contentEl.addEventListener("contextmenu", (event) => {
+        this.#contentEl.addEventListener("contextmenu", (event) => {
             event.stopPropagation();
             event.preventDefault();
             const targetIndex = Array.from(this.parentElement.children).indexOf(this);
@@ -180,13 +182,12 @@ export default class TreeNode extends CustomElement {
         });
     }
 
-    click() {
-        super.click();
-        const contentEl = this.shadowRoot.getElementById("content");
-        scrollIntoViewIfNeeded(contentEl, {
+    select() {
+        scrollIntoViewIfNeeded(this.#contentEl, {
             behavior: "smooth",
             block: "nearest"
         });
+        this.#contentEl.click();
     }
 
     toggleCollapsed(force) {

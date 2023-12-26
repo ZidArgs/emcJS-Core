@@ -79,12 +79,12 @@ export default class BoolOrLogicInput extends AbstractFormInput {
         this.#inputEl.focus(options);
     }
 
-    addOperatorGroup(group) {
-        this.#logicEl.addOperatorGroup(group);
+    addOperatorGroup(...groupList) {
+        this.#logicEl.addOperatorGroup(...groupList);
     }
 
-    removeOperatorGroup(group) {
-        this.#logicEl.removeOperatorGroup(group);
+    removeOperatorGroup(...groupList) {
+        this.#logicEl.removeOperatorGroup(...groupList);
     }
 
     get defaultValue() {

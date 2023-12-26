@@ -1,27 +1,28 @@
 import CustomFormElementDelegating from "../../../../element/CustomFormElementDelegating.js";
 import {
-    debounce
-} from "../../../../../util/Debouncer.js";
-import {
     isEqual
 } from "../../../../../util/helper/Comparator.js";
+import {
+    debounce
+} from "../../../../../util/Debouncer.js";
 import SimpleDataProvider from "../../../../../util/grid/provider/SimpleDataProvider.js";
 import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
 import "../../../../grid/DataGrid.js";
-import "../search/SearchInput.js";
-import TPL from "./OptionAmountListInput.js.html" assert {type: "html"};
-import STYLE from "./OptionAmountListInput.js.css" assert {type: "css"};
+import TPL from "./BoolOrLogicListInput.js.html" assert {type: "html"};
+import STYLE from "./BoolOrLogicListInput.js.css" assert {type: "css"};
 
 const MUTATION_CONFIG = {
     attributes: true,
     attributeFilter: ["value"]
 };
 
-export default class OptionAmountListInput extends CustomFormElementDelegating {
+export default class BoolOrLogicListInput extends CustomFormElementDelegating {
 
     #value;
 
     #options = [];
+
+    #operatorGroups = new Set();
 
     #searchEl;
 
@@ -56,6 +57,12 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
             }
             this.value = currentValue;
         }, 300));
+        this.#gridEl.addEventListener("rows-updated", () => {
+            const logicEls = this.#gridEl.getAllCellsForColumn("value");
+            for (const logicEl of logicEls) {
+                logicEl.addOperatorGroup(...this.#operatorGroups);
+            }
+        });
         /* --- */
         this.#dataManager = new SimpleDataProvider(this.#gridEl);
         /* --- */
@@ -88,6 +95,46 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
 
     formStateRestoreCallback(state/* , mode */) {
         this.value = state;
+    }
+
+    addOperatorGroup(...groupList) {
+        let changes = false;
+        for (const group of groupList) {
+            if (!(typeof group === "string") || group === "") {
+                continue;
+            }
+            if (!this.#operatorGroups.has(group)) {
+                this.#operatorGroups.add(group);
+                changes = true;
+            }
+        }
+        /* --- */
+        if (changes) {
+            const logicEls = this.#gridEl.getAllCellsForColumn("value");
+            for (const logicEl of logicEls) {
+                logicEl.addOperatorGroup(...groupList);
+            }
+        }
+    }
+
+    removeOperatorGroup(...groupList) {
+        let changes = false;
+        for (const group of groupList) {
+            if (!(typeof group === "string") || group === "") {
+                continue;
+            }
+            if (this.#operatorGroups.has(group)) {
+                this.#operatorGroups.delete(group);
+                changes = true;
+            }
+        }
+        /* --- */
+        if (changes) {
+            const logicEls = this.#gridEl.getAllCellsForColumn("value");
+            for (const logicEl of logicEls) {
+                logicEl.removeOperatorGroup(...groupList);
+            }
+        }
     }
 
     get defaultValue() {
@@ -239,7 +286,7 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
         const data = this.#options.map((name) => {
             return {
                 name,
-                value: curValue[name] ?? 0
+                value: curValue[name] ?? false
             }
         });
         this.#dataManager.setSource(data);
@@ -251,4 +298,4 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
 
 }
 
-customElements.define("emc-input-option-amount-list", OptionAmountListInput);
+customElements.define("emc-input-boolorlogic-list", BoolOrLogicListInput);

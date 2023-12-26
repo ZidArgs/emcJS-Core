@@ -99,22 +99,36 @@ export default class LogicElementModal extends Modal {
         this.#refreshOperators();
     }
 
-    addOperatorGroup(group) {
-        if (!(typeof group === "string") || group === "") {
-            throw new TypeError("group name must be a non empty string");
+    addOperatorGroup(...groupList) {
+        let changes = false;
+        for (const group of groupList) {
+            if (!(typeof group === "string") || group === "") {
+                continue;
+            }
+            if (!this.#operatorGroups.has(group)) {
+                this.#operatorGroups.add(group);
+                changes = true;
+            }
         }
-        if (!this.#operatorGroups.has(group)) {
-            this.#operatorGroups.add(group);
+        /* --- */
+        if (changes) {
             this.#refreshOperators();
         }
     }
 
-    removeOperatorGroup(group) {
-        if (!(typeof group === "string") || group === "") {
-            throw new TypeError("group name must be a non empty string");
+    removeOperatorGroup(...groupList) {
+        let changes = false;
+        for (const group of groupList) {
+            if (!(typeof group === "string") || group === "") {
+                continue;
+            }
+            if (this.#operatorGroups.has(group)) {
+                this.#operatorGroups.delete(group);
+                changes = true;
+            }
         }
-        if (this.#operatorGroups.has(group)) {
-            this.#operatorGroups.delete(group);
+        /* --- */
+        if (changes) {
             this.#refreshOperators();
         }
     }

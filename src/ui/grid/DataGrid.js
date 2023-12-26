@@ -232,8 +232,15 @@ export default class DataGrid extends CustomElement {
                     this.#emptyEl.classList.add("hidden");
                 }
             }
+            /* --- */
+            const ev = new Event("rows-updated");
+            this.dispatchEvent(ev);
         }
         this.#updateSelectHeader();
+    }
+
+    getAllCellsForColumn(name) {
+        return this.#bodyEl.querySelectorAll(`tr > [col-name="${name}"]`);
     }
 
     #applyColumnDefinition() {
@@ -263,6 +270,9 @@ export default class DataGrid extends CustomElement {
             this.#columnDefinition = newColumnDefinition;
             this.#headerManager.manage(newColumnDefinition);
             this.#rowManager.manage(this.#data, newColumnDefinition);
+            /* --- */
+            const ev = new Event("rows-updated");
+            this.dispatchEvent(ev);
         }
     }
 

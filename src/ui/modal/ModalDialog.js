@@ -1,3 +1,5 @@
+import FormBuilder from "../../util/form/FormBuilder.js";
+import FormContext from "../../util/form/FormContext.js";
 import ModalLayer from "./ModalLayer.js";
 import Modal from "./Modal.js";
 import "../form/button/Button.js";
@@ -168,6 +170,38 @@ export default class ModalDialog extends Modal {
             // ---
             dialogEl.onsubmit = function() {
                 resolve(true);
+            }
+            dialogEl.oncancel = function() {
+                resolve(false);
+            }
+            dialogEl.onclose = function() {
+                resolve();
+            }
+            dialogEl.show();
+        });
+    }
+
+    static form(ttl, msg, formConfig) {
+        return new Promise(function(resolve) {
+            const dialogEl = new ModalDialog({
+                title: ttl,
+                text: msg,
+                submit: true,
+                cancel: true
+            });
+            // ---
+            const formEl = FormBuilder.buildForm(formConfig, null, null, "ModalDialog");
+            const formContext = new FormContext();
+            formContext.registerForm(formEl);
+            dialogEl.append(formEl);
+            // ---
+            formContext.addEventListener("submit", (event) => {
+                const {data} = event;
+                resolve(data);
+            });
+            // ---
+            dialogEl.onsubmit = function() {
+                formContext.submit();
             }
             dialogEl.oncancel = function() {
                 resolve(false);

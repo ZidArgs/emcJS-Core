@@ -27,6 +27,14 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
         });
     }
 
+    addOperatorGroup(...groupList) {
+        this.#inputEl.addOperatorGroup(...groupList);
+    }
+
+    removeOperatorGroup(...groupList) {
+        this.#inputEl.removeOperatorGroup(...groupList);
+    }
+
     get value() {
         return this.getJSONAttribute("value");
     }

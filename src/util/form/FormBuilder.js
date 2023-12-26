@@ -13,7 +13,7 @@ import "../../ui/form/field/DefaultFormFieldsLoader.js";
 
 class FormBuilder {
 
-    build(config) {
+    build(config, label = null) {
         if (config != null && !(typeof config === "object")) {
             throw new TypeError("config must be an Object or an array or null");
         }
@@ -34,22 +34,22 @@ class FormBuilder {
             if (forms != null) {
                 if (Array.isArray(forms)) {
                     for (const {elements, config: formConfig, values} of forms) {
-                        formContainerEl.append(this.buildForm(elements, {...values, ...defaultValues}, formConfig));
+                        formContainerEl.append(this.buildForm(elements, {...values, ...defaultValues}, formConfig, label));
                     }
                 } else {
                     const {elements, config: formConfig, values} = forms;
-                    formContainerEl.append(this.buildForm(elements, {...values, ...defaultValues}, formConfig));
+                    formContainerEl.append(this.buildForm(elements, {...values, ...defaultValues}, formConfig, label));
                 }
             } else {
                 const {elements, config: formConfig, values} = config;
-                formContainerEl.append(this.buildForm(elements, values, formConfig));
+                formContainerEl.append(this.buildForm(elements, values, formConfig, label));
             }
         }
 
         return formContainerEl;
     }
 
-    buildForm(content, defaultValues, params) {
+    buildForm(content, defaultValues, params, label = null) {
         if (content != null && typeof content !== "object") {
             throw new TypeError("content must be an HTMLElement, Object, Array or null");
         }
@@ -76,12 +76,12 @@ class FormBuilder {
             formEl.dataset[key] = data[key];
         }
 
-        this.replaceForm(formEl, content, defaultValues, formParams);
+        this.replaceForm(formEl, content, defaultValues, formParams, label);
 
         return formEl;
     }
 
-    replaceForm(formEl, content, defaultValues, params) {
+    replaceForm(formEl, content, defaultValues, params, label = null) {
         if (!(formEl instanceof HTMLFormElement)) {
             throw new TypeError("formEl must be of type HTMLFormElement");
         }
@@ -104,7 +104,7 @@ class FormBuilder {
         } = params ?? {};
 
         this.#applyHiddenValues(formEl, values);
-        this.#fillFormElements(formEl, content, defaultValues);
+        this.#fillFormElements(formEl, content, defaultValues, label);
 
         if (!isNullOrFalse(submitButton) || !isNullOrFalse(resetButton)) {
             const buttonRowEl = document.createElement("emc-form-row");
@@ -156,7 +156,7 @@ class FormBuilder {
         }
     }
 
-    #fillFormElements(containerEl, content, defaultValues) {
+    #fillFormElements(containerEl, content, defaultValues, label = null) {
         if (!(containerEl instanceof HTMLElement)) {
             throw new TypeError("containerEl must be of type HTMLElement");
         }
@@ -172,18 +172,18 @@ class FormBuilder {
                     if (config instanceof HTMLElement) {
                         containerEl.append(config);
                     } else {
-                        containerEl.append(this.#createFormElement(config, defaultValues ?? {}));
+                        containerEl.append(this.#createFormElement(config, defaultValues ?? {}, label));
                     }
                 }
             } else if (content instanceof HTMLElement) {
                 containerEl.append(content);
             } else {
-                containerEl.append(this.#createFormElement(content, defaultValues ?? {}));
+                containerEl.append(this.#createFormElement(content, defaultValues ?? {}, label));
             }
         }
     }
 
-    #createFormElement(config = {}, defaultValues = {}) {
+    #createFormElement(config = {}, defaultValues = {}, label = null) {
         const {type, id, visible, enabled, data, ...params} = config;
         switch (type) {
             case "SubmitButton": {
@@ -208,14 +208,14 @@ class FormBuilder {
                 return this.#createRow(id, visible, enabled, params, data, defaultValues);
             }
             default: {
-                return this.#createField(type, id, visible, enabled, params, data, defaultValues);
+                return this.#createField(type, id, visible, enabled, params, data, defaultValues, label);
             }
         }
     }
 
-    #createField(type, id, visible, enabled, config = {}, data = {}, defaultValues = {}) {
+    #createField(type, id, visible, enabled, config = {}, data = {}, defaultValues = {}, label = null) {
         const {value, ...params} = config;
-        const el = FormElementRegistry.create(type, params);
+        const el = FormElementRegistry.create(type, params, label);
         if (id != null) {
             el.id = id;
         }
@@ -413,7 +413,7 @@ class FormBuilder {
         return el;
     }
 
-    #createFieldset(id, visible, enabled, params = {}, data = {}, defaultValues = {}) {
+    #createFieldset(id, visible, enabled, params = {}, data = {}, defaultValues = {}, label = null) {
         const el = document.createElement("emc-form-fieldset");
         if (id != null) {
             el.id = id;
@@ -436,11 +436,11 @@ class FormBuilder {
         if (params.tooltip != null) {
             el.tooltip = params.tooltip;
         }
-        this.#fillFormElements(el, params.children, defaultValues);
+        this.#fillFormElements(el, params.children, defaultValues, label);
         return el;
     }
 
-    #createRow(id, visible, enabled, params = {}, data = {}, defaultValues = {}) {
+    #createRow(id, visible, enabled, params = {}, data = {}, defaultValues = {}, label = null) {
         const el = document.createElement("emc-form-row");
         if (id != null) {
             el.id = id;
@@ -457,7 +457,7 @@ class FormBuilder {
         if (params.align != null) {
             el.align = params.align;
         }
-        this.#fillFormElements(el, params.children, defaultValues);
+        this.#fillFormElements(el, params.children, defaultValues, label);
         return el;
     }
 

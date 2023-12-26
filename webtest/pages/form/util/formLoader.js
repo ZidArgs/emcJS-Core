@@ -3,7 +3,6 @@ import i18n from "/emcJS/util/I18n.js";
 import FileLoader from "/emcJS/util/file/FileLoader.js";
 import OptionGroupRegistry from "/emcJS/data/registry/form/OptionGroupRegistry.js";
 import TokenRegistry from "/emcJS/data/registry/form/TokenRegistry.js";
-import ListGroupRegistry from "/emcJS/data/registry/form/ListGroupRegistry.js";
 import "/emcJS/ui/Page.js";
 // form
 import FormBuilder from "/emcJS/util/form/FormBuilder.js";
@@ -31,7 +30,7 @@ export async function init() {
     ]);
     OptionGroupRegistry.load(optionGroups);
     TokenRegistry.load(tokenGroups);
-    ListGroupRegistry.load(listGroups);
+    OptionGroupRegistry.load(listGroups);
     initFlag = true;
 }
 

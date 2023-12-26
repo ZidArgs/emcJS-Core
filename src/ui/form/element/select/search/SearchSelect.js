@@ -478,6 +478,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
         this.#optionSelectEventManager.clearTargets();
         for (const el of optionNodeList) {
             this.#optionSelectEventManager.addTarget(el);
+            /* --- */
             if (oldNodes.has(el)) {
                 oldNodes.delete(el);
             } else {

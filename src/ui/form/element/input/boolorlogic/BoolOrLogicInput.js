@@ -58,12 +58,12 @@ export default class BoolOrLogicInput extends CustomFormElementDelegating {
         this.value = state;
     }
 
-    addOperatorGroup(group) {
-        this.#boolOrLogicModal.addOperatorGroup(group);
+    addOperatorGroup(...groupList) {
+        this.#boolOrLogicModal.addOperatorGroup(...groupList);
     }
 
-    removeOperatorGroup(group) {
-        this.#boolOrLogicModal.removeOperatorGroup(group);
+    removeOperatorGroup(...groupList) {
+        this.#boolOrLogicModal.removeOperatorGroup(...groupList);
     }
 
     set value(value) {

@@ -158,6 +158,7 @@ export default class ImageSelect extends CustomFormElementDelegating {
         const newNodes = new Set();
         for (const el of optionNodeList) {
             res[el.value] = el.i18nValue ?? el.innerHTML;
+            /* --- */
             if (oldNodes.has(el)) {
                 oldNodes.delete(el);
             } else {
