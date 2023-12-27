@@ -1,6 +1,9 @@
 import CustomElement from "../../element/CustomElement.js";
 import TPL from "./DataGridCell.js.html" assert {type: "html"};
 import STYLE from "./DataGridCell.js.css" assert {type: "css"};
+import {
+    deepClone
+} from "../../../util/helper/DeepClone.js";
 
 const CELL_TYPES = new Map();
 const MIN_WIDTH = new Map();
@@ -9,12 +12,22 @@ export default class DataGridCell extends CustomElement {
 
     #contentEl;
 
+    #rowData;
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#contentEl = this.shadowRoot.getElementById("content");
+    }
+
+    set rowData(value) {
+        this.#rowData = deepClone(value);
+    }
+
+    get rowData() {
+        return deepClone(this.#rowData);
     }
 
     set columnName(val) {

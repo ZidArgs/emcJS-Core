@@ -93,11 +93,11 @@ export default class CellManager {
             newOrder.push(name);
 
             if (!this.#elements.has(name)) {
-                const cellEl = this.composer(name, this.#rowName, type, columnData, value);
+                const cellEl = this.composer(name, this.#rowName, type, columnData, value, rowData);
                 if (cellEl != null) {
                     cellEl.setAttribute("col-name", name);
                     cellEl.setAttribute("row-name", this.#rowName);
-                    this.mutator(cellEl, columnData, value);
+                    this.mutator(cellEl, columnData, value, rowData);
                     this.#elements.set(name, cellEl);
                     changes.added.push(name);
                     this.#target.append(cellEl);
@@ -108,9 +108,9 @@ export default class CellManager {
             } else if (this.#types.get(name) !== type) {
                 const oldEl = this.#elements.get(name);
                 oldEl.remove();
-                const cellEl = this.composer(name, this.#rowName, type, columnData, value);
+                const cellEl = this.composer(name, this.#rowName, type, columnData, value, rowData);
                 if (cellEl != null) {
-                    this.mutator(cellEl, columnData, value);
+                    this.mutator(cellEl, columnData, value, rowData);
                     this.#elements.set(name, cellEl);
                     changes.added.push(name);
                     this.#target.append(cellEl);
@@ -121,7 +121,7 @@ export default class CellManager {
             } else {
                 const cellEl = this.#elements.get(name);
                 const activeEl = cellEl.shadowRoot.activeElement;
-                if (this.#checkChange(name, columnData, value)) {
+                if (this.#checkChange(name, columnData, value, rowData)) {
                     this.mutator(cellEl, columnData, value);
                     changes.updated.push(name);
                 }
@@ -171,7 +171,7 @@ export default class CellManager {
         return false;
     }
 
-    composer(columnName, rowName, type, options, value) {
+    composer(columnName, rowName, type, options, value, rowData) {
         const cellEl = DataGridCell.createCell(type);
 
         cellEl.columnName = columnName;
@@ -188,10 +188,12 @@ export default class CellManager {
             cellEl.value = value;
         }
 
+        cellEl.rowData = rowData;
+
         return cellEl;
     }
 
-    mutator(cellEl, options, value) {
+    mutator(cellEl, options, value, rowData) {
         const currentAttributes = new Set([...cellEl.attributes].map((a) => {
             return a.name;
         }).filter((a) => {
@@ -208,6 +210,8 @@ export default class CellManager {
         for (const attrName of currentAttributes) {
             cellEl[attrName] = null;
         }
+
+        cellEl.rowData = rowData;
 
         if (value != null) {
             cellEl.value = value;
