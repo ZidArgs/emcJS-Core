@@ -83,18 +83,18 @@ export default class FormContext extends EventTarget {
         this.#storageEventTargetManager.switchTarget(this.#dataStorage);
         this.#storageEventTargetManager.set("clear", (event) => {
             const ev = new Event("clear");
-            ev.data = event.data;
+            ev.data = elevateObject(event.data);
             this.dispatchEvent(ev);
         });
         this.#storageEventTargetManager.set("change", (event) => {
             const ev = new Event("change");
-            ev.data = event.data;
-            ev.changes = event.changes;
+            ev.data = elevateObject(event.data);
+            ev.changes = elevateObject(event.changes);
             this.dispatchEvent(ev);
         });
         this.#storageEventTargetManager.set("load", (event) => {
             const ev = new Event("load");
-            ev.data = event.data;
+            ev.data = elevateObject(event.data);
             this.dispatchEvent(ev);
         });
     }
