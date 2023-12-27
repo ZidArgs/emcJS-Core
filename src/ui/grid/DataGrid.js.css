@@ -28,6 +28,7 @@
 }
 .head th {
     position: sticky;
+    box-sizing: border-box;
     top: 0px;
     min-width: 50px;
     height: 2.5em;
@@ -55,8 +56,9 @@
     background-color: var(--grid-row-hover-back-color, #e3f6fc);
 }
 #body tr > * {
+    box-sizing: border-box;
     height: 2.5em;
-    padding: 0px 8px;
+    padding: 0px;
     border-bottom: solid var(--grid-row-seperator-width, 1px) var(--grid-row-seperator-color, #696969);
     overflow: hidden;
 }
@@ -175,4 +177,20 @@ th.select-cell input[type="checkbox"]:checked:not(:indeterminate) {
 }
 .select-cell input[type="checkbox"]:indeterminate::before {
     content: "•";
+}
+@-moz-document url-prefix() {
+    
+    .head th {
+        padding: 0px;
+    }
+ 
+    .head th.select-cell {
+        min-width: 38px;
+    }
+
+    .head th:not(:first-child):not(:nth-child(2)):not(.lastCell) {
+        border-left: none;
+        box-shadow: inset var(--grid-header-seperator-color, #ffffff) var(--grid-column-seperator-width, 2px) 0px 0px;
+    }
+ 
 }

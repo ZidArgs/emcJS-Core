@@ -52,7 +52,7 @@ export default class DataGridCell extends CustomElement {
                     this.onValueChange(this.value);
                 } break;
                 case "col-name": {
-                    const styleWidth = `calc(var(--width-${this.columnName}, 100%) - 16px)`;
+                    const styleWidth = `var(--width-${this.columnName}, 100%)`;
                     this.#contentEl.style.minWidth = styleWidth;
                     this.#contentEl.style.width = styleWidth;
                 } break;

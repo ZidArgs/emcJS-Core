@@ -48,7 +48,7 @@ export default class CellManager {
         this.#selectCellEl.className = "select-cell";
         this.#selectCellEl.append(this.#selectCheckboxEl);
 
-        this.#lastCellEl = document.createElement("th")
+        this.#lastCellEl = document.createElement("td")
         this.#lastCellEl.classList.add("lastCell");
     }
 

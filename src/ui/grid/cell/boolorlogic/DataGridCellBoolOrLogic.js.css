@@ -1,6 +1,9 @@
 #content {
     justify-content: center;
 }
+p {
+    text-align: center;
+}
 #input {
     display: none;
     width: 100%;

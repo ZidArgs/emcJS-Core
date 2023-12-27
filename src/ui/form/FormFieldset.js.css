@@ -4,8 +4,8 @@
     align-items: stretch;
     justify-content: flex-start;
     flex-direction: column;
-    min-width: min-content;
     box-sizing: border-box;
+    width: 100%;
 }
 * {
     position: relative;
@@ -13,9 +13,20 @@
     margin: 0px;
     font-size: 1em;
 }
+#container {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-start;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 5px;
+}
 #fieldset {
+    min-width: 0px;
+    width: 100%;
     padding: 10px;
-    margin: 5px;
     background-color: var(--fieldset-back-color, #ffffff);
     border: solid var(--fieldset-border-width, 2px) var(--form-border-color, #000000);
     border-radius: var(--fieldset-border-radius, 6px);

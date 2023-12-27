@@ -8,6 +8,7 @@
     display: flex;
     align-items: center;
     height: 100%;
+    padding: 0px 8px;
     overflow: hidden;
 }
 p {
@@ -16,4 +17,5 @@ p {
     white-space: pre;
     text-overflow: ellipsis;
     text-align: left;
+    width: 100%;
 }
