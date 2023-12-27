@@ -3,6 +3,7 @@ import TPL from "./DataGridCell.js.html" assert {type: "html"};
 import STYLE from "./DataGridCell.js.css" assert {type: "css"};
 
 const CELL_TYPES = new Map();
+const MIN_WIDTH = new Map();
 
 export default class DataGridCell extends CustomElement {
 
@@ -16,32 +17,32 @@ export default class DataGridCell extends CustomElement {
         this.#contentEl = this.shadowRoot.getElementById("content");
     }
 
-    get columnName() {
-        return this.getAttribute("col-name");
-    }
-
     set columnName(val) {
         this.setAttribute("col-name", val);
     }
 
-    get rowName() {
-        return this.getAttribute("row-name");
+    get columnName() {
+        return this.getAttribute("col-name");
     }
 
     set rowName(val) {
         this.setAttribute("row-name", val);
     }
 
-    get value() {
-        return this.getAttribute("value");
+    get rowName() {
+        return this.getAttribute("row-name");
     }
 
     set value(val) {
         this.setAttribute("value", val);
     }
 
+    get value() {
+        return this.getAttribute("value");
+    }
+
     static get observedAttributes() {
-        return ["value"];
+        return ["value", "col-name"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -49,6 +50,11 @@ export default class DataGridCell extends CustomElement {
             switch (name) {
                 case "value": {
                     this.onValueChange(this.value);
+                } break;
+                case "col-name": {
+                    const styleWidth = `calc(var(--width-${this.columnName}, 100%) - 16px)`;
+                    this.#contentEl.style.minWidth = styleWidth;
+                    this.#contentEl.style.width = styleWidth;
                 } break;
             }
         }
@@ -64,7 +70,7 @@ export default class DataGridCell extends CustomElement {
         }
     }
 
-    static registerCellType(name, CellClass) {
+    static registerCellType(name, CellClass, minWidth) {
         if (typeof name !== "string" || name === "") {
             throw new TypeError("name must be a non empty string");
         }
@@ -72,6 +78,11 @@ export default class DataGridCell extends CustomElement {
             throw new TypeError("registered types must inherit from DataGridCell");
         }
         CELL_TYPES.set(name, CellClass);
+        /* --- */
+        minWidth = parseFloat(minWidth);
+        if (!isNaN(minWidth)) {
+            MIN_WIDTH.set(name, minWidth);
+        }
     }
 
     static createCell(name) {
@@ -88,6 +99,13 @@ export default class DataGridCell extends CustomElement {
             return cellEl.prototype === CellClass;
         }
         return false;
+    }
+
+    static getTypeMinWidth(name) {
+        if (MIN_WIDTH.has(name)) {
+            return MIN_WIDTH.get(name);
+        }
+        return 0;
     }
 
 }

@@ -58,6 +58,7 @@
     height: 2.5em;
     padding: 0px 8px;
     border-bottom: solid var(--grid-row-seperator-width, 1px) var(--grid-row-seperator-color, #696969);
+    overflow: hidden;
 }
 #body tr > *.empty {
     color: #00000019;

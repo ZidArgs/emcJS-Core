@@ -178,6 +178,9 @@ export default class CellManager {
         cellEl.rowName = rowName;
 
         for (const [attrName, attrValue] of Object.entries(options)) {
+            if (attrName === "caption" || attrName === "value") {
+                continue;
+            }
             cellEl[attrName] = attrValue;
         }
 
@@ -195,7 +198,7 @@ export default class CellManager {
             return a !== "class" && a !== "width" && a !== "caption" && a !== "col-name" && a !== "row-name" && a !== "value";
         }));
         for (const [attrName, attrValue] of Object.entries(options)) {
-            if (attrName === "width" || attrName === "caption" || attrName === "value") {
+            if (attrName === "caption" || attrName === "value") {
                 continue;
             }
             currentAttributes.delete(attrName);

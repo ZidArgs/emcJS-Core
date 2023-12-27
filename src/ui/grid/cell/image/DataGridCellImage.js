@@ -90,10 +90,12 @@ export default class DataGridCellImage extends DataGridCell {
         if (value != null && value != "") {
             this.classList.remove("empty");
             this.#valueEl.innerText = value;
+            this.#valueEl.title = value;
             this.#inputEl.value = value;
         } else {
             this.classList.add("empty");
             this.#valueEl.innerText = "";
+            this.#valueEl.title = "";
             this.#inputEl.value = "";
         }
     }
@@ -131,5 +133,5 @@ export default class DataGridCellImage extends DataGridCell {
 
 }
 
-DataGridCell.registerCellType("image", DataGridCellImage);
+DataGridCell.registerCellType("image", DataGridCellImage, 300);
 customElements.define("emc-grid-datagrid-cell-image", DataGridCellImage);

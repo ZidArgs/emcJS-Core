@@ -5,10 +5,13 @@ import EventTargetManager from "../../../../util/event/EventTargetManager.js";
 import DataGridCell from "../DataGridCell.js";
 import "../../../i18n/builtin/I18nInput.js";
 import "../../../i18n/I18nLabel.js";
+import "../../../i18n/I18nTooltip.js";
 import TPL from "./DataGridCellI18n.js.html" assert {type: "html"};
 import STYLE from "./DataGridCellI18n.js.css" assert {type: "css"};
 
 export default class DataGridCellI18n extends DataGridCell {
+
+    #tooltipEl;
 
     #valueEl;
 
@@ -21,6 +24,7 @@ export default class DataGridCellI18n extends DataGridCell {
         this.shadowRoot.getElementById("content").append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
+        this.#tooltipEl = this.shadowRoot.getElementById("tooltip");
         this.#valueEl = this.shadowRoot.getElementById("value");
         this.#inputEl = this.shadowRoot.getElementById("input");
         /* --- */
@@ -69,10 +73,12 @@ export default class DataGridCellI18n extends DataGridCell {
         if (value != null && value != "") {
             this.classList.remove("empty");
             this.#valueEl.i18nValue = value;
+            this.#tooltipEl.i18nValue = value;
             this.#inputEl.value = value;
         } else {
             this.classList.add("empty");
             this.#valueEl.i18nValue = "";
+            this.#tooltipEl.i18nValue = "";
             this.#inputEl.value = "";
         }
     }
@@ -94,5 +100,5 @@ export default class DataGridCellI18n extends DataGridCell {
 
 }
 
-DataGridCell.registerCellType("i18n", DataGridCellI18n);
+DataGridCell.registerCellType("i18n", DataGridCellI18n, 400);
 customElements.define("emc-grid-datagrid-cell-i18n", DataGridCellI18n);

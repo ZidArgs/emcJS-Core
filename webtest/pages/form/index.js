@@ -52,11 +52,10 @@ i18n.setTranslation("en", {
 })
 i18n.language = "en";
 
-const [defaultValues, optionGroups, tokenGroups, listGroups, buttonConfig, extraConfig, ...formConfig] = await Promise.all([
+const [defaultValues, optionGroups, tokenGroups, buttonConfig, extraConfig, ...formConfig] = await Promise.all([
     FileLoader.json("./_config/defaults.json"),
     FileLoader.json("./_config/OptionGroups.json"),
     FileLoader.json("./_config/TokenGroups.json"),
-    FileLoader.json("./_config/ListGroups.json"),
     FileLoader.json("./form-config/Buttons.json"),
     FileLoader.json("./form-config/extra.json"),
     FileLoader.json("./form-config/input/ListInput.json"),
@@ -80,7 +79,6 @@ const [defaultValues, optionGroups, tokenGroups, listGroups, buttonConfig, extra
 
 OptionGroupRegistry.load(optionGroups);
 TokenRegistry.load(tokenGroups);
-OptionGroupRegistry.load(listGroups);
 
 const pageEl = document.getElementById("page");
 

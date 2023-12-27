@@ -74,5 +74,5 @@ export default class DataGridCellButton extends DataGridCell {
 
 }
 
-DataGridCell.registerCellType("button", DataGridCellButton);
+DataGridCell.registerCellType("button", DataGridCellButton, 100);
 customElements.define("emc-grid-datagrid-cell-button", DataGridCellButton);

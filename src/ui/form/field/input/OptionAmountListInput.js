@@ -23,9 +23,9 @@ export default class OptionAmountListInput extends AbstractFormInput {
 
     #inputEl;
 
-    #listGroup = null;
+    #optionGroup = null;
 
-    #listGroupEventTargetManager = new EventTargetManager();
+    #optionGroupEventTargetManager = new EventTargetManager();
 
     constructor() {
         super();
@@ -40,7 +40,7 @@ export default class OptionAmountListInput extends AbstractFormInput {
             this.refreshFormValue();
         });
         /* --- */
-        this.#listGroupEventTargetManager.set("change", () => {
+        this.#optionGroupEventTargetManager.set("change", () => {
             this.#loadListFromGroup();
         });
     }
@@ -86,16 +86,16 @@ export default class OptionAmountListInput extends AbstractFormInput {
         return this.#inputEl.getSubmitValue();
     }
 
-    set listgroup(value) {
-        this.setAttribute("listgroup", value);
+    set optiongroup(value) {
+        this.setAttribute("optiongroup", value);
     }
 
-    get listgroup() {
-        return this.getAttribute("listgroup");
+    get optiongroup() {
+        return this.getAttribute("optiongroup");
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "value", "readonly", "listgroup"];
+        return [...super.observedAttributes, "value", "readonly", "optiongroup"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -128,14 +128,14 @@ export default class OptionAmountListInput extends AbstractFormInput {
                     safeSetAttribute(this.#inputEl, name, newValue);
                 }
             } break;
-            case "listgroup": {
+            case "optiongroup": {
                 if (oldValue != newValue) {
                     if (newValue == null || newValue === "") {
-                        this.#listGroup = null;
+                        this.#optionGroup = null;
                     } else {
-                        this.#listGroup = new OptionGroupRegistry(newValue);
+                        this.#optionGroup = new OptionGroupRegistry(newValue);
                     }
-                    this.#listGroupEventTargetManager.switchTarget(this.#listGroup);
+                    this.#optionGroupEventTargetManager.switchTarget(this.#optionGroup);
                     this.#loadListFromGroup();
                 }
             } break;
@@ -144,13 +144,13 @@ export default class OptionAmountListInput extends AbstractFormInput {
 
     static fromConfig(config) {
         const inputEl = new OptionAmountListInput();
-        const {list = [], listgroup, ...params} = config;
+        const {list = [], optiongroup, ...params} = config;
         for (const name in params) {
             const value = params[name];
             safeSetAttribute(inputEl, name, value);
         }
-        if (typeof listgroup === "string" && listgroup !== "") {
-            inputEl.setAttribute("listgroup", listgroup);
+        if (typeof optiongroup === "string" && optiongroup !== "") {
+            inputEl.setAttribute("optiongroup", optiongroup);
         } else {
             for (const value of list) {
                 const optionEl = I18nOption.create();
@@ -164,8 +164,8 @@ export default class OptionAmountListInput extends AbstractFormInput {
 
     #loadListFromGroup() {
         this.innerHTML = "";
-        if (this.#listGroup != null) {
-            const list = this.#listGroup.keys();
+        if (this.#optionGroup != null) {
+            const list = this.#optionGroup.keys();
             for (const value of list) {
                 const optionEl = I18nOption.create();
                 optionEl.setAttribute("value", value);

@@ -20,7 +20,7 @@
 ::slotted(form) {
     position: relative;
     min-height: 2em;
-    min-width: min-content;
+    min-width: 100%;
     margin: 0px;
     padding: 0px;
     color: var(--form-text-color, #000000);

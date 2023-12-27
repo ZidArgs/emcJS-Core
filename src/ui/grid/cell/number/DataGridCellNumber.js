@@ -82,6 +82,7 @@ export default class DataGridCellNumber extends DataGridCell {
             value = value.toFixed(this.decimals);
         }
         this.#valueEl.innerText = value;
+        this.#valueEl.title = value;
         this.#inputEl.value = parseFloat(value);
     }
 
@@ -105,5 +106,5 @@ export default class DataGridCellNumber extends DataGridCell {
 
 }
 
-DataGridCell.registerCellType("number", DataGridCellNumber);
+DataGridCell.registerCellType("number", DataGridCellNumber, 100);
 customElements.define("emc-grid-datagrid-cell-number", DataGridCellNumber);

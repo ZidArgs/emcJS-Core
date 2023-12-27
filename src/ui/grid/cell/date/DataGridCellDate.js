@@ -74,10 +74,12 @@ export default class DataGridCellDate extends DataGridCell {
             const editValue = DateUtil.convertLocal(value, "Y-M-D");
             this.classList.remove("empty");
             this.#valueEl.innerText = viewValue;
+            this.#valueEl.title = viewValue;
             this.#inputEl.value = editValue;
         } else {
             this.classList.add("empty");
             this.#valueEl.innerText = "";
+            this.#valueEl.title = "";
             this.#inputEl.value = "";
         }
     }
@@ -99,5 +101,5 @@ export default class DataGridCellDate extends DataGridCell {
 
 }
 
-DataGridCell.registerCellType("date", DataGridCellDate);
+DataGridCell.registerCellType("date", DataGridCellDate, 200);
 customElements.define("emc-grid-datagrid-cell-date", DataGridCellDate);

@@ -5,7 +5,7 @@ import {
 const RESIZE_OBSERVER = new ResizeObserver((entries) => {
     for (const entry of entries) {
         const target = entry.target;
-        target.handleResize();
+        target.resizeCallback();
     }
 });
 

@@ -83,10 +83,13 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
     onValueChange(value) {
         if (value === true) {
             this.#valueEl.innerText = "True";
+            this.#valueEl.title = "True";
         } else if (value === false) {
             this.#valueEl.innerText = "False";
+            this.#valueEl.title = "False";
         } else {
             this.#valueEl.innerText = "Logic";
+            this.#valueEl.title = "Logic";
         }
         this.#inputEl.value = value;
     }
@@ -108,5 +111,5 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
 
 }
 
-DataGridCell.registerCellType("boolorlogic", DataGridCellBoolOrLogic);
+DataGridCell.registerCellType("boolorlogic", DataGridCellBoolOrLogic, 300);
 customElements.define("emc-grid-datagrid-cell-boolorlogic", DataGridCellBoolOrLogic);

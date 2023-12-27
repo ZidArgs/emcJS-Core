@@ -74,10 +74,12 @@ export default class DataGridCellDateTime extends DataGridCell {
             const editValue = DateUtil.convertLocal(value, "Y-M-DTh:m:s");
             this.classList.remove("empty");
             this.#valueEl.innerText = viewValue;
+            this.#valueEl.title = viewValue;
             this.#inputEl.value = editValue;
         } else {
             this.classList.add("empty");
             this.#valueEl.innerText = "";
+            this.#valueEl.title = "";
             this.#inputEl.value = "";
         }
     }
@@ -99,5 +101,5 @@ export default class DataGridCellDateTime extends DataGridCell {
 
 }
 
-DataGridCell.registerCellType("datetime", DataGridCellDateTime);
+DataGridCell.registerCellType("datetime", DataGridCellDateTime, 300);
 customElements.define("emc-grid-datagrid-cell-datetime", DataGridCellDateTime);

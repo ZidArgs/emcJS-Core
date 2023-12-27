@@ -64,6 +64,7 @@ export default class DataGridCellBoolean extends DataGridCell {
     onValueChange(value) {
         value = !!value && value !== "false";
         this.#valueEl.innerText = value ? "☑" : "☐";
+        this.#valueEl.title = value ? "True" : "False";
         this.#inputEl.checked = value;
     }
 
@@ -84,5 +85,5 @@ export default class DataGridCellBoolean extends DataGridCell {
 
 }
 
-DataGridCell.registerCellType("boolean", DataGridCellBoolean);
+DataGridCell.registerCellType("boolean", DataGridCellBoolean, 70);
 customElements.define("emc-grid-datagrid-cell-boolean", DataGridCellBoolean);

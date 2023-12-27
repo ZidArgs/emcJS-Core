@@ -14,8 +14,9 @@ import {
 import MutationObserverManager from "../../util/observer/MutationObserverManager.js";
 import HeaderManager from "../../util/grid/manager/HeaderManager.js";
 import RowManager from "../../util/grid/manager/RowManager.js";
+import ResizeObserverMixin from "../mixin/ResizeObserverMixin.js";
 import Column from "./Column.js";
-import "./cell/DataGridCell.js";
+import DataGridCell from "./cell/DataGridCell.js";
 import "./cell/button/DataGridCellButton.js";
 import "./cell/boolean/DataGridCellBoolean.js";
 import "./cell/string/DataGridCellString.js";
@@ -33,7 +34,20 @@ const MUTATION_CONFIG = {
     attributes: true
 };
 
-export default class DataGrid extends CustomElement {
+const PX_REGEXP = /^[0-9]+(?:\.[0-9]+)?$/;
+
+function getStyleLengthValue(value, type) {
+    const minValue = DataGridCell.getTypeMinWidth(type);
+    if (PX_REGEXP.test(value)) {
+        return Math.max(parseFloat(value), minValue, 50);
+    }
+    if (minValue != null) {
+        return Math.max(minValue, 50);
+    }
+    return 200;
+}
+
+export default class DataGrid extends ResizeObserverMixin(CustomElement) {
 
     #tableEl;
 
@@ -56,6 +70,8 @@ export default class DataGrid extends CustomElement {
     #headerSelectEl;
 
     #selected = new Set();
+
+    #stretched = null;
 
     #mutationObserver = new MutationObserverManager(MUTATION_CONFIG, () => {
         this.#onSlotChange();
@@ -152,12 +168,17 @@ export default class DataGrid extends CustomElement {
         });
     }
 
+    connectedCallback() {
+        super.connectedCallback();
+        this.#stretched = this.#columnDefinition.find((definition) => definition.name === this.stretched);
+    }
+
     set nohead(value) {
-        this.setAttribute("nohead", value);
+        this.setBooleanAttribute("nohead", value);
     }
 
     get nohead() {
-        return this.getAttribute("nohead");
+        return this.getBooleanAttribute("nohead");
     }
 
     set selectable(value) {
@@ -168,8 +189,16 @@ export default class DataGrid extends CustomElement {
         return this.getAttribute("selectable");
     }
 
+    set stretched(value) {
+        this.setAttribute("stretched", value);
+    }
+
+    get stretched() {
+        return this.getAttribute("stretched");
+    }
+
     static get observedAttributes() {
-        return ["selectable"];
+        return ["selectable", "stretched"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -179,6 +208,18 @@ export default class DataGrid extends CustomElement {
                     if (newValue == null || newValue === "false" || newValue === "single" || oldValue === "single") {
                         this.clearSelected()
                     }
+                } break;
+                case "stretched": {
+                    if (this.#stretched != null) {
+                        const name = this.#stretched.name;
+                        const widthValue = this.#stretched.width;
+                        if (widthValue != null) {
+                            const styleWidth = getStyleLengthValue(widthValue);
+                            this.style.setProperty(`--width-${name}`, `${styleWidth}px`);
+                        }
+                    }
+                    this.#stretched = this.#columnDefinition.find((definition) => definition.name === newValue);
+                    this.resizeCallback();
                 } break;
             }
         }
@@ -277,6 +318,17 @@ export default class DataGrid extends CustomElement {
             this.#headerManager.manage(newColumnDefinition);
             this.#rowManager.manage(this.#data, newColumnDefinition);
             /* --- */
+            for (const definition of newColumnDefinition) {
+                if (definition.name === this.stretched) {
+                    this.#stretched = definition;
+                } else {
+                    const widthValue = definition.width;
+                    const styleWidth = getStyleLengthValue(widthValue ?? 200, definition.type);
+                    this.style.setProperty(`--width-${definition.name}`, `${styleWidth}px`);
+                }
+            }
+            this.resizeCallback();
+            /* --- */
             const ev = new Event("rows-updated");
             this.dispatchEvent(ev);
         }
@@ -303,6 +355,33 @@ export default class DataGrid extends CustomElement {
     #onSlotChange = debounce(() => {
         this.#applyColumnDefinition();
     });
+
+    resizeCallback() {
+        if (this.#stretched != null) {
+            const gridWidth = this.clientWidth;
+            const name = this.#stretched.name;
+            let diff = 0;
+            for (const def of this.#columnDefinition) {
+                if (def !== this.#stretched) {
+                    if (def.width != null) {
+                        diff += getStyleLengthValue(def.width, def.type);
+                    } else {
+                        diff += 200;
+                    }
+                }
+            }
+            if (this.selectable != null && this.selectable !== false) {
+                diff += 40;
+            }
+            let resultWidth = gridWidth - diff;
+            const widthValue = this.#stretched.width;
+            if (widthValue != null) {
+                resultWidth = Math.max(resultWidth, parseFloat(widthValue) || 0);
+            }
+            const styleWidth = getStyleLengthValue(resultWidth, this.#stretched.type);
+            this.style.setProperty(`--width-${name}`, `${styleWidth}px`);
+        }
+    }
 
 }
 

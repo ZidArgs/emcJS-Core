@@ -5,15 +5,6 @@ import {
     deepClone
 } from "../../helper/DeepClone.js";
 
-const PX_REGEXP = /^[0-9]+(?:\.[0-9]+)?$/;
-
-function getStyleLengthValue(value) {
-    if (PX_REGEXP.test(value)) {
-        return `${Math.max(parseFloat(value), 50)}px`;
-    }
-    return value;
-}
-
 export default class HeaderManager {
 
     #target;
@@ -131,27 +122,20 @@ export default class HeaderManager {
 
     composer(name, columnData) {
         const headerCellEl = document.createElement("th");
-        const {caption, width} = columnData;
+        const {caption} = columnData;
 
         headerCellEl.innerText = caption ?? name;
-        if (width != null) {
-            const styleWidth = getStyleLengthValue(width);
-            headerCellEl.style.minWidth = styleWidth;
-            headerCellEl.style.width = styleWidth;
-        }
+        const styleWidth = `var(--width-${name}, 100%)`;
+        headerCellEl.style.minWidth = styleWidth;
+        headerCellEl.style.width = styleWidth;
 
         return headerCellEl;
     }
 
     mutator(headerCellEl, name, columnData) {
-        const {caption, width} = columnData;
+        const {caption} = columnData;
 
         headerCellEl.innerText = caption ?? name;
-        if (width != null) {
-            const styleWidth = getStyleLengthValue(width);
-            headerCellEl.style.minWidth = styleWidth;
-            headerCellEl.style.width = styleWidth;
-        }
     }
 
 }
