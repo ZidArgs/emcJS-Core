@@ -1,55 +1,61 @@
+import CustomElement from "./element/CustomElement.js";
 import ActiveCounter from "../util/ActiveCounter.js";
 import TPL from "./BusyIndicator.js.html" assert {type: "html"};
 import STYLE from "./BusyIndicator.js.css" assert {type: "css"};
 
-// TODO should be self managed html element
+export default class BusyIndicator extends CustomElement {
 
-const EL = document.createElement("DIV");
-EL.className = "busy-indicator";
-EL.attachShadow({mode: "open"});
-EL.shadowRoot.append(TPL.generate());
-STYLE.apply(EL.shadowRoot);
-document.body.append(EL);
+    #isActive = false;
 
-const activeCounter = new ActiveCounter();
-activeCounter.addEventListener("active", (event) => {
-    if (event.data) {
-        EL.classList.add("active");
-    } else {
-        EL.classList.remove("active");
-    }
-});
+    #targetEl = document.body;
 
-class BusyIndicator {
+    #activeCounter = new ActiveCounter();
 
-    async busy() {
-        activeCounter.add();
+    constructor() {
+        super();
+        this.shadowRoot.append(TPL.generate());
+        STYLE.apply(this.shadowRoot);
     }
 
-    async unbusy() {
-        activeCounter.remove();
-    }
-
-    async watch(promise) {
-        if (promise instanceof Promise) {
-            try {
-                await this.busy();
-                const result = promise();
-                await this.unbusy();
-                return result;
-            } catch (err) {
-                await this.unbusy();
-                throw err;
+    busy() {
+        return new Promise((resolve) => {
+            if (this.#activeCounter.add()) {
+                this.#isActive = true;
+                this.#targetEl.append(this);
+                setTimeout(()=> {
+                    resolve();
+                }, 10);
+            } else {
+                resolve();
             }
-        }
+        });
     }
 
-    setIndicator(element) {
+    unbusy() {
+        return new Promise((resolve) => {
+            if (this.#activeCounter.remove()) {
+                this.#isActive = false;
+                this.remove();
+                setTimeout(()=> {
+                    resolve();
+                }, 10);
+            } else {
+                resolve();
+            }
+        });
+    }
+
+    setTarget(element) {
         if (element instanceof HTMLElement) {
-            EL.append(element);
+            this.#targetEl = element;
+        } else {
+            this.#targetEl = document.body;
+        }
+        if (this.#isActive) {
+            this.#targetEl.append(this);
         }
     }
 
 }
 
-export default new BusyIndicator;
+customElements.define("emc-busy-indicator", BusyIndicator);

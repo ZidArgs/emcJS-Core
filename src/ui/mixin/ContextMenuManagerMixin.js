@@ -25,13 +25,13 @@ export default createMixin((superclass) => class ContextMenuManagerMixin extends
     #inactiveGroups = new Map();
 
     #showCtxMenu() {
-        if (this.#counter.add() > 0) {
+        if (this.#counter.add()) {
             this.classList.add("ctx-marked");
         }
     }
 
     #closeCtxMenu() {
-        if (this.#counter.remove() <= 0) {
+        if (this.#counter.remove()) {
             this.classList.remove("ctx-marked");
             this.dispatchEvent(new Event("contextmenusclosed", {bubbles: true, cancelable: true}));
         }
