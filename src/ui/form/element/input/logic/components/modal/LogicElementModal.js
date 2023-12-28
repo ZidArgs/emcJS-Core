@@ -45,6 +45,7 @@ const DEFAULT_LOGIC_OPERATORS = [
     "add", "sub", "mul", "div", "mod", "pow"
 ];
 
+// TODO use ModalDialog instead
 export default class LogicElementModal extends Modal {
 
     #containerEl;

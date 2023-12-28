@@ -1,0 +1,10 @@
+#footer {
+    display: flex;
+}
+#submit,
+#cancel {
+    margin: 2px;
+}
+#input {
+    width: 100%;
+}

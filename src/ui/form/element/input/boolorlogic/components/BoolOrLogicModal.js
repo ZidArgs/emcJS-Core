@@ -4,6 +4,7 @@ import "../../../../field/input/BoolOrLogicInput.js";
 import TPL from "./BoolOrLogicModal.js.html" assert {type: "html"};
 import STYLE from "./BoolOrLogicModal.js.css" assert {type: "css"};
 
+// TODO use ModalDialog instead
 export default class BoolOrLogicModal extends Modal {
 
     #inputEl;

@@ -7,6 +7,7 @@ import {
 } from "../../../../../util/Debouncer.js";
 import SimpleDataProvider from "../../../../../util/grid/provider/SimpleDataProvider.js";
 import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
+import "../search/SearchInput.js";
 import "../../../../grid/DataGrid.js";
 import TPL from "./BoolOrLogicListInput.js.html" assert {type: "html"};
 import STYLE from "./BoolOrLogicListInput.js.css" assert {type: "css"};

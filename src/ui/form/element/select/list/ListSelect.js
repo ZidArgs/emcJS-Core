@@ -8,8 +8,8 @@ import {
 import ElementListCache from "../../../../../util/html/ElementListCache.js";
 import SimpleDataProvider from "../../../../../util/grid/provider/SimpleDataProvider.js";
 import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
-import "../../../../grid/DataGrid.js";
 import "../../input/search/SearchInput.js";
+import "../../../../grid/DataGrid.js";
 import TPL from "./ListSelect.js.html" assert {type: "html"};
 import STYLE from "./ListSelect.js.css" assert {type: "css"};
 

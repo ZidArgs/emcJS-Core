@@ -27,6 +27,7 @@ import "./cell/boolorlogic/DataGridCellBoolOrLogic.js";
 import "./cell/date/DataGridCellDate.js";
 import "./cell/datetime/DataGridCellDateTime.js";
 import "./cell/time/DataGridCellTime.js";
+import "./cell/relation/DataGridCellRelation.js";
 import TPL from "./DataGrid.js.html" assert {type: "html"};
 import STYLE from "./DataGrid.js.css" assert {type: "css"};
 

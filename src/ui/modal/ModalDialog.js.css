@@ -6,7 +6,7 @@
 #footer {
     display: flex;
 }
-#window {
-    width: auto;
-    min-width: 20vw;
+#submit,
+#cancel {
+    min-width: 100px;
 }

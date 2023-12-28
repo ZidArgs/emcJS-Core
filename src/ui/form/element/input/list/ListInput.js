@@ -4,8 +4,8 @@ import {
 } from "../../../../../util/helper/Comparator.js";
 import SimpleDataProvider from "../../../../../util/grid/provider/SimpleDataProvider.js";
 import ModalDialog from "../../../../modal/ModalDialog.js";
-import "../../../../grid/DataGrid.js";
 import "../search/SearchInput.js";
+import "../../../../grid/DataGrid.js";
 import TPL from "./ListInput.js.html" assert {type: "html"};
 import STYLE from "./ListInput.js.css" assert {type: "css"};
 

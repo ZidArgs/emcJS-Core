@@ -1,9 +1,7 @@
 import CustomFormElementDelegating from "../../../../element/CustomFormElementDelegating.js";
 import "../../../../i18n/builtin/I18nInput.js";
 import TypeStorage from "../../../../../data/type/TypeStorage.js";
-import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
 import EventMultiTargetManager from "../../../../../util/event/EventMultiTargetManager.js";
-import i18n from "../../../../../util/I18n.js";
 import CharacterSearch from "../../../../../util/search/CharacterSearch.js";
 import {
     sortNodeList
@@ -15,7 +13,6 @@ import Comparator, {
     isEqual
 } from "../../../../../util/helper/Comparator.js";
 import ElementListCache from "../../../../../util/html/ElementListCache.js";
-import "../../../../i18n/builtin/I18nOption.js";
 import "./components/RelationSelectEntry.js";
 import TPL from "./RelationSelect.js.html" assert {type: "html"};
 import STYLE from "./RelationSelect.js.css" assert {type: "css"};
@@ -26,12 +23,6 @@ const ESCAPE_KEYS = [
     "Enter"
 ];
 
-/** TODO detect if bound storages change
- * - TypeStorage change event -> event.changes[key].oldValue == null || event.changes[key].newValue == null)
- * - TypeStorage clear event
- * - TypeStorage load event
- * - TypeStorage register event
- */
 export default class RelationSelect extends CustomFormElementDelegating {
 
     #isEditMode = false;
@@ -63,8 +54,6 @@ export default class RelationSelect extends CustomFormElementDelegating {
     #optionNodeList = new ElementListCache();
 
     #optionSelectEventManager = new EventMultiTargetManager();
-
-    #i18nEventManager = new EventTargetManager(i18n);
 
     constructor() {
         super();
@@ -198,14 +187,6 @@ export default class RelationSelect extends CustomFormElementDelegating {
             }
         }, {passive: true});
         /* --- */
-        this.#i18nEventManager.setActive(this.getBooleanAttribute("sorted"));
-        this.#i18nEventManager.set("language", () => {
-            this.#sort();
-        });
-        this.#i18nEventManager.set("translation", () => {
-            this.#sort();
-        });
-        /* --- */
         TypeStorage.onStorageRegister((typeNames) => {
             this.#fillAfterStorageRegister(typeNames);
         });
@@ -266,7 +247,10 @@ export default class RelationSelect extends CustomFormElementDelegating {
                 name: value.name
             };
             if (typeof value.type !== "string" || typeof value.name !== "string") {
-                value = null;
+                value = {
+                    type: null,
+                    name: null
+                };
             }
         }
         return value;
@@ -343,7 +327,6 @@ export default class RelationSelect extends CustomFormElementDelegating {
             case "sorted": {
                 if (oldValue != newValue) {
                     const sorted = this.sorted;
-                    this.#i18nEventManager.setActive(sorted);
                     if (sorted) {
                         this.#sort();
                     }
@@ -426,17 +409,17 @@ export default class RelationSelect extends CustomFormElementDelegating {
         if (value != null && value !== "") {
             const selectedEl = this.#optionNodeList.querySelector(`[type="${value.type}"][name="${value.name}"]`);
             if (selectedEl != null) {
-                this.#nameEl.i18nValue = selectedEl.name;
-                this.#typeEl.i18nValue = selectedEl.type;
+                this.#nameEl.innerText = selectedEl.name;
+                this.#typeEl.innerText = selectedEl.type;
             } else {
-                this.#nameEl.i18nValue = "";
-                this.#typeEl.i18nValue = "";
+                this.#nameEl.innerText = "";
+                this.#typeEl.innerText = "";
             }
             this.#valueEl.classList.remove("hidden");
             this.#placeholderEl.classList.add("hidden");
         } else {
-            this.#nameEl.i18nValue = "";
-            this.#typeEl.i18nValue = "";
+            this.#nameEl.innerText = "";
+            this.#typeEl.innerText = "";
             this.#valueEl.classList.add("hidden");
             this.#placeholderEl.classList.remove("hidden");
         }

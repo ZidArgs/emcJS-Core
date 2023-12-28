@@ -42,22 +42,6 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
         this.setJSONAttribute("value", val);
     }
 
-    get action() {
-        return this.getAttribute("action");
-    }
-
-    set action(val) {
-        this.setAttribute("action", val);
-    }
-
-    get editable() {
-        return this.getBooleanAttribute("editable");
-    }
-
-    set editable(val) {
-        this.setBooleanAttribute("editable", val);
-    }
-
     static get observedAttributes() {
         return [...super.observedAttributes, "editable", "row-name"];
     }

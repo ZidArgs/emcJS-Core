@@ -1,5 +1,3 @@
-import FormBuilder from "../../util/form/FormBuilder.js";
-import FormContext from "../../util/form/FormContext.js";
 import ModalLayer from "./ModalLayer.js";
 import Modal from "./Modal.js";
 import "../form/button/Button.js";
@@ -7,6 +5,12 @@ import TPL from "./ModalDialog.js.html" assert {type: "html"};
 import STYLE from "./ModalDialog.js.css" assert {type: "css"};
 
 export default class ModalDialog extends Modal {
+
+    #onsubmit = null;
+
+    #oncancel = null;
+
+    #onclose = null;
 
     constructor(options = {}) {
         super(options.title, options.close);
@@ -49,168 +53,134 @@ export default class ModalDialog extends Modal {
         }
     }
 
-    show() {
-        ModalLayer.append(this, "dialog");
-        this.initialFocus();
+    async show() {
+        return new Promise((resolve) => {
+            this.#onsubmit = function() {
+                resolve(true);
+            }
+            this.#oncancel = function() {
+                resolve(false);
+            }
+            this.#onclose = function() {
+                resolve();
+            }
+            ModalLayer.append(this, "dialog");
+            this.initialFocus();
+        });
     }
 
     submit() {
-        this.dispatchEvent(new Event("submit"));
         this.remove();
+        if (this.#onsubmit) {
+            this.#onsubmit();
+            this.#onsubmit = null;
+            this.#oncancel = null;
+            this.#onclose = null;
+        }
+        this.dispatchEvent(new Event("submit"));
     }
 
     cancel() {
-        this.dispatchEvent(new Event("cancel"));
         this.remove();
+        if (this.#oncancel) {
+            this.#oncancel();
+            this.#onsubmit = null;
+            this.#oncancel = null;
+            this.#onclose = null;
+        }
+        this.dispatchEvent(new Event("cancel"));
     }
 
-    static alert(ttl, msg) {
-        return new Promise(function(resolve) {
-            const dialogEl = new ModalDialog({
-                title: ttl,
-                text: msg,
-                submit: "ok"
-            });
-            // ---
-            dialogEl.onsubmit = function() {
-                resolve(true);
-            }
-            dialogEl.oncancel = function() {
-                resolve(false);
-            }
-            dialogEl.onclose = function() {
-                resolve();
-            }
-            dialogEl.show();
-        });
+    close() {
+        this.remove();
+        if (this.#onclose) {
+            this.#onclose();
+            this.#onsubmit = null;
+            this.#oncancel = null;
+            this.#onclose = null;
+        }
+        this.dispatchEvent(new Event("close"));
     }
 
-    static confirm(ttl, msg) {
-        return new Promise(function(resolve) {
-            const dialogEl = new ModalDialog({
-                title: ttl,
-                text: msg,
-                submit: "yes",
-                cancel: "no"
-            });
-            // ---
-            dialogEl.onsubmit = function() {
-                resolve(true);
-            }
-            dialogEl.oncancel = function() {
-                resolve(false);
-            }
-            dialogEl.onclose = function() {
-                resolve();
-            }
-            dialogEl.show();
-        });
+    getSubmitValue() {
+        return true;
     }
 
-    static prompt(ttl, msg, def) {
-        return new Promise(function(resolve) {
-            const dialogEl = new ModalDialog({
-                title: ttl,
-                text: msg,
-                submit: true,
-                cancel: true
-            });
-            // ---
-            const inputEl = document.createElement("input");
-            inputEl.style.padding = "5px";
-            inputEl.style.color = "black";
-            inputEl.style.backgroundColor = "white";
-            inputEl.style.border = "solid 1px black";
-            if (typeof def == "string") {
-                inputEl.value = def;
-            }
-            inputEl.addEventListener("keypress", (event) => {
-                if (event.key == "Enter") {
-                    dialogEl.submit();
-                }
-                event.stopPropagation();
-            });
-            dialogEl.append(inputEl);
-            // ---
-            dialogEl.onsubmit = function() {
-                resolve(inputEl.value);
-            }
-            dialogEl.oncancel = function() {
-                resolve(false);
-            }
-            dialogEl.onclose = function() {
-                resolve();
-            }
-            dialogEl.show();
+    static async alert(ttl, msg) {
+        const dialogEl = new ModalDialog({
+            title: ttl,
+            text: msg,
+            submit: "ok"
         });
+        // ---
+        const result = await dialogEl.show();
+        return result;
     }
 
-    static error(ttl = "Error", msg = "An error occured", errors = []) {
-        return new Promise(function(resolve) {
-            const dialogEl = new ModalDialog({
-                title: ttl,
-                text: msg,
-                submit: "ok"
-            });
-            // ---
-            const inputEl = document.createElement("textarea");
-            inputEl.style.width = "700px";
-            inputEl.style.maxWidth = "80vw";
-            inputEl.style.height = "300px";
-            inputEl.style.padding = "5px";
-            inputEl.style.color = "black";
-            inputEl.style.backgroundColor = "white";
-            inputEl.style.border = "solid 1px black";
-            inputEl.style.overflow = "scroll";
-            inputEl.style.whiteSpace = "pre";
-            inputEl.style.resize = "none";
-            inputEl.readOnly = true;
-            inputEl.value = Array.isArray(errors) ? errors.join("\n") : errors.toString();
-            dialogEl.append(inputEl);
-            // ---
-            dialogEl.onsubmit = function() {
-                resolve(true);
-            }
-            dialogEl.oncancel = function() {
-                resolve(false);
-            }
-            dialogEl.onclose = function() {
-                resolve();
-            }
-            dialogEl.show();
+    static async confirm(ttl, msg) {
+        const dialogEl = new ModalDialog({
+            title: ttl,
+            text: msg,
+            submit: "yes",
+            cancel: "no"
         });
+        // ---
+        const result = await dialogEl.show();
+        return result;
     }
 
-    static form(ttl, msg, formConfig) {
-        return new Promise(function(resolve) {
-            const dialogEl = new ModalDialog({
-                title: ttl,
-                text: msg,
-                submit: true,
-                cancel: true
-            });
-            // ---
-            const formEl = FormBuilder.buildForm(formConfig, null, null, "ModalDialog");
-            const formContext = new FormContext();
-            formContext.registerForm(formEl);
-            dialogEl.append(formEl);
-            // ---
-            formContext.addEventListener("submit", (event) => {
-                const {data} = event;
-                resolve(data);
-            });
-            // ---
-            dialogEl.onsubmit = function() {
-                formContext.submit();
-            }
-            dialogEl.oncancel = function() {
-                resolve(false);
-            }
-            dialogEl.onclose = function() {
-                resolve();
-            }
-            dialogEl.show();
+    static async prompt(ttl, msg, value) {
+        const dialogEl = new ModalDialog({
+            title: ttl,
+            text: msg,
+            submit: true,
+            cancel: true
         });
+        // ---
+        const inputEl = document.createElement("input");
+        inputEl.style.padding = "5px";
+        inputEl.style.color = "black";
+        inputEl.style.backgroundColor = "white";
+        inputEl.style.border = "solid 1px black";
+        if (typeof value === "string") {
+            inputEl.value = value;
+        }
+        inputEl.addEventListener("keypress", (event) => {
+            if (event.key == "Enter") {
+                dialogEl.submit();
+            }
+            event.stopPropagation();
+        });
+        dialogEl.append(inputEl);
+        // ---
+        const result = await dialogEl.show();
+        return result && inputEl.value;
+    }
+
+    static async error(ttl = "Error", msg = "An error occured", errors = []) {
+        const dialogEl = new ModalDialog({
+            title: ttl,
+            text: msg,
+            submit: "ok"
+        });
+        // ---
+        const inputEl = document.createElement("textarea");
+        inputEl.style.width = "700px";
+        inputEl.style.maxWidth = "80vw";
+        inputEl.style.height = "300px";
+        inputEl.style.padding = "5px";
+        inputEl.style.color = "black";
+        inputEl.style.backgroundColor = "white";
+        inputEl.style.border = "solid 1px black";
+        inputEl.style.overflow = "scroll";
+        inputEl.style.whiteSpace = "pre";
+        inputEl.style.resize = "none";
+        inputEl.readOnly = true;
+        inputEl.value = Array.isArray(errors) ? errors.join("\n") : errors.toString();
+        dialogEl.append(inputEl);
+        // ---
+        const result = await dialogEl.show();
+        return result;
     }
 
 }

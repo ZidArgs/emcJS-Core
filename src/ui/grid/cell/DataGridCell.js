@@ -54,6 +54,22 @@ export default class DataGridCell extends CustomElement {
         return this.getAttribute("value");
     }
 
+    set action(val) {
+        this.setAttribute("action", val);
+    }
+
+    get action() {
+        return this.getAttribute("action");
+    }
+
+    set editable(val) {
+        this.setBooleanAttribute("editable", val);
+    }
+
+    get editable() {
+        return this.getBooleanAttribute("editable");
+    }
+
     static get observedAttributes() {
         return ["value", "col-name"];
     }

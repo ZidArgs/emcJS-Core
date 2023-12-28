@@ -4,20 +4,20 @@ import STYLE from "./RelationSelectEntry.js.css" assert {type: "css"};
 
 export default class RelationSelectEntry extends CustomElement {
 
+    #containerEl;
+
     #nameEl;
 
     #typeEl;
-
-    #tooltipEl;
 
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
+        this.#containerEl = this.shadowRoot.getElementById("container");
         this.#nameEl = this.shadowRoot.getElementById("name");
         this.#typeEl = this.shadowRoot.getElementById("type");
-        this.#tooltipEl = this.shadowRoot.getElementById("tooltip");
     }
 
     set name(value) {
@@ -51,13 +51,14 @@ export default class RelationSelectEntry extends CustomElement {
         switch (name) {
             case "name": {
                 if (oldValue != newValue) {
-                    this.#nameEl.i18nValue = newValue;
-                    this.#tooltipEl.i18nTooltip = newValue;
+                    this.#nameEl.innerText = newValue;
+                    this.#containerEl.title = `${newValue || "---"}\n[${this.type || "---"}]`;
                 }
             } break;
             case "type": {
                 if (oldValue != newValue) {
-                    this.#typeEl.i18nValue = newValue;
+                    this.#typeEl.innerText = newValue;
+                    this.#containerEl.title = `${this.name || "---"}\n[${newValue || "---"}]`;
                 }
             } break;
         }
@@ -67,7 +68,7 @@ export default class RelationSelectEntry extends CustomElement {
         if (!this.name || !this.type) {
             return "";
         }
-        return `${this.#nameEl.innerText}\n${this.#typeEl.innerText}`;
+        return `${this.name}\n[${this.type}]`;
     }
 
 }

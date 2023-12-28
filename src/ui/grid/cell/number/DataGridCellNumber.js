@@ -30,28 +30,12 @@ export default class DataGridCellNumber extends DataGridCell {
         });
     }
 
-    get action() {
-        return this.getAttribute("action");
-    }
-
-    set action(val) {
-        this.setAttribute("action", val);
-    }
-
-    get decimals() {
-        return this.setIntAttribute("decimals");
-    }
-
     set decimals(val) {
         this.getIntAttribute("decimals", val);
     }
 
-    get editable() {
-        return this.getBooleanAttribute("editable");
-    }
-
-    set editable(val) {
-        this.setBooleanAttribute("editable", val);
+    get decimals() {
+        return this.setIntAttribute("decimals");
     }
 
     static get observedAttributes() {

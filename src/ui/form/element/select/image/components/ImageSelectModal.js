@@ -17,6 +17,7 @@ import "./ImageSelectPreview.js";
 import TPL from "./ImageSelectModal.js.html" assert {type: "html"};
 import STYLE from "./ImageSelectModal.js.css" assert {type: "css"};
 
+// TODO use ModalDialog instead
 export default class ImageSelectModal extends Modal {
 
     #slotEl;

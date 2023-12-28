@@ -19,14 +19,6 @@ export default class DataGridCellButton extends DataGridCell {
         });
     }
 
-    get action() {
-        return this.getAttribute("action");
-    }
-
-    set action(val) {
-        this.setAttribute("action", val);
-    }
-
     get text() {
         return this.getAttribute("text");
     }

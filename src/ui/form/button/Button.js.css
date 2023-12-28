@@ -73,6 +73,9 @@
 #button[icon]:not([icon=""])::before {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
+    height: 1em;
+    width: 1em;
     font-size: 1.3em;
     line-height: 1em;
     font-family: monospace;

@@ -8,6 +8,7 @@ import "../../../../../button/Button.js";
 import TPL from "./LogicJSONModal.js.html" assert {type: "html"};
 import STYLE from "./LogicJSONModal.js.css" assert {type: "css"};
 
+// TODO use ModalDialog instead
 export default class LogicJSONModal extends Modal {
 
     #submitEl;
@@ -17,7 +18,7 @@ export default class LogicJSONModal extends Modal {
     #errorEl;
 
     constructor() {
-        super("Import/Export JSON...");
+        super("Edit JSON...");
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */

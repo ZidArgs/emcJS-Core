@@ -7,8 +7,8 @@ import {
 } from "../../../../../util/helper/Comparator.js";
 import SimpleDataProvider from "../../../../../util/grid/provider/SimpleDataProvider.js";
 import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
-import "../../../../grid/DataGrid.js";
 import "../search/SearchInput.js";
+import "../../../../grid/DataGrid.js";
 import TPL from "./OptionAmountListInput.js.html" assert {type: "html"};
 import STYLE from "./OptionAmountListInput.js.css" assert {type: "css"};
 
