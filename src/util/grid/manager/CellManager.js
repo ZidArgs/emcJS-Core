@@ -121,8 +121,8 @@ export default class CellManager {
             } else {
                 const cellEl = this.#elements.get(name);
                 const activeEl = cellEl.shadowRoot.activeElement;
-                if (this.#checkChange(name, columnData, value, rowData)) {
-                    this.mutator(cellEl, columnData, value);
+                if (this.#checkChange(name, columnData, value)) {
+                    this.mutator(cellEl, columnData, value, rowData);
                     changes.updated.push(name);
                 }
                 unused.delete(name);
