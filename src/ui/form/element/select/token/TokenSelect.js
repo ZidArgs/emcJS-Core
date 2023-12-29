@@ -471,7 +471,7 @@ export default class TokenSelect extends CustomFormElementDelegating {
 
     #applyValue(value) {
         const data = [];
-        for (const val of value) {
+        for (const val of value ?? []) {
             const selectedEl = this.#optionNodeList.querySelector(`[value="${val}"]`);
             if (selectedEl != null) {
                 data.push({
