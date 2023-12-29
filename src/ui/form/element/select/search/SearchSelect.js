@@ -1,5 +1,5 @@
 import CustomFormElementDelegating from "../../../../element/CustomFormElementDelegating.js";
-import "../../../../i18n/builtin/I18nInput.js";
+import BusyIndicatorManager from "../../../../../util/BusyIndicatorManager.js";
 import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
 import EventMultiTargetManager from "../../../../../util/event/EventMultiTargetManager.js";
 import i18n from "../../../../../util/I18n.js";
@@ -15,6 +15,7 @@ import Comparator, {
 } from "../../../../../util/helper/Comparator.js";
 import ElementListCache from "../../../../../util/html/ElementListCache.js";
 import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
+import "../../../../i18n/builtin/I18nInput.js";
 import "../../../../i18n/builtin/I18nOption.js";
 import TPL from "./SearchSelect.js.html" assert {type: "html"};
 import STYLE from "./SearchSelect.js.css" assert {type: "css"};
@@ -469,7 +470,8 @@ export default class SearchSelect extends CustomFormElementDelegating {
         this.#optionNodeList.setNodeList(sortedNodeList);
     });
 
-    #resolveSlottedElements() {
+    async #resolveSlottedElements() {
+        await BusyIndicatorManager.busy();
         const optionNodeList = this.#optionsContainerEl.assignedElements({flatten: true}).filter((el) => el.matches("[value]"));
         this.#optionNodeList.setNodeList(optionNodeList);
         /* --- */
@@ -496,6 +498,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
             this.#sort();
         }
         this.#applyValue(this.#value);
+        await BusyIndicatorManager.unbusy();
     }
 
     #onSlotChange = debounce(() => {

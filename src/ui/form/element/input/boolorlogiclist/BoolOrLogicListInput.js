@@ -1,4 +1,5 @@
 import CustomFormElementDelegating from "../../../../element/CustomFormElementDelegating.js";
+import BusyIndicatorManager from "../../../../../util/BusyIndicatorManager.js";
 import {
     isEqual
 } from "../../../../../util/helper/Comparator.js";
@@ -80,8 +81,8 @@ export default class BoolOrLogicListInput extends CustomFormElementDelegating {
     }
 
     connectedCallback() {
-        this.#resolveSlottedElements();
         this.#updateSort(this.sorted);
+        this.#resolveSlottedElements();
     }
 
     formDisabledCallback(disabled) {
@@ -241,7 +242,8 @@ export default class BoolOrLogicListInput extends CustomFormElementDelegating {
         }
     }
 
-    #resolveSlottedElements() {
+    async #resolveSlottedElements() {
+        await BusyIndicatorManager.busy();
         const optionNodeList = this.#optionsContainerEl.assignedElements({flatten: true}).filter((el) => el.matches("[value]"));
         /* --- */
         const oldNodes = new Set(this.#mutationObserver.getObservedNodes());
@@ -280,6 +282,7 @@ export default class BoolOrLogicListInput extends CustomFormElementDelegating {
         this.value = newValue;
         /* --- */
         this.dispatchEvent(new Event("options"));
+        await BusyIndicatorManager.unbusy();
     }
 
     #applyValue() {

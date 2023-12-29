@@ -30,6 +30,7 @@ import "./cell/time/DataGridCellTime.js";
 import "./cell/relation/DataGridCellRelation.js";
 import TPL from "./DataGrid.js.html" assert {type: "html"};
 import STYLE from "./DataGrid.js.css" assert {type: "css"};
+import BusyIndicatorManager from "../../util/BusyIndicatorManager.js";
 
 const MUTATION_CONFIG = {
     attributes: true
@@ -264,7 +265,8 @@ export default class DataGrid extends ResizeObserverMixin(CustomElement) {
         }
     }
 
-    setData(rows = []) {
+    async setData(rows = []) {
+        await BusyIndicatorManager.busy();
         if (rows != null && !Array.isArray(rows)) {
             throw new TypeError("Data must be an array or null");
         }
@@ -285,13 +287,15 @@ export default class DataGrid extends ResizeObserverMixin(CustomElement) {
             this.dispatchEvent(ev);
         }
         this.#updateSelectHeader();
+        await BusyIndicatorManager.unbusy();
     }
 
     getAllCellsForColumn(name) {
         return this.#bodyEl.querySelectorAll(`tr > [col-name="${name}"]`);
     }
 
-    #applyColumnDefinition() {
+    async #applyColumnDefinition() {
+        await BusyIndicatorManager.busy();
         const columnNodeList = this.#columnContainerEl.assignedElements({flatten: true}).filter((el) => el instanceof Column);
         const newColumnDefinition = [];
         /* --- */
@@ -333,6 +337,7 @@ export default class DataGrid extends ResizeObserverMixin(CustomElement) {
             const ev = new Event("rows-updated");
             this.dispatchEvent(ev);
         }
+        await BusyIndicatorManager.unbusy();
     }
 
     #updateSelectHeader() {

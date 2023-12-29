@@ -1,5 +1,5 @@
 import CustomFormElementDelegating from "../../../../element/CustomFormElementDelegating.js";
-import "../../../../i18n/builtin/I18nInput.js";
+import BusyIndicatorManager from "../../../../../util/BusyIndicatorManager.js";
 import TypeStorage from "../../../../../data/type/TypeStorage.js";
 import EventMultiTargetManager from "../../../../../util/event/EventMultiTargetManager.js";
 import CharacterSearch from "../../../../../util/search/CharacterSearch.js";
@@ -13,6 +13,7 @@ import Comparator, {
     isEqual
 } from "../../../../../util/helper/Comparator.js";
 import ElementListCache from "../../../../../util/html/ElementListCache.js";
+import "../../../../i18n/builtin/I18nInput.js";
 import "./components/RelationSelectEntry.js";
 import TPL from "./RelationSelect.js.html" assert {type: "html"};
 import STYLE from "./RelationSelect.js.css" assert {type: "css"};
@@ -76,10 +77,10 @@ export default class RelationSelect extends CustomFormElementDelegating {
             }
         });
         /* --- */
-        this.#typeStorageEventManager.set("change", () => {
+        this.#typeStorageEventManager.set("clear", () => {
             this.#fillSelectElements();
         });
-        this.#typeStorageEventManager.set("change", () => {
+        this.#typeStorageEventManager.set("load", () => {
             this.#fillSelectElements();
         });
         this.#typeStorageEventManager.set("change", () => {
@@ -190,6 +191,7 @@ export default class RelationSelect extends CustomFormElementDelegating {
         TypeStorage.onStorageRegister((typeNames) => {
             this.#fillAfterStorageRegister(typeNames);
         });
+        this.#fillSelectElements();
     }
 
     connectedCallback() {
@@ -198,7 +200,6 @@ export default class RelationSelect extends CustomFormElementDelegating {
         this.#applyValue(value);
         this.internals.setFormValue(value);
         this.#typesWildcarded = this.types.includes("*");
-        this.#fillSelectElements();
     }
 
     formDisabledCallback(disabled) {
@@ -514,7 +515,8 @@ export default class RelationSelect extends CustomFormElementDelegating {
         this.#optionNodeList.setNodeList(sortedNodeList);
     });
 
-    #fillSelectElements() {
+    async #fillSelectElements() {
+        await BusyIndicatorManager.busy();
         this.innerHTML = "";
         this.#optionNodeList.purge();
         this.#optionSelectEventManager.clearTargets();
@@ -564,6 +566,7 @@ export default class RelationSelect extends CustomFormElementDelegating {
             this.#sort();
         }
         this.#applyValue(this.#value);
+        await BusyIndicatorManager.unbusy();
     }
 
     #fillAfterStorageRegister(typeNames) {

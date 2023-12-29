@@ -1,5 +1,5 @@
 import CustomFormElementDelegating from "../../../../element/CustomFormElementDelegating.js";
-import "../../../../i18n/builtin/I18nInput.js";
+import BusyIndicatorManager from "../../../../../util/BusyIndicatorManager.js";
 import TokenRegistry from "../../../../../data/registry/form/TokenRegistry.js";
 import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
 import EventMultiTargetManager from "../../../../../util/event/EventMultiTargetManager.js";
@@ -17,6 +17,7 @@ import Comparator, {
 import ElementListCache from "../../../../../util/html/ElementListCache.js";
 import ElementManager from "../../../../../util/html/ElementManager.js";
 import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
+import "../../../../i18n/builtin/I18nInput.js";
 import "../../../../i18n/builtin/I18nOption.js";
 import "../../../../i18n/I18nLabel.js";
 import TPL from "./TokenSelect.js.html" assert {type: "html"};
@@ -638,7 +639,8 @@ export default class TokenSelect extends CustomFormElementDelegating {
         }
     }
 
-    #loadTokenFromGroup() {
+    async #loadTokenFromGroup() {
+        await BusyIndicatorManager.busy();
         this.innerHTML = "";
         if (this.#tokenRegistry != null) {
             for (const value of this.#tokenRegistry) {
@@ -648,6 +650,7 @@ export default class TokenSelect extends CustomFormElementDelegating {
                 this.append(optionEl);
             }
         }
+        await BusyIndicatorManager.unbusy();
     }
 
 }

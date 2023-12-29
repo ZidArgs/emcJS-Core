@@ -1,4 +1,5 @@
 import CustomFormElementDelegating from "../../../../element/CustomFormElementDelegating.js";
+import BusyIndicatorManager from "../../../../../util/BusyIndicatorManager.js";
 import {
     debounce
 } from "../../../../../util/Debouncer.js";
@@ -193,7 +194,8 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
         }
     }
 
-    #resolveSlottedElements() {
+    async #resolveSlottedElements() {
+        await BusyIndicatorManager.busy();
         const optionNodeList = this.#optionsContainerEl.assignedElements({flatten: true}).filter((el) => el.matches("[value]"));
         /* --- */
         const oldNodes = new Set(this.#mutationObserver.getObservedNodes());
@@ -232,6 +234,7 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
         this.value = newValue;
         /* --- */
         this.dispatchEvent(new Event("options"));
+        await BusyIndicatorManager.unbusy();
     }
 
     #applyValue() {

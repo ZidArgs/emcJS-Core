@@ -4,6 +4,8 @@ const INSTANCES = new Map();
 
 export default class BusyIndicatorManager {
 
+    static #mainBusyEl = document.createElement("emc-busy-indicator");
+
     #busyEl;
 
     constructor(name) {
@@ -47,6 +49,34 @@ export default class BusyIndicatorManager {
 
     setTarget(element) {
         this.#busyEl.setTarget(element);
+    }
+
+    static setIndicator(element) {
+        if (element instanceof HTMLElement) {
+            BusyIndicatorManager.#mainBusyEl.append(element);
+        }
+    }
+
+    static async busy() {
+        await BusyIndicatorManager.#mainBusyEl.busy();
+    }
+
+    static async unbusy() {
+        await BusyIndicatorManager.#mainBusyEl.unbusy();
+    }
+
+    static async watch(promise) {
+        if (promise instanceof Promise) {
+            await BusyIndicatorManager.#mainBusyEl.busy();
+            try {
+                const result = promise();
+                await BusyIndicatorManager.#mainBusyEl.unbusy();
+                return result;
+            } catch (err) {
+                await BusyIndicatorManager.#mainBusyEl.unbusy();
+                throw err;
+            }
+        }
     }
 
 }

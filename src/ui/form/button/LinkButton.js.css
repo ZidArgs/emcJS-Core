@@ -80,7 +80,7 @@
     width: 1em;
     font-size: 1.3em;
     line-height: 1em;
-    font-family: monospace;
+    font-family: "monospace", monospace;
     font-weight: bold;
     content: attr(icon);
 }

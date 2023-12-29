@@ -1,4 +1,5 @@
 import Modal from "../../../../../modal/Modal.js";
+import BusyIndicatorManager from "../../../../../../util/BusyIndicatorManager.js";
 import CharacterSearch from "../../../../../../util/search/CharacterSearch.js";
 import ElementListCache from "../../../../../../util/html/ElementListCache.js";
 import EventMultiTargetManager from "../../../../../../util/event/EventMultiTargetManager.js";
@@ -107,7 +108,8 @@ export default class ImageSelectModal extends Modal {
         return this.getAttribute("value") ?? this.#optionNodeList.first?.value;
     }
 
-    loadOptions(options) {
+    async loadOptions(options) {
+        await BusyIndicatorManager.busy();
         this.innerHTML = "";
         for (const value in options) {
             const optionEl = document.createElement("emc-select-image-preview");
@@ -119,6 +121,7 @@ export default class ImageSelectModal extends Modal {
             });
             this.append(optionEl);
         }
+        await BusyIndicatorManager.unbusy();
     }
 
     static get observedAttributes() {

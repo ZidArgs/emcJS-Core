@@ -24,7 +24,7 @@ export default class BusyIndicator extends CustomElement {
                 this.#targetEl.append(this);
                 setTimeout(()=> {
                     resolve();
-                }, 10);
+                }, 1);
             } else {
                 resolve();
             }
@@ -38,7 +38,7 @@ export default class BusyIndicator extends CustomElement {
                 this.remove();
                 setTimeout(()=> {
                     resolve();
-                }, 10);
+                }, 0);
             } else {
                 resolve();
             }

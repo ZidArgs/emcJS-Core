@@ -1,4 +1,5 @@
 import CustomFormElementDelegating from "../../../../element/CustomFormElementDelegating.js";
+import BusyIndicatorManager from "../../../../../util/BusyIndicatorManager.js";
 import {
     isEqual
 } from "../../../../../util/helper/Comparator.js";
@@ -220,7 +221,8 @@ export default class ListSelect extends CustomFormElementDelegating {
         this.#gridEl.setSelected(value);
     }
 
-    #onSlotChange = debounce(() => {
+    #onSlotChange = debounce(async () => {
+        await BusyIndicatorManager.busy();
         const data = [];
         const optionNodeList = this.#optionsContainerEl.assignedElements({flatten: true}).filter((el) => el.matches("[value]"));
         this.#optionNodeList.setNodeList(optionNodeList);
@@ -245,6 +247,7 @@ export default class ListSelect extends CustomFormElementDelegating {
             this.#mutationObserver.observe(node);
         }
         this.#dataManager.setSource(data);
+        await BusyIndicatorManager.unbusy();
     });
 
 }

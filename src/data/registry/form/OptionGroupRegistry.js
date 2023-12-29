@@ -36,6 +36,14 @@ export default class OptionGroupRegistry extends EventTarget {
         return this.#options.has(key);
     }
 
+    clear() {
+        if (this.#options.size > 0) {
+            this.#options.clear();
+            const event = new Event("change");
+            this.dispatchEvent(event);
+        }
+    }
+
     setAll(options) {
         if (options == null || typeof options !== "object") {
             throw new TypeError("options has to be a dict or an array");
@@ -75,6 +83,12 @@ export default class OptionGroupRegistry extends EventTarget {
             const options = config[name];
             const registry = new OptionGroupRegistry(name);
             registry.setAll(options);
+        }
+    }
+
+    static reset() {
+        for (const [, storage] in REGISTRY_STORAGE) {
+            storage.clear();
         }
     }
 

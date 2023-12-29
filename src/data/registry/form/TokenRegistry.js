@@ -72,4 +72,10 @@ export default class TokenRegistry extends EventTarget {
         }
     }
 
+    static reset() {
+        for (const [, storage] in REGISTRY_STORAGE) {
+            storage.clear();
+        }
+    }
+
 }

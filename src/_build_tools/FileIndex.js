@@ -12,6 +12,10 @@ function normalizePath(path) {
 
 class FileIndex {
 
+    reset() {
+        FILES.clear();
+    }
+
     register(src = "/", dest = "/", sourcemaps = false) {
         const files = [];
         return through(function(file) {
@@ -76,7 +80,6 @@ class FileIndex {
         console.log("write new index");
         fs.writeFileSync(indexPath, JSON.stringify(files, null, 4));
         fs.writeFileSync(path.resolve("import_removed.json"), JSON.stringify(removedImports.sort(), null, 4));
-        FILES.clear();
         return indexPath;
     }
 
