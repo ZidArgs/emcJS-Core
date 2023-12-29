@@ -138,10 +138,7 @@ export default class ModalDialog extends Modal {
         });
         // ---
         const inputEl = document.createElement("input");
-        inputEl.style.padding = "5px";
-        inputEl.style.color = "black";
-        inputEl.style.backgroundColor = "white";
-        inputEl.style.border = "solid 1px black";
+        inputEl.className = "prompt-input";
         if (typeof value === "string") {
             inputEl.value = value;
         }

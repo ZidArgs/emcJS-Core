@@ -8,7 +8,7 @@ export default class ModalDialogRelationSelect extends ModalDialog {
     #inputEl;
 
     constructor() {
-        super("Select entity");
+        super({title: "Select entity"});
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
