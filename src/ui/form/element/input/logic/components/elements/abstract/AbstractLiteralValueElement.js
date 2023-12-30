@@ -41,7 +41,7 @@ export default class AbstractLiteralValueElement extends AbstractElement {
     }
 
     loadLogic(logic) {
-        this.ref = logic.ref ?? logic.content;
+        this.ref = logic.ref;
     }
 
     static get observedAttributes() {

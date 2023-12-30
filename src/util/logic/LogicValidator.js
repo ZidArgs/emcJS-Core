@@ -40,8 +40,20 @@ class LogicValidator {
     #validateType(node, noEmpty, path = [], errors = []) {
         const currentType = node["type"];
         switch (currentType) {
-            case "string":
             case "value": {
+                if (typeof node["ref"] !== "string") {
+                    errors.push(`ref has to be a string [ ${path.join(" > ")} ]`);
+                }
+            } break;
+            case "state": {
+                if (typeof node["ref"] !== "string") {
+                    errors.push(`ref has to be a string [ ${path.join(" > ")} ]`);
+                }
+                if (typeof node["value"] !== "string" && (typeof node["value"] !== "number" || isNaN(node["ref"]))) {
+                    errors.push(`value has to be a string or a number [ ${path.join(" > ")} ]`);
+                }
+            } break;
+            case "string": {
                 if (typeof node["content"] !== "string") {
                     errors.push(`content has to be a string [ ${path.join(" > ")} ]`);
                 }
@@ -50,14 +62,6 @@ class LogicValidator {
                 const val = parseInt(node["content"]);
                 if (!isNaN(val)) {
                     errors.push(`content has to be a number [ ${path.join(" > ")} ]`);
-                }
-            } break;
-            case "state": {
-                if (typeof node["content"] !== "string") {
-                    errors.push(`content has to be a string [ ${path.join(" > ")} ]`);
-                }
-                if (typeof node["value"] !== "string" && (typeof node["value"] !== "number" || isNaN(node["content"]))) {
-                    errors.push(`value has to be a string or a number [ ${path.join(" > ")} ]`);
                 }
             } break;
             case "and":

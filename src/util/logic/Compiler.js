@@ -4,9 +4,9 @@ const TRANSPILERS = {
     "false":    () => "0",
     "string":   (logic) => escape(logic.content),
     "number":   (logic) => toNumber(logic.content),
-    "value":    (logic) => `(val("${escape(logic.content)}")||0)`,
+    "value":    (logic) => `(val("${escape(logic.ref)}")||0)`,
+    "state":    (logic) => `(val("${escape(logic.ref)}")||"")=="${escape(logic.value)}"`,
     "pointer":  (logic) => `(val(val("${escape(logic.content)}")||"")||0)`,
-    "state":    (logic) => `(val("${escape(logic.content)}")||"")=="${escape(logic.value)}"`,
 
     /* operators */
     "and":      (logic) => `${multiElementOperation(logic.content, "&&")}`,
