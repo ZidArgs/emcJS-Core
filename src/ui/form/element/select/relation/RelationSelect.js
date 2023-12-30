@@ -99,6 +99,10 @@ export default class RelationSelect extends CustomFormElementDelegating {
         this.#scrollContainerEl = this.shadowRoot.getElementById("scroll-container");
         this.#buttonEl = this.shadowRoot.getElementById("button");
         /* --- */
+        this.#scrollContainerEl.addEventListener("mousedown", (event) => {
+            event.stopPropagation();
+        });
+        /* --- */
         this.#buttonEl.addEventListener("click", (event) => {
             if (!this.#isEditMode) {
                 this.#startEditMode();

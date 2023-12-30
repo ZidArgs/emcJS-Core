@@ -94,6 +94,10 @@ export default class SearchSelect extends CustomFormElementDelegating {
             this.#onSlotChange();
         });
         /* --- */
+        this.#scrollContainerEl.addEventListener("mousedown", (event) => {
+            event.stopPropagation();
+        });
+        /* --- */
         this.#buttonEl.addEventListener("click", (event) => {
             if (!this.#isEditMode) {
                 this.#startEditMode();
