@@ -2,7 +2,7 @@ import {
     immute
 } from "../Immutable.js";
 
-const TypeDefinitions = new Map();
+const TypeConfigurations = new Map();
 
 const INTERNAL_TYPES = [
     "Boolean",
@@ -37,7 +37,12 @@ class TypeConfigMap extends EventTarget {
         if (typeof typeConfig !== "object" || Array.isArray(typeConfig)) {
             throw new Error(`TypeConfigMap - config has to be a dictionary [ ${typeName} ]`);
         }
-        TypeDefinitions.set(typeName, this.#convertConfig(typeName, typeConfig));
+        TypeConfigurations.set(typeName, immute({
+            parameters: {
+                allowExtension: !!(typeConfig.parameters.allowExtension ?? false)
+            },
+            definition: this.#convertConfig(typeName, typeConfig.definition)
+        }));
         const ev = new Event("register");
         ev.data = {typeName};
         this.dispatchEvent(ev);
@@ -61,137 +66,100 @@ class TypeConfigMap extends EventTarget {
     }
 
     get(typeName) {
-        const typeConfig = TypeDefinitions.get(typeName);
-        if (typeConfig == null) {
+        const typeDefinition = TypeConfigurations.get(typeName);
+        if (typeDefinition == null) {
             throw new Error(`TypeConfigMap - no type with name "${typeName}" registered`);
         }
-        return typeConfig;
+        return typeDefinition;
     }
 
-    getAtPath(typeName, path) {
-        if (!Array.isArray(path)) {
-            throw new Error(`TypeConfigMap - path has to be an array`);
-        }
-        return this.#getAtPath(typeName, path);
-    }
-
-    #getAtPath(typeName, path, currentPath = []) {
-        path = [...path];
-        const typeConfig = this.get(typeName);
-        return this.#getAtPathRecursive(typeName, typeConfig, path, currentPath);
-    }
-
-    #getAtPathRecursive(typeName, typeConfig, path, currentPath) {
-        if (path.length === 0) {
-            return typeConfig;
-        }
-        const currentType = typeConfig["@type"];
-        let name = path.shift();
-        if (this.isListingType(currentType)) {
-            name = "children";
-        }
-        if (!(name in typeConfig)) {
-            throw new Error(`TypeConfigMap - can not resolve attribute "${name}" in "${typeName} [ ${currentPath.join(" > ")} ]"`);
-        }
-        const definition = typeConfig[name];
-        const nextType = definition["@type"];
-        if (this.isInternalType(nextType)) {
-            if (!this.isListingType(nextType) && path.length > 0) {
-                throw new Error(`TypeConfigMap - path overflow, type "${nextType}" can not have children [ ${currentPath.join(" > ")} ]`);
-            }
-            return this.#getAtPathRecursive(typeName, definition, path, [...currentPath, name]);
-        } else {
-            return this.#getAtPath(nextType, path, [...currentPath, name]);
-        }
-    }
-
-    #convertConfig(typeName, typeConfig) {
+    #convertConfig(typeName, typeDefinition) {
         const result = {};
-        for (const [currentName, definition] of Object.entries(typeConfig)) {
-            result[currentName] = this.#convertType(typeName, currentName, definition);
+        for (const [currentName, attrDefinition] of Object.entries(typeDefinition)) {
+            result[currentName] = this.#convertType(typeName, currentName, attrDefinition);
         }
-        return immute(result);
+        return result;
     }
 
-    #convertType(typeName, currentName, definition) {
-        if (!("@type" in definition)) {
+    #convertType(typeName, currentName, attrDefinition) {
+        if (!("@type" in attrDefinition)) {
             throw new Error(`TypeConfigMap - @type missing [ ${typeName} > ${currentName} ]`);
         }
 
-        const currentType = definition["@type"];
+        const currentType = attrDefinition["@type"];
         const currentResult = {
             "@type": currentType
         };
 
-        if ("optional" in definition) {
-            if (typeof definition["optional"] !== "boolean") {
+        if ("optional" in attrDefinition) {
+            if (typeof attrDefinition["optional"] !== "boolean") {
                 throw new Error(`TypeConfigMap - optional has to be a boolean [ ${typeName} > ${currentName} ]`);
             }
-            currentResult["optional"] = definition["optional"];
+            currentResult["optional"] = attrDefinition["optional"];
         }
 
         switch (currentType) {
             case "String": {
-                if ("pattern" in definition) {
-                    if (typeof definition["pattern"] !== "string") {
+                if ("pattern" in attrDefinition) {
+                    if (typeof attrDefinition["pattern"] !== "string") {
                         throw new Error(`TypeConfigMap - pattern has to be a string [ ${typeName} > ${currentName} ]`);
                     }
                     try {
-                        currentResult["pattern"] = new RegExp(definition["pattern"], "i");
+                        currentResult["pattern"] = new RegExp(attrDefinition["pattern"], "i");
                     } catch {
                         throw new Error(`TypeConfigMap - pattern is not a valid RegExp [ ${typeName} > ${currentName} ]`);
                     }
                 }
             } break;
             case "Number": {
-                if ("decimalPlaces" in definition) {
-                    if (typeof definition["decimalPlaces"] !== "number") {
+                if ("decimalPlaces" in attrDefinition) {
+                    if (typeof attrDefinition["decimalPlaces"] !== "number") {
                         throw new Error(`TypeConfigMap - decimalPlaces has to be a number [ ${typeName} > ${currentName} ]`);
                     }
-                    currentResult["decimalPlaces"] = parseInt(definition["decimalPlaces"]);
+                    currentResult["decimalPlaces"] = parseInt(attrDefinition["decimalPlaces"]);
                 }
-                if ("min" in definition) {
-                    if (typeof definition["min"] !== "number") {
+                if ("min" in attrDefinition) {
+                    if (typeof attrDefinition["min"] !== "number") {
                         throw new Error(`TypeConfigMap - min has to be a number [ ${typeName} > ${currentName} ]`);
                     }
-                    currentResult["min"] = definition["min"];
+                    currentResult["min"] = attrDefinition["min"];
                 }
-                if ("max" in definition) {
-                    if (typeof definition["max"] !== "number") {
+                if ("max" in attrDefinition) {
+                    if (typeof attrDefinition["max"] !== "number") {
                         throw new Error(`TypeConfigMap - max has to be a number [ ${typeName} > ${currentName} ]`);
                     }
-                    currentResult["max"] = definition["max"];
+                    currentResult["max"] = attrDefinition["max"];
                 }
             } break;
             case "Choice": {
-                if (!("choices" in definition) || !Array.isArray(definition["choices"])) {
+                if (!("choices" in attrDefinition) || !Array.isArray(attrDefinition["choices"])) {
                     throw new Error(`TypeConfigMap - choices has to be an array [ ${typeName} > ${currentName} ]`);
                 }
-                if (definition["choices"].some((entry) => typeof entry !== "string")) {
+                if (attrDefinition["choices"].some((entry) => typeof entry !== "string")) {
                     throw new Error(`TypeConfigMap - choices can only contain strings [ ${typeName} > ${currentName} ]`);
                 }
-                currentResult["choices"] = definition["choices"];
+                currentResult["choices"] = attrDefinition["choices"];
             } break;
             case "List": {
-                if (!("children" in definition) || typeof definition["children"] !== "object" || Array.isArray(definition["children"])) {
+                if (!("children" in attrDefinition) || typeof attrDefinition["children"] !== "object" || Array.isArray(attrDefinition["children"])) {
                     throw new Error(`TypeConfigMap - children has to be a type definition [ ${typeName} > ${currentName} ]`);
                 }
-                currentResult["children"] = this.#convertType(typeName, currentName, definition["children"]);
+                currentResult["children"] = this.#convertType(typeName, currentName, attrDefinition["children"]);
             } break;
             case "AssociativeList": {
-                if (!("children" in definition) || typeof definition["children"] !== "object" || Array.isArray(definition["children"])) {
+                if (!("children" in attrDefinition) || typeof attrDefinition["children"] !== "object" || Array.isArray(attrDefinition["children"])) {
                     throw new Error(`TypeConfigMap - children has to be a type definition [ ${typeName} > ${currentName} ]`);
                 }
-                currentResult["children"] = this.#convertType(typeName, currentName, definition["children"]);
+                currentResult["children"] = this.#convertType(typeName, currentName, attrDefinition["children"]);
             } break;
             case "Relation": {
-                if (!("types" in definition) || !Array.isArray(definition["types"])) {
+                if (!("types" in attrDefinition) || !Array.isArray(attrDefinition["types"])) {
                     throw new Error(`TypeConfigMap - types has to be an array [ ${typeName} > ${currentName} ]`);
                 }
-                if (definition["types"].some((entry) => typeof entry !== "string" || entry === "")) {
+                if (attrDefinition["types"].some((entry) => typeof entry !== "string" || entry === "")) {
                     throw new Error(`TypeConfigMap - types can only contain non empty strings [ ${typeName} > ${currentName} ]`);
                 }
-                currentResult["types"] = definition["types"];
+                currentResult["types"] = attrDefinition["types"];
             } break;
             default: { // boolean, image, color, logic, custom
             } break;

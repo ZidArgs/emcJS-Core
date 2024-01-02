@@ -9,7 +9,7 @@ const COLOR_PATTERN = /#[0-9a-f]{6}/i;
 
 class TypeValidator {
 
-    validate(typeName, value, {label, throwErrors = false, strict = false} = {}) {
+    validate(typeName, value, {label, throwErrors = false} = {}) {
         label = typeof label === "string" && label !== "" ? `| ${label} |` : "|";
 
         if (typeof typeName !== "string" || typeName === "" || typeName === "*") {
@@ -17,7 +17,7 @@ class TypeValidator {
         }
 
         const errors = [];
-        this.#validate(typeName, value, strict, [label], errors);
+        this.#validate(typeName, value, [label], errors);
         if (throwErrors && errors.length > 0) {
             const msg = errors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
             throw new Error(`Error validating value as "${typeName}"\n    ${msg}`);
@@ -25,7 +25,7 @@ class TypeValidator {
         return errors;
     }
 
-    #validate(typeName, data, strict, currentPath, errors) {
+    #validate(typeName, data, currentPath, errors) {
         const typeConfig = TypeConfigMap.get(typeName);
         if (typeConfig == null) {
             errors.push(`error resolving type "${typeName}": unknown [ ${currentPath.join(" > ")} ]`);
@@ -36,100 +36,74 @@ class TypeValidator {
             return;
         }
 
-        if (strict) {
+        const {definition: typeDefinition, parameters: typeParameters} = typeConfig;
+
+        if (!typeParameters.allowExtension) {
             for (const name in data) {
-                if (!(name in typeConfig)) {
-                    errors.push(`type "${typeName}" does not include attribute "${name}" (strict) [ ${currentPath.join(" > ")} ]`);
+                if (!(name in typeDefinition)) {
+                    errors.push(`type "${typeName}" does not include attribute "${name}" and extension is not allowed [ ${currentPath.join(" > ")} ]`);
                 }
             }
         }
 
-        for (const [name, definition] of Object.entries(typeConfig)) {
+        for (const [name, attrDefinition] of Object.entries(typeDefinition)) {
             const value = data[name];
             if (value == null) {
-                if (!definition.optional) {
+                if (!attrDefinition.optional) {
                     errors.push(`type "${typeName}" is missing required attribute "${name}" [ ${currentPath.join(" > ")} ]`);
                 }
                 continue;
             }
-            this.#validateType([...currentPath, `${name} {${definition["@type"]}}`], value, definition, strict, errors);
+            this.#validateType([...currentPath, `${name} {${attrDefinition["@type"]}}`], value, attrDefinition, errors);
         }
     }
 
-    validateAtPath(typeName, path, value, {label, throwErrors = false, strict = false} = {}) {
-        label = typeof label === "string" && label !== "" ? `| ${label} |` : "|";
-
-        if (typeof typeName !== "string" || typeName === "" || typeName === "*") {
-            throw new Error(`Error validating value\n    typeName has to be a string that is not empty and not "*"`);
-        }
-        if (typeof path !== "string" || path === "") {
-            throw new Error(`Error validating value\n    path has to be a string that is not empty and not "*"`);
-        }
-
-        const errors = [];
-        path = path.split(".");
-        try {
-            const definition = TypeConfigMap.getAtPath(typeName, path);
-            const name = path.pop();
-
-            this.#validateType([label, ...path, `${name} {${definition["@type"]}}`], value, definition, strict, errors);
-        } catch (err) {
-            errors.push(err.message);
-        }
-
-        if (throwErrors && errors.length > 0) {
-            const msg = errors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
-            throw new Error(`Error validating value as "${typeName}"\n    ${msg}`);
-        }
-        return errors;
-    }
-
-    #validateType(currentPath, value, definition, strict, errors) {
-        const currentType = definition["@type"];
+    #validateType(currentPath, value, attrDefinition, errors) {
+        const currentType = attrDefinition["@type"];
         switch (currentType) {
             case "List": {
-                this.#validateList(currentPath, value, definition, strict, errors);
+                this.#validateList(currentPath, value, attrDefinition, errors);
             } break;
             case "AssociativeList": {
-                this.#validateAssociativeList(currentPath, value, definition, strict, errors);
+                this.#validateAssociativeList(currentPath, value, attrDefinition, errors);
             } break;
             case "Relation": {
-                this.#validateRelation(currentPath, value, definition, strict, errors);
+                this.#validateRelation(currentPath, value, attrDefinition, errors);
             } break;
             case "Boolean": {
-                this.#validateBoolean(currentPath, value, definition, strict, errors);
+                this.#validateBoolean(currentPath, value, attrDefinition, errors);
             } break;
             case "String": {
-                this.#validateString(currentPath, value, definition, strict, errors);
+                this.#validateString(currentPath, value, attrDefinition, errors);
             } break;
             case "Number": {
-                this.#validateNumber(currentPath, value, definition, strict, errors);
+                this.#validateNumber(currentPath, value, attrDefinition, errors);
             } break;
             case "Choice": {
-                this.#validateChoice(currentPath, value, definition, strict, errors);
+                this.#validateChoice(currentPath, value, attrDefinition, errors);
             } break;
             case "Image": {
-                this.#validateImage(currentPath, value, definition, strict, errors);
+                this.#validateImage(currentPath, value, attrDefinition, errors);
             } break;
             case "Color": {
-                this.#validateColor(currentPath, value, definition, strict, errors);
+                this.#validateColor(currentPath, value, attrDefinition, errors);
             } break;
             case "Logic": {
-                this.#validateLogic(currentPath, value, definition, strict, errors);
+                this.#validateLogic(currentPath, value, attrDefinition, errors);
             } break;
             default: {
-                this.#validate(currentType, value, strict, currentPath, errors);
+                this.#validate(currentType, value, currentPath, errors);
             } break;
         }
     }
 
-    #validateBoolean(currentPath, value, definition, strict, errors) {
+    #validateBoolean(currentPath, value, definition, errors) {
         if (typeof value !== "boolean") {
             errors.push(`boolean expected [ ${currentPath.join(" > ")} ]`);
         }
     }
 
-    #validateString(currentPath, value, definition, strict, errors) {
+    #validateString(currentPath, value, definition, errors) {
         if (typeof value !== "string") {
             errors.push(`string expected [ ${currentPath.join(" > ")} ]`);
         } else {
@@ -140,7 +114,7 @@ class TypeValidator {
         }
     }
 
-    #validateNumber(currentPath, value, definition, strict, errors) {
+    #validateNumber(currentPath, value, definition, errors) {
         if (typeof value !== "number") {
             errors.push(`number expected [ ${currentPath.join(" > ")} ]`);
         } else if (definition.decimalPlaces != null && (value.toString().split(".")[1]?.length ?? 0 > definition.decimalPlaces)) {
@@ -152,7 +126,7 @@ class TypeValidator {
         }
     }
 
-    #validateChoice(currentPath, value, definition, strict, errors) {
+    #validateChoice(currentPath, value, definition, errors) {
         if (typeof value !== "string") {
             errors.push(`string expected [ ${currentPath.join(" > ")} ]`);
         } else if (!definition.choices.includes(value)) {
@@ -160,7 +134,7 @@ class TypeValidator {
         }
     }
 
-    #validateImage(currentPath, value, definition, strict, errors) {
+    #validateImage(currentPath, value, definition, errors) {
         if (typeof value !== "string") {
             errors.push(`string expected [ ${currentPath.join(" > ")} ]`);
         } else if (value !== "" && !IMAGE_PATTERN.test(value)) {
@@ -168,7 +142,7 @@ class TypeValidator {
         }
     }
 
-    #validateColor(currentPath, value, definition, strict, errors) {
+    #validateColor(currentPath, value, definition, errors) {
         if (typeof value !== "string") {
             errors.push(`string expected [ ${currentPath.join(" > ")} ]`);
         } else if (!COLOR_PATTERN.test(value)) {
@@ -176,7 +150,7 @@ class TypeValidator {
         }
     }
 
-    #validateLogic(currentPath, value, definition, strict, errors) {
+    #validateLogic(currentPath, value, definition, errors) {
         if (typeof value !== "boolean") {
             if (typeof value !== "object" || Array.isArray(value)) {
                 errors.push(`boolean or logic definition expected [ ${currentPath.join(" > ")} ]`);
@@ -189,7 +163,7 @@ class TypeValidator {
         }
     }
 
-    #validateList(currentPath, value, definition, strict, errors) {
+    #validateList(currentPath, value, definition, errors) {
         if (!Array.isArray(value)) {
             errors.push(`array expected [ ${currentPath.join(" > ")} ]`);
         } else if (!definition.children.optional && value.length <= 0) {
@@ -197,12 +171,12 @@ class TypeValidator {
         } else {
             for (const key in value) {
                 const entry = value[key];
-                this.#validateType([...currentPath, `${key} {${definition.children["@type"]}}`], entry, definition.children, strict, errors);
+                this.#validateType([...currentPath, `${key} {${definition.children["@type"]}}`], entry, definition.children, errors);
             }
         }
     }
 
-    #validateAssociativeList(currentPath, value, definition, strict, errors) {
+    #validateAssociativeList(currentPath, value, definition, errors) {
         if (typeof value !== "object" || Array.isArray(value)) {
             errors.push(`dictionary expected [ ${currentPath.join(" > ")} ]`);
         } else if (!definition.children.optional && Object.keys(value).length <= 0) {
@@ -210,12 +184,12 @@ class TypeValidator {
         } else {
             for (const key in value) {
                 const entry = value[key];
-                this.#validateType([...currentPath, `"${key}" {${definition.children["@type"]}}`], entry, definition.children, strict, errors);
+                this.#validateType([...currentPath, `"${key}" {${definition.children["@type"]}}`], entry, definition.children, errors);
             }
         }
     }
 
-    #validateRelation(currentPath, value, definition, strict, errors) {
+    #validateRelation(currentPath, value, definition, errors) {
         if (typeof value !== "object" || Array.isArray(value)) {
             errors.push(`dictionary expected [ ${currentPath.join(" > ")} ]`);
         } else if (!isEqual(Object.keys(value).sort(), ["name", "type"])) {

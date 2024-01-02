@@ -39,8 +39,7 @@ export default class TypeStorage extends EventTarget {
         // validation
         if (Object.keys(value).length) {
             const validationErrors = TypeValidator.validate(this.#typeName, value, {
-                label: key,
-                strict: true
+                label: key
             });
             if (validationErrors.length > 0) {
                 const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
@@ -71,8 +70,7 @@ export default class TypeStorage extends EventTarget {
             // validation
             if (Object.keys(newValue).length) {
                 const validationErrors = TypeValidator.validate(this.#typeName, newValue, {
-                    label: key,
-                    strict: true
+                    label: key
                 });
                 if (validationErrors.length > 0) {
                     const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
@@ -158,8 +156,7 @@ export default class TypeStorage extends EventTarget {
             // validation
             if (Object.keys(newValue).length) {
                 const validationErrors = TypeValidator.validate(this.#typeName, newValue, {
-                    label: key,
-                    strict: true
+                    label: key
                 });
                 if (validationErrors.length > 0) {
                     const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
@@ -190,8 +187,7 @@ export default class TypeStorage extends EventTarget {
             // validation
             if (newValue != null && Object.keys(newValue).length) {
                 const validationErrors = TypeValidator.validate(this.#typeName, newValue, {
-                    label: key,
-                    strict: true
+                    label: key
                 });
                 if (validationErrors.length > 0) {
                     const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");

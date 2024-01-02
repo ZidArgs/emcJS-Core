@@ -26,8 +26,7 @@ export default class TypeEntity extends EventTarget {
         this.#entityName = entityName;
         // validation
         const validationErrors = TypeValidator.validate(this.#typeName, data, {
-            label: this.#entityName,
-            strict: true
+            label: this.#entityName
         });
         if (validationErrors.length > 0) {
             const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
