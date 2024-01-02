@@ -13,6 +13,7 @@
     --navigation-text-color: #000000;
     --navigation-back-color: #ffffff;
     --navigation-shadow-color: #000000;
+    --navigation-marker-color: #ffffff;
 
     /* === panel === */
     --panel-text-color: var(--page-text-color, #000000);
