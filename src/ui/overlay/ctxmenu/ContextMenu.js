@@ -47,9 +47,9 @@ export default class ContextMenu extends CustomElement {
 
     #props;
 
-    #items = [];
+    #items = null;
 
-    #addedItems = [];
+    #addedItems = null;
 
     #inactiveGroups = new Set();
 
@@ -208,29 +208,37 @@ export default class ContextMenu extends CustomElement {
     }
 
     initItems() {
-        const config = [];
-        const itemEls = this.querySelectorAll("div.splitter, [menu-action]");
-        for (const itemEl of Array.from(itemEls)) {
-            const attr = itemEl.getAttribute("menu-action");
-            if (attr != null) {
-                config.push({menuAction: attr, content: itemEl.innerHTML});
-            } else {
-                config.push("splitter");
+        if (this.#items == null) {
+            const config = [];
+            const itemEls = this.querySelectorAll("div.splitter, [menu-action]");
+            for (const itemEl of Array.from(itemEls)) {
+                const attr = itemEl.getAttribute("menu-action");
+                if (attr != null) {
+                    config.push({menuAction: attr, content: itemEl.innerHTML});
+                } else {
+                    config.push("splitter");
+                }
             }
+            this.setItems(config);
         }
-        this.setItems(config);
     }
 
-    setItems(config = []) {
+    setItems(config) {
         if (Array.isArray(config)) {
             this.#items = config;
             this.#renderItems();
+        } else {
+            this.#items = null;
+            this.initItems();
         }
     }
 
-    setAddedItems(config = []) {
+    setAddedItems(config) {
         if (Array.isArray(config)) {
             this.#addedItems = config;
+            this.#renderItems();
+        } else {
+            this.#addedItems = null;
             this.#renderItems();
         }
     }

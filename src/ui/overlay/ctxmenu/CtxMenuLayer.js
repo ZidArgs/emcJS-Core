@@ -12,7 +12,10 @@ export default class CtxMenuLayer extends CustomElement {
     }
 
     static findNextLayer(source) {
-        if (source instanceof CtxMenuLayer || source == document.body) {
+        if (!(source instanceof Node)) {
+            throw new Error("can only traverse instances of Node");
+        }
+        if (source instanceof CtxMenuLayer || source === document.body) {
             return source;
         }
         if (source.assignedSlot != null) {
