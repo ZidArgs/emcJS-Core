@@ -22,17 +22,17 @@ export default class EventTargetManager {
             if (this.#target != null) {
                 this.#active = value;
                 if (value) {
-                    for (const [name, handler] of this.#subs.entries()) {
+                    for (const [name, handler] of this.#subs) {
                         this.#target.addEventListener(name, handler, {capture: false});
                     }
-                    for (const [name, handler] of this.#captures.entries()) {
+                    for (const [name, handler] of this.#captures) {
                         this.#target.addEventListener(name, handler, {capture: true});
                     }
                 } else {
-                    for (const [name, handler] of this.#subs.entries()) {
+                    for (const [name, handler] of this.#subs) {
                         this.#target.removeEventListener(name, handler, {capture: false});
                     }
-                    for (const [name, handler] of this.#captures.entries()) {
+                    for (const [name, handler] of this.#captures) {
                         this.#target.removeEventListener(name, handler, {capture: true});
                     }
                 }
@@ -45,19 +45,19 @@ export default class EventTargetManager {
             throw new TypeError("target must be an instance of EventTarget or null");
         }
         if (this.#target != null) {
-            for (const [name, handler] of this.#subs.entries()) {
+            for (const [name, handler] of this.#subs) {
                 this.#target.removeEventListener(name, handler, {capture: false});
             }
-            for (const [name, handler] of this.#captures.entries()) {
+            for (const [name, handler] of this.#captures) {
                 this.#target.removeEventListener(name, handler, {capture: true});
             }
         }
         this.#target = target;
         if (this.#active && target != null) {
-            for (const [name, handler] of this.#subs.entries()) {
+            for (const [name, handler] of this.#subs) {
                 target.addEventListener(name, handler, {capture: false});
             }
-            for (const [name, handler] of this.#captures.entries()) {
+            for (const [name, handler] of this.#captures) {
                 target.addEventListener(name, handler, {capture: true});
             }
         }
@@ -153,10 +153,10 @@ export default class EventTargetManager {
 
     clear() {
         if (this.#target != null) {
-            for (const [name, handler] of this.#subs.entries()) {
+            for (const [name, handler] of this.#subs) {
                 this.#target.removeEventListener(name, handler, {capture: false});
             }
-            for (const [name, handler] of this.#captures.entries()) {
+            for (const [name, handler] of this.#captures) {
                 this.#target.removeEventListener(name, handler, {capture: true});
             }
         }

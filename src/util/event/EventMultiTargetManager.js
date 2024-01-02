@@ -16,19 +16,19 @@ export default class EventMultiTargetManager {
         value = !!value;
         if (this.#active != value) {
             this.#active = value;
-            for (const target of this.#targets.values()) {
+            for (const target of this.#targets) {
                 if (value) {
-                    for (const [name, handler] of this.#subs.entries()) {
+                    for (const [name, handler] of this.#subs) {
                         target.addEventListener(name, handler, {capture: false});
                     }
-                    for (const [name, handler] of this.#captures.entries()) {
+                    for (const [name, handler] of this.#captures) {
                         target.addEventListener(name, handler, {capture: true});
                     }
                 } else {
-                    for (const [name, handler] of this.#subs.entries()) {
+                    for (const [name, handler] of this.#subs) {
                         target.removeEventListener(name, handler, {capture: false});
                     }
-                    for (const [name, handler] of this.#captures.entries()) {
+                    for (const [name, handler] of this.#captures) {
                         target.removeEventListener(name, handler, {capture: true});
                     }
                 }
@@ -43,10 +43,10 @@ export default class EventMultiTargetManager {
         if (!this.#targets.has(target)) {
             this.#targets.add(target);
             if (this.#active) {
-                for (const [name, handler] of this.#subs.entries()) {
+                for (const [name, handler] of this.#subs) {
                     target.addEventListener(name, handler, {capture: false});
                 }
-                for (const [name, handler] of this.#captures.entries()) {
+                for (const [name, handler] of this.#captures) {
                     target.addEventListener(name, handler, {capture: true});
                 }
             }
@@ -59,21 +59,21 @@ export default class EventMultiTargetManager {
         }
         if (this.#targets.has(target)) {
             this.#targets.delete(target);
-            for (const [name, handler] of this.#subs.entries()) {
+            for (const [name, handler] of this.#subs) {
                 target.removeEventListener(name, handler, {capture: false});
             }
-            for (const [name, handler] of this.#captures.entries()) {
+            for (const [name, handler] of this.#captures) {
                 target.removeEventListener(name, handler, {capture: true});
             }
         }
     }
 
     clearTargets() {
-        for (const target of this.#targets.values()) {
-            for (const [name, handler] of this.#subs.entries()) {
+        for (const target of this.#targets) {
+            for (const [name, handler] of this.#subs) {
                 target.removeEventListener(name, handler, {capture: false});
             }
-            for (const [name, handler] of this.#captures.entries()) {
+            for (const [name, handler] of this.#captures) {
                 target.removeEventListener(name, handler, {capture: true});
             }
         }
@@ -81,7 +81,7 @@ export default class EventMultiTargetManager {
     }
 
     getTargets() {
-        return Array.from(this.#targets.values());
+        return Array.from(this.#targets);
     }
 
     set(name, handler) {
@@ -97,13 +97,13 @@ export default class EventMultiTargetManager {
                 throw new TypeError(`name parameter must be of type "string" but was "${typeof name}"`);
             }
             if (this.#subs.has(name)) {
-                for (const target of this.#targets.values()) {
+                for (const target of this.#targets) {
                     const oldhandler = this.#subs.get(name);
                     target.removeEventListener(name, oldhandler, {capture: false});
                 }
             }
             if (this.#active) {
-                for (const target of this.#targets.values()) {
+                for (const target of this.#targets) {
                     target.addEventListener(name, handler, {capture: false});
                 }
             }
@@ -124,13 +124,13 @@ export default class EventMultiTargetManager {
                 throw new TypeError(`name parameter must be of type "string" but was "${typeof name}"`);
             }
             if (this.#captures.has(name)) {
-                for (const target of this.#targets.values()) {
+                for (const target of this.#targets) {
                     const oldhandler = this.#captures.get(name);
                     target.removeEventListener(name, oldhandler, {capture: true});
                 }
             }
             if (this.#active) {
-                for (const target of this.#targets.values()) {
+                for (const target of this.#targets) {
                     target.addEventListener(name, handler, {capture: true});
                 }
             }
@@ -148,7 +148,7 @@ export default class EventMultiTargetManager {
                 throw new TypeError(`name parameter must be of type "string" but was "${typeof name}"`);
             }
             if (this.#subs.has(name)) {
-                for (const target of this.#targets.values()) {
+                for (const target of this.#targets) {
                     const oldhandler = this.#subs.get(name);
                     target.removeEventListener(name, oldhandler, {capture: false});
                 }
@@ -167,7 +167,7 @@ export default class EventMultiTargetManager {
                 throw new TypeError(`name parameter must be of type "string" but was "${typeof name}"`);
             }
             if (this.#captures.has(name)) {
-                for (const target of this.#targets.values()) {
+                for (const target of this.#targets) {
                     const oldhandler = this.#captures.get(name);
                     target.removeEventListener(name, oldhandler, {capture: true});
                 }
@@ -177,11 +177,11 @@ export default class EventMultiTargetManager {
     }
 
     clear() {
-        for (const target of this.#targets.values()) {
-            for (const [name, handler] of this.#subs.entries()) {
+        for (const target of this.#targets) {
+            for (const [name, handler] of this.#subs) {
                 target.removeEventListener(name, handler, {capture: false});
             }
-            for (const [name, handler] of this.#captures.entries()) {
+            for (const [name, handler] of this.#captures) {
                 target.removeEventListener(name, handler, {capture: true});
             }
         }

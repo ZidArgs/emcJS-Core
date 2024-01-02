@@ -1,5 +1,7 @@
 :root {
 
+    --default-unknown-back-image: url('data:image/webp;base64,UklGRjQCAABXRUJQVlA4TCgCAAAvH8AHEC/jIJIkRaruPmb275T+RThsI0mRqrqP8Tn/TN9hG0mKHHT3HD3zs40kyWm45xE2FpbGJwEwgUDgA4FAYAOBQOACMwgM0D+YQSCQ4wADDLCDQKD77wf9wAECgVVGOmTIkCGjGBZO1fMuHdW0kZEOp5yq5127njTLwal0pKMcV9fvr5o26ei2MxlOpaMcN+W4ckrG9norhoWMet4Vw6JZDu16MhxX5bhySsb6fHFKhlMyynFVjiun0pGOdMhwSgag27ZtvFlxUrdJbePUtm3b7Xn/d+h37/m+6n9E/xW2bdsYSNJddR4BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACQqm9ubW2uT0UsSVR3i4iIiHTl4xGsuEdExE9050KtciDAmdo6PtmdDwgGKkKszKFde1FVfd92IPKmFTnp6RfVpwfVz1UnmbNG63VID1QPB2VT9dzB6En4qnE341qfx0TkVu8krMib9eLqNBjpRp+8ST3LiD3X+KteeghJVw0h2lXd9hDqXDXbtvCmtxMeQ5OrdtOGr/VjyYdoddVmakd134BocdVk2dC9Po4YFI0Rmqyo7n1RhDVJWyRbqstfFP5A3sZ3GSTrFxczBkSnf27VIiIiIuKdQOi5xjp8lMnZ2VHj9lqXNzfgsRypLnoI/Vnz4pVGUVXIxS3pc2A2zs7m3HR5cPHtqxsMbo2ejfBw4tVdRqoQj/ou65paWppqk//qLwA=');
+
     /* === page === */
     --page-text-color: #000000;
     --page-back-color: #ffffff;
