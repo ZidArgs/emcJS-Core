@@ -17,6 +17,7 @@ import RowManager from "../../util/grid/manager/RowManager.js";
 import ResizeObserverMixin from "../mixin/ResizeObserverMixin.js";
 import Column from "./Column.js";
 import DataGridCell from "./cell/DataGridCell.js";
+import "./cell/buttonsorter/DataGridCellButtonSorter.js";
 import "./cell/button/DataGridCellButton.js";
 import "./cell/boolean/DataGridCellBoolean.js";
 import "./cell/string/DataGridCellString.js";
@@ -38,9 +39,9 @@ const MUTATION_CONFIG = {
 
 const PX_REGEXP = /^[0-9]+(?:\.[0-9]+)?$/;
 
-function getStyleLengthValue(value, type) {
+function getStyleLengthValue(type, value) {
     const minValue = DataGridCell.getTypeMinWidth(type);
-    if (PX_REGEXP.test(value)) {
+    if (value != null && PX_REGEXP.test(value)) {
         return Math.max(parseFloat(value), minValue, 50);
     }
     if (minValue != null) {
@@ -117,6 +118,27 @@ export default class DataGrid extends ResizeObserverMixin(CustomElement) {
         this.#headerManager = new HeaderManager(this.#headerEl, this.#headerSelectEl);
         this.#rowManager = new RowManager(this.#bodyEl);
         /* --- */
+        this.#tableEl.addEventListener("move-row-up", (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            const {rowName} = event.data;
+            const ev = new Event("move-row-up");
+            ev.data = {
+                rowName
+            };
+            this.dispatchEvent(ev);
+        });
+        this.#tableEl.addEventListener("move-row-down", (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            const {rowName} = event.data;
+            const ev = new Event("move-row-down");
+            ev.data = {
+                rowName
+            };
+            this.dispatchEvent(ev);
+        });
+        /* --- */
         this.#tableEl.addEventListener("action", (event) => {
             event.stopPropagation();
             event.preventDefault();
@@ -127,7 +149,8 @@ export default class DataGrid extends ResizeObserverMixin(CustomElement) {
             const ev = new Event(`action::${action}`);
             ev.data = {
                 columnName,
-                rowName
+                rowName,
+                source: event.srcElement
             };
             this.dispatchEvent(ev);
         });
@@ -142,7 +165,8 @@ export default class DataGrid extends ResizeObserverMixin(CustomElement) {
             ev.data = {
                 value,
                 columnName,
-                rowName
+                rowName,
+                source: event.srcElement
             };
             this.dispatchEvent(ev);
         });
@@ -216,7 +240,7 @@ export default class DataGrid extends ResizeObserverMixin(CustomElement) {
                         const name = this.#stretched.name;
                         const widthValue = this.#stretched.width;
                         if (widthValue != null) {
-                            const styleWidth = getStyleLengthValue(widthValue);
+                            const styleWidth = getStyleLengthValue(this.#stretched.type, widthValue);
                             this.style.setProperty(`--width-${name}`, `${styleWidth}px`);
                         }
                     }
@@ -328,7 +352,7 @@ export default class DataGrid extends ResizeObserverMixin(CustomElement) {
                     this.#stretched = definition;
                 } else {
                     const widthValue = definition.width;
-                    const styleWidth = getStyleLengthValue(widthValue ?? 200, definition.type);
+                    const styleWidth = getStyleLengthValue(definition.type, widthValue);
                     this.style.setProperty(`--width-${definition.name}`, `${styleWidth}px`);
                 }
             }
@@ -370,9 +394,9 @@ export default class DataGrid extends ResizeObserverMixin(CustomElement) {
             for (const def of this.#columnDefinition) {
                 if (def !== this.#stretched) {
                     if (def.width != null) {
-                        diff += getStyleLengthValue(def.width, def.type);
+                        diff += getStyleLengthValue(def.type, def.width);
                     } else {
-                        diff += 200;
+                        diff += getStyleLengthValue(def.type);
                     }
                 }
             }
@@ -384,7 +408,7 @@ export default class DataGrid extends ResizeObserverMixin(CustomElement) {
             if (widthValue != null) {
                 resultWidth = Math.max(resultWidth, parseFloat(widthValue) || 0);
             }
-            const styleWidth = getStyleLengthValue(resultWidth, this.#stretched.type);
+            const styleWidth = getStyleLengthValue(this.#stretched.type, resultWidth);
             this.style.setProperty(`--width-${name}`, `${styleWidth}px`);
         }
     }

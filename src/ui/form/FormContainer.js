@@ -59,6 +59,14 @@ export default class FormContainer extends CustomElement {
         return this.getBooleanAttribute("hasfooter");
     }
 
+    set noScroll(value) {
+        this.setBooleanAttribute("noscroll", value);
+    }
+
+    get noScroll() {
+        return this.getBooleanAttribute("noscroll");
+    }
+
     static get observedAttributes() {
         return ["hasheader", "hasfooter"];
     }

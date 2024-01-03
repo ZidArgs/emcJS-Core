@@ -32,6 +32,10 @@ export default class TypeStorage extends EventTarget {
         TypeStorage.#callListeners(typeName);
     }
 
+    get typeName() {
+        return this.#typeName;
+    }
+
     set(key, value) {
         if (value == null) {
             return;
@@ -228,6 +232,9 @@ export default class TypeStorage extends EventTarget {
     }
 
     static getStorage(typeName) {
+        if (typeName == null) {
+            return null;
+        }
         if (typeof typeName !== "string" || typeName === "" || typeName === "*") {
             throw new Error(`typeName has to be a string that is not empty and not "*"`);
         }

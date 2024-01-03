@@ -1,7 +1,7 @@
 import path from "path";
 import gulp from "gulp";
 import newer from "gulp-newer";
-import sourceImport from "./build_tools/sourceImport.js";
+import sourceImport from "./src/_build_tools/sourceImport.js";
 
 const __dirname = path.resolve();
 

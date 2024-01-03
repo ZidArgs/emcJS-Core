@@ -131,5 +131,5 @@ export default class DataGridCellRelation extends DataGridCell {
 
 }
 
-DataGridCell.registerCellType("relation", DataGridCellRelation, 500);
+DataGridCell.registerCellType("relation", DataGridCellRelation, 300);
 customElements.define("emc-grid-datagrid-cell-relation", DataGridCellRelation);

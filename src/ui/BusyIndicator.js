@@ -24,7 +24,7 @@ export default class BusyIndicator extends CustomElement {
                 this.#targetEl.append(this);
                 setTimeout(()=> {
                     resolve();
-                }, 1);
+                }, 10);
             } else {
                 resolve();
             }

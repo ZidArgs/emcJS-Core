@@ -1,4 +1,5 @@
 import ObservableStorage from "../../../data/storage/observable/ObservableStorage.js";
+import EventTargetManager from "../../event/EventTargetManager.js";
 import {
     deepClone
 } from "../../helper/DeepClone.js";
@@ -14,32 +15,47 @@ export default class ObservableStorageProvider extends AbstractDataProvider {
 
     #source;
 
+    #eventManager = new EventTargetManager();
+
     constructor(target, source) {
         super(target);
-        if (!(source instanceof ObservableStorage)) {
+        if (source != null && !(source instanceof ObservableStorage)) {
+            throw new Error("source must be a ObservableStorage");
+        }
+        /* --- */
+        this.#eventManager.set(["change", "clear", "load"], () => {
+            this.triggerUpdate();
+        });
+        /* --- */
+        this.#source = source;
+        if (source != null) {
+            this.#eventManager.switchTarget(source);
+        }
+    }
+
+    setSource(source) {
+        if (!(source != null && source instanceof ObservableStorage)) {
             throw new Error("source must be a ObservableStorage");
         }
         this.#source = source;
-        /* --- */
-        source.addEventListener("change", () => {
-            this.triggerUpdate();
-        });
-        source.addEventListener("clear", () => {
-            this.triggerUpdate();
-        });
-        source.addEventListener("load", () => {
-            this.triggerUpdate();
-        });
+        if (source != null) {
+            this.#eventManager.switchTarget(source);
+        }
+        this.triggerUpdate();
     }
 
     async getData(options = {}) {
+        if (this.#source == null) {
+            return [];
+        }
+
         const {sort = [], page = 0, pageSize = 0, filter = {}, filterFunction = false} = options;
 
         const convertedFilter = Object.entries(filter).map(([key, value]) => {
             return [key, new CharacterSearch(value)];
         });
 
-        const result = Object.entries(this.#source.getAll()).map(([key, value]) => {
+        const result = [...this.#source.keys()].map(([key, value]) => {
             return {
                 ...deepClone(value),
                 name: key

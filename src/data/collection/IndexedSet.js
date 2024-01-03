@@ -58,53 +58,25 @@ export default class IndexedSet {
     add(value) {
         const index = this.#values.indexOf(value);
         if (index >= 0) {
-            this.#values = [
-                ...this.#values.slice(0, index),
-                ...this.#values.slice(index + 1),
-                value
-            ];
-        } else {
-            this.#values.push(value);
+            this.#values.splice(index, 1);
         }
+        this.#values.push(value);
         return this;
     }
 
     insert(value, pos) {
         const index = this.#values.indexOf(value);
-        let values = this.#values;
         if (index >= 0) {
-            values = [
-                ...values.slice(0, index),
-                ...values.slice(index + 1)
-            ];
+            this.#values.splice(index, 1);
         }
-        if (pos === 0) {
-            this.#values = [
-                value,
-                ...values
-            ];
-        } else if (pos >= values.length) {
-            this.#values = [
-                ...values,
-                value
-            ];
-        } else {
-            this.#values = [
-                ...values.slice(0, pos - 1),
-                value,
-                ...values.slice(pos)
-            ];
-        }
+        this.#values.splice(pos, 0, value);
         return this;
     }
 
     delete(value) {
         const index = this.#values.indexOf(value);
         if (index >= 0) {
-            this.#values = [
-                ...this.#values.slice(0, index),
-                ...this.#values.slice(index + 1)
-            ];
+            this.#values.splice(index, 1);
         }
         return this;
     }

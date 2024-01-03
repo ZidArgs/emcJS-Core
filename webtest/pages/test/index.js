@@ -120,56 +120,62 @@ grid2El.setData([
 ]);
 
 TypeConfigMap.register("Coordinates", {
-    "x": {
-        "@type": "Number",
-        "optional": false,
-        "default": -1,
-        "decimalPlaces": 0
-    },
-    "y": {
-        "@type": "Number",
-        "optional": false,
-        "default": -1,
-        "decimalPlaces": 0
-    },
-    "target": {
-        "@type": "Relation",
-        "optional": true,
-        "types": [
-            "Exit"
-        ]
-    }
-});
-
-TypeConfigMap.register("Connection", {
-    "label": {
-        "@type": "String",
-        "optional": false,
-        "default": "",
-        "pattern": ".+"
-    },
-    "posA": {
-        "@type": "Coordinates",
-        "optional": false
-    },
-    "posB": {
-        "@type": "Coordinates",
-        "optional": false
-    },
-    "target": {
-        "@type": "AssociativeList",
-        "optional": false,
-        "children": {
+    "parameters": {},
+    "definition": {
+        "x": {
+            "@type": "Number",
+            "optional": false,
+            "default": -1,
+            "decimalPlaces": 0
+        },
+        "y": {
+            "@type": "Number",
+            "optional": false,
+            "default": -1,
+            "decimalPlaces": 0
+        },
+        "target": {
             "@type": "Relation",
             "optional": true,
             "types": [
                 "Exit"
             ]
         }
-    },
-    "logic": {
-        "@type": "Logic",
-        "optional": true
+    }
+});
+
+TypeConfigMap.register("Connection", {
+    "parameters": {},
+    "definition": {
+        "label": {
+            "@type": "String",
+            "optional": false,
+            "default": "",
+            "pattern": ".+"
+        },
+        "posA": {
+            "@type": "Coordinates",
+            "optional": false
+        },
+        "posB": {
+            "@type": "Coordinates",
+            "optional": false
+        },
+        "target": {
+            "@type": "AssociativeList",
+            "optional": false,
+            "children": {
+                "@type": "Relation",
+                "optional": true,
+                "types": [
+                    "Exit"
+                ]
+            }
+        },
+        "logic": {
+            "@type": "Logic",
+            "optional": true
+        }
     }
 });
 
