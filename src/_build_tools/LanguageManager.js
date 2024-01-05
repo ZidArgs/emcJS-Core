@@ -46,14 +46,12 @@ function analyzeFile(ref, file) {
     };
     const fileContent = String(file.contents);
     const lines = fileContent.split(LNBR_SEQ);
-    if (lines[0].startsWith("!language file")) {
-        for (const line of lines) {
-            for (const {regEx, func} of EXTRACTORS) {
-                const matches = regEx.exec(line);
-                if (matches != null) {
-                    func(result, matches);
-                    break;
-                }
+    for (const line of lines) {
+        for (const {regEx, func} of EXTRACTORS) {
+            const matches = regEx.exec(line);
+            if (matches != null) {
+                func(result, matches);
+                break;
             }
         }
     }
