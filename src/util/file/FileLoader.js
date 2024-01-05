@@ -1,6 +1,7 @@
 import JSONC from "../converter/JSONC.js";
 import XML from "../converter/XML.js";
 import INI from "../converter/INI.js";
+import Lang from "../converter/Lang.js";
 import Properties from "../converter/Properties.js";
 
 async function getFile(file, contentType) {
@@ -40,6 +41,10 @@ class FileLoader {
 
     jsonc(file) {
         return this.text(file).then(JSONC.parse);
+    }
+
+    lang(file) {
+        return this.text(file).then(Lang.parse);
     }
 
     properties(file) {

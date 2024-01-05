@@ -17,7 +17,7 @@ class INI {
             if (GROUP.test(line)) {
                 act = line.slice(1, -1);
                 if (output[act] != null) {
-                    throw new SyntaxError(`Duplicate section in INI at line ${i + 1}:\n${line}`);
+                    throw new SyntaxError(`duplicate section in INI at line ${i + 1}:\n${line}`);
                 }
                 output[act] = output[act] || {};
                 continue;
@@ -25,14 +25,48 @@ class INI {
             if (VALUE.test(line)) {
                 const data = line.split("=");
                 if (typeof output[act][data[0]] === "string") {
-                    throw new SyntaxError(`Duplicate key in INI at line ${i + 1}:\n${line}`);
+                    throw new SyntaxError(`duplicate key in INI at line ${i + 1}:\n${line}`);
                 }
                 output[act][data[0]] = data[1];
                 continue;
             }
-            throw new SyntaxError(`Unexpected token in INI at line ${i + 1}:\n${line}`);
+            throw new SyntaxError(`unexpected token in INI at line ${i + 1}:\n${line}`);
         }
         return output;
+    }
+
+    stringify(input) {
+        if (typeof input !== "object" || Array.isArray(input)) {
+            throw new TypeError("input has to be an object");
+        }
+        const lines = [];
+        if ("" in input) {
+            const group = input[""];
+            for (const key in group) {
+                if (key.includes("=")) {
+                    throw new Error(`keys can not contain "=" [ "{empty}" -> "${key}" ]`);
+                }
+                const value = group[key];
+                lines.push(`${key}=${value}`);
+            }
+            lines.push("");
+        }
+        for (const groupName in input) {
+            if (groupName === "") {
+                continue;
+            }
+            lines.push(`[${groupName}]`);
+            const group = input[groupName];
+            for (const key in group) {
+                if (key.includes("=")) {
+                    throw new Error(`keys can not contain "=" [ "{empty}" -> "${key}" ]`);
+                }
+                const value = group[key];
+                lines.push(`${key}=${value}`);
+            }
+            lines.push("");
+        }
+        return lines.join("\n");
     }
 
 }

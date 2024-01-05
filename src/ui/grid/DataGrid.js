@@ -17,18 +17,7 @@ import RowManager from "../../util/grid/manager/RowManager.js";
 import ResizeObserverMixin from "../mixin/ResizeObserverMixin.js";
 import Column from "./Column.js";
 import DataGridCell from "./cell/DataGridCell.js";
-import "./cell/buttonsorter/DataGridCellButtonSorter.js";
-import "./cell/button/DataGridCellButton.js";
-import "./cell/boolean/DataGridCellBoolean.js";
-import "./cell/string/DataGridCellString.js";
-import "./cell/number/DataGridCellNumber.js";
-import "./cell/image/DataGridCellImage.js";
-import "./cell/i18n/DataGridCellI18n.js";
-import "./cell/boolorlogic/DataGridCellBoolOrLogic.js";
-import "./cell/date/DataGridCellDate.js";
-import "./cell/datetime/DataGridCellDateTime.js";
-import "./cell/time/DataGridCellTime.js";
-import "./cell/relation/DataGridCellRelation.js";
+import "./cell/CellTypeLoader.js";
 import TPL from "./DataGrid.js.html" assert {type: "html"};
 import STYLE from "./DataGrid.js.css" assert {type: "css"};
 import BusyIndicatorManager from "../../util/BusyIndicatorManager.js";
@@ -314,8 +303,12 @@ export default class DataGrid extends ResizeObserverMixin(CustomElement) {
         await BusyIndicatorManager.unbusy();
     }
 
-    getAllCellsForColumn(name) {
-        return this.#bodyEl.querySelectorAll(`tr > [col-name="${name}"]`);
+    getAllCellsForColumn(colName) {
+        return this.#bodyEl.querySelectorAll(`:scope > tr > [col-name="${colName}"]`);
+    }
+
+    getCell(rowName, colName) {
+        return this.#bodyEl.querySelector(`:scope > tr[row-name="${rowName}"]`).querySelector(`:scope > [col-name="${colName}"]`);
     }
 
     async #applyColumnDefinition() {

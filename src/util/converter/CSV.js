@@ -29,6 +29,24 @@ class CSV {
         })
     }
 
+    stringify(input, split = ",") {
+        if (!Array.isArray(input)) {
+            throw new TypeError("input has to be an array");
+        }
+        const lines = [];
+        for (const index in input) {
+            const row = input[index];
+            if (!Array.isArray(row)) {
+                throw new TypeError(`row is not an array at index [ ${index} ]`);
+            }
+            lines.push(row.map((value) => {
+                value = value.replace(/"/g, "\"\"");
+                return value.includes(split) ? `"${value}"` : value
+            }).join(split));
+        }
+        return lines.join("\n");
+    }
+
 }
 
 export default new CSV();

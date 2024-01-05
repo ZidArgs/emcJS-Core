@@ -6,20 +6,27 @@ import through from "through";
 const LNBR_SEQ = /(?:\r\n|\n|\r)/g
 const EXTRACTORS = [
     {
-        regEx: /#\s+base:\s*(.+)\s*/,
+        regEx: /@base:\s*(.+)\s*/,
         func: (result, matches) => {
             result["base"] = matches[1];
         }
     },
     {
-        regEx: /#\s+language:\s*(.+)\s*/,
+        regEx: /@label:\s*(.+)\s*/,
         func: (result, matches) => {
             result["label"] = matches[1];
         }
     },
     {
-        regEx: /#\s+fragment:\s*(.+)\.([^.]+)\s*/,
+        regEx: /@author:\s*(.+)\s*/,
         func: (result, matches) => {
+            result["author"] = matches[1];
+        }
+    },
+    {
+        regEx: /#\s*fragment:\s*(.+)\.([^.]+)\s*/,
+        func: (result, matches) => {
+            result["fragments"] = result["fragments"] ?? [];
             result["fragments"].push({
                 "type": matches[2],
                 "name": matches[1]
@@ -35,12 +42,11 @@ function normalizePath(path) {
 
 function analyzeFile(ref, file) {
     const result = {
-        "label": ref,
-        "fragments": []
+        "label": ref
     };
     const fileContent = String(file.contents);
     const lines = fileContent.split(LNBR_SEQ);
-    if (lines[0] == "# language file for track-oot") {
+    if (lines[0].startsWith("!language file")) {
         for (const line of lines) {
             for (const {regEx, func} of EXTRACTORS) {
                 const matches = regEx.exec(line);

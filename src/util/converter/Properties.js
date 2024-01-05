@@ -10,6 +10,7 @@ const ESCAPE_PATTERN_1 = /\\=/g;
 const ESCAPE_PATTERN_2 = /\\:/g;
 const VALUE_PATTERN_0 = /(.*?)(?:=|:)(.*)/;
 const VALUE_PATTERN_1 = /(.*?)(?: )(.*)/;
+const MULTILINE_PATTERN = /(?:^\\|[^\\](?:\\\\)*\\)$/;
 
 function processLine(line) {
     const escaped = line.trim()
@@ -33,15 +34,15 @@ class Properties {
             const [key, value] = processLine(line);
             if (key) {
                 if (typeof output[key] === "string") {
-                    throw new SyntaxError(`Duplicate key in Properties at line ${i + 1}:\n${line}`);
+                    throw new SyntaxError(`duplicate key in PROPERTIES at line ${i + 1}:\n${line}`);
                 }
                 output[key] = value;
-                while (output[key].endsWith("\\")) {
-                    output[key] = output[key].slice(0, -1).trim() + `\r\n${(lines[++i] ?? "").trim()}`;
+                while (MULTILINE_PATTERN.test(output[key])) {
+                    output[key] = output[key].slice(0, -1).trim() + `\r\n${(lines[++i] ?? "").trim()}`.replace(/\\\\/g, "\\");
                 }
                 continue;
             }
-            throw new SyntaxError(`Unexpected token in Properties at line ${i + 1}:\n${line}`);
+            throw new SyntaxError(`unexpected token in PROPERTIES at line ${i + 1}:\n${line}`);
         }
         return output;
     }

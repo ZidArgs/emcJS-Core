@@ -1,6 +1,6 @@
 const UNICODE_ESCAPE = /(\\)?\\u([0-9A-F]{4})/ig;
 
-function unicodeEscapeReaplaces(match, preEscapeSlash, unicodeValue) {
+function unicodeEscapeReplaces(match, preEscapeSlash, unicodeValue) {
     if (preEscapeSlash) {
         return match.slice(1);
     }
@@ -12,5 +12,5 @@ export function unicodeSlice(text, start, end) {
 }
 
 export function unescapeUnicode(value) {
-    return value.replace(UNICODE_ESCAPE, unicodeEscapeReaplaces);
+    return value.replace(UNICODE_ESCAPE, unicodeEscapeReplaces);
 }

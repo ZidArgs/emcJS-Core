@@ -20,10 +20,35 @@ function extractInternalValues(key) {
     return res;
 }
 
+async function importBasefile(basePath, type, name) {
+    switch (type) {
+        case "lang": {
+            const trans = await FileLoader.lang(`${basePath}/${name}.lang`);
+            return trans;
+        }
+        case "properties": {
+            const trans = await FileLoader.properties(`${basePath}/${name}.properties`);
+            return trans;
+        }
+        case "json": {
+            const trans = await FileLoader.jsonc(`${basePath}/${name}.json`);
+            return flattenObject(trans);
+        }
+        case "js": {
+            const [exec] = await Import.module(`${basePath}/${name}.js`);
+            const trans = exec();
+            return flattenObject(trans);
+        }
+        default: {
+            return {};
+        }
+    }
+}
+
 async function importFragment(basePath, type, name) {
     switch (type) {
         case "lang": {
-            const trans = await FileLoader.properties(`${basePath}/fragments/${name}.lang`);
+            const trans = await FileLoader.lang(`${basePath}/fragments/${name}.lang`);
             return trans;
         }
         case "properties": {
@@ -59,6 +84,13 @@ class I18n extends EventTarget {
 
     #active = "";
 
+    getMeta(key, lang = this.language) {
+        key = `@${key}`;
+        if (this.#languages.get(lang)?.has(key)) {
+            return this.#languages.get(lang).get(key);
+        }
+    }
+
     async loadTranslations(basePath = "/i18n") {
         try {
             const languages = await FileLoader.json(`${basePath}/_meta.json`);
@@ -83,10 +115,10 @@ class I18n extends EventTarget {
             this.setBase(key, data["base"]);
             // fetch all translation files
             const transProm = [];
-            for (const {type, name} of data["fragments"]) {
+            for (const {type, name} of data["fragments"] ?? []) {
                 transProm.push(importFragment(basePath, type, name));
             }
-            transProm.push(FileLoader.properties(`${basePath}/${key}.lang`));
+            transProm.push(importBasefile(basePath, data["type"] ?? "lang", key));
             // build resulting translation
             let translation = {};
             const translations = await Promise.all(transProm);
@@ -146,7 +178,7 @@ class I18n extends EventTarget {
         }
         const changes = {};
         for (const key in values) {
-            if (!key || typeof key !== "string") {
+            if (!key || typeof key !== "string" || key.startsWith("@")) {
                 continue;
             }
             const value = values[key];
@@ -218,6 +250,9 @@ class I18n extends EventTarget {
     }
 
     get(key, values = []) {
+        if (key == null || (typeof key === "string" && key.startsWith("@"))) {
+            return "";
+        }
         const internalValues = extractInternalValues(key);
         const trans = this.#getTranslation(this.language, key.replace(INTERNAL_VALUES_REGEX, "{{$1}}")).trim();
         return trans.replace(TEMPLATE_VALUES_REGEX, (_, n) => {
@@ -234,7 +269,7 @@ class I18n extends EventTarget {
         if (typeof key === "number" || !isNaN(parseFloat(key))) {
             return key;
         }
-        if (typeof key === "string" && key !== "") {
+        if (typeof key === "string" && key !== "" && !key.startsWith("@")) {
             if (typeof lang === "string" && lang) {
                 if (!this.#languages.has(lang)) {
                     I18n.logger.warn(`language "${lang}" is not loaded`);
@@ -270,16 +305,16 @@ class I18n extends EventTarget {
     }
 
     #hasTranslation(lang, key) {
-        if (typeof key !== "string" || !key) {
+        if (typeof key !== "string" || !key || key.startsWith("@")) {
             return false;
         }
         if (typeof lang === "string" && lang) {
-            if (this.#languages.get(lang).has(key)) {
+            if (this.#languages.get(lang)?.has(key)) {
                 return true;
             }
             if (this.#base.has(lang)) {
                 const base = this.#base.has(lang)
-                if (this.#languages.get(base).has(key)) {
+                if (this.#languages.get(base)?.has(key)) {
                     return true;
                 }
             }
@@ -296,18 +331,22 @@ class I18n extends EventTarget {
     getKeys(lang) {
         const keys = new Set();
         if (typeof lang === "string" && lang) {
-            const language = this.#languages.get(lang);
+            const language = this.#languages.get(lang) ?? [];
             for (const [key] of language) {
-                keys.add(key);
+                if (!key.startsWith("@")) {
+                    keys.add(key);
+                }
             }
-            const missing = this.#missing.get(lang);
+            const missing = this.#missing.get(lang) ?? [];
             for (const key of missing) {
                 keys.add(key);
             }
         } else {
             for (const [, language] of this.#languages) {
                 for (const [key] of language) {
-                    keys.add(key);
+                    if (!key.startsWith("@")) {
+                        keys.add(key);
+                    }
                 }
             }
             for (const [, missing] of this.#missing) {
@@ -322,7 +361,7 @@ class I18n extends EventTarget {
     getMissing(lang) {
         const keys = new Set();
         if (typeof lang === "string" && lang) {
-            const missing = this.#missing.get(lang);
+            const missing = this.#missing.get(lang) ?? [];
             for (const key of missing) {
                 keys.add(key);
             }
@@ -334,6 +373,23 @@ class I18n extends EventTarget {
             }
         }
         return Array.from(keys);
+    }
+
+    getEntries(lang) {
+        const entries = {};
+        if (typeof lang === "string" && lang) {
+            const language = this.#languages.get(lang) ?? [];
+            for (const [key, value] of language) {
+                if (!key.startsWith("@")) {
+                    entries[key] = value;
+                }
+            }
+            const missing = this.#missing.get(lang) ?? [];
+            for (const key of missing) {
+                entries[key] = "";
+            }
+            return entries;
+        }
     }
 
 }

@@ -102,13 +102,17 @@ class JSONC {
                 const line = lines[i] + "\n";
                 if (pos < line.length) {
                     const l = ref[i];
-                    throw new SyntaxError(`Unexpected token in JSONC at line ${i + 1}:\n${l}\n${(new Array(pos + 1)).join(" ")}^`);
+                    throw new SyntaxError(`unexpected token in JSONC at line ${i + 1}:\n${l}\n${(new Array(pos + 1)).join(" ")}^`);
                 } else {
                     pos -= line.length;
                 }
             }
-            throw new SyntaxError("Unexpected end of input in JSONC");
+            throw new SyntaxError("unexpected end of input in JSONC");
         }
+    }
+
+    stringify(input) {
+        return JSON.stringify(input);
     }
 
 }
