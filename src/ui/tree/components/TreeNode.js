@@ -14,6 +14,7 @@ import STYLE from "./TreeNode.js.css" assert {type: "css"};
 
 const NODE_TYPES = new Map();
 
+// TODO try to use new sorter in ElementManager
 class TreeNodeElementManager extends ElementManager {
 
     composer(key, params) {

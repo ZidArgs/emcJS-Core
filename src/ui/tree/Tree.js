@@ -13,6 +13,7 @@ import STYLE from "./Tree.js.css" assert {type: "css"};
 // TODO add optional  search
 // TODO for sort add ascending/descending option and folder handling
 
+// TODO try to use new sorter in ElementManager
 export default class Tree extends CustomElement {
 
     #elManager;

@@ -34,6 +34,7 @@ const MUTATION_CONFIG = {
     attributeFilter: ["value"]
 };
 
+// TODO try to use new sorter in ElementManager
 class TokenElementManager extends ElementManager {
 
     composer(key, params) {

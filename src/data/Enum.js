@@ -3,7 +3,7 @@ export default class Enum {
     #value;
 
     constructor(value) {
-        if (typeof value == "object") {
+        if (typeof value === "object") {
             throw new TypeError("only primitive values allowed");
         }
         this.#value = value;
@@ -14,7 +14,7 @@ export default class Enum {
     }
 
     equals(inst) {
-        return this === inst || this.value === inst;
+        return this === inst || this.value === inst.value;
     }
 
     valueOf() {
