@@ -7,6 +7,9 @@ import {
 import {
     deepClone
 } from "../helper/DeepClone.js";
+import {
+    getArrayMutations
+} from "../helper/collection/ArrayMutations.js";
 
 export default class ElementManager {
 
@@ -26,6 +29,8 @@ export default class ElementManager {
 
     #args;
 
+    #currentRenderTimeout;
+
     constructor(target, ...args) {
         if (!(target instanceof HTMLElement)) {
             throw new TypeError("target must be of type HTMLElement");
@@ -40,7 +45,6 @@ export default class ElementManager {
         }
 
         const unused = new Set(this.#elements.keys());
-        const changes = {added: [], updated: [], deleted: [], moved: []};
         this.#definedOrder = [];
 
         for (const index in data) {
@@ -60,14 +64,12 @@ export default class ElementManager {
                     el.setAttribute("em-key", key);
                     this.mutator(el, key, options, ...this.#args);
                     this.#elements.set(key, el);
-                    changes.added.push(key);
                 }
             } else {
                 const el = this.#elements.get(key);
                 if (this.#checkChange(params)) {
                     this.#data.set(key, params);
                     this.mutator(el, key, options, ...this.#args);
-                    changes.updated.push(key);
                 }
                 unused.delete(key);
             }
@@ -78,57 +80,49 @@ export default class ElementManager {
             el.remove();
             this.#elements.delete(key);
             this.#cache.delete(key);
-            changes.deleted.push(key);
             this.cleanup(el, key, ...this.#args);
         }
 
-        this.#sortEntries(changes);
-
-        return changes;
+        this.#sortEntries();
     }
 
     registerSortFunction(sorter) {
         if (typeof sorter === "function") {
             if (this.#sorter !== sorter) {
                 this.#sorter = sorter;
-                const changes = {added: [], updated: [], deleted: [], moved: []};
-                this.#sortEntries(changes);
-                return changes;
+                this.#sortEntries();
             }
         } else {
             this.#sorter = null;
-            const changes = {added: [], updated: [], deleted: [], moved: []};
-            this.#sortEntries(changes);
-            return changes;
+            this.#sortEntries();
         }
     }
 
     sort() {
         if (this.#sorter != null) {
-            const changes = {added: [], updated: [], deleted: [], moved: []};
-            this.#sortEntries(changes);
-            return changes;
+            this.#sortEntries();
         }
     }
 
-    #sortEntries(changes) {
+    #sortEntries() {
         if (this.#sorter != null && this.#cache.size > 0) {
             const newOrder = this.#definedOrder.toSorted((key0, key1) => {
                 const data0 = this.#data.get(key0);
                 const data1 = this.#data.get(key1);
+                const el0 = this.#elements.get(key0);
+                const el1 = this.#elements.get(key1);
                 if (data0 == null || data1 == null) {
                     return 0;
                 }
-                return this.#sorter(data0, data1);
+                return this.#sorter({
+                    data: data0,
+                    element: el0
+                }, {
+                    data: data1,
+                    element: el1
+                });
             });
             if (!isEqual(this.#order, newOrder)) {
-                for (const oldIndex in this.#order) {
-                    const key = this.#order[oldIndex];
-                    const newIndex = newOrder.indexOf(key);
-                    if (oldIndex !== newIndex) {
-                        changes.moved.push(key);
-                    }
-                }
                 this.#order = newOrder;
                 this.#render();
             }
@@ -139,9 +133,29 @@ export default class ElementManager {
     }
 
     #render = debounce(() => {
-        for (const key of this.#order) {
-            const el = this.#elements.get(key);
-            if (el != null) {
+        clearTimeout(this.#currentRenderTimeout);
+        const children = this.#target.children;
+        if (children.length > 0) {
+            const currentOrder = [...children].map((el) => el.getAttribute("em-key") ?? "");
+            const keys = [...this.#order];
+            const {changes} = getArrayMutations(currentOrder, keys);
+            for (const newIndex in changes) {
+                const key = changes[newIndex];
+                const el = this.#elements.get(key);
+                el.remove();
+            }
+            for (const newIndex in changes) {
+                const key = changes[newIndex];
+                const el = this.#elements.get(key);
+                if (+newIndex === 0) {
+                    this.#target.prepend(el);
+                } else {
+                    this.#target.children[newIndex - 1].after(el);
+                }
+            }
+        } else {
+            for (const key of this.#order) {
+                const el = this.#elements.get(key);
                 this.#target.append(el);
             }
         }

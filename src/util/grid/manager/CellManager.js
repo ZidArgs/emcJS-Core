@@ -6,6 +6,7 @@ import {
 } from "../../helper/DeepClone.js";
 import DataGridCell from "../../../ui/grid/cell/DataGridCell.js";
 
+// TODO optimize like in src\util\html\ElementManager.js
 export default class CellManager {
 
     #target;

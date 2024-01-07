@@ -5,6 +5,7 @@ import {
     deepClone
 } from "../../helper/DeepClone.js";
 
+// TODO optimize like in src\util\html\ElementManager.js
 export default class HeaderManager {
 
     #target;

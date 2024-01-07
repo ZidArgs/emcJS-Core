@@ -6,6 +6,7 @@ import {
 } from "../../helper/DeepClone.js";
 import CellManager from "./CellManager.js";
 
+// TODO optimize like in src\util\html\ElementManager.js
 export default class RowManager {
 
     #target;
