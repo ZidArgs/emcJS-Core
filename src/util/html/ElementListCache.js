@@ -12,7 +12,7 @@ export default class ElementListCache {
 
     prepend(node) {
         if (node instanceof Element) {
-            this.#elementList.insert(node, 0);
+            this.#elementList.insertAt(0, node);
         }
     }
 

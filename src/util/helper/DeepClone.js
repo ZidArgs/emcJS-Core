@@ -2,13 +2,31 @@ import {
     instanceOfOne
 } from "./Class.js";
 
+const NODE_SUPPORTED = "Node" in globalThis;
+
 const STRUCTURED_CLONE_CLASSES = [
-    Boolean, Number, String, RegExp, Date, Blob, File, FileList,
+    Boolean, Number, String, RegExp, Date,
     ArrayBuffer, Int8Array, Uint8Array, Uint8ClampedArray,
     Int16Array, Uint16Array, Int32Array, Uint32Array,
     Float32Array, Float64Array, BigInt64Array, BigUint64Array,
-    DataView, ImageBitmap, ImageData
+    DataView
 ];
+
+if ("Blob" in globalThis) {
+    STRUCTURED_CLONE_CLASSES.push(Blob);
+}
+if ("File" in globalThis) {
+    STRUCTURED_CLONE_CLASSES.push(File);
+}
+if ("FileList" in globalThis) {
+    STRUCTURED_CLONE_CLASSES.push(FileList);
+}
+if ("ImageBitmap" in globalThis) {
+    STRUCTURED_CLONE_CLASSES.push(ImageBitmap);
+}
+if ("ImageData" in globalThis) {
+    STRUCTURED_CLONE_CLASSES.push(ImageData);
+}
 
 export function deepClone(item) {
     return deepCloneItem(item);
@@ -33,7 +51,7 @@ function deepCloneItem(item, refs = new WeakMap()) {
 }
 
 function deepCloneObject(item, refs) {
-    if (item instanceof Node) {
+    if (NODE_SUPPORTED && item instanceof Node) {
         const result = item.cloneNode(true);
         refs.set(item, result);
         return result;

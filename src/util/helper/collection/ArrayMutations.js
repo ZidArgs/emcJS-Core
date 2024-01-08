@@ -25,10 +25,12 @@ export function insertAtIndexImmuted(array, index, value) {
 
 // analytical functions
 export function getArrayMutations(a, b) {
-    const {sequences, maxLength} = getArrayMutationSequence(a, b);
+    const sequenceData = getArrayMutationSequence(a, b);
+
+    const {sequences, maxLength} = sequenceData;
 
     const changeMap = {
-        changes: {},
+        changes: [],
         deleted: []
     };
 
@@ -40,9 +42,6 @@ export function getArrayMutations(a, b) {
 
     const bB = [...sequences];
 
-    if (bB[0].oldStart === bB[0].newStart) {
-        bB.splice(0, 1);
-    }
     const toRemove = bB.findIndex((e) => {
         return e.oldStart >= 0 && e.length === maxLength;
     });
@@ -50,12 +49,9 @@ export function getArrayMutations(a, b) {
         bB.splice(toRemove, 1);
     }
 
-    while (bB.length) {
-        const {sequence, newStart} = bB.shift();
-        let offset = newStart;
-        for (const eB of sequence) {
-            changeMap.changes[offset++] = eB;
-        }
+    for (const seq of bB) {
+        const {sequence, newStart} = seq;
+        changeMap.changes.push({sequence, position: newStart});
     }
 
     return changeMap;
@@ -68,43 +64,52 @@ export function getArrayMutationSequence(a, b) {
     if (a.length !== (new Set(a)).size || b.length !== (new Set(b)).size) {
         throw new TypeError("arrays need to have unique values");
     }
+
     const bA = [...a].filter((eA) => {
         if (b.indexOf(eA) < 0) {
             return false;
         }
         return true;
     });
+
     const res = {
         sequences: [],
-        maxLength: 0
+        maxLength: 0,
+        ascending: 0,
+        descending: 0
     };
-    let offset = 0;
-    while (offset < b.length) {
-        const s = extractArraySequences(bA, b, offset);
+
+    let newStart = 0;
+    while (newStart < b.length) {
+        const s = extractMutationArraySequences(bA, b, newStart);
         const seqLength = s.length;
         if (res.maxLength < seqLength) {
             res.maxLength = seqLength;
         }
-        const iBA = bA.indexOf(s[0]);
-        if (iBA >= 0) {
-            bA.splice(iBA, seqLength);
-        }
         const iA = a.indexOf(s[0]);
+        const movedBy = newStart - iA;
         res.sequences.push({
             sequence: s,
             oldStart: iA,
-            newStart: offset,
+            newStart,
+            movedBy,
             length: seqLength
         });
-        offset += seqLength;
+        if (movedBy > 0) {
+            res.ascending += seqLength;
+        } else if (movedBy < 0) {
+            res.descending += seqLength;
+        }
+        newStart += seqLength;
     }
 
-    return mergeArraySequences(res);
+    return mergeArrayMutationSequences(res);
 }
 
-function extractArraySequences(a, b, s) {
+function extractMutationArraySequences(a, b, s) {
     let as = a.indexOf(b[s]);
     const res = [];
+
     if (as < 0) {
         while (as < 0 && s < b.length) {
             res.push(b[s]);
@@ -118,14 +123,20 @@ function extractArraySequences(a, b, s) {
             s++;
         }
     }
+
     return res;
 }
 
-function mergeArraySequences(data) {
+function mergeArrayMutationSequences(data) {
     const res = {
         sequences: [],
-        maxLength: 0
+        maxLength: 0,
+        ascending: data.ascending,
+        descending: data.descending
     };
+
+    const generalMovementUp = data.ascending > data.descending;
+
     data.sequences.sort((a0, a1) => {
         if (a0.oldStart === -1 && a1.oldStart > -1) {
             return 1;
@@ -133,52 +144,124 @@ function mergeArraySequences(data) {
         if (a0.oldStart > -1 && a1.oldStart === -1) {
             return -1;
         }
-        if (a0.newStart < a1.newStart) {
-            return -1;
-        }
-        if (a0.newStart > a1.newStart) {
-            return 1;
+        if (generalMovementUp) {
+            if (a0.movedBy < 0 && a1.movedBy >= 0) {
+                return -1;
+            }
+            if (a0.movedBy >= 0 && a1.movedBy < 0) {
+                return 1;
+            }
+            if (a0.newStart < a1.newStart) {
+                return -1;
+            }
+            if (a0.newStart > a1.newStart) {
+                return 1;
+            }
+        } else {
+            if (a0.movedBy <= 0 && a1.movedBy > 0) {
+                return -1;
+            }
+            if (a0.movedBy > 0 && a1.movedBy <= 0) {
+                return 1;
+            }
+            if (a0.newStart > a1.newStart) {
+                return -1;
+            }
+            if (a0.newStart < a1.newStart) {
+                return 1;
+            }
         }
         return 0;
     });
-    let nStart = 0;
-    let oStart = 0;
-    let currentStart = -1;
-    let descend = true;
-    let currentSequence;
+
+    let nStart;
+    let oStart;
+    let currentNewStart = generalMovementUp ? -1 : Number.MAX_SAFE_INTEGER;
+    let currentOldStart = generalMovementUp ? -1 : Number.MAX_SAFE_INTEGER;
+    let generalMovementSequence = [];
+    const newElements = [];
+
     for (const seq of data.sequences) {
-        const {sequence, oldStart, newStart} = seq;
-        const descended = newStart < oldStart;
-        if (currentSequence != null && oldStart > 0 && newStart > currentStart && descend === descended) {
-            currentStart = newStart;
-            currentSequence = [
-                ...currentSequence,
-                ...sequence
-            ]
+        const {sequence, oldStart, newStart, movedBy} = seq;
+
+        if (oldStart < 0) {
+            newElements.push(seq);
         } else {
-            if (currentSequence != null) {
-                const seqLength = currentSequence.length;
+            const followsGeneralDirection = generalMovementUp ? movedBy >= 0 : movedBy <= 0;
+            const followsAfterLatest = generalMovementUp ? newStart > currentNewStart : newStart < currentNewStart;
+            const didFollowAfterLatest = generalMovementSequence.length === 0 || (generalMovementUp ? oldStart > currentOldStart : oldStart < currentOldStart);
+
+            if (followsGeneralDirection && didFollowAfterLatest && followsAfterLatest) {
+                if (nStart == null) {
+                    nStart = newStart;
+                    oStart = oldStart;
+                }
+
+                currentNewStart = newStart;
+                currentOldStart = oldStart;
+
+                if (generalMovementUp) {
+                    generalMovementSequence = [
+                        ...generalMovementSequence,
+                        ...sequence
+                    ];
+                } else {
+                    generalMovementSequence = [
+                        ...sequence,
+                        ...generalMovementSequence
+                    ];
+                }
+            } else {
+                const seqLength = sequence.length;
+
+                const last = res.sequences.at(-1);
+                if (last != null) {
+                    if (generalMovementUp) {
+                        if (newStart === last.newStart + last.length) {
+                            last.sequence = [
+                                ...last.sequence,
+                                ...sequence
+                            ];
+                            last.length += seqLength;
+
+                            if (res.maxLength < last.length) {
+                                res.maxLength = last.length;
+                            }
+                            continue;
+                        }
+                    } else if (newStart === last.newStart - seqLength) {
+                        last.sequence = [
+                            ...sequence,
+                            ...last.sequence
+                        ];
+                        last.newStart = newStart;
+                        last.length += seqLength;
+
+                        if (res.maxLength < last.length) {
+                            res.maxLength = last.length;
+                        }
+                        continue;
+                    }
+                }
+
                 res.sequences.push({
-                    sequence: currentSequence,
-                    oldStart: oStart,
-                    newStart: nStart,
+                    sequence: sequence,
+                    oldStart,
+                    newStart,
                     length: seqLength
                 });
+
                 if (res.maxLength < seqLength) {
                     res.maxLength = seqLength;
                 }
             }
-            nStart = newStart;
-            oStart = oldStart;
-            currentStart = newStart;
-            currentSequence = sequence;
-            descend = newStart < oldStart;
         }
     }
-    if (currentSequence.length > 0) {
-        const seqLength = currentSequence.length;
+
+    if (generalMovementSequence.length > 0) {
+        const seqLength = generalMovementSequence.length;
         res.sequences.push({
-            sequence: currentSequence,
+            sequence: generalMovementSequence,
             oldStart: oStart,
             newStart: nStart,
             length: seqLength
@@ -187,5 +270,43 @@ function mergeArraySequences(data) {
             res.maxLength = seqLength;
         }
     }
+
+    while (newElements.length) {
+        const seq = newElements.shift();
+        const {sequence, newStart} = seq;
+        const currentSequence = [...sequence];
+        let currentOffset = newStart + 1;
+        while (newElements.length) {
+            const nSeq = newElements[0];
+            const {sequence: nextSequence, newStart: nextStart} = nSeq;
+            if (nextStart === currentOffset++) {
+                currentSequence.push(...nextSequence);
+                newElements.shift();
+            } else {
+                break;
+            }
+        }
+        const seqLength = currentSequence.length;
+        res.sequences.push({
+            sequence: currentSequence,
+            oldStart: -1,
+            newStart,
+            length: seqLength
+        });
+        if (res.maxLength < seqLength) {
+            res.maxLength = seqLength;
+        }
+    }
+
+    res.sequences.sort((a0, a1) => {
+        if (a0.newStart < a1.newStart) {
+            return -1;
+        }
+        if (a0.newStart > a1.newStart) {
+            return 1;
+        }
+        return 0;
+    });
+
     return res;
 }

@@ -139,25 +139,31 @@ export default class ElementManager {
             const currentOrder = [...children].map((el) => el.getAttribute("em-key") ?? "");
             const keys = [...this.#order];
             const {changes} = getArrayMutations(currentOrder, keys);
-            for (const newIndex in changes) {
-                const key = changes[newIndex];
-                const el = this.#elements.get(key);
-                el.remove();
+            for (const {sequence} of changes) {
+                for (const key of sequence) {
+                    const el = this.#elements.get(key);
+                    el.remove();
+                }
             }
-            for (const newIndex in changes) {
-                const key = changes[newIndex];
-                const el = this.#elements.get(key);
-                if (+newIndex === 0) {
-                    this.#target.prepend(el);
+            for (const {sequence, position} of changes) {
+                const els = [];
+                for (const key of sequence) {
+                    const el = this.#elements.get(key);
+                    els.push(el);
+                }
+                if (position === 0) {
+                    this.#target.prepend(...els);
                 } else {
-                    this.#target.children[newIndex - 1].after(el);
+                    this.#target.children[position - 1].after(...els);
                 }
             }
         } else {
+            const els = [];
             for (const key of this.#order) {
                 const el = this.#elements.get(key);
-                this.#target.append(el);
+                els.push(el);
             }
+            this.#target.append(...els);
         }
     });
 
