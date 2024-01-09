@@ -52,6 +52,10 @@ export default class I18nLabel extends I18nMixin(CustomElement) {
         return document.createElement("emc-i18n-label");
     }
 
+    get comparatorText() {
+        return this.innerText;
+    }
+
 }
 
 customElements.define("emc-i18n-label", I18nLabel);

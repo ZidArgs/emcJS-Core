@@ -155,6 +155,10 @@ export default class ObservableStorage extends EventTarget {
         return this.#rootData.get(key);
     }
 
+    hasChanges() {
+        return this.#changeData.size > 0;
+    }
+
     getChanges() {
         const res = {};
         for (const [key, value] of this.#changeData) {

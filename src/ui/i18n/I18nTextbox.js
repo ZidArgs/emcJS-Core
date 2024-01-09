@@ -55,6 +55,10 @@ export default class I18nTextbox extends I18nMixin(CustomElement) {
         }
     }
 
+    get comparatorText() {
+        return this.innerText;
+    }
+
 }
 
 customElements.define("emc-i18n-textbox", I18nTextbox);

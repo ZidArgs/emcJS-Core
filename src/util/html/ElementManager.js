@@ -29,8 +29,6 @@ export default class ElementManager {
 
     #args;
 
-    #currentRenderTimeout;
-
     constructor(target, ...args) {
         if (!(target instanceof HTMLElement)) {
             throw new TypeError("target must be of type HTMLElement");
@@ -107,8 +105,8 @@ export default class ElementManager {
     #sortEntries() {
         if (this.#sorter != null && this.#cache.size > 0) {
             const newOrder = this.#definedOrder.toSorted((key0, key1) => {
-                const data0 = this.#data.get(key0);
-                const data1 = this.#data.get(key1);
+                const data0 = this.#cache.get(key0);
+                const data1 = this.#cache.get(key1);
                 const el0 = this.#elements.get(key0);
                 const el1 = this.#elements.get(key1);
                 if (data0 == null || data1 == null) {
@@ -133,7 +131,6 @@ export default class ElementManager {
     }
 
     #render = debounce(() => {
-        clearTimeout(this.#currentRenderTimeout);
         const children = this.#target.children;
         if (children.length > 0) {
             const currentOrder = [...children].map((el) => el.getAttribute("em-key") ?? "");

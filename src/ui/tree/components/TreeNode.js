@@ -1,11 +1,14 @@
 import CustomElement from "../../element/CustomElement.js";
-import ElementManager from "../../../util/html/ElementManager.js";
+import TreeNodeElementManager from "../manager/TreeNodeElementManager.js";
 import {
     scrollIntoViewIfNeeded
 } from "../../../util/helper/ui/Scroll.js";
 import {
-    sortChildren
+    nodeTextComparator
 } from "../../../util/helper/ui/NodeListSort.js";
+import {
+    debounce
+} from "../../../util/Debouncer.js";
 import EventTargetManager from "../../../util/event/EventTargetManager.js";
 import i18n from "../../../util/I18n.js";
 import "../../i18n/I18nLabel.js";
@@ -14,66 +17,15 @@ import STYLE from "./TreeNode.js.css" assert {type: "css"};
 
 const NODE_TYPES = new Map();
 
-// TODO try to use new sorter in ElementManager
-class TreeNodeElementManager extends ElementManager {
-
-    composer(key, params) {
-        const {nodeType, startCollapsed = false, children} = params;
-        const el = TreeNode.createNodeType(nodeType);
-        el.ref = key;
-        if (children != null) {
-            el.forceCollapsible = true;
-            el.toggleCollapsed(!!startCollapsed);
-        } else {
-            el.forceCollapsible = false;
-        }
-        return el;
-    }
-
-    mutator(el, key, params) {
-        const {label = key, data = {}, sorted = false, children, ...attr} = params;
-        el.label = label;
-        el.sorted = sorted;
-        for (const name in data) {
-            el.dataset[name] = data[name];
-        }
-        if (children != null) {
-            el.loadConfig(children);
-            el.forceCollapsible = true;
-        } else {
-            el.forceCollapsible = false;
-        }
-        for (const name in attr) {
-            const value = attr[name];
-            if (value != null) {
-                if (typeof value === "object") {
-                    el.setAttribute(name, JSON.stringify(value));
-                } else if (typeof value === "boolean") {
-                    if (value) {
-                        el.setAttribute(name, "");
-                    } else {
-                        el.removeAttribute(name);
-                    }
-                } else {
-                    el.setAttribute(name, value);
-                }
-            } else {
-                el.removeAttribute(name);
-            }
-        }
-    }
-
-}
-
 export default class TreeNode extends CustomElement {
 
     #nodeEl;
 
+    #labelEl;
+
     #contentEl;
 
-    #elManager;
-
-    #elementData = [];
+    #elementManager;
 
     #i18nEventManager = new EventTargetManager(i18n);
 
@@ -82,6 +34,7 @@ export default class TreeNode extends CustomElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
+        this.#labelEl = this.shadowRoot.getElementById("label");
         this.#contentEl = this.shadowRoot.getElementById("content");
         this.#contentEl.addEventListener("click", (event) => {
             event.stopPropagation();
@@ -99,9 +52,11 @@ export default class TreeNode extends CustomElement {
                 top: event.clientY
             };
             this.dispatchEvent(selectEvent);
+
             const contentClickEvent = new MouseEvent("contentclick", event);
             this.dispatchEvent(contentClickEvent);
-            if (event.pointerType && !selectEvent.defaultPrevented && !contentClickEvent.defaultPrevented) {
+
+            if (event.pointerType && !contentClickEvent.defaultPrevented) {
                 this.toggleCollapsed();
             }
         });
@@ -120,9 +75,10 @@ export default class TreeNode extends CustomElement {
                 left: event.clientX,
                 top: event.clientY
             };
+            this.dispatchEvent(menuEvent);
+
             const contentContextmenuEvent = new MouseEvent("contentcontextmenu", event);
             this.dispatchEvent(contentContextmenuEvent);
-            this.dispatchEvent(menuEvent);
         });
         /* --- */
         const subTreeEl = this.shadowRoot.getElementById("tree");
@@ -172,35 +128,25 @@ export default class TreeNode extends CustomElement {
             this.toggleCollapsed();
         });
         /* --- */
-        this.#elManager = TreeNode.createTreeElementManager(this);
+        this.#elementManager = new TreeNodeElementManager(this, TreeNode);
+        if (this.sorted) {
+            this.#elementManager.registerSortFunction(this.#sortByNameFunction);
+        }
         /* --- */
-        this.#i18nEventManager.setActive(this.getBooleanAttribute("sorted"));
+        this.#i18nEventManager.setActive(this.sorted);
         this.#i18nEventManager.set("language", () => {
-            sortChildren(this);
+            this.#sort();
         });
         this.#i18nEventManager.set("translation", () => {
-            sortChildren(this);
+            this.#sort();
         });
     }
 
-    select() {
-        scrollIntoViewIfNeeded(this.#contentEl, {
-            behavior: "smooth",
-            block: "nearest"
-        });
-        this.#contentEl.click();
-    }
-
-    toggleCollapsed(force) {
-        if (this.isCollapsible) {
-            this.#nodeEl.classList.toggle("collapsed", force);
-        }
-    }
-
-    forceAllCollapsed(collapsed = true) {
-        this.toggleCollapsed(!!collapsed);
-        for (const ch of this.children) {
-            ch.forceAllCollapsed(collapsed);
+    connectedCallback() {
+        const sorted = this.sorted;
+        this.#i18nEventManager.setActive(sorted);
+        if (sorted) {
+            this.#elementManager.registerSortFunction(this.#sortByNameFunction);
         }
     }
 
@@ -253,21 +199,42 @@ export default class TreeNode extends CustomElement {
             switch (name) {
                 case "label": {
                     if (oldValue != newValue) {
-                        this.shadowRoot.getElementById("label").i18nValue = newValue;
+                        this.#labelEl.i18nValue = newValue;
                     }
                 } break;
                 case "sorted": {
                     if (oldValue != newValue) {
-                        const sorted = this.getBooleanAttribute("sorted");
+                        const sorted = this.sorted;
                         this.#i18nEventManager.setActive(sorted);
                         if (sorted) {
-                            sortChildren(this);
+                            this.#elementManager.registerSortFunction(this.#sortByNameFunction);
                         } else {
-                            this.#elManager.manage(this.#elementData);
+                            this.#elementManager.registerSortFunction();
                         }
                     }
                 } break;
             }
+        }
+    }
+
+    select() {
+        scrollIntoViewIfNeeded(this.#contentEl, {
+            behavior: "smooth",
+            block: "nearest"
+        });
+        this.#contentEl.click();
+    }
+
+    toggleCollapsed(force) {
+        if (this.isCollapsible) {
+            this.#nodeEl.classList.toggle("collapsed", force);
+        }
+    }
+
+    forceAllCollapsed(collapsed = true) {
+        this.toggleCollapsed(!!collapsed);
+        for (const ch of this.children) {
+            ch.forceAllCollapsed(collapsed);
         }
     }
 
@@ -277,11 +244,7 @@ export default class TreeNode extends CustomElement {
             const config = structure[key];
             data.push({...config, key});
         }
-        this.#elementData = data;
-        this.#elManager.manage(data);
-        if (this.sorted) {
-            sortChildren(this);
-        }
+        this.#elementManager.manage(data);
     }
 
     static registerNodeType(type, TreeNodeClass) {
@@ -306,8 +269,18 @@ export default class TreeNode extends CustomElement {
         return new TreeNodeClass();
     }
 
-    static createTreeElementManager(container) {
-        return new TreeNodeElementManager(container);
+    get comparatorText() {
+        return this.#labelEl.innerText;
+    }
+
+    #sort = debounce(() => {
+        this.#elementManager.sort();
+    }, 1000);
+
+    #sortByNameFunction(entry0, entry1) {
+        const {element: el0} = entry0;
+        const {element: el1} = entry1;
+        return nodeTextComparator(el0, el1);
     }
 
 }

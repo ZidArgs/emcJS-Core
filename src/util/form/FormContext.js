@@ -118,6 +118,10 @@ export default class FormContext extends EventTarget {
         this.dispatchEvent(ev);
     }
 
+    acceptChanges() {
+        this.#dataStorage.purgeChanges();
+    }
+
     addValidator(validator) {
         if (typeof validator === "function" && !this.#validators.has(validator)) {
             this.#validators.add(validator);
@@ -314,6 +318,10 @@ export default class FormContext extends EventTarget {
             }
         }
         return res;
+    }
+
+    hasChanges() {
+        return this.#dataStorage.hasChanges();
     }
 
     getChanges() {

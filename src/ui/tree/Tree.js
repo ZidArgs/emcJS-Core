@@ -1,10 +1,19 @@
 import CustomElement from "../element/CustomElement.js";
 import {
-    sortChildren
+    nodeTextComparator
 } from "../../util/helper/ui/NodeListSort.js";
 import {
     scrollIntoViewIfNeeded
 } from "../../util/helper/ui/Scroll.js";
+import {
+    deepClone
+} from "../../util/helper/DeepClone.js";
+import {
+    debounce
+} from "../../util/Debouncer.js";
+import TreeNodeElementManager from "./manager/TreeNodeElementManager.js";
+import EventTargetManager from "../../util/event/EventTargetManager.js";
+import i18n from "../../util/I18n.js";
 import TreeNode from "./components/TreeNode.js";
 import TPL from "./Tree.js.html" assert {type: "html"};
 import STYLE from "./Tree.js.css" assert {type: "css"};
@@ -12,11 +21,15 @@ import STYLE from "./Tree.js.css" assert {type: "css"};
 // TODO add cut/copy/paste functionality
 // TODO add optional  search
 // TODO for sort add ascending/descending option and folder handling
-
-// TODO try to use new sorter in ElementManager
 export default class Tree extends CustomElement {
 
-    #elManager;
+    #elementManager;
+
+    #i18nEventManager = new EventTargetManager(i18n);
+
+    #currentSelectionPath = [];
+
+    #currentSelectionRefPath = [];
 
     constructor() {
         super();
@@ -26,7 +39,10 @@ export default class Tree extends CustomElement {
         const treeEl = this.shadowRoot.getElementById("tree");
         treeEl.addEventListener("select", (event) => {
             if (!event.data.isSelected) {
-                const {element} = event.data;
+                const {element, path, refPath} = event.data;
+                this.#currentSelectionPath = path;
+                this.#currentSelectionRefPath = refPath;
+
                 const keyboardMarked = this.querySelector(".keyboard-marked");
                 if (keyboardMarked != null) {
                     keyboardMarked.classList.remove("keyboard-marked");
@@ -112,7 +128,56 @@ export default class Tree extends CustomElement {
             }
         });
         /* --- */
-        this.#elManager = TreeNode.createTreeElementManager(this);
+        this.#elementManager = new TreeNodeElementManager(this, TreeNode);
+        if (this.sorted) {
+            this.#elementManager.registerSortFunction(this.#sortByNameFunction);
+        }
+        /* --- */
+        this.#i18nEventManager.setActive(this.sorted);
+        this.#i18nEventManager.set("language", () => {
+            this.#sort();
+        });
+        this.#i18nEventManager.set("translation", () => {
+            this.#sort();
+        });
+    }
+
+    connectedCallback() {
+        const sorted = this.sorted;
+        this.#i18nEventManager.setActive(sorted);
+        if (sorted) {
+            this.#elementManager.registerSortFunction(this.#sortByNameFunction);
+        }
+    }
+
+    set sorted(value) {
+        this.setBooleanAttribute("sorted", value);
+    }
+
+    get sorted() {
+        return this.getBooleanAttribute("sorted");
+    }
+
+    static get observedAttributes() {
+        return ["sorted"];
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (oldValue != newValue) {
+            switch (name) {
+                case "sorted": {
+                    if (oldValue != newValue) {
+                        const sorted = this.sorted;
+                        this.#i18nEventManager.setActive(sorted);
+                        if (sorted) {
+                            this.#elementManager.registerSortFunction(this.#sortByNameFunction);
+                        } else {
+                            this.#elementManager.registerSortFunction();
+                        }
+                    }
+                } break;
+            }
+        }
     }
 
     loadConfig(config) {
@@ -121,10 +186,7 @@ export default class Tree extends CustomElement {
             const options = config[key];
             data.push({...options, key});
         }
-        this.#elManager.manage(data);
-        if (this.sorted) {
-            sortChildren(this);
-        }
+        this.#elementManager.manage(data);
     }
 
     loadConfigAtPath(path, config) {
@@ -141,7 +203,7 @@ export default class Tree extends CustomElement {
         }
     }
 
-    loadConfigAtPathRef(path, config) {
+    loadConfigAtRefPath(path, config) {
         if (!Array.isArray(path)) {
             throw new Error("path must be an array");
         }
@@ -153,6 +215,14 @@ export default class Tree extends CustomElement {
                 node.loadConfig(config);
             }
         }
+    }
+
+    getSelectedPath() {
+        return deepClone(this.#currentSelectionPath);
+    }
+
+    getSelectedRefPath() {
+        return deepClone(this.#currentSelectionRefPath);
     }
 
     selectItemByPath(path) {
@@ -182,7 +252,7 @@ export default class Tree extends CustomElement {
         }
     }
 
-    selectItemByPathRef(path) {
+    selectItemByRefPath(path) {
         const element = this.#getElementByRefPath(path);
         if (element != null) {
             element.select();
@@ -209,7 +279,7 @@ export default class Tree extends CustomElement {
         }
     }
 
-    markItemByPathForMenu(path) {
+    markItemForMenuByPath(path) {
         const keyboardMarked = this.querySelector(".keyboard-marked");
         if (keyboardMarked != null) {
             keyboardMarked.classList.remove("keyboard-marked");
@@ -224,7 +294,7 @@ export default class Tree extends CustomElement {
         }
     }
 
-    markItemByPathForMenuRef(path) {
+    markItemForMenuByRefPath(path) {
         const keyboardMarked = this.querySelector(".keyboard-marked");
         if (keyboardMarked != null) {
             keyboardMarked.classList.remove("keyboard-marked");
@@ -239,14 +309,14 @@ export default class Tree extends CustomElement {
         }
     }
 
-    toggleNodeCollapsed(path, force) {
+    toggleNodeCollapsedByPath(path, force) {
         const element = this.#getElementByPath(path);
         if (element != null) {
             element.toggleCollapsed(force);
         }
     }
 
-    toggleNodeCollapsedRef(path, force) {
+    toggleNodeCollapsedByRefPath(path, force) {
         const element = this.#getElementByRefPath(path);
         if (element != null) {
             element.toggleCollapsed(force);
@@ -269,7 +339,7 @@ export default class Tree extends CustomElement {
         }
     }
 
-    forcePathExpandedRef(path) {
+    forceRefPathExpanded(path) {
         if (path == null || !path.length) {
             return;
         }
@@ -399,6 +469,16 @@ export default class Tree extends CustomElement {
                 block: "nearest"
             });
         }
+    }
+
+    #sort = debounce(() => {
+        this.#elementManager.sort();
+    }, 1000);
+
+    #sortByNameFunction(entry0, entry1) {
+        const {element: el0} = entry0;
+        const {element: el1} = entry1;
+        return nodeTextComparator(el0, el1);
     }
 
 }

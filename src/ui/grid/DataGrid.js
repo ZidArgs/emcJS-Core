@@ -12,8 +12,8 @@ import {
     getAllAttributes
 } from "../../util/helper/ui/NodeAttributes.js";
 import MutationObserverManager from "../../util/observer/MutationObserverManager.js";
-import HeaderManager from "../../util/grid/manager/HeaderManager.js";
-import RowManager from "../../util/grid/manager/RowManager.js";
+import HeaderManager from "./manager/HeaderManager.js";
+import RowManager from "./manager/RowManager.js";
 import ResizeObserverMixin from "../mixin/ResizeObserverMixin.js";
 import Column from "./Column.js";
 import DataGridCell from "./cell/DataGridCell.js";

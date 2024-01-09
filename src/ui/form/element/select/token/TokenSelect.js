@@ -6,7 +6,8 @@ import EventMultiTargetManager from "../../../../../util/event/EventMultiTargetM
 import i18n from "../../../../../util/I18n.js";
 import CharacterSearch from "../../../../../util/search/CharacterSearch.js";
 import {
-    sortNodeList
+    sortNodeList,
+    nodeTextComparator
 } from "../../../../../util/helper/ui/NodeListSort.js";
 import {
     debounce
@@ -15,8 +16,8 @@ import Comparator, {
     isEqual
 } from "../../../../../util/helper/Comparator.js";
 import ElementListCache from "../../../../../util/html/ElementListCache.js";
-import ElementManager from "../../../../../util/html/ElementManager.js";
 import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
+import TokenSelectedElementManager from "./manager/TokenSelectedElementManager.js";
 import "../../../../i18n/builtin/I18nInput.js";
 import "../../../../i18n/builtin/I18nOption.js";
 import "../../../../i18n/I18nLabel.js";
@@ -34,21 +35,7 @@ const MUTATION_CONFIG = {
     attributeFilter: ["value"]
 };
 
-// TODO try to use new sorter in ElementManager
-class TokenElementManager extends ElementManager {
-
-    composer(key, params) {
-        const el = document.createElement("emc-i18n-label");
-        el.className = "token";
-        el.i18nValue = params.content ?? key;
-        el.dataset.value = key;
-        el.addEventListener("click", (event) => {
-            params.tokenAction(event);
-        });
-        return el;
-    }
-
-}
+// TODO use ElementManager for options?
 
 // TODO add manage token option (?)
 // TODO add token usage detection (?)
@@ -77,7 +64,7 @@ export default class TokenSelect extends CustomFormElementDelegating {
 
     #optionsContainerEl;
 
-    #elManager;
+    #elementManager;
 
     #optionNodeList = new ElementListCache();
 
@@ -217,7 +204,8 @@ export default class TokenSelect extends CustomFormElementDelegating {
             }
         }, {passive: true});
         /* --- */
-        this.#elManager = new TokenElementManager(this.#valueEl);
+        this.#elementManager = new TokenSelectedElementManager(this.#valueEl);
+        this.#elementManager.registerSortFunction(this.#sortByNameFunction);
         /* --- */
         this.#tokenRegistryEventTargetManager.set("change", () => {
             this.#loadTokenFromGroup();
@@ -225,9 +213,11 @@ export default class TokenSelect extends CustomFormElementDelegating {
         /* --- */
         this.#i18nEventManager.set("language", () => {
             this.#sort();
+            this.#sortOptions();
         });
         this.#i18nEventManager.set("translation", () => {
             this.#sort();
+            this.#sortOptions();
         });
     }
 
@@ -487,7 +477,7 @@ export default class TokenSelect extends CustomFormElementDelegating {
                 });
             }
         }
-        this.#elManager.manage(data);
+        this.#elementManager.manage(data);
     }
 
     #moveMarker(modeUp = false) {
@@ -558,17 +548,6 @@ export default class TokenSelect extends CustomFormElementDelegating {
         }
     }
 
-    #sort = debounce(() => {
-        const optionNodeList = this.#optionNodeList.getNodeList();
-        const sortedNodeList = sortNodeList(optionNodeList);
-        if (!Comparator.isEqual(optionNodeList, sortedNodeList)) {
-            for (const el of sortedNodeList) {
-                (el.parentElement ?? el.getRootNode() ?? document).append(el);
-            }
-        }
-        this.#optionNodeList.setNodeList(sortedNodeList);
-    });
-
     #resolveSlottedElements() {
         const optionNodeList = this.#optionsContainerEl.assignedElements({flatten: true}).filter((el) => el.matches("[value]"));
         this.#optionNodeList.setNodeList(optionNodeList);
@@ -591,7 +570,7 @@ export default class TokenSelect extends CustomFormElementDelegating {
             this.#mutationObserver.observe(node);
         }
         /* --- */
-        this.#sort();
+        this.#sortOptions();
         this.#applyValue(this.#value);
     }
 
@@ -656,6 +635,27 @@ export default class TokenSelect extends CustomFormElementDelegating {
             }
         }
         await BusyIndicatorManager.unbusy();
+    }
+
+    #sortOptions = debounce(() => {
+        const optionNodeList = this.#optionNodeList.getNodeList();
+        const sortedNodeList = sortNodeList(optionNodeList);
+        if (!Comparator.isEqual(optionNodeList, sortedNodeList)) {
+            for (const el of sortedNodeList) {
+                (el.parentElement ?? el.getRootNode() ?? document).append(el);
+            }
+        }
+        this.#optionNodeList.setNodeList(sortedNodeList);
+    });
+
+    #sort = debounce(() => {
+        this.#elementManager.sort();
+    }, 1000);
+
+    #sortByNameFunction(entry0, entry1) {
+        const {element: el0} = entry0;
+        const {element: el1} = entry1;
+        return nodeTextComparator(el0, el1);
     }
 
 }

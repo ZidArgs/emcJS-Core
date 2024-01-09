@@ -56,7 +56,7 @@
     },
     {
         "type": "SwitchInput",
-        "name": "multiple",
+        "name": "multi",
         "label": "Allow multiple values",
         "value": false
     },

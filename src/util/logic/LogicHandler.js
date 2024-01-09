@@ -1,3 +1,5 @@
+import LogicDataCollector from "util/logic/LogicDataCollector.js";
+import ObservableStorage from "../../data/storage/observable/ObservableStorage.js";
 import {
     debounce
 } from "../Debouncer.js";
@@ -8,7 +10,7 @@ const EVENTS = ["load", "clear", "change"];
 
 export default class LogicHandler extends EventTarget {
 
-    #storage = null;
+    #source = null;
 
     #value = true;
 
@@ -16,18 +18,21 @@ export default class LogicHandler extends EventTarget {
 
     #data = new Map();
 
-    constructor(storage, logic = true, events = EVENTS) {
+    constructor(source, logic = true, events = EVENTS) {
+        if (!(source instanceof ObservableStorage) && !(source instanceof LogicDataCollector)) {
+            throw new TypeError("storage must be ObservableStorage or LogicDataCollector");
+        }
         super();
-        this.#storage = storage;
-        this.#compileLogic(logic, events);
+        this.#source = source;
+        this.#init(logic, events);
     }
 
-    #compileLogic(logic, events) {
+    #init(logic, events) {
         if (typeof logic == "object") {
             this.#logic = LogicCompiler.compile(logic);
             this.#value = this.#execute();
             if (events.length > 0) {
-                const storageEventManager = new EventTargetManager(this.#storage);
+                const storageEventManager = new EventTargetManager(this.#source);
                 storageEventManager.set(events, () => {
                     this.#update();
                 });
@@ -39,7 +44,7 @@ export default class LogicHandler extends EventTarget {
     }
 
     #getValue(key) {
-        return this.#data.get(key) ?? this.#storage.get(key);
+        return this.#data.get(key) ?? this.#source.get(key);
     }
 
     #execute() {
