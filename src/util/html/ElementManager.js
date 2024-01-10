@@ -77,6 +77,7 @@ export default class ElementManager {
             const el = this.#elements.get(key);
             el.remove();
             this.#elements.delete(key);
+            this.#data.delete(key);
             this.#cache.delete(key);
             this.cleanup(el, key, ...this.#args);
         }
@@ -103,10 +104,10 @@ export default class ElementManager {
     }
 
     #sortEntries() {
-        if (this.#sorter != null && this.#cache.size > 0) {
+        if (this.#sorter != null && this.#data.size > 0) {
             const newOrder = this.#definedOrder.toSorted((key0, key1) => {
-                const data0 = this.#cache.get(key0);
-                const data1 = this.#cache.get(key1);
+                const data0 = this.#data.get(key0);
+                const data1 = this.#data.get(key1);
                 const el0 = this.#elements.get(key0);
                 const el1 = this.#elements.get(key1);
                 if (data0 == null || data1 == null) {
