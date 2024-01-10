@@ -139,14 +139,18 @@ export default class ElementManager {
             for (const {sequence} of changes) {
                 for (const key of sequence) {
                     const el = this.#elements.get(key);
-                    el.remove();
+                    if (el != null) {
+                        el.remove();
+                    }
                 }
             }
             for (const {sequence, position} of changes) {
                 const els = [];
                 for (const key of sequence) {
                     const el = this.#elements.get(key);
-                    els.push(el);
+                    if (el != null) {
+                        els.push(el);
+                    }
                 }
                 if (position === 0) {
                     this.#target.prepend(...els);
@@ -158,7 +162,9 @@ export default class ElementManager {
             const els = [];
             for (const key of this.#order) {
                 const el = this.#elements.get(key);
-                els.push(el);
+                if (el != null) {
+                    els.push(el);
+                }
             }
             this.#target.append(...els);
         }

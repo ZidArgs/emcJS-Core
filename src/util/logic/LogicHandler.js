@@ -10,6 +10,8 @@ export default class LogicHandler extends EventTarget {
 
     #source = null;
 
+    #sourceEventManager = new EventTargetManager();
+
     #value = true;
 
     #logic = null;
@@ -25,22 +27,23 @@ export default class LogicHandler extends EventTarget {
         }
         super();
         this.#source = source;
-        this.#init(logic, events);
+        if (events.length > 0) {
+            this.#sourceEventManager.set(events, () => {
+                this.#update();
+            });
+        }
+        this.#init(logic);
     }
 
-    #init(logic, events) {
+    #init(logic) {
         if (typeof logic == "object") {
             this.#logic = LogicCompiler.compile(logic);
             this.#value = this.#execute();
-            if (events.length > 0) {
-                const storageEventManager = new EventTargetManager(this.#source);
-                storageEventManager.set(events, () => {
-                    this.#update();
-                });
-            }
+            this.#sourceEventManager.switchTarget(this.#source);
         } else if (logic != null) {
             this.#logic = logic;
             this.#value = !!logic;
+            this.#sourceEventManager.switchTarget();
         }
     }
 
@@ -65,6 +68,10 @@ export default class LogicHandler extends EventTarget {
             }
         }
     });
+
+    setLogic(logic) {
+        this.#init(logic);
+    }
 
     setDataValue(key, value) {
         const old = this.#data.get(key);
