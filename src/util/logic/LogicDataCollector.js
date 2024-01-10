@@ -5,7 +5,7 @@ import MapLocker from "../../data/locker/MapLocker.js";
 import ObservableStorage from "../../data/storage/observable/ObservableStorage.js";
 import EventMultiTargetManager from "../event/EventMultiTargetManager.js"
 
-export class LogicDataCollector extends EventTarget {
+export default class LogicDataCollector extends EventTarget {
 
     #storageRegister = new Map();
 
