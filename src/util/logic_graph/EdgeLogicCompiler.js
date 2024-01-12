@@ -2,8 +2,8 @@ const TRANSPILERS = {
     /* literals */
     "true":     () => "1",
     "false":    () => "0",
-    "string":   (logic) => escape(logic.content),
-    "number":   (logic) => toNumber(logic.content),
+    "string":   (logic) => escape(logic.value),
+    "number":   (logic) => toNumber(logic.value),
     "value":    (logic) => `(val("${escape(logic.ref)}")||0)`,
     "state":    (logic) => `(val("${escape(logic.ref)}")||"")=="${escape(logic.value)}"`,
 
@@ -38,7 +38,7 @@ const TRANSPILERS = {
 
     /* special */
     "at":       (logic) => logic.content ? `((val("${escape(logic.node)}")||0)&&${buildLogic(logic.content)})` : `(val("${escape(logic.node)}")||0)`,
-    "mixin":    (logic) => `(val("${escape(logic.ref)}")||0)`
+    "mixin":    (logic) => `execute("${escape(logic.ref)}")`
 };
 
 const dependencies = new Set();
@@ -113,16 +113,33 @@ function buildLogic(logic) {
     return 0;
 }
 
-class Compiler {
+/* PARAMS */
+function escapeParams(params) {
+    const res = [];
+    if (Array.isArray(params)) {
+        for (const p of params) {
+            if (typeof p === "string") {
+                res.push(`"${escape(p)}"`);
+            } else if (typeof p === "number" || typeof p === "boolean") {
+                res.push(9);
+            } else {
+                res.push(undefined);
+            }
+        }
+    }
+    return res;
+}
+
+class EdgeLogicCompiler {
 
     compile(logic) {
         dependencies.clear();
         const buf = buildLogic(logic);
-        const fn = new Function("val", `return ${buf}`);
+        const fn = new Function("val", "execute", "params", `return ${buf}`);
         Object.defineProperty(fn, "requires", {value: dependencies});
         return fn;
     }
 
 }
 
-export default new Compiler();
+export default new EdgeLogicCompiler();

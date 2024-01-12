@@ -4,7 +4,7 @@ import {
     debounce
 } from "../Debouncer.js";
 import EventTargetManager from "../event/EventTargetManager.js";
-import LogicCompiler from "../logic/LogicCompiler.js";
+import LogicCompiler from "../logic/processor/LogicCompiler.js";
 
 const CONTEXTS = new WeakMap();
 const MUTATION_CONFIG = {

@@ -1,9 +1,9 @@
 import {
     debounce, debounceCacheData
-} from "../Debouncer.js";
-import MapLocker from "../../data/locker/MapLocker.js";
-import ObservableStorage from "../../data/storage/observable/ObservableStorage.js";
-import EventMultiTargetManager from "../event/EventMultiTargetManager.js"
+} from "../../Debouncer.js";
+import ObservableStorage from "../../../data/storage/observable/ObservableStorage.js";
+import EventMultiTargetManager from "../../event/EventMultiTargetManager.js"
+import LogicDataStorage from "../../../data/storage/logic/LogicDataStorage.js";
 
 export default class LogicDataCollector extends EventTarget {
 
@@ -11,11 +11,7 @@ export default class LogicDataCollector extends EventTarget {
 
     #augments = new Set();
 
-    #cache = new Map();
-
-    #cacheLock = new MapLocker(this.#cache);
-
-    #data = new Map();
+    #storage = new LogicDataStorage();
 
     #eventManager = new EventMultiTargetManager();
 
@@ -34,7 +30,7 @@ export default class LogicDataCollector extends EventTarget {
         });
     }
 
-    #init = debounce(() => {
+    init = debounce(() => {
         const logicData = {};
         for (const [storage, {prefix, postfix, precall}] of this.#storageRegister) {
             const data = storage.getAll();
@@ -45,41 +41,44 @@ export default class LogicDataCollector extends EventTarget {
             }
         }
         // ---
-        this.#cache.clear();
-        for (const [key, value] of Object.entries(logicData)) {
-            this.#cache.set(key, value);
-        }
-        const augmentedData = this.#execAugment(logicData);
-        for (const [key, value] of Object.entries(augmentedData)) {
-            this.#data.set(key, value);
-        }
+        this.#storage.clear();
+        this.#storage.setData(logicData);
+
+        this.#execAugments();
+
         const ev = new Event("load");
+        ev.data = this.#storage.getAll();
         this.dispatchEvent(ev);
+
+        this.#storage.flush();
     });
 
     #changeData = debounceCacheData((newData) => {
         const changes = {};
         for (const data of newData) {
             for (const [key, value] of Object.entries(data)) {
-                const oldValue = this.#cache.get(key);
+                const oldValue = this.#storage.get(key);
                 if (oldValue != value) {
                     changes[key] = value;
-                    this.#cache.set(key, value);
                 }
             }
         }
+
         if (Object.keys(changes).length > 0) {
-            const augmentedData = this.#execAugment(changes);
-            for (const [key, value] of Object.entries(augmentedData)) {
-                this.#data.set(key, value);
-            }
+            this.#storage.setData(changes);
+
+            this.#execAugments();
+
             const ev = new Event("change");
+            ev.data = this.#storage.getAllChanges();
             this.dispatchEvent(ev);
+
+            this.#storage.flush();
         }
     });
 
     get(key) {
-        return this.#data.get(key);
+        return this.#storage.getAugmented(key);
     }
 
     registerStorage(storage, prefix = "", postfix = "", precall = null) {
@@ -88,7 +87,7 @@ export default class LogicDataCollector extends EventTarget {
         }
         this.#eventManager.addTarget(storage);
         this.#storageRegister.set(storage, {prefix, postfix, precall});
-        this.#init();
+        this.init();
     }
 
     unregisterStorage(storage) {
@@ -97,7 +96,7 @@ export default class LogicDataCollector extends EventTarget {
         }
         this.#eventManager.removeTarget(storage);
         this.#storageRegister.delete(storage);
-        this.#init();
+        this.init();
     }
 
     registerAugment(augment) {
@@ -106,7 +105,7 @@ export default class LogicDataCollector extends EventTarget {
         }
         if (!this.#augments.has(augment)) {
             this.#augments.add(augment);
-            this.#init();
+            this.init();
         }
     }
 
@@ -116,16 +115,14 @@ export default class LogicDataCollector extends EventTarget {
         }
         if (this.#augments.has(augment)) {
             this.#augments.delete(augment);
-            this.#init();
+            this.init();
         }
     }
 
-    #execAugment(data) {
+    #execAugments() {
         for (const augment of this.#augments) {
-            const res = augment(this.#cacheLock, data);
-            data = {...data, ...res};
+            augment(this.#storage.restricted);
         }
-        return data;
     }
 
     #renameKeys(src = {}, prefix = "", postfix = "") {

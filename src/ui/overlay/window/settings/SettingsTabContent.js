@@ -1,5 +1,5 @@
 import CustomElement from "../../../element/CustomElement.js";
-import LogicHandler from "../../../../util/logic/LogicHandler.js";
+import LogicHandler from "../../../../util/logic/processor/LogicHandler.js";
 import I18nLabel from "../../../i18n/I18nLabel.js";
 import "../../../i18n/I18nTextbox.js";
 import "../../../input/InputWrapper.js";

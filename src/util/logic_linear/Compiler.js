@@ -2,10 +2,10 @@ const TRANSPILERS = {
     /* literals */
     "true":     () => "1",
     "false":    () => "0",
-    "string":   (logic) => `${escapeString(logic.content)}`,
-    "number":   (logic) => `${escapeNumber(logic.content)}`,
-    "value":    (logic) => `(val(${escapeString(logic.ref)})??0)`,
-    "state":    (logic) => `(val(${escapeString(logic.ref)})??0)==${escapeValue(logic.value)}`,
+    "string":   (logic) => escape(logic.value),
+    "number":   (logic) => toNumber(logic.value),
+    "value":    (logic) => `(val("${escape(logic.ref)}")||0)`,
+    "state":    (logic) => `(val("${escape(logic.ref)}")||"")=="${escape(logic.value)}"`,
 
     /* operators */
     "and":      (logic) => `${multiElementOperation(logic.content, "&&")}`,
@@ -17,8 +17,8 @@ const TRANSPILERS = {
     "xnor":     (logic) => `!${twoElementOperation(logic.content, "^") || 1}`,
 
     /* restrictors */
-    "min":      (logic) => `(${buildLogic(logic.content)}>=${escapeNumber(logic.value)})`,
-    "max":      (logic) => `(${buildLogic(logic.content)}<=${escapeNumber(logic.value)})`,
+    "min":      (logic) => `(${buildLogic(logic.content)}>=${escape(logic.value, 0)})`,
+    "max":      (logic) => `(${buildLogic(logic.content)}<=${escape(logic.value, 0)})`,
 
     /* comparators */
     "eq":       (logic) => twoElementOperation(logic.content, "=="),
@@ -34,78 +34,77 @@ const TRANSPILERS = {
     "mul":      (logic) => mathMultiElementOperation(logic.content, "*"),
     "div":      (logic) => mathMultiElementOperation(logic.content, "/"),
     "mod":      (logic) => mathMultiElementOperation(logic.content, "%"),
-    "pow":      (logic) => mathTwoElementOperation(logic.content, "**")
+    "pow":      (logic) => mathTwoElementOperation(logic.content, "**"),
+
+    /* special */
+    "at":       (logic) => logic.content ? `((val("${escape(logic.node)}")||0)&&${buildLogic(logic.content)})` : `(val("${escape(logic.node)}")||0)`,
+    "mixin":    (logic) => `(val("${escape(logic.ref)}")||0)`
 };
 
 const dependencies = new Set();
 
 /* STRINGS */
-function escapeString(str) {
-    if (typeof str !== "string") {
-        if (typeof str === "number" && !isNaN(str)) {
-            return `"${str}"`;
-        }
-        return `""`;
-    }
-    const res = str.replace(/[\\"]/g, "\\$&");
-    return `"${res}"`;
-}
-
-/* VALUE */
-function escapeValue(str) {
-    if (typeof str !== "string") {
-        if (typeof str === "number") {
-            if (isNaN(str)) {
-                return 0;
-            }
+function escape(str, def = "") {
+    if (typeof str != "string") {
+        if (typeof str == "number" && !isNaN(str)) {
             return str;
         }
-        return 0;
+        return def;
     }
     const res = str.replace(/[\\"]/g, "\\$&");
     dependencies.add(res);
-    return `"${res}"`;
+    return res;
 }
 
 /* ELEMENTS */
 function twoElementOperation(els, join) {
-    return multiElementOperation(els.slice(0, 2), join);
+    if (els.length == 0) {
+        return 0;
+    }
+    if (els.length == 1) {
+        return buildLogic(els[0]);
+    }
+    return `(${buildLogic(els[0])}${join}${buildLogic(els[1])})`;
 }
 
 function multiElementOperation(els, join) {
-    if (els.length === 0) {
+    if (els.length == 0) {
         return 0;
+    }
+    if (els.length == 1) {
+        return buildLogic(els[0]);
     }
     return `(${els.map(buildLogic).join(join)})`;
 }
 
 /* MATH */
-function escapeNumber(val) {
-    val = parseInt(val);
-    if (!isNaN(val)) {
-        return val;
-    }
-    return 0;
-}
-
 function toNumber(val) {
     return `(parseInt(${val})||0)`
 }
 
 function mathTwoElementOperation(els, join) {
-    return mathMultiElementOperation(els.slice(0, 2), join);
+    if (els.length == 0) {
+        return 0;
+    }
+    if (els.length == 1) {
+        return buildLogic(els[0]);
+    }
+    return toNumber(`${buildLogic(toNumber(els[0]))}${join}${buildLogic(toNumber(els[1]))}`);
 }
 
 function mathMultiElementOperation(els, join) {
-    if (els.length === 0) {
+    if (els.length == 0) {
         return 0;
     }
-    return `${els.map(buildLogic).map(toNumber).join(join)}`;
+    if (els.length == 1) {
+        return buildLogic(els[0]);
+    }
+    return toNumber(`${els.map(buildLogic).map(toNumber).join(join)}`);
 }
 
 /* INITIATOR */
 function buildLogic(logic) {
-    if (typeof logic !== "object") {
+    if (typeof logic != "object") {
         logic = {type: logic};
     }
     if (TRANSPILERS[logic.type] != null) {
@@ -114,16 +113,16 @@ function buildLogic(logic) {
     return 0;
 }
 
-class LogicCompiler {
+class Compiler {
 
     compile(logic) {
+        dependencies.clear();
         const buf = buildLogic(logic);
         const fn = new Function("val", `return ${buf}`);
         Object.defineProperty(fn, "requires", {value: dependencies});
-        dependencies.clear();
         return fn;
     }
 
 }
 
-export default new LogicCompiler;
+export default new Compiler();

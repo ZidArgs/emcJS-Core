@@ -1,5 +1,3 @@
-// TODO add option to invalidate logic elements without children
-
 class LogicValidator {
 
     #customValidators = new Map();
@@ -54,14 +52,14 @@ class LogicValidator {
                 }
             } break;
             case "string": {
-                if (typeof node["content"] !== "string") {
-                    errors.push(`content has to be a string [ ${path.join(" > ")} ]`);
+                if (typeof node["value"] !== "string") {
+                    errors.push(`value has to be a string [ ${path.join(" > ")} ]`);
                 }
             } break;
             case "number": {
-                const val = parseInt(node["content"]);
+                const val = parseInt(node["value"]);
                 if (!isNaN(val)) {
-                    errors.push(`content has to be a number [ ${path.join(" > ")} ]`);
+                    errors.push(`value has to be a number [ ${path.join(" > ")} ]`);
                 }
             } break;
             case "and":

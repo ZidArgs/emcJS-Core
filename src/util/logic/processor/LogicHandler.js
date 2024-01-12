@@ -1,7 +1,7 @@
 import {
     debounce
-} from "../Debouncer.js";
-import EventTargetManager from "../event/EventTargetManager.js";
+} from "../../Debouncer.js";
+import EventTargetManager from "../../event/EventTargetManager.js";
 import LogicCompiler from "./LogicCompiler.js";
 
 const EVENTS = ["load", "clear", "change"];
