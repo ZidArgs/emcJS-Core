@@ -98,11 +98,17 @@ export default class BoolOrLogicInput extends CustomFormElementDelegating {
     }
 
     static get observedAttributes() {
-        return ["value", "sorted"];
+        return ["name", "value", "sorted"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
+            case "name":{
+                if (oldValue != newValue) {
+                    this.#boolOrLogicModal = BoolOrLogicModal.getModalByName(newValue);
+                    this.#boolOrLogicModal.name = newValue;
+                }
+            } break;
             case "value": {
                 if (oldValue != newValue) {
                     if (this.#value === undefined) {

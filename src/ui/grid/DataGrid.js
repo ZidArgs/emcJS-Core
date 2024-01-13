@@ -14,16 +14,17 @@ import {
 import {
     getAllAttributes
 } from "../../util/helper/ui/NodeAttributes.js";
+import BusyIndicatorManager from "../../util/BusyIndicatorManager.js";
 import MutationObserverManager from "../../util/observer/MutationObserverManager.js";
 import HeaderManager from "./manager/HeaderManager.js";
 import RowManager from "./manager/RowManager.js";
 import ResizeObserverMixin from "../mixin/ResizeObserverMixin.js";
 import Column from "./Column.js";
 import DataGridCell from "./cell/DataGridCell.js";
+import CellCache from "./data/CellCache.js";
 import "./cell/CellTypeLoader.js";
 import TPL from "./DataGrid.js.html" assert {type: "html"};
 import STYLE from "./DataGrid.js.css" assert {type: "css"};
-import BusyIndicatorManager from "../../util/BusyIndicatorManager.js";
 
 const MUTATION_CONFIG = {
     attributes: true
@@ -45,6 +46,8 @@ function getStyleLengthValue(type, value) {
 export default class DataGrid extends ResizeObserverMixin(CustomElement) {
 
     #internalId = appUID("data-grid");
+
+    #cellCache = new CellCache();
 
     #tableEl;
 
@@ -110,7 +113,7 @@ export default class DataGrid extends ResizeObserverMixin(CustomElement) {
         this.#onSlotChange();
         /* --- */
         this.#headerManager = new HeaderManager(this.#headerEl, this.#headerSelectEl);
-        this.#rowManager = new RowManager(this.#bodyEl, this.#internalId);
+        this.#rowManager = new RowManager(this.#bodyEl, this.#cellCache, this.#internalId);
         /* --- */
         this.#tableEl.addEventListener("move-row-up", (event) => {
             event.stopPropagation();
@@ -191,6 +194,10 @@ export default class DataGrid extends ResizeObserverMixin(CustomElement) {
     connectedCallback() {
         super.connectedCallback();
         this.#stretched = this.#columnDefinition.find((definition) => definition.name === this.stretched);
+    }
+
+    get internalId() {
+        return this.#internalId;
     }
 
     set nohead(value) {
@@ -313,11 +320,11 @@ export default class DataGrid extends ResizeObserverMixin(CustomElement) {
     });
 
     getAllCellsForColumn(colName) {
-        return this.#bodyEl.querySelectorAll(`:scope > tr > [col-name="${colName}"]`);
+        return this.#cellCache.getAllCellsForColumn(colName);
     }
 
     getCell(rowName, colName) {
-        return this.#bodyEl.querySelector(`:scope > tr[row-name="${rowName}"]`).querySelector(`:scope > [col-name="${colName}"]`);
+        return this.#cellCache.getCell(rowName, colName);
     }
 
     async #applyColumnDefinition() {

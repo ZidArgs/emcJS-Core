@@ -37,25 +37,6 @@
         "value": ""
     },
     {
-        "type": "KeyValueListInput",
-        "name": "options",
-        "label": "Options (ignored if Option Group is set)",
-        "value": {},
-        "visible": {
-            "type": "eq",
-            "content": [
-                {
-                    "type": "value",
-                    "content": "optiongroup"
-                },
-                {
-                    "type": "string",
-                    "content": ""
-                }
-            ]
-        }
-    },
-    {
         "type": "SwitchInput",
         "name": "resettable",
         "label": "Resettable",

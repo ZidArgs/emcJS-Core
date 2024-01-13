@@ -109,12 +109,17 @@ export default class BoolOrLogicInput extends AbstractFormInput {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "value", "readonly"];
+        return [...super.observedAttributes, "name", "value", "readonly"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
+            case "name":{
+                if (oldValue != newValue) {
+                    this.#logicEl.name = newValue;
+                }
+            } break;
             case "value": {
                 if (oldValue != newValue) {
                     this.#applyValueAttribute(newValue);

@@ -15,6 +15,27 @@
     --navigation-shadow-color: #000000;
     --navigation-marker-color: #ffffff;
 
+    /* === dialog === */
+    --modal-back-color: #ffffff;
+    --modal-text-color: #000000;
+
+    --modal-close-back-color: #ffb9b9;
+    --modal-close-text-color: #000000;
+
+    --modal-close-hover-back-color: #ff0000;
+    --modal-close-hover-text-color: #ffffff;
+
+    --modal-close-focus-color: #000000;
+
+    --modal-border-color: #cccccc;
+    --modal-border-width: var(--page-border-width, 2px);
+
+    --modal-header-back-color: #e4e4e4;
+    --modal-header-text-color: #000000;
+
+    --modal-footer-back-color: #e4e4e4;
+    --modal-footer-text-color: #000000;
+
     /* === panel === */
     --panel-text-color: var(--page-text-color, #000000);
     --panel-back-color: var(--page-back-color, #ffffff);

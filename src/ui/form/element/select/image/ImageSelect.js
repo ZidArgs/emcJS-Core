@@ -1,23 +1,13 @@
 import CustomFormElementDelegating from "../../../../element/CustomFormElementDelegating.js";
-import {
-    debounce
-} from "../../../../../util/Debouncer.js";
 import ElementListCache from "../../../../../util/html/ElementListCache.js";
 import {
     isEqual
 } from "../../../../../util/helper/Comparator.js";
-import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
 import ImageSelectModal from "./components/ImageSelectModal.js";
 import "../../../../i18n/I18nLabel.js";
 import "../../../../i18n/I18nTooltip.js";
 import TPL from "./ImageSelect.js.html" assert {type: "html"};
 import STYLE from "./ImageSelect.js.css" assert {type: "css"};
-
-const MUTATION_CONFIG = {
-    attributes: true,
-    characterData: true,
-    attributeFilter: ["value"]
-};
 
 export default class ImageSelect extends CustomFormElementDelegating {
 
@@ -29,15 +19,9 @@ export default class ImageSelect extends CustomFormElementDelegating {
 
     #buttonEl;
 
-    #optionsContainerEl;
-
     #imageIconModal = new ImageSelectModal();
 
     #optionNodeList = new ElementListCache();
-
-    #mutationObserver = new MutationObserverManager(MUTATION_CONFIG, () => {
-        this.#onSlotChange();
-    });
 
     constructor() {
         super();
@@ -47,7 +31,6 @@ export default class ImageSelect extends CustomFormElementDelegating {
         this.#iconEl = this.shadowRoot.getElementById("icon");
         this.#textEl = this.shadowRoot.getElementById("text");
         this.#buttonEl = this.shadowRoot.getElementById("button");
-        this.#optionsContainerEl = this.shadowRoot.getElementById("options-container");
         this.#buttonEl.addEventListener("click", () => {
             this.#imageIconModal.value = this.value;
             this.#imageIconModal.show();
@@ -55,15 +38,11 @@ export default class ImageSelect extends CustomFormElementDelegating {
         this.#imageIconModal.addEventListener("submit", () => {
             this.value = this.#imageIconModal.value;
         });
-        this.#optionsContainerEl.addEventListener("slotchange", () => {
-            this.#onSlotChange();
-        });
     }
 
     connectedCallback() {
         const value = this.value;
         this.#value = value;
-        this.#imageIconModal.loadOptions(this.#resolveSlottedOptions());
         this.internals.setFormValue(value);
     }
 
@@ -94,6 +73,14 @@ export default class ImageSelect extends CustomFormElementDelegating {
         return this.#value ?? super.value;
     }
 
+    set optiongroup(value) {
+        this.setAttribute("optiongroup", value);
+    }
+
+    get optiongroup() {
+        return this.getAttribute("optiongroup");
+    }
+
     set readonly(value) {
         this.setBooleanAttribute("readonly", value);
     }
@@ -111,11 +98,16 @@ export default class ImageSelect extends CustomFormElementDelegating {
     }
 
     static get observedAttributes() {
-        return ["value", "placeholder", "sorted"];
+        return ["name", "value", "optiongroup", "placeholder", "sorted"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
+            case "name": {
+                if (oldValue != newValue) {
+                    this.#imageIconModal = ImageSelectModal.getModalByName(newValue);
+                }
+            } break;
             case "value": {
                 if (oldValue != newValue) {
                     if (this.#value === undefined) {
@@ -124,6 +116,11 @@ export default class ImageSelect extends CustomFormElementDelegating {
                         /* --- */
                         this.dispatchEvent(new Event("change"));
                     }
+                }
+            } break;
+            case "optiongroup": {
+                if (oldValue != newValue) {
+                    this.#imageIconModal.optiongroup = newValue;
                 }
             } break;
             // case "placeholder": {
@@ -148,36 +145,6 @@ export default class ImageSelect extends CustomFormElementDelegating {
             this.#textEl.i18nValue = "";
         }
     }
-
-    #resolveSlottedOptions() {
-        const res = {};
-        const optionNodeList = this.#optionsContainerEl.assignedElements({flatten: true}).filter((el) => el.matches("[value]"));
-        this.#optionNodeList.setNodeList(optionNodeList);
-        /* --- */
-        const oldNodes = new Set(this.#mutationObserver.getObservedNodes());
-        const newNodes = new Set();
-        for (const el of optionNodeList) {
-            res[el.value] = el.i18nValue ?? el.innerHTML;
-            /* --- */
-            if (oldNodes.has(el)) {
-                oldNodes.delete(el);
-            } else {
-                newNodes.add(el);
-            }
-        }
-        for (const node of oldNodes) {
-            this.#mutationObserver.unobserve(node);
-        }
-        for (const node of newNodes) {
-            this.#mutationObserver.observe(node);
-        }
-        return res;
-    }
-
-    #onSlotChange = debounce(() => {
-        this.#imageIconModal.loadOptions(this.#resolveSlottedOptions());
-        this.#applyValue(this.#imageIconModal.value);
-    });
 
 }
 

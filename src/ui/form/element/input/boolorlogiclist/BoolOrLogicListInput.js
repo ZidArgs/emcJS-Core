@@ -8,6 +8,7 @@ import {
 } from "../../../../../util/Debouncer.js";
 import SimpleDataProvider from "../../../../../util/grid/provider/SimpleDataProvider.js";
 import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
+import LogicElementModal from "../logic/components/modal/LogicElementModal.js";
 import "../search/SearchInput.js";
 import "../../../../grid/DataGrid.js";
 import TPL from "./BoolOrLogicListInput.js.html" assert {type: "html"};
@@ -97,46 +98,6 @@ export default class BoolOrLogicListInput extends CustomFormElementDelegating {
 
     formStateRestoreCallback(state/* , mode */) {
         this.value = state;
-    }
-
-    addOperatorGroup(...groupList) {
-        let changes = false;
-        for (const group of groupList) {
-            if (!(typeof group === "string") || group === "") {
-                continue;
-            }
-            if (!this.#operatorGroups.has(group)) {
-                this.#operatorGroups.add(group);
-                changes = true;
-            }
-        }
-        /* --- */
-        if (changes) {
-            const logicEls = this.#gridEl.getAllCellsForColumn("value");
-            for (const logicEl of logicEls) {
-                logicEl.addOperatorGroup(...groupList);
-            }
-        }
-    }
-
-    removeOperatorGroup(...groupList) {
-        let changes = false;
-        for (const group of groupList) {
-            if (!(typeof group === "string") || group === "") {
-                continue;
-            }
-            if (this.#operatorGroups.has(group)) {
-                this.#operatorGroups.delete(group);
-                changes = true;
-            }
-        }
-        /* --- */
-        if (changes) {
-            const logicEls = this.#gridEl.getAllCellsForColumn("value");
-            for (const logicEl of logicEls) {
-                logicEl.removeOperatorGroup(...groupList);
-            }
-        }
     }
 
     get defaultValue() {
@@ -299,6 +260,22 @@ export default class BoolOrLogicListInput extends CustomFormElementDelegating {
     #onSlotChange = debounce(() => {
         this.#resolveSlottedElements();
     });
+
+    async addOperatorGroup(...groupList) {
+        await BusyIndicatorManager.busy();
+        const gridId = this.#gridEl.internalId;
+        const modal = LogicElementModal.getModalByName(`${gridId}-value`);
+        modal.addOperatorGroup(...groupList);
+        await BusyIndicatorManager.unbusy();
+    }
+
+    async removeOperatorGroup(...groupList) {
+        await BusyIndicatorManager.busy();
+        const gridId = this.#gridEl.internalId;
+        const modal = LogicElementModal.getModalByName(`${gridId}-value`);
+        modal.removeOperatorGroup(...groupList);
+        await BusyIndicatorManager.unbusy();
+    }
 
 }
 

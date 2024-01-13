@@ -10,11 +10,14 @@ import {
 import {
     getArrayMutations
 } from "../../../util/helper/collection/ArrayMutations.js";
+import CellCache from "../data/CellCache.js";
 import CellManager from "./CellManager.js";
 
 export default class RowManager {
 
     #dataGridId;
+
+    #cellCache;
 
     #target;
 
@@ -28,11 +31,15 @@ export default class RowManager {
 
     #cellManagers = new Map();
 
-    constructor(target, dataGridId) {
+    constructor(target, cellCache, dataGridId) {
         if (!(target instanceof HTMLTableSectionElement)) {
             throw new TypeError("target must be of type HTMLTableSectionElement");
         }
+        if (!(cellCache instanceof CellCache)) {
+            throw new TypeError("cellCache must be of type CellCache");
+        }
         this.#dataGridId = dataGridId;
+        this.#cellCache = cellCache;
         this.#target = target;
     }
 
@@ -88,6 +95,7 @@ export default class RowManager {
             const rowEl = this.#elements.get(name);
             rowEl.remove();
             this.#elements.delete(name);
+            this.#cellCache.removeRow(name);
             this.#rowDataCache.delete(name);
         }
 
@@ -120,7 +128,7 @@ export default class RowManager {
     composer(name, columnData, rowData, isSelected) {
         const rowEl = document.createElement("tr");
 
-        const cellManager = new CellManager(rowEl, this.#dataGridId);
+        const cellManager = new CellManager(rowEl, this.#cellCache, this.#dataGridId);
         this.#cellManagers.set(name, cellManager);
         cellManager.manage(columnData, rowData, isSelected);
 

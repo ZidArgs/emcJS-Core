@@ -60,6 +60,9 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
                 case "row-name": {
                     this.#inputEl.setModalRefName(newValue);
                 } break;
+                case "col-name": {
+                    this.#inputEl.name = `${this.dataGridId}-${newValue}`;
+                } break;
             }
         }
     }

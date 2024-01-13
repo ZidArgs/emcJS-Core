@@ -167,7 +167,7 @@ export default class ObservableStorage extends EventTarget {
         return res;
     }
 
-    purgeChanges() {
+    flushChanges() {
         for (const [key, value] of this.#changeData) {
             this.#rootData.set(key, value);
         }
@@ -190,7 +190,7 @@ export default class ObservableStorage extends EventTarget {
         this.dispatchEvent(ev);
     }
 
-    resetChanges() {
+    purgeChanges() {
         for (const [key] of this.#changeData) {
             if (this.#rootData.has(key)) {
                 const newValue = this.#rootData.get(key);

@@ -13,11 +13,15 @@ const Q_TAB = [
     "[tabindex]:not([tabindex=\"-1\"])"
 ].join(",");
 
+const modalStorage = new Map();
+
 const visibleModals = new Set();
 
 export default class Modal extends CustomElement {
 
     #titleTextEl;
+
+    #assocName = "";
 
     constructor(title = "", close = "close") {
         super();
@@ -47,6 +51,10 @@ export default class Modal extends CustomElement {
         focusBottomEl.addEventListener("focus", () => {
             this.focusFirst();
         });
+    }
+
+    get assocName() {
+        return this.#assocName;
     }
 
     disconnectedCallback() {
@@ -134,6 +142,28 @@ export default class Modal extends CustomElement {
                 closeEl.focus();
             }
         }
+    }
+
+    static getModalByName(name) {
+        if (typeof name !== "string" || name === "") {
+            return new this();
+        }
+        if (modalStorage.has(this)) {
+            const modalsForType = modalStorage.get(this);
+            if (modalsForType.has(name)) {
+                return modalsForType.get(name)
+            }
+            const modal = new this();
+            modal.#assocName = name;
+            modalsForType.set(name, modal);
+            return modal;
+        }
+        const modalsForType = new Map();
+        const modal = new this();
+        modal.#assocName = name;
+        modalsForType.set(name, modal);
+        modalStorage.set(this, modalsForType);
+        return modal;
     }
 
 }

@@ -33,12 +33,13 @@
     width: 100%;
     max-width: 1000px;
     margin-top: 100px;
-    color: black;
-    background-color: white;
-    border: solid 2px #cccccc;
+    color: var(--modal-text-color, #000000);
+    background-color: var(--modal-back-color, #ffffff);
+    border: solid var(--modal-border-width, 2px) var(--modal-border-color, #cccccc);
     border-radius: 4px;
     resize: both;
     pointer-events: all;
+    box-shadow: #000000c4 11px 11px 20px 0px;
 }
 :host(.inactive) #modal {
     pointer-events: none;
@@ -46,13 +47,50 @@
 }
 #header {
     display: flex;
-    border-bottom: solid 2px #cccccc;
+    color: var(--modal-header-text-color, #000000);
+    background-color: var(--modal-header-back-color, #e4e4e4);
+    border-bottom: solid var(--modal-border-width, 2px) var(--modal-border-color, #cccccc);
+}
+#footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-height: 50px;
+    padding: 5px;
+    color: var(--modal-footer-text-color, #000000);
+    background-color: var(--modal-footer-back-color, #e4e4e4);
+    border-top: solid var(--modal-border-width, 2px) var(--modal-border-color, #cccccc);
+}
+#footer:empty {
+    display: none;
+}
+#close {
+    display: flex;
+    width: 40px;
+    height: 40px;
+    border: none;
+    align-items: center;
+    justify-content: center;
+    color: var(--modal-close-text-color, #b4b4b4);
+    background-color: var(--modal-close-back-color, #ffb9b9);
+    cursor: pointer;
+    appearance: none;
+    font-size: 1.5em;
+    line-height: 1em;
+}
+#close:hover {
+    color: var(--modal-close-hover-text-color, #ffffff);
+    background-color: var(--modal-close-hover-back-color, #ff0000);
+}
+#close:focus {
+    box-shadow: inset var(--modal-close-focus-color, #000000) 0 0px 3px 4px;
+    outline: none;
 }
 #title {
     display: flex;
     align-items: center;
     flex: 1;
-    height: 30px;
+    height: 40px;
     padding: 0 10px;
     font-weight: bold;
     overflow: hidden;
@@ -80,35 +118,4 @@
 }
 #text:empty {
     display: none;
-}
-#footer {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    min-height: 50px;
-    padding: 5px;
-    border-top: solid 2px #cccccc;
-}
-#footer:empty {
-    display: none;
-}
-#close {
-    display: flex;
-    width: 40px;
-    height: 30px;
-    border: none;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    appearance: none;
-    font-size: 1.2em;
-    line-height: 1em;
-}
-#close:hover {
-    color: white;
-    background-color: red;
-}
-#close:focus {
-    box-shadow: inset red 0 0px 3px 4px;
-    outline: none;
 }

@@ -17,6 +17,10 @@ export default class TypeStorage extends EventTarget {
 
     #typeName;
 
+    #rootData = new Map();
+
+    #changeData = new Map();
+
     #buffer = new Map();
 
     constructor(typeName) {
@@ -53,6 +57,7 @@ export default class TypeStorage extends EventTarget {
         // write
         const oldValue = this.get(key);
         if (!isEqual(oldValue, value)) {
+            this.#writeChangeData(key, value);
             this.#buffer.set(key, value);
             // event
             const ev = new Event("change");
@@ -85,6 +90,7 @@ export default class TypeStorage extends EventTarget {
             // write
             const oldValue = this.get(key);
             if (!isEqual(oldValue, newValue)) {
+                this.#writeChangeData(key, newValue);
                 this.#buffer.set(key, newValue);
                 values[key] = newValue;
                 changes[key] = {oldValue, newValue};
@@ -122,6 +128,7 @@ export default class TypeStorage extends EventTarget {
     delete(key) {
         const oldValue = this.#buffer.get(key);
         if (oldValue != null) {
+            this.#writeChangeData(key, null);
             this.#buffer.delete(key);
             const ev = new Event("change");
             ev.data = {[key]: undefined};
@@ -139,6 +146,8 @@ export default class TypeStorage extends EventTarget {
     }
 
     clear() {
+        this.#rootData.clear();
+        this.#changeData.clear();
         this.#buffer.clear();
         const ev = new Event("clear");
         ev.data = this.getAll();
@@ -151,6 +160,8 @@ export default class TypeStorage extends EventTarget {
 
     deserialize(data = {}) {
         const allErrors = [];
+        this.#rootData.clear();
+        this.#changeData.clear();
         this.#buffer.clear();
         for (const key in data) {
             const newValue = data[key];
@@ -169,6 +180,7 @@ export default class TypeStorage extends EventTarget {
                 }
             }
             // write
+            this.#rootData.set(key, newValue);
             this.#buffer.set(key, newValue);
         }
         // event
@@ -227,10 +239,6 @@ export default class TypeStorage extends EventTarget {
         }
     }
 
-    [Symbol.iterator]() {
-        return this.#buffer[Symbol.iterator]()
-    }
-
     static getStorage(typeName) {
         if (typeName == null) {
             return null;
@@ -264,5 +272,71 @@ export default class TypeStorage extends EventTarget {
             listener(typeNames);
         }
     });
+
+    getRootValue(key) {
+        return this.#rootData.get(key);
+    }
+
+    hasChanges() {
+        return this.#changeData.size > 0;
+    }
+
+    getChanges() {
+        const res = {};
+        for (const [key, value] of this.#changeData) {
+            res[key] = value;
+        }
+        return res;
+    }
+
+    flushChanges() {
+        for (const [key, value] of this.#changeData) {
+            this.#rootData.set(key, value);
+        }
+        this.#changeData.clear();
+    }
+
+    resetValueChange(key) {
+        const oldValue = this.#buffer.get(key);
+        if (this.#rootData.has(key)) {
+            const newValue = this.#rootData.get(key);
+            this.#buffer.set(key, newValue);
+        } else {
+            this.#buffer.delete(key);
+        }
+        this.#changeData.delete(key);
+        const defaultValue = this.getDefault(key);
+        const ev = new Event("change");
+        ev.data = {[key]: defaultValue};
+        ev.changes = {[key]: {oldValue, newValue: defaultValue}};
+        this.dispatchEvent(ev);
+    }
+
+    purgeChanges() {
+        for (const [key] of this.#changeData) {
+            if (this.#rootData.has(key)) {
+                const newValue = this.#rootData.get(key);
+                this.#buffer.set(key, newValue);
+            } else {
+                this.#buffer.delete(key);
+            }
+        }
+        this.#changeData.clear();
+        const ev = new Event("load");
+        ev.data = this.getAll();
+        this.dispatchEvent(ev);
+    }
+
+    [Symbol.iterator]() {
+        return this.#buffer[Symbol.iterator]()
+    }
+
+    #writeChangeData(key, value) {
+        if (this.#rootData.get(key) === value) {
+            this.#changeData.delete(key);
+        } else {
+            this.#changeData.set(key, value);
+        }
+    }
 
 }

@@ -119,7 +119,7 @@ export default class FormContext extends EventTarget {
     }
 
     acceptChanges() {
-        this.#dataStorage.purgeChanges();
+        this.#dataStorage.flushChanges();
     }
 
     addValidator(validator) {
@@ -185,7 +185,7 @@ export default class FormContext extends EventTarget {
     }
 
     reset() {
-        this.#dataStorage.resetChanges();
+        this.#dataStorage.purgeChanges();
     }
 
     set ghostInvisible(value) {

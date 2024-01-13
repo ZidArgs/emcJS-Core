@@ -50,6 +50,14 @@ export default class BoolOrLogicModal extends Modal {
         this.remove();
     }
 
+    set name(value) {
+        this.#inputEl.name = value;
+    }
+
+    get name() {
+        return this.#inputEl.name;
+    }
+
     set value(value) {
         this.#inputEl.value = value;
     }

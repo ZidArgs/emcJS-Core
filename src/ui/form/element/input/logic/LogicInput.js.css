@@ -74,3 +74,8 @@
 :host(:disabled) .footer {
     border-top-color: var(--input-disabled-border-color, #6a6a6a) !important;
 }
+#optimize,
+#json {
+    min-width: 100px;
+    margin: 0px 0px 0px 10px;
+}

@@ -12,7 +12,9 @@ export default class TypeEntity extends EventTarget {
 
     #entityName;
 
-    #buffer = null;
+    #rootData = {};
+
+    #buffer = {};
 
     constructor(typeName, entityName, data = {}) {
         if (typeof typeName !== "string" || typeName === "" || typeName === "*") {
@@ -33,6 +35,7 @@ export default class TypeEntity extends EventTarget {
             throw new Error(`Error deserializing data as "${this.#typeName}"\n    ${msg}`);
         }
         // write
+        this.#rootData = deepClone(data);
         this.#buffer = deepClone(data);
     }
 
@@ -79,6 +82,27 @@ export default class TypeEntity extends EventTarget {
             const ev = new Event("change");
             ev.data = {[this.#entityName]: {}};
             ev.changes = {[this.#entityName]: {oldValue, newValue: {}}};
+            this.dispatchEvent(ev);
+        }
+    }
+
+    hasChange() {
+        return !isEqual(this.#rootData, this.#buffer);
+    }
+
+    flushChange() {
+        this.#rootData = deepClone(this.#buffer);
+    }
+
+    purgeChange() {
+        const newValue = this.#rootData;
+        const oldValue = this.#buffer;
+        if (!isEqual(oldValue, newValue)) {
+            this.#buffer = deepClone(newValue);
+            // event
+            const ev = new Event("change");
+            ev.data = {[this.#entityName]: newValue};
+            ev.changes = {[this.#entityName]: {oldValue, newValue}};
             this.dispatchEvent(ev);
         }
     }

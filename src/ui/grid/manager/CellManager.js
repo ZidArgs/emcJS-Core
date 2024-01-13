@@ -11,10 +11,13 @@ import {
     getArrayMutations
 } from "../../../util/helper/collection/ArrayMutations.js";
 import DataGridCell from "../cell/DataGridCell.js";
+import CellCache from "../data/CellCache.js";
 
 export default class CellManager {
 
     #dataGridId;
+
+    #cellCache;
 
     #target;
 
@@ -36,11 +39,15 @@ export default class CellManager {
 
     #lastCellEl;
 
-    constructor(target, dataGridId) {
+    constructor(target, cellCache, dataGridId) {
         if (!(target instanceof HTMLTableRowElement)) {
             throw new TypeError("target must be of type HTMLTableRowElement");
         }
+        if (!(cellCache instanceof CellCache)) {
+            throw new TypeError("cellCache must be of type CellCache");
+        }
         this.#dataGridId = dataGridId;
+        this.#cellCache = cellCache;
         this.#target = target;
 
         this.#selectCellEl = document.createElement("td");
@@ -106,6 +113,7 @@ export default class CellManager {
                     cellEl.setAttribute("row-name", this.#rowName);
                     this.mutator(cellEl, columnData, value, rowData);
                     this.#elements.set(name, cellEl);
+                    this.#cellCache.addCell(this.#rowName, name, cellEl);
                 }
                 this.#columnDefinitionCache.set(name, deepClone(columnData));
                 this.#valueCache.set(name, deepClone(value));
@@ -140,6 +148,7 @@ export default class CellManager {
             const cellEl = this.#elements.get(name);
             cellEl.remove();
             this.#elements.delete(name);
+            this.#cellCache.removeCell(this.#rowName, name);
             this.#columnDefinitionCache.delete(name);
         }
 

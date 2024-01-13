@@ -4,6 +4,9 @@ import STYLE from "./DataGridCell.js.css" assert {type: "css"};
 import {
     deepClone
 } from "../../../util/helper/DeepClone.js";
+import {
+    isEqual
+} from "../../../util/helper/Comparator.js";
 
 const CELL_TYPES = new Map();
 const MIN_WIDTH = new Map();
@@ -33,7 +36,11 @@ export default class DataGridCell extends CustomElementDelegating {
     }
 
     set rowData(value) {
-        this.#rowData = deepClone(value);
+        if (!isEqual(this.#rowData, value)) {
+            this.#rowData = deepClone(value);
+            const ev = new Event("rowdata");
+            this.dispatchEvent(ev);
+        }
     }
 
     get rowData() {

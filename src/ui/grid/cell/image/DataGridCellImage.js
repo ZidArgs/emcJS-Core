@@ -66,6 +66,9 @@ export default class DataGridCellImage extends DataGridCell {
                     this.#optionGroupEventTargetManager.switchTarget(this.#optionGroup);
                     this.#loadOptionsFromGroup();
                 } break;
+                case "col-name": {
+                    this.#inputEl.name = `${this.dataGridId}-${newValue}`;
+                } break;
             }
         }
     }

@@ -1,3 +1,4 @@
+import OptionGroupRegistry from "../../../../../../data/registry/form/OptionGroupRegistry.js";
 import Modal from "../../../../../modal/Modal.js";
 import BusyIndicatorManager from "../../../../../../util/BusyIndicatorManager.js";
 import CharacterSearch from "../../../../../../util/search/CharacterSearch.js";
@@ -22,6 +23,10 @@ import STYLE from "./ImageSelectModal.js.css" assert {type: "css"};
 export default class ImageSelectModal extends Modal {
 
     #slotEl;
+
+    #optionGroup = null;
+
+    #optionGroupEventTargetManager = new EventTargetManager();
 
     #optionNodeList = new ElementListCache();
 
@@ -77,6 +82,10 @@ export default class ImageSelectModal extends Modal {
             this.#onSlotChange();
         });
         /* --- */
+        this.#optionGroupEventTargetManager.set("change", () => {
+            this.#loadOptionsFromGroup();
+        });
+        /* --- */
         this.#i18nEventManager.setActive(this.getBooleanAttribute("sorted"));
         this.#i18nEventManager.set("language", () => {
             this.#sort();
@@ -108,33 +117,34 @@ export default class ImageSelectModal extends Modal {
         return this.getAttribute("value") ?? this.#optionNodeList.first?.value;
     }
 
-    async loadOptions(options) {
-        await BusyIndicatorManager.busy();
-        this.innerHTML = "";
-        for (const value in options) {
-            const optionEl = document.createElement("emc-select-image-preview");
-            optionEl.value = value;
-            optionEl.src = value;
-            optionEl.text = options[value];
-            optionEl.addEventListener("click", () => {
-                this.value = value;
-            });
-            this.append(optionEl);
-        }
-        await BusyIndicatorManager.unbusy();
+    set optiongroup(value) {
+        this.setAttribute("optiongroup", value);
+    }
+
+    get optiongroup() {
+        return this.getAttribute("optiongroup");
     }
 
     static get observedAttributes() {
-        return ["value"];
+        return ["value", "optiongroup"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        switch (name) {
-            case "value": {
-                if (oldValue != newValue) {
+        if (oldValue != newValue) {
+            switch (name) {
+                case "value": {
                     this.#applyValue(newValue);
-                }
-            } break;
+                } break;
+                case "optiongroup": {
+                    if (newValue == null || newValue === "") {
+                        this.#optionGroup = null;
+                    } else {
+                        this.#optionGroup = new OptionGroupRegistry(newValue);
+                    }
+                    this.#optionGroupEventTargetManager.switchTarget(this.#optionGroup);
+                    this.#loadOptionsFromGroup();
+                } break;
+            }
         }
     }
 
@@ -177,6 +187,24 @@ export default class ImageSelectModal extends Modal {
     #onSlotChange = debounce(() => {
         this.#resolveSlottedElements();
     });
+
+    async #loadOptionsFromGroup() {
+        await BusyIndicatorManager.busy();
+        this.innerHTML = "";
+        if (this.#optionGroup != null) {
+            for (const [value, label] of this.#optionGroup) {
+                const optionEl = document.createElement("emc-select-image-preview");
+                optionEl.value = value;
+                optionEl.src = value;
+                optionEl.text = label;
+                optionEl.addEventListener("click", () => {
+                    this.value = value;
+                });
+                this.append(optionEl);
+            }
+        }
+        await BusyIndicatorManager.unbusy();
+    }
 
 }
 

@@ -159,17 +159,19 @@ export default class LogicInput extends BaseClass {
         });
         /* --- */
         this.addEventListener("placeholderclicked", (event) => {
-            const targetEl = event.target;
-            const slotName = event.name;
-            this.#logicElementModal.onsubmit = (event) => {
-                const resultEl = event.element;
-                if (slotName) {
-                    resultEl.setAttribute("slot", slotName);
-                }
-                targetEl.append(resultEl);
-                resultEl.focus();
-            };
-            this.#logicElementModal.show();
+            if (this.#logicElementModal != null) {
+                const targetEl = event.target;
+                const slotName = event.name;
+                this.#logicElementModal.onsubmit = (event) => {
+                    const resultEl = event.element;
+                    if (slotName) {
+                        resultEl.setAttribute("slot", slotName);
+                    }
+                    targetEl.append(resultEl);
+                    resultEl.focus();
+                };
+                this.#logicElementModal.show();
+            }
         });
         this.addEventListener("valuechange", (event) => {
             this.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
@@ -199,11 +201,11 @@ export default class LogicInput extends BaseClass {
     }
 
     addOperatorGroup(...groupList) {
-        this.#logicElementModal.addOperatorGroup(...groupList);
+        this.#logicElementModal?.addOperatorGroup(...groupList);
     }
 
     removeOperatorGroup(...groupList) {
-        this.#logicElementModal.removeOperatorGroup(...groupList);
+        this.#logicElementModal?.removeOperatorGroup(...groupList);
     }
 
     #removeElement(id) {
@@ -240,12 +242,17 @@ export default class LogicInput extends BaseClass {
     }
 
     static get observedAttributes() {
-        return ["value"];
+        return ["name", "value"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
+            case "name": {
+                if (oldValue != newValue) {
+                    this.#logicElementModal = LogicElementModal.getModalByName(newValue);
+                    this.#logicElementModal.name = newValue;
+                }
+            } break;
             case "value": {
                 if (oldValue != newValue) {
                     if (!this.isChanged) {
