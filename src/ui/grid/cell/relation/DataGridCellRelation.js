@@ -24,8 +24,8 @@ export default class DataGridCellRelation extends DataGridCell {
 
     #optionGroupEventTargetManager = new EventTargetManager();
 
-    constructor() {
-        super();
+    constructor(dataGridId) {
+        super(dataGridId);
         this.shadowRoot.getElementById("content").append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */

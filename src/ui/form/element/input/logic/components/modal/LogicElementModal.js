@@ -1,6 +1,10 @@
 import Modal from "../../../../../../modal/Modal.js";
 import AbstractElement from "../elements/abstract/AbstractElement.js";
 import LogicOperatorRegistry from "../../../../../../../data/registry/LogicOperatorRegistry.js";
+import {
+    debounce
+} from "../../../../../../../util/Debouncer.js";
+import BusyIndicatorManager from "../../../../../../../util/BusyIndicatorManager.js";
 import "../../../../../../FilteredList.js";
 import "../../../../../../container/CollapsePanel.js";
 import "../../../../../button/Button.js";
@@ -134,7 +138,8 @@ export default class LogicElementModal extends Modal {
         }
     }
 
-    #refreshOperators() {
+    #refreshOperators = debounce(async () => {
+        await BusyIndicatorManager.busy();
         this.#containerEl.innerHTML = "";
         // load default operators
         const operators = DEFAULT_LOGIC_OPERATORS.map((type) => {
@@ -147,7 +152,8 @@ export default class LogicElementModal extends Modal {
             const operators = LogicOperatorRegistry.get(group);
             this.#loadOperatorGroup(group, caption, operators);
         }
-    }
+        await BusyIndicatorManager.unbusy();
+    });
 
     #loadOperatorGroup(group, caption = group, operators = [], compact = false) {
         const groupEl = document.createElement("emc-collapsepanel");

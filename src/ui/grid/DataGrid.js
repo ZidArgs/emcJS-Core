@@ -6,6 +6,9 @@ import {
     deepClone
 } from "../../util/helper/DeepClone.js";
 import {
+    appUID
+} from "../../util/helper/UniqueGenerator.js";
+import {
     debounce
 } from "../../util/Debouncer.js";
 import {
@@ -40,6 +43,8 @@ function getStyleLengthValue(type, value) {
 }
 
 export default class DataGrid extends ResizeObserverMixin(CustomElement) {
+
+    #internalId = appUID("data-grid");
 
     #tableEl;
 
@@ -105,7 +110,7 @@ export default class DataGrid extends ResizeObserverMixin(CustomElement) {
         this.#onSlotChange();
         /* --- */
         this.#headerManager = new HeaderManager(this.#headerEl, this.#headerSelectEl);
-        this.#rowManager = new RowManager(this.#bodyEl);
+        this.#rowManager = new RowManager(this.#bodyEl, this.#internalId);
         /* --- */
         this.#tableEl.addEventListener("move-row-up", (event) => {
             event.stopPropagation();
@@ -295,13 +300,17 @@ export default class DataGrid extends ResizeObserverMixin(CustomElement) {
                     this.#emptyEl.classList.add("hidden");
                 }
             }
+            this.#notifyRowUpdate();
             /* --- */
-            const ev = new Event("rows-updated");
-            this.dispatchEvent(ev);
         }
         this.#updateSelectHeader();
         await BusyIndicatorManager.unbusy();
     }
+
+    #notifyRowUpdate = debounce(() => {
+        const ev = new Event("rows-updated");
+        this.dispatchEvent(ev);
+    });
 
     getAllCellsForColumn(colName) {
         return this.#bodyEl.querySelectorAll(`:scope > tr > [col-name="${colName}"]`);

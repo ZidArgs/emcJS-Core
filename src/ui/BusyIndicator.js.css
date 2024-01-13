@@ -12,7 +12,7 @@
     right: 0;
     bottom: 0;
     cursor: wait;
-    pointer-events: none;
+    pointer-events: all;
     z-index: 9999999999;
     background: rgba(0,0,0,0.3);
     transform: translateZ(0);

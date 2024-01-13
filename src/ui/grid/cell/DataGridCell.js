@@ -10,16 +10,26 @@ const MIN_WIDTH = new Map();
 
 export default class DataGridCell extends CustomElementDelegating {
 
+    #dataGridId;
+
     #contentEl;
 
     #rowData;
 
-    constructor() {
+    constructor(dataGridId) {
+        if (typeof dataGridId !== "string" || dataGridId === "") {
+            throw new Error("dataGridId must be a non empty string");
+        }
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
+        this.#dataGridId = dataGridId;
         this.#contentEl = this.shadowRoot.getElementById("content");
+    }
+
+    get dataGridId() {
+        return this.#dataGridId;
     }
 
     set rowData(value) {
@@ -114,10 +124,10 @@ export default class DataGridCell extends CustomElementDelegating {
         }
     }
 
-    static createCell(name) {
+    static createCell(name, internalDataGridId) {
         if (CELL_TYPES.has(name)) {
             const CellClass = CELL_TYPES.get(name);
-            return new CellClass();
+            return new CellClass(internalDataGridId);
         }
         return new DataGridCell();
     }

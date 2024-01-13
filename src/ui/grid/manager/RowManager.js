@@ -14,6 +14,8 @@ import CellManager from "./CellManager.js";
 
 export default class RowManager {
 
+    #dataGridId;
+
     #target;
 
     #elements = new Map();
@@ -26,10 +28,11 @@ export default class RowManager {
 
     #cellManagers = new Map();
 
-    constructor(target) {
+    constructor(target, dataGridId) {
         if (!(target instanceof HTMLTableSectionElement)) {
             throw new TypeError("target must be of type HTMLTableSectionElement");
         }
+        this.#dataGridId = dataGridId;
         this.#target = target;
     }
 
@@ -117,7 +120,7 @@ export default class RowManager {
     composer(name, columnData, rowData, isSelected) {
         const rowEl = document.createElement("tr");
 
-        const cellManager = new CellManager(rowEl);
+        const cellManager = new CellManager(rowEl, this.#dataGridId);
         this.#cellManagers.set(name, cellManager);
         cellManager.manage(columnData, rowData, isSelected);
 

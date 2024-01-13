@@ -14,6 +14,8 @@ import DataGridCell from "../cell/DataGridCell.js";
 
 export default class CellManager {
 
+    #dataGridId;
+
     #target;
 
     #rowName;
@@ -34,10 +36,11 @@ export default class CellManager {
 
     #lastCellEl;
 
-    constructor(target) {
+    constructor(target, dataGridId) {
         if (!(target instanceof HTMLTableRowElement)) {
             throw new TypeError("target must be of type HTMLTableRowElement");
         }
+        this.#dataGridId = dataGridId;
         this.#target = target;
 
         this.#selectCellEl = document.createElement("td");
@@ -168,7 +171,7 @@ export default class CellManager {
     }
 
     composer(columnName, rowName, type, options, value, rowData) {
-        const cellEl = DataGridCell.createCell(type);
+        const cellEl = DataGridCell.createCell(type, this.#dataGridId);
 
         cellEl.columnName = columnName;
         cellEl.rowName = rowName;

@@ -1,15 +1,17 @@
 #modal {
-    width: 100%;
+    width: 80vw;
+    max-width: 80vw;
     min-width: 20vw;
+}
+#content {
+    height: 70vh;
+    min-height: 70vh;
+    max-height: 70vh;
 }
 #json {
     flex-grow: 1;
-    height: 40vh;
-    width: 40vw;
-    min-height: 20vh;
-    max-height: 40vh;
-    min-width: 20vw;
-    max-width: 900px;
+    height: 100%;
+    width: 100%;
     padding: 7px;
     color: var(--input-text-color, #000000);
     background-color: var(--input-back-color, #ffffff);
@@ -17,6 +19,7 @@
     border-radius: var(--form-border-radius, 6px);
     font-size: 1em;
     overflow: scroll;
+    resize: none;
 }
 #json:focus {
     box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);

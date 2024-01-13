@@ -7,8 +7,8 @@ export default class DataGridCellButton extends DataGridCell {
 
     #inputEl;
 
-    constructor() {
-        super();
+    constructor(dataGridId) {
+        super(dataGridId);
         this.shadowRoot.getElementById("content").append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */

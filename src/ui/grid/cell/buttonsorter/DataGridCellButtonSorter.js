@@ -9,8 +9,8 @@ export default class DataGridCellButtonSorter extends DataGridCell {
 
     #sortDownEl;
 
-    constructor() {
-        super();
+    constructor(dataGridId) {
+        super(dataGridId);
         this.shadowRoot.getElementById("content").append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
