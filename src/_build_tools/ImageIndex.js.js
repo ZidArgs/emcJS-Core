@@ -28,7 +28,7 @@ class ImageIndex {
         });
     }
 
-    finish(dest = "/", index = "index.images.json", pattern = null) {
+    finish(dest = "/", index = "index.images.json", filterPattern = null, namePattern = null) {
         const indexPath = path.resolve(dest, index);
         const indexPathNormal = normalizePath(indexPath);
         console.log(`image index file: ${indexPathNormal}`);
@@ -37,7 +37,14 @@ class ImageIndex {
 
         for (const [filePath, name] of FILES) {
             const relativePath = `/${path.relative(dest, filePath)}`.replace(/\\/g, "/");
-            if (pattern == null || pattern.test(relativePath)) {
+            if (filterPattern == null || filterPattern.test(relativePath)) {
+                if (namePattern != null) {
+                    const res = namePattern.exec(relativePath);
+                    if (res != null) {
+                        files[relativePath] = res.at(-1);
+                        continue;
+                    }
+                }
                 files[relativePath] = name;
             }
         }

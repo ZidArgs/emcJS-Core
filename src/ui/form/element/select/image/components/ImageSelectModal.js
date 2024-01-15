@@ -63,6 +63,30 @@ export default class ImageSelectModal extends Modal {
             }
         });
 
+        const viewControlEl = els.getElementById("view-control");
+        const viewSizeSmallEl = els.getElementById("view-size-small");
+        const viewSizeNormalEl = els.getElementById("view-size-normal");
+        const viewSizeBigEl = els.getElementById("view-size-big");
+        const viewSizeGiganticEl = els.getElementById("view-size-gigantic");
+
+        contentEl.before(viewControlEl);
+        viewSizeSmallEl.addEventListener("click", () => {
+            contentEl.style.setProperty("--icon-preview-size", "50px");
+            viewControlEl.className = "size-small";
+        });
+        viewSizeNormalEl.addEventListener("click", () => {
+            contentEl.style.setProperty("--icon-preview-size", "100px");
+            viewControlEl.className = "size-normal";
+        });
+        viewSizeBigEl.addEventListener("click", () => {
+            contentEl.style.setProperty("--icon-preview-size", "200px");
+            viewControlEl.className = "size-big";
+        });
+        viewSizeGiganticEl.addEventListener("click", () => {
+            contentEl.style.setProperty("--icon-preview-size", "400px");
+            viewControlEl.className = "size-gigantic";
+        });
+
         const cancelEl = els.getElementById("cancel");
         cancelEl.addEventListener("click", () => this.cancel());
         footerEl.append(cancelEl);
