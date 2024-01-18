@@ -6,7 +6,7 @@ import {
 import {
     isEqual
 } from "../../../../util/helper/Comparator.js";
-import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
+import FormElementRegistry from "../../../../data/registry/form/FormElementRegistry.js";
 import {
     safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";

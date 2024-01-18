@@ -1,4 +1,4 @@
-import FormElementRegistry from "../../data/registry/FormElementRegistry.js";
+import FormElementRegistry from "../../data/registry/form/FormElementRegistry.js";
 import {
     isNullOrFalse
 } from "../helper/Comparator.js";

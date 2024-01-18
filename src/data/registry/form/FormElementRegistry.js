@@ -1,11 +1,11 @@
-import CustomFormElement from "../../ui/element/CustomFormElement.js";
-import CustomFormElementDelegating from "../../ui/element/CustomFormElementDelegating.js";
+import CustomFormElement from "../../../ui/element/CustomFormElement.js";
+import CustomFormElementDelegating from "../../../ui/element/CustomFormElementDelegating.js";
 import {
     instanceOfOne
-} from "../../util/helper/Class.js";
+} from "../../../util/helper/Class.js";
 import {
     safeSetAttribute
-} from "../../util/helper/ui/NodeAttributes.js";
+} from "../../../util/helper/ui/NodeAttributes.js";
 
 const EXPECTED_CLASSES = [
     HTMLInputElement,

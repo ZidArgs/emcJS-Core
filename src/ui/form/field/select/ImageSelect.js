@@ -1,5 +1,5 @@
 import AbstractFormInput from "../../abstract/AbstractFormInput.js";
-import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
+import FormElementRegistry from "../../../../data/registry/form/FormElementRegistry.js";
 import {
     deepClone
 } from "../../../../util/helper/DeepClone.js";

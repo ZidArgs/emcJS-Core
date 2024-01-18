@@ -3,7 +3,7 @@ import "../../../i18n/builtin/I18nInput.js";
 import {
     deepClone
 } from "../../../../util/helper/DeepClone.js";
-import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
+import FormElementRegistry from "../../../../data/registry/form/FormElementRegistry.js";
 import {
     safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";

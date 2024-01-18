@@ -1,4 +1,5 @@
 import CustomElement from "../element/CustomElement.js";
+import UniqueEntriesStack from "../../data/stack/UniqueEntriesStack.js";
 import "../i18n/I18nLabel.js";
 import "../symbols/CloseSymbol.js";
 import TPL from "./Modal.js.html" assert {type: "html"};
@@ -15,7 +16,7 @@ const Q_TAB = [
 
 const modalStorage = new Map();
 
-const visibleModals = new Set();
+const visibleModals = new UniqueEntriesStack();
 
 export default class Modal extends CustomElement {
 
@@ -67,21 +68,25 @@ export default class Modal extends CustomElement {
 
     show() {
         document.body.append(this);
-        visibleModals.delete(this);
-        for (const modal of visibleModals) {
-            modal.classList.add("inactive");
+        const oldModal = visibleModals.peek();
+        if (oldModal != null) {
+            oldModal.classList.add("inactive");
         }
         this.classList.remove("inactive");
-        visibleModals.add(this);
+        visibleModals.push(this);
         this.initialFocus();
     }
 
     remove() {
         super.remove();
-        visibleModals.delete(this);
-        const lastModal = Array.from(visibleModals).at(-1);
-        if (lastModal != null) {
-            lastModal.classList.remove("inactive");
+        if (visibleModals.peek() === this) {
+            visibleModals.pop();
+            const lastModal = visibleModals.peek();
+            if (lastModal != null) {
+                lastModal.classList.remove("inactive");
+            }
+        } else {
+            visibleModals.delete(this);
         }
     }
 

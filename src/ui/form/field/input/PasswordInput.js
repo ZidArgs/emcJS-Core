@@ -1,6 +1,6 @@
 import AbstractFormInput from "../../abstract/AbstractFormInput.js";
 import "../../../i18n/builtin/I18nInput.js";
-import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
+import FormElementRegistry from "../../../../data/registry/form/FormElementRegistry.js";
 import {
     safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";

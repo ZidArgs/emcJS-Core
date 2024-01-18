@@ -6,7 +6,7 @@ import {
 import {
     toStartUppercaseEndLowercase
 } from "../../../../util/helper/string/ConvertCase.js";
-import FormElementRegistry from "../../../../data/registry/FormElementRegistry.js";
+import FormElementRegistry from "../../../../data/registry/form/FormElementRegistry.js";
 import EventTargetManager from "../../../../util/event/EventTargetManager.js";
 import {
     safeSetAttribute
