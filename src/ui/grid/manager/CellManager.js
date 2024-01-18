@@ -10,7 +10,7 @@ import {
 import {
     getArrayMutations
 } from "../../../util/helper/collection/ArrayMutations.js";
-import DataGridCell from "../cell/DataGridCell.js";
+import DataGridCell from "../components/cell/DataGridCell.js";
 import CellCache from "../data/CellCache.js";
 
 export default class CellManager {

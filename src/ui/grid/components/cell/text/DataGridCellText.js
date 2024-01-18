@@ -1,14 +1,13 @@
 import {
     debounce
-} from "../../../../util/Debouncer.js";
-import EventTargetManager from "../../../../util/event/EventTargetManager.js";
-import DateUtil from "../../../../util/date/DateUtil.js";
+} from "../../../../../util/Debouncer.js";
+import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
 import DataGridCell from "../DataGridCell.js";
-import "../../../i18n/builtin/I18nInput.js";
-import TPL from "./DataGridCellTime.js.html" assert {type: "html"};
-import STYLE from "./DataGridCellTime.js.css" assert {type: "css"};
+import "../../../../i18n/builtin/I18nTextarea.js";
+import TPL from "./DataGridCellText.js.html" assert {type: "html"};
+import STYLE from "./DataGridCellText.js.css" assert {type: "css"};
 
-export default class DataGridCellTime extends DataGridCell {
+export default class DataGridCellText extends DataGridCell {
 
     #valueEl;
 
@@ -51,14 +50,10 @@ export default class DataGridCellTime extends DataGridCell {
 
     onValueChange(value) {
         if (value != null && value != "") {
-            if (!(value instanceof Date)) {
-                value = new Date(value);
-            }
-            const convertedValue = DateUtil.convertLocal(value, "h:m:s");
             this.classList.remove("empty");
-            this.#valueEl.innerText = convertedValue;
-            this.#valueEl.title = convertedValue;
-            this.#inputEl.value = convertedValue;
+            this.#valueEl.innerText = value;
+            this.#valueEl.title = value;
+            this.#inputEl.value = value;
         } else {
             this.classList.add("empty");
             this.#valueEl.innerText = "";
@@ -84,5 +79,5 @@ export default class DataGridCellTime extends DataGridCell {
 
 }
 
-DataGridCell.registerCellType("time", DataGridCellTime, 200);
-customElements.define("emc-grid-datagrid-cell-time", DataGridCellTime);
+DataGridCell.registerCellType("text", DataGridCellText, 200);
+customElements.define("emc-grid-datagrid-cell-text", DataGridCellText);

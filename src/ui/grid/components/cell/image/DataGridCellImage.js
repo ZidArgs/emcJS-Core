@@ -1,20 +1,16 @@
 import {
     debounce
-} from "../../../../util/Debouncer.js";
-import OptionGroupRegistry from "../../../../data/registry/form/OptionGroupRegistry.js";
-import EventTargetManager from "../../../../util/event/EventTargetManager.js";
+} from "../../../../../util/Debouncer.js";
+import OptionGroupRegistry from "../../../../../data/registry/form/OptionGroupRegistry.js";
+import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
 import DataGridCell from "../DataGridCell.js";
-import "../../../form/element/select/relation/RelationSelect.js";
-import TPL from "./DataGridCellRelation.js.html" assert {type: "html"};
-import STYLE from "./DataGridCellRelation.js.css" assert {type: "css"};
+import "../../../../form/element/select/image/ImageSelect.js";
+import TPL from "./DataGridCellImage.js.html" assert {type: "html"};
+import STYLE from "./DataGridCellImage.js.css" assert {type: "css"};
 
-export default class DataGridCellRelation extends DataGridCell {
+export default class DataGridCellImage extends DataGridCell {
 
     #valueEl;
-
-    #nameEl;
-
-    #typeEl;
 
     #inputEl;
 
@@ -30,22 +26,12 @@ export default class DataGridCellRelation extends DataGridCell {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#valueEl = this.shadowRoot.getElementById("value");
-        this.#nameEl = this.shadowRoot.getElementById("name");
-        this.#typeEl = this.shadowRoot.getElementById("type");
         this.#inputEl = this.shadowRoot.getElementById("input");
         /* --- */
         this.#inputEventManager = new EventTargetManager(this.#inputEl);
         this.#inputEventManager.set("input", (event) => {
             this.#onInput(event);
         });
-    }
-
-    set value(val) {
-        this.setJSONAttribute("value", val);
-    }
-
-    get value() {
-        return this.getJSONAttribute("value");
     }
 
     set optiongroup(value) {
@@ -80,21 +66,24 @@ export default class DataGridCellRelation extends DataGridCell {
                     this.#optionGroupEventTargetManager.switchTarget(this.#optionGroup);
                     this.#loadOptionsFromGroup();
                 } break;
+                case "col-name": {
+                    this.#inputEl.name = `${this.dataGridId}-${newValue}`;
+                } break;
             }
         }
     }
 
     onValueChange(value) {
-        if (value != null && typeof value.type === "string" && typeof value.name === "string" && value.type !== "" && value.name !== "") {
-            this.#nameEl.innerText = value.name;
-            this.#typeEl.innerText = value.type;
-            this.#valueEl.title = `${value.name}\n[${value.type}]`;
+        if (value != null && value != "") {
+            this.classList.remove("empty");
+            this.#valueEl.innerText = value;
+            this.#valueEl.title = value;
             this.#inputEl.value = value;
         } else {
-            this.#nameEl.innerText = "";
-            this.#typeEl.innerText = "";
+            this.classList.add("empty");
+            this.#valueEl.innerText = "";
             this.#valueEl.title = "";
-            this.#inputEl.value = value;
+            this.#inputEl.value = "";
         }
     }
 
@@ -131,5 +120,5 @@ export default class DataGridCellRelation extends DataGridCell {
 
 }
 
-DataGridCell.registerCellType("relation", DataGridCellRelation, 300);
-customElements.define("emc-grid-datagrid-cell-relation", DataGridCellRelation);
+DataGridCell.registerCellType("image", DataGridCellImage, 300);
+customElements.define("emc-grid-datagrid-cell-image", DataGridCellImage);

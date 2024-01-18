@@ -20,9 +20,9 @@ import HeaderManager from "./manager/HeaderManager.js";
 import RowManager from "./manager/RowManager.js";
 import ResizeObserverMixin from "../mixin/ResizeObserverMixin.js";
 import Column from "./Column.js";
-import DataGridCell from "./cell/DataGridCell.js";
+import DataGridCell from "./components/cell/DataGridCell.js";
 import CellCache from "./data/CellCache.js";
-import "./cell/CellTypeLoader.js";
+import "./components/cell/CellTypeLoader.js";
 import TPL from "./DataGrid.js.html" assert {type: "html"};
 import STYLE from "./DataGrid.js.css" assert {type: "css"};
 

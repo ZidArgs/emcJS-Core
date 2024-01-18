@@ -1,14 +1,14 @@
 import {
     debounce
-} from "../../../../util/Debouncer.js";
-import EventTargetManager from "../../../../util/event/EventTargetManager.js";
-import DateUtil from "../../../../util/date/DateUtil.js";
+} from "../../../../../util/Debouncer.js";
+import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
+import DateUtil from "../../../../../util/date/DateUtil.js";
 import DataGridCell from "../DataGridCell.js";
-import "../../../i18n/builtin/I18nInput.js";
-import TPL from "./DataGridCellDate.js.html" assert {type: "html"};
-import STYLE from "./DataGridCellDate.js.css" assert {type: "css"};
+import "../../../../i18n/builtin/I18nInput.js";
+import TPL from "./DataGridCellDateTime.js.html" assert {type: "html"};
+import STYLE from "./DataGridCellDateTime.js.css" assert {type: "css"};
 
-export default class DataGridCellDate extends DataGridCell {
+export default class DataGridCellDateTime extends DataGridCell {
 
     #valueEl;
 
@@ -54,8 +54,8 @@ export default class DataGridCellDate extends DataGridCell {
             if (!(value instanceof Date)) {
                 value = new Date(value);
             }
-            const viewValue = DateUtil.convertLocal(value, "D.M.Ys");
-            const editValue = DateUtil.convertLocal(value, "Y-M-D");
+            const viewValue = DateUtil.convertLocal(value, "D.M.Y h:m:s");
+            const editValue = DateUtil.convertLocal(value, "Y-M-DTh:m:s");
             this.classList.remove("empty");
             this.#valueEl.innerText = viewValue;
             this.#valueEl.title = viewValue;
@@ -85,5 +85,5 @@ export default class DataGridCellDate extends DataGridCell {
 
 }
 
-DataGridCell.registerCellType("date", DataGridCellDate, 200);
-customElements.define("emc-grid-datagrid-cell-date", DataGridCellDate);
+DataGridCell.registerCellType("datetime", DataGridCellDateTime, 300);
+customElements.define("emc-grid-datagrid-cell-datetime", DataGridCellDateTime);

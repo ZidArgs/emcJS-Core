@@ -1,6 +1,6 @@
-import EventTargetManager from "../../../../util/event/EventTargetManager.js";
+import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
 import DataGridCell from "../DataGridCell.js";
-import "../../../i18n/builtin/I18nInput.js";
+import "../../../../i18n/builtin/I18nInput.js";
 import TPL from "./DataGridCellBoolean.js.html" assert {type: "html"};
 import STYLE from "./DataGridCellBoolean.js.css" assert {type: "css"};
 

@@ -1,9 +1,9 @@
 import {
     debounce
-} from "../../../../util/Debouncer.js";
-import EventTargetManager from "../../../../util/event/EventTargetManager.js";
+} from "../../../../../util/Debouncer.js";
+import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
 import DataGridCell from "../DataGridCell.js";
-import "../../../i18n/builtin/I18nInput.js";
+import "../../../../i18n/builtin/I18nInput.js";
 import TPL from "./DataGridCellString.js.html" assert {type: "html"};
 import STYLE from "./DataGridCellString.js.css" assert {type: "css"};
 

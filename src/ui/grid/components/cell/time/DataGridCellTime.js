@@ -1,17 +1,14 @@
 import {
     debounce
-} from "../../../../util/Debouncer.js";
-import EventTargetManager from "../../../../util/event/EventTargetManager.js";
+} from "../../../../../util/Debouncer.js";
+import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
+import DateUtil from "../../../../../util/date/DateUtil.js";
 import DataGridCell from "../DataGridCell.js";
-import "../../../i18n/builtin/I18nInput.js";
-import "../../../i18n/I18nLabel.js";
-import "../../../i18n/I18nTooltip.js";
-import TPL from "./DataGridCellI18n.js.html" assert {type: "html"};
-import STYLE from "./DataGridCellI18n.js.css" assert {type: "css"};
+import "../../../../i18n/builtin/I18nInput.js";
+import TPL from "./DataGridCellTime.js.html" assert {type: "html"};
+import STYLE from "./DataGridCellTime.js.css" assert {type: "css"};
 
-export default class DataGridCellI18n extends DataGridCell {
-
-    #tooltipEl;
+export default class DataGridCellTime extends DataGridCell {
 
     #valueEl;
 
@@ -24,7 +21,6 @@ export default class DataGridCellI18n extends DataGridCell {
         this.shadowRoot.getElementById("content").append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.#tooltipEl = this.shadowRoot.getElementById("tooltip");
         this.#valueEl = this.shadowRoot.getElementById("value");
         this.#inputEl = this.shadowRoot.getElementById("input");
         /* --- */
@@ -55,14 +51,18 @@ export default class DataGridCellI18n extends DataGridCell {
 
     onValueChange(value) {
         if (value != null && value != "") {
+            if (!(value instanceof Date)) {
+                value = new Date(value);
+            }
+            const convertedValue = DateUtil.convertLocal(value, "h:m:s");
             this.classList.remove("empty");
-            this.#valueEl.i18nValue = value;
-            this.#tooltipEl.i18nValue = value;
-            this.#inputEl.value = value;
+            this.#valueEl.innerText = convertedValue;
+            this.#valueEl.title = convertedValue;
+            this.#inputEl.value = convertedValue;
         } else {
             this.classList.add("empty");
-            this.#valueEl.i18nValue = "";
-            this.#tooltipEl.i18nValue = "";
+            this.#valueEl.innerText = "";
+            this.#valueEl.title = "";
             this.#inputEl.value = "";
         }
     }
@@ -84,5 +84,5 @@ export default class DataGridCellI18n extends DataGridCell {
 
 }
 
-DataGridCell.registerCellType("i18n", DataGridCellI18n, 400);
-customElements.define("emc-grid-datagrid-cell-i18n", DataGridCellI18n);
+DataGridCell.registerCellType("time", DataGridCellTime, 200);
+customElements.define("emc-grid-datagrid-cell-time", DataGridCellTime);

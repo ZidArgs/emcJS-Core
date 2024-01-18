@@ -1,6 +1,6 @@
-import EventTargetManager from "../../../../util/event/EventTargetManager.js";
+import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
 import DataGridCell from "../DataGridCell.js";
-import "../../../form/element/input/boolorlogic/BoolOrLogicInput.js";
+import "../../../../form/element/input/boolorlogic/BoolOrLogicInput.js";
 import TPL from "./DataGridCellBoolOrLogic.js.html" assert {type: "html"};
 import STYLE from "./DataGridCellBoolOrLogic.js.css" assert {type: "css"};
 

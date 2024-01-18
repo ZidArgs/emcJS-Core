@@ -1,13 +1,14 @@
 import {
     debounce
-} from "../../../../util/Debouncer.js";
-import EventTargetManager from "../../../../util/event/EventTargetManager.js";
+} from "../../../../../util/Debouncer.js";
+import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
+import DateUtil from "../../../../../util/date/DateUtil.js";
 import DataGridCell from "../DataGridCell.js";
-import "../../../i18n/builtin/I18nTextarea.js";
-import TPL from "./DataGridCellText.js.html" assert {type: "html"};
-import STYLE from "./DataGridCellText.js.css" assert {type: "css"};
+import "../../../../i18n/builtin/I18nInput.js";
+import TPL from "./DataGridCellDate.js.html" assert {type: "html"};
+import STYLE from "./DataGridCellDate.js.css" assert {type: "css"};
 
-export default class DataGridCellText extends DataGridCell {
+export default class DataGridCellDate extends DataGridCell {
 
     #valueEl;
 
@@ -50,10 +51,15 @@ export default class DataGridCellText extends DataGridCell {
 
     onValueChange(value) {
         if (value != null && value != "") {
+            if (!(value instanceof Date)) {
+                value = new Date(value);
+            }
+            const viewValue = DateUtil.convertLocal(value, "D.M.Ys");
+            const editValue = DateUtil.convertLocal(value, "Y-M-D");
             this.classList.remove("empty");
-            this.#valueEl.innerText = value;
-            this.#valueEl.title = value;
-            this.#inputEl.value = value;
+            this.#valueEl.innerText = viewValue;
+            this.#valueEl.title = viewValue;
+            this.#inputEl.value = editValue;
         } else {
             this.classList.add("empty");
             this.#valueEl.innerText = "";
@@ -79,5 +85,5 @@ export default class DataGridCellText extends DataGridCell {
 
 }
 
-DataGridCell.registerCellType("text", DataGridCellText, 200);
-customElements.define("emc-grid-datagrid-cell-text", DataGridCellText);
+DataGridCell.registerCellType("date", DataGridCellDate, 200);
+customElements.define("emc-grid-datagrid-cell-date", DataGridCellDate);

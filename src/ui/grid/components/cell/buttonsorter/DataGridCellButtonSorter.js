@@ -1,5 +1,5 @@
 import DataGridCell from "../DataGridCell.js";
-import "../../../form/button/Button.js";
+import "../../../../form/button/Button.js";
 import TPL from "./DataGridCellButtonSorter.js.html" assert {type: "html"};
 import STYLE from "./DataGridCellButtonSorter.js.css" assert {type: "css"};
 
