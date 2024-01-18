@@ -72,6 +72,7 @@ const BaseClass = mix(
     ContextMenuManagerMixin
 );
 
+// TODO use modal handler
 export default class LogicInput extends BaseClass {
 
     #optimizeButtonEl;

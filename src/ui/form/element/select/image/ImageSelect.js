@@ -9,6 +9,7 @@ import "../../../../i18n/I18nTooltip.js";
 import TPL from "./ImageSelect.js.html" assert {type: "html"};
 import STYLE from "./ImageSelect.js.css" assert {type: "css"};
 
+// TODO use modal handler
 export default class ImageSelect extends CustomFormElementDelegating {
 
     #value;
@@ -33,10 +34,10 @@ export default class ImageSelect extends CustomFormElementDelegating {
         this.#buttonEl = this.shadowRoot.getElementById("button");
         this.#buttonEl.addEventListener("click", () => {
             this.#imageIconModal.value = this.value;
+            this.#imageIconModal.onsubmit = () => {
+                this.value = this.#imageIconModal.value;
+            };
             this.#imageIconModal.show();
-        });
-        this.#imageIconModal.addEventListener("submit", () => {
-            this.value = this.#imageIconModal.value;
         });
     }
 

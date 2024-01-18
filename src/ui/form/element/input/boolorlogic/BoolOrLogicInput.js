@@ -8,6 +8,7 @@ import "../../../../i18n/I18nTooltip.js";
 import TPL from "./BoolOrLogicInput.js.html" assert {type: "html"};
 import STYLE from "./BoolOrLogicInput.js.css" assert {type: "css"};
 
+// TODO use modal handler
 export default class BoolOrLogicInput extends CustomFormElementDelegating {
 
     #value;
@@ -27,10 +28,10 @@ export default class BoolOrLogicInput extends CustomFormElementDelegating {
         this.#buttonEl = this.shadowRoot.getElementById("button");
         this.#buttonEl.addEventListener("click", () => {
             this.#boolOrLogicModal.value = this.value;
+            this.#boolOrLogicModal.onsubmit = () => {
+                this.value = this.#boolOrLogicModal.value;
+            };
             this.#boolOrLogicModal.show();
-        });
-        this.#boolOrLogicModal.addEventListener("submit", () => {
-            this.value = this.#boolOrLogicModal.value;
         });
     }
 
