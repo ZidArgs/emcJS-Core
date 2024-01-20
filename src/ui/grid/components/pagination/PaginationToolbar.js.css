@@ -1,10 +1,23 @@
 :host {
-    width: 100%;
+    display: contents;
 }
-emc-form-row > * {
+#container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0px;
+    margin: 0px;
+    background-color: transparent;
+    border: none;
+}
+#container > * {
     margin: 0px;
 }
-emc-form-row > *:focus {
+#container > *:focus {
     z-index: 1;
 }
 #first {
@@ -19,10 +32,9 @@ emc-form-row > *:focus {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 }
-#current {
-    flex-grow: 1;
+#current,
+#size {
     height: 2em;
-    width: 100px;
     padding: 0px 10px;
     color: var(--input-text-color, #000000);
     background-color: var(--input-back-color, #ffffff);
@@ -44,12 +56,19 @@ emc-form-row > *:focus {
     margin: 0;
 }
 #max,
-#size,
+#max-text {
+    display: flex;
+}
+#size-text,
+#total-text,
+#total {
+    display: none;
+}
+#max,
 #total,
 #max-text,
 #size-text,
 #total-text {
-    display: flex;
     justify-content: center;
     align-items: center;
     width: min-content;
@@ -80,4 +99,33 @@ emc-form-row > *:focus {
     margin-right: calc(var(--form-border-width, 2px) * -1);
     border-top-left-radius: var(--form-border-radius, 6px);
     border-bottom-left-radius: var(--form-border-radius, 6px);
+}
+#current:disabled {
+    color: var(--button-text-color, #000000);
+    background-color: var(--button-back-color, #eaeaea);
+}
+#size {
+    display: none;
+    cursor: pointer;
+}
+#size:disabled {
+    cursor: default;
+    color: var(--button-text-color, #000000);
+    background-color: var(--button-back-color, #eaeaea);
+    opacity: 1;
+    appearance: none;
+}
+#first:disabled,
+#decrease:disabled,
+#increase:disabled,
+#last:disabled {
+    border: solid var(--form-border-width, 2px) var(--button-border-color, #000000);
+}
+:host([show-size]:not([show-size="false"])) #size-text,
+:host([show-total]:not([show-total="false"])) #total-text,
+:host([show-total]:not([show-total="false"])) #total {
+    display: flex;
+}
+:host([show-size]:not([show-size="false"])) #size {
+    display: inline-block;
 }

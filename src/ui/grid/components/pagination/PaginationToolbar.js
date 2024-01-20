@@ -121,6 +121,22 @@ export default class PaginationToolbar extends CustomElementDelegating {
         return this.getAttribute("sizes");
     }
 
+    set showSize(value) {
+        this.setBooleanAttribute("show-size", value);
+    }
+
+    get showSize() {
+        return this.getBooleanAttribute("show-size");
+    }
+
+    set showTotal(value) {
+        this.setBooleanAttribute("show-total", value);
+    }
+
+    get showTotal() {
+        return this.getBooleanAttribute("show-total");
+    }
+
     static get observedAttributes() {
         return ["value", "max", "size", "total", "sizes"];
     }
@@ -134,6 +150,12 @@ export default class PaginationToolbar extends CustomElementDelegating {
                     const ev = new Event("page");
                     ev.data = currentValue;
                     this.dispatchEvent(ev);
+                    /* --- */
+                    const maxValue = this.max ?? 1;
+                    this.#firstEl.disabled = currentValue === 1;
+                    this.#decreaseEl.disabled = currentValue === 1;
+                    this.#increaseEl.disabled = currentValue === maxValue;
+                    this.#lastEl.disabled = currentValue === maxValue;
                 } else {
                     this.#currentEl.value = oldValue;
                 }
@@ -144,11 +166,18 @@ export default class PaginationToolbar extends CustomElementDelegating {
                     const currentValue = this.value ?? 1;
                     if (currentValue > maxValue) {
                         this.value = currentValue;
+                    } else {
+                        this.#firstEl.disabled = currentValue === 1;
+                        this.#decreaseEl.disabled = currentValue === 1;
+                        this.#increaseEl.disabled = currentValue === maxValue;
+                        this.#lastEl.disabled = currentValue === maxValue;
                     }
                     if (maxValue != null && maxValue > 0) {
                         this.#maxEl.innerText = maxValue;
+                        this.#currentEl.disabled = maxValue <= 1;
                     } else {
                         this.#maxEl.innerText = "1";
+                        this.#currentEl.disabled = true;
                     }
                 }
             } break;
@@ -197,12 +226,26 @@ export default class PaginationToolbar extends CustomElementDelegating {
                 parsedSizes.push(parsedSize);
             }
         }
-        parsedSizes.sort((a, b) => a - b);
-        for (const size of parsedSizes) {
-            const opt = document.createElement("option");
-            opt.value = size;
-            opt.innerText = size;
-            this.#sizeEl.append(opt);
+        if (parsedSizes.length) {
+            const currentPageSize = this.#sizeEl.value;
+            let hasPageSize = false;
+            parsedSizes.sort((a, b) => a - b);
+            for (const size of parsedSizes) {
+                const opt = document.createElement("option");
+                opt.value = size;
+                opt.innerText = size;
+                this.#sizeEl.append(opt);
+                if (size === currentPageSize) {
+                    hasPageSize = true;
+                }
+            }
+            if (!hasPageSize) {
+                this.#sizeEl.value = parsedSizes[0];
+            }
+            this.#sizeEl.disabled = false;
+        } else {
+            this.#sizeEl.value = 0;
+            this.#sizeEl.disabled = true;
         }
     }
 
