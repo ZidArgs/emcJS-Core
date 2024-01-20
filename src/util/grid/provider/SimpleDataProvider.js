@@ -11,6 +11,8 @@ const SORT_PATTERN = /^(!?)(.+)$/;
 
 export default class SimpleDataProvider extends AbstractDataProvider {
 
+    #resultSize = 0;
+
     #source = [];
 
     constructor(target, source) {
@@ -21,6 +23,10 @@ export default class SimpleDataProvider extends AbstractDataProvider {
             }
             this.#source = deepClone(source);
         }
+    }
+
+    get resultSize() {
+        return this.#resultSize;
     }
 
     setSource(source = []) {
@@ -74,6 +80,8 @@ export default class SimpleDataProvider extends AbstractDataProvider {
             }
             return 0;
         });
+
+        this.#resultSize = result.length;
 
         if (pageSize > 0) {
             const start = page * pageSize;

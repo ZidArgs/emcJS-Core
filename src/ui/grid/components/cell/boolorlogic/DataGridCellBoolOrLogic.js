@@ -98,5 +98,5 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
 
 }
 
-DataGridCell.registerCellType("boolorlogic", DataGridCellBoolOrLogic, 300);
+DataGridCell.registerCellType("boolorlogic", DataGridCellBoolOrLogic, 210);
 customElements.define("emc-grid-datagrid-cell-boolorlogic", DataGridCellBoolOrLogic);

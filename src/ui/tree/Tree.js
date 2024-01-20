@@ -230,6 +230,8 @@ export default class Tree extends CustomElement {
         if (element != null) {
             element.select();
         } else {
+            this.#currentSelectionPath = [];
+            this.#currentSelectionRefPath = [];
             const keyboardMarked = this.querySelector(".keyboard-marked");
             if (keyboardMarked != null) {
                 keyboardMarked.classList.remove("keyboard-marked");
@@ -257,6 +259,8 @@ export default class Tree extends CustomElement {
         if (element != null) {
             element.select();
         } else {
+            this.#currentSelectionPath = [];
+            this.#currentSelectionRefPath = [];
             const keyboardMarked = this.querySelector(".keyboard-marked");
             if (keyboardMarked != null) {
                 keyboardMarked.classList.remove("keyboard-marked");

@@ -13,6 +13,8 @@ const SORT_PATTERN = /^(!?)(.+)$/;
 
 export default class TypeStorageProvider extends AbstractDataProvider {
 
+    #resultSize = 0;
+
     #source;
 
     #eventManager = new EventTargetManager();
@@ -31,6 +33,10 @@ export default class TypeStorageProvider extends AbstractDataProvider {
         if (source != null) {
             this.#eventManager.switchTarget(source);
         }
+    }
+
+    get resultSize() {
+        return this.#resultSize;
     }
 
     setSource(source) {
@@ -97,6 +103,8 @@ export default class TypeStorageProvider extends AbstractDataProvider {
             }
             return 0;
         });
+
+        this.#resultSize = result.length;
 
         if (pageSize > 0) {
             const start = page * pageSize;

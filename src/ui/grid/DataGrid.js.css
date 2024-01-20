@@ -36,6 +36,8 @@
     color: var(--grid-header-text-color, #ffffff);
     background-color: var(--grid-header-back-color, #000000);
     white-space: pre;
+    overflow: hidden;
+    text-overflow: ellipsis;
     z-index: 10;
 }
 :host([stretch="last"]) th:last-child {

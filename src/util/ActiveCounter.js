@@ -16,4 +16,12 @@ export default class ActiveCounter {
         return false;
     }
 
+    reset() {
+        if (this.#count > 0) {
+            this.#count = 0;
+            return true;
+        }
+        return false;
+    }
+
 }

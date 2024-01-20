@@ -9,12 +9,12 @@ import STYLE from "./CustomElement.js.css" assert {type: "css"};
 
 export default class CustomElement extends HTMLElement {
 
-    constructor() {
+    constructor(delegatesFocus = false) {
         if (new.target === CustomElement) {
             throw new Error("can not construct abstract class");
         }
         super();
-        this.attachShadow({mode: "open"});
+        this.attachShadow({mode: "open", delegatesFocus});
         // this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
     }
@@ -53,10 +53,21 @@ export default class CustomElement extends HTMLElement {
         return true;
     }
 
-    setNumberAttribute(name, value) {
+    setNumberAttribute(name, value, min, max) {
         const parsedValue = parseFloat(value);
         if (!isNaN(parsedValue)) {
-            this.setAttribute(name, parsedValue);
+            const parsedMin = parseFloat(min) || Number.MIN_VALUE;
+            const parsedMax = parseFloat(max) || Number.MAX_VALUE;
+            if (parsedMin > parsedMax) {
+                throw new Error("min can't be greater than max");
+            }
+            if (parsedValue < parsedMin) {
+                this.setAttribute(name, parsedMin);
+            } else if (parsedValue > parsedMax) {
+                this.setAttribute(name, parsedMax);
+            } else {
+                this.setAttribute(name, parsedValue);
+            }
         } else {
             this.removeAttribute(name);
         }
@@ -73,10 +84,21 @@ export default class CustomElement extends HTMLElement {
         return null;
     }
 
-    setIntAttribute(name, value) {
+    setIntAttribute(name, value, min, max) {
         const parsedValue = parseInt(value);
         if (!isNaN(parsedValue)) {
-            this.setAttribute(name, parsedValue);
+            const parsedMin = parseInt(min) || Number.MIN_SAFE_INTEGER;
+            const parsedMax = parseInt(max) || Number.MAX_SAFE_INTEGER;
+            if (parsedMin > parsedMax) {
+                throw new Error("min can't be greater than max");
+            }
+            if (parsedValue < parsedMin) {
+                this.setAttribute(name, parsedMin);
+            } else if (parsedValue > parsedMax) {
+                this.setAttribute(name, parsedMax);
+            } else {
+                this.setAttribute(name, parsedValue);
+            }
         } else {
             this.removeAttribute(name);
         }

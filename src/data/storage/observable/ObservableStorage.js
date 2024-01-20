@@ -13,6 +13,10 @@ export default class ObservableStorage extends EventTarget {
 
     #buffer = new Map();
 
+    get size() {
+        return this.#buffer.size;
+    }
+
     clone() {
         const instance = new this.constructor();
         for (const [key, value] of this.#buffer) {

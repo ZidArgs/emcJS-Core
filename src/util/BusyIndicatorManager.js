@@ -27,6 +27,10 @@ export default class BusyIndicatorManager {
         await this.#busyEl.unbusy();
     }
 
+    async reset() {
+        await this.#busyEl.reset();
+    }
+
     async watch(promise) {
         if (promise instanceof Promise) {
             await this.#busyEl.busy();
@@ -65,6 +69,10 @@ export default class BusyIndicatorManager {
         await BusyIndicatorManager.#mainBusyEl.unbusy();
     }
 
+    static async reset() {
+        await BusyIndicatorManager.#mainBusyEl.reset();
+    }
+
     static async watch(promise) {
         if (promise instanceof Promise) {
             await BusyIndicatorManager.#mainBusyEl.busy();
@@ -73,7 +81,7 @@ export default class BusyIndicatorManager {
                 await BusyIndicatorManager.#mainBusyEl.unbusy();
                 return result;
             } catch (err) {
-                await BusyIndicatorManager.#mainBusyEl.unbusy();
+                await BusyIndicatorManager.#mainBusyEl.reset();
                 throw err;
             }
         }

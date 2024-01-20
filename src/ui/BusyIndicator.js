@@ -45,6 +45,20 @@ export default class BusyIndicator extends CustomElement {
         });
     }
 
+    reset() {
+        return new Promise((resolve) => {
+            if (this.#activeCounter.reset()) {
+                this.#isActive = false;
+                this.remove();
+                setTimeout(()=> {
+                    resolve();
+                }, 0);
+            } else {
+                resolve();
+            }
+        });
+    }
+
     setTarget(element) {
         if (element instanceof HTMLElement) {
             this.#targetEl = element;

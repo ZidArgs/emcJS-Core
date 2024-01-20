@@ -74,6 +74,7 @@
     color: var(--modal-close-text-color, #b4b4b4);
     background-color: var(--modal-close-back-color, #ffb9b9);
     cursor: pointer;
+    user-select: none;
     appearance: none;
     font-size: 1.5em;
     line-height: 1em;

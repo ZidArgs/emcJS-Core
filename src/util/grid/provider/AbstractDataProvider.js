@@ -7,7 +7,9 @@ import {
 import {
     debounce
 } from "../../Debouncer.js";
+import EventTargetManager from "../../event/EventTargetManager.js";
 import DataGrid from "../../../ui/grid/DataGrid.js";
+import PaginationToolbar from "../../../ui/grid/components/pagination/PaginationToolbar.js";
 
 const DEFAULT_OPTIONS = {sort: [], page: 0, pageSize: 0, filter: {}, filterFunction: false};
 
@@ -17,19 +19,47 @@ export default class AbstractDataProvider {
         return deepClone(DEFAULT_OPTIONS);
     }
 
-    #target;
-
     #options = DEFAULT_OPTIONS;
 
-    constructor(target) {
+    #data;
+
+    #gridEl;
+
+    #paginationEl;
+
+    #paginationEventManager = new EventTargetManager();
+
+    constructor(grid) {
         if (new.target === AbstractDataProvider) {
             throw new Error("can not construct abstract class");
         }
-        if (!(target instanceof DataGrid)) {
+        if (!(grid instanceof DataGrid)) {
             throw new Error("target must be an instance of DataGrid");
         }
-        this.#target = target;
+        this.#gridEl = grid;
         this.triggerUpdate();
+        /* --- */
+        this.#paginationEventManager.set("page", (event) => {
+            const page = event.data - 1;
+            this.updateOptions({page});
+        });
+        this.#paginationEventManager.set("size", (event) => {
+            const pageSize = event.data;
+            this.updateOptions({page: 0, pageSize});
+        });
+    }
+
+    get resultSize() {
+        return 0;
+    }
+
+    setPagination(paginationEl) {
+        if (paginationEl != null && !(paginationEl instanceof PaginationToolbar)) {
+            throw new Error("paginationEl must be an instance of PaginationToolbar");
+        }
+        this.#paginationEl = paginationEl;
+        this.#paginationEventManager.switchTarget(paginationEl);
+        this.#updatePaginationEl();
     }
 
     setOptions(value) {
@@ -89,8 +119,28 @@ export default class AbstractDataProvider {
     }
 
     triggerUpdate = debounce(async () => {
-        const data = await this.getData(this.#options);
-        this.#target.setData(data);
+        this.#data = await this.getData(this.#options);
+        this.#gridEl.setData(this.#data);
+        this.#updatePaginationEl();
+    });
+
+    #updatePaginationEl = debounce(() => {
+        if (this.#paginationEl != null) {
+            const pageSize = this.#options.pageSize;
+            const currentPage = this.#options.page;
+            const totalEntries = this.resultSize;
+            this.#paginationEl.total = totalEntries;
+            if (pageSize != null && pageSize > 0) {
+                const maxPages = Math.ceil(totalEntries / pageSize);
+                this.#paginationEl.size = pageSize;
+                this.#paginationEl.max = maxPages;
+                this.#paginationEl.value = (currentPage ?? 0) + 1;
+            } else {
+                this.#paginationEl.size = null;
+                this.#paginationEl.max = 1;
+                this.#paginationEl.value = 1;
+            }
+        }
     });
 
     async getData() {

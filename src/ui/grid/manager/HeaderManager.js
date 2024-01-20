@@ -119,7 +119,9 @@ export default class HeaderManager {
         const {caption} = columnData;
 
         headerCellEl.innerText = caption ?? name;
+        headerCellEl.title = caption ?? name;
         const styleWidth = `var(--width-${name}, 100%)`;
+        headerCellEl.style.maxWidth = styleWidth;
         headerCellEl.style.minWidth = styleWidth;
         headerCellEl.style.width = styleWidth;
 
@@ -130,6 +132,7 @@ export default class HeaderManager {
         const {caption} = columnData;
 
         headerCellEl.innerText = caption ?? name;
+        headerCellEl.title = caption ?? name;
     }
 
     #render = debounce(() => {

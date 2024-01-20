@@ -8,6 +8,7 @@ import {
 import SimpleDataProvider from "../../../../../util/grid/provider/SimpleDataProvider.js";
 import ModalDialog from "../../../../modal/ModalDialog.js";
 import "../search/SearchInput.js";
+import "../../../button/Button.js";
 import "../../../../grid/DataGrid.js";
 import TPL from "./KeyValueListInput.js.html" assert {type: "html"};
 import STYLE from "./KeyValueListInput.js.css" assert {type: "css"};

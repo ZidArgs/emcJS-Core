@@ -5,6 +5,7 @@ import {
 import SimpleDataProvider from "../../../../../util/grid/provider/SimpleDataProvider.js";
 import ModalDialog from "../../../../modal/ModalDialog.js";
 import "../search/SearchInput.js";
+import "../../../button/Button.js";
 import "../../../../grid/DataGrid.js";
 import TPL from "./ListInput.js.html" assert {type: "html"};
 import STYLE from "./ListInput.js.css" assert {type: "css"};

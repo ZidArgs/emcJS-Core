@@ -23,6 +23,10 @@ export default class TypeStorage extends EventTarget {
 
     #buffer = new Map();
 
+    get size() {
+        return this.#buffer.size;
+    }
+
     constructor(typeName) {
         if (typeof typeName !== "string" || typeName === "" || typeName === "*") {
             throw new Error(`typeName has to be a string that is not empty and not "*"`);
