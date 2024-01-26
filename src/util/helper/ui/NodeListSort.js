@@ -1,5 +1,5 @@
-import Comparator, {
-    numberedStringComparator
+import {
+    numberedStringComparator, isEqual
 } from "../Comparator.js";
 import {
     getInnerText
@@ -14,7 +14,7 @@ export function nodeTextComparator(a, b) {
 export function sortChildren(containerEl, selector = "*") {
     const nodeList = Array.from(containerEl.children).filter((el) => el.matches(selector));
     const sortedNodeList = [...nodeList].sort(nodeTextComparator);
-    if (!Comparator.isEqual(nodeList, sortedNodeList)) {
+    if (!isEqual(nodeList, sortedNodeList)) {
         for (const el of sortedNodeList) {
             containerEl.append(el);
         }
@@ -25,7 +25,7 @@ export function sortChildren(containerEl, selector = "*") {
 export function sortSlotted(slotEl, selector = "*") {
     const nodeList = slotEl.assignedElements({flatten: true}).filter((el) => el.matches(selector));
     const sortedNodeList = [...nodeList].sort(nodeTextComparator);
-    if (!Comparator.isEqual(nodeList, sortedNodeList)) {
+    if (!isEqual(nodeList, sortedNodeList)) {
         for (const el of sortedNodeList) {
             (el.parentElement ?? el.getRootNode() ?? document).append(el);
         }

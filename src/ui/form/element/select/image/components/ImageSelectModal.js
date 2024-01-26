@@ -12,7 +12,9 @@ import {
 import {
     sortNodeList
 } from "../../../../../../util/helper/ui/NodeListSort.js";
-import Comparator from "../../../../../../util/helper/Comparator.js";
+import {
+    isEqual
+} from "../../../../../../util/helper/Comparator.js";
 import "../../../../button/Button.js";
 import "../../../input/search/SearchInput.js";
 import "./ImageSelectPreview.js";
@@ -189,7 +191,7 @@ export default class ImageSelectModal extends Modal {
     #sort = debounce(() => {
         const optionNodeList = this.#optionNodeList.getNodeList();
         const sortedNodeList = sortNodeList(optionNodeList);
-        if (!Comparator.isEqual(optionNodeList, sortedNodeList)) {
+        if (!isEqual(optionNodeList, sortedNodeList)) {
             for (const el of sortedNodeList) {
                 (el.parentElement ?? el.getRootNode() ?? document).append(el);
             }

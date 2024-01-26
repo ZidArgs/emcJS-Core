@@ -1,12 +1,8 @@
+import {
+    isNull
+} from "./CheckType.js";
+
 const NUMBERED_STRING_REGEX = /(.*?)([0-9]*)$/;
-
-export function isNullOrFalse(a) {
-    return a == null || a === false;
-}
-
-export function isStringNonEmpty(a) {
-    return typeof a === "string" && a !== "";
-}
 
 export function isJSON(input) {
     try {
@@ -33,13 +29,13 @@ export function compareVersions(a = "", b = "", s = ".") {
 }
 
 export function isEqual(a, b) {
-    if (a == null && b == null) {
+    if (isNull(a) && isNull(b)) {
         return true;
     }
     if (Object.is(a, b)) {
         return true;
     }
-    if (a == null || b == null) {
+    if (isNull(a) || isNull(b)) {
         return false;
     }
     if (typeof a.equals === "function") {
@@ -85,7 +81,7 @@ export function numberedStringComparator(a, b) {
     return sCompare;
 }
 
-class Comparator {
+export default class Comparator {
 
     #comparators = new Map();
 
@@ -100,11 +96,22 @@ class Comparator {
     }
 
     isEqual(a, b) {
+        if (isNull(a) && isNull(b)) {
+            return true;
+        }
         if (Object.is(a, b)) {
             return true;
         }
-
-        if (a == null || b == null || typeof a != "object" || !(a instanceof b.constructor || b instanceof a.constructor)) {
+        if (isNull(a) || isNull(b)) {
+            return false;
+        }
+        if (typeof a.equals === "function") {
+            return a.equals(b);
+        }
+        if (typeof b.equals === "function") {
+            return b.equals(a);
+        }
+        if (typeof a != "object" || !(a instanceof b.constructor || b instanceof a.constructor)) {
             return false;
         }
 
@@ -133,17 +140,15 @@ class Comparator {
             return a.getTime() === b.getTime();
         }
 
-        // check nodes
-        if (a instanceof Node && b instanceof Node) {
-            return a === b;
-        }
-
         // check arrays
         if (Array.isArray(a)) {
-            if (a.length != b.length) {
+            if (!Array.isArray(b) || a.length != b.length) {
                 return false;
             }
-            return a.every((i, j) => this.isEqual(i, b[j]));
+            return a.every((i, j) => isEqual(i, b[j]));
+        }
+        if (Array.isArray(b)) {
+            return false;
         }
 
         // check dicts
@@ -151,9 +156,7 @@ class Comparator {
         if (c.length != Object.keys(b).length) {
             return false;
         }
-        return c.every((i) => this.isEqual(a[i], b[i]));
+        return c.every((i) => isEqual(a[i], b[i]));
     }
 
 }
-
-export default new Comparator();

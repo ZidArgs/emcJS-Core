@@ -2,6 +2,10 @@ export function isNull(value) {
     return value === null || value === undefined;
 }
 
+export function isNullOrFalse(value) {
+    return isNull(value) || value === false;
+}
+
 export function isPrimitive(value) {
     if (value == null) {
         return isNull(value);
@@ -27,10 +31,7 @@ export function isEmpty(value) {
 }
 
 export function isStringNotEmpty(value) {
-    if (typeof value === "string") {
-        return value !== "";
-    }
-    return false;
+    return typeof value === "string" && value !== "";
 }
 
 export function isDict(value) {

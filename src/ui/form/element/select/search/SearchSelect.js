@@ -10,7 +10,7 @@ import {
 import {
     debounce
 } from "../../../../../util/Debouncer.js";
-import Comparator, {
+import {
     isEqual
 } from "../../../../../util/helper/Comparator.js";
 import ElementListCache from "../../../../../util/html/ElementListCache.js";
@@ -466,7 +466,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
     #sort = debounce(() => {
         const optionNodeList = this.#optionNodeList.getNodeList();
         const sortedNodeList = sortNodeList(optionNodeList);
-        if (!Comparator.isEqual(optionNodeList, sortedNodeList)) {
+        if (!isEqual(optionNodeList, sortedNodeList)) {
             for (const el of sortedNodeList) {
                 (el.parentElement ?? el.getRootNode() ?? document).append(el);
             }
