@@ -137,26 +137,32 @@ export default class ElementManager {
             const currentOrder = [...children].map((el) => el.getAttribute("em-key") ?? "");
             const keys = [...this.#order];
             const {changes} = getArrayMutations(currentOrder, keys);
-            for (const {sequence} of changes) {
-                for (const key of sequence) {
-                    const el = this.#elements.get(key);
-                    if (el != null) {
-                        el.remove();
+            if (changes.length > 0) {
+                for (const {sequence} of changes) {
+                    for (const key of sequence) {
+                        const el = this.#elements.get(key);
+                        if (el != null) {
+                            el.remove();
+                        }
                     }
                 }
-            }
-            for (const {sequence, position} of changes) {
-                const els = [];
-                for (const key of sequence) {
-                    const el = this.#elements.get(key);
-                    if (el != null) {
-                        els.push(el);
+                let missingOffset = 0;
+                for (const {sequence, position} of changes) {
+                    const adjustedPosition = position - missingOffset;
+                    const els = [];
+                    for (const key of sequence) {
+                        const el = this.#elements.get(key);
+                        if (el != null) {
+                            els.push(el);
+                        } else {
+                            missingOffset++;
+                        }
                     }
-                }
-                if (position === 0) {
-                    this.#target.prepend(...els);
-                } else {
-                    this.#target.children[position - 1].after(...els);
+                    if (adjustedPosition <= 0) {
+                        this.#target.prepend(...els);
+                    } else {
+                        this.#target.children[adjustedPosition - 1].after(...els);
+                    }
                 }
             }
         } else {
