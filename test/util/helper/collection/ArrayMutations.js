@@ -19,9 +19,6 @@ describe("ArrayMutations", function() {
         const mutations = getArrayMutations(SOURCE, TARGET_0);
         const mutated = new IndexedSet(source);
 
-        console.log("mutation 0", mutations.changes);
-        console.log();
-
         mutated.delete(...mutations.deleted);
         for (const {sequence} of mutations.changes) {
             mutated.delete(...sequence);
@@ -33,6 +30,7 @@ describe("ArrayMutations", function() {
         const res = Array.from(mutated);
 
         it("could be restored from mutations [0]", function() {
+            // console.log("mutation 0", mutations.changes);
             assert.deepEqual(res, TARGET_0)
         });
     });
@@ -40,9 +38,6 @@ describe("ArrayMutations", function() {
     describe("switch first and last", function() {
         const mutations = getArrayMutations(SOURCE, TARGET_1);
         const mutated = new IndexedSet(source);
-
-        console.log("mutation 1", mutations.changes);
-        console.log();
 
         mutated.delete(...mutations.deleted);
         for (const {sequence} of mutations.changes) {
@@ -55,6 +50,7 @@ describe("ArrayMutations", function() {
         const res = Array.from(mutated);
 
         it("could be restored from mutations [1]", function() {
+            // console.log("mutation 1", mutations.changes);
             assert.deepEqual(res, TARGET_1)
         });
     });
@@ -62,9 +58,6 @@ describe("ArrayMutations", function() {
     describe("move sequence to sequence", function() {
         const mutations = getArrayMutations(SOURCE, TARGET_2);
         const mutated = new IndexedSet(source);
-
-        console.log("mutation 2", mutations.changes);
-        console.log();
 
         mutated.delete(...mutations.deleted);
         for (const {sequence} of mutations.changes) {
@@ -77,6 +70,7 @@ describe("ArrayMutations", function() {
         const res = Array.from(mutated);
 
         it("could be restored from mutations [2]", function() {
+            // console.log("mutation 2", mutations.changes);
             assert.deepEqual(res, TARGET_2)
         });
     });
@@ -84,9 +78,6 @@ describe("ArrayMutations", function() {
     describe("move sequence into split positions", function() {
         const mutations = getArrayMutations(SOURCE, TARGET_3);
         const mutated = new IndexedSet(source);
-
-        console.log("mutation 3", mutations.changes);
-        console.log();
 
         mutated.delete(...mutations.deleted);
         for (const {sequence} of mutations.changes) {
@@ -99,6 +90,7 @@ describe("ArrayMutations", function() {
         const res = Array.from(mutated);
 
         it("could be restored from mutations [3]", function() {
+            // console.log("mutation 3", mutations.changes);
             assert.deepEqual(res, TARGET_3)
         });
     });
@@ -106,9 +98,6 @@ describe("ArrayMutations", function() {
     describe("move split values into sequence left", function() {
         const mutations = getArrayMutations(SOURCE, TARGET_4);
         const mutated = new IndexedSet(source);
-
-        console.log("mutation 4", mutations.changes);
-        console.log();
 
         mutated.delete(...mutations.deleted);
         for (const {sequence} of mutations.changes) {
@@ -121,6 +110,7 @@ describe("ArrayMutations", function() {
         const res = Array.from(mutated);
 
         it("could be restored from mutations [4]", function() {
+            // console.log("mutation 4", mutations.changes);
             assert.deepEqual(res, TARGET_4)
         });
     });
@@ -128,9 +118,6 @@ describe("ArrayMutations", function() {
     describe("move split values into sequence right", function() {
         const mutations = getArrayMutations(SOURCE, TARGET_5);
         const mutated = new IndexedSet(source);
-
-        console.log("mutation 5", mutations.changes);
-        console.log();
 
         mutated.delete(...mutations.deleted);
         for (const {sequence} of mutations.changes) {
@@ -143,6 +130,7 @@ describe("ArrayMutations", function() {
         const res = Array.from(mutated);
 
         it("could be restored from mutations [5]", function() {
+            // console.log("mutation 5", mutations.changes);
             assert.deepEqual(res, TARGET_5)
         });
     });

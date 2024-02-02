@@ -9,7 +9,7 @@ describe("MapLocker", function() {
     map.set("bar", "foo");
     const mapLocker = new MapLocker(map);
 
-    describe("add()", function() {
+    describe("set()", function() {
         it("should throw error", function() {
             assert.throws(() => {
                 mapLocker.set(1, 2);
