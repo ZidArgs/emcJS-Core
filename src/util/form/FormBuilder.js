@@ -1,7 +1,7 @@
 import FormElementRegistry from "../../data/registry/form/FormElementRegistry.js";
 import {
     isNullOrFalse
-} from "../helper/Comparator.js";
+} from "../helper/CheckType.js";
 import "../../ui/form/FormContainer.js";
 import "../../ui/form/FormFieldset.js";
 import "../../ui/form/FormRow.js";

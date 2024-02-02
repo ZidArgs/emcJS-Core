@@ -40,3 +40,12 @@ export function isDict(value) {
     }
     return false;
 }
+
+export function isJSON(input) {
+    try {
+        JSON.parse(input);
+    } catch {
+        return false;
+    }
+    return true;
+}

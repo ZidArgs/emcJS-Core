@@ -4,15 +4,6 @@ import {
 
 const NUMBERED_STRING_REGEX = /(.*?)([0-9]*)$/;
 
-export function isJSON(input) {
-    try {
-        JSON.parse(input);
-    } catch {
-        return false;
-    }
-    return true;
-}
-
 export function compareVersions(a = "", b = "", s = ".") {
     const c = a.split(s);
     const d = b.split(s);
