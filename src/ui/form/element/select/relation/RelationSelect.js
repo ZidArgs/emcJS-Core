@@ -252,10 +252,7 @@ export default class RelationSelect extends CustomFormElementDelegating {
                 name: value.name
             };
             if (typeof value.type !== "string" || typeof value.name !== "string") {
-                value = {
-                    type: null,
-                    name: null
-                };
+                value = null;
             }
         }
         return value;

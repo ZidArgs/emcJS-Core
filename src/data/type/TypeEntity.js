@@ -21,7 +21,7 @@ export default class TypeEntity extends EventTarget {
             throw new Error(`typeName has to be a string that is not empty and not "*"`);
         }
         if (typeof entityName !== "string" || entityName === "") {
-            throw new Error(`name has to be a string that is not empty`);
+            throw new Error(`entityName has to be a string that is not empty`);
         }
         super();
         this.#typeName = typeName;
