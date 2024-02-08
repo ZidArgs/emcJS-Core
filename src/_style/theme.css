@@ -36,6 +36,12 @@
     --modal-footer-back-color: #e4e4e4;
     --modal-footer-text-color: #000000;
 
+    --modal-icon-default-color: #000000;
+    --modal-icon-alert-color: #e98e2d;
+    --modal-icon-confirm-color: #0000ff;
+    --modal-icon-prompt-color: #01ada4;
+    --modal-icon-error-color: #c50000;
+
     /* === panel === */
     --panel-text-color: var(--page-text-color, #000000);
     --panel-back-color: var(--page-back-color, #ffffff);

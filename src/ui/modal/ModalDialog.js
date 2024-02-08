@@ -112,6 +112,7 @@ export default class ModalDialog extends Modal {
             text: msg,
             submit: "ok"
         });
+        dialogEl.setFontIcon("!", {color: "var(--modal-icon-alert-color, #e98e2d)", circle: "var(--modal-icon-alert-color, #e98e2d)"});
         // ---
         const result = await dialogEl.show();
         return result;
@@ -124,6 +125,7 @@ export default class ModalDialog extends Modal {
             submit: "yes",
             cancel: "no"
         });
+        dialogEl.setFontIcon("?", {color: "var(--modal-icon-confirm-color, #0000ff)", circle: "var(--modal-icon-confirm-color, #0000ff)"});
         // ---
         const result = await dialogEl.show();
         return result;
@@ -136,6 +138,7 @@ export default class ModalDialog extends Modal {
             submit: true,
             cancel: true
         });
+        dialogEl.setFontIcon("🖉", {color: "var(--modal-icon-prompt-color, #01ada4)", circle: "var(--modal-icon-prompt-color, #01ada4)"});
         // ---
         const inputEl = document.createElement("input");
         inputEl.className = "prompt-input";
@@ -160,6 +163,7 @@ export default class ModalDialog extends Modal {
             text: msg,
             submit: "ok"
         });
+        dialogEl.setFontIcon("⚠", {color: "var(--modal-icon-error-color, #c50000)"});
         // ---
         const inputEl = document.createElement("textarea");
         inputEl.style.width = "700px";

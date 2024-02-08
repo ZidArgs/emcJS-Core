@@ -1,3 +1,5 @@
+const COLOR_PATTERN = /#[0-9a-f]{6}/i;
+
 export function isNull(value) {
     return value === null || value === undefined;
 }
@@ -39,6 +41,10 @@ export function isDict(value) {
         return value.constructor === Object;
     }
     return false;
+}
+
+export function isColorString(value) {
+    return isStringNotEmpty(value) && COLOR_PATTERN.test(value);
 }
 
 export function isJSON(input) {

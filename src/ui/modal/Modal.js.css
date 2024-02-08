@@ -100,6 +100,24 @@
     font-size: 1em;
     line-height: 1em;
 }
+#title-icon {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    width: 40px;
+    margin-left: 5px;
+    color: var(--modal-icon-default-color, #000000);
+    font-family: monospace;
+    font-size: 1.9em;
+    line-height: 1em;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+#title-icon.visible {
+    display: inline-flex;
+}
 #content {
     display: flex;
     flex-direction: column;

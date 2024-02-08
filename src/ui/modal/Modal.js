@@ -1,5 +1,8 @@
 import CustomElement from "../element/CustomElement.js";
 import UniqueEntriesStack from "../../data/stack/UniqueEntriesStack.js";
+import {
+    isColorString
+} from "../../util/helper/CheckType.js";
 import "../i18n/I18nLabel.js";
 import "../symbols/CloseSymbol.js";
 import TPL from "./Modal.js.html" assert {type: "html"};
@@ -20,6 +23,8 @@ const visibleModals = new UniqueEntriesStack();
 
 export default class Modal extends CustomElement {
 
+    #titleIconEl;
+
     #titleTextEl;
 
     #assocName = "";
@@ -29,6 +34,7 @@ export default class Modal extends CustomElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
+        this.#titleIconEl = this.shadowRoot.getElementById("title-icon");
         this.#titleTextEl = this.shadowRoot.getElementById("title-text");
         this.#titleTextEl.i18nValue = title;
         /* --- */
@@ -60,6 +66,46 @@ export default class Modal extends CustomElement {
 
     disconnectedCallback() {
         this.classList.remove("inactive");
+    }
+
+    setFontIcon(content, {color, circle = false} = {}) {
+        if (typeof content === "string" && content !== "") {
+            this.#titleIconEl.innerText = content;
+            if (isColorString(color)) {
+                this.#titleIconEl.style.color = color;
+            } else {
+                this.#titleIconEl.style.color = "";
+            }
+            if (circle) {
+                if (isColorString(circle)) {
+                    this.#titleIconEl.style.backgroundImage = `radial-gradient(transparent 55%, ${circle}, transparent 65%)`;
+                } else {
+                    this.#titleIconEl.style.backgroundImage = "radial-gradient(transparent 55%, black, transparent 65%)";
+                }
+            } else {
+                this.#titleIconEl.style.backgroundImage = "";
+            }
+            this.#titleIconEl.className = "visible";
+        } else {
+            this.#titleIconEl.innerText = "";
+            this.#titleIconEl.style.backgroundImage = "";
+            this.#titleIconEl.style.color = "";
+            this.#titleIconEl.className = "";
+        }
+    }
+
+    setImageIcon(content) {
+        if (typeof content === "string" && content !== "") {
+            this.#titleIconEl.innerText = "";
+            this.#titleIconEl.style.backgroundImage = content;
+            this.#titleIconEl.style.color = "";
+            this.#titleIconEl.className = "visible";
+        } else {
+            this.#titleIconEl.innerText = "";
+            this.#titleIconEl.style.backgroundImage = "";
+            this.#titleIconEl.style.color = "";
+            this.#titleIconEl.className = "";
+        }
     }
 
     setTitle(value) {
