@@ -148,8 +148,8 @@ export default class LogicElementModal extends Modal {
         this.#loadOperatorGroup("", "default", operators, true);
         // load custom operators
         for (const group of this.#operatorGroups) {
-            const caption = LogicOperatorRegistry.getCaption(group);
-            const operators = LogicOperatorRegistry.get(group);
+            const caption = LogicOperatorRegistry.getGroupCaption(group);
+            const operators = LogicOperatorRegistry.getGroup(group);
             this.#loadOperatorGroup(group, caption, operators);
         }
         await BusyIndicatorManager.unbusy();
@@ -168,7 +168,7 @@ export default class LogicElementModal extends Modal {
         const groupEl = this.#containerEl.querySelector(`emc-collapsepanel[data-group="${group}"]`);
         if (groupEl != null) {
             groupEl.innerHTML = "";
-            const operators = LogicOperatorRegistry.get(group);
+            const operators = LogicOperatorRegistry.getGroup(group);
             this.#loadOperators(operators, groupEl);
         }
     }

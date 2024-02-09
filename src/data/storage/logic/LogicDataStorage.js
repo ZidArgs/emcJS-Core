@@ -7,6 +7,8 @@ export default class LogicDataStorage {
 
     #augments = new Map();
 
+    #deletedAugments = new Set();
+
     setData(data = {}) {
         for (const [key, value] of Object.entries(data)) {
             this.#changes.set(key, value);
@@ -42,6 +44,14 @@ export default class LogicDataStorage {
 
     setAugmented(key, value) {
         this.#augments.set(key, value);
+        this.#deletedAugments.delete(key);
+    }
+
+    deleteAugmented(key) {
+        if (this.#augments.get(key)) {
+            this.#augments.delete(key);
+            this.#deletedAugments.add(key);
+        }
     }
 
     getAugmented(key) {
@@ -50,6 +60,11 @@ export default class LogicDataStorage {
 
     clearAugments() {
         this.#augments.clear();
+        this.#deletedAugments.clear();
+    }
+
+    flushAugments() {
+        this.#deletedAugments.clear();
     }
 
     // ---
@@ -76,6 +91,9 @@ export default class LogicDataStorage {
         for (const [key, value] of this.#augments) {
             res[key] = value;
         }
+        for (const key of this.#deletedAugments) {
+            res[key] = this.get(key);
+        }
         return res;
     }
 
@@ -83,6 +101,9 @@ export default class LogicDataStorage {
         const res = {};
         for (const [key, value] of this.#augments) {
             res[key] = value;
+        }
+        for (const key of this.#deletedAugments) {
+            res[key] = this.get(key);
         }
         return res;
     }
@@ -94,6 +115,7 @@ export default class LogicDataStorage {
             hasChange: this.hasChange.bind(this),
             get: this.get.bind(this),
             setAugmented: this.setAugmented.bind(this),
+            deleteAugmented: this.deleteAugmented.bind(this),
             getAugmented: this.getAugmented.bind(this)
         };
     }

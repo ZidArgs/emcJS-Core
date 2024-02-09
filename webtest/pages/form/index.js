@@ -228,11 +228,14 @@ CustomActionRegistry.current.set("cheese", () => {
 
 const logicTestEl = document.getElementById("logicTest");
 logicTestEl.addOperatorGroup("custom-settings");
-LogicOperatorRegistry.setCaption("custom-settings", "custom settings");
-LogicOperatorRegistry.setOperator("custom-settings", "value.test", {
+LogicOperatorRegistry.setGroupCaption("custom-settings", "custom settings");
+
+LogicOperatorRegistry.setOperator("value.test", {
     "type": "value"
 });
-LogicOperatorRegistry.setOperator("custom-settings", "state.test", {
+LogicOperatorRegistry.linkOperator("value.test", "custom-settings");
+
+LogicOperatorRegistry.setOperator("state.test", {
     "type": "state",
     "options": {
         "test": "Test",
@@ -241,3 +244,4 @@ LogicOperatorRegistry.setOperator("custom-settings", "state.test", {
     },
     "value": "test"
 });
+LogicOperatorRegistry.linkOperator("state.test", "custom-settings");

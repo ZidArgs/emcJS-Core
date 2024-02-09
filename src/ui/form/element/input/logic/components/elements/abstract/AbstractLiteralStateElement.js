@@ -2,6 +2,7 @@ import AbstractElement from "./AbstractElement.js";
 import "../../../../../select/search/SearchSelect.js";
 import TPL from "./AbstractLiteralStateElement.js.html" assert {type: "html"};
 import STYLE from "./AbstractLiteralStateElement.js.css" assert {type: "css"};
+import LogicOperatorRegistry from "../../../../../../../../data/registry/LogicOperatorRegistry.js";
 
 export default class AbstractLiteralStateElement extends AbstractElement {
 
@@ -93,6 +94,10 @@ export default class AbstractLiteralStateElement extends AbstractElement {
 
     loadLogic(logic) {
         this.ref = logic.ref;
+        const operatorConfig = LogicOperatorRegistry.getOperator(logic.ref);
+        if (operatorConfig != null) {
+            this.setOptions(operatorConfig.options);
+        }
         this.value = logic.value;
     }
 

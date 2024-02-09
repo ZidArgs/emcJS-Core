@@ -1,3 +1,7 @@
+import {
+    debounce
+} from "../Debouncer.js";
+
 const dl = document.createElement("a");
 dl.style.position = "absolute !important";
 dl.style.display = "none !important";
@@ -30,28 +34,55 @@ class FileSystem {
 
     load(extensions) {
         return new Promise((resolve, reject) => {
-            if (typeof extensions == "string") {
-                ul.setAttribute("accept", extensions);
-            }
-            if (Array.isArray(extensions)) {
-                ul.setAttribute("accept", extensions.join(","));
-            }
-            ul.onchange = function() {
-                if (ul.files.length > 0) {
-                    const fileData = ul.files[0];
-                    ul.value = null;
-                    const reader = new FileReader();
-                    reader.onload = function() {
-                        resolve(convertData(reader.result));
-                    };
-                    reader.onabort = resolve;
-                    reader.onerror = reject;
-                    reader.readAsDataURL(fileData);
-                    ul.removeAttribute("accept");
+            try {
+                if (typeof extensions == "string") {
+                    ul.setAttribute("accept", extensions);
                 }
-            };
-            ul.onerror = reject;
-            ul.click();
+                if (Array.isArray(extensions)) {
+                    ul.setAttribute("accept", extensions.join(","));
+                }
+
+                const cancelDetector = debounce(() => {
+                    if (ul.files.length === 0) {
+                        window.removeEventListener("focus", cancelDetector);
+                        resolve(null);
+                    }
+                }, 100);
+
+                ul.onchange = () => {
+                    if (ul.files.length > 0) {
+                        cancelDetector.cancel();
+                        window.removeEventListener("focus", cancelDetector);
+                        const fileData = ul.files[0];
+                        ul.value = null;
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                            resolve(convertData(reader.result));
+                        };
+                        reader.onabort = () => {
+                            resolve(null);
+                        };
+                        reader.onerror = () => {
+                            reject("error reading file");
+                        };
+                        reader.readAsDataURL(fileData);
+                        ul.removeAttribute("accept");
+                    } else {
+                        resolve(null);
+                    }
+                };
+                ul.onabort = () => {
+                    resolve(null);
+                };
+                ul.onerror = () => {
+                    reject("error in file selection");
+                };
+                ul.click();
+
+                window.addEventListener("focus", cancelDetector, false);
+            } catch {
+                reject("error in file selection");
+            }
         });
     }
 

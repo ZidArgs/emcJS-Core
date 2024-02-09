@@ -9,12 +9,16 @@ export function debounce(func, wait = 0) {
         wait = 0;
     }
     let timeout;
-    return function(...args) {
+    const fn = function(...args) {
         clearTimeout(timeout);
         timeout = setTimeout(() => {
             func(...args);
         }, wait);
     };
+    fn.cancel = () => {
+        clearTimeout(timeout);
+    };
+    return fn;
 }
 
 export function debounceCacheData(func, wait = 0) {
@@ -29,7 +33,7 @@ export function debounceCacheData(func, wait = 0) {
     }
     let timeout;
     let cache = [];
-    return function(...data) {
+    const fn = function(...data) {
         cache.push(...data);
         clearTimeout(timeout);
         timeout = setTimeout(() => {
@@ -37,6 +41,10 @@ export function debounceCacheData(func, wait = 0) {
             cache = [];
         }, wait);
     };
+    fn.cancel = () => {
+        clearTimeout(timeout);
+    };
+    return fn;
 }
 
 export function debounceByType(func, wait = 0) {
@@ -50,10 +58,14 @@ export function debounceByType(func, wait = 0) {
         wait = 0;
     }
     const timeout = new Map();
-    return function(type, ...args) {
+    const fn = function(type, ...args) {
         clearTimeout(timeout.get(type));
         timeout.set(type, setTimeout(() => {
             func(type, ...args);
         }, wait));
     };
+    fn.cancel = (type) => {
+        clearTimeout(timeout.get(type));
+    };
+    return fn;
 }
