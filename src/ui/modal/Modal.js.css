@@ -109,7 +109,7 @@
     margin-left: 5px;
     color: var(--modal-icon-default-color, #000000);
     font-family: monospace;
-    font-size: 1.9em;
+    font-size: 2.8em;
     line-height: 1em;
     background-size: contain;
     background-repeat: no-repeat;
@@ -117,6 +117,9 @@
 }
 #title-icon.visible {
     display: inline-flex;
+}
+#title-icon.small {
+    font-size: 1.9em;
 }
 #content {
     display: flex;

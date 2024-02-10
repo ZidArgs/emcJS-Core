@@ -17,6 +17,8 @@ const Q_TAB = [
     "[tabindex]:not([tabindex=\"-1\"])"
 ].join(",");
 
+const SIZE_REGEXP = /^[0-9]+(?:\.[0-9]+)?(?:em|px|%)$/;
+
 const modalStorage = new Map();
 
 const visibleModals = new UniqueEntriesStack();
@@ -68,9 +70,12 @@ export default class Modal extends CustomElement {
         this.classList.remove("inactive");
     }
 
-    setFontIcon(content, {color, circle = false} = {}) {
+    setFontIcon(content, {color, size, circle = false} = {}) {
         if (typeof content === "string" && content !== "") {
             this.#titleIconEl.innerText = content;
+            if (SIZE_REGEXP.test(size)) {
+                this.#titleIconEl.style.fontSize = size;
+            }
             if (isColorString(color)) {
                 this.#titleIconEl.style.color = color;
             } else {
@@ -78,19 +83,21 @@ export default class Modal extends CustomElement {
             }
             if (circle) {
                 if (isColorString(circle)) {
-                    this.#titleIconEl.style.backgroundImage = `radial-gradient(transparent 55%, ${circle}, transparent 65%)`;
+                    this.#titleIconEl.style.backgroundImage = `radial-gradient(transparent 45%, ${circle}, transparent 55%)`;
                 } else {
-                    this.#titleIconEl.style.backgroundImage = "radial-gradient(transparent 55%, black, transparent 65%)";
+                    this.#titleIconEl.style.backgroundImage = "radial-gradient(transparent 45%, black, transparent 55%)";
                 }
+                this.#titleIconEl.classList.add("small");
             } else {
                 this.#titleIconEl.style.backgroundImage = "";
+                this.#titleIconEl.classList.remove("small");
             }
-            this.#titleIconEl.className = "visible";
+            this.#titleIconEl.classList.add("visible");
         } else {
             this.#titleIconEl.innerText = "";
             this.#titleIconEl.style.backgroundImage = "";
             this.#titleIconEl.style.color = "";
-            this.#titleIconEl.className = "";
+            this.#titleIconEl.classList.remove("visible");
         }
     }
 
@@ -99,12 +106,12 @@ export default class Modal extends CustomElement {
             this.#titleIconEl.innerText = "";
             this.#titleIconEl.style.backgroundImage = content;
             this.#titleIconEl.style.color = "";
-            this.#titleIconEl.className = "visible";
+            this.#titleIconEl.classList.add("visible");
         } else {
             this.#titleIconEl.innerText = "";
             this.#titleIconEl.style.backgroundImage = "";
             this.#titleIconEl.style.color = "";
-            this.#titleIconEl.className = "";
+            this.#titleIconEl.classList.remove("visible");
         }
     }
 
