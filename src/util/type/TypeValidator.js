@@ -3,21 +3,31 @@ import {
 } from "../helper/Comparator.js";
 import TypeConfigMap from "../../data/type/TypeConfigMap.js";
 import LogicValidator from "../logic/LogicValidator.js";
+import {
+    getFromObjectByPath
+} from "../helper/collection/ObjectContent.js";
 
 const IMAGE_PATTERN = /\.(?:apng|avif|gif|jpg|jpeg|jfif|pjpeg|pjp|png|svg|webp|bmp|ico|tiff)$/i;
 const COLOR_PATTERN = /#[0-9a-f]{6}/i;
 
 class TypeValidator {
 
-    validate(typeName, value, {label, throwErrors = false, forceAllOptional = false} = {}) {
-        label = typeof label === "string" && label !== "" ? `| ${label} |` : "|";
+    validate(typeName, value, options = {}) {
+        const {
+            label,
+            throwErrors = false,
+            forceAllOptional = false,
+            ignoreDuplicateKeys = false
+        } = options;
+
+        const pathLabel = typeof label === "string" && label !== "" ? `| ${label} |` : "|";
 
         if (typeof typeName !== "string" || typeName === "" || typeName === "*") {
             throw new Error(`Error validating value\n    typeName has to be a string that is not empty and not "*"`);
         }
 
         const errors = [];
-        this.#validate(typeName, value, [label], forceAllOptional, errors);
+        this.#validate(typeName, value, [pathLabel], {forceAllOptional, ignoreDuplicateKeys}, errors);
         if (throwErrors && errors.length > 0) {
             const msg = errors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
             throw new Error(`Error validating value as "${typeName}"\n    ${msg}`);
@@ -25,7 +35,7 @@ class TypeValidator {
         return errors;
     }
 
-    #validate(typeName, data, currentPath, forceAllOptional, errors) {
+    #validate(typeName, data, currentPath, options, errors) {
         const typeConfig = TypeConfigMap.get(typeName);
         if (typeConfig == null) {
             errors.push(`error resolving type "${typeName}": unknown [ ${currentPath.join(" > ")} ]`);
@@ -49,23 +59,23 @@ class TypeValidator {
         for (const [name, attrDefinition] of Object.entries(typeDefinition)) {
             const value = data[name];
             if (value == null) {
-                if (!forceAllOptional && !attrDefinition.optional) {
+                if (!options.forceAllOptional && !attrDefinition.optional) {
                     errors.push(`type "${typeName}" is missing required attribute "${name}" [ ${currentPath.join(" > ")} ]`);
                 }
                 continue;
             }
-            this.#validateType([...currentPath, `${name} {${attrDefinition["@type"]}}`], value, attrDefinition, forceAllOptional, errors);
+            this.#validateType([...currentPath, `${name} {${attrDefinition["@type"]}}`], value, attrDefinition, options, errors);
         }
     }
 
-    #validateType(currentPath, value, attrDefinition, forceAllOptional, errors) {
+    #validateType(currentPath, value, attrDefinition, options, errors) {
         const currentType = attrDefinition["@type"];
         switch (currentType) {
             case "List": {
-                this.#validateList(currentPath, value, attrDefinition, forceAllOptional, errors);
+                this.#validateList(currentPath, value, attrDefinition, options, errors);
             } break;
             case "AssociativeList": {
-                this.#validateAssociativeList(currentPath, value, attrDefinition, forceAllOptional, errors);
+                this.#validateAssociativeList(currentPath, value, attrDefinition, options, errors);
             } break;
             case "Relation": {
                 this.#validateRelation(currentPath, value, attrDefinition, errors);
@@ -92,7 +102,7 @@ class TypeValidator {
                 this.#validateLogic(currentPath, value, attrDefinition, errors);
             } break;
             default: {
-                this.#validate(currentType, value, currentPath, forceAllOptional, errors);
+                this.#validate(currentType, value, currentPath, options, errors);
             } break;
         }
     }
@@ -163,20 +173,36 @@ class TypeValidator {
         }
     }
 
-    #validateList(currentPath, value, definition, forceAllOptional, errors) {
+    #validateList(currentPath, value, definition, options, errors) {
         if (!Array.isArray(value)) {
             errors.push(`array expected [ ${currentPath.join(" > ")} ]`);
         } else if (!definition.children.optional && value.length <= 0) {
             errors.push(`must have at least one child [ ${currentPath.join(" > ")} ]`);
         } else {
-            for (const key in value) {
-                const entry = value[key];
-                this.#validateType([...currentPath, `${key} {${definition.children["@type"]}}`], entry, definition.children, forceAllOptional, errors);
+            const uniqueKey = options.ignoreDuplicateKeys ? false : definition.uniqueKey;
+            if (typeof uniqueKey !== "string" || uniqueKey === "") {
+                for (const key in value) {
+                    const entry = value[key];
+                    this.#validateType([...currentPath, `${key} {${definition.children["@type"]}}`], entry, definition.children, options, errors);
+                }
+            } else {
+                const keyPath = uniqueKey.split(".");
+                const usedKeys = new Set();
+                for (const key in value) {
+                    const entry = value[key];
+                    const entryKey = getFromObjectByPath(entry, keyPath);
+                    if (usedKeys.has(entryKey)) {
+                        errors.push(`duplicate key "${entryKey}" (${uniqueKey}) [ ${currentPath.join(" > ")} ]`);
+                    } else {
+                        usedKeys.add(entryKey);
+                    }
+                    this.#validateType([...currentPath, `${key} {${definition.children["@type"]}}`], entry, definition.children, options, errors);
+                }
             }
         }
     }
 
-    #validateAssociativeList(currentPath, value, definition, forceAllOptional, errors) {
+    #validateAssociativeList(currentPath, value, definition, options, errors) {
         if (typeof value !== "object" || Array.isArray(value)) {
             errors.push(`dictionary expected [ ${currentPath.join(" > ")} ]`);
         } else if (!definition.children.optional && Object.keys(value).length <= 0) {
@@ -184,7 +210,7 @@ class TypeValidator {
         } else {
             for (const key in value) {
                 const entry = value[key];
-                this.#validateType([...currentPath, `"${key}" {${definition.children["@type"]}}`], entry, definition.children, forceAllOptional, errors);
+                this.#validateType([...currentPath, `"${key}" {${definition.children["@type"]}}`], entry, definition.children, options, errors);
             }
         }
     }
