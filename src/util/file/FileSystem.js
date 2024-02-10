@@ -1,7 +1,3 @@
-import {
-    debounce
-} from "../Debouncer.js";
-
 const dl = document.createElement("a");
 dl.style.position = "absolute !important";
 dl.style.display = "none !important";
@@ -42,17 +38,8 @@ class FileSystem {
                     ul.setAttribute("accept", extensions.join(","));
                 }
 
-                const cancelDetector = debounce(() => {
-                    if (ul.files.length === 0) {
-                        window.removeEventListener("focus", cancelDetector);
-                        resolve(null);
-                    }
-                }, 100);
-
                 ul.onchange = () => {
                     if (ul.files.length > 0) {
-                        cancelDetector.cancel();
-                        window.removeEventListener("focus", cancelDetector);
                         const fileData = ul.files[0];
                         ul.value = null;
                         const reader = new FileReader();
@@ -71,15 +58,13 @@ class FileSystem {
                         resolve(null);
                     }
                 };
-                ul.onabort = () => {
+                ul.oncancel = () => {
                     resolve(null);
                 };
                 ul.onerror = () => {
                     reject("error in file selection");
                 };
                 ul.click();
-
-                window.addEventListener("focus", cancelDetector, false);
             } catch {
                 reject("error in file selection");
             }
