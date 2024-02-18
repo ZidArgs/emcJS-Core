@@ -85,6 +85,9 @@ class TypeConfigMap extends EventTarget {
         if (!("@type" in attrDefinition)) {
             throw new Error(`TypeConfigMap - @type missing [ ${typeName} > ${currentName} ]`);
         }
+        if (typeof attrDefinition["@type"] !== "string" || attrDefinition["@type"] === "") {
+            throw new Error(`TypeConfigMap - @type has to be a non empty string [ ${typeName} > ${currentName} ]`);
+        }
 
         const currentType = attrDefinition["@type"];
         const currentResult = {
@@ -141,6 +144,13 @@ class TypeConfigMap extends EventTarget {
                 currentResult["choices"] = attrDefinition["choices"];
             } break;
             case "List": {
+                if ("uniqueKey" in attrDefinition) {
+                    if (typeof attrDefinition["uniqueKey"] !== "string") {
+                        throw new Error(`TypeConfigMap - uniqueKey has to be a string [ ${typeName} > ${currentName} ]`);
+                    }
+                    currentResult["uniqueKey"] = attrDefinition["uniqueKey"];
+                }
+
                 if (!("children" in attrDefinition) || typeof attrDefinition["children"] !== "object" || Array.isArray(attrDefinition["children"])) {
                     throw new Error(`TypeConfigMap - children has to be a type definition [ ${typeName} > ${currentName} ]`);
                 }

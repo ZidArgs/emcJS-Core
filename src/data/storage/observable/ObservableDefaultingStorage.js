@@ -19,7 +19,7 @@ export default class ObservableDefaultingStorage extends ObservableStorage {
     setDefault(key, value) {
         const old = this.#defaults.get(key);
         if (old != value) {
-            this.#defaults.set(key, value);
+            this.#defaults.set(key, deepClone(value));
             if (!super.has(key)) {
                 const ev = new Event("change");
                 ev.data = {[key]: value};

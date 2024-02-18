@@ -1,21 +1,20 @@
-const EDGES = new WeakMap();
-const NAME = new WeakMap();
-
 class Node {
 
+    #name;
+
+    #edges = new Map();
+
     constructor(name) {
-        EDGES.set(this, new Map());
-        NAME.set(this, name);
+        this.#name = name;
     }
 
     getName() {
-        return NAME.get(this);
+        return this.#name;
     }
 
     append(node, condition) {
         if (node instanceof Node) {
-            const edges = EDGES.get(this);
-            edges.set(node.getName(), new Edge(this, node, condition));
+            this.#edges.set(node.getName(), new Edge(this, node, condition));
         } else {
             throw new TypeError("Expected type Node");
         }
@@ -23,21 +22,18 @@ class Node {
 
     remove(node) {
         if (node instanceof Node) {
-            const edges = EDGES.get(this);
-            edges.delete(node.getName());
+            this.#edges.delete(node.getName());
         } else {
             throw new TypeError("Expected type Node");
         }
     }
 
     getTargets() {
-        const edges = EDGES.get(this);
-        return edges.keys();
+        return this.#edges.keys();
     }
 
     getEdge(name) {
-        const edges = EDGES.get(this);
-        return edges.get(name);
+        return this.#edges.get(name);
     }
 
     toString() {
@@ -46,63 +42,58 @@ class Node {
 
 }
 
-const SOURCE = new WeakMap();
-const TARGET = new WeakMap();
-const CONDITION = new WeakMap();
-
 class Edge {
 
+    #source;
+
+    #target;
+
+    #condition;
+
     constructor(source, target, condition) {
-        SOURCE.set(this, source);
-        TARGET.set(this, target);
-        CONDITION.set(this, condition);
+        this.#source = source;
+        this.#target = target;
+        this.#condition = condition;
     }
 
     getCondition() {
-        return CONDITION.get(this);
+        return this.#condition;
     }
 
     getTarget() {
-        return TARGET.get(this);
+        return this.#target;
     }
 
     getSource() {
-        return SOURCE.get(this);
+        return this.#source;
     }
 
     toString() {
-        return `${SOURCE.get(this)} => ${TARGET.get(this)}`;
+        return `${this.#source} => ${this.#target}`;
     }
 
 }
 
 /* node factory */
-const NODES = new WeakMap();
-
 export default class NodeFactory {
 
-    constructor() {
-        NODES.set(this, new Map());
-    }
+    #nodes = new Map();
 
     reset() {
-        const nodes = NODES.get(this);
-        nodes.clear();
+        this.#nodes.clear();
     }
 
     get(name) {
-        const nodes = NODES.get(this);
-        if (nodes.has(name)) {
-            return nodes.get(name);
+        if (this.#nodes.has(name)) {
+            return this.#nodes.get(name);
         }
         const node = new Node(name);
-        nodes.set(name, node);
+        this.#nodes.set(name, node);
         return node;
     }
 
     getNames() {
-        const nodes = NODES.get(this);
-        return nodes.keys();
+        return this.#nodes.keys();
     }
 
 }

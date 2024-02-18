@@ -1,180 +1,160 @@
 import NodeFactory from "./NodeFactory.js";
 import EdgeLogicCompiler from "./EdgeLogicCompiler.js";
 
-const DIRTY = new WeakMap();
-const MIXINS = new WeakMap();
-const MEM_I = new WeakMap();
-const MEM_O = new WeakMap();
-const DEBUG = new WeakMap();
-const NODES = new WeakMap();
-
-const REDIRECT_MATRIX = new WeakMap();
-const FORCED_REACHABLE = new WeakMap();
-
 export default class LogicGraph {
 
+    #debug = false;
+
+    #dirty = false;
+
+    #nodeFactory = new NodeFactory();
+
+    #mixins = new Map();
+
+    #collectibles = new Map();
+
+    #memoryIn = new Map();
+
+    #memoryOut = new Map();
+
+    #redirects = new Map();
+
+    #forcedReachables = new Set();
+
     constructor(debug = false) {
-        NODES.set(this, new NodeFactory());
-        MIXINS.set(this, new Map());
-        MEM_I.set(this, new Map());
-        MEM_O.set(this, new Map());
-        REDIRECT_MATRIX.set(this, new Map());
-        FORCED_REACHABLE.set(this, new Set());
-        DIRTY.set(this, false);
-        DEBUG.set(this, debug);
+        this.#debug = debug;
     }
 
     set debug(value) {
-        DEBUG.set(this, value);
+        this.#debug = value;
     }
 
     get debug() {
-        return DEBUG.get(this);
+        return this.#debug;
     }
 
     clearGraph() {
-        const nodeFactory = NODES.get(this);
-        nodeFactory.reset();
+        this.#nodeFactory.reset();
     }
 
     load(config) {
-        const debug = DEBUG.get(this);
-        const nodeFactory = NODES.get(this);
-        const mixins = MIXINS.get(this);
-        const mem_o = MEM_O.get(this);
-        if (debug) {
+        if (this.#debug) {
             console.groupCollapsed("GRAPH LOGIC BUILD");
             console.time("build time");
         }
         for (const name in config.edges) {
             const children = config.edges[name];
-            const node = nodeFactory.get(name);
+            const node = this.#nodeFactory.get(name);
             for (const child in children) {
                 const logic = children[child];
                 const fn = EdgeLogicCompiler.compile(logic);
-                node.append(nodeFactory.get(child), fn);
-                if (!mem_o.has(child)) {
-                    mem_o.set(child, false);
+                node.append(this.#nodeFactory.get(child), fn);
+                if (!this.#memoryOut.has(child)) {
+                    this.#memoryOut.set(child, false);
                 }
             }
         }
         for (const name in config.logic) {
             const logic = config.logic[name];
             const fn = EdgeLogicCompiler.compile(logic);
-            mixins.set(name, fn);
+            this.#mixins.set(name, fn);
         }
-        if (debug) {
+        if (this.#debug) {
             console.timeEnd("build time");
             console.groupEnd("GRAPH LOGIC BUILD");
         }
-        DIRTY.set(this, true);
+        this.#dirty = true;
     }
 
     setEdge(source, target, value) {
-        const debug = DEBUG.get(this);
-        const nodeFactory = NODES.get(this);
-        if (debug) {
+        if (this.#debug) {
             console.groupCollapsed("GRAPH LOGIC BUILD");
             console.time("build time");
         }
-        const node = nodeFactory.get(source);
-        const child = nodeFactory.get(target);
+        const node = this.#nodeFactory.get(source);
+        const child = this.#nodeFactory.get(target);
         if (typeof value == "undefined" || value == null) {
             node.remove(child);
-            DIRTY.set(this, true);
         } else {
             const fn = EdgeLogicCompiler.compile(value);
             node.append(child, fn);
-            DIRTY.set(this, true);
         }
-        DIRTY.set(this, true);
-        if (debug) {
+        this.#dirty = true;
+        if (this.#debug) {
             console.timeEnd("build time");
             console.groupEnd("GRAPH LOGIC BUILD");
         }
     }
 
     setMixin(name, value) {
-        const debug = DEBUG.get(this);
-        const mixins = MIXINS.get(this);
-        if (debug) {
+        if (this.#debug) {
             console.groupCollapsed("GRAPH LOGIC BUILD");
             console.time("build time");
         }
         if (typeof value == "undefined" || value == null) {
-            mixins.delete(name);
-            DIRTY.set(this, true);
+            this.#mixins.delete(name);
         } else {
             const fn = EdgeLogicCompiler.compile(value);
-            mixins.set(name, fn);
-            DIRTY.set(this, true);
+            this.#mixins.set(name, fn);
         }
-        if (debug) {
+        this.#dirty = true;
+        if (this.#debug) {
             console.timeEnd("build time");
             console.groupEnd("GRAPH LOGIC BUILD");
         }
-        DIRTY.set(this, true);
     }
 
     clearRedirects() {
-        const debug = DEBUG.get(this);
-        if (debug == "extended") {
+        if (this.#debug == "extended") {
             console.log("GRAPH LOGIC REDIRECT RESET");
         }
-        const redirectMatrix = REDIRECT_MATRIX.get(this);
-        redirectMatrix.clear();
+        this.#redirects.clear();
     }
 
     setRedirect(source, target, reroute) {
-        const debug = DEBUG.get(this);
-        if (debug == "extended") {
+        if (this.#debug == "extended") {
             console.groupCollapsed("GRAPH LOGIC REDIRECT CHANGE");
             console.log({[`${source} => ${target}`]: reroute});
             console.groupEnd("GRAPH LOGIC REDIRECT CHANGE");
         }
-        const redirectMatrix = REDIRECT_MATRIX.get(this);
         if (reroute == null) {
-            redirectMatrix.delete(`${source} => ${target}`);
+            this.#redirects.delete(`${source} => ${target}`);
         } else {
-            redirectMatrix.set(`${source} => ${target}`, `${reroute}`);
+            this.#redirects.set(`${source} => ${target}`, `${reroute}`);
         }
     }
 
     setAllRedirects(redirects) {
-        const debug = DEBUG.get(this);
-        if (debug == "extended") {
+        if (this.#debug == "extended") {
             console.groupCollapsed("GRAPH LOGIC REDIRECT CHANGE");
         }
-        const redirectMatrix = REDIRECT_MATRIX.get(this);
         for (const {source, target, reroute} of redirects) {
-            if (debug == "extended") {
+            if (this.#debug == "extended") {
                 console.log({[`${source} => ${target}`]: reroute});
             }
             if (reroute == null) {
-                redirectMatrix.delete(`${source} => ${target}`);
+                this.#redirects.delete(`${source} => ${target}`);
             } else {
-                redirectMatrix.set(`${source} => ${target}`, `${reroute}`);
+                this.#redirects.set(`${source} => ${target}`, `${reroute}`);
             }
         }
-        if (debug == "extended") {
+        if (this.#debug == "extended") {
             console.groupEnd("GRAPH LOGIC REDIRECT CHANGE");
         }
     }
 
     getRedirect(source, target) {
-        const redirectMatrix = REDIRECT_MATRIX.get(this);
-        if (redirectMatrix.has(`${source} => ${target}`)) {
-            return redirectMatrix.get(`${source} => ${target}`);
+        if (this.#redirects.has(`${source} => ${target}`)) {
+            return this.#redirects.get(`${source} => ${target}`);
         }
         return target;
     }
 
     getEdges() {
-        const nodeFactory = NODES.get(this);
-        const nodes = nodeFactory.getNames();
+        const nodes = this.#nodeFactory.getNames();
         const res = [];
         for (const name of nodes) {
-            const node = nodeFactory.get(name);
+            const node = this.#nodeFactory.get(name);
             const children = node.getTargets();
             for (const ch of children) {
                 res.push([name, ch]);
@@ -184,11 +164,10 @@ export default class LogicGraph {
     }
 
     getTargetNodes() {
-        const nodeFactory = NODES.get(this);
-        const nodes = nodeFactory.getNames();
+        const nodes = this.#nodeFactory.getNames();
         const res = new Set();
         for (const name of nodes) {
-            const node = nodeFactory.get(name);
+            const node = this.#nodeFactory.get(name);
             const children = node.getTargets();
             for (const ch of children) {
                 res.add(ch);
@@ -198,65 +177,72 @@ export default class LogicGraph {
     }
 
     addReachable(target) {
-        const forcedReachable = FORCED_REACHABLE.get(this);
-        forcedReachable.add(target);
+        this.#forcedReachables.add(target);
     }
 
     deleteReachable(target) {
-        const forcedReachable = FORCED_REACHABLE.get(this);
-        forcedReachable.delete(target);
+        this.#forcedReachables.delete(target);
     }
 
     clearReachables() {
-        const forcedReachable = FORCED_REACHABLE.get(this);
-        forcedReachable.clear();
+        this.#forcedReachables.clear();
+    }
+
+    addCollectible(target, value) {
+        this.#collectibles.set(target, value);
+    }
+
+    deleteCollectible(target) {
+        this.#collectibles.delete(target);
+    }
+
+    clearCollectibles() {
+        this.#collectibles.clear();
     }
 
     /* broad search */
     traverse(startNode) {
-        const nodeFactory = NODES.get(this);
         const allTargets = this.getTargetNodes();
         let reachableCount = 0;
         const reachableNodes = new Set();
         const changes = {};
-        const mixins = MIXINS.get(this);
-        const mem_o = MEM_O.get(this);
-        const mem_i = MEM_I.get(this);
-        const debug = DEBUG.get(this);
-        const start = nodeFactory.get(startNode);
+        const start = this.#nodeFactory.get(startNode);
+        const collected = new Map();
         if (start != null) {
-            const forcedReachable = FORCED_REACHABLE.get(this);
-            if (debug) {
-                const redirectMatrix = REDIRECT_MATRIX.get(this);
+            if (this.#debug) {
                 console.groupCollapsed("GRAPH LOGIC EXECUTION");
-                console.log("input", Object.fromEntries(mem_i));
-                console.log("redirects", Object.fromEntries(redirectMatrix));
-                console.log("forced", Array.from(forcedReachable));
+                console.log("input", Object.fromEntries(this.#memoryIn));
+                console.log("collectibles", Object.fromEntries(this.#collectibles));
+                console.log("redirects", Object.fromEntries(this.#redirects));
+                console.log("forced", Array.from(this.#forcedReachables));
                 console.log("traverse nodes...");
                 console.time("execution time");
-                if (debug == "extended") {
+                if (this.#debug == "extended") {
                     console.groupCollapsed("traversion graph");
                 }
             }
 
-            for (const name of forcedReachable) {
+            for (const name of this.#forcedReachables) {
                 reachableNodes.add(name);
             }
+
+            const collect = (key) => {
+                const value = collected.get(key) ?? this.#memoryIn.get(key) ?? 0;
+                collected.set(key, value + 1)
+            };
 
             const valueGetter = (key) => {
                 if (allTargets.has(key) && reachableNodes.has(key)) {
                     return 1;
-                } else if (mem_i.has(key)) {
-                    return mem_i.get(key);
                 }
-                return 0;
+                return collected.get(key) ?? this.#memoryIn.get(key) ?? 0;
             };
 
             const execute = (name) => {
-                if (mixins.has(name)) {
-                    const fn = mixins.get(name);
+                if (this.#mixins.has(name)) {
+                    const fn = this.#mixins.get(name);
                     const res = fn(valueGetter, execute);
-                    if (debug == "extended") {
+                    if (this.#debug == "extended") {
                         console.groupCollapsed(`execute mixin { ${name} }`);
                         console.log(fn.toString());
                         console.log(`result: ${res}`);
@@ -280,7 +266,7 @@ export default class LogicGraph {
                 while (counts--) {
                     const edge = queue.shift();
                     const condition = edge.getCondition();
-                    if (debug == "extended") {
+                    if (this.#debug == "extended") {
                         console.groupCollapsed(`traverse edge { ${edge} }`);
                         console.log(condition.toString());
                     }
@@ -288,14 +274,18 @@ export default class LogicGraph {
                     if (cRes) {
                         changed = true;
                         const name = this.getRedirect(edge.getSource().getName(), edge.getTarget().getName());
-                        if (debug == "extended") {
+                        if (this.#debug == "extended") {
                             if (name != edge.getTarget().getName()) {
                                 console.log(`redirecting edge { ${edge} } to point to { ${name} }`);
                             }
                         }
                         if (name != "") {
-                            const node = nodeFactory.get(name);
+                            const node = this.#nodeFactory.get(name);
                             reachableNodes.add(name);
+                            if (this.#collectibles.has(name)) {
+                                const collectibleName = this.#collectibles.get(name);
+                                collect(collectibleName);
+                            }
                             const targets = node.getTargets();
                             for (const ch of targets) {
                                 const chEdge = node.getEdge(ch);
@@ -308,7 +298,7 @@ export default class LogicGraph {
                     } else {
                         queue.push(edge);
                     }
-                    if (debug == "extended") {
+                    if (this.#debug == "extended") {
                         console.log(`result: ${cRes}`);
                         console.groupEnd(`traverse edge { ${edge} }`);
                         if (reachableCount != reachableNodes.size) {
@@ -320,22 +310,23 @@ export default class LogicGraph {
             }
             /* end traversion */
 
-            DIRTY.set(this, false);
+            this.#dirty = false;
             for (const ch of allTargets) {
                 const v = reachableNodes.has(ch);
-                if (mem_o.get(ch) != v) {
-                    mem_o.set(ch, v);
+                if (this.#memoryOut.get(ch) != v) {
+                    this.#memoryOut.set(ch, v);
                     changes[ch] = v;
                 }
             }
-            if (debug) {
-                if (debug == "extended") {
+            if (this.#debug) {
+                if (this.#debug == "extended") {
                     console.groupEnd("traversion graph");
                 }
                 console.log("success");
                 console.timeEnd("execution time");
                 console.log("reachable", Array.from(reachableNodes));
-                console.log("output", Object.fromEntries(mem_o));
+                console.log("output", Object.fromEntries(this.#memoryOut));
+                console.log("collected", Object.fromEntries(collected));
                 console.log("changes", changes);
                 console.groupEnd("GRAPH LOGIC EXECUTION");
             }
@@ -344,84 +335,68 @@ export default class LogicGraph {
     }
 
     set(key, value) {
-        const debug = DEBUG.get(this);
-        if (debug) {
+        if (this.#debug) {
             console.groupCollapsed("GRAPH LOGIC MEMORY CHANGE");
             console.log({[key]: value});
             console.groupEnd("GRAPH LOGIC MEMORY CHANGE");
         }
-        const mem_i = MEM_I.get(this);
-        mem_i.set(key, value);
-        DIRTY.set(this, true);
+        this.#memoryIn.set(key, value);
+        this.#dirty = true;
     }
 
     setAll(values) {
-        const debug = DEBUG.get(this);
-        if (debug) {
+        if (this.#debug) {
             console.groupCollapsed("GRAPH LOGIC MEMORY CHANGE");
         }
-        const mem_i = MEM_I.get(this);
         if (values instanceof Map) {
             for (const [k, v] of values) {
-                if (debug) {
+                if (this.#debug) {
                     console.log({[k]: v});
                 }
-                mem_i.set(k, v);
+                this.#memoryIn.set(k, v);
             }
         } else if (typeof values == "object" && !Array.isArray(values)) {
             for (const k in values) {
                 const v = values[k];
-                if (debug) {
+                if (this.#debug) {
                     console.log({[k]: v});
                 }
-                mem_i.set(k, v);
+                this.#memoryIn.set(k, v);
             }
         }
-        DIRTY.set(this, true);
-        if (debug) {
+        this.#dirty = true;
+        if (this.#debug) {
             console.groupEnd("GRAPH LOGIC MEMORY CHANGE");
         }
     }
 
     get(ref) {
-        const mem_o = MEM_O.get(this);
-        if (mem_o.has(ref)) {
-            return mem_o.get(ref);
-        }
-        return false;
+        return this.#memoryOut.get(ref) ?? false;
     }
 
     getAll() {
-        const mem_o = MEM_O.get(this);
         const obj = {};
-        for (const [k, v] of mem_o) {
+        for (const [k, v] of this.#memoryOut) {
             obj[k] = v;
         }
         return obj;
     }
 
     has(ref) {
-        const mem_o = MEM_O.get(this);
-        if (mem_o.has(ref)) {
-            return true;
-        }
-        return false;
+        return this.#memoryOut.has(ref);
     }
 
     reset() {
-        const debug = DEBUG.get(this);
-        if (debug) {
+        if (this.#debug) {
             console.log("GRAPH LOGIC MEMORY RESET");
         }
-        const mem_i = MEM_I.get(this);
-        const mem_o = MEM_O.get(this);
-        mem_i.clear();
-        mem_o.clear();
-        DIRTY.set(this, true);
+        this.#memoryIn.clear();
+        this.#memoryOut.clear();
+        this.#dirty = true;
     }
 
     isDirty() {
-        return DIRTY.get(this);
+        return this.#dirty;
     }
 
 }

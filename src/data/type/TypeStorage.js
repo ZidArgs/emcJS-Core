@@ -13,6 +13,7 @@ const REGISTER_LISTENER = new Set();
 
 const STORAGES = new Map();
 
+// TODO create custom error type including error data
 export default class TypeStorage extends EventTarget {
 
     #typeName;
@@ -22,6 +23,8 @@ export default class TypeStorage extends EventTarget {
     #changeData = new Map();
 
     #buffer = new Map();
+
+    #errorData = new Map();
 
     get size() {
         return this.#buffer.size;
@@ -55,14 +58,17 @@ export default class TypeStorage extends EventTarget {
             });
             if (validationErrors.length > 0) {
                 const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
+                this.#errorData.set(key, {value: deepClone(value), error: msg});
                 throw new Error(`Error validating value as "${this.#typeName}"\n    ${msg}`);
             }
+            this.#errorData.delete(key);
         }
         // write
         const oldValue = this.get(key);
         if (!isEqual(oldValue, value)) {
-            this.#writeChangeData(key, value);
-            this.#buffer.set(key, value);
+            const clonedValue = deepClone(value);
+            this.#writeChangeData(key, clonedValue);
+            this.#buffer.set(key, clonedValue);
             // event
             const ev = new Event("change");
             ev.data = {[key]: value};
@@ -87,15 +93,18 @@ export default class TypeStorage extends EventTarget {
                 });
                 if (validationErrors.length > 0) {
                     const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
+                    this.#errorData.set(key, {value: deepClone(newValue), error: msg});
                     allErrors.push(`Error validating value as "${this.#typeName}"\n    ${msg}`);
                     continue;
                 }
+                this.#errorData.delete(key);
             }
             // write
             const oldValue = this.get(key);
             if (!isEqual(oldValue, newValue)) {
-                this.#writeChangeData(key, newValue);
-                this.#buffer.set(key, newValue);
+                const clonedValue = deepClone(newValue);
+                this.#writeChangeData(key, clonedValue);
+                this.#buffer.set(key, clonedValue);
                 values[key] = newValue;
                 changes[key] = {oldValue, newValue};
             }
@@ -132,7 +141,7 @@ export default class TypeStorage extends EventTarget {
     delete(key) {
         const oldValue = this.#buffer.get(key);
         if (oldValue != null) {
-            this.#writeChangeData(key, null);
+            this.#writeChangeData(key);
             this.#buffer.delete(key);
             const ev = new Event("change");
             ev.data = {[key]: undefined};
@@ -179,13 +188,16 @@ export default class TypeStorage extends EventTarget {
                 });
                 if (validationErrors.length > 0) {
                     const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
+                    this.#errorData.set(key, {value: deepClone(newValue), error: msg});
                     allErrors.push(`Error validating value as "${this.#typeName}"\n    ${msg}`);
                     continue;
                 }
+                this.#errorData.delete(key);
             }
             // write
-            this.#rootData.set(key, newValue);
-            this.#buffer.set(key, newValue);
+            const clonedValue = deepClone(newValue);
+            this.#rootData.set(key, clonedValue);
+            this.#buffer.set(key, clonedValue);
         }
         // event
         const ev = new Event("load");
@@ -211,19 +223,24 @@ export default class TypeStorage extends EventTarget {
                 });
                 if (validationErrors.length > 0) {
                     const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
+                    this.#errorData.set(key, {value: deepClone(newValue), error: msg});
                     allErrors.push(`Error validating value as "${this.#typeName}"\n    ${msg}`);
                     continue;
                 }
+                this.#errorData.delete(key);
             }
             // write
             const oldValue = this.get(key);
             if (!isEqual(oldValue, newValue)) {
-                if (newValue == undefined) {
+                if (newValue == null) {
                     this.#buffer.delete(key);
+                    this.#writeChangeData(key);
                     values[key] = undefined;
                     changes[key] = {oldValue, newValue: undefined};
                 } else {
-                    this.#buffer.set(key, newValue);
+                    const clonedValue = deepClone(newValue);
+                    this.#buffer.set(key, clonedValue);
+                    this.#writeChangeData(key, clonedValue);
                     values[key] = newValue;
                     changes[key] = {oldValue, newValue};
                 }
@@ -295,7 +312,11 @@ export default class TypeStorage extends EventTarget {
 
     flushChanges() {
         for (const [key, value] of this.#changeData) {
-            this.#rootData.set(key, value);
+            if (value == null) {
+                this.#rootData.delete(key);
+            } else {
+                this.#rootData.set(key, value);
+            }
         }
         this.#changeData.clear();
     }
@@ -335,12 +356,24 @@ export default class TypeStorage extends EventTarget {
         return this.#buffer[Symbol.iterator]()
     }
 
-    #writeChangeData(key, value) {
+    #writeChangeData(key, value = null) {
         if (this.#rootData.get(key) === value) {
             this.#changeData.delete(key);
         } else {
             this.#changeData.set(key, value);
         }
+    }
+
+    getErrorData() {
+        const res = {};
+        for (const [key, {value, error}] of this.#errorData) {
+            res[key] = {value, error};
+        }
+        return res;
+    }
+
+    clearErrors() {
+        this.#errorData.clear();
     }
 
 }
