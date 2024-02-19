@@ -228,7 +228,10 @@ export default class LogicGraph {
 
             const collect = (key) => {
                 const value = collected.get(key) ?? this.#memoryIn.get(key) ?? 0;
-                collected.set(key, value + 1)
+                collected.set(key, value + 1);
+                if (this.#debug == "extended") {
+                    console.log("collected:", key);
+                }
             };
 
             const valueGetter = (key) => {
@@ -271,6 +274,9 @@ export default class LogicGraph {
                         console.log(condition.toString());
                     }
                     const cRes = condition(valueGetter, execute);
+                    if (this.#debug == "extended") {
+                        console.log(`result: ${cRes}`);
+                    }
                     if (cRes) {
                         changed = true;
                         const name = this.getRedirect(edge.getSource().getName(), edge.getTarget().getName());
@@ -299,7 +305,6 @@ export default class LogicGraph {
                         queue.push(edge);
                     }
                     if (this.#debug == "extended") {
-                        console.log(`result: ${cRes}`);
                         console.groupEnd(`traverse edge { ${edge} }`);
                         if (reachableCount != reachableNodes.size) {
                             console.log("reachable changed", Array.from(reachableNodes));
