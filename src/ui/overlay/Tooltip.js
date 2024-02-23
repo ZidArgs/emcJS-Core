@@ -2,6 +2,9 @@ import CustomElement from "../element/CustomElement.js";
 import TPL from "./Tooltip.js.html" assert {type: "html"};
 import STYLE from "./Tooltip.js.css" assert {type: "css"};
 
+/**
+ * @deprecated
+ */
 export default class Tooltip extends CustomElement {
 
     constructor() {

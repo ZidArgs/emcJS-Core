@@ -1,4 +1,5 @@
 :host {
+    --tooltip-scale: 1;
     position: absolute;
     display: none;
     padding: 5px;
@@ -11,42 +12,50 @@
 :host([position="topleft"]) {
     right: 100%;
     bottom: 100%;
-    transform: translate(-2px, -2px);
+    transform-origin: calc(100% + 4px) calc(100% + 4px);
+    transform: translate(-4px, -4px) scale(var(--tooltip-scale, 1));
 }
 :host([position="top"]) {
     left: 50%;
     bottom: 100%;
-    transform: translate(-50%, -10px);
+    transform-origin: center calc(100% + 10px);
+    transform: translate(-50%, -10px) scale(var(--tooltip-scale, 1));
 }
 :host([position="topright"]) {
     left: 100%;
     bottom: 100%;
-    transform: translate(2px, -2px);
+    transform-origin: calc(100% + 4px) -4px;
+    transform: translate(4px, -4px) scale(var(--tooltip-scale, 1));
 }
 :host([position="right"]) {
     left: 100%;
     top: 50%;
-    transform: translate(10px, -50%);
+    transform-origin: -10px center;
+    transform: translate(10px, -50%) scale(var(--tooltip-scale, 1));
 }
 :host([position="bottomright"]) {
     left: 100%;
     top: 100%;
-    transform: translate(2px, 2px);
+    transform-origin: -4px -4px;
+    transform: translate(4px, 4px) scale(var(--tooltip-scale, 1));
 }
 :host([position="bottom"]) {
     left: 50%;
     top: 100%;
-    transform: translate(-50%, 10px);
+    transform-origin: center -10px;
+    transform: translate(-50%, 10px) scale(var(--tooltip-scale, 1));
 }
 :host([position="bottomleft"]) {
     right: 100%;
     top: 100%;
-    transform: translate(-2px, 2px);
+    transform-origin: calc(100% + 4px) -4px;
+    transform: translate(-4px, 4px) scale(var(--tooltip-scale, 1));
 }
 :host([position="left"]) {
     right: 100%;
     top: 50%;
-    transform: translate(-10px, -50%);
+    transform-origin: calc(100% + 10px) center;
+    transform: translate(-10px, -50%) scale(var(--tooltip-scale, 1));
 }
 :host::after {
     position: absolute;
