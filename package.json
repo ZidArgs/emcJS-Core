@@ -12,7 +12,7 @@
   "homepage": "https://bitbucket.org/zidargs/emcjs/src",
   "dependencies": {},
   "devDependencies": {
-    "webservice": "git+https://bitbucket.org/zidargs/webservice.git/@1.4.4",
+    "webservice": "git+https://bitbucket.org/zidargs/webservice.git/#2.0.0",
     "@babel/core": "^7.16.10",
     "@babel/eslint-parser": "^7.16.5",
     "@babel/plugin-syntax-import-assertions": "^7.17.12",
