@@ -44,7 +44,7 @@ class INI {
             const group = input[""];
             for (const key in group) {
                 if (key.includes("=")) {
-                    throw new Error(`keys can not contain "=" [ "{empty}" -> "${key}" ]`);
+                    throw new Error(`keys can not contain "=" [ "" -> "${key}" ]`);
                 }
                 const value = group[key];
                 lines.push(`${key}=${value}`);
@@ -59,7 +59,7 @@ class INI {
             const group = input[groupName];
             for (const key in group) {
                 if (key.includes("=")) {
-                    throw new Error(`keys can not contain "=" [ "{empty}" -> "${key}" ]`);
+                    throw new Error(`keys can not contain "=" [ "${groupName}" -> "${key}" ]`);
                 }
                 const value = group[key];
                 lines.push(`${key}=${value}`);

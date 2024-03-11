@@ -6,21 +6,9 @@ import through from "through";
 const LNBR_SEQ = /(?:\r\n|\n|\r)/g
 const EXTRACTORS = [
     {
-        regEx: /@base:\s*(.+)\s*/,
+        regEx: /@([^:]+):\s*(.+)\s*/,
         func: (result, matches) => {
-            result["base"] = matches[1];
-        }
-    },
-    {
-        regEx: /@label:\s*(.+)\s*/,
-        func: (result, matches) => {
-            result["label"] = matches[1];
-        }
-    },
-    {
-        regEx: /@author:\s*(.+)\s*/,
-        func: (result, matches) => {
-            result["author"] = matches[1];
+            result[matches[1]] = matches[2];
         }
     },
     {

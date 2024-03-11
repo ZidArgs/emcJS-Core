@@ -32,15 +32,39 @@ export function isEmpty(value) {
     return false;
 }
 
+export function isBoolean(value) {
+    return typeof value === "boolean";
+}
+
+export function isNumber(value) {
+    return typeof value === "number";
+}
+
+export function isNumberNotNaN(value) {
+    return typeof value === "number" && !isNaN(value);
+}
+
+export function isString(value) {
+    return typeof value === "string";
+}
+
 export function isStringNotEmpty(value) {
     return typeof value === "string" && value !== "";
 }
 
 export function isDict(value) {
-    if (typeof value === "object" && !Array.isArray(value)) {
+    if (typeof value === "object" && !isNull(value) && !Array.isArray(value)) {
         return value.constructor === Object;
     }
     return false;
+}
+
+export function isArray(value) {
+    return Array.isArray(value);
+}
+
+export function isFunction(value) {
+    return typeof value === "function";
 }
 
 export function isColorString(value) {

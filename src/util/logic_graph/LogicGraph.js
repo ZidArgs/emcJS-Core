@@ -236,9 +236,16 @@ export default class LogicGraph {
 
             const valueGetter = (key) => {
                 if (allTargets.has(key) && reachableNodes.has(key)) {
+                    if (this.#debug == "extended") {
+                        console.log(`get value for { ${key} } - reached`);
+                    }
                     return 1;
                 }
-                return collected.get(key) ?? this.#memoryIn.get(key) ?? 0;
+                const result = collected.get(key) ?? this.#memoryIn.get(key) ?? 0;
+                if (this.#debug == "extended") {
+                    console.log(`get value for { ${key} } - ${result}`);
+                }
+                return result;
             };
 
             const execute = (name) => {
