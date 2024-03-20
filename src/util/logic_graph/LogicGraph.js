@@ -208,15 +208,16 @@ export default class LogicGraph {
         const changes = {};
         const start = this.#nodeFactory.get(startNode);
         const collected = new Map();
+        let logicCalculationCounter = 0;
+        console.group("GRAPH LOGIC EXECUTION");
+        console.time("execution time");
         if (start != null) {
             if (this.#debug) {
-                console.groupCollapsed("GRAPH LOGIC EXECUTION");
                 console.log("input", Object.fromEntries(this.#memoryIn));
                 console.log("collectibles", Object.fromEntries(this.#collectibles));
                 console.log("redirects", Object.fromEntries(this.#redirects));
                 console.log("forced", Array.from(this.#forcedReachables));
                 console.log("traverse nodes...");
-                console.time("execution time");
                 if (this.#debug == "extended") {
                     console.groupCollapsed("traversion graph");
                 }
@@ -280,13 +281,23 @@ export default class LogicGraph {
                         console.groupCollapsed(`traverse edge { ${edge} }`);
                         console.log(condition.toString());
                     }
+                    const name = this.getRedirect(edge.getSource().getName(), edge.getTarget().getName());
+                    if (reachableNodes.has(name)) {
+                        if (this.#debug) {
+                            if (this.#debug == "extended") {
+                                console.groupEnd(`traverse edge { ${edge} }`);
+                            }
+                            console.log(`already reached node { ${name} }`);
+                        }
+                        continue;
+                    }
                     const cRes = condition(valueGetter, execute);
+                    logicCalculationCounter++;
                     if (this.#debug == "extended") {
                         console.log(`result: ${cRes}`);
                     }
                     if (cRes) {
                         changed = true;
-                        const name = this.getRedirect(edge.getSource().getName(), edge.getTarget().getName());
                         if (this.#debug == "extended") {
                             if (name != edge.getTarget().getName()) {
                                 console.log(`redirecting edge { ${edge} } to point to { ${name} }`);
@@ -305,16 +316,25 @@ export default class LogicGraph {
                                 const chName = this.getRedirect(chEdge.getSource().getName(), chEdge.getTarget().getName());
                                 if (!reachableNodes.has(chName)) {
                                     queue.push(chEdge);
+                                    if (this.#debug == "extended") {
+                                        console.log(`adding edge { ${chEdge} } to queue`);
+                                    }
                                 }
                             }
                         }
                     } else {
                         queue.push(edge);
+                        if (this.#debug == "extended") {
+                            console.log(`adding unchanged edge { ${edge} } back to queue`);
+                        }
                     }
                     if (this.#debug == "extended") {
                         console.groupEnd(`traverse edge { ${edge} }`);
                         if (reachableCount != reachableNodes.size) {
                             console.log("reachable changed", Array.from(reachableNodes));
+                        }
+                        if (reachableCount != reachableNodes.size) {
+                            console.log("current queue", queue.map((edge) => edge.toString()));
                         }
                     }
                     reachableCount = reachableNodes.size;
@@ -335,13 +355,14 @@ export default class LogicGraph {
                     console.groupEnd("traversion graph");
                 }
                 console.log("success");
-                console.timeEnd("execution time");
                 console.log("reachable", Array.from(reachableNodes));
                 console.log("output", Object.fromEntries(this.#memoryOut));
                 console.log("collected", Object.fromEntries(collected));
                 console.log("changes", changes);
-                console.groupEnd("GRAPH LOGIC EXECUTION");
             }
+            console.log("logic calculation count", logicCalculationCounter);
+            console.timeEnd("execution time");
+            console.groupEnd("GRAPH LOGIC EXECUTION");
         }
         return changes;
     }
