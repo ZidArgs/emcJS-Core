@@ -1,5 +1,6 @@
 import NodeFactory from "./NodeFactory.js";
 import EdgeLogicCompiler from "./EdgeLogicCompiler.js";
+import UniqueQueue from "../../data/collection/UniqueQueue.js";
 
 export default class LogicGraph {
 
@@ -265,17 +266,17 @@ export default class LogicGraph {
             };
 
             /* start traversion */
-            const queue = [];
+            const queue = new UniqueQueue();
             for (const ch of start.getTargets()) {
                 const edge = start.getEdge(ch);
-                queue.push(edge);
+                queue.enqueue(edge);
             }
             let changed = true;
             while (!!queue.length && !!changed) {
                 changed = false;
                 let counts = queue.length;
                 while (counts--) {
-                    const edge = queue.shift();
+                    const edge = queue.dequeue();
                     const condition = edge.getCondition();
                     if (this.#debug == "extended") {
                         console.groupCollapsed(`traverse edge { ${edge} }`);
@@ -315,7 +316,7 @@ export default class LogicGraph {
                                 const chEdge = node.getEdge(ch);
                                 const chName = this.getRedirect(chEdge.getSource().getName(), chEdge.getTarget().getName());
                                 if (!reachableNodes.has(chName)) {
-                                    queue.push(chEdge);
+                                    queue.enqueue(chEdge);
                                     if (this.#debug == "extended") {
                                         console.log(`adding edge { ${chEdge} } to queue`);
                                     }
@@ -323,7 +324,7 @@ export default class LogicGraph {
                             }
                         }
                     } else {
-                        queue.push(edge);
+                        queue.enqueue(edge);
                         if (this.#debug == "extended") {
                             console.log(`adding unchanged edge { ${edge} } back to queue`);
                         }
