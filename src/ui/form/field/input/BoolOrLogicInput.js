@@ -154,14 +154,17 @@ export default class BoolOrLogicInput extends AbstractFormInput {
 
     #applyValueAttribute(value) {
         if (typeof value === "object") {
-            this.#inputEl.setAttribute("value", "logic");
+            this.#inputEl.value = "logic";
+            this.#logicEl.classList.add("active");
             safeSetAttribute(this.#logicEl, "value", value);
         } else if (value === false) {
-            this.#inputEl.setAttribute("value", "false");
-            this.#logicEl.removeAttribute("value");
+            this.#inputEl.value = "false";
+            this.#logicEl.classList.remove("active");
+            this.#logicEl.value = null;
         } else {
-            this.#inputEl.setAttribute("value", "true");
-            this.#logicEl.removeAttribute("value");
+            this.#inputEl.value = "true";
+            this.#logicEl.classList.remove("active");
+            this.#logicEl.value = null;
         }
     }
 

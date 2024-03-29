@@ -67,7 +67,7 @@ export default class ObservableStorage extends EventTarget {
     }
 
     get(key) {
-        return deepClone(this.#buffer.get(key) ?? this.getDefault());
+        return deepClone(this.#buffer.get(key) ?? this.getDefault(key));
     }
 
     getAll() {

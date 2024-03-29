@@ -185,6 +185,14 @@ export default class SettingsWindow extends Window {
         }
     }
 
+    addCustomInput(category, inputEl, ref, label, desc, def, visible, resettable) {
+        const tabEl = this.getTab(category);
+        if (tabEl != null) {
+            this.#storage.setDefault(ref, def);
+            tabEl.addCustomInput(inputEl, this.#storage, ref, this.constructor.getLabel(label), desc, visible, resettable);
+        }
+    }
+
     addElements(category, content) {
         const tabEl = this.getTab(category);
         if (tabEl != null) {

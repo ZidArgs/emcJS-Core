@@ -431,6 +431,34 @@ export default class SettingsTabContent extends CustomElement {
         containerEl.append(labelEl);
     }
 
+    addCustomInput(inputEl, storage, ref, label, desc, visible, resettable) {
+        inputEl.id = `${this.id}_${ref}`;
+        inputEl.className = "settings-input";
+        inputEl.setAttribute("type", "custom");
+        inputEl.value = storage.get(ref);
+        inputEl.dataset.ref = ref;
+        // events
+        storage.addEventListener("clear", (event) => {
+            inputEl.value = event.data[ref];
+        });
+        storage.addEventListener("load", (event) => {
+            inputEl.value = event.data[ref];
+        });
+        storage.addEventListener("change", (event) => {
+            if (event.data[ref] != null) {
+                inputEl.value = event.data[ref];
+            }
+        });
+        inputEl.addEventListener("change", () => {
+            storage.set(ref, inputEl.value);
+        });
+        // add element
+        const resetEl = resettable && createResetButton(storage, ref);
+        const labelEl = generateField(label, desc, inputEl, storage, visible, resetEl);
+        const containerEl = this.shadowRoot.getElementById("container");
+        containerEl.append(labelEl);
+    }
+
     addElements(content) {
         // add element
         const containerEl = this.shadowRoot.getElementById("container");
