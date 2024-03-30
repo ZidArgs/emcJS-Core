@@ -42,6 +42,11 @@
     --modal-icon-prompt-color: #01ada4;
     --modal-icon-error-color: #c50000;
 
+    /* === tooltip === */
+    --tooltip-text-color: var(--page-text-color, #000000);
+    --tooltip-back-color: var(--page-back-color, #ffffff);
+    --tooltip-border-color: var(--page-border-color, #000000);
+
     /* === panel === */
     --panel-text-color: var(--page-text-color, #000000);
     --panel-back-color: var(--page-back-color, #ffffff);

@@ -3,9 +3,10 @@
     position: absolute;
     display: none;
     padding: 5px;
-    background-color: black;
+    color: var(--tooltip-text-color, #000000);
+    background-color: var(--tooltip-back-color, #ffffff);
     border-radius: 4px;
-    box-shadow: 0 0 0 2px white;
+    box-shadow: 0 0 0 2px var(--tooltip-border-color, #000000);
     pointer-events: none;
     z-index: 900800;
 }
@@ -24,7 +25,7 @@
 :host([position="topright"]) {
     left: 100%;
     bottom: 100%;
-    transform-origin: calc(100% + 4px) -4px;
+    transform-origin: -4px calc(100% + 4px);
     transform: translate(4px, -4px) scale(var(--tooltip-scale, 1));
 }
 :host([position="right"]) {
@@ -62,8 +63,8 @@
     display: block;
     border-width: 5px;
     border-style: solid;
-    border-color: transparent black black transparent;
-    box-shadow: 2px 2px 0 white;
+    border-color: transparent var(--tooltip-back-color, #ffffff) var(--tooltip-back-color, #ffffff) transparent;
+    box-shadow: 2px 2px 0 var(--tooltip-border-color, #000000);
     content: " ";
 }
 :host([position="topleft"])::after {

@@ -2,6 +2,9 @@
     "test": {
         "label": "Test"
     },
+    "tooltip": {
+        "label": "Tooltip"
+    },
     "form": {
         "label": "Form",
         "children": {
