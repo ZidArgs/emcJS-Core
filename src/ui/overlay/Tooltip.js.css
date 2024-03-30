@@ -64,7 +64,7 @@
     border-width: 5px;
     border-style: solid;
     border-color: transparent var(--tooltip-back-color, #ffffff) var(--tooltip-back-color, #ffffff) transparent;
-    box-shadow: 2px 2px 0 var(--tooltip-border-color, #000000);
+    box-shadow: 2px 2px 0px -1px var(--tooltip-border-color, #000000);
     content: " ";
 }
 :host([position="topleft"])::after {
