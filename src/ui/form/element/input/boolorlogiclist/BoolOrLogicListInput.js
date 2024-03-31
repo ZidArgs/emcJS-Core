@@ -6,7 +6,7 @@ import {
 import {
     debounce
 } from "../../../../../util/Debouncer.js";
-import SimpleDataProvider from "../../../../../util/grid/provider/SimpleDataProvider.js";
+import SimpleDataProvider from "../../../../../util/dataprovider/SimpleDataProvider.js";
 import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
 import LogicElementModal from "../logic/components/modal/LogicElementModal.js";
 import "../search/SearchInput.js";

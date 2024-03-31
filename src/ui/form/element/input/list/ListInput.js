@@ -2,7 +2,7 @@ import CustomFormElementDelegating from "../../../../element/CustomFormElementDe
 import {
     isEqual
 } from "../../../../../util/helper/Comparator.js";
-import SimpleDataProvider from "../../../../../util/grid/provider/SimpleDataProvider.js";
+import SimpleDataProvider from "../../../../../util/dataprovider/SimpleDataProvider.js";
 import ModalDialog from "../../../../modal/ModalDialog.js";
 import "../search/SearchInput.js";
 import "../../../button/Button.js";

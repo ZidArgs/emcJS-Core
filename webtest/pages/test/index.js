@@ -7,6 +7,7 @@ import TypeValidator from "/emcJS/util/type/TypeValidator.js";
 import Logger from "/emcJS/util/log/Logger.js";
 import i18n from "/emcJS/util/I18n.js";
 import OptionGroupRegistry from "/emcJS/data/registry/form/OptionGroupRegistry.js";
+import RemoteDataProvider from "/emcJS/util/dataprovider/RemoteDataProvider.js";
 
 (new OptionGroupRegistry("ImageSelect")).setAll({
     "": "",
@@ -118,6 +119,9 @@ grid2El.setData([
         G: new Date()
     }
 ]);
+
+const gridRemoteEl = document.getElementById("grid-remote");
+new RemoteDataProvider(gridRemoteEl, "/api/data");
 
 TypeConfigMap.register("Coordinates", {
     "parameters": {},

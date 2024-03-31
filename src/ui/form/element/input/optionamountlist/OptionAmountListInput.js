@@ -6,7 +6,7 @@ import {
 import {
     isEqual
 } from "../../../../../util/helper/Comparator.js";
-import SimpleDataProvider from "../../../../../util/grid/provider/SimpleDataProvider.js";
+import SimpleDataProvider from "../../../../../util/dataprovider/SimpleDataProvider.js";
 import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
 import "../search/SearchInput.js";
 import "../../../../grid/DataGrid.js";

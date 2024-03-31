@@ -1,15 +1,15 @@
 import {
     deepClone
-} from "../../helper/DeepClone.js";
+} from "../helper/DeepClone.js";
 import {
     isEqual
-} from "../../helper/Comparator.js";
+} from "../helper/Comparator.js";
 import {
     debounce
-} from "../../Debouncer.js";
-import EventTargetManager from "../../event/EventTargetManager.js";
-import DataGrid from "../../../ui/grid/DataGrid.js";
-import PaginationToolbar from "../../../ui/grid/components/pagination/PaginationToolbar.js";
+} from "../Debouncer.js";
+import EventTargetManager from "../event/EventTargetManager.js";
+import PaginationToolbar from "../../ui/grid/components/pagination/PaginationToolbar.js";
+import DataRecieverMixin from "./DataRecieverMixin.js";
 
 const DEFAULT_OPTIONS = {sort: [], page: 0, pageSize: 0, filter: {}, filterFunction: false};
 
@@ -23,20 +23,20 @@ export default class AbstractDataProvider {
 
     #data;
 
-    #gridEl;
+    #recieveer;
 
     #paginationEl;
 
     #paginationEventManager = new EventTargetManager();
 
-    constructor(grid) {
+    constructor(recieveer) {
         if (new.target === AbstractDataProvider) {
             throw new Error("can not construct abstract class");
         }
-        if (!(grid instanceof DataGrid)) {
-            throw new Error("target must be an instance of DataGrid");
+        if (!(recieveer instanceof DataRecieverMixin)) {
+            throw new Error("target must extend DataRecieverMixin");
         }
-        this.#gridEl = grid;
+        this.#recieveer = recieveer;
         this.triggerUpdate();
         /* --- */
         this.#paginationEventManager.set("page", (event) => {
@@ -120,7 +120,7 @@ export default class AbstractDataProvider {
 
     triggerUpdate = debounce(async () => {
         this.#data = await this.getData(this.#options);
-        this.#gridEl.setData(this.#data);
+        this.#recieveer.setData(this.#data);
         this.#updatePaginationEl();
     });
 

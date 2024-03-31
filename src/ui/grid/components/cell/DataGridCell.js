@@ -136,7 +136,7 @@ export default class DataGridCell extends CustomElementDelegating {
             const CellClass = CELL_TYPES.get(name);
             return new CellClass(internalDataGridId);
         }
-        return new DataGridCell();
+        return new DataGridCell(internalDataGridId);
     }
 
     static isCellType(name, cellEl) {

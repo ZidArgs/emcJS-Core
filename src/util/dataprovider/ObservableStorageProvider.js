@@ -1,14 +1,17 @@
-import TypeStorage from "../../../data/type/TypeStorage.js";
-import EventTargetManager from "../../event/EventTargetManager.js";
+import ObservableStorage from "../../data/storage/observable/ObservableStorage.js";
+import EventTargetManager from "../event/EventTargetManager.js";
+import {
+    deepClone
+} from "../helper/DeepClone.js";
 import {
     numberedStringComparator
-} from "../../helper/Comparator.js";
-import CharacterSearch from "../../search/CharacterSearch.js";
+} from "../helper/Comparator.js";
+import CharacterSearch from "../search/CharacterSearch.js";
 import AbstractDataProvider from "./AbstractDataProvider.js";
 
 const SORT_PATTERN = /^(!?)(.+)$/;
 
-export default class TypeStorageReferenceProvider extends AbstractDataProvider {
+export default class ObservableStorageProvider extends AbstractDataProvider {
 
     #resultSize = 0;
 
@@ -18,8 +21,8 @@ export default class TypeStorageReferenceProvider extends AbstractDataProvider {
 
     constructor(target, source) {
         super(target);
-        if (source != null && !(source instanceof TypeStorage)) {
-            throw new Error("source must be a TypeStorage");
+        if (source != null && !(source instanceof ObservableStorage)) {
+            throw new Error("source must be a ObservableStorage");
         }
         /* --- */
         this.#eventManager.set(["change", "clear", "load"], () => {
@@ -37,8 +40,8 @@ export default class TypeStorageReferenceProvider extends AbstractDataProvider {
     }
 
     setSource(source) {
-        if (source != null && !(source instanceof TypeStorage)) {
-            throw new Error("source must be a TypeStorage");
+        if (!(source != null && source instanceof ObservableStorage)) {
+            throw new Error("source must be a ObservableStorage");
         }
         this.#source = source;
         if (source != null) {
@@ -53,21 +56,15 @@ export default class TypeStorageReferenceProvider extends AbstractDataProvider {
         }
 
         const {sort = [], page = 0, pageSize = 0, filter = {}, filterFunction = false} = options;
-        const typeName = this.#source.typeName;
 
         const convertedFilter = Object.entries(filter).map(([key, value]) => {
             return [key, new CharacterSearch(value)];
         });
 
-        const result = [...this.#source.keys()].map((key) => {
+        const result = [...this.#source.keys()].map(([key, value]) => {
             return {
-                name: `${key}\n[${typeName}]`,
-                entityType: typeName,
-                entityName: key,
-                entity: {
-                    type: typeName,
-                    name: key
-                }
+                ...deepClone(value),
+                name: key
             }
         }).filter((record) => {
             if (typeof record !== "object") {

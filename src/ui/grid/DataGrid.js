@@ -16,6 +16,7 @@ import {
 } from "../../util/helper/ui/NodeAttributes.js";
 import BusyIndicatorManager from "../../util/BusyIndicatorManager.js";
 import MutationObserverManager from "../../util/observer/MutationObserverManager.js";
+import DataRecieverMixin from "../../util/dataprovider/DataRecieverMixin.js";
 import HeaderManager from "./manager/HeaderManager.js";
 import RowManager from "./manager/RowManager.js";
 import ResizeObserverMixin from "../mixin/ResizeObserverMixin.js";
@@ -43,7 +44,7 @@ function getStyleLengthValue(type, value) {
     return 200;
 }
 
-export default class DataGrid extends ResizeObserverMixin(CustomElement) {
+export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(CustomElement)) {
 
     #internalId = appUID("data-grid");
 

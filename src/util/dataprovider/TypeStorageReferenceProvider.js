@@ -1,17 +1,14 @@
-import TypeStorage from "../../../data/type/TypeStorage.js";
-import EventTargetManager from "../../event/EventTargetManager.js";
-import {
-    deepClone
-} from "../../helper/DeepClone.js";
+import TypeStorage from "../../data/type/TypeStorage.js";
+import EventTargetManager from "../event/EventTargetManager.js";
 import {
     numberedStringComparator
-} from "../../helper/Comparator.js";
-import CharacterSearch from "../../search/CharacterSearch.js";
+} from "../helper/Comparator.js";
+import CharacterSearch from "../search/CharacterSearch.js";
 import AbstractDataProvider from "./AbstractDataProvider.js";
 
 const SORT_PATTERN = /^(!?)(.+)$/;
 
-export default class TypeStorageProvider extends AbstractDataProvider {
+export default class TypeStorageReferenceProvider extends AbstractDataProvider {
 
     #resultSize = 0;
 
@@ -22,7 +19,7 @@ export default class TypeStorageProvider extends AbstractDataProvider {
     constructor(target, source) {
         super(target);
         if (source != null && !(source instanceof TypeStorage)) {
-            throw new Error("source must be a ObservableStorage");
+            throw new Error("source must be a TypeStorage");
         }
         /* --- */
         this.#eventManager.set(["change", "clear", "load"], () => {
@@ -62,9 +59,8 @@ export default class TypeStorageProvider extends AbstractDataProvider {
             return [key, new CharacterSearch(value)];
         });
 
-        const result = [...this.#source.keys()].map(([key, value]) => {
+        const result = [...this.#source.keys()].map((key) => {
             return {
-                ...deepClone(value),
                 name: `${key}\n[${typeName}]`,
                 entityType: typeName,
                 entityName: key,

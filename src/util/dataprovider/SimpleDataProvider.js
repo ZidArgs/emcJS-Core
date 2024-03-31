@@ -1,37 +1,27 @@
-import ObservableStorage from "../../../data/storage/observable/ObservableStorage.js";
-import EventTargetManager from "../../event/EventTargetManager.js";
 import {
     deepClone
-} from "../../helper/DeepClone.js";
+} from "../helper/DeepClone.js";
 import {
     numberedStringComparator
-} from "../../helper/Comparator.js";
-import CharacterSearch from "../../search/CharacterSearch.js";
+} from "../helper/Comparator.js";
+import CharacterSearch from "../search/CharacterSearch.js";
 import AbstractDataProvider from "./AbstractDataProvider.js";
 
 const SORT_PATTERN = /^(!?)(.+)$/;
 
-export default class ObservableStorageProvider extends AbstractDataProvider {
+export default class SimpleDataProvider extends AbstractDataProvider {
 
     #resultSize = 0;
 
-    #source;
-
-    #eventManager = new EventTargetManager();
+    #source = [];
 
     constructor(target, source) {
         super(target);
-        if (source != null && !(source instanceof ObservableStorage)) {
-            throw new Error("source must be a ObservableStorage");
-        }
-        /* --- */
-        this.#eventManager.set(["change", "clear", "load"], () => {
-            this.triggerUpdate();
-        });
-        /* --- */
-        this.#source = source;
         if (source != null) {
-            this.#eventManager.switchTarget(source);
+            if (!Array.isArray(source)) {
+                throw new Error("source must be an Array or null");
+            }
+            this.#source = deepClone(source);
         }
     }
 
@@ -39,14 +29,11 @@ export default class ObservableStorageProvider extends AbstractDataProvider {
         return this.#resultSize;
     }
 
-    setSource(source) {
-        if (!(source != null && source instanceof ObservableStorage)) {
-            throw new Error("source must be a ObservableStorage");
+    setSource(source = []) {
+        if (!Array.isArray(source)) {
+            throw new Error("source must be an Array");
         }
-        this.#source = source;
-        if (source != null) {
-            this.#eventManager.switchTarget(source);
-        }
+        this.#source = deepClone(source);
         this.triggerUpdate();
     }
 
@@ -61,11 +48,8 @@ export default class ObservableStorageProvider extends AbstractDataProvider {
             return [key, new CharacterSearch(value)];
         });
 
-        const result = [...this.#source.keys()].map(([key, value]) => {
-            return {
-                ...deepClone(value),
-                name: key
-            }
+        const result = this.#source.map((record) => {
+            return deepClone(record);
         }).filter((record) => {
             if (typeof record !== "object") {
                 throw new Error("source contained non object value");

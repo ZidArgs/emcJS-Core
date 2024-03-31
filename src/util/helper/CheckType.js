@@ -79,3 +79,27 @@ export function isJSON(input) {
     }
     return true;
 }
+
+export function isUrl(input) {
+    if (typeof input !== "string") {
+        return false;
+    }
+    try {
+        new URL(input, self.location.origin);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+export function isHttpUrl(input) {
+    if (typeof input !== "string") {
+        return false;
+    }
+    try {
+        const url = new URL(input, self.location.origin);
+        return url.protocol === "http:" || url.protocol === "https:";
+    } catch {
+        return false;
+    }
+}

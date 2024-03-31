@@ -7,7 +7,7 @@ import {
     debounce
 } from "../../../../../util/Debouncer.js";
 import ElementListCache from "../../../../../util/html/ElementListCache.js";
-import SimpleDataProvider from "../../../../../util/grid/provider/SimpleDataProvider.js";
+import SimpleDataProvider from "../../../../../util/dataprovider/SimpleDataProvider.js";
 import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
 import "../../input/search/SearchInput.js";
 import "../../../../grid/DataGrid.js";
