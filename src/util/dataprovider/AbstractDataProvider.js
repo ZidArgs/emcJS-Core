@@ -23,7 +23,7 @@ export default class AbstractDataProvider {
 
     #data;
 
-    #recieveer;
+    #reciever;
 
     #paginationEl;
 
@@ -36,7 +36,7 @@ export default class AbstractDataProvider {
         if (!(recieveer instanceof DataRecieverMixin)) {
             throw new Error("target must extend DataRecieverMixin");
         }
-        this.#recieveer = recieveer;
+        this.#reciever = recieveer;
         this.triggerUpdate();
         /* --- */
         this.#paginationEventManager.set("page", (event) => {
@@ -120,7 +120,7 @@ export default class AbstractDataProvider {
 
     triggerUpdate = debounce(async () => {
         this.#data = await this.getData(this.#options);
-        this.#recieveer.setData(this.#data);
+        this.#reciever.setData(this.#data);
         this.#updatePaginationEl();
     });
 

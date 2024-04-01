@@ -4,7 +4,8 @@ import {
 
 export default createMixin((superclass) => class DataRecieverMixin extends superclass {
 
-    setData(/* data */) {}
+    // eslint-disable-next-line no-unused-vars
+    setData(data) {}
 
 });
 

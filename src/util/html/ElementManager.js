@@ -190,18 +190,12 @@ export default class ElementManager {
     }
 
     // eslint-disable-next-line no-unused-vars
-    composer(key, options, ...args) {
-        // ignore
-    }
+    composer(key, options, ...args) {}
 
     // eslint-disable-next-line no-unused-vars
-    mutator(el, key, options, ...args) {
-        // ignore
-    }
+    mutator(el, key, options, ...args) {}
 
     // eslint-disable-next-line no-unused-vars
-    cleanup(el, key, ...args) {
-        // ignore
-    }
+    cleanup(el, key, ...args) {}
 
 }
