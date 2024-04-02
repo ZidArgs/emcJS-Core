@@ -53,6 +53,8 @@ function analyzeFile(sourcePath, src = "/", dest = "/", target = "/", fileConten
 
 class ImportAnalyzer {
 
+    #reportImport = false;
+
     register(src, dest, target) {
         const transformStream = new Transform({objectMode: true});
         transformStream._transform = function(file, encoding, callback) {
@@ -88,12 +90,18 @@ class ImportAnalyzer {
         for (const [file, imports] of allImports) {
             importTree[file] = Array.from(imports);
         }
-        fs.writeFileSync(path.resolve("import_tree.json"), JSON.stringify(importTree, null, 4));
+        if (this.#reportImport) {
+            fs.writeFileSync(path.resolve("import_tree.json"), JSON.stringify(importTree, null, 4));
+        }
         // calculate
         const result = this.#calculateUsedImports(...filePaths);
         if (result.size) {
             return result;
         }
+    }
+
+    reportImport(value) {
+        this.#reportImport = !!value;
     }
 
 }

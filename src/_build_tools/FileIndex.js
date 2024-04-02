@@ -38,7 +38,8 @@ class FileIndex {
         const {
             usedImports = null,
             ignoreImportPaths = null,
-            deleteUnused = true
+            deleteUnused = true,
+            reportRemoved = false
         } = config;
         const indexPath = path.resolve(dest, index);
         const indexPathNormal = normalizePath(indexPath);
@@ -79,7 +80,9 @@ class FileIndex {
         files.push("/");
         console.log("write new index");
         fs.writeFileSync(indexPath, JSON.stringify(files, null, 4));
-        fs.writeFileSync(path.resolve("import_removed.json"), JSON.stringify(removedImports.sort(), null, 4));
+        if (reportRemoved) {
+            fs.writeFileSync(path.resolve("import_removed.json"), JSON.stringify(removedImports.sort(), null, 4));
+        }
         return indexPath;
     }
 
