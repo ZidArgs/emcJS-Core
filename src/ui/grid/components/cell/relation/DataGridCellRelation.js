@@ -108,7 +108,7 @@ export default class DataGridCellRelation extends DataGridCell {
             value,
             action: this.action,
             columnName: this.columnName,
-            rowName: this.rowName
+            rowKey: this.rowKey
         };
         this.dispatchEvent(ev);
     }, 300);

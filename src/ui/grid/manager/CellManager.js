@@ -21,7 +21,7 @@ export default class CellManager {
 
     #target;
 
-    #rowName;
+    #rowKey;
 
     #elements = new Map();
 
@@ -57,7 +57,7 @@ export default class CellManager {
             const ev = new Event("selection", {bubbles: true, cancelable: true});
             ev.data = {
                 value: this.#selectCheckboxEl.checked,
-                rowName: this.#rowName
+                rowKey: this.#rowKey
             };
             this.#selectCheckboxEl.dispatchEvent(ev);
         });
@@ -85,9 +85,9 @@ export default class CellManager {
 
         const unused = new Set(this.#elements.keys());
         const newOrder = [];
-        this.#rowName = rowData.name;
-        if (typeof this.#rowName !== "string") {
-            throw new TypeError("row name must be a string");
+        this.#rowKey = rowData.key;
+        if (typeof this.#rowKey !== "string") {
+            throw new TypeError("row key must be a string");
         }
 
         for (const index in columnDefinition) {
@@ -107,13 +107,13 @@ export default class CellManager {
             newOrder.push(name);
 
             if (!this.#elements.has(name)) {
-                const cellEl = this.composer(name, this.#rowName, type, columnData, value, rowData);
+                const cellEl = this.composer(name, this.#rowKey, type, columnData, value, rowData);
                 if (cellEl != null) {
                     cellEl.setAttribute("col-name", name);
-                    cellEl.setAttribute("row-name", this.#rowName);
+                    cellEl.setAttribute("row-key", this.#rowKey);
                     this.mutator(cellEl, columnData, value, rowData);
                     this.#elements.set(name, cellEl);
-                    this.#cellCache.addCell(this.#rowName, name, cellEl);
+                    this.#cellCache.addCell(this.#rowKey, name, cellEl);
                 }
                 this.#columnDefinitionCache.set(name, deepClone(columnData));
                 this.#valueCache.set(name, deepClone(value));
@@ -121,7 +121,7 @@ export default class CellManager {
             } else if (this.#types.get(name) !== type) {
                 const oldEl = this.#elements.get(name);
                 oldEl.remove();
-                const cellEl = this.composer(name, this.#rowName, type, columnData, value, rowData);
+                const cellEl = this.composer(name, this.#rowKey, type, columnData, value, rowData);
                 if (cellEl != null) {
                     this.mutator(cellEl, columnData, value, rowData);
                     this.#elements.set(name, cellEl);
@@ -148,13 +148,13 @@ export default class CellManager {
             const cellEl = this.#elements.get(name);
             cellEl.remove();
             this.#elements.delete(name);
-            this.#cellCache.removeCell(this.#rowName, name);
+            this.#cellCache.removeCell(this.#rowKey, name);
             this.#columnDefinitionCache.delete(name);
         }
 
         // add select element
         this.#selectCheckboxEl.checked = isSelected;
-        this.#selectCheckboxEl.setAttribute("row-name", this.#rowName);
+        this.#selectCheckboxEl.setAttribute("row-key", this.#rowKey);
 
         if (!isEqual(newOrder, this.#order)) {
             this.#order = newOrder;
@@ -179,11 +179,11 @@ export default class CellManager {
         return false;
     }
 
-    composer(columnName, rowName, type, options, value, rowData) {
+    composer(columnName, rowKey, type, options, value, rowData) {
         const cellEl = DataGridCell.createCell(type, this.#dataGridId);
 
         cellEl.columnName = columnName;
-        cellEl.rowName = rowName;
+        cellEl.rowKey = rowKey;
 
         for (const [attrName, attrValue] of Object.entries(options)) {
             if (attrName === "caption" || attrName === "value") {
@@ -205,7 +205,7 @@ export default class CellManager {
         const currentAttributes = new Set([...cellEl.attributes].map((a) => {
             return a.name;
         }).filter((a) => {
-            return a !== "class" && a !== "width" && a !== "caption" && a !== "col-name" && a !== "row-name" && a !== "value";
+            return a !== "class" && a !== "width" && a !== "caption" && a !== "col-name" && a !== "row-key" && a !== "value";
         }));
         for (const [attrName, attrValue] of Object.entries(options)) {
             if (attrName === "caption" || attrName === "value") {

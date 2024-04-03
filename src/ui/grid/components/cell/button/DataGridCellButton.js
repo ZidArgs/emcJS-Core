@@ -59,7 +59,7 @@ export default class DataGridCellButton extends DataGridCell {
         ev.data = {
             action: this.action,
             columnName: this.columnName,
-            rowName: this.rowName
+            rowKey: this.rowKey
         };
         this.dispatchEvent(ev);
     }

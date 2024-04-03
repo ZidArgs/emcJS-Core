@@ -65,38 +65,38 @@ export default class RowManager {
             if (typeof rowData !== "object" || Array.isArray(rowData)) {
                 throw new TypeError("data entries must be objects");
             }
-            const name = rowData.name;
-            const isSelected = selectedRows?.has(name) ?? false;
-            if (typeof name !== "string") {
-                throw new TypeError("row name must be a string");
+            const key = rowData.key;
+            const isSelected = selectedRows?.has(key) ?? false;
+            if (typeof key !== "string") {
+                throw new TypeError("row key must be a string");
             }
 
-            newOrder.push(name);
+            newOrder.push(key);
 
-            if (!this.#elements.has(name)) {
-                const rowEl = this.composer(name, columnDefinition, rowData, isSelected);
+            if (!this.#elements.has(key)) {
+                const rowEl = this.composer(key, columnDefinition, rowData, isSelected);
                 if (rowEl != null) {
-                    rowEl.setAttribute("row-name", name);
-                    this.mutator(rowEl, name, columnDefinition, rowData, isSelected);
-                    this.#elements.set(name, rowEl);
+                    rowEl.setAttribute("row-key", key);
+                    this.mutator(rowEl, key, columnDefinition, rowData, isSelected);
+                    this.#elements.set(key, rowEl);
                 }
                 this.#cachedColumnDefinition = deepClone(columnDefinition);
-                this.#rowDataCache.set(name, deepClone(rowData));
+                this.#rowDataCache.set(key, deepClone(rowData));
             } else {
-                const rowEl = this.#elements.get(name);
-                if (columnDataChanged || this.#checkRowDataChange(name, rowData)) {
-                    this.mutator(rowEl, name, columnDefinition, rowData, isSelected);
+                const rowEl = this.#elements.get(key);
+                if (columnDataChanged || this.#checkRowDataChange(key, rowData)) {
+                    this.mutator(rowEl, key, columnDefinition, rowData, isSelected);
                 }
-                unused.delete(name);
+                unused.delete(key);
             }
         }
 
-        for (const name of unused) {
-            const rowEl = this.#elements.get(name);
+        for (const key of unused) {
+            const rowEl = this.#elements.get(key);
             rowEl.remove();
-            this.#elements.delete(name);
-            this.#cellCache.removeRow(name);
-            this.#rowDataCache.delete(name);
+            this.#elements.delete(key);
+            this.#cellCache.removeRow(key);
+            this.#rowDataCache.delete(key);
         }
 
         if (!isEqual(newOrder, this.#order)) {
@@ -113,37 +113,37 @@ export default class RowManager {
         return false;
     }
 
-    #checkRowDataChange(name, rowData) {
-        if (typeof name !== "string") {
+    #checkRowDataChange(key, rowData) {
+        if (typeof key !== "string") {
             return true;
         }
-        const cachedRowData = this.#rowDataCache.get(name);
+        const cachedRowData = this.#rowDataCache.get(key);
         if (!isEqual(cachedRowData, rowData)) {
-            this.#rowDataCache.set(name, deepClone(rowData));
+            this.#rowDataCache.set(key, deepClone(rowData));
             return true;
         }
         return false;
     }
 
-    composer(name, columnData, rowData, isSelected) {
+    composer(key, columnData, rowData, isSelected) {
         const rowEl = document.createElement("tr");
 
         const cellManager = new CellManager(rowEl, this.#cellCache, this.#dataGridId);
-        this.#cellManagers.set(name, cellManager);
+        this.#cellManagers.set(key, cellManager);
         cellManager.manage(columnData, rowData, isSelected);
 
         return rowEl;
     }
 
-    mutator(rowEl, name, columnData, rowData, isSelected) {
-        const cellManager = this.#cellManagers.get(name);
+    mutator(rowEl, key, columnData, rowData, isSelected) {
+        const cellManager = this.#cellManagers.get(key);
         cellManager.manage(columnData, rowData, isSelected);
     }
 
     #render = debounce(() => {
         const children = this.#target.children;
         if (children.length > 0) {
-            const currentOrder = [...children].map((el) => el.getAttribute("row-name") ?? "");
+            const currentOrder = [...children].map((el) => el.getAttribute("row-key") ?? "");
             const keys = [...this.#order];
             const {changes} = getArrayMutations(currentOrder, keys);
             for (const {sequence} of changes) {

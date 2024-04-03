@@ -7,26 +7,41 @@ import {
 } from "../../util/formLoader.js";
 
 TypeConfigMap.register("A", {
-    "foobar": {
-        "@type": "String",
-        "optional": false,
-        "default": ""
+    "parameters": {
+        "allowExtension": false
+    },
+    "definition": {
+        "foobar": {
+            "@type": "String",
+            "optional": false,
+            "default": ""
+        }
     }
 });
 
 TypeConfigMap.register("B", {
-    "barfoo": {
-        "@type": "String",
-        "optional": false,
-        "default": ""
+    "parameters": {
+        "allowExtension": false
+    },
+    "definition": {
+        "barfoo": {
+            "@type": "String",
+            "optional": false,
+            "default": ""
+        }
     }
 });
 
 TypeConfigMap.register("C", {
-    "baba": {
-        "@type": "String",
-        "optional": false,
-        "default": ""
+    "parameters": {
+        "allowExtension": false
+    },
+    "definition": {
+        "baba": {
+            "@type": "String",
+            "optional": false,
+            "default": ""
+        }
     }
 });
 

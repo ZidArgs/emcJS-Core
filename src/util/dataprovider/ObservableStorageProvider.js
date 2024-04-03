@@ -64,7 +64,7 @@ export default class ObservableStorageProvider extends AbstractDataProvider {
         const result = [...this.#source.keys()].map(([key, value]) => {
             return {
                 ...deepClone(value),
-                name: key
+                key
             }
         }).filter((record) => {
             if (typeof record !== "object") {

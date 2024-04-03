@@ -90,11 +90,11 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
             const selectEls = this.shadowRoot.querySelectorAll(`td.select-cell input[type="checkbox"]`);
             for (const selectEl of selectEls) {
                 selectEl.checked = value;
-                const rowName = selectEl.getAttribute("row-name");
+                const rowKey = selectEl.getAttribute("row-key");
                 if (value) {
-                    this.#selected.add(rowName);
+                    this.#selected.add(rowKey);
                 } else {
-                    this.#selected.delete(rowName);
+                    this.#selected.delete(rowKey);
                 }
             }
             const ev = new Event("selection");
@@ -119,20 +119,20 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
         this.#tableEl.addEventListener("move-row-up", (event) => {
             event.stopPropagation();
             event.preventDefault();
-            const {rowName} = event.data;
+            const {rowKey} = event.data;
             const ev = new Event("move-row-up");
             ev.data = {
-                rowName
+                rowKey
             };
             this.dispatchEvent(ev);
         });
         this.#tableEl.addEventListener("move-row-down", (event) => {
             event.stopPropagation();
             event.preventDefault();
-            const {rowName} = event.data;
+            const {rowKey} = event.data;
             const ev = new Event("move-row-down");
             ev.data = {
-                rowName
+                rowKey
             };
             this.dispatchEvent(ev);
         });
@@ -140,14 +140,14 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
         this.#tableEl.addEventListener("action", (event) => {
             event.stopPropagation();
             event.preventDefault();
-            const {action, columnName, rowName} = event.data;
+            const {action, columnName, rowKey} = event.data;
             if (action == null) {
                 return;
             }
             const ev = new Event(`action::${action}`);
             ev.data = {
                 columnName,
-                rowName,
+                rowKey,
                 source: event.srcElement
             };
             this.dispatchEvent(ev);
@@ -155,7 +155,7 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
         this.#tableEl.addEventListener("edit", (event) => {
             event.stopPropagation();
             event.preventDefault();
-            const {value, action, columnName, rowName} = event.data;
+            const {value, action, columnName, rowKey} = event.data;
             if (action == null) {
                 return;
             }
@@ -163,7 +163,7 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
             ev.data = {
                 value,
                 columnName,
-                rowName,
+                rowKey,
                 source: event.srcElement
             };
             this.dispatchEvent(ev);
@@ -171,19 +171,19 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
         this.#tableEl.addEventListener("selection", (event) => {
             event.stopPropagation();
             event.preventDefault();
-            const {value, rowName} = event.data;
+            const {value, rowKey} = event.data;
             if (this.selectable === "single") {
-                const oldRowName = [...this.#selected][0];
-                const selectEl = this.shadowRoot.querySelectorAll(`.select-cell input[type="checkbox"][row-name="${oldRowName}"]`);
+                const oldrowKey = [...this.#selected][0];
+                const selectEl = this.shadowRoot.querySelectorAll(`.select-cell input[type="checkbox"][row-key="${oldrowKey}"]`);
                 if (selectEl != null) {
                     selectEl.checked = false;
                 }
                 this.#selected.clear();
-                this.#selected.add(rowName);
+                this.#selected.add(rowKey);
             } else if (value) {
-                this.#selected.add(rowName);
+                this.#selected.add(rowKey);
             } else {
-                this.#selected.delete(rowName);
+                this.#selected.delete(rowKey);
             }
             this.#updateSelectHeader();
             const ev = new Event("selection");
@@ -265,7 +265,7 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
             }
             const selectEls = this.shadowRoot.querySelectorAll(`.select-cell input[type="checkbox"]`);
             for (const selectEl of selectEls) {
-                selectEl.checked = this.#selected.has(selectEl.getAttribute("row-name"));
+                selectEl.checked = this.#selected.has(selectEl.getAttribute("row-key"));
             }
             this.#updateSelectHeader();
             const ev = new Event("selection");
@@ -324,8 +324,8 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
         return this.#cellCache.getAllCellsForColumn(colName);
     }
 
-    getCell(rowName, colName) {
-        return this.#cellCache.getCell(rowName, colName);
+    getCell(rowKey, colName) {
+        return this.#cellCache.getCell(rowKey, colName);
     }
 
     async #applyColumnDefinition() {

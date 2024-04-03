@@ -39,8 +39,8 @@ export default class ListInput extends CustomFormElementDelegating {
         this.#gridEl.addEventListener("action::delete", (event) => {
             event.stopPropagation();
             event.preventDefault();
-            const {rowName} = event.data;
-            const index = this.#value.indexOf(rowName);
+            const {rowKey} = event.data;
+            const index = this.#value.indexOf(rowKey);
             if (index >= 0) {
                 const newValue = [
                     ...this.#value.slice(0, index),
@@ -52,21 +52,21 @@ export default class ListInput extends CustomFormElementDelegating {
         /* --- */
         this.#addEl = this.shadowRoot.getElementById("add");
         this.#addEl.addEventListener("click", async () => {
-            let rowName = null;
+            let rowKey = null;
             const currentValue = this.value ?? [];
-            while (rowName == null) {
-                rowName = await ModalDialog.prompt("Add item", "Please enter a new key");
-                if (typeof rowName !== "string") {
+            while (rowKey == null) {
+                rowKey = await ModalDialog.prompt("Add item", "Please enter a new key");
+                if (typeof rowKey !== "string") {
                     return;
                 }
-                if (currentValue.includes(rowName)) {
-                    await ModalDialog.alert("Key already exists", `The key "${rowName}" does already exist. Please enter another one!`);
-                    rowName = null;
+                if (currentValue.includes(rowKey)) {
+                    await ModalDialog.alert("Key already exists", `The key "${rowKey}" does already exist. Please enter another one!`);
+                    rowKey = null;
                 }
             }
             this.value = [
                 ...currentValue,
-                rowName
+                rowKey
             ];
         });
         /* --- */
@@ -186,6 +186,7 @@ export default class ListInput extends CustomFormElementDelegating {
     #applyValue(value) {
         const data = value.map((row) => {
             return {
+                key: row,
                 name: row
             }
         });

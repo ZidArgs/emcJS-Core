@@ -53,10 +53,10 @@ export default class BoolOrLogicListInput extends CustomFormElementDelegating {
         this.#gridEl.addEventListener("edit::value", debounce((event) => {
             event.stopPropagation();
             event.preventDefault();
-            const {value, rowName} = event.data;
+            const {value, rowKey} = event.data;
             const currentValue = {...this.#value};
-            if (rowName in currentValue) {
-                currentValue[rowName] = value;
+            if (rowKey in currentValue) {
+                currentValue[rowKey] = value;
             }
             this.value = currentValue;
         }, 300));
@@ -220,6 +220,7 @@ export default class BoolOrLogicListInput extends CustomFormElementDelegating {
             /* --- */
             const amount = value?.[option] ?? 0;
             rows.push({
+                key: option,
                 name: option,
                 value: amount
             });
@@ -250,6 +251,7 @@ export default class BoolOrLogicListInput extends CustomFormElementDelegating {
         const curValue = this.#value;
         const data = this.#options.map((name) => {
             return {
+                key: name,
                 name,
                 value: curValue[name] ?? false
             }

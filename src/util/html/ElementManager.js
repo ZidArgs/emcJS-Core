@@ -27,14 +27,14 @@ export default class ElementManager {
 
     #sorter = null;
 
-    #args;
+    #params;
 
-    constructor(target, ...args) {
+    constructor(target, ...params) {
         if (!(target instanceof HTMLElement)) {
             throw new TypeError("target must be of type HTMLElement");
         }
         this.#target = target;
-        this.#args = args;
+        this.#params = params;
     }
 
     manage(data) {
@@ -46,28 +46,28 @@ export default class ElementManager {
         this.#definedOrder = [];
 
         for (const index in data) {
-            const params = data[index];
-            if (typeof params !== "object" || Array.isArray(params)) {
+            const record = data[index];
+            if (typeof record !== "object" || Array.isArray(record)) {
                 throw new TypeError("data entries must be objects");
             }
 
-            const {key = index, ...options} = params;
+            const {key = index, ...values} = record;
             this.#definedOrder.push(key);
 
             if (!this.#elements.has(key)) {
-                this.#data.set(key, params);
-                this.#cache.set(key, deepClone(params));
-                const el = this.composer(key, options, ...this.#args);
+                this.#data.set(key, record);
+                this.#cache.set(key, deepClone(record));
+                const el = this.composer(key, values, ...this.#params);
                 if (el != null) {
                     el.setAttribute("em-key", key);
-                    this.mutator(el, key, options, ...this.#args);
+                    this.mutator(el, key, values, ...this.#params);
                     this.#elements.set(key, el);
                 }
             } else {
                 const el = this.#elements.get(key);
-                if (this.#checkChange(params)) {
-                    this.#data.set(key, params);
-                    this.mutator(el, key, options, ...this.#args);
+                if (this.#checkChange(record)) {
+                    this.#data.set(key, record);
+                    this.mutator(el, key, values, ...this.#params);
                 }
                 unused.delete(key);
             }
@@ -79,7 +79,7 @@ export default class ElementManager {
             this.#elements.delete(key);
             this.#data.delete(key);
             this.#cache.delete(key);
-            this.cleanup(el, key, ...this.#args);
+            this.cleanup(el, key, ...this.#params);
         }
 
         this.#sortEntries();
@@ -190,12 +190,12 @@ export default class ElementManager {
     }
 
     // eslint-disable-next-line no-unused-vars
-    composer(key, options, ...args) {}
+    composer(key, values, ...params) {}
 
     // eslint-disable-next-line no-unused-vars
-    mutator(el, key, options, ...args) {}
+    mutator(el, key, values, ...params) {}
 
     // eslint-disable-next-line no-unused-vars
-    cleanup(el, key, ...args) {}
+    cleanup(el, key, ...params) {}
 
 }

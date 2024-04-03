@@ -190,7 +190,7 @@ class TypeValidator {
                 const usedKeys = new Set();
                 for (const key in value) {
                     const entry = value[key];
-                    const entryKey = getFromObjectByPath(entry, keyPath);
+                    const entryKey = this.#generateStringKey(getFromObjectByPath(entry, keyPath));
                     if (usedKeys.has(entryKey)) {
                         errors.push(`duplicate key "${entryKey}" (${uniqueKey}) [ ${currentPath.join(" > ")} ]`);
                     } else {
@@ -200,6 +200,16 @@ class TypeValidator {
                 }
             }
         }
+    }
+
+    #generateStringKey(input) {
+        if (typeof input === "string") {
+            return input;
+        }
+        if (typeof input === "object") {
+            return JSON.stringify(input).replace(/"(.*?)":"(.*?)"/g, "$1:'$2'");
+        }
+        return input.toString();
     }
 
     #validateAssociativeList(currentPath, value, definition, options, errors) {

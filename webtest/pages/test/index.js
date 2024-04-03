@@ -36,7 +36,7 @@ i18n.setTranslation("de", {
 const grid0El = document.getElementById("grid0");
 grid0El.setData([
     {
-        name: "0",
+        key: "0",
         i18n: "test.blablabla",
         A: 1,
         B: "Cheese",
@@ -44,7 +44,7 @@ grid0El.setData([
         E: "2016-03-02T12:34:51"
     },
     {
-        name: "1",
+        key: "1",
         i18n: "test.bluiuiui",
         A: 2,
         B: "Pizza",
@@ -52,7 +52,7 @@ grid0El.setData([
         E: "2022-12-28T16:27:19"
     },
     {
-        name: "2",
+        key: "2",
         i18n: "test.blöbliblup",
         A: 3,
         C: -15,
@@ -64,7 +64,7 @@ grid0El.setData([
 const grid1El = document.getElementById("grid1");
 grid1El.setData([
     {
-        name: "0",
+        key: "0",
         i18n: "test.blablabla",
         A: 1,
         B: "Cheese",
@@ -73,7 +73,7 @@ grid1El.setData([
         E: "2016-03-02T12:34:51"
     },
     {
-        name: "1",
+        key: "1",
         i18n: "test.bluiuiui",
         A: 2,
         B: "Pizza",
@@ -81,7 +81,7 @@ grid1El.setData([
         E: "2022-12-28T16:27:19"
     },
     {
-        name: "2",
+        key: "2",
         i18n: "test.blöbliblup",
         A: 3,
         C: -15,
@@ -93,7 +93,7 @@ grid1El.setData([
 const grid2El = document.getElementById("grid2");
 grid2El.setData([
     {
-        name: "0",
+        key: "0",
         i18n: "test.blablabla",
         A: 1,
         B: "Cheese",
@@ -101,7 +101,7 @@ grid2El.setData([
         E: "2016-03-02T12:34:51"
     },
     {
-        name: "1",
+        key: "1",
         i18n: "test.bluiuiui",
         A: 2,
         B: "Pizza",
@@ -109,7 +109,7 @@ grid2El.setData([
         E: "2022-12-28T16:27:19"
     },
     {
-        name: "2",
+        key: "2",
         i18n: "test.blöbliblup",
         A: 3,
         C: -15,

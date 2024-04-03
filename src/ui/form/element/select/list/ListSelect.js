@@ -231,6 +231,7 @@ export default class ListSelect extends CustomFormElementDelegating {
         const newNodes = new Set();
         for (const el of optionNodeList) {
             data.push({
+                key: el.value,
                 name: el.value
             });
             /* --- */

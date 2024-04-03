@@ -59,14 +59,14 @@ export default class TypeStorageReferenceProvider extends AbstractDataProvider {
             return [key, new CharacterSearch(value)];
         });
 
-        const result = [...this.#source.keys()].map((key) => {
+        const result = [...this.#source.keys()].map((name) => {
             return {
-                name: `${key}\n[${typeName}]`,
+                key: `${name}\n[${typeName}]`,
                 entityType: typeName,
-                entityName: key,
+                entityName: name,
                 entity: {
                     type: typeName,
-                    name: key
+                    name
                 }
             }
         }).filter((record) => {

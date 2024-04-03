@@ -63,7 +63,7 @@ function extractError(err) {
 function formatMessage(data, omitStack) {
     const {type, time, target, message} = data;
     const typeString = padEndSlice(type, 5);
-    const targetString = typeof target === "string" && target !== "" ? target : "···";
+    const targetString = typeof target === "string" && target !== "" ? target : "∅";
     if (message instanceof Error) {
         const msg = formatError(message, omitStack);
         return `[${time} - ${typeString}] ${targetString} • ${msg}`;

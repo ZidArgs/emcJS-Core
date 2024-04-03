@@ -56,10 +56,12 @@ export default class DataProviderService extends ServiceModule {
             length: 10,
             records: [
                 {
+                    key: "0000001",
                     name: "A",
                     desc: "foobar"
                 },
                 {
+                    key: "0000002",
                     name: "B",
                     desc: "barfoo"
                 }

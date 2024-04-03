@@ -91,7 +91,7 @@ function augmentFile(emcJSPrefix, sourcePath, fileContent) {
                 // if the file exists
                 if (fs.existsSync(resolvedPath)) {
                     const fileContent = fs.readFileSync(resolvedPath).toString();
-                    result += `const ${name} = new Template(\`\n${fileContent.split("\n").map((l) => `    ${l}`).join("\n")}\n\`);\n`;
+                    result += `const ${name} = new Template(\`\n${fileContent.replace(/\\/g, "\\\\").split("\n").map((l) => `    ${l}`).join("\n")}\n\`);\n`;
                 }
             }
             result += "\n";
@@ -108,7 +108,7 @@ function augmentFile(emcJSPrefix, sourcePath, fileContent) {
                 // if the file exists
                 if (fs.existsSync(resolvedPath)) {
                     const fileContent = fs.readFileSync(resolvedPath).toString();
-                    result += `const ${name} = new GlobalStyle(\`\n${fileContent.split("\n").map((l) => `    ${l}`).join("\n")}\n\`);\n`;
+                    result += `const ${name} = new GlobalStyle(\`\n${fileContent.replace(/\\/g, "\\\\").split("\n").map((l) => `    ${l}`).join("\n")}\n\`);\n`;
                 }
             }
             result += "\n";
@@ -122,7 +122,7 @@ function augmentFile(emcJSPrefix, sourcePath, fileContent) {
                 // if the file exists
                 if (fs.existsSync(resolvedPath)) {
                     const fileContent = fs.readFileSync(resolvedPath).toString();
-                    result += `const ${name} = ${fileContent};\n`;
+                    result += `const ${name} = ${fileContent.replace(/\\/g, "\\\\")};\n`;
                 }
             }
             result += "\n";
@@ -146,7 +146,7 @@ function augmentFile(emcJSPrefix, sourcePath, fileContent) {
                             const fileContent = fs.readFileSync(resolvedFilePath).toString();
                             try {
                                 JSON.parse(fileContent);
-                                typeDefs.push(`    ${name}: ${fileContent.split("\n").map((l) => `    ${l}`).join("\n").slice(4)}`);
+                                typeDefs.push(`    ${name}: ${fileContent.replace(/\\/g, "\\\\").split("\n").map((l) => `    ${l}`).join("\n").slice(4)}`);
                             } catch {
                                 // ignore
                             }

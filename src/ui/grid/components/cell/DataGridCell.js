@@ -55,12 +55,12 @@ export default class DataGridCell extends CustomElementDelegating {
         return this.getAttribute("col-name");
     }
 
-    set rowName(val) {
-        this.setAttribute("row-name", val);
+    set rowKey(val) {
+        this.setAttribute("row-key", val);
     }
 
-    get rowName() {
-        return this.getAttribute("row-name");
+    get rowKey() {
+        return this.getAttribute("row-key");
     }
 
     set value(val) {
