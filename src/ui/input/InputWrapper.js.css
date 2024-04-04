@@ -84,7 +84,7 @@
     margin-left: 5px;
     font-size: 1.5em;
     line-height: 1em;
-    content: "\uD83D\uDD17\uFE0E";
+    content: "🔗︎";
 }
 ::slotted(input[type="checkbox"]) {
     flex-shrink: 0;

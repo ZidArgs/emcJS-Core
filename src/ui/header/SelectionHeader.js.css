@@ -34,13 +34,13 @@
 }
 #selection::before {
     font-size: 18px;
-    content: "\u2610";
+    content: "☐";
 }
 #selection:indeterminate::before {
-    content: "\u2BBD";
+    content: "⮽";
 }
 #selection:checked::before {
-    content: "\u2611";
+    content: "☑";
 }
 :host(:not([multiple])) #selection,
 :host([multiple="false"]) #selection {
