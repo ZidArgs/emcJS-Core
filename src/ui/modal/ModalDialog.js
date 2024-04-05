@@ -144,6 +144,8 @@ export default class ModalDialog extends Modal {
         inputEl.className = "prompt-input";
         if (typeof value === "string") {
             inputEl.value = value;
+        } else if (typeof value === "number") {
+            inputEl.value = value.toString();
         }
         inputEl.addEventListener("keypress", (event) => {
             if (event.key == "Enter") {
@@ -155,6 +157,35 @@ export default class ModalDialog extends Modal {
         // ---
         const result = await dialogEl.show();
         return result && inputEl.value;
+    }
+
+    static async promptNumber(ttl, msg, value, min = Number.MIN_VALUE, max = Number.MAX_VALUE) {
+        const dialogEl = new ModalDialog({
+            title: ttl,
+            text: msg,
+            submit: true,
+            cancel: true
+        });
+        dialogEl.setFontIcon("🖉", {size: "1.4em", color: "var(--modal-icon-prompt-color, #01ada4)", circle: "var(--modal-icon-prompt-color, #01ada4)"});
+        // ---
+        const inputEl = document.createElement("input");
+        inputEl.type = "number";
+        inputEl.min = min;
+        inputEl.max = max;
+        inputEl.className = "prompt-input";
+        if (typeof value === "number" && !isNaN(value)) {
+            inputEl.value = value;
+        }
+        inputEl.addEventListener("keypress", (event) => {
+            if (event.key == "Enter") {
+                dialogEl.submit();
+            }
+            event.stopPropagation();
+        });
+        dialogEl.append(inputEl);
+        // ---
+        const result = await dialogEl.show();
+        return result && parseFloat(inputEl.value);
     }
 
     static async error(ttl = "Error", msg = "An error occured", errors = []) {

@@ -125,8 +125,10 @@ export default class Dialog extends Window {
             inputEl.style.color = "black";
             inputEl.style.backgroundColor = "white";
             inputEl.style.border = "solid 1px black";
-            if (typeof def == "string") {
+            if (typeof def === "string") {
                 inputEl.value = def;
+            } else if (typeof def === "number") {
+                inputEl.value = def.toString();
             }
             inputEl.addEventListener("keypress", (event) => {
                 if (event.key == "Enter") {
@@ -138,6 +140,47 @@ export default class Dialog extends Window {
             // ---
             dialogEl.onsubmit = function() {
                 resolve(inputEl.value);
+            }
+            dialogEl.oncancel = function() {
+                resolve(false);
+            }
+            dialogEl.onclose = function() {
+                resolve();
+            }
+            dialogEl.show();
+        });
+    }
+
+    static promptNumber(ttl, msg, def, min = Number.MIN_VALUE, max = Number.MAX_VALUE) {
+        return new Promise(function(resolve) {
+            const dialogEl = new Dialog({
+                title: ttl,
+                text: msg,
+                submit: true,
+                cancel: true
+            });
+            // ---
+            const inputEl = document.createElement("input");
+            inputEl.type = "number";
+            inputEl.min = min;
+            inputEl.max = max;
+            inputEl.style.padding = "5px";
+            inputEl.style.color = "black";
+            inputEl.style.backgroundColor = "white";
+            inputEl.style.border = "solid 1px black";
+            if (typeof def === "number" && !isNaN(def)) {
+                inputEl.value = def;
+            }
+            inputEl.addEventListener("keypress", (event) => {
+                if (event.key == "Enter") {
+                    dialogEl.submit();
+                }
+                event.stopPropagation();
+            });
+            dialogEl.append(inputEl);
+            // ---
+            dialogEl.onsubmit = function() {
+                resolve(parseFloat(inputEl.value));
             }
             dialogEl.oncancel = function() {
                 resolve(false);
