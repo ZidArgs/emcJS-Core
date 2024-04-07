@@ -313,7 +313,7 @@ class I18n extends EventTarget {
                 return true;
             }
             if (this.#base.has(lang)) {
-                const base = this.#base.has(lang)
+                const base = this.#base.has(lang);
                 if (this.#languages.get(base)?.has(key)) {
                     return true;
                 }

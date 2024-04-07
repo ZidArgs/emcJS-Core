@@ -188,7 +188,7 @@ export default class ListInput extends CustomFormElementDelegating {
             return {
                 key: row,
                 name: row
-            }
+            };
         });
         this.#dataManager.setSource(data);
     }

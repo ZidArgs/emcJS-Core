@@ -21,7 +21,7 @@ class Inject {
                     rej(`error appending style "${url}"`);
                 }, function(r) {
                     rej(r);
-                })
+                });
             };
             t.href = url;
             document.head.append(t);
@@ -40,7 +40,7 @@ class Inject {
                     rej(`error appending script "${url}"`);
                 }, function(r) {
                     rej(r);
-                })
+                });
             };
             t.src = url;
             document.head.append(t);
@@ -59,7 +59,7 @@ class Inject {
                     rej(`error appending module "${url}"`);
                 }, function(r) {
                     rej(r);
-                })
+                });
             };
             t.src = url;
             document.head.append(t);

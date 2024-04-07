@@ -26,7 +26,7 @@ export default class ImageSelect extends AbstractFormInput {
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#inputEl.addEventListener("change", () => {
-            this.value = this.#inputEl.value
+            this.value = this.#inputEl.value;
         });
     }
 

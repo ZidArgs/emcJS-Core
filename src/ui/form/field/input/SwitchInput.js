@@ -41,7 +41,7 @@ export default class SwitchInput extends AbstractFormInput {
 
     set value(value) {
         const convertedValue = value ?? this.defaultValue;
-        super.value = this.#applyValue(convertedValue)
+        super.value = this.#applyValue(convertedValue);
     }
 
     get value() {

@@ -72,7 +72,7 @@ export default class TypeStorageProvider extends AbstractDataProvider {
                     type: typeName,
                     name
                 }
-            }
+            };
         }).filter((record) => {
             if (typeof record !== "object") {
                 throw new Error("source contained non object value");

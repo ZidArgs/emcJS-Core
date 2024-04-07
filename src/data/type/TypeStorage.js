@@ -353,7 +353,7 @@ export default class TypeStorage extends EventTarget {
     }
 
     [Symbol.iterator]() {
-        return this.#buffer[Symbol.iterator]()
+        return this.#buffer[Symbol.iterator]();
     }
 
     #writeChangeData(key, value = null) {

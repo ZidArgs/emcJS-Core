@@ -59,7 +59,7 @@ export default class ElementListCache {
     }
 
     querySelectorAll(selector) {
-        return [...this.#elementList].filter((el) => el.matches(selector))
+        return [...this.#elementList].filter((el) => el.matches(selector));
     }
 
     get size() {

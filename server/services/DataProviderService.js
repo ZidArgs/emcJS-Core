@@ -1,4 +1,4 @@
-import ServiceModule from "webservice/ServiceModule.js"
+import ServiceModule from "webservice/ServiceModule.js";
 
 export default class DataProviderService extends ServiceModule {
 
@@ -19,7 +19,7 @@ export default class DataProviderService extends ServiceModule {
                 return {
                     status: 200,
                     json: data
-                }
+                };
             } catch (err) {
                 console.error(err);
                 return {

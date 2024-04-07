@@ -62,7 +62,7 @@ export default class ObservableIDBProxyStorage extends ObservableStorage {
                     resolve(this);
                     this.removeEventListener("load", handler);
                     this.removeEventListener("error", handler);
-                }
+                };
                 this.addEventListener("load", handler);
                 this.addEventListener("error", handler);
             }

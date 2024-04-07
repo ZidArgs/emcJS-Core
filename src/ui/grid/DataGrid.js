@@ -234,7 +234,7 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
             switch (name) {
                 case "selectable": {
                     if (newValue == null || newValue === "false" || newValue === "single" || oldValue === "single") {
-                        this.clearSelected()
+                        this.clearSelected();
                     }
                 } break;
                 case "stretched": {

@@ -26,7 +26,7 @@ class CSV {
                 }
             }
             return output;
-        })
+        });
     }
 
     stringify(input, split = ",") {
@@ -41,7 +41,7 @@ class CSV {
             }
             lines.push(row.map((value) => {
                 value = value.replace(/"/g, "\"\"");
-                return value.includes(split) ? `"${value}"` : value
+                return value.includes(split) ? `"${value}"` : value;
             }).join(split));
         }
         return lines.join("\n");

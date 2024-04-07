@@ -90,7 +90,7 @@ export default class EventMultiTargetManager {
         }
         if (Array.isArray(name)) {
             for (const n of name) {
-                this.set(n, handler)
+                this.set(n, handler);
             }
         } else {
             if (typeof name != "string") {
@@ -117,7 +117,7 @@ export default class EventMultiTargetManager {
         }
         if (Array.isArray(name)) {
             for (const n of name) {
-                this.set(n, handler)
+                this.set(n, handler);
             }
         } else {
             if (typeof name != "string") {
@@ -141,7 +141,7 @@ export default class EventMultiTargetManager {
     delete(name) {
         if (Array.isArray(name)) {
             for (const n of name) {
-                this.delete(n)
+                this.delete(n);
             }
         } else {
             if (typeof name != "string") {
@@ -160,7 +160,7 @@ export default class EventMultiTargetManager {
     deleteCapture(name) {
         if (Array.isArray(name)) {
             for (const n of name) {
-                this.delete(n)
+                this.delete(n);
             }
         } else {
             if (typeof name != "string") {

@@ -17,7 +17,7 @@ export default class TabPanel extends Panel {
                 event.preventDefault();
                 return false;
             }
-        }
+        };
     }
 
     connectedCallback() {

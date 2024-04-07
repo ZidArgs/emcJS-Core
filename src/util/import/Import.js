@@ -40,7 +40,7 @@ function extractModule(module) {
         const {default: def, ...other} = module ?? {};
         return [def, other];
     } catch (err) {
-        throw new Error(`Error extracting module`, {cause: err})
+        throw new Error(`Error extracting module`, {cause: err});
     }
 }
 
@@ -48,7 +48,7 @@ async function importModule(url) {
     return import(url)
         .then(extractModule)
         .catch((err) => {
-            throw new Error(`Error loading module "${url}"`, {cause: err})
+            throw new Error(`Error loading module "${url}"`, {cause: err});
         });
 }
 

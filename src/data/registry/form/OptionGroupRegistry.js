@@ -75,7 +75,7 @@ export default class OptionGroupRegistry extends EventTarget {
     }
 
     [Symbol.iterator]() {
-        return this.#options[Symbol.iterator]()
+        return this.#options[Symbol.iterator]();
     }
 
     static load(config) {

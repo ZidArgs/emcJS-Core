@@ -245,7 +245,7 @@ export default class OptionAmountListInput extends CustomFormElementDelegating {
                 key: name,
                 name,
                 value: curValue[name] ?? 0
-            }
+            };
         });
         this.#dataManager.setSource(data);
     }

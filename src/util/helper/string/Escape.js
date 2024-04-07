@@ -25,7 +25,7 @@ export function escapeString(str) {
         .replace(ESC_FORM_FEED, "\\f")
         .replace(ESC_BACKSPACE, "\\b")
         .replace(ESC_SINGLE_QUOTE, "\\'")
-        .replace(ESC_DOUBLE_QUOTE, "\\\"")
+        .replace(ESC_DOUBLE_QUOTE, "\\\"");
 }
 
 const UNESC_BACKSLASH = /\\\\/g;
@@ -50,7 +50,7 @@ export function unescapeString(str) {
         .replace(UNESC_FORM_FEED, "\f")
         .replace(UNESC_BACKSPACE, "\\b")
         .replace(UNESC_SINGLE_QUOTE, "'")
-        .replace(UNESC_DOUBLE_QUOTE, "\""))
+        .replace(UNESC_DOUBLE_QUOTE, "\""));
 }
 
 export function escapeHTMLEntities(str) {

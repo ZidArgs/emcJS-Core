@@ -147,6 +147,10 @@
             "error",
             "always"
         ],
+        "semi": [
+            "error",
+            "always"
+        ],
         "padded-blocks": [
             "error",
             {

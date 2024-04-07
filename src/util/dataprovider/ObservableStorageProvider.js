@@ -65,7 +65,7 @@ export default class ObservableStorageProvider extends AbstractDataProvider {
             return {
                 ...deepClone(value),
                 key
-            }
+            };
         }).filter((record) => {
             if (typeof record !== "object") {
                 throw new Error("source contained non object value");

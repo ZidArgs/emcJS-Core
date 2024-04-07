@@ -209,7 +209,7 @@ export default class Modal extends CustomElement {
         if (modalStorage.has(this)) {
             const modalsForType = modalStorage.get(this);
             if (modalsForType.has(name)) {
-                return modalsForType.get(name)
+                return modalsForType.get(name);
             }
             const modal = new this();
             modal.#assocName = name;

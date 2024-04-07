@@ -20,7 +20,7 @@ export default class Layout extends CustomElement {
 
     loadLayout(layout) {
         this.innerHTML = "";
-        const rendered = this.#renderLayout(layout)
+        const rendered = this.#renderLayout(layout);
         this.appendChild(rendered);
     }
 

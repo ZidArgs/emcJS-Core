@@ -2,7 +2,7 @@ import {
     debounce, debounceCacheData
 } from "../../Debouncer.js";
 import ObservableStorage from "../../../data/storage/observable/ObservableStorage.js";
-import EventMultiTargetManager from "../../event/EventMultiTargetManager.js"
+import EventMultiTargetManager from "../../event/EventMultiTargetManager.js";
 import LogicDataStorage from "../../../data/storage/logic/LogicDataStorage.js";
 
 export default class LogicDataCollector extends EventTarget {

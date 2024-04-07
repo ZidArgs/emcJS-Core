@@ -58,7 +58,7 @@ export default class TokenSelect extends CustomElementDelegating {
         }
         event.stopPropagation();
         return false;
-    }
+    };
 
     constructor() {
         super();

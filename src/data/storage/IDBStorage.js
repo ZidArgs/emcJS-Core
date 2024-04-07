@@ -5,7 +5,7 @@ function requestToPromise(request) {
         };
         request.onerror = function(e) {
             reject(e);
-        }
+        };
     });
 }
 
@@ -25,7 +25,7 @@ function cursorToPromise(cursor, fn) {
         };
         cursor.onerror = function(e) {
             reject(e);
-        }
+        };
     });
 }
 

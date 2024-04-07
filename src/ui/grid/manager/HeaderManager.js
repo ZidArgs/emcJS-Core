@@ -38,7 +38,7 @@ export default class HeaderManager {
         this.#selectHeaderCellEl.className = "select-cell";
         this.#selectHeaderCellEl.append(headerSelectEl);
 
-        this.#lastHeaderCellEl = document.createElement("th")
+        this.#lastHeaderCellEl = document.createElement("th");
         this.#lastHeaderCellEl.classList.add("lastCell");
     }
 

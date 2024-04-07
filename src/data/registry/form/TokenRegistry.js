@@ -61,7 +61,7 @@ export default class TokenRegistry extends EventTarget {
     }
 
     [Symbol.iterator]() {
-        return this.#token[Symbol.iterator]()
+        return this.#token[Symbol.iterator]();
     }
 
     static load(config) {

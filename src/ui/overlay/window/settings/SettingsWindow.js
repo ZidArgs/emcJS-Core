@@ -50,7 +50,7 @@ export default class SettingsWindow extends Window {
                 event.preventDefault();
                 return false;
             }
-        }
+        };
 
         const submitEl = this.shadowRoot.getElementById("submit");
         if (!!options.submit && typeof options.submit === "string") {

@@ -254,7 +254,7 @@ export default class BoolOrLogicListInput extends CustomFormElementDelegating {
                 key: name,
                 name,
                 value: curValue[name] ?? false
-            }
+            };
         });
         this.#dataManager.setSource(data);
     }

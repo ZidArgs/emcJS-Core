@@ -167,7 +167,7 @@ export default class FormContext extends EventTarget {
                 name: null,
                 element: null,
                 errors: [message]
-            }
+            };
         }
     }
 
@@ -179,7 +179,7 @@ export default class FormContext extends EventTarget {
                     name: fieldEl.name,
                     element: fieldEl,
                     errors
-                }
+                };
             }
         }
     }
@@ -308,7 +308,7 @@ export default class FormContext extends EventTarget {
     getFormHiddenData() {
         const res = {};
         for (const formEl of this.#formElList) {
-            const all = formEl.querySelectorAll("input[type=\"hidden\"][name]")
+            const all = formEl.querySelectorAll("input[type=\"hidden\"][name]");
             for (const el of all) {
                 const name = el.getAttribute("name");
                 if (name != null) {

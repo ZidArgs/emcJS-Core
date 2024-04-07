@@ -78,13 +78,13 @@ export default class Dialog extends Window {
             // ---
             dialogEl.onsubmit = function() {
                 resolve(true);
-            }
+            };
             dialogEl.oncancel = function() {
                 resolve(false);
-            }
+            };
             dialogEl.onclose = function() {
                 resolve();
-            }
+            };
             dialogEl.show();
         });
     }
@@ -100,13 +100,13 @@ export default class Dialog extends Window {
             // ---
             dialogEl.onsubmit = function() {
                 resolve(true);
-            }
+            };
             dialogEl.oncancel = function() {
                 resolve(false);
-            }
+            };
             dialogEl.onclose = function() {
                 resolve();
-            }
+            };
             dialogEl.show();
         });
     }
@@ -140,13 +140,13 @@ export default class Dialog extends Window {
             // ---
             dialogEl.onsubmit = function() {
                 resolve(inputEl.value);
-            }
+            };
             dialogEl.oncancel = function() {
                 resolve(false);
-            }
+            };
             dialogEl.onclose = function() {
                 resolve();
-            }
+            };
             dialogEl.show();
         });
     }
@@ -181,13 +181,13 @@ export default class Dialog extends Window {
             // ---
             dialogEl.onsubmit = function() {
                 resolve(parseFloat(inputEl.value));
-            }
+            };
             dialogEl.oncancel = function() {
                 resolve(false);
-            }
+            };
             dialogEl.onclose = function() {
                 resolve();
-            }
+            };
             dialogEl.show();
         });
     }
@@ -217,13 +217,13 @@ export default class Dialog extends Window {
             // ---
             dialogEl.onsubmit = function() {
                 resolve(true);
-            }
+            };
             dialogEl.oncancel = function() {
                 resolve(false);
-            }
+            };
             dialogEl.onclose = function() {
                 resolve();
-            }
+            };
             dialogEl.show();
         });
     }

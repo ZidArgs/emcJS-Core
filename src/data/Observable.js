@@ -121,7 +121,7 @@ export default class Observable extends EventTarget {
         const manager = new EventTargetManager();
         manager.set("update", (event) => {
             const value = this.get(key);
-            const change = {[key]: event.change}
+            const change = {[key]: event.change};
             // ---
             const ev = new Event("update");
             ev.change = change;
@@ -215,7 +215,7 @@ export default class Observable extends EventTarget {
     }
 
     [Symbol.iterator]() {
-        return this.#buffer[Symbol.iterator]()
+        return this.#buffer[Symbol.iterator]();
     }
 
     toJSON() {

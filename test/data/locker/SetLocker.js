@@ -13,16 +13,16 @@ describe("SetLocker", function() {
         it("should throw error", function() {
             assert.throws(() => {
                 setLocker.add(1);
-            }, "TypeError: setLocker.set is not a function")
+            }, "TypeError: setLocker.set is not a function");
         });
     });
 
     describe("has()", function() {
         it("should return true if the key exists", function() {
-            assert.equal(setLocker.has("foobar"), true)
+            assert.equal(setLocker.has("foobar"), true);
         });
         it("should return false if the key does not exist", function() {
-            assert.equal(setLocker.has(1), false)
+            assert.equal(setLocker.has(1), false);
         });
     });
 });

@@ -79,7 +79,7 @@ function multiElementOperation(els, join) {
 
 /* MATH */
 function toNumber(val) {
-    return `(parseInt(${val})||0)`
+    return `(parseInt(${val})||0)`;
 }
 
 function mathTwoElementOperation(els, join) {
@@ -114,21 +114,21 @@ function buildLogic(logic) {
 }
 
 /* PARAMS */
-function escapeParams(params) {
-    const res = [];
-    if (Array.isArray(params)) {
-        for (const p of params) {
-            if (typeof p === "string") {
-                res.push(`"${escape(p)}"`);
-            } else if (typeof p === "number" || typeof p === "boolean") {
-                res.push(9);
-            } else {
-                res.push(undefined);
-            }
-        }
-    }
-    return res;
-}
+// function escapeParams(params) {
+//     const res = [];
+//     if (Array.isArray(params)) {
+//         for (const p of params) {
+//             if (typeof p === "string") {
+//                 res.push(`"${escape(p)}"`);
+//             } else if (typeof p === "number" || typeof p === "boolean") {
+//                 res.push(9);
+//             } else {
+//                 res.push(undefined);
+//             }
+//         }
+//     }
+//     return res;
+// }
 
 class EdgeLogicCompiler {
 

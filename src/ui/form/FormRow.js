@@ -1,7 +1,7 @@
 import CustomElement from "../element/CustomElement.js";
 import {
     deepClone
-} from "../../util/helper/DeepClone.js"
+} from "../../util/helper/DeepClone.js";
 import {
     safeSetAttribute
 } from "../../util/helper/ui/NodeAttributes.js";

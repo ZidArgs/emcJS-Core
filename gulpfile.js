@@ -20,7 +20,7 @@ function copyJS(dest = OUT_PATH) {
     ];
     let res = gulp.src(FILES);
     if (!REBUILD) {
-        res = res.pipe(newer(dest))
+        res = res.pipe(newer(dest));
     }
     res = res.pipe(sourceImport());
     res = res.pipe(gulp.dest(dest));
@@ -33,7 +33,7 @@ function copyCSS(dest = OUT_PATH) {
     ];
     let res = gulp.src(FILES);
     if (!REBUILD) {
-        res = res.pipe(newer(`${dest}/_style`))
+        res = res.pipe(newer(`${dest}/_style`));
     }
     res = res.pipe(gulp.dest(`${dest}/_style`));
     return res;

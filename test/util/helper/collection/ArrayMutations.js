@@ -31,7 +31,7 @@ describe("ArrayMutations", function() {
 
         it("could be restored from mutations [0]", function() {
             // console.log("mutation 0", mutations.changes);
-            assert.deepEqual(res, TARGET_0)
+            assert.deepEqual(res, TARGET_0);
         });
     });
 
@@ -51,7 +51,7 @@ describe("ArrayMutations", function() {
 
         it("could be restored from mutations [1]", function() {
             // console.log("mutation 1", mutations.changes);
-            assert.deepEqual(res, TARGET_1)
+            assert.deepEqual(res, TARGET_1);
         });
     });
 
@@ -71,7 +71,7 @@ describe("ArrayMutations", function() {
 
         it("could be restored from mutations [2]", function() {
             // console.log("mutation 2", mutations.changes);
-            assert.deepEqual(res, TARGET_2)
+            assert.deepEqual(res, TARGET_2);
         });
     });
 
@@ -91,7 +91,7 @@ describe("ArrayMutations", function() {
 
         it("could be restored from mutations [3]", function() {
             // console.log("mutation 3", mutations.changes);
-            assert.deepEqual(res, TARGET_3)
+            assert.deepEqual(res, TARGET_3);
         });
     });
 
@@ -111,7 +111,7 @@ describe("ArrayMutations", function() {
 
         it("could be restored from mutations [4]", function() {
             // console.log("mutation 4", mutations.changes);
-            assert.deepEqual(res, TARGET_4)
+            assert.deepEqual(res, TARGET_4);
         });
     });
 
@@ -131,7 +131,7 @@ describe("ArrayMutations", function() {
 
         it("could be restored from mutations [5]", function() {
             // console.log("mutation 5", mutations.changes);
-            assert.deepEqual(res, TARGET_5)
+            assert.deepEqual(res, TARGET_5);
         });
     });
 });

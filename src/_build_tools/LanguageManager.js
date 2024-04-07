@@ -3,7 +3,7 @@ import path from "path";
 import through from "through";
 // import del from "del";
 
-const LNBR_SEQ = /(?:\r\n|\n|\r)/g
+const LNBR_SEQ = /(?:\r\n|\n|\r)/g;
 const EXTRACTORS = [
     {
         regEx: /@([^:]+):\s*(.+)\s*/,

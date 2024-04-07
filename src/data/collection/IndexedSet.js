@@ -26,12 +26,12 @@ class IndexedSetIterator {
             return {
                 value: this.#withKey ? [value, value] : value,
                 done: false
-            }
+            };
         }
         return {
             value: undefined,
             done: true
-        }
+        };
     }
 
 }

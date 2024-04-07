@@ -16,7 +16,7 @@ export default class ChoiceSelect extends ChildlistMutationObserverMixin(CustomE
         /* --- */
         this.#eventManager.set("click", (event) => {
             this.#clickOption(event);
-        })
+        });
     }
 
     #clickOption(event) {

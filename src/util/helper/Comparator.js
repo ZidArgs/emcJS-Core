@@ -78,10 +78,10 @@ export default class Comparator {
 
     registerComparator(clazz, comparator) {
         if (typeof clazz !== "function" || clazz.prototype == null) {
-            throw new TypeError("clazz must be a class or compositor.")
+            throw new TypeError("clazz must be a class or compositor.");
         }
         if (typeof comparator !== "function") {
-            throw new TypeError("comparator must be a function.")
+            throw new TypeError("comparator must be a function.");
         }
         this.#comparators.set(clazz, comparator);
     }

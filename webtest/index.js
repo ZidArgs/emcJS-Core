@@ -78,7 +78,7 @@ function scrollIntoViewIfNeeded(target) {
 
 function addEntry(targetEl, src, {label, children}, hashPrefix = "") {
     if (hashPrefix) {
-        hashPrefix = hashPrefix + "::"
+        hashPrefix = hashPrefix + "::";
     }
     const preSrc = `${SRC_PREFIX}${src}${SRC_SUFFIX}`;
     const preName = `${hashPrefix}${label.replace(/ /g, "_")}`;

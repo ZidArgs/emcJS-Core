@@ -35,7 +35,7 @@ let globalOmitStack = true;
 function formatStyle(style) {
     const result = [];
     for (const attr in style) {
-        result.push(`${attr}:${style[attr]}`)
+        result.push(`${attr}:${style[attr]}`);
     }
     return result.join(";");
 }

@@ -404,7 +404,7 @@ export default class SettingsTabContent extends CustomElement {
         });
         // add element
         const resetEl = resettable && createResetButton(() => {
-            storage.resetAll(Object.keys(convertedValues))
+            storage.resetAll(Object.keys(convertedValues));
         });
         const labelEl = generateField(label, desc, inputEl, storage, visible, resetEl);
         const containerEl = this.shadowRoot.getElementById("container");

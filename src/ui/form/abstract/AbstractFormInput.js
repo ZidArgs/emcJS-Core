@@ -117,7 +117,7 @@ export default class AbstractFormInput extends AbstractFormField {
 
     get value() {
         if (this.#value === undefined) {
-            return super.value
+            return super.value;
         }
         return this.#value;
     }

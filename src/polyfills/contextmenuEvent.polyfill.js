@@ -96,7 +96,7 @@ if (!isOnContextmenuSupported) {
             ADD_EVENT_LISTENER.call(this, "touchstart", startTouch, {passive: true});
         }
         ADD_EVENT_LISTENER.call(this, type, listener, options);
-    }
+    };
     HTMLElement.prototype.setAttribute = function(name, value) {
         if (name === ON_EVENT_NAME) {
             if (typeof value != "function") {

@@ -49,7 +49,7 @@ const ALLOW_INVALID = false;
 
 i18n.setTranslation("en", {
     "test.desc": "this is a test"
-})
+});
 i18n.language = "en";
 
 const [defaultValues, optionGroups, tokenGroups, buttonConfig, extraConfig, ...formConfig] = await Promise.all([

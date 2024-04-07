@@ -255,11 +255,11 @@ export default class TokenSelect extends CustomFormElementDelegating {
             } else if (!Array.isArray(value)) {
                 value = [value];
             } else {
-                value = [...value]
+                value = [...value];
             }
             if (!this.chooseonly && this.#tokenRegistry != null) {
                 for (const token of value) {
-                    this.#tokenRegistry.add(token)
+                    this.#tokenRegistry.add(token);
                 }
             }
             this.#value = value;
@@ -350,7 +350,7 @@ export default class TokenSelect extends CustomFormElementDelegating {
             } break;
             case "placeholder": {
                 if (oldValue != newValue) {
-                    this.#placeholderEl.setAttribute("i18n-value", newValue)
+                    this.#placeholderEl.setAttribute("i18n-value", newValue);
                 }
             } break;
             case "multiple": {
@@ -429,7 +429,7 @@ export default class TokenSelect extends CustomFormElementDelegating {
                 }
             } else {
                 if (this.#tokenRegistry != null) {
-                    this.#tokenRegistry.add(value)
+                    this.#tokenRegistry.add(value);
                 }
                 if (this.multiple) {
                     valueBuffer.add(value);
@@ -585,7 +585,7 @@ export default class TokenSelect extends CustomFormElementDelegating {
             this.#toggleToken(value, el);
         }
         event.stopPropagation();
-    }
+    };
 
     #toggleMarkedToken() {
         const el = this.#optionNodeList.querySelector(".marked");

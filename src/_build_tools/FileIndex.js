@@ -39,11 +39,14 @@ class FileIndex {
             usedImports = null,
             ignoreImportPaths = null,
             deleteUnused = true,
-            reportRemoved = false
+            reportRemoved = false,
+            silent = false
         } = config;
         const indexPath = path.resolve(dest, index);
         const indexPathNormal = normalizePath(indexPath);
-        console.log(`index file: ${indexPathNormal}`);
+        if (!silent) {
+            console.log(`index file: ${indexPathNormal}`);
+        }
         const destFiles = glob.sync("./**/*", {
             nodir: true,
             cwd: dest,
@@ -53,22 +56,30 @@ class FileIndex {
         const removedImports = [];
         if (deleteUnused) {
             if (usedImports != null) {
-                console.log("removing unused imports");
+                if (!silent) {
+                    console.log("removing unused imports");
+                }
                 for (const fName of FILES) {
                     if (fName.endsWith(".js") && !usedImports.has(fName)) {
                         if (ignoreImportPaths == null || !ignoreImportPaths.test(fName)) {
-                            console.log(`remove import: ${fName}`);
+                            if (!silent) {
+                                console.log(`remove import: ${fName}`);
+                            }
                             FILES.delete(fName);
                             removedImports.push(fName);
                         }
                     }
                 }
             }
-            console.log("deleting unused files");
+            if (!silent) {
+                console.log("deleting unused files");
+            }
             for (const i in destFiles) {
                 const fName = destFiles[i];
                 if (fName != indexPathNormal && !FILES.has(fName)) {
-                    console.log(`delete file: ${fName}`);
+                    if (!silent) {
+                        console.log(`delete file: ${fName}`);
+                    }
                     del.sync(fName);
                 }
             }
@@ -78,7 +89,9 @@ class FileIndex {
 
         const files = Array.from(FILES).sort().map((el)=>`/${path.relative(dest, el)}`.replace(/\\/g, "/"));
         files.push("/");
-        console.log("write new index");
+        if (!silent) {
+            console.log("write new index");
+        }
         fs.writeFileSync(indexPath, JSON.stringify(files, null, 4));
         if (reportRemoved) {
             fs.writeFileSync(path.resolve("import_removed.json"), JSON.stringify(removedImports.sort(), null, 4));

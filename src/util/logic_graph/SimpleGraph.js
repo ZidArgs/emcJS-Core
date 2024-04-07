@@ -41,7 +41,7 @@ export default class AccessGraph {
             queue.push(start);
             while (queue.length) {
                 const node = queue.shift();
-                reachableNodes.add(node.getName())
+                reachableNodes.add(node.getName());
                 for (const ch in node.getTargets()) {
                     const child = node.getEdge(ch).getTarget();
                     if (!reachableNodes.has(ch)) {

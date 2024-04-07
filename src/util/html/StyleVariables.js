@@ -2,7 +2,7 @@ import "../../polyfills/adoptedStyleSheet.polyfill.js";
 
 function createStyleSheet() {
     const styleEl = document.createElement("style");
-    styleEl.innerHTML = ":root {}"
+    styleEl.innerHTML = ":root {}";
     document.head.appendChild(styleEl);
     return styleEl.sheet;
 }

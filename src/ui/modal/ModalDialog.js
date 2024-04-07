@@ -57,13 +57,13 @@ export default class ModalDialog extends Modal {
         return new Promise((resolve) => {
             this.#onsubmit = function() {
                 resolve(true);
-            }
+            };
             this.#oncancel = function() {
                 resolve(false);
-            }
+            };
             this.#onclose = function() {
                 resolve();
-            }
+            };
             ModalLayer.append(this, "dialog");
             this.initialFocus();
         });

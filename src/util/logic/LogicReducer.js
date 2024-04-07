@@ -24,7 +24,7 @@ export function reduceLogic(input) {
                 return output.content[0];
             }
             if (output.content.some((e) => e.type == "false")) {
-                return {type: "false"}
+                return {type: "false"};
             }
             return output;
         }
@@ -40,7 +40,7 @@ export function reduceLogic(input) {
                 return output.content[0];
             }
             if (output.content.some((e) => e.type == "false")) {
-                return {type: "true"}
+                return {type: "true"};
             }
             return output;
         }
@@ -56,7 +56,7 @@ export function reduceLogic(input) {
                 return output.content[0];
             }
             if (output.content.some((e) => e.type == "true")) {
-                return {type: "true"}
+                return {type: "true"};
             }
             return output;
         }
@@ -72,7 +72,7 @@ export function reduceLogic(input) {
                 return output.content[0];
             }
             if (output.content.some((e) => e.type == "true")) {
-                return {type: "false"}
+                return {type: "false"};
             }
             return output;
         }
@@ -88,10 +88,10 @@ export function reduceLogic(input) {
                 return output.content[0];
             }
             if (output.content[0].type == "true" && output.content[1].type == "true" || output.content[0].type == "false" && output.content[1].type == "false") {
-                return {type: "false"}
+                return {type: "false"};
             }
             if (output.content[0].type == "false" && output.content[1].type == "true" || output.content[0].type == "true" && output.content[1].type == "false") {
-                return {type: "true"}
+                return {type: "true"};
             }
             return output;
         }
@@ -107,10 +107,10 @@ export function reduceLogic(input) {
                 return output.content[0];
             }
             if (output.content[0].type == "true" && output.content[1].type == "true" || output.content[0].type == "false" && output.content[1].type == "false") {
-                return {type: "true"}
+                return {type: "true"};
             }
             if (output.content[0].type == "false" && output.content[1].type == "true" || output.content[0].type == "true" && output.content[1].type == "false") {
-                return {type: "false"}
+                return {type: "false"};
             }
             return output;
         }
@@ -154,18 +154,18 @@ export function reduceLogic(input) {
             const output = {
                 "type": "not",
                 "content": reduceLogic(input.content)
-            }
+            };
             if (output.content == null) {
                 return;
             }
             if (output.content.type == "false") {
-                return {type: "true"}
+                return {type: "true"};
             }
             if (output.content.type == "true") {
-                return {type: "false"}
+                return {type: "false"};
             }
             if (output.content.type == "not") {
-                return output.content.content
+                return output.content.content;
             }
             return output;
         }

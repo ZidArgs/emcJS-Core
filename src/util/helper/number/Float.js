@@ -30,7 +30,7 @@ export function randomFloat(min = 0, max = Number.MAX_VALUE, fractionDigits = 20
         return NaN;
     }
     if (isNaN(fractionDigits)) {
-        fractionDigits = 20
+        fractionDigits = 20;
     }
     if (min > max) {
         [min, max] = [max, min];

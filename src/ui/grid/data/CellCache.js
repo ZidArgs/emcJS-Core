@@ -29,14 +29,14 @@ export default class CellCache {
     removeRow(row) {
         this.#rows.delete(row);
         for (const column of this.#columns.values()) {
-            column.delete(row)
+            column.delete(row);
         }
     }
 
     removeColumn(column) {
         this.#columns.delete(column);
         for (const row of this.#rows.values()) {
-            row.delete(column)
+            row.delete(column);
         }
     }
 

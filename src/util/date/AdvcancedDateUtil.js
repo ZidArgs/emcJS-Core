@@ -34,11 +34,11 @@ const FORMAT_FN = {
     },
     w: (date) => date.getDay(),
     z: () => {
-        throw new Error("day of the year (z) is not supported yet")
+        throw new Error("day of the year (z) is not supported yet");
     }, // 0 - 365
     // Week
     W: () => {
-        throw new Error("week of the year (W) is not supported yet")
+        throw new Error("week of the year (W) is not supported yet");
     }, // eg: 24 for the 42nd week
     // Month
     F: (date) => MONTH_NAMES_FULL[date.getMonth()],
@@ -46,11 +46,11 @@ const FORMAT_FN = {
     M: (date) => MONTH_NAMES_SHORT[date.getMonth()],
     n: (date) => date.getMonth() + 1,
     t: () => {
-        throw new Error("number of days in a month (t) is not supported yet")
+        throw new Error("number of days in a month (t) is not supported yet");
     }, // 28 - 31
     // Year
     L: () => {
-        throw new Error("leap year (L) is not supported yet")
+        throw new Error("leap year (L) is not supported yet");
     }, // 1 for leap, 0 otherwise
     Y: (date) => date.getFullYear(),
     y: (date) => `${date.getFullYear()}`.slice(-2),
@@ -72,15 +72,15 @@ const FORMAT_FN = {
     v: (date) => `00${date.getMilliseconds()}`.slice(-3),
     // Timezone
     e: () => {
-        throw new Error("timezone identifier (e) is not supported yet")
+        throw new Error("timezone identifier (e) is not supported yet");
     }, // eg: UTC, GMT, Atlantic/Azores
     I: () => {
-        throw new Error("daylight savings (I) is not supported yet")
+        throw new Error("daylight savings (I) is not supported yet");
     }, // 1 for daylight savings, 0 otherwise
     O: (date) => {
         const o = date.getTimezoneOffset();
         const n = o < 0;
-        const d = n ? -o : o
+        const d = n ? -o : o;
         const h = `0${Math.floor(d / 60)}`.slice(-2);
         const m = `0${d % 60}`.slice(-2);
         return `${n ? "-" : "+"}${h}${m}`;
@@ -88,7 +88,7 @@ const FORMAT_FN = {
     P: (date) => {
         const o = date.getTimezoneOffset();
         const n = o < 0;
-        const d = n ? -o : o
+        const d = n ? -o : o;
         const h = `0${Math.floor(d / 60)}`.slice(-2);
         const m = `0${d % 60}`.slice(-2);
         return `${n ? "-" : "+"}${h}:${m}`;

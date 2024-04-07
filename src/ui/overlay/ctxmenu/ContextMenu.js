@@ -99,7 +99,7 @@ export default class ContextMenu extends CustomElement {
         };
         this.#initFocusEl.onblur = () => {
             this.#initFocusEl.setAttribute("tabindex", "");
-        }
+        };
     }
 
     connectedCallback() {

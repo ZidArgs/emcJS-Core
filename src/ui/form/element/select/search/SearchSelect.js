@@ -283,7 +283,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
             } break;
             case "placeholder": {
                 if (oldValue != newValue) {
-                    this.#placeholderEl.setAttribute("i18n-value", newValue)
+                    this.#placeholderEl.setAttribute("i18n-value", newValue);
                 }
             } break;
             case "sorted": {

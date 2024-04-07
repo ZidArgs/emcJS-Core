@@ -19,7 +19,7 @@ export default class EntityRegistry {
     }
 
     [Symbol.iterator]() {
-        return this.#data[Symbol.iterator]()
+        return this.#data[Symbol.iterator]();
     }
 
 }

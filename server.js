@@ -7,7 +7,7 @@ const port = process.argv.indexOf("-port") >= 1 ? process.argv[process.argv.inde
 
 const service = new WebService(port, {enableCors});
 service.registerService(StaticService, "", {serveFolder: "./webtest"});
-service.registerService(DataProviderService, "/api/data")
+service.registerService(DataProviderService, "/api/data");
 
 const po = service.port.toString().padEnd(5);
 
