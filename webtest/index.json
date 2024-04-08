@@ -2,6 +2,12 @@
     "test": {
         "label": "Test"
     },
+    "datagrid": {
+        "label": "DataGrid"
+    },
+    "datalist": {
+        "label": "DataList"
+    },
     "tooltip": {
         "label": "Tooltip"
     },

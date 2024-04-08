@@ -10,7 +10,7 @@ import SimpleDataProvider from "../../../../../util/dataprovider/SimpleDataProvi
 import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
 import LogicElementModal from "../logic/components/modal/LogicElementModal.js";
 import "../search/SearchInput.js";
-import "../../../../grid/DataGrid.js";
+import "../../../../dataview/datagrid/DataGrid.js";
 import TPL from "./BoolOrLogicListInput.js.html" assert {type: "html"};
 import STYLE from "./BoolOrLogicListInput.js.css" assert {type: "css"};
 

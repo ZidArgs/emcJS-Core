@@ -6,7 +6,7 @@ import SimpleDataProvider from "../../../../../util/dataprovider/SimpleDataProvi
 import ModalDialog from "../../../../modal/ModalDialog.js";
 import "../search/SearchInput.js";
 import "../../../button/Button.js";
-import "../../../../grid/DataGrid.js";
+import "../../../../dataview/datagrid/DataGrid.js";
 import TPL from "./ListInput.js.html" assert {type: "html"};
 import STYLE from "./ListInput.js.css" assert {type: "css"};
 

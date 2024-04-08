@@ -11,7 +11,7 @@ import {
     getArrayMutations
 } from "../helper/collection/ArrayMutations.js";
 
-export default class ElementManager {
+export default class ElementManager extends EventTarget {
 
     #target;
 
@@ -33,6 +33,7 @@ export default class ElementManager {
         if (!(target instanceof HTMLElement)) {
             throw new TypeError("target must be of type HTMLElement");
         }
+        super();
         this.#target = target;
         this.#params = params;
     }
@@ -132,6 +133,7 @@ export default class ElementManager {
     }
 
     #render = debounce(() => {
+        this.dispatchEvent(new Event("beforerender"));
         const children = this.#target.children;
         if (children.length > 0) {
             const currentOrder = [...children].map((el) => el.getAttribute("em-key") ?? "");
@@ -175,6 +177,7 @@ export default class ElementManager {
             }
             this.#target.append(...els);
         }
+        this.dispatchEvent(new Event("afterrender"));
     });
 
     #checkChange(data) {

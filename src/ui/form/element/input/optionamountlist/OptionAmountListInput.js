@@ -9,7 +9,7 @@ import {
 import SimpleDataProvider from "../../../../../util/dataprovider/SimpleDataProvider.js";
 import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
 import "../search/SearchInput.js";
-import "../../../../grid/DataGrid.js";
+import "../../../../dataview/datagrid/DataGrid.js";
 import TPL from "./OptionAmountListInput.js.html" assert {type: "html"};
 import STYLE from "./OptionAmountListInput.js.css" assert {type: "css"};
 

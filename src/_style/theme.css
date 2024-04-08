@@ -151,28 +151,45 @@
     --tree-marked-text-color: #ffffff;
     --tree-marked-back-color: #000000;
 
-    /* === grid === */
-    --grid-text-color: #000000;
-    --grid-back-color: #ffffff;
-    --grid-border-color: #000000; /* all; top_bottom right_left; top right bottom left*/
-    --grid-border-width: var(--page-border-width, 2px);
-    --grid-border-radius: 6px;
+    /* === datagrid === */
+    --datagrid-text-color: #000000;
+    --datagrid-back-color: #ffffff;
+    --datagrid-border-color: #000000; /* all; top_bottom right_left; top right bottom left*/
+    --datagrid-border-width: var(--page-border-width, 2px);
+    --datagrid-border-radius: 6px;
 
-    --grid-empty-text-color: #666666;
-    --grid-empty-back-color: #dadada;
+    --datagrid-empty-text-color: #666666;
+    --datagrid-empty-back-color: #dadada;
 
-    --grid-column-seperator-width: 2px;
+    --datagrid-column-seperator-width: 2px;
 
-    --grid-header-text-color: #ffffff;
-    --grid-header-back-color: #000000;
-    --grid-header-seperator-color: #ffffff;
+    --datagrid-header-text-color: #ffffff;
+    --datagrid-header-back-color: #000000;
+    --datagrid-header-seperator-color: #ffffff;
 
-    --grid-row-seperator-width: 1px;
-    --grid-row-seperator-color: #696969;
+    --datagrid-row-seperator-width: 1px;
+    --datagrid-row-seperator-color: #696969;
 
-    --grid-row-seperator-color: #b4b4b4;
-    --grid-row-seperator-height: 1px;
-    --grid-row-hover-back-color: #e3f6fc;
+    --datagrid-row-seperator-color: #b4b4b4;
+    --datagrid-row-seperator-height: 1px;
+    --datagrid-row-hover-back-color: #e3f6fc;
+
+    /* === datalist === */
+    --datalist-back-color: #ffffff;
+    --datalist-border-color: #000000; /* all; top_bottom right_left; top right bottom left*/
+    --datalist-border-width: var(--page-border-width, 2px);
+    --datalist-border-radius: 6px;
+
+    --datalist-empty-text-color: #666666;
+    --datalist-empty-back-color: #dadada;
+
+    --datalist-entry-text-color: #000000;
+    --datalist-entry-back-color: #ffffff;
+    --datalist-entry-hover-text-color: #000000;
+    --datalist-entry-hover-back-color: #e3f6fc;
+    --datalist-entry-border-color: #000000; /* all; top_bottom right_left; top right bottom left*/
+    --datalist-entry-border-width: var(--page-border-width, 2px);
+    --datalist-entry-border-radius: 10px;
 
     /* === scrollbar === */
     --scrollbar-size: 10px;

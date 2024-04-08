@@ -1,0 +1,20 @@
+#container {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    box-sizing: border-box;
+    padding: 8px;
+    margin: 5px;
+    color: var(--datalist-entry-text-color, #000000);
+    background-color: var(--datalist-entry-back-color, #ffffff);
+    border: solid var(--datalist-entry-border-width, 2px) var(--datalist-entry-border-color, #000000);
+    border-radius: var(--datalist-entry-border-radius, 10px);
+    font-size: 1em;
+    font-family: Arial, Helvetica, sans-serif;
+    word-break: break-all;
+}
+
+#container:hover {
+    color: var(--datalist-entry-hover-text-color, #000000);
+    background-color: var(--datalist-entry-hover-back-color, #ffffff);
+}

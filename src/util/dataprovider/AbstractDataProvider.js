@@ -8,7 +8,7 @@ import {
     debounce
 } from "../Debouncer.js";
 import EventTargetManager from "../event/EventTargetManager.js";
-import PaginationToolbar from "../../ui/grid/components/pagination/PaginationToolbar.js";
+import PaginationToolbar from "../../ui/dataview/toolbar/PaginationToolbar.js";
 import DataRecieverMixin from "./DataRecieverMixin.js";
 
 const DEFAULT_OPTIONS = {sort: [], page: 0, pageSize: 0, filter: {}, filterFunction: false};

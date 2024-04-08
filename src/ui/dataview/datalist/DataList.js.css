@@ -1,0 +1,57 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    min-width: 250px;
+    min-height: 400px;
+    width: 500px;
+    margin: 8px;
+    background-color: var(--datalist-back-color, #ffffff);
+    border: solid var(--datalist-border-width, 2px) var(--datalist-border-color, #000000);
+    border-radius: var(--datalist-border-radius, 30px);
+}
+#scroll-container {
+    flex-grow: 1;
+    flex-shrink: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+#content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+#empty {
+    position: sticky;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    top: 50px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    max-height: 200px;
+    min-width: calc(200px - var(--scrollbar-size, 0px) - 4px); /* --datagrid-border-width * 2 */
+    min-height: 2rem;
+    width: 100%;
+    pointer-events: none;
+    user-select: none;
+}
+#empty .empty-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 30px;
+    color: var(--datalist-empty-text-color, #666666);
+    background-color: var(--datalist-empty-back-color, #dadada);
+    white-space: normal;
+    font-style: italic;
+}
+#empty.hidden {
+    display: none;
+}

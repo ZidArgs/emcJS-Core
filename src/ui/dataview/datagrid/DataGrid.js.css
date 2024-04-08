@@ -1,0 +1,198 @@
+:host {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100px;
+    min-width: 200px;
+    height: 200px;
+    width: 300px;
+    margin: 8px;
+    color: var(--datagrid-text-color, #000000);
+    background-color: var(--datagrid-back-color, #ffffff);
+    border: solid var(--datagrid-border-width, 2px) var(--datagrid-border-color, #000000);
+    border-radius: var(--datagrid-border-radius, 6px);
+    overflow: auto;
+    scroll-padding-top: 3em;
+    scroll-padding-bottom: 0.5em;
+}
+:host([nohead]:not([nohead="false"])) {
+    scroll-padding-top: 0.5em;
+}
+#table {
+    min-width: 100%;
+    border-spacing: 0px;
+}
+:host([nohead]:not([nohead="false"])) .head th {
+    height: 0px;
+    font-size: 0px;
+}
+.head th {
+    position: sticky;
+    box-sizing: border-box;
+    top: 0px;
+    min-width: 50px;
+    height: 2.5em;
+    padding: 0px 8px;
+    color: var(--datagrid-header-text-color, #ffffff);
+    background-color: var(--datagrid-header-back-color, #000000);
+    white-space: pre;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    z-index: 10;
+}
+:host([stretch="last"]) th:last-child {
+    width: 100%;
+}
+.head th:not(:first-child):not(:nth-child(2)):not(.lastCell) {
+    border-left: solid var(--datagrid-column-seperator-width, 2px) var(--datagrid-header-seperator-color, #ffffff);
+}
+.head th.lastCell {
+    padding: 0px;
+    min-width: 0px;
+    width: 100%;
+}
+.head th.lastCell:not(:first-child) {
+    box-shadow: inset var(--datagrid-header-seperator-color, #ffffff) var(--datagrid-column-seperator-width, 2px) 0px 0px;
+}
+#body tr:hover {
+    background-color: var(--datagrid-row-hover-back-color, #e3f6fc);
+}
+#body tr > * {
+    box-sizing: border-box;
+    height: 2.5em;
+    padding: 0px;
+    border-bottom: solid var(--datagrid-row-seperator-width, 1px) var(--datagrid-row-seperator-color, #696969);
+    overflow: hidden;
+}
+#body tr > *.empty {
+    color: #00000019;
+}
+#body tr > *.lastCell {
+    padding: 0px;
+}
+#empty {
+    position: sticky;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    max-height: 200px;
+    min-width: calc(200px - var(--scrollbar-size, 0px) - 4px); /* --datagrid-border-width * 2 */
+    min-height: 2rem;
+    width: 100%;
+    pointer-events: none;
+    user-select: none;
+}
+#empty .empty-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 30px;
+    color: var(--datagrid-empty-text-color, #666666);
+    background-color: var(--datagrid-empty-back-color, #dadada);
+    white-space: normal;
+    font-style: italic;
+}
+#options-container,
+#empty.hidden {
+    display: none;
+}
+.select-cell {
+    display: none;
+    text-align: center;
+}
+#body tr > .select-cell {
+    padding: 0px;
+}
+.head th.select-cell {
+    min-width: 40px;
+    padding: 0px;
+}
+.head th.select-cell:not(:nth-last-child(2)) {
+    border-right: solid var(--datagrid-column-seperator-width, 2px) var(--datagrid-header-seperator-color, #ffffff);
+}
+:host([selectable]:not([selectable="false"])) .select-cell {
+    display: table-cell;
+}
+:host([selectable="single"]) .head th.select-cell input[type="checkbox"],
+:host([nohead]:not([nohead="false"])) .head th.select-cell input[type="checkbox"] {
+    display: none;
+}
+.select-cell input[type="checkbox"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0px;
+    color: inherit;
+    cursor: pointer;
+    appearance: none;
+    outline: none;
+}
+.select-cell input[type="checkbox"] {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    appearance: none;
+    flex-grow: 0;
+    width: 1.4em;
+    height: 1.4em;
+    padding: 2px;
+    margin: 0px;
+    margin-right: auto;
+    color: var(--datagrid-text-color, #000000);
+    background-color: var(--datagrid-back-color, #ffffff);
+    border: solid 2px var(--datagrid-text-color, #000000);
+    border-radius: 0.3em;
+    font-size: 16px;
+    cursor: pointer;
+}
+th.select-cell input[type="checkbox"] {
+    color: var(--datagrid-header-text-color, #ffffff);
+    background-color: var(--datagrid-header-back-color, #000000);
+    border-color: var(--datagrid-header-text-color, #ffffff);
+}
+.select-cell input[type="checkbox"]:checked:not(:indeterminate) {
+    color: var(--datagrid-back-color, #ffffff);
+    background-color: var(--datagrid-text-color, #000000);
+}
+th.select-cell input[type="checkbox"]:checked:not(:indeterminate) {
+    color: var(--datagrid-header-back-color, #000000);
+    background-color: var(--datagrid-header-text-color, #ffffff);
+}
+.select-cell input[type="checkbox"]:focus {
+    box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
+    outline: none;
+}
+.select-cell input[type="checkbox"]::before {
+    font-size: 1.1em;
+    line-height: 1em;
+    font-family: monospace;
+    font-weight: bold;
+    content: " ";
+}
+.select-cell input[type="checkbox"]:checked::before {
+    content: "✓";
+}
+.select-cell input[type="checkbox"]:indeterminate::before {
+    content: "•";
+}
+@-moz-document url-prefix() {
+    
+    .head th {
+        padding: 0px;
+    }
+ 
+    .head th.select-cell {
+        min-width: 38px;
+    }
+
+    .head th:not(:first-child):not(:nth-child(2)):not(.lastCell) {
+        border-left: none;
+        box-shadow: inset var(--datagrid-header-seperator-color, #ffffff) var(--datagrid-column-seperator-width, 2px) 0px 0px;
+    }
+ 
+}
