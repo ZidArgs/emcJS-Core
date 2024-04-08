@@ -5,7 +5,7 @@
     justify-content: center;
     min-width: 250px;
     min-height: 400px;
-    width: 500px;
+    width: 300px;
     margin: 8px;
     background-color: var(--datalist-back-color, #ffffff);
     border: solid var(--datalist-border-width, 2px) var(--datalist-border-color, #000000);
@@ -45,12 +45,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100px;
+    min-width: 100px;
+    padding: 20px;
     height: 30px;
     color: var(--datalist-empty-text-color, #666666);
     background-color: var(--datalist-empty-back-color, #dadada);
-    white-space: normal;
+    font-size: 16px;
     font-style: italic;
+    white-space: nowrap;
 }
 #empty.hidden {
     display: none;

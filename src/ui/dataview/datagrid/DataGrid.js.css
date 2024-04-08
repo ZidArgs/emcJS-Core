@@ -90,12 +90,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100px;
+    min-width: 100px;
+    padding: 20px;
     height: 30px;
-    color: var(--datagrid-empty-text-color, #666666);
-    background-color: var(--datagrid-empty-back-color, #dadada);
-    white-space: normal;
+    color: var(--datalist-empty-text-color, #666666);
+    background-color: var(--datalist-empty-back-color, #dadada);
+    font-size: 16px;
     font-style: italic;
+    white-space: nowrap;
 }
 #options-container,
 #empty.hidden {
