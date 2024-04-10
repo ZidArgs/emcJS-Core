@@ -1,6 +1,9 @@
 :host {
     display: flex;
 }
+/*
+TODO add navigation button variables
+*/
 button {
     display: flex;
     justify-content: var(--justify-content, center);
@@ -11,6 +14,7 @@ button {
     border: none;
     border-radius: 0;
     background-color: var(--navigation-back-color, #ffffff);
+    background-image: var(--navigation-back-image, none);
     color: var(--navigation-text-color, #000000);
     font-weight: bold;
     font-size: 1em;

@@ -20,10 +20,12 @@
     margin: 6px;
     color: var(--form-text-color, #000000);
     /* background-color: var(--form-back-color, #ffffff); */
+    /* background-image: var(--form-back-image, none); */
 }
 .container:hover {
     color: var(--form-hover-text-color, #000000);
     background-color: var(--form-hover-back-color, #eeeeee);
+    background-image: var(--form-hover-back-image, none);
 }
 #label {
     display: flex;
@@ -58,6 +60,7 @@
 }
 #field-container input:invalid {
     background-color: var(--input-invalid-back-color, #ffebeb);
+    background-image: var(--input-invalid-back-image, none);
 }
 #error {
     display: block;
@@ -66,6 +69,7 @@
     margin-top: 5px;
     color: var(--form-invalid-text-color, #a70000);
     background-color: var(--form-invalid-back-color, #ffeeee);
+    background-image: var(--form-invalid-back-image, none);
     font-size: 0.9em;
     line-height: 1.4em;
     font-style: italic;

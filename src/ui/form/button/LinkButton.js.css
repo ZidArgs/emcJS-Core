@@ -3,18 +3,18 @@
     width: min-content;
     height: 2em;
     margin: 10px;
-    border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
-    border-radius: var(--form-border-radius, 6px);
+    border: solid var(--button-border-width, 2px) var(--form-border-color, #000000);
+    border-radius: var(--button-border-radius, 6px);
     user-select: none;
     overflow: hidden;
     font-size: 1rem;
 }
 :host(:disabled) {
-    border-color: var(--input-disabled-border-color, #6a6a6a);
+    border-color: var(--button-disabled-border-color, #6a6a6a);
     pointer-events: none;
 }
 :host(:focus) {
-    box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
+    box-shadow: 0 0 2px 3px var(--button-focus-color, #06b5ff);
     outline: none;
 }
 #button {
@@ -28,6 +28,7 @@
     appearance: none;
     color: var(--button-text-color, #000000);
     background-color: var(--button-back-color, #cccccc);
+    background-image: var(--button-back-image, none);
     border: none;
     font-size: 1em;
     font-weight: bold;
@@ -48,10 +49,12 @@
 #button:hover {
     color: var(--button-hover-text-color, #ffffff);
     background-color: var(--button-hover-back-color, #000000);
+    background-image: var(--button-hover-back-image, none);
 }
 #button[disabled]:not([disabled="false"]) {
     color: var(--input-disabled-text-color, #757575);
-    background-color: var(--input-disabled-back-color, #999999);
+    background-color: var(--button-disabled-back-color, #999999);
+    background-image: var(--button-disabled-back-image, none);
     cursor: default;
 }
 #button:focus {
@@ -65,12 +68,12 @@
     margin-left: 5px;
 }
 #button:hover #link-icon path {
-    stroke: var(--input-back-color, #ffffff);
-    fill: var(--input-back-color, #ffffff);
+    stroke: var(--button-back-color, #ffffff);
+    fill: var(--button-back-color, #ffffff);
 }
 #button[disabled]:not([disabled="false"]) #link-icon path {
-    stroke: var(--input-disabled-text-color, #757575);
-    fill: var(--input-disabled-text-color, #757575);
+    stroke: var(--button-disabled-text-color, #757575);
+    fill: var(--button-disabled-text-color, #757575);
 }
 #button[icon]:not([icon=""])::before {
     display: inline-flex;

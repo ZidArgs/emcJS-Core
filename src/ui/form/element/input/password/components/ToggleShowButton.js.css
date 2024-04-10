@@ -24,6 +24,7 @@
     appearance: none;
     color: var(--button-text-color, #000000);
     background-color: var(--button-back-color, #cccccc);
+    background-image: var(--button-back-image, none);
     border: none;
     font-size: 1.5em;
     font-weight: bold;
@@ -35,7 +36,8 @@
 }
 #button:disabled {
     color: var(--input-disabled-text-color, #757575);
-    background-color: var(--input-disabled-back-color, #999999);
+    background-color: var(--button-disabled-back-color, #999999);
+    background-image: var(--button-disabled-back-image, none);
     cursor: default;
 }
 #button:focus {
@@ -82,8 +84,8 @@
 }
 #button:disabled::after {
     text-shadow:
-        1px 1px var(--input-disabled-back-color, #999999),
-        -1px 1px var(--input-disabled-back-color, #999999),
-        1px -1px var(--input-disabled-back-color, #999999),
-        -1px -1px var(--input-disabled-back-color, #999999);
+        1px 1px var(--button-disabled-back-color, #999999),
+        -1px 1px var(--button-disabled-back-color, #999999),
+        1px -1px var(--button-disabled-back-color, #999999),
+        -1px -1px var(--button-disabled-back-color, #999999);
 }

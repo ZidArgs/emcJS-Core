@@ -14,6 +14,7 @@
     overflow-x: hidden;
     overflow-y: auto;
     background-color: var(--panel-back-color, #ffffff);
+    background-image: var(--panel-back-image, none);
     border: solid var(--panel-border-width, 2px) var(--panel-border-color, #000000);
     border-radius: 0px 0px var(--panel-border-radius, 6px) var(--panel-border-radius, 6px);
 }

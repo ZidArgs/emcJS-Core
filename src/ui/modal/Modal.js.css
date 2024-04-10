@@ -35,6 +35,7 @@
     margin-top: 100px;
     color: var(--modal-text-color, #000000);
     background-color: var(--modal-back-color, #ffffff);
+    background-image: var(--modal-back-image, none);
     border: solid var(--modal-border-width, 2px) var(--modal-border-color, #cccccc);
     border-radius: 4px;
     resize: both;
@@ -49,6 +50,7 @@
     display: flex;
     color: var(--modal-header-text-color, #000000);
     background-color: var(--modal-header-back-color, #e4e4e4);
+    background-image: var(--modal-header-back-image, none);
     border-bottom: solid var(--modal-border-width, 2px) var(--modal-border-color, #cccccc);
 }
 #footer {
@@ -59,6 +61,7 @@
     padding: 5px;
     color: var(--modal-footer-text-color, #000000);
     background-color: var(--modal-footer-back-color, #e4e4e4);
+    background-image: var(--modal-footer-back-image, none);
     border-top: solid var(--modal-border-width, 2px) var(--modal-border-color, #cccccc);
 }
 #footer:empty {
@@ -73,6 +76,7 @@
     justify-content: center;
     color: var(--modal-close-text-color, #b4b4b4);
     background-color: var(--modal-close-back-color, #ffb9b9);
+    background-image: var(--modal-close-back-image, none);
     cursor: pointer;
     user-select: none;
     appearance: none;
@@ -82,6 +86,7 @@
 #close:hover {
     color: var(--modal-close-hover-text-color, #ffffff);
     background-color: var(--modal-close-hover-back-color, #ff0000);
+    background-image: var(--modal-close-hover-back-image, none);
 }
 #close:focus {
     box-shadow: inset var(--modal-close-focus-color, #000000) 0 0px 3px 4px;

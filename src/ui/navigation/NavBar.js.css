@@ -5,6 +5,7 @@
     width: 100%;
     min-height: 40px;
     background-color: var(--navigation-back-color, #ffffff);
+    background-image: var(--navigation-back-image, none);
     color: var(--navigation-text-color, #000000);
     flex-grow: 0;
     flex-shrink: 0;
@@ -53,6 +54,7 @@ ul li {
     min-width: 150px;
     padding: 5px;
     background-color: var(--navigation-back-color, #ffffff);
+    background-image: var(--navigation-back-image, none);
 }
 ul > li {
     display: inline-block;

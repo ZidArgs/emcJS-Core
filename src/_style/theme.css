@@ -5,6 +5,7 @@
     /* === page === */
     --page-text-color: #000000;
     --page-back-color: #ffffff;
+    --page-back-image: none;
     --page-border-color: #000000; /* all; top_bottom right_left; top right bottom left*/
     --page-border-width: 2px;
     --page-border-radius: 6px;
@@ -12,17 +13,21 @@
     /* === navigation === */
     --navigation-text-color: #000000;
     --navigation-back-color: #ffffff;
+    --navigation-back-image: none;
     --navigation-shadow-color: #000000;
     --navigation-marker-color: #ffffff;
 
     /* === dialog === */
     --modal-back-color: #ffffff;
+    --modal-back-image: none;
     --modal-text-color: #000000;
 
     --modal-close-back-color: #ffb9b9;
+    --modal-close-back-image: none;
     --modal-close-text-color: #000000;
 
     --modal-close-hover-back-color: #ff0000;
+    --modal-close-hover-back-image: none;
     --modal-close-hover-text-color: #ffffff;
 
     --modal-close-focus-color: #000000;
@@ -31,9 +36,11 @@
     --modal-border-width: var(--page-border-width, 2px);
 
     --modal-header-back-color: #e4e4e4;
+    --modal-header-back-image: none;
     --modal-header-text-color: #000000;
 
     --modal-footer-back-color: #e4e4e4;
+    --modal-footer-back-image: none;
     --modal-footer-text-color: #000000;
 
     --modal-icon-default-color: #000000;
@@ -50,121 +57,160 @@
     /* === panel === */
     --panel-text-color: var(--page-text-color, #000000);
     --panel-back-color: var(--page-back-color, #ffffff);
+    --panel-back-image: none;
     --panel-border-color: var(--page-border-color, #000000);
     --panel-border-width: var(--page-border-width, 2px);
     --panel-border-radius: var(--page-border-radius, 6px);
     --panel-header-text-color: var(--panel-text-color, #000000);
     --panel-header-back-color: var(--panel-back-color, #ffffff);
+    --panel-header-back-image: none;
     --panel-input-text-color: var(--panel-text-color, #000000);
     --panel-input-back-color: var(--panel-back-color, #ffffff);
+    --panel-input-back-image: none;
 
     /* === form === */
     --form-text-color: #000000;
     --form-back-color: #ffffff;
+    --form-back-image: none;
     --form-border-color: #000000; /* all; top_bottom right_left; top right bottom left*/
     --form-border-width: var(--page-border-width, 2px);
     --form-border-radius: var(--page-border-radius, 6px);
 
     --form-hover-text-color: #000000;
     --form-hover-back-color: #eeeeee;
+    --form-hover-back-image: none;
 
     --form-invalid-text-color: #a70000;
     --form-invalid-back-color: #ffeeee;
+    --form-invalid-back-image: none;
 
     /* === fieldset === */
     --fieldset-back-color: #ffffff;
+    --fieldset-back-image: none;
     --fieldset-border-width: var(--form-border-width, 2px);
     --fieldset-border-radius: var(--form-border-radius, 6px);
 
     /* === input === */
     --input-text-color: #000000;
     --input-back-color: #ffffff;
+    --input-back-image: none;
     --input-focus-color: #06b5ff;
     --input-placeholder-text-color: #757575;
 
     --input-invalid-back-color: #ffebeb;
+    --input-invalid-back-image: none;
     --input-invalid-border-color: #ff2500; /* all; top_bottom right_left; top right bottom left*/
     --input-invalid-focus-color: #ff2500;
 
     --input-disabled-text-color: #757575;
     --input-disabled-back-color: #999999;
+    --input-disabled-back-image: none;
     --input-disabled-border-color: #6a6a6a; /* all; top_bottom right_left; top right bottom left*/
 
     /* === switch === */
     --switch-checked-back-color: #9ee1ec;
+    --switch-checked-back-image: none;
+
     --switch-indeterminate-back-color: #ffffff;
+    --switch-indeterminate-back-image: none;
+
     --switch-unchecked-back-color: #ffffff;
+    --switch-unchecked-back-image: none;
 
     /* === range === */
-    --range-track-back-color: #00000000;
-    --range-track-front-color: #000000;
+    --range-track-color: #f5f5f5;
+    --range-track-image: none;
 
-    --range-track-disabled-back-color: #b5b5b5;
-    --range-track-disabled-front-color: #464646;
+    --range-fill-color: #000000;
+    --range-fill-image: none;
 
-    --range-track-back-top-color: var(--range-track-back-color, #00000000);
-    --range-track-back-bottom-color: var(--range-track-back-color, #00000000);
-    --range-track-front-top-color: var(--range-track-front-color, #000000);
-    --range-track-front-bottom-color: var(--range-track-front-color, #000000);
+    --range-invalid-track-color: #ff9987;
+    --range-invalid-track-image: none;
 
-    --range-track-disabled-back-top-color: var(--range-track-disabled-back-color, #b5b5b5);
-    --range-track-disabled-back-bottom-color: var(--range-track-disabled-back-color, #b5b5b5);
-    --range-track-disabled-front-top-color: var(--range-track-disabled-front-color, #464646);
-    --range-track-disabled-front-bottom-color: var(--range-track-disabled-front-color, #464646);
+    --range-invalid-fill-color: #a70000;
+    --range-invalid-fill-image: none;
+
+    --range-disabled-track-color: #b5b5b5;
+    --range-disabled-track-image: none;
+
+    --range-disabled-fill-color: #464646;
+    --range-disabled-fill-image: none;
 
     /* === select === */
     --select-option-divider-color: #949494;
     --select-option-text-color: #000000;
     --select-option-back-color: #ffffff;
+    --select-option-back-image: none;
 
     --select-option-marked-text-color: #000000;
     --select-option-marked-back-color: #b1f4ff;
+    --select-option-marked-back-image: none;
 
     --select-option-selected-text-color: #000000;
     --select-option-selected-back-color: #dbdbdb;
+    --select-option-selected-back-image: none;
 
     --select-option-selected-marked-text-color: #000000;
     --select-option-selected-marked-back-color: #26e0ff;
+    --select-option-selected-marked-back-image: none;
 
     /* === button === */
     --button-text-color: #000000;
     --button-back-color: #eaeaea;
+    --button-back-image: none;
     --button-border-color: #000000; /* all; top_bottom right_left; top right bottom left*/
+    --button-border-width: var(--page-border-width, 2px);
+    --button-border-radius: var(--page-border-radius, 6px);
     --button-hover-text-color: #ffffff;
     --button-hover-back-color: #353935;
+    --button-hover-back-image: none;
     --button-hover-border-color: #000000; /* all; top_bottom right_left; top right bottom left*/
+    --button-focus-color: var(--input-focus-color, #06b5ff);
 
     --button-primary-text-color: #000000;
     --button-primary-back-color: #00dbd0;
+    --button-primary-back-image: none;
     --button-primary-border-color: #007b75; /* all; top_bottom right_left; top right bottom left*/
     --button-primary-hover-text-color: #ffffff;
     --button-primary-hover-back-color: #353935;
+    --button-primary-hover-back-image: none;
     --button-primary-hover-border-color: #000000; /* all; top_bottom right_left; top right bottom left*/
+
+    --button-disabled-text-color: var(--input-disabled-text-color, #757575);
+    --button-disabled-back-color: var(--input-disabled-back-color, #999999);
+    --button-disabled-back-image: none;
+    --button-disabled-border-color: var(--input-disabled-border-color, #6a6a6a); /* all; top_bottom right_left; top right bottom left*/
 
     /* === tree === */
     --tree-text-color: #000000;
     --tree-back-color: #ffffff;
+    --tree-back-image: none;
 
     --tree-hover-text-color: #000000;
     --tree-hover-back-color: #cccccc;
+    --tree-hover-back-image: none;
 
     --tree-marked-text-color: #ffffff;
     --tree-marked-back-color: #000000;
+    --tree-marked-back-image: none;
 
     /* === datagrid === */
     --datagrid-text-color: #000000;
     --datagrid-back-color: #ffffff;
+    --datagrid-back-image: none;
     --datagrid-border-color: #000000; /* all; top_bottom right_left; top right bottom left*/
     --datagrid-border-width: var(--page-border-width, 2px);
     --datagrid-border-radius: 6px;
 
     --datagrid-empty-text-color: #666666;
     --datagrid-empty-back-color: #dadada;
+    --datagrid-empty-back-image: none;
 
     --datagrid-column-seperator-width: 2px;
 
     --datagrid-header-text-color: #ffffff;
     --datagrid-header-back-color: #000000;
+    --datagrid-header-back-image: none;
     --datagrid-header-seperator-color: #ffffff;
 
     --datagrid-row-seperator-width: 1px;
@@ -172,24 +218,37 @@
 
     --datagrid-row-seperator-color: #b4b4b4;
     --datagrid-row-seperator-height: 1px;
+
     --datagrid-row-hover-back-color: #e3f6fc;
+    --datagrid-row-hover-back-image: none;
 
     /* === datalist === */
     --datalist-back-color: #ffffff;
+    --datalist-back-image: none;
     --datalist-border-color: #000000; /* all; top_bottom right_left; top right bottom left*/
     --datalist-border-width: var(--page-border-width, 2px);
     --datalist-border-radius: 6px;
 
     --datalist-empty-text-color: #666666;
     --datalist-empty-back-color: #dadada;
+    --datalist-empty-back-image: none;
 
     --datalist-entry-text-color: #000000;
     --datalist-entry-back-color: #ffffff;
+    --datalist-entry-back-image: none;
+
     --datalist-entry-hover-text-color: #000000;
     --datalist-entry-hover-back-color: #e3f6fc;
+    --datalist-entry-hover-back-image: none;
+    
     --datalist-entry-border-color: #000000; /* all; top_bottom right_left; top right bottom left*/
     --datalist-entry-border-width: var(--page-border-width, 2px);
     --datalist-entry-border-radius: 10px;
+
+    /* === pagination === */
+    --pagination-border-width: var(--page-border-width, 2px);
+    --pagination-border-radius: var(--page-border-radius, 2px);
+    --pagination-focus-color: var(--input-focus-color, #06b5ff);
 
     /* === scrollbar === */
     --scrollbar-size: 10px;

@@ -22,6 +22,8 @@ export default class RangeInput extends AbstractFormInput {
 
     #fieldEl;
 
+    #inputContainerEl;
+
     #inputEl;
 
     #numberEl;
@@ -33,6 +35,7 @@ export default class RangeInput extends AbstractFormInput {
         /* --- */
         this.#fieldEl = this.shadowRoot.getElementById("field");
         /* --- */
+        this.#inputContainerEl = this.shadowRoot.getElementById("input-container");
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#inputEl.addEventListener("input", () => {
             this.#applyValueToBar(this.#inputEl.value);
@@ -170,12 +173,12 @@ export default class RangeInput extends AbstractFormInput {
             if (min < max) {
                 const parts = max - min;
                 if (parts < this.#inputEl.offsetWidth / 10) {
-                    this.#inputEl.classList.add("scratched");
+                    this.#inputContainerEl.classList.add("scratched");
                     return;
                 }
             }
         }
-        this.#inputEl.classList.remove("scratched");
+        this.#inputContainerEl.classList.remove("scratched");
     }
 
 }

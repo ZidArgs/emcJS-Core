@@ -11,6 +11,7 @@
     padding: 8px;
     color: var(--panel-header-text-color, #000000);
     background-color: var(--panel-header-back-color, #ffffff);
+    background-image: var(--panel-header-image, none);
     border-bottom: solid var(--panel-border-width, 2px) var(--panel-border-color, #000000);
 }
 #body {
@@ -20,6 +21,7 @@
     flex: 1;
     color: var(--panel-text-color, #000000);
     background-color: var(--panel-back-color, #ffffff);
+    background-image: var(--panel-back-image, none);
     overflow-x: auto;
     overflow-y: auto;
 }

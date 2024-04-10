@@ -1,5 +1,6 @@
 :host {
-    display: contents;
+    display: block;
+    margin: 10px;
 }
 #container {
     position: relative;
@@ -13,10 +14,15 @@
     margin: 0px;
     background-color: transparent;
     border: none;
-    font-size: 1rem;
+    font-size: 1em;
+    --button-border-width: var(--pagination-border-width, 2px);
+    --button-border-radius: var(--pagination-border-radius, 6px);
+    --input-focus-color: var(--pagination-focus-color, #06b5ff);
+    --button-focus-color: var(--pagination-focus-color, #06b5ff);
 }
 #container > * {
     margin: 0px;
+    font-size: 1em;
 }
 #container > *:focus {
     z-index: 1;
@@ -39,7 +45,8 @@
     padding: 0px 10px;
     color: var(--input-text-color, #000000);
     background-color: var(--input-back-color, #ffffff);
-    border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
+    background-image: var(--input-back-image, none);
+    border: solid var(--pagination-border-width, 2px) var(--form-border-color, #000000);
     font-size: 1em;
     text-align: end;
 }
@@ -77,33 +84,35 @@
     padding: 0px 10px;
     color: var(--button-text-color, #000000);
     background-color: var(--button-back-color, #eaeaea);
-    border: solid var(--form-border-width, 2px) var(--button-border-color, #000000);
+    background-image: var(--button-back-image, none);
+    border: solid var(--pagination-border-width, 2px) var(--button-border-color, #000000);
     white-space: nowrap;
     user-select: none;
     overflow: hidden;
-    font-size: 1rem;
+    font-size: 1em;
 }
 #size,
 #total {
-    border-top-right-radius: var(--form-border-radius, 6px);
-    border-bottom-right-radius: var(--form-border-radius, 6px);
+    border-top-right-radius: var(--pagination-border-radius, 6px);
+    border-bottom-right-radius: var(--pagination-border-radius, 6px);
 }
 #decrease,
 #increase,
 #max-text {
-    margin-left: calc(var(--form-border-width, 2px) * -1);
-    margin-right: calc(var(--form-border-width, 2px) * -1);
+    margin-left: calc(var(--pagination-border-width, 2px) * -1);
+    margin-right: calc(var(--pagination-border-width, 2px) * -1);
 }
 #size-text,
 #total-text {
     margin-left: 10px;
-    margin-right: calc(var(--form-border-width, 2px) * -1);
-    border-top-left-radius: var(--form-border-radius, 6px);
-    border-bottom-left-radius: var(--form-border-radius, 6px);
+    margin-right: calc(var(--pagination-border-width, 2px) * -1);
+    border-top-left-radius: var(--pagination-border-radius, 6px);
+    border-bottom-left-radius: var(--pagination-border-radius, 6px);
 }
 #current:disabled {
     color: var(--button-text-color, #000000);
     background-color: var(--button-back-color, #eaeaea);
+    background-image: var(--button-back-image, none);
 }
 #size {
     display: none;
@@ -113,6 +122,7 @@
     cursor: default;
     color: var(--button-text-color, #000000);
     background-color: var(--button-back-color, #eaeaea);
+    background-image: var(--button-back-image, none);
     opacity: 1;
     appearance: none;
 }
@@ -120,7 +130,7 @@
 #decrease:disabled,
 #increase:disabled,
 #last:disabled {
-    border: solid var(--form-border-width, 2px) var(--button-border-color, #000000);
+    border: solid var(--pagination-border-width, 2px) var(--button-border-color, #000000);
 }
 :host([show-size]:not([show-size="false"])) #size-text,
 :host([show-total]:not([show-total="false"])) #total-text,

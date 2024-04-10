@@ -8,6 +8,7 @@
     width: 300px;
     margin: 8px;
     background-color: var(--datalist-back-color, #ffffff);
+    background-image: var(--datalist-back-image, none);
     border: solid var(--datalist-border-width, 2px) var(--datalist-border-color, #000000);
     border-radius: var(--datalist-border-radius, 30px);
 }
@@ -50,6 +51,7 @@
     height: 30px;
     color: var(--datalist-empty-text-color, #666666);
     background-color: var(--datalist-empty-back-color, #dadada);
+    background-image: var(--datalist-empty-back-image, none);
     font-size: 16px;
     font-style: italic;
     white-space: nowrap;

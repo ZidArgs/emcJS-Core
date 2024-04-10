@@ -9,6 +9,7 @@
     margin: 8px;
     color: var(--datagrid-text-color, #000000);
     background-color: var(--datagrid-back-color, #ffffff);
+    background-image: var(--datagrid-back-image, none);
     border: solid var(--datagrid-border-width, 2px) var(--datagrid-border-color, #000000);
     border-radius: var(--datagrid-border-radius, 6px);
     overflow: auto;
@@ -35,6 +36,7 @@
     padding: 0px 8px;
     color: var(--datagrid-header-text-color, #ffffff);
     background-color: var(--datagrid-header-back-color, #000000);
+    background-image: var(--datagrid-header-back-image, none);
     white-space: pre;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -56,6 +58,7 @@
 }
 #body tr:hover {
     background-color: var(--datagrid-row-hover-back-color, #e3f6fc);
+    background-image: var(--datagrid-row-hover-back-image, none);
 }
 #body tr > * {
     box-sizing: border-box;
@@ -93,8 +96,9 @@
     min-width: 100px;
     padding: 20px;
     height: 30px;
-    color: var(--datalist-empty-text-color, #666666);
-    background-color: var(--datalist-empty-back-color, #dadada);
+    color: var(--datagrid-empty-text-color, #666666);
+    background-color: var(--datagrid-empty-back-color, #dadada);
+    background-image: var(--datagrid-empty-back-image, none);
     font-size: 16px;
     font-style: italic;
     white-space: nowrap;
@@ -134,6 +138,9 @@
     appearance: none;
     outline: none;
 }
+/*
+TODO add grid checkbox variables
+*/
 .select-cell input[type="checkbox"] {
     display: inline-flex;
     justify-content: center;

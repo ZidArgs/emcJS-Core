@@ -28,14 +28,19 @@
     width: 100%;
     padding: 10px;
     background-color: var(--fieldset-back-color, #ffffff);
+    background-image: var(--fieldset-back-image, none);
     border: solid var(--fieldset-border-width, 2px) var(--form-border-color, #000000);
     border-radius: var(--fieldset-border-radius, 6px);
 }
+/*
+TODO add legend variables
+*/
 #legend {
     min-width: 50%;
     padding: 4px 12px;
     color: var(--form-text-color, #000000);
     background-color: var(--fieldset-back-color, #ffffff);
+    background-image: var(--fieldset-back-image, none);
     border: solid var(--fieldset-border-width, 2px) var(--form-border-color, #000000);
     border-radius: var(--fieldset-border-radius, 6px);
 }

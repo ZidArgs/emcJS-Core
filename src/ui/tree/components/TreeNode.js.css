@@ -49,11 +49,13 @@
 #content {
     color: var(--tree-text-color, #000000);
     background-color: var(--tree-back-color, #ffffff);
+    background-image: var(--tree-back-image, none);
 }
 #content:hover,
 :host(.ctx-marked) #content {
     color: var(--tree-hover-text-color, #000000);
     background-color: var(--tree-hover-back-color, #cccccc);
+    background-image: var(--tree-hover-back-image, none);
 }
 #content:hover #collapse:after,
 :host(.ctx-marked) #collapse:after {
@@ -63,6 +65,7 @@
 :host(.marked) #content {
     color: var(--tree-marked-text-color, #ffffff);
     background-color: var(--tree-marked-back-color, #000000);
+    background-image: var(--tree-marked-back-image, none);
 }
 :host(.marked) #content #collapse:after {
     border-bottom-color: var(--tree-marked-text-color, #ffffff);

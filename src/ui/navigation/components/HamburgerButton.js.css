@@ -4,6 +4,9 @@
     height: 40px;
     padding: 0px;
 }
+/*
+TODO add navigation button variables
+*/
 button {
     display: flex;
     justify-content: center;
@@ -13,6 +16,7 @@ button {
     border: none;
     border-radius: 0;
     background-color: var(--navigation-back-color, #ffffff);
+    background-image: var(--navigation-back-image, none);
     cursor: pointer;
     outline: none;
     appearance: none;

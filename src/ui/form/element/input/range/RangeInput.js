@@ -13,6 +13,8 @@ export default class RangeInput extends CustomFormElementDelegating {
 
     #inputEl;
 
+    #inputContainerEl;
+
     #numberEl;
 
     constructor() {
@@ -20,6 +22,7 @@ export default class RangeInput extends CustomFormElementDelegating {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
+        this.#inputContainerEl = this.shadowRoot.getElementById("input-container");
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#inputEl.addEventListener("input", (event) => {
             event.stopPropagation();
@@ -155,12 +158,12 @@ export default class RangeInput extends CustomFormElementDelegating {
             if (min < max) {
                 const parts = max - min;
                 if (parts < this.#inputEl.offsetWidth / 10) {
-                    this.#inputEl.classList.add("scratched");
+                    this.#inputContainerEl.classList.add("scratched");
                     return;
                 }
             }
         }
-        this.#inputEl.classList.remove("scratched");
+        this.#inputContainerEl.classList.remove("scratched");
     }
 
     #notifyChange = debounce(() => {
