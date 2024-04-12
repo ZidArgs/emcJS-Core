@@ -1,3 +1,4 @@
+import HTTPMethods from "../../enum/http/HTTPMethods.js";
 import {
     isHttpUrl
 } from "../helper/CheckType.js";
@@ -9,10 +10,15 @@ export default class RemoteDataProvider extends AbstractDataProvider {
 
     #source;
 
-    constructor(target, source) {
+    #method = "SEARCH";
+
+    constructor(target, source, method) {
         super(target);
         if (!isHttpUrl(source)) {
             throw new Error("source must be a valid HTTP URL");
+        }
+        if (typeof method === "string" && HTTPMethods.includes(method)) {
+            this.#method = method;
         }
         this.#source = new URL(source, self.location.origin);
     }
@@ -37,7 +43,7 @@ export default class RemoteDataProvider extends AbstractDataProvider {
         const {sort = [], page = 0, pageSize = 0, filter = {}} = options;
 
         const response = await fetch(this.#source, {
-            method: "SEARCH",
+            method: this.#method,
             cache: "no-cache",
             headers: {
                 "Content-Type": "application/json"

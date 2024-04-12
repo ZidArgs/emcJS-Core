@@ -25,9 +25,16 @@ export default class Enum {
         return this.#value.toString();
     }
 
+    static includes(value) {
+        return this.asArray().includes(value);
+    }
+
+    static asArray() {
+        return Object.keys(this).filter((v) => this[v] instanceof this);
+    }
+
     static toString() {
-        const names = Object.keys(this).filter((v) => this[v] instanceof this);
-        return `Enum(${names.join(", ")})`;
+        return `Enum(${this.asArray().join(", ")})`;
     }
 
 }
