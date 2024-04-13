@@ -29,7 +29,7 @@ export default class RemoteDataProvider extends AbstractDataProvider {
         return this.#resultSize;
     }
 
-    setSource(source = []) {
+    setSource(source = "") {
         if (!isHttpUrl(source)) {
             throw new Error("source must be a valid HTTP URL");
         }
