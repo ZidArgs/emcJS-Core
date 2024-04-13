@@ -10,14 +10,16 @@ export default class RemoteDataProvider extends AbstractDataProvider {
 
     #source;
 
-    #method = "SEARCH";
+    #method = HTTPMethods.SEARCH.toString();
 
     constructor(target, source, method) {
         super(target);
         if (!isHttpUrl(source)) {
             throw new Error("source must be a valid HTTP URL");
         }
-        if (typeof method === "string" && HTTPMethods.includes(method)) {
+        if (method instanceof HTTPMethods) {
+            this.#method = method.toString();
+        } else if (typeof method === "string" && HTTPMethods.includes(method)) {
             this.#method = method;
         }
         this.#source = new URL(source, self.location.origin);

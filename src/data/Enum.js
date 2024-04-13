@@ -14,7 +14,7 @@ export default class Enum {
     }
 
     equals(inst) {
-        return this === inst || this.value === inst.value;
+        return this === inst || inst instanceof Enum && this.value === inst.value;
     }
 
     valueOf() {
