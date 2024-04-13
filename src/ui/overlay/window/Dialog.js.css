@@ -43,4 +43,5 @@
 #window {
     width: auto;
     min-width: 20vw;
+    max-width: 500px;
 }

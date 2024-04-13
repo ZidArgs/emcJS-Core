@@ -18,7 +18,9 @@ export default class AppState extends EventTarget {
         if (typeof data === "object" && !Array.isArray(data)) {
             for (const category in data) {
                 const dataStorage = this.getStorage(category);
-                dataStorage.deserialize(data[category]);
+                if (dataStorage != null) {
+                    dataStorage.deserialize(data[category]);
+                }
             }
         }
     }
@@ -94,7 +96,9 @@ export default class AppState extends EventTarget {
         }
         for (const category in data) {
             const dataStorage = this.getStorage(category);
-            dataStorage.deserialize(data[category]);
+            if (dataStorage != null) {
+                dataStorage.deserialize(data[category]);
+            }
         }
         /* --- */
         const ev = new Event("load");
@@ -105,16 +109,18 @@ export default class AppState extends EventTarget {
     overwrite(data = {}) {
         for (const category in data) {
             const dataStorage = this.getStorage(category);
-            const buffer = data[category];
-            if (buffer == null) {
-                dataStorage.clear();
-            } else {
-                dataStorage.overwrite(data[category]);
+            if (dataStorage != null) {
+                const buffer = data[category];
+                if (buffer == null) {
+                    dataStorage.clear();
+                } else {
+                    dataStorage.overwrite(data[category]);
+                }
             }
         }
     }
 
-    createNewJSON(initialData = {}) {
+    createNewData(initialData = {}) {
         const res = {
             meta: {},
             data: {}
@@ -162,6 +168,9 @@ export default class AppState extends EventTarget {
         if (this.#registeredStorages.has(storageCategory)) {
             throw new Error(`special storage with name "${storageCategory}" already registerred`);
         }
+        if (storageCategory.includes(".")) {
+            throw new Error(`failed to register storage "${storageCategory}" - category must not include "."`);
+        }
         const handler = this.#getChangeHandler(storageCategory);
         if (this.#requestedStorages.has(storageCategory)) {
             const oldStorage = this.#requestedStorages.get(storageCategory);
@@ -179,6 +188,9 @@ export default class AppState extends EventTarget {
 
     getStorage(category) {
         const storageCategory = category.toString();
+        if (storageCategory.includes(".")) {
+            throw new Error(`failed to retrieve storage "${storageCategory}" - category must not include "."`);
+        }
         if (this.#registeredStorages.has(storageCategory)) {
             return this.#registeredStorages.get(storageCategory);
         }
@@ -210,17 +222,21 @@ export default class AppState extends EventTarget {
     /* DATA */
     set(category, key, value) {
         const dataStorage = this.getStorage(category);
-        if (typeof key == "object") {
-            dataStorage.setAll(key);
-        } else {
-            dataStorage.set(key, value);
+        if (dataStorage != null) {
+            if (typeof key == "object") {
+                dataStorage.setAll(key);
+            } else {
+                dataStorage.set(key, value);
+            }
         }
     }
 
     get(category, key, def) {
         const dataStorage = this.getStorage(category);
-        if (dataStorage.has(key)) {
-            return dataStorage.get(key);
+        if (dataStorage != null) {
+            if (dataStorage.has(key)) {
+                return dataStorage.get(key);
+            }
         }
         return def;
     }
@@ -239,18 +255,23 @@ export default class AppState extends EventTarget {
             const res = {};
             for (const cat of category) {
                 const dataStorage = this.getStorage(cat);
-                res[cat] = dataStorage.getAll();
+                if (dataStorage != null) {
+                    res[cat] = dataStorage.getAll();
+                }
             }
             return res;
         } else {
             const dataStorage = this.getStorage(category);
-            return dataStorage.getAll();
+            if (dataStorage != null) {
+                return dataStorage.getAll();
+            }
+            return {};
         }
     }
 
     delete(category, key) {
         const dataStorage = this.getStorage(category);
-        if (dataStorage.has(key)) {
+        if (dataStorage != null && dataStorage.has(key)) {
             dataStorage.delete(key);
         }
     }

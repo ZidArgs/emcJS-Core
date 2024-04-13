@@ -168,6 +168,7 @@ export default class Dialog extends Window {
             inputEl.style.color = "black";
             inputEl.style.backgroundColor = "white";
             inputEl.style.border = "solid 1px black";
+            inputEl.style.textAlign = "end";
             if (typeof def === "number" && !isNaN(def)) {
                 inputEl.value = def;
             }
