@@ -1,4 +1,4 @@
-import ServiceModule from "webservice/ServiceModule.js";
+import ServiceModule from "jswebservice/ServiceModule.js";
 
 export default class DataProviderService extends ServiceModule {
 
@@ -11,7 +11,7 @@ export default class DataProviderService extends ServiceModule {
     }
 
     async #onrequest(method, params, query, body) {
-        if (method == "SEARCH") {
+        if (method == "POST") {
             const {sort, page, pageSize, filter} = body;
             try {
                 const data = await this.#getResponseData(sort, page, pageSize, filter);

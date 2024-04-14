@@ -10,7 +10,7 @@ export default class RemoteDataProvider extends AbstractDataProvider {
 
     #source;
 
-    #method = HTTPMethods.SEARCH.toString();
+    #method = HTTPMethods.POST.toString();
 
     constructor(target, source, method) {
         super(target);

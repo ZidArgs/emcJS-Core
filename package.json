@@ -1,17 +1,17 @@
 {
   "name": "emcjs",
-  "version": "0.14.2",
+  "version": "0.14.3",
   "description": "Modular JS API",
   "type": "module",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@bitbucket.org/zidargs/emcjs.git"
   },
-  "author": "Denis Peters (ZidArgs)",
+  "author": "Denis Weiß (ZidArgs)",
   "license": "MIT",
   "homepage": "https://bitbucket.org/zidargs/emcjs/src",
   "dependencies": {
-    "webservice": "git+https://bitbucket.org/zidargs/webservice.git/#2.0.5"
+    "jswebservice": "git+https://bitbucket.org/zidargs/jswebservice.git/#2.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.16.10",

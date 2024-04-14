@@ -1,5 +1,5 @@
-import WebService from "webservice/WebService.js";
-import StaticService from "webservice/services/StaticService.js";
+import WebService from "jswebservice/WebService.js";
+import StaticService from "jswebservice/services/StaticService.js";
 import DataProviderService from "./server/services/DataProviderService.js";
 
 const enableCors = process.argv.indexOf("-cors") >= 1;
