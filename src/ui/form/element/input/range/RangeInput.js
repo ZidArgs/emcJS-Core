@@ -124,10 +124,10 @@ export default class RangeInput extends CustomFormElementDelegating {
         const max = parseInt(this.getAttribute("max") || "10");
         if (min < max) {
             const parts = max - min;
-            this.#inputEl.style.setProperty("--range-parts", parts);
+            this.#inputContainerEl.style.setProperty("--range-parts", parts);
             this.#applyScratchValue();
         } else {
-            this.#inputEl.style.setProperty("--range-parts", 1);
+            this.#inputContainerEl.style.setProperty("--range-parts", 1);
             this.#applyScratchValue();
         }
     }
@@ -137,15 +137,15 @@ export default class RangeInput extends CustomFormElementDelegating {
         const max = parseInt(this.getAttribute("max") || "10");
         if (min < max) {
             if (value !== "") {
-                this.#inputEl.style.setProperty("--range-value", value - min);
+                this.#inputContainerEl.style.setProperty("--range-value", value - min);
                 this.#numberEl.value = value;
             } else {
                 const pos = (max - min) / 2;
-                this.#inputEl.style.setProperty("--range-value", pos - min);
+                this.#inputContainerEl.style.setProperty("--range-value", pos - min);
                 this.#numberEl.value = pos;
             }
         } else {
-            this.#inputEl.style.setProperty("--range-value", 0);
+            this.#inputContainerEl.style.setProperty("--range-value", 0);
             this.#applyScratchValue();
         }
     }

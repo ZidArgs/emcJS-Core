@@ -117,25 +117,6 @@
     --switch-unchecked-back-color: #ffffff;
     --switch-unchecked-back-image: none;
 
-    /* === range === */
-    --range-track-color: #f5f5f5;
-    --range-track-image: none;
-
-    --range-fill-color: #000000;
-    --range-fill-image: none;
-
-    --range-invalid-track-color: #ff9987;
-    --range-invalid-track-image: none;
-
-    --range-invalid-fill-color: #a70000;
-    --range-invalid-fill-image: none;
-
-    --range-disabled-track-color: #b5b5b5;
-    --range-disabled-track-image: none;
-
-    --range-disabled-fill-color: #464646;
-    --range-disabled-fill-image: none;
-
     /* === select === */
     --select-option-divider-color: #949494;
     --select-option-text-color: #000000;
@@ -180,6 +161,32 @@
     --button-disabled-back-color: var(--input-disabled-back-color, #999999);
     --button-disabled-back-image: none;
     --button-disabled-border-color: var(--input-disabled-border-color, #6a6a6a); /* all; top_bottom right_left; top right bottom left*/
+
+    /* === range === */
+    --range-track-color: #e7f2f3;
+    --range-track-image: none;
+
+    --range-fill-color: #9ee1ec;
+    --range-fill-image: none;
+
+    --range-invalid-track-color: #ff9987;
+    --range-invalid-track-image: none;
+
+    --range-invalid-fill-color: #a70000;
+    --range-invalid-fill-image: none;
+
+    --range-disabled-track-color: #b5b5b5;
+    --range-disabled-track-image: none;
+
+    --range-disabled-fill-color: #464646;
+    --range-disabled-fill-image: none;
+
+    --range-button-back-color: var(--button-back-color, #eaeaea);
+    --range-button-border-color: var(--button-border-color, #000000);
+    --range-button-hover-back-color: var(--button-hover-back-color, #353935);
+    --range-button-hover-border-color: var(--button-hover-border-color, #000000);
+    --range-button-disabled-back-color: var(--button-disabled-back-color, #999999);
+    --range-button-disabled-border-color: var(--button-disabled-border-color, #6a6a6a);
 
     /* === tree === */
     --tree-text-color: #000000;
