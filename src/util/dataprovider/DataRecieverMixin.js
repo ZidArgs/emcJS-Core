@@ -7,5 +7,11 @@ export default createMixin((superclass) => class DataRecieverMixin extends super
     // eslint-disable-next-line no-unused-vars
     setData(data) {}
 
+    busy() {}
+
+    unbusy() {}
+
+    reset() {}
+
 });
 

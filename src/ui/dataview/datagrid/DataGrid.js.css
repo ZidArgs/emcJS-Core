@@ -88,6 +88,9 @@
     width: 100%;
     pointer-events: none;
     user-select: none;
+    animation: popInLater .1s ease-in 1s forwards;
+    animation-fill-mode: forwards;
+    opacity: 0;
 }
 #empty .empty-text {
     display: flex;
@@ -204,4 +207,9 @@ th.select-cell input[type="checkbox"]:checked:not(:indeterminate) {
         box-shadow: inset var(--datagrid-header-seperator-color, #ffffff) var(--datagrid-column-seperator-width, 2px) 0px 0px;
     }
  
+}
+@keyframes popInLater {
+    to {
+        opacity: 1;
+    }
 }

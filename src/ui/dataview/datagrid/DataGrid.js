@@ -23,6 +23,7 @@ import ResizeObserverMixin from "../../mixin/ResizeObserverMixin.js";
 import Column from "./Column.js";
 import DataGridCell from "./components/cell/DataGridCell.js";
 import CellCache from "./data/CellCache.js";
+import BusyIndicator from "../../BusyIndicator.js";
 import "./components/CellTypeLoader.js";
 import TPL from "./DataGrid.js.html" assert {type: "html"};
 import STYLE from "./DataGrid.js.css" assert {type: "css"};
@@ -78,10 +79,14 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
         this.#onSlotChange();
     });
 
+    #busyIndicator = new BusyIndicator();
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
+        /* --- */
+        this.#busyIndicator.setTarget(this.shadowRoot);
         /* --- */
         this.#headerSelectEl = document.createElement("input");
         this.#headerSelectEl.type = "checkbox";
@@ -420,6 +425,18 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
             const styleWidth = getStyleLengthValue(this.#stretched.type, resultWidth);
             this.style.setProperty(`--width-${name}`, `${styleWidth}px`);
         }
+    }
+
+    busy() {
+        return this.#busyIndicator.busy();
+    }
+
+    unbusy() {
+        return this.#busyIndicator.unbusy();
+    }
+
+    reset() {
+        return this.#busyIndicator.reset();
     }
 
 }

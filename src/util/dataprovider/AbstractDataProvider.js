@@ -29,14 +29,14 @@ export default class AbstractDataProvider {
 
     #paginationEventManager = new EventTargetManager();
 
-    constructor(recieveer) {
+    constructor(reciever) {
         if (new.target === AbstractDataProvider) {
             throw new Error("can not construct abstract class");
         }
-        if (!(recieveer instanceof DataRecieverMixin)) {
+        if (!(reciever instanceof DataRecieverMixin)) {
             throw new Error("target must extend DataRecieverMixin");
         }
-        this.#reciever = recieveer;
+        this.#reciever = reciever;
         this.triggerUpdate();
         /* --- */
         this.#paginationEventManager.set("page", (event) => {
@@ -119,9 +119,11 @@ export default class AbstractDataProvider {
     }
 
     triggerUpdate = debounce(async () => {
+        await this.#reciever.busy();
         this.#data = await this.getData(this.#options);
         this.#reciever.setData(this.#data);
         this.#updatePaginationEl();
+        await this.#reciever.unbusy();
     });
 
     #updatePaginationEl = debounce(() => {

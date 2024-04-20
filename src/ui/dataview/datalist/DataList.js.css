@@ -41,6 +41,9 @@
     width: 100%;
     pointer-events: none;
     user-select: none;
+    animation: popInLater .1s ease-in 1s forwards;
+    animation-fill-mode: forwards;
+    opacity: 0;
 }
 #empty .empty-text {
     display: flex;
@@ -58,4 +61,9 @@
 }
 #empty.hidden {
     display: none;
+}
+@keyframes popInLater {
+    to {
+        opacity: 1;
+    }
 }

@@ -1,4 +1,8 @@
 import CustomElement from "../element/CustomElement.js";
+import {
+    isFunction,
+    isHttpUrl
+} from "../../util/helper/CheckType.js";
 import "./components/Button.js";
 import "./components/HamburgerButton.js";
 import TPL from "./NavBar.js.html" assert {type: "html"};
@@ -79,7 +83,7 @@ export default class NavBar extends CustomElement {
                     btnEl.tooltip = config["tooltip"];
                 }
                 // action
-                if (config["handler"] != null && typeof config.handler == "function") {
+                if (isFunction(config.handler)) {
                     btnEl.addEventListener("click", (event) => {
                         const hamburger = this.shadowRoot.getElementById("hamburger-button");
                         hamburger.open = false;
@@ -87,6 +91,23 @@ export default class NavBar extends CustomElement {
                         containerEl.classList.remove("open");
                         closeAll(contentEl);
                         config.handler();
+                        event.stopPropagation();
+                        return false;
+                    });
+                }
+                // href
+                if (isHttpUrl(config.href)) {
+                    btnEl.addEventListener("click", (event) => {
+                        const hamburger = this.shadowRoot.getElementById("hamburger-button");
+                        hamburger.open = false;
+                        containerEl.classList.remove("cover");
+                        containerEl.classList.remove("open");
+                        closeAll(contentEl);
+                        if (config.targetNew) {
+                            window.open(config.href, "_blank");
+                        } else {
+                            window.location.href = config.href;
+                        }
                         event.stopPropagation();
                         return false;
                     });

@@ -60,7 +60,7 @@ export default class BusyIndicator extends CustomElement {
     }
 
     setTarget(element) {
-        if (element instanceof HTMLElement) {
+        if (element instanceof HTMLElement || element instanceof ShadowRoot) {
             this.#targetEl = element;
         } else {
             this.#targetEl = document.body;
