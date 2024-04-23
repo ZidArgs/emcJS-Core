@@ -31,11 +31,11 @@ export default class ObservableStorage extends EventTarget {
 
     set(key, value) {
         const oldValue = this.get(key);
-        // change event
         if (!isEqual(oldValue, value)) {
             const clonedValue = deepClone(value);
             this.#writeChangeData(key, clonedValue);
             this.#buffer.set(key, clonedValue);
+            // change event
             const ev = new Event("change");
             ev.data = {[key]: value};
             ev.changes = {[key]: {oldValue, newValue: value}};
@@ -84,6 +84,7 @@ export default class ObservableStorage extends EventTarget {
             this.#writeChangeData(key);
             this.#buffer.delete(key);
             const defaultValue = this.getDefault(key);
+            // change event
             const ev = new Event("change");
             ev.data = {[key]: defaultValue};
             ev.changes = {[key]: {oldValue, newValue: defaultValue}};
@@ -103,6 +104,7 @@ export default class ObservableStorage extends EventTarget {
         this.#rootData.clear();
         this.#changeData.clear();
         this.#buffer.clear();
+        // clear event
         const ev = new Event("clear");
         ev.data = this.getAll();
         this.dispatchEvent(ev);
@@ -197,6 +199,7 @@ export default class ObservableStorage extends EventTarget {
         }
         this.#changeData.delete(key);
         const defaultValue = this.getDefault(key);
+        // change event
         const ev = new Event("change");
         ev.data = {[key]: defaultValue};
         ev.changes = {[key]: {oldValue, newValue: defaultValue}};
@@ -213,6 +216,7 @@ export default class ObservableStorage extends EventTarget {
             }
         }
         this.#changeData.clear();
+        // load event
         const ev = new Event("load");
         ev.data = this.getAll();
         this.dispatchEvent(ev);

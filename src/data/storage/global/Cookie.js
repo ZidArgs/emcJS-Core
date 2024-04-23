@@ -11,7 +11,7 @@ class Cookie {
         for (const entry of entries) {
             const buf = entry.trim().split("=");
             const key = buf.shift().trim();
-            if (key == name) {
+            if (key === name) {
                 const value = decodeURI(buf.join("="));
                 return value;
             }

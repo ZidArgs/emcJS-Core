@@ -14,3 +14,14 @@ export function jsonReviver(key, value) {
         return value;
     }
 }
+
+export function jsonParseSafe(value) {
+    if (typeof value !== "string" || value === "") {
+        return null;
+    }
+    try {
+        return JSON.parse(value);
+    } catch {
+        return null;
+    }
+}

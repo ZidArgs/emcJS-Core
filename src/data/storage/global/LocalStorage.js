@@ -1,51 +1,106 @@
-// TODO sync data to other page instances
+import {
+    isEqual
+} from "../../../util/helper/Comparator.js";
+import {
+    deepClone
+} from "../../../util/helper/DeepClone.js";
+import {
+    jsonParseSafe
+} from "../../../util/helper/JSON.js";
 
-class LocalStorage {
+const STORAGE = new Map();
+
+class LocalStorage extends EventTarget {
+
+    #read(key) {
+        const res = localStorage.getItem(key);
+        return jsonParseSafe(res);
+    }
+
+    #write(key, value) {
+        try {
+            if (value == null) {
+                localStorage.removeItem(key);
+            } else {
+                localStorage.setItem(key, JSON.stringify(value));
+            }
+        } catch {
+            return;
+        }
+    }
+
+    constructor() {
+        super();
+        const keys = Object.keys(localStorage);
+        for (const key of keys) {
+            const value = this.#read(key);
+            if (value != null) {
+                STORAGE.set(key, value);
+            }
+        }
+        // event
+        window.addEventListener("storage", (event) => {
+            const {key, newValue, storageArea} = event;
+            if (storageArea === localStorage) {
+                if (key == null) {
+                    STORAGE.clear();
+                } else if (newValue == null) {
+                    STORAGE.delete(key);
+                } else {
+                    STORAGE.set(key, jsonParseSafe(newValue));
+                }
+            }
+        });
+    }
 
     set(key, value) {
-        localStorage.setItem(key, JSON.stringify(value));
+        const oldValue = STORAGE.get(key);
+        if (!isEqual(oldValue, value)) {
+            STORAGE.set(key, value);
+            this.#write(key, value);
+        }
     }
 
     get(key, value) {
-        const res = localStorage.getItem(key);
-        if (res != null) {
-            return JSON.parse(res);
-        }
-        return value;
+        return STORAGE.get(key) ?? value;
     }
 
     has(key) {
-        return localStorage.getItem(key) != null;
+        return STORAGE.has(key);
     }
 
     delete(key) {
-        localStorage.removeItem(key);
+        const oldValue = STORAGE.get(key);
+        if (oldValue != null) {
+            STORAGE.delete(key);
+            this.#write(key);
+        }
     }
 
     clear() {
         localStorage.clear();
+        STORAGE.clear();
     }
 
-    keys(filter) {
-        const keys = Object.keys(localStorage);
-        if (typeof filter == "string") {
-            return keys.filter((key) => key.startsWith(filter));
-        }
-        return keys;
+    keys() {
+        return STORAGE.keys();
     }
 
     setAll(values) {
         for (const key in values) {
+            const oldValue = STORAGE.get(key);
             const value = values[key];
-            this.set(key, value);
+            if (!isEqual(oldValue, value)) {
+                STORAGE.set(key, value);
+                this.#write(key, value);
+            }
         }
     }
 
-    getAll(filter) {
+    getAll() {
         const res = {};
-        const keys = this.keys(filter);
-        for (const key of keys) {
-            res[key] = this.get(key);
+        for (const [key, value] of STORAGE) {
+            res[key] = deepClone(value);
         }
         return res;
     }
