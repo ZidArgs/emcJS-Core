@@ -189,7 +189,7 @@ export default class LogicGraph {
         this.#forcedReachables.clear();
     }
 
-    addCollectible(target, value) {
+    setCollectible(target, value) {
         this.#collectibles.set(target, value);
     }
 
@@ -335,7 +335,7 @@ export default class LogicGraph {
                             console.log("reachable changed", Array.from(reachableNodes));
                         }
                         if (reachableCount != reachableNodes.size) {
-                            console.log("current queue", queue.map((edge) => edge.toString()));
+                            console.log("current queue", queue.toArray().map((edge) => edge.toString()));
                         }
                     }
                     reachableCount = reachableNodes.size;
