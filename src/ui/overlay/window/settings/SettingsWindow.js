@@ -102,7 +102,7 @@ export default class SettingsWindow extends Window {
             const containerEl = tabEl.querySelector(".container");
             return containerEl;
         } else {
-            const tabEl = categoriesEl.setTab(category, I18nLabel.getLabel(this.constructor.getTabLabel(label)));
+            const tabEl = categoriesEl.addTab(category, I18nLabel.getLabel(this.constructor.getTabLabel(label)));
             const containerEl = document.createElement("emc-window-settings-tab");
             containerEl.className = "container";
             containerEl.id = `settings_${category}`;

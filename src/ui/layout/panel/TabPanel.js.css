@@ -6,7 +6,7 @@
 }
 #categories {
     flex-shrink: 0;
-    padding: 5px;
+    padding: 5px 5px 0px;
     overflow-x: auto;
     overflow-y: none;
     border-bottom: solid 2px #cccccc;
@@ -37,7 +37,7 @@
     flex: 1;
     overflow: hidden;
 }
-.panel {
+::slotted(.panel) {
     display: none;
     height: 100%;
     width: 100%;
@@ -45,6 +45,6 @@
     word-wrap: break-word;
     resize: none;
 }
-.panel.active {
+::slotted(.panel.active) {
     display: block;
 }

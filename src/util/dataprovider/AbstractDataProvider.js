@@ -7,7 +7,7 @@ import {
 import {
     debounce
 } from "../Debouncer.js";
-import EventTargetManager from "../event/EventTargetManager.js";
+import EventMultiTargetManager from "../event/EventMultiTargetManager.js";
 import PaginationToolbar from "../../ui/dataview/toolbar/PaginationToolbar.js";
 import DataRecieverMixin from "./DataRecieverMixin.js";
 
@@ -25,9 +25,9 @@ export default class AbstractDataProvider {
 
     #reciever;
 
-    #paginationEl;
+    #paginationEls = new Set();
 
-    #paginationEventManager = new EventTargetManager();
+    #paginationEventManager = new EventMultiTargetManager();
 
     constructor(reciever) {
         if (new.target === AbstractDataProvider) {
@@ -57,9 +57,18 @@ export default class AbstractDataProvider {
         if (paginationEl != null && !(paginationEl instanceof PaginationToolbar)) {
             throw new Error("paginationEl must be an instance of PaginationToolbar");
         }
-        this.#paginationEl = paginationEl;
-        this.#paginationEventManager.switchTarget(paginationEl);
-        this.#updatePaginationEl();
+        this.#paginationEls.clear();
+        this.#paginationEventManager.clearTargets();
+        this.addPagination(paginationEl);
+    }
+
+    addPagination(paginationEl) {
+        if (paginationEl != null && !(paginationEl instanceof PaginationToolbar)) {
+            throw new Error("paginationEl must be an instance of PaginationToolbar");
+        }
+        this.#paginationEls.add(paginationEl);
+        this.#paginationEventManager.addTarget(paginationEl);
+        this.#updatePaginationEls();
     }
 
     setOptions(value) {
@@ -122,25 +131,27 @@ export default class AbstractDataProvider {
         await this.#reciever.busy();
         this.#data = await this.getData(this.#options);
         this.#reciever.setData(this.#data);
-        this.#updatePaginationEl();
+        this.#updatePaginationEls();
         await this.#reciever.unbusy();
     });
 
-    #updatePaginationEl = debounce(() => {
-        if (this.#paginationEl != null) {
-            const pageSize = this.#options.pageSize;
-            const currentPage = this.#options.page;
-            const totalEntries = this.resultSize;
-            this.#paginationEl.total = totalEntries;
-            if (pageSize != null && pageSize > 0) {
-                const maxPages = Math.ceil(totalEntries / pageSize);
-                this.#paginationEl.size = pageSize;
-                this.#paginationEl.max = maxPages;
-                this.#paginationEl.value = (currentPage ?? 0) + 1;
-            } else {
-                this.#paginationEl.size = null;
-                this.#paginationEl.max = 1;
-                this.#paginationEl.value = 1;
+    #updatePaginationEls = debounce(() => {
+        for (const paginationEl of this.#paginationEls) {
+            if (paginationEl != null) {
+                const pageSize = this.#options.pageSize;
+                const currentPage = this.#options.page;
+                const totalEntries = this.resultSize;
+                paginationEl.total = totalEntries;
+                if (pageSize != null && pageSize > 0) {
+                    const maxPages = Math.ceil(totalEntries / pageSize);
+                    paginationEl.size = pageSize;
+                    paginationEl.max = maxPages;
+                    paginationEl.value = (currentPage ?? 0) + 1;
+                } else {
+                    paginationEl.size = null;
+                    paginationEl.max = 1;
+                    paginationEl.value = 1;
+                }
             }
         }
     });

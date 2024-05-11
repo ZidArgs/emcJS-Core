@@ -1,16 +1,26 @@
+import {
+    isStringNotEmpty
+} from "../../../util/helper/CheckType.js";
 import Panel from "../Panel.js";
+import "../../form/button/Button.js";
 import TPL from "./TabPanel.js.html" assert {type: "html"};
 import STYLE from "./TabPanel.js.css" assert {type: "css"};
 
 export default class TabPanel extends Panel {
+
+    #categoryEl;
+
+    #panelList = new Map();
+
+    #buttonList = new Map();
 
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const ctgrs = this.shadowRoot.getElementById("categories");
-        ctgrs.onclick = (event) => {
+        this.#categoryEl = this.shadowRoot.getElementById("categories");
+        this.#categoryEl.onclick = (event) => {
             const targetEl = event.target.getAttribute("target");
             if (targetEl != null) {
                 this.active = targetEl;
@@ -21,6 +31,7 @@ export default class TabPanel extends Panel {
     }
 
     connectedCallback() {
+        this.#prepareTabs();
         if (!this.active) {
             const el = this.shadowRoot.querySelector("[target]");
             if (el != null) {
@@ -46,26 +57,29 @@ export default class TabPanel extends Panel {
             switch (name) {
                 case "active": {
                     if (oldValue) {
-                        const ol = this.shadowRoot.getElementById(`panel_${oldValue}`);
-                        if (ol != null) {
-                            ol.classList.remove("active");
+                        const oldPanel = this.#panelList.get(oldValue);
+                        if (oldPanel != null) {
+                            oldPanel.classList.remove("active");
                         }
-                        const ob = this.shadowRoot.querySelector(`[target="${oldValue}"]`);
-                        if (ob != null) {
-                            ob.classList.remove("active");
+                        const oldButton = this.#buttonList.get(oldValue);
+                        if (oldButton != null) {
+                            oldButton.classList.remove("active");
                         }
                     }
-                    const nl = this.shadowRoot.getElementById(`panel_${newValue}`);
-                    if (nl != null) {
-                        nl.classList.add("active");
+                    const newPanel = this.#panelList.get(newValue);
+                    if (newPanel != null) {
+                        newPanel.classList.add("active");
                     }
-                    const nb = this.shadowRoot.querySelector(`[target="${newValue}"]`);
-                    if (nb != null) {
-                        nb.classList.add("active");
+                    const newButton = this.#buttonList.get(newValue);
+                    if (newButton != null) {
+                        newButton.classList.add("active");
+                        const ev = new Event("change");
+                        ev.panel = newValue;
+                        this.dispatchEvent(ev);
                     } else {
-                        const el = this.shadowRoot.querySelector("[target]");
-                        if (el != null) {
-                            this.active = el.getAttribute("target");
+                        const firstButton = this.shadowRoot.querySelector("[target]");
+                        if (firstButton != null) {
+                            this.active = firstButton.getAttribute("target");
                         }
                     }
                 } break;
@@ -73,51 +87,68 @@ export default class TabPanel extends Panel {
         }
     }
 
-    setTab(category, name = category) {
+    addTab(category, name = category) {
+        if (!isStringNotEmpty(category)) {
+            throw new Error("category must be an unempty string");
+        }
+        if (!isStringNotEmpty(name)) {
+            throw new Error("optional name must be an unempty string");
+        }
         const panelId = `panel_${category}`;
-        const buttonId = `button_${category}`;
-        const buttonEl = this.shadowRoot.getElementById(buttonId);
+        const buttonEl = this.#buttonList.get(category);
         if (buttonEl == null) {
             // panel
-            const panelEl = document.createElement("div");
+            const panelEl = this.#panelList.get(category) ?? document.createElement("div");
             panelEl.id = panelId;
             panelEl.className = "panel";
             panelEl.setAttribute("category", category);
-            this.shadowRoot.getElementById("body").append(panelEl);
+            this.#panelList.add(category, panelEl);
+            this.append(panelEl);
             // button
-            const buttonEl = document.createElement("button");
-            buttonEl.id = buttonId;
-            buttonEl.className = "category";
-            buttonEl.setAttribute("target", category);
-            if (name instanceof HTMLElement) {
-                buttonEl.append(name);
-            } else if (typeof name === "string") {
-                buttonEl.innerHTML = name;
-            }
-            const buttonWrapperEl = document.createElement("emc-input-wrapper");
-            buttonWrapperEl.append(buttonEl);
-            this.shadowRoot.getElementById("categories").append(buttonWrapperEl);
+            this.#addTabButton(category, name);
             // ---
             return panelEl;
-        } else if (name instanceof HTMLElement) {
-            buttonEl.append(name);
-        } else if (typeof name === "string") {
-            buttonEl.innerHTML = name;
+        } else {
+            buttonEl.text = name;
         }
     }
 
     getTab(category) {
-        const panelId = `panel_${category}`;
-        const panelEl = this.shadowRoot.getElementById(panelId);
-        if (panelEl != null) {
-            return panelEl;
-        }
+        return this.#panelList.get(category);
     }
 
     hasTab(category) {
-        const panelId = `panel_${category}`;
-        const panelEl = this.shadowRoot.getElementById(panelId);
-        return panelEl != null;
+        return this.#panelList.has(category);
+    }
+
+    #prepareTabs() {
+        const panelElList = this.querySelectorAll(`:scope > div[category]`);
+        for (const panelEl of panelElList) {
+            const category = panelEl.getAttribute("category");
+            if (isStringNotEmpty(category)) {
+                this.#panelList.set(category, panelEl);
+                const panelId = `panel_${category}`;
+                panelEl.id = panelId;
+                panelEl.className = "panel";
+                const buttonEl = this.#buttonList.get(category);
+                if (buttonEl == null) {
+                    this.#addTabButton(category, category);
+                } else {
+                    this.#categoryEl.append(buttonEl);
+                }
+            }
+        }
+    }
+
+    #addTabButton(category, name) {
+        const buttonId = `button_${category}`;
+        const buttonEl = document.createElement("emc-button");
+        buttonEl.id = buttonId;
+        buttonEl.className = "category";
+        buttonEl.setAttribute("target", category);
+        buttonEl.text = name;
+        this.#buttonList.set(category, buttonEl);
+        this.#categoryEl.append(buttonEl);
     }
 
 }
