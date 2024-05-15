@@ -101,8 +101,11 @@ export default class TabPanel extends Panel {
             const panelEl = this.#panelList.get(category) ?? document.createElement("div");
             panelEl.id = panelId;
             panelEl.className = "panel";
+            if (category === this.active) {
+                panelEl.classList.add("active");
+            }
             panelEl.setAttribute("category", category);
-            this.#panelList.add(category, panelEl);
+            this.#panelList.set(category, panelEl);
             this.append(panelEl);
             // button
             this.#addTabButton(category, name);
@@ -130,6 +133,9 @@ export default class TabPanel extends Panel {
                 const panelId = `panel_${category}`;
                 panelEl.id = panelId;
                 panelEl.className = "panel";
+                if (category === this.active) {
+                    panelEl.classList.add("active");
+                }
                 const buttonEl = this.#buttonList.get(category);
                 if (buttonEl == null) {
                     this.#addTabButton(category, category);
