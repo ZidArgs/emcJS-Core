@@ -1,4 +1,4 @@
-import CustomElement from "../../element/CustomElement.js";
+import CustomElement from "../element/CustomElement.js";
 import TPL from "./TooltipLayer.js.html" assert {type: "html"};
 import STYLE from "./TooltipLayer.js.css" assert {type: "css"};
 

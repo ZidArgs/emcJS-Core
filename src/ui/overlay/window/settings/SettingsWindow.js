@@ -1,6 +1,5 @@
 import ObservableDefaultingStorage from "../../../../data/storage/observable/ObservableDefaultingStorage.js";
 import Window from "../Window.js";
-import I18nLabel from "../../../i18n/I18nLabel.js";
 import "../../../layout/panel/TabPanel.js";
 import "../../../input/ListSelect.js";
 import "./SettingsTabContent.js";

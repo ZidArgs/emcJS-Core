@@ -1,1 +1,1 @@
-import "/emcJS/ui/overlay/Tooltip.js";
+import "/emcJS/ui/tooltip/Tooltip.js";

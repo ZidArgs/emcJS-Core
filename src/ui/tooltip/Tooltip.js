@@ -34,7 +34,6 @@ export default class Tooltip extends CustomElement {
         if (!this.hasAttribute("slot")) {
             this.setAttribute("slot", "tooltip");
         }
-        this.initItems();
     }
 
     static get observedAttributes() {
