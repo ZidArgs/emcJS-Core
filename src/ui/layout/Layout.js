@@ -61,7 +61,7 @@ export default class Layout extends CustomElement {
             } else if (layout.type == "tabpanel") {
                 const el = document.createElement("emc-panel-tabpanel");
                 for (const cat of layout.categories) {
-                    const cnt = el.addTab(cat.category, cat.name ?? cat.category);
+                    const cnt = el.setTab(cat.category, cat.name ?? cat.category);
                     for (const item of cat.items) {
                         const ch = this.#renderLayout(cat);
                         if (item.autosize) {
@@ -82,6 +82,22 @@ export default class Layout extends CustomElement {
             el.classList.add("error-panel");
             el.innerHTML = `error: no layout found`;
             return el;
+        }
+    }
+
+    load() {
+        for (const ch of this.children) {
+            if (typeof ch.load === "function") {
+                ch.load();
+            }
+        }
+    }
+
+    unload() {
+        for (const ch of this.children) {
+            if (typeof ch.unload === "function") {
+                ch.unload();
+            }
         }
     }
 

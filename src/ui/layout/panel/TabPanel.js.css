@@ -24,7 +24,7 @@
     justify-content: center;
     cursor: pointer;
     user-select: none;
-    -webkit-appearance: none;
+    appearance: none;
 }
 .category:hover {
     background-color: var(--category-hover-color, lightgray);
@@ -37,8 +37,10 @@
     flex: 1;
     overflow: hidden;
 }
-::slotted(.panel) {
+::slotted(*) {
     display: none;
+}
+::slotted(.panel) {
     height: 100%;
     width: 100%;
     overflow: auto;

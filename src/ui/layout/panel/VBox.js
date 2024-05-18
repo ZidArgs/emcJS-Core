@@ -11,6 +11,22 @@ export default class VBox extends CustomElement {
         /* --- */
     }
 
+    load() {
+        for (const ch of this.children) {
+            if (typeof ch.load === "function") {
+                ch.load();
+            }
+        }
+    }
+
+    unload() {
+        for (const ch of this.children) {
+            if (typeof ch.unload === "function") {
+                ch.unload();
+            }
+        }
+    }
+
 }
 
 customElements.define("emc-panel-vbox", VBox);

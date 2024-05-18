@@ -129,10 +129,23 @@ export default class AbstractDataProvider {
 
     triggerUpdate = debounce(async () => {
         await this.#reciever.busy();
-        this.#data = await this.getData(this.#options);
-        this.#reciever.setData(this.#data);
-        this.#updatePaginationEls();
-        await this.#reciever.unbusy();
+        try {
+            const data = await this.getData(this.#options);
+            if (Array.isArray(data)) {
+                if (!isEqual(this.#data, data)) {
+                    this.#data = data;
+                    this.#reciever.setData(data);
+                }
+            } else {
+                this.#data = [];
+                this.#reciever.setData([]);
+            }
+        } catch {
+            this.#reciever.setData([]);
+        } finally {
+            this.#updatePaginationEls();
+            await this.#reciever.unbusy();
+        }
     });
 
     #updatePaginationEls = debounce(() => {
