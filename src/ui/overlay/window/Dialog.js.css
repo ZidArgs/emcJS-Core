@@ -33,7 +33,7 @@
     text-transform: uppercase;
     cursor: pointer;
     user-select: none;
-    -webkit-appearance: none;
+    appearance: none;
 }
 #submit:hover,
 #cancel:hover {

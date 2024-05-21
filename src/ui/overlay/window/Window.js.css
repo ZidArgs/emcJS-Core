@@ -74,7 +74,7 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    -webkit-appearance: none;
+    appearance: none;
     font-size: 1.2em;
     line-height: 1em;
 }
