@@ -202,14 +202,13 @@ export default class Dialog extends Window {
             });
             // ---
             const inputEl = document.createElement("textarea");
-            inputEl.style.width = "700px";
-            inputEl.style.maxWidth = "80vw";
-            inputEl.style.height = "300px";
+            inputEl.style.width = "100%";
+            inputEl.style.maxHeight = "300px";
             inputEl.style.padding = "5px";
             inputEl.style.color = "black";
             inputEl.style.backgroundColor = "white";
             inputEl.style.border = "solid 1px black";
-            inputEl.style.overflow = "scroll";
+            inputEl.style.overflow = "auto";
             inputEl.style.whiteSpace = "pre";
             inputEl.style.resize = "none";
             inputEl.readOnly = true;

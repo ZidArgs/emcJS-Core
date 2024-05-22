@@ -197,13 +197,13 @@ export default class ModalDialog extends Modal {
         dialogEl.setFontIcon("⚠", {color: "var(--modal-icon-error-color, #c50000)"});
         // ---
         const inputEl = document.createElement("textarea");
-        inputEl.style.maxWidth = "100%";
-        inputEl.style.height = "300px";
+        inputEl.style.width = "100%";
+        inputEl.style.maxHeight = "300px";
         inputEl.style.padding = "5px";
         inputEl.style.color = "black";
         inputEl.style.backgroundColor = "white";
         inputEl.style.border = "solid 1px black";
-        inputEl.style.overflow = "scroll";
+        inputEl.style.overflow = "auto";
         inputEl.style.whiteSpace = "pre";
         inputEl.style.resize = "none";
         inputEl.readOnly = true;
