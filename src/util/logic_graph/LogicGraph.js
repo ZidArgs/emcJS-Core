@@ -284,10 +284,8 @@ export default class LogicGraph {
                     }
                     const name = this.getRedirect(edge.getSource().getName(), edge.getTarget().getName());
                     if (reachableNodes.has(name)) {
-                        if (this.#debug) {
-                            if (this.#debug == "extended") {
-                                console.groupEnd(`traverse edge { ${edge} }`);
-                            }
+                        if (this.#debug == "extended") {
+                            console.groupEnd(`traverse edge { ${edge} }`);
                             console.log(`already reached node { ${name} }`);
                         }
                         continue;

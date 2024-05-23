@@ -18,7 +18,10 @@ export default class LogicDataCollector extends EventTarget {
     constructor() {
         super();
         /* EVENTS */
-        this.#eventManager.set(["load", "clear", "change"], (event) => {
+        this.#eventManager.set(["load", "clear"], () => {
+            this.init();
+        });
+        this.#eventManager.set("change", (event) => {
             const storage = event.target;
             const {prefix, postfix, precall} = this.#storageRegister.get(storage);
             const data = event.data;
