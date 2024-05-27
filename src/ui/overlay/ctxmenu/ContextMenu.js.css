@@ -6,6 +6,7 @@
     top: 0;
     bottom: 0;
     cursor: default;
+    z-index: 900600;
 }
 :host([active]:not([active="false"])) {
     display: block;

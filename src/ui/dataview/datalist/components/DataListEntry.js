@@ -12,6 +12,16 @@ export default class DataListEntry extends CustomElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#containerEl = this.shadowRoot.getElementById("container");
+        /* --- */
+        this.addEventListener("contextmenu", (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            const menuEvent = new Event("menu", {bubbles: true, cancelable: true});
+            menuEvent.data = {
+                key: this.key
+            };
+            this.dispatchEvent(menuEvent);
+        });
     }
 
     setData(data) {
