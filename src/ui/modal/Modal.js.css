@@ -14,14 +14,14 @@
     background-color: rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(2px);
     -webkit-backdrop-filter: blur(2px);
-    z-index: 900700;
+    z-index: 900600;
     pointer-events: all !important;
 }
 :host(.inactive) {
     background-color: transparent !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    z-index: 900699;
+    z-index: 900599;
 }
 :host,
 .button {

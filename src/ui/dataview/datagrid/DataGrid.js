@@ -161,13 +161,12 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
         this.#tableEl.addEventListener("action", (event) => {
             event.stopPropagation();
             event.preventDefault();
-            const {value, action, columnName, rowKey} = event.data;
+            const {action, columnName, rowKey} = event.data;
             if (action == null) {
                 return;
             }
             const ev = new Event(`action::${action}`);
             ev.data = {
-                value,
                 columnName,
                 rowKey,
                 source: event.srcElement
@@ -177,12 +176,13 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
         this.#tableEl.addEventListener("edit", (event) => {
             event.stopPropagation();
             event.preventDefault();
-            const {action, columnName, rowKey} = event.data;
+            const {value, action, columnName, rowKey} = event.data;
             if (action == null) {
                 return;
             }
             const ev = new Event(`edit::${action}`);
             ev.data = {
+                value,
                 columnName,
                 rowKey,
                 source: event.srcElement

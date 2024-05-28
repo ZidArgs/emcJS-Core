@@ -1,8 +1,8 @@
 import AbstractElement from "./AbstractElement.js";
 import "../../../../../select/search/SearchSelect.js";
+import LogicOperatorRegistry from "../../../../../../../../data/registry/LogicOperatorRegistry.js";
 import TPL from "./AbstractLiteralStateElement.js.html" assert {type: "html"};
 import STYLE from "./AbstractLiteralStateElement.js.css" assert {type: "css"};
-import LogicOperatorRegistry from "../../../../../../../../data/registry/LogicOperatorRegistry.js";
 
 export default class AbstractLiteralStateElement extends AbstractElement {
 
@@ -56,18 +56,26 @@ export default class AbstractLiteralStateElement extends AbstractElement {
     setOptions(options) {
         this.#options = options;
         this.#inputEl.innerHTML = "";
-        for (const name in options) {
-            const optionEl = document.createElement("emc-option");
-            optionEl.setAttribute("value", name);
-            const textValue = options[name];
-            if (typeof textValue === "string" && textValue !== "") {
-                const labelEl = document.createElement("emc-i18n-label");
-                labelEl.i18nValue = textValue;
-                optionEl.append(labelEl);
-            } else if (name !== "") {
-                const labelEl = document.createElement("emc-i18n-label");
-                labelEl.i18nValue = name;
-                optionEl.append(labelEl);
+        if (Array.isArray(options)) {
+            for (const value of options) {
+                this.#addOption(value);
+            }
+        } else {
+            for (const value in options) {
+                const label = options[value];
+                this.#addOption(value, label);
+            }
+        }
+    }
+
+    #addOption(value, label) {
+        if (typeof value === "string" && value !== "") {
+            const optionEl = document.createElement("option", {is: "emc-i18n-option"});
+            optionEl.value = value;
+            if (typeof label === "string" && label !== "") {
+                optionEl.i18nValue = label;
+            } else {
+                optionEl.i18nValue = value;
             }
             this.#inputEl.append(optionEl);
         }

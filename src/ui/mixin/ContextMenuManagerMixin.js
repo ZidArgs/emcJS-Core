@@ -130,6 +130,7 @@ export default createMixin((superclass) => class ContextMenuManagerMixin extends
             const manager = this.#getEventManager(name);
             internalManager.switchTarget(null);
             manager.switchTarget(null);
+            this.#menus.delete(name);
             oldMenu.remove();
         }
     }
@@ -201,6 +202,7 @@ export default createMixin((superclass) => class ContextMenuManagerMixin extends
         for (const [, menu] of this.#menus) {
             menu.remove();
         }
+        this.#menus.clear();
     }
 
 });

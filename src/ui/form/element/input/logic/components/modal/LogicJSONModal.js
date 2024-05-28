@@ -71,7 +71,7 @@ export default class LogicJSONModal extends Modal {
     });
 
     set value(value) {
-        this.#jsonEl.value = JSON.stringify(value, null, 4);
+        this.#jsonEl.value = value != null ? JSON.stringify(value, null, 4) : "";
     }
 
     get value() {

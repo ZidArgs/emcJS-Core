@@ -7,10 +7,12 @@
     right: 0;
     bottom: 0;
     pointer-events: none;
+    z-index: 900600;
 }
 :host(.inactive) {
     z-index: 0;
     background-color: transparent;
+    z-index: 900599;
 }
 :host,
 .button {
