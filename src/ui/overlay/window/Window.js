@@ -1,6 +1,6 @@
 import CustomElement from "../../element/CustomElement.js";
-import WindowLayer from "./WindowLayer.js";
 import I18nLabel from "../../i18n/I18nLabel.js";
+import UniqueEntriesStack from "../../../data/stack/UniqueEntriesStack.js";
 import "../../symbols/CloseSymbol.js";
 import TPL from "./Window.js.html" assert {type: "html"};
 import STYLE from "./Window.js.css" assert {type: "css"};
@@ -13,6 +13,8 @@ const Q_TAB = [
     "textarea:not([tabindex=\"-1\"])",
     "[tabindex]:not([tabindex=\"-1\"])"
 ].join(",");
+
+const visibleModals = new UniqueEntriesStack();
 
 export default class Window extends CustomElement {
 
@@ -50,8 +52,27 @@ export default class Window extends CustomElement {
     }
 
     show() {
-        WindowLayer.append(this);
+        document.body.append(this);
+        const oldModal = visibleModals.peek();
+        if (oldModal != null) {
+            oldModal.classList.add("inactive");
+        }
+        this.classList.remove("inactive");
+        visibleModals.push(this);
         this.initialFocus();
+    }
+
+    remove() {
+        super.remove();
+        if (visibleModals.peek() === this) {
+            visibleModals.pop();
+            const lastModal = visibleModals.peek();
+            if (lastModal != null) {
+                lastModal.classList.remove("inactive");
+            }
+        } else {
+            visibleModals.delete(this);
+        }
     }
 
     close() {

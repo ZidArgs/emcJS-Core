@@ -1,4 +1,3 @@
-import WindowLayer from "./WindowLayer.js";
 import Window from "./Window.js";
 import TPL from "./Dialog.js.html" assert {type: "html"};
 import STYLE from "./Dialog.js.css" assert {type: "css"};
@@ -51,11 +50,6 @@ export default class Dialog extends Window {
         } else {
             cancelEl.remove();
         }
-    }
-
-    show() {
-        WindowLayer.append(this, "dialogs");
-        this.initialFocus();
     }
 
     submit() {

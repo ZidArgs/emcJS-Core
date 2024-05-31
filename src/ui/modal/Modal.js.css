@@ -106,7 +106,7 @@
     line-height: 1em;
 }
 #title-icon {
-    display: none;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     height: 40px;
@@ -119,9 +119,6 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-}
-#title-icon.visible {
-    display: inline-flex;
 }
 #title-icon.small {
     font-size: 1.9em;

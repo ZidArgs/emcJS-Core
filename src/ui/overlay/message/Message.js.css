@@ -15,7 +15,7 @@
     color: var(--color, #000000);
     background-color: transparent;
     cursor: pointer;
-    -webkit-appearance: none;
+    appearance: none;
     font-size: 10px;
     line-height: 1em;
     pointer-events: all;
@@ -34,4 +34,7 @@
     width: 0px;
     height: 4px;
     background-color: var(--color, #ff0000);
+}
+:host(:hover) #autoclose {
+    animation-play-state: paused !important;
 }

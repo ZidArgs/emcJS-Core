@@ -1,5 +1,4 @@
 import CustomElement from "./element/CustomElement.js";
-import "./overlay/window/WindowLayer.js";
 import "./overlay/message/MessageLayer.js";
 import "./overlay/ctxmenu/CtxMenuLayer.js";
 import TPL from "./Page.js.html" assert {type: "html"};

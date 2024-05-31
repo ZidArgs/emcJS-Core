@@ -1,4 +1,3 @@
-import ModalLayer from "./ModalLayer.js";
 import Modal from "./Modal.js";
 import "../form/button/Button.js";
 import TPL from "./ModalDialog.js.html" assert {type: "html"};
@@ -13,7 +12,7 @@ export default class ModalDialog extends Modal {
     #onclose = null;
 
     constructor(options = {}) {
-        super(options.title, options.close);
+        super(options.title);
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
@@ -64,8 +63,7 @@ export default class ModalDialog extends Modal {
             this.#onclose = function() {
                 resolve();
             };
-            ModalLayer.append(this, "dialog");
-            this.initialFocus();
+            super.show();
         });
     }
 

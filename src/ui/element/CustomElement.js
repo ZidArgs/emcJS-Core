@@ -53,6 +53,18 @@ export default class CustomElement extends HTMLElement {
         return true;
     }
 
+    setStringAttribute(name, value) {
+        if (value == null) {
+            this.removeAttribute(name);
+        } else {
+            this.setAttribute(name, value.toString());
+        }
+    }
+
+    getStringAttribute(name) {
+        return this.getAttribute(name);
+    }
+
     setNumberAttribute(name, value, min, max) {
         const parsedValue = parseFloat(value);
         if (!isNaN(parsedValue)) {

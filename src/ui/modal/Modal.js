@@ -31,14 +31,14 @@ export default class Modal extends CustomElement {
 
     #assocName = "";
 
-    constructor(title = "", close = "close") {
+    constructor(title) {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#titleIconEl = this.shadowRoot.getElementById("title-icon");
         this.#titleTextEl = this.shadowRoot.getElementById("title-text");
-        this.#titleTextEl.i18nValue = title;
+        this.title = title;
         /* --- */
         this.addEventListener("keypress", (event) => {
             if (event.key == "Escape") {
@@ -47,9 +47,6 @@ export default class Modal extends CustomElement {
             event.stopPropagation();
         });
         const closeEl = this.shadowRoot.getElementById("close");
-        if (!!close && typeof close === "string") {
-            closeEl.setAttribute("title", close);
-        }
         closeEl.addEventListener("click", () => this.close());
         /* --- */
         const focusTopEl = this.shadowRoot.getElementById("focus_catcher_top");
@@ -68,6 +65,28 @@ export default class Modal extends CustomElement {
 
     disconnectedCallback() {
         this.classList.remove("inactive");
+    }
+
+    set title(value) {
+        this.setStringAttribute("title", value);
+    }
+
+    get title() {
+        return this.getStringAttribute("title");
+    }
+
+    static get observedAttributes() {
+        return ["title"];
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        switch (name) {
+            case "title": {
+                if (oldValue != newValue) {
+                    this.#titleTextEl.i18nValue = newValue;
+                }
+            } break;
+        }
     }
 
     setFontIcon(content, {color, size, circle = false} = {}) {
@@ -92,12 +111,11 @@ export default class Modal extends CustomElement {
                 this.#titleIconEl.style.backgroundImage = "";
                 this.#titleIconEl.classList.remove("small");
             }
-            this.#titleIconEl.classList.add("visible");
         } else {
-            this.#titleIconEl.innerText = "";
+            this.#titleIconEl.innerText = "❖";
             this.#titleIconEl.style.backgroundImage = "";
             this.#titleIconEl.style.color = "";
-            this.#titleIconEl.classList.remove("visible");
+            this.#titleIconEl.classList.remove("small");
         }
     }
 
@@ -106,17 +124,12 @@ export default class Modal extends CustomElement {
             this.#titleIconEl.innerText = "";
             this.#titleIconEl.style.backgroundImage = content;
             this.#titleIconEl.style.color = "";
-            this.#titleIconEl.classList.add("visible");
         } else {
-            this.#titleIconEl.innerText = "";
+            this.#titleIconEl.innerText = "❖";
             this.#titleIconEl.style.backgroundImage = "";
             this.#titleIconEl.style.color = "";
-            this.#titleIconEl.classList.remove("visible");
         }
-    }
-
-    setTitle(value) {
-        this.#titleTextEl.i18nValue = value;
+        this.#titleIconEl.classList.remove("small");
     }
 
     show() {
