@@ -41,6 +41,23 @@ export function isEqual(a, b) {
     if (a instanceof Date && b instanceof Date) {
         return a.getTime() == b.getTime();
     }
+    if (a instanceof HTMLElement) {
+        if (b instanceof HTMLElement) {
+            if (a.tagName !== b.tagName) {
+                return false;
+            }
+            if (a.attributes.length !== b.attributes.length) {
+                return false;
+            }
+            for (const attr of a.attributes) {
+                if (attr.value !== b.getAttribute(attr.name)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
     if (Array.isArray(a)) {
         if (!Array.isArray(b) || a.length != b.length) {
             return false;
@@ -129,6 +146,25 @@ export default class Comparator {
         // check dates
         if (a instanceof Date && b instanceof Date) {
             return a.getTime() === b.getTime();
+        }
+
+        // check html elements
+        if (a instanceof HTMLElement) {
+            if (b instanceof HTMLElement) {
+                if (a.tagName !== b.tagName) {
+                    return false;
+                }
+                if (a.attributes.length !== b.attributes.length) {
+                    return false;
+                }
+                for (const attr of a.attributes) {
+                    if (attr.value !== b.getAttribute(attr.name)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return false;
         }
 
         // check arrays

@@ -11,6 +11,14 @@ export default class ModalDialog extends Modal {
 
     #onclose = null;
 
+    #textEl;
+
+    #cancelEl;
+
+    #submitEl;
+
+    #initialFocusElement = null;
+
     constructor(options = {}) {
         super(options.title);
         const els = TPL.generate();
@@ -19,36 +27,36 @@ export default class ModalDialog extends Modal {
         const footerEl = this.shadowRoot.getElementById("footer");
 
         if (!!options.text && typeof options.text === "string") {
-            const textEl = this.shadowRoot.getElementById("text");
+            this.#textEl = this.shadowRoot.getElementById("text");
             if (options.text instanceof HTMLElement) {
-                textEl.append(options.text);
+                this.#textEl.append(options.text);
             } else if (typeof options.text === "string") {
-                textEl.innerHTML = options.text;
+                this.#textEl.innerHTML = options.text;
             }
         }
 
         if (options.cancel) {
-            const cancelEl = els.getElementById("cancel");
+            this.#cancelEl = els.getElementById("cancel");
             if (options.cancel instanceof HTMLElement) {
-                cancelEl.text = undefined;
-                cancelEl.append(options.cancel);
+                this.#cancelEl.text = undefined;
+                this.#cancelEl.append(options.cancel);
             } else if (typeof options.cancel === "string") {
-                cancelEl.text = options.cancel;
+                this.#cancelEl.text = options.cancel;
             }
-            cancelEl.addEventListener("click", () => this.cancel());
-            footerEl.append(cancelEl);
+            this.#cancelEl.addEventListener("click", () => this.cancel());
+            footerEl.append(this.#cancelEl);
         }
 
         if (options.submit) {
-            const submitEl = els.getElementById("submit");
+            this.#submitEl = els.getElementById("submit");
             if (options.submit instanceof HTMLElement) {
-                submitEl.text = undefined;
-                submitEl.append(options.submit);
+                this.#submitEl.text = undefined;
+                this.#submitEl.append(options.submit);
             } else if (typeof options.submit === "string") {
-                submitEl.text = options.submit;
+                this.#submitEl.text = options.submit;
             }
-            submitEl.addEventListener("click", () => this.submit());
-            footerEl.append(submitEl);
+            this.#submitEl.addEventListener("click", () => this.submit());
+            footerEl.append(this.#submitEl);
         }
     }
 
@@ -111,6 +119,7 @@ export default class ModalDialog extends Modal {
             submit: "ok"
         });
         dialogEl.setFontIcon("!", {color: "var(--modal-icon-alert-color, #e98e2d)", circle: "var(--modal-icon-alert-color, #e98e2d)"});
+        dialogEl.initialFocusElement = dialogEl.#submitEl;
         // ---
         const result = await dialogEl.show();
         return result;
@@ -124,6 +133,7 @@ export default class ModalDialog extends Modal {
             cancel: "no"
         });
         dialogEl.setFontIcon("?", {color: "var(--modal-icon-confirm-color, #0000ff)", circle: "var(--modal-icon-confirm-color, #0000ff)"});
+        dialogEl.initialFocusElement = dialogEl.#cancelEl;
         // ---
         const result = await dialogEl.show();
         return result;
@@ -152,6 +162,7 @@ export default class ModalDialog extends Modal {
             event.stopPropagation();
         });
         dialogEl.append(inputEl);
+        dialogEl.initialFocusElement = inputEl;
         // ---
         const result = await dialogEl.show();
         return result && inputEl.value;
@@ -181,6 +192,7 @@ export default class ModalDialog extends Modal {
             event.stopPropagation();
         });
         dialogEl.append(inputEl);
+        dialogEl.initialFocusElement = inputEl;
         // ---
         const result = await dialogEl.show();
         return result && parseFloat(inputEl.value);
@@ -207,9 +219,31 @@ export default class ModalDialog extends Modal {
         inputEl.readOnly = true;
         inputEl.value = Array.isArray(errors) ? errors.join("\n") : errors.toString();
         dialogEl.append(inputEl);
+        dialogEl.initialFocusElement = inputEl;
         // ---
         const result = await dialogEl.show();
         return result;
+    }
+
+    initialFocus() {
+        const presetEl = this.initialFocusElement;
+        if (presetEl != null) {
+            presetEl.focus();
+        } else {
+            super.initialFocus();
+        }
+    }
+
+    set initialFocusElement(value) {
+        if (value instanceof HTMLElement) {
+            this.#initialFocusElement = value;
+        } else {
+            this.#initialFocusElement = null;
+        }
+    }
+
+    get initialFocusElement() {
+        return this.#initialFocusElement;
     }
 
 }

@@ -49,6 +49,10 @@ export default class ModalDialogRelationSelect extends ModalDialog {
         return this.#inputEl.sorted;
     }
 
+    get initialFocusElement() {
+        return this.#inputEl;
+    }
+
 }
 
 customElements.define("emc-modal-dialog-select-relation", ModalDialogRelationSelect);

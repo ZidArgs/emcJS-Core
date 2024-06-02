@@ -11,7 +11,7 @@ import STYLE from "./Modal.js.css" assert {type: "css"};
 const Q_TAB = [
     "button:not([tabindex=\"-1\"])",
     "[href]:not([tabindex=\"-1\"])",
-    "input:not([tabindex=\"-1\"])",
+    "input:not([type=\"hidden\"]):not([tabindex=\"-1\"])",
     "select:not([tabindex=\"-1\"])",
     "textarea:not([tabindex=\"-1\"])",
     "[tabindex]:not([tabindex=\"-1\"])"
@@ -163,7 +163,7 @@ export default class Modal extends CustomElement {
 
     #getModalFocusable() {
         const els = Array.from(this.shadowRoot.querySelectorAll(Q_TAB));
-        return els.slice(1, -1);
+        return [...els.slice(2, -1), els[1]];
     }
 
     #getContentFocusable() {

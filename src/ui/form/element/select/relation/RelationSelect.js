@@ -376,7 +376,7 @@ export default class RelationSelect extends CustomFormElementDelegating {
             }
             for (const el of this.#optionNodeList) {
                 el.style.display = "";
-                if (el.value?.type === this.#value?.type && el.value?.name === this.#value?.name) {
+                if ((el.value?.type ?? "") === (this.#value?.type ?? "") && (el.value?.name ?? "") === (this.#value?.name ?? "")) {
                     el.classList.add("selected");
                 } else {
                     el.classList.remove("selected");
@@ -444,9 +444,14 @@ export default class RelationSelect extends CustomFormElementDelegating {
                 markedEl.classList.remove("marked");
             }
             el.classList.add("marked");
-            const targetScroll = el.offsetTop - 20;
-            if (this.#scrollContainerEl.scrollTop > targetScroll) {
-                this.#scrollContainerEl.scrollTop = targetScroll;
+            const scrollOffset = this.#scrollContainerEl.offsetTop;
+            const scrollHeight = this.#scrollContainerEl.offsetHeight;
+            const targetOffset = el.offsetTop - scrollOffset;
+            const targetHeight = el.offsetHeight;
+            if (this.#scrollContainerEl.scrollTop > targetOffset - 20) {
+                this.#scrollContainerEl.scrollTop = targetOffset - 20;
+            } else if (this.#scrollContainerEl.scrollTop < targetOffset + targetHeight - (scrollHeight - 20)) {
+                this.#scrollContainerEl.scrollTop = targetOffset + targetHeight - (scrollHeight - 20);
             }
         }
     }
@@ -468,7 +473,7 @@ export default class RelationSelect extends CustomFormElementDelegating {
         } else {
             const value = this.#value;
             nextEl = this.#optionNodeList.querySelector(`[type="${value?.type ?? ""}"][name="${value?.name ?? ""}"]`);
-            if (nextEl == null) {
+            if (nextEl == null || nextEl.style.display == "none") {
                 nextEl = this.#getFirstOption();
             }
         }

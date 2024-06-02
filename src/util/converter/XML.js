@@ -2,6 +2,7 @@
 
 const PARSER = new DOMParser();
 
+// TODO
 class XML {
 
     parse(input) {

@@ -1,5 +1,6 @@
 import CustomElement from "./CustomElement.js";
 
+// TODO extend HTMLInputElement (needs testing)
 export default class CustomFormElement extends CustomElement {
 
     static get formAssociated() {

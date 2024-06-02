@@ -403,9 +403,14 @@ export default class SearchSelect extends CustomFormElementDelegating {
                 marked.classList.remove("marked");
             }
             el.classList.add("marked");
-            const targetScroll = el.offsetTop - 20;
-            if (this.#scrollContainerEl.scrollTop > targetScroll) {
-                this.#scrollContainerEl.scrollTop = targetScroll;
+            const scrollOffset = this.#scrollContainerEl.offsetTop;
+            const scrollHeight = this.#scrollContainerEl.offsetHeight;
+            const targetOffset = el.offsetTop - scrollOffset;
+            const targetHeight = el.offsetHeight;
+            if (this.#scrollContainerEl.scrollTop > targetOffset - 20) {
+                this.#scrollContainerEl.scrollTop = targetOffset - 20;
+            } else if (this.#scrollContainerEl.scrollTop < targetOffset + targetHeight - (scrollHeight - 20)) {
+                this.#scrollContainerEl.scrollTop = targetOffset + targetHeight - (scrollHeight - 20);
             }
         }
     }
@@ -426,7 +431,7 @@ export default class SearchSelect extends CustomFormElementDelegating {
             }
         } else {
             nextEl = this.#optionNodeList.querySelector(`[value="${this.#value}"]`);
-            if (nextEl == null) {
+            if (nextEl == null || nextEl.style.display == "none") {
                 nextEl = this.#getFirstOption();
             }
         }

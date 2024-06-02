@@ -1,8 +1,8 @@
-import CustomElementDelegating from "../CustomElement/CustomElementDelegating.js";
+import CustomElement from "../CustomElement/CustomElement.js";
 // import TPL from "./ChevronRightSymbol.js.html" assert {type: "html"};
 import STYLE from "./ChevronRightSymbol.js.css" assert {type: "css"};
 
-export default class Symbol extends CustomElementDelegating {
+export default class Symbol extends CustomElement {
 
     constructor() {
         super();
