@@ -6,5 +6,7 @@
     line-height: 1em;
     font-family: monospace;
     font-weight: bold;
+    transform-origin: center;
+    rotate: 270deg;
     content: "↺";
 }
