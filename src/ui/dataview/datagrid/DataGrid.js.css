@@ -57,7 +57,8 @@
     box-shadow: inset var(--datagrid-header-seperator-color, #ffffff) var(--datagrid-column-seperator-width, 2px) 0px 0px;
 }
 #body tr:hover {
-    background-color: var(--datagrid-row-hover-back-color, #e3f6fc);
+    color: var(--datagrid-row-hover-text-color, #000000);
+    background-color: var(--datagrid-row-hover-back-color, #e4e4e4);
     background-image: var(--datagrid-row-hover-back-image, none);
 }
 #body tr > * {

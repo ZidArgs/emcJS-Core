@@ -4,19 +4,18 @@
     width: 100%;
 }
 #icon-background {
-    --checker-color: #8181813d;
     width: 2em;
     height: 2em;
     margin-right: calc(-1 * var(--form-border-width, 2px));
     background-color: var(--input-back-color, #ffffff);
     background-image:
-        linear-gradient(45deg, var(--checker-color) 25%, transparent 25%),
-        linear-gradient(-45deg, var(--checker-color) 25%, transparent 25%),
-        linear-gradient(45deg, transparent 75%, var(--checker-color) 75%),
-        linear-gradient(-45deg, transparent 75%, var(--checker-color) 75%);
+        linear-gradient(45deg, var(--image-checker-back-color) 25%, transparent 25%),
+        linear-gradient(-45deg, var(--image-checker-back-color) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, var(--image-checker-back-color) 75%),
+        linear-gradient(-45deg, transparent 75%, var(--image-checker-back-color) 75%);
     background-size:10px 10px;
     background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
-    border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
+    border: solid var(--form-border-width, 2px) var(--input-border-color, #222222);
     border-radius: var(--form-border-radius, 6px) 0px 0px var(--form-border-radius, 6px);
 }
 :host(:invalid) #icon-background {
@@ -39,7 +38,7 @@
     color: var(--input-text-color, #000000);
     background-color: var(--input-back-color, #ffffff);
     background-image: var(--input-back-image, none);
-    border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
+    border: solid var(--form-border-width, 2px) var(--input-border-color, #222222);
     border-radius: 0px;
     font-size: 1em;
 }
@@ -61,7 +60,7 @@
     color: var(--button-text-color, #000000);
     background-color: var(--button-back-color, #cccccc);
     background-image: var(--button-back-image, none);
-    border: solid var(--form-border-width, 2px) var(--form-border-color, #000000);
+    border: solid var(--form-border-width, 2px) var(--input-border-color, #222222);
     border-radius: 0px var(--form-border-radius, 6px) var(--form-border-radius, 6px) 0px;
     font-size: 1em;
     font-weight: bold;

@@ -6,7 +6,7 @@
     height: 2rem;
     color: var(--input-text-color, #000000);
     background-color: var(--input-back-color, #ffffff);
-    border: solid 1px var(--input-border-color, #000000);
+    border: solid 1px var(--input-border-color, #222222);
     border-radius: 2px;
     user-select: none;
 }

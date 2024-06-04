@@ -5,7 +5,7 @@
     min-width: 200px;
     color: var(--input-text-color, #000000);
     background-color: var(--input-back-color, #ffffff);
-    border: solid 1px var(--input-border-color, #000000);
+    border: solid 1px var(--input-border-color, #222222);
     border-radius: 2px;
     user-select: none;
 }
@@ -73,7 +73,7 @@
     overflow-x: hidden;
     overflow-y: auto;
     background-color: var(--input-back-color, #ffffff);
-    border: solid 1px var(--input-border-color, #000000);
+    border: solid 1px var(--input-border-color, #222222);
     z-index: 1000;
     box-shadow: black 2px 2px 2px;
 }

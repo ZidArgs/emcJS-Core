@@ -273,6 +273,12 @@ class FormBuilder {
         if (params.tooltip != null) {
             el.tooltip = params.tooltip;
         }
+        if (params.primary != null) {
+            el.primary = params.primary;
+        }
+        if (params.secondary != null) {
+            el.secondary = params.secondary;
+        }
         if (params.disabled != null) {
             el.disabled = params.disabled;
         }
@@ -305,6 +311,12 @@ class FormBuilder {
         if (params.tooltip != null) {
             el.tooltip = params.tooltip;
         }
+        if (params.primary != null) {
+            el.primary = params.primary;
+        }
+        if (params.secondary != null) {
+            el.secondary = params.secondary;
+        }
         if (params.disabled != null) {
             el.disabled = params.disabled;
         }
@@ -336,6 +348,12 @@ class FormBuilder {
         }
         if (params.tooltip != null) {
             el.tooltip = params.tooltip;
+        }
+        if (params.primary != null) {
+            el.primary = params.primary;
+        }
+        if (params.secondary != null) {
+            el.secondary = params.secondary;
         }
         if (params.disabled != null) {
             el.disabled = params.disabled;
@@ -372,6 +390,12 @@ class FormBuilder {
         if (params.action != null) {
             el.action = params.action;
         }
+        if (params.primary != null) {
+            el.primary = params.primary;
+        }
+        if (params.secondary != null) {
+            el.secondary = params.secondary;
+        }
         if (params.disabled != null) {
             el.disabled = params.disabled;
         }
@@ -406,6 +430,12 @@ class FormBuilder {
         }
         if (params.href != null) {
             el.href = params.href;
+        }
+        if (params.primary != null) {
+            el.primary = params.primary;
+        }
+        if (params.secondary != null) {
+            el.secondary = params.secondary;
         }
         if (params.disabled != null) {
             el.disabled = params.disabled;
