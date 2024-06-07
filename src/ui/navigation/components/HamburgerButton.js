@@ -3,7 +3,7 @@ import "../../i18n/I18nTooltip.js";
 import TPL from "./HamburgerButton.js.html" assert {type: "html"};
 import STYLE from "./HamburgerButton.js.css" assert {type: "css"};
 
-export default class Button extends CustomElement {
+export default class HamburgerButton extends CustomElement {
 
     constructor() {
         super();
@@ -45,4 +45,4 @@ export default class Button extends CustomElement {
 
 }
 
-customElements.define("emc-navbar-hamburger", Button);
+customElements.define("emc-navbar-hamburger", HamburgerButton);

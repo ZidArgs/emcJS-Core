@@ -20,7 +20,22 @@ function closeAll(targetEl) {
     }
 }
 
+function encodeWindowFeatures(input) {
+    if (typeof input === "string") {
+        return input;
+    } else if (typeof input === "object" && !Array.isArray(input)) {
+        return Object.entries(input).map((entry) => {
+            const [key, value] = entry;
+            return `${key}=${value}`;
+        }).join(",");
+    }
+}
+
 export default class NavBar extends CustomElement {
+
+    #containerEl;
+
+    #navigationHandler = null;
 
     constructor() {
         super();
@@ -29,27 +44,47 @@ export default class NavBar extends CustomElement {
         /* --- */
 
         // layout
-        const containerEl = this.shadowRoot.getElementById("container");
+        this.#containerEl = this.shadowRoot.getElementById("container");
         const coverEl = this.shadowRoot.getElementById("cover");
         const contentEl = this.shadowRoot.getElementById("content");
         const hamburgerEl = this.shadowRoot.getElementById("hamburger-button");
         hamburgerEl.addEventListener("click", () => {
-            if (containerEl.classList.contains("open")) {
-                containerEl.classList.remove("open");
-                containerEl.classList.remove("cover");
+            if (this.#containerEl.classList.contains("open")) {
+                this.#containerEl.classList.remove("open");
+                this.#containerEl.classList.remove("cover");
                 closeAll(contentEl);
                 hamburgerEl.open = false;
             } else {
-                containerEl.classList.add("open");
+                this.#containerEl.classList.add("open");
                 hamburgerEl.open = true;
             }
         });
         coverEl.addEventListener("click", () => {
-            containerEl.classList.remove("open");
-            containerEl.classList.remove("cover");
+            this.#containerEl.classList.remove("open");
+            this.#containerEl.classList.remove("cover");
             closeAll(contentEl);
             hamburgerEl.open = false;
         });
+    }
+
+    set maxWidth(value) {
+        this.setIntAttribute("maxwidth", value, 0);
+    }
+
+    get maxWidth() {
+        return this.getIntAttribute("maxwidth");
+    }
+
+    static get observedAttributes() {
+        return ["maxwidth"];
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (name == "maxwidth") {
+            if (oldValue != newValue) {
+                this.#containerEl.style.maxWidth = `${newValue}px`;
+            }
+        }
     }
 
     loadNavigation(config) {
@@ -57,6 +92,14 @@ export default class NavBar extends CustomElement {
         contentEl.innerHTML = "";
         for (const item of config) {
             this.#generateElement(contentEl, item);
+        }
+    }
+
+    setNavigationHandler(fn) {
+        if (typeof fn === "function") {
+            this.#navigationHandler = fn;
+        } else {
+            this.#navigationHandler = null;
         }
     }
 
@@ -103,8 +146,12 @@ export default class NavBar extends CustomElement {
                         containerEl.classList.remove("cover");
                         containerEl.classList.remove("open");
                         closeAll(contentEl);
-                        if (config.targetNew) {
-                            window.open(config.href, "_blank");
+                        const target = event.ctrlKey ? "_blank" : config.target;
+                        if (target) {
+                            const windowFeatures = encodeWindowFeatures(config.windowFeatures);
+                            window.open(config.href, target, windowFeatures);
+                        } else if (this.#navigationHandler != null) {
+                            this.#navigationHandler(config.href);
                         } else {
                             window.location.href = config.href;
                         }
