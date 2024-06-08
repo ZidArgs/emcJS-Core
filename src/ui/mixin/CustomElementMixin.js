@@ -14,7 +14,12 @@ export default createMixin((superclass) => class CustomElementMixin extends supe
     constructor(...args) {
         super(...args);
         /* --- */
+        this.attachShadow({mode: "open", delegatesFocus: this.constructor.delegatesFocus});
         STYLE.apply(this.shadowRoot);
+    }
+
+    static get delegatesFocus() {
+        return false;
     }
 
     connectedCallback() {

@@ -7,7 +7,6 @@ export default class CustomElement extends CustomElementMixin(HTMLElement) {
             throw new Error("can not construct abstract class");
         }
         super();
-        this.attachShadow({mode: "open"});
     }
 
 }
