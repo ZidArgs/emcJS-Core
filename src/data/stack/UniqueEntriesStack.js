@@ -29,4 +29,8 @@ export default class UniqueEntriesStack {
         }
     }
 
+    get size() {
+        return this.#entries.length;
+    }
+
 }

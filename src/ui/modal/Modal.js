@@ -278,6 +278,12 @@ export default class Modal extends CustomElement {
         return modal;
     }
 
+    static closeAll() {
+        while (visibleModals.size > 0) {
+            visibleModals.pop().close();
+        }
+    }
+
 }
 
 customElements.define("emc-modal", Modal);
