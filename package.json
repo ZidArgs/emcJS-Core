@@ -11,7 +11,7 @@
   "license": "MIT",
   "homepage": "https://bitbucket.org/zidargs/emcjs/src",
   "dependencies": {
-    "jswebservice": "git+https://bitbucket.org/zidargs/jswebservice.git/#2.1.2"
+    "jswebservice": "git+https://bitbucket.org/zidargs/jswebservice.git/#2.1.4"
   },
   "devDependencies": {
     "@babel/core": "^7.16.10",
