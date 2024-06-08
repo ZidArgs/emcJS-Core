@@ -36,7 +36,7 @@ export default class BoolOrLogicInput extends CustomFormElementDelegating {
     }
 
     setModalRefName(name) {
-        this.#boolOrLogicModal.title = name;
+        this.#boolOrLogicModal.caption = name;
     }
 
     connectedCallback() {

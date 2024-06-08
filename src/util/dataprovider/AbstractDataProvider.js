@@ -13,7 +13,7 @@ import DataRecieverMixin from "./DataRecieverMixin.js";
 
 const DEFAULT_OPTIONS = {sort: [], page: 0, pageSize: 0, filter: {}, filterFunction: false};
 
-export default class AbstractDataProvider {
+export default class AbstractDataProvider extends EventTarget {
 
     static get defaultOptions() {
         return deepClone(DEFAULT_OPTIONS);
@@ -36,6 +36,7 @@ export default class AbstractDataProvider {
         if (!(reciever instanceof DataRecieverMixin)) {
             throw new Error("target must extend DataRecieverMixin");
         }
+        super();
         this.#reciever = reciever;
         this.triggerUpdate();
         /* --- */
@@ -140,8 +141,10 @@ export default class AbstractDataProvider {
                 this.#data = [];
                 this.#reciever.setData([]);
             }
+            this.dispatchEvent(new Event("updated"));
         } catch {
             this.#reciever.setData([]);
+            this.dispatchEvent(new Event("error"));
         } finally {
             this.#updatePaginationEls();
             await this.#reciever.unbusy();

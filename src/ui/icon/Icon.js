@@ -1,4 +1,4 @@
-import CustomElement from "./element/CustomElement.js";
+import CustomElement from "../element/CustomElement.js";
 import TPL from "./Icon.js.html" assert {type: "html"};
 import STYLE from "./Icon.js.css" assert {type: "css"};
 

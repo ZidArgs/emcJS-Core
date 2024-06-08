@@ -38,6 +38,7 @@
     background-image: var(--modal-back-image, none);
     border: solid var(--modal-border-width, 2px) var(--modal-border-color, #cccccc);
     border-radius: 4px;
+    font-size: 1rem;
     resize: both;
     pointer-events: all;
     box-shadow: #000000c4 11px 11px 20px 0px;
@@ -74,7 +75,7 @@
     border: none;
     align-items: center;
     justify-content: center;
-    color: var(--modal-close-text-color, #b4b4b4);
+    color: var(--modal-close-text-color, #222222);
     background-color: var(--modal-close-back-color, #ffb9b9);
     background-image: var(--modal-close-back-image, none);
     cursor: pointer;
@@ -142,4 +143,19 @@
 }
 #text:empty {
     display: none;
+}
+a {
+    color: var(--modal-link-text-color, #004472);
+    text-decoration: none;
+    border-radius: var(--button-border-radius, 4px);
+}
+a:hover {
+    color: var(--modal-link-hover-text-color, #003597);
+}
+a:focus {
+    box-shadow: 0 0 2px 3px var(--button-focus-color, #06b5ff);
+    outline: none;
+}
+.text-icon {
+    margin-right: 0.5em;
 }

@@ -1,4 +1,7 @@
 import Button from "./Button.js";
+import {
+    registerFocusable
+} from "../../../util/helper/html/getFocusableElements.js";
 import CustomActionRegistry from "../../../data/registry/CustomActionRegistry.js";
 import {
     deepClone
@@ -38,3 +41,4 @@ export default class ActionButton extends Button {
 }
 
 customElements.define("emc-button-action", ActionButton);
+registerFocusable("emc-button-action");

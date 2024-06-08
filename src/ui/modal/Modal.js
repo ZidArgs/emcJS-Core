@@ -3,19 +3,13 @@ import UniqueEntriesStack from "../../data/stack/UniqueEntriesStack.js";
 import {
     isColorString
 } from "../../util/helper/CheckType.js";
+import {
+    getFocusableElements
+} from "../../util/helper/html/getFocusableElements.js";
 import "../i18n/I18nLabel.js";
 import "../symbols/CloseSymbol.js";
 import TPL from "./Modal.js.html" assert {type: "html"};
 import STYLE from "./Modal.js.css" assert {type: "css"};
-
-const Q_TAB = [
-    "button:not([tabindex=\"-1\"])",
-    "[href]:not([tabindex=\"-1\"])",
-    "input:not([type=\"hidden\"]):not([tabindex=\"-1\"])",
-    "select:not([tabindex=\"-1\"])",
-    "textarea:not([tabindex=\"-1\"])",
-    "[tabindex]:not([tabindex=\"-1\"])"
-].join(",");
 
 const SIZE_REGEXP = /^[0-9]+(?:\.[0-9]+)?(?:em|px|%)$/;
 
@@ -29,16 +23,25 @@ export default class Modal extends CustomElement {
 
     #titleTextEl;
 
+    #closeEl;
+
+    #textEl;
+
+    #footerEl;
+
     #assocName = "";
 
-    constructor(title) {
+    constructor(caption) {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#titleIconEl = this.shadowRoot.getElementById("title-icon");
         this.#titleTextEl = this.shadowRoot.getElementById("title-text");
-        this.title = title;
+        this.#closeEl = this.shadowRoot.getElementById("close");
+        this.#textEl = this.shadowRoot.getElementById("text");
+        this.#footerEl = this.shadowRoot.getElementById("footer");
+        this.caption = caption;
         /* --- */
         this.addEventListener("keypress", (event) => {
             if (event.key == "Escape") {
@@ -67,21 +70,21 @@ export default class Modal extends CustomElement {
         this.classList.remove("inactive");
     }
 
-    set title(value) {
-        this.setStringAttribute("title", value);
+    set caption(value) {
+        this.setStringAttribute("caption", value);
     }
 
-    get title() {
-        return this.getStringAttribute("title");
+    get caption() {
+        return this.getStringAttribute("caption");
     }
 
     static get observedAttributes() {
-        return ["title"];
+        return ["caption"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
-            case "title": {
+            case "caption": {
                 if (oldValue != newValue) {
                     this.#titleTextEl.i18nValue = newValue;
                 }
@@ -111,25 +114,63 @@ export default class Modal extends CustomElement {
                 this.#titleIconEl.style.backgroundImage = "";
                 this.#titleIconEl.classList.remove("small");
             }
+            return true;
         } else {
             this.#titleIconEl.innerText = "❖";
             this.#titleIconEl.style.backgroundImage = "";
             this.#titleIconEl.style.color = "";
             this.#titleIconEl.classList.remove("small");
+            return false;
         }
     }
 
     setImageIcon(content) {
+        this.#titleIconEl.classList.remove("small");
         if (typeof content === "string" && content !== "") {
             this.#titleIconEl.innerText = "";
             this.#titleIconEl.style.backgroundImage = content;
             this.#titleIconEl.style.color = "";
+            return true;
         } else {
             this.#titleIconEl.innerText = "❖";
             this.#titleIconEl.style.backgroundImage = "";
             this.#titleIconEl.style.color = "";
+            return false;
         }
+    }
+
+    setHTMLIcon(content) {
         this.#titleIconEl.classList.remove("small");
+        if (content instanceof HTMLElement) {
+            this.#titleIconEl.innerText = "";
+            this.#titleIconEl.append(content);
+            return true;
+        } else {
+            this.#titleIconEl.innerText = "❖";
+            this.#titleIconEl.style.backgroundImage = "";
+            this.#titleIconEl.style.color = "";
+            return false;
+        }
+    }
+
+    setIcon(config) {
+        switch (config.method) {
+            case "font": {
+                return this.setFontIcon(config.content, config.style);
+            }
+            case "image": {
+                return this.setImageIcon(config.content);
+            }
+            case "html": {
+                return this.setHTMLIcon(config.content);
+            }
+            default: {
+                this.#titleIconEl.innerText = "❖";
+                this.#titleIconEl.style.backgroundImage = "";
+                this.#titleIconEl.style.color = "";
+                return false;
+            }
+        }
     }
 
     show() {
@@ -161,56 +202,56 @@ export default class Modal extends CustomElement {
         this.dispatchEvent(new Event("close"));
     }
 
-    #getModalFocusable() {
-        const els = Array.from(this.shadowRoot.querySelectorAll(Q_TAB));
-        return [...els.slice(2, -1), els[1]];
+    #getTextFocusable() {
+        return getFocusableElements(this.#textEl);
     }
 
     #getContentFocusable() {
-        return Array.from(this.querySelectorAll(Q_TAB));
+        return getFocusableElements(this);
+    }
+
+    #getFooterFocusable() {
+        return getFocusableElements(this.#footerEl);
     }
 
     initialFocus() {
-        const contentEls = this.#getContentFocusable();
-        if (contentEls.length) {
-            contentEls[0].focus();
+        const textEls = this.#getTextFocusable();
+        if (textEls.length) {
+            textEls.at(-1).focus();
         } else {
-            const modalEls = this.#getModalFocusable();
-            if (modalEls.length) {
-                modalEls[0].focus();
-            } else {
-                const closeEl = this.shadowRoot.getElementById("close");
-                closeEl.focus();
+            const contentEls = this.#getContentFocusable();
+            if (contentEls.length) {
+                contentEls.at(-1).focus();
+            } else  {
+                const footerEls = this.#getFooterFocusable();
+                if (footerEls.length) {
+                    footerEls.at(-1).focus();
+                } else {
+                    this.#closeEl.focus();
+                }
             }
         }
     }
 
     focusFirst() {
-        const modalEls = this.#getModalFocusable();
-        if (modalEls.length) {
-            modalEls[0].focus();
-        } else {
-            const contentEls = this.#getContentFocusable();
-            if (contentEls.length) {
-                contentEls[0].focus();
-            } else {
-                const closeEl = this.shadowRoot.getElementById("close");
-                closeEl.focus();
-            }
-        }
+        this.#closeEl.focus();
     }
 
     focusLast() {
-        const modalEls = this.#getModalFocusable();
-        if (modalEls.length) {
-            modalEls[modalEls.length - 1].focus();
+        const footerEls = this.#getFooterFocusable();
+        if (footerEls.length) {
+            footerEls.at(-1).focus();
         } else {
             const contentEls = this.#getContentFocusable();
             if (contentEls.length) {
-                contentEls[contentEls.length - 1].focus();
-            } else {
-                const closeEl = this.shadowRoot.getElementById("close");
-                closeEl.focus();
+                contentEls.at(-1).focus();
+            } else  {
+                const textEls = this.#getTextFocusable();
+                if (textEls.length) {
+                    textEls.at(-1).focus();
+                } else {
+                    this.#closeEl.focus();
+                }
             }
         }
     }

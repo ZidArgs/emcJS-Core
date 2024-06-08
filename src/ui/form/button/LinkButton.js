@@ -2,6 +2,9 @@ import CustomFormElementDelegating from "../../element/CustomFormElementDelegati
 import {
     deepClone
 } from "../../../util/helper/DeepClone.js";
+import {
+    registerFocusable
+} from "../../../util/helper/html/getFocusableElements.js";
 import "../../i18n/I18nTooltip.js";
 import "../../i18n/I18nLabel.js";
 import TPL from "./LinkButton.js.html" assert {type: "html"};
@@ -119,3 +122,4 @@ export default class LinkButton extends CustomFormElementDelegating {
 }
 
 customElements.define("emc-button-link", LinkButton);
+registerFocusable("emc-button-link");

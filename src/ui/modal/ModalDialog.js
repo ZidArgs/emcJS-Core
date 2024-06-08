@@ -3,7 +3,45 @@ import "../form/button/Button.js";
 import TPL from "./ModalDialog.js.html" assert {type: "html"};
 import STYLE from "./ModalDialog.js.css" assert {type: "css"};
 
+const DEFAULT_DIALOG_ICONS = {
+    alert: {
+        method: "font",
+        content: "!",
+        style: {
+            color: "var(--modal-icon-alert-color, #e98e2d)",
+            circle: "var(--modal-icon-alert-color, #e98e2d)"
+        }
+    },
+    confirm: {
+        method: "font",
+        content: "?",
+        style: {
+            color: "var(--modal-icon-confirm-color, #0000ff)",
+            circle: "var(--modal-icon-confirm-color, #0000ff)"
+        }
+    },
+    promt: {
+        method: "font",
+        content: "🖉",
+        style: {
+            size: "1.4em",
+            color: "var(--modal-icon-prompt-color, #01ada4)",
+            circle: "var(--modal-icon-prompt-color, #01ada4)"
+        }
+    },
+    error: {
+        method: "font",
+        content: "⚠",
+        style: {
+            size: "2em",
+            color: "var(--modal-icon-error-color, #c50000)"
+        }
+    }
+};
+
 export default class ModalDialog extends Modal {
+
+    static #dialogIcons = new Map();
 
     #onsubmit = null;
 
@@ -20,7 +58,7 @@ export default class ModalDialog extends Modal {
     #initialFocusElement = null;
 
     constructor(options = {}) {
-        super(options.title);
+        super(options.caption);
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
@@ -112,41 +150,55 @@ export default class ModalDialog extends Modal {
         return true;
     }
 
-    static async alert(ttl, msg) {
+    static setDialogIcon(type, config) {
+        this.#dialogIcons.set(type, config);
+    }
+
+    static #applyDialogIcon(dialogEl, type) {
+        if (this.#dialogIcons.has(type)) {
+            const iconConfig = this.#dialogIcons.get(type);
+            if (dialogEl.setIcon(iconConfig)) {
+                return;
+            }
+        }
+        dialogEl.setIcon(DEFAULT_DIALOG_ICONS[type]);
+    }
+
+    static async alert(caption, text) {
         const dialogEl = new ModalDialog({
-            title: ttl,
-            text: msg,
+            caption,
+            text,
             submit: "ok"
         });
-        dialogEl.setFontIcon("!", {color: "var(--modal-icon-alert-color, #e98e2d)", circle: "var(--modal-icon-alert-color, #e98e2d)"});
+        this.#applyDialogIcon(dialogEl, "alert");
         dialogEl.initialFocusElement = dialogEl.#submitEl;
         // ---
         const result = await dialogEl.show();
         return result;
     }
 
-    static async confirm(ttl, msg) {
+    static async confirm(caption, text) {
         const dialogEl = new ModalDialog({
-            title: ttl,
-            text: msg,
+            caption,
+            text,
             submit: "yes",
             cancel: "no"
         });
-        dialogEl.setFontIcon("?", {color: "var(--modal-icon-confirm-color, #0000ff)", circle: "var(--modal-icon-confirm-color, #0000ff)"});
+        this.#applyDialogIcon(dialogEl, "alert");
         dialogEl.initialFocusElement = dialogEl.#cancelEl;
         // ---
         const result = await dialogEl.show();
         return result;
     }
 
-    static async prompt(ttl, msg, value) {
+    static async prompt(caption, text, value) {
         const dialogEl = new ModalDialog({
-            title: ttl,
-            text: msg,
+            caption,
+            text,
             submit: true,
             cancel: true
         });
-        dialogEl.setFontIcon("🖉", {size: "1.4em", color: "var(--modal-icon-prompt-color, #01ada4)", circle: "var(--modal-icon-prompt-color, #01ada4)"});
+        this.#applyDialogIcon(dialogEl, "promt");
         // ---
         const inputEl = document.createElement("input");
         inputEl.className = "prompt-input";
@@ -168,14 +220,14 @@ export default class ModalDialog extends Modal {
         return result && inputEl.value;
     }
 
-    static async promptNumber(ttl, msg, value, min = Number.MIN_VALUE, max = Number.MAX_VALUE) {
+    static async promptNumber(caption, text, value = 0, min = Number.MIN_VALUE, max = Number.MAX_VALUE) {
         const dialogEl = new ModalDialog({
-            title: ttl,
-            text: msg,
+            caption,
+            text,
             submit: true,
             cancel: true
         });
-        dialogEl.setFontIcon("🖉", {size: "1.4em", color: "var(--modal-icon-prompt-color, #01ada4)", circle: "var(--modal-icon-prompt-color, #01ada4)"});
+        this.#applyDialogIcon(dialogEl, "promt");
         // ---
         const inputEl = document.createElement("input");
         inputEl.type = "number";
@@ -198,28 +250,30 @@ export default class ModalDialog extends Modal {
         return result && parseFloat(inputEl.value);
     }
 
-    static async error(ttl = "Error", msg = "An error occured", errors = []) {
+    static async error(caption = "Error", text = "An error occured", errors = []) {
         const dialogEl = new ModalDialog({
-            title: ttl,
-            text: msg,
+            caption,
+            text,
             submit: "ok"
         });
-        dialogEl.setFontIcon("⚠", {color: "var(--modal-icon-error-color, #c50000)"});
+        this.#applyDialogIcon(dialogEl, "error");
         // ---
-        const inputEl = document.createElement("textarea");
-        inputEl.style.width = "100%";
-        inputEl.style.maxHeight = "300px";
-        inputEl.style.padding = "5px";
-        inputEl.style.color = "black";
-        inputEl.style.backgroundColor = "white";
-        inputEl.style.border = "solid 1px black";
-        inputEl.style.overflow = "auto";
-        inputEl.style.whiteSpace = "pre";
-        inputEl.style.resize = "none";
-        inputEl.readOnly = true;
-        inputEl.value = Array.isArray(errors) ? errors.join("\n") : errors.toString();
-        dialogEl.append(inputEl);
-        dialogEl.initialFocusElement = inputEl;
+        if (errors.length > 0) {
+            const inputEl = document.createElement("textarea");
+            inputEl.style.width = "100%";
+            inputEl.style.maxHeight = "300px";
+            inputEl.style.padding = "5px";
+            inputEl.style.color = "black";
+            inputEl.style.backgroundColor = "white";
+            inputEl.style.border = "solid 1px black";
+            inputEl.style.overflow = "auto";
+            inputEl.style.whiteSpace = "pre";
+            inputEl.style.resize = "none";
+            inputEl.readOnly = true;
+            inputEl.value = Array.isArray(errors) ? errors.join("\n") : errors.toString();
+            dialogEl.append(inputEl);
+            dialogEl.initialFocusElement = inputEl;
+        }
         // ---
         const result = await dialogEl.show();
         return result;

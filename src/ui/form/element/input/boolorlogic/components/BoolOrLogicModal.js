@@ -32,16 +32,16 @@ export default class BoolOrLogicModal extends Modal {
         footerEl.append(submitEl);
     }
 
-    set title(value) {
+    set caption(value) {
         if (typeof value === "string" && value !== "") {
-            super.title = `Edit logic: ${value}`;
+            super.caption = `Edit logic: ${value}`;
         } else {
-            super.title = "Edit logic";
+            super.caption = "Edit logic";
         }
     }
 
-    get title() {
-        return super.title;
+    get caption() {
+        return super.caption;
     }
 
     submit() {

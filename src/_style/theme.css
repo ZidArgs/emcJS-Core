@@ -27,7 +27,7 @@
     --modal-back-color: var(--page-back-color);
     --modal-back-image: none;
 
-    --modal-close-text-color: #000000;
+    --modal-close-text-color: #222222;
     --modal-close-back-color: #ffb9b9;
     --modal-close-back-image: none;
 
@@ -53,6 +53,9 @@
     --modal-icon-confirm-color: #0000ff;
     --modal-icon-prompt-color: #01ada4;
     --modal-icon-error-color: #c50000;
+
+    --modal-link-text-color: #004472;
+    --modal-link-hover-text-color: #003597;
 
     /* === tooltip === */
     --tooltip-text-color: var(--page-text-color);

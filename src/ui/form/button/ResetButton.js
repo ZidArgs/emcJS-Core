@@ -1,4 +1,7 @@
 import Button from "./Button.js";
+import {
+    registerFocusable
+} from "../../../util/helper/html/getFocusableElements.js";
 import STYLE from "./ResetButton.js.css" assert {type: "css"};
 
 export default class ResetButton extends Button {
@@ -20,3 +23,4 @@ export default class ResetButton extends Button {
 }
 
 customElements.define("emc-button-reset", ResetButton);
+registerFocusable("emc-button-reset");
