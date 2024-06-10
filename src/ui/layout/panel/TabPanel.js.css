@@ -20,6 +20,7 @@
     padding: 5px;
     color: var(--button-text-color, #000000);
     background-color: var(--button-back-color, #ffffff);
+    border-bottom-style: none;
     border-width: var(--button-border-width, 2px);
     border-color: var(--button-border-color, #222222);
     border-radius: var(--button-border-radius, 6px) var(--button-border-radius, 6px) 0px 0px;

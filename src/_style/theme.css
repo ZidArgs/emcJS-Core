@@ -58,7 +58,7 @@
     --modal-link-text-color: #004472;
     --modal-link-hover-text-color: #003597;
 
-    /* tabpanel */
+    /* === tabpanel === */
     --tabpanel-categories-border-width: var(--page-border-width);
     --tabpanel-categories-border-color: var(--page-content-border-color);
 
@@ -339,6 +339,7 @@
 
     /* === pagination === */
     --pagination-border-width: var(--page-border-width);
+    --pagination-border-color: var(--page-border-color); /* all; top_bottom right_left; top right bottom left*/
     --pagination-border-radius: var(--page-border-radius);
     --pagination-focus-color: var(--input-focus-color);
 

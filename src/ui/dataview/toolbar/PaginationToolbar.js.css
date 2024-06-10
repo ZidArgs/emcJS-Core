@@ -48,7 +48,7 @@
     background-image: var(--input-back-image, none);
     border-style: solid;
     border-width: var(--pagination-border-width, 2px);
-    border-color: var(--input-border-color, #000000);
+    border-color: var(--pagination-border-color, #000000);
     font-size: 1em;
     text-align: end;
 }
@@ -89,7 +89,7 @@
     background-image: var(--button-back-image, none);
     border-style: solid;
     border-width: var(--pagination-border-width, 2px);
-    border-color: var(--button-border-color, #222222);
+    border-color: var(--pagination-border-color, #222222);
     white-space: nowrap;
     user-select: none;
     overflow: hidden;
@@ -130,13 +130,13 @@
     opacity: 1;
     appearance: none;
 }
-#first:disabled,
-#decrease:disabled,
-#increase:disabled,
-#last:disabled {
+#first,
+#decrease,
+#increase,
+#last {
     border-style: solid;
     border-width: var(--pagination-border-width, 2px);
-    border-color: var(--button-border-color, #222222);
+    border-color: var(--pagination-border-color, #222222);
 }
 :host([show-size]:not([show-size="false"])) #size-text,
 :host([show-total]:not([show-total="false"])) #total-text,
