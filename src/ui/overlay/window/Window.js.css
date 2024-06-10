@@ -33,9 +33,12 @@
     width: 100%;
     max-width: 1000px;
     margin-top: 100px;
-    color: black;
-    background-color: white;
-    border: solid 2px #cccccc;
+    color: var(--modal-text-color, #000000);
+    background-color: var(--modal-back-color, #ffffff);
+    background-image: var(--modal-back-image, none);
+    border-style: solid;
+    border-width: var(--modal-border-width, 2px);
+    border-color: var(--modal-border-color, #cccccc);
     border-radius: 4px;
     resize: both;
     pointer-events: all;
@@ -46,7 +49,10 @@
 }
 #header {
     display: flex;
-    border-bottom: solid 2px #cccccc;
+    color: var(--modal-header-text-color, #000000);
+    background-color: var(--modal-header-back-color, #e4e4e4);
+    background-image: var(--modal-header-back-image, none);
+    border-bottom: solid var(--modal-border-width, 2px) var(--modal-border-color, #cccccc);
 }
 #title {
     display: flex;
@@ -84,17 +90,21 @@
     border: none;
     align-items: center;
     justify-content: center;
+    color: var(--modal-close-text-color, #222222);
+    background-color: var(--modal-close-back-color, #ffb9b9);
+    background-image: var(--modal-close-back-image, none);
     cursor: pointer;
     appearance: none;
     font-size: 1.2em;
     line-height: 1em;
 }
 #close:hover {
-    color: white;
-    background-color: red;
+    color: var(--modal-close-hover-text-color, #ffffff);
+    background-color: var(--modal-close-hover-back-color, #ff0000);
+    background-image: var(--modal-close-hover-back-image, none);
 }
 #close:focus {
-    box-shadow: inset red 0 0px 3px 4px;
+    box-shadow: inset var(--modal-close-focus-color, #000000) 0 0px 3px 4px;
     outline: none;
 }
 #close:focus:not(:focus-visible) {

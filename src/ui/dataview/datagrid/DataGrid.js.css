@@ -10,7 +10,9 @@
     color: var(--datagrid-text-color, #000000);
     background-color: var(--datagrid-back-color, #ffffff);
     background-image: var(--datagrid-back-image, none);
-    border: solid var(--datagrid-border-width, 2px) var(--datagrid-border-color, #000000);
+    border-style: solid;
+    border-width: var(--datagrid-border-width, 2px);
+    border-color: var(--datagrid-border-color, #000000);
     border-radius: var(--datagrid-border-radius, 6px);
     overflow: auto;
     scroll-padding-top: 3em;

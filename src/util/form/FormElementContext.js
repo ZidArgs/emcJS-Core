@@ -29,6 +29,10 @@ export default class FormElementContext {
 
     #element;
 
+    #valueAttributeName = "value";
+
+    #elementEventManager = new EventTargetManager();
+
     #storage;
 
     #storageEventManager = new EventTargetManager();
@@ -56,12 +60,46 @@ export default class FormElementContext {
         }
         this.#element = node;
         CONTEXTS.set(node, this);
+        if (node.type === "checkbox" || node.type === "radio") {
+            this.#valueAttributeName = "checked";
+        }
         /* --- */
         mutationObserver.observe(this.#element, MUTATION_CONFIG);
+        this.#elementEventManager.switchTarget(this.#element);
+        this.#elementEventManager.set("change", () => {
+            if (this.#storage != null) {
+                this.#storageEventManager.setActive(false);
+                this.#storage.set(this.#element.name, this.#element[this.#valueAttributeName]);
+                this.#storageEventManager.setActive(true);
+            }
+        });
         /* --- */
-        this.#storageEventManager.set(["load", "clear", "change"], () => {
+        this.#storageEventManager.set("change", (event) => {
+            this.#elementEventManager.setActive(false);
+            if (this.#element.name in event.data) {
+                const value = event.data[this.#element.name] ?? "";
+                this.#element[this.#valueAttributeName] = value;
+            }
             this.#callUpdateVisible();
             this.#callUpdateEnabled();
+            this.#elementEventManager.setActive(true);
+        });
+        this.#storageEventManager.set(["load", "clear"], (event) => {
+            this.#elementEventManager.setActive(false);
+            const value = event.data[this.#element.name] ?? "";
+            if (value != null) {
+                if (typeof value === "object") {
+                    this.#element.setAttribute(this.#valueAttributeName, JSON.stringify(value));
+                } else {
+                    this.#element.setAttribute(this.#valueAttributeName, value);
+                }
+            } else {
+                this.#element.removeAttribute(this.#valueAttributeName);
+            }
+            this.#element[this.#valueAttributeName] = value;
+            this.#callUpdateVisible();
+            this.#callUpdateEnabled();
+            this.#elementEventManager.setActive(true);
         });
         /* --- */
         const visibleValue = this.#element.getAttribute("visible");

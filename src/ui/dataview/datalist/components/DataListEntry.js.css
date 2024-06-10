@@ -8,7 +8,9 @@
     color: var(--datalist-entry-text-color, #000000);
     background-color: var(--datalist-entry-back-color, #ffffff);
     background-image: var(--datalist-entry-back-image, none);
-    border: solid var(--datalist-entry-border-width, 2px) var(--datalist-entry-border-color, #000000);
+    border-style: solid;
+    border-width: var(--datalist-entry-border-width, 2px);
+    border-color: var(--datalist-entry-border-color, #000000);
     border-radius: var(--datalist-entry-border-radius, 10px);
     font-size: 1em;
     font-family: Arial, Helvetica, sans-serif;

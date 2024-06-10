@@ -1,0 +1,61 @@
+<html lang="en">
+
+<head>
+    <title>emcJS sandbox</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Test for emcJS components">
+    <meta name="robots" content="none">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#000000">
+    <style>
+        :root {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 16px;
+        }
+
+        * {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        emc-form-container {
+            height: 100%;
+        }
+    </style>
+    <script type="module" src="./index.js"></script>
+</head>
+
+<body style="display: flex; flex-direction: column;">
+    <emc-page id="page" style="padding: 8px;">
+        <emc-form-container id="form" hasfooter="">
+            <form>
+                <emc-form-fieldset label="string" desc="test.desc" tooltip="lorem ipsum dolor sit amet">
+                    <emc-form-field desc="test.desc">
+                        <emc-input-string name="string.resettable" label="string resettable" placeholder="Enter text..." resettable required></emc-input-string>
+                    </emc-form-field>
+                    <emc-input-string name="string.nofield" label="string nofield" placeholder="Enter text..." resettable required></emc-input-string>
+                    <emc-form-field>
+                        <label>
+                            string default
+                            <input name="string.default" placeholder="Enter text..." required></input>
+                        </label>
+                    </emc-form-field>
+                    <emc-form-field desc="test.desc"></emc-form-field>
+                </emc-form-fieldset>
+            </form>
+            <form>
+                <input type="hidden" name="test" value="foobar">
+                <emc-form-row align="end">
+                    <emc-button-reset visible="true" enabled="true"></emc-button-reset>
+                    <emc-button-submit visible="true" enabled="true"></emc-button-submit>
+                </emc-form-row>
+            </form>
+        </emc-form-container>
+    </emc-page>
+</body>
+
+</html>

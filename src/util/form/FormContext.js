@@ -1,5 +1,6 @@
 import ObservableStorage from "../../data/storage/observable/ObservableStorage.js";
 import AbstractFormField from "../../ui/form/abstract/AbstractFormField.js";
+import AbstractFormInput from "../../ui/form/element/input/AbstractFormInput.js";
 import FormContainer from "../../ui/form/FormContainer.js";
 import {
     debounce
@@ -17,13 +18,19 @@ import {
 } from "../helper/ui/Form.js";
 import MutationObserverManager from "../observer/MutationObserverManager.js";
 import FormElementContext from "./FormElementContext.js";
-import FormFieldContext from "./FormFieldContext.js";
+import FormFieldContext from "./FormInputContext.js";
 
 const FORM_ELEMENTS = [
     HTMLInputElement,
     HTMLSelectElement,
-    HTMLTextAreaElement,
-    HTMLButtonElement
+    HTMLTextAreaElement
+];
+
+const INPUT_TYPE_BLACKLIST = [
+    "button",
+    "sumbit",
+    "reset",
+    "image"
 ];
 
 const MUTATION_CONFIG = {
@@ -366,14 +373,14 @@ export default class FormContext extends EventTarget {
     }
 
     #registerNode(node) {
-        if (node instanceof AbstractFormField) {
+        if (node instanceof AbstractFormField || node instanceof AbstractFormInput) {
             const context = FormFieldContext.getContext(node);
             context.storage = this.#dataStorage;
             context.ghostInvisible = this.#ghostInvisible;
             this.#formFieldContextList.add(context);
             node.addValidator(this.#doGlobalValidationFromField);
             node.formContextAssociatedCallback(this);
-        } else if (instanceOfOne(node, ...FORM_ELEMENTS)) {
+        } else if (instanceOfOne(node, ...FORM_ELEMENTS) && !INPUT_TYPE_BLACKLIST.includes(node.type)) {
             const context = FormElementContext.getContext(node);
             context.storage = this.#dataStorage;
             context.ghostInvisible = this.#ghostInvisible;
@@ -381,13 +388,13 @@ export default class FormContext extends EventTarget {
     }
 
     #unregisterNode(node) {
-        if (node instanceof AbstractFormField) {
+        if (node instanceof AbstractFormField || node instanceof AbstractFormInput) {
             const context = FormFieldContext.getContext(node);
             context.storage = null;
             context.ghostInvisible = false;
             this.#formFieldContextList.delete(context);
             node.removeValidator(this.#doGlobalValidationFromField);
-        } else if (instanceOfOne(node, ...FORM_ELEMENTS)) {
+        } else if (instanceOfOne(node, ...FORM_ELEMENTS) && !INPUT_TYPE_BLACKLIST.includes(node.type)) {
             const context = FormElementContext.getContext(node);
             context.storage = null;
             context.ghostInvisible = false;

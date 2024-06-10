@@ -1,0 +1,73 @@
+:host {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-start;
+    flex-direction: column;
+    min-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+}
+:host:not(:has(:visible)) {
+    display: none;
+}
+* {
+    box-sizing: border-box;
+    font-size: 1em;
+}
+#container {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: column;
+    padding: 6px;
+    color: var(--form-text-color, #000000);
+}
+#container:hover {
+    color: var(--form-hover-text-color, #000000);
+    background-color: var(--form-hover-back-color, #eeeeee);
+    background-image: var(--form-hover-back-image, none);
+}
+#field-container {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-start;
+    width: 100%;
+    min-width: 100px;
+}
+#error {
+    display: block;
+    flex-shrink: 0;
+    padding: 0px 5px;
+    margin-left: 4px;
+    color: var(--form-invalid-text-color, #a70000);
+    background-color: var(--form-invalid-back-color, #ffeeee);
+    background-image: var(--form-invalid-back-image, none);
+    font-size: 0.9em;
+    line-height: 1.4em;
+    font-style: italic;
+    cursor: pointer;
+    user-select: none;
+}
+#error:empty {
+    display: none;
+}
+#description {
+    display: block;
+    flex-shrink: 0;
+    padding: 0px 5px;
+    margin-top: 5px;
+    font-size: 0.9em;
+    line-height: 1.4em;
+    font-style: italic;
+    cursor: default;
+    user-select: none;
+}
+#description:empty {
+    display: none;
+}
+::slotted(*) {
+    color: inherit;
+    padding: 0;
+}

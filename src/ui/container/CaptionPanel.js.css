@@ -1,7 +1,9 @@
 :host {
     display: flex;
     flex-direction: column;
-    border: solid var(--panel-border-width, 2px) var(--panel-border-color, #000000);
+    border-style: solid;
+    border-width: var(--panel-border-width, 2px);
+    border-color: var(--panel-border-color, #000000);
     border-radius: var(--panel-border-radius, 6px);
     overflow: hidden;
     user-select: none;

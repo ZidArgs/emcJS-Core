@@ -9,17 +9,20 @@
     padding: 5px 5px 0px;
     overflow-x: auto;
     overflow-y: none;
-    border-bottom: solid 2px #cccccc;
+    border-bottom-style: solid;
+    border-bottom-width: var(--tabpanel-categories-border-width, 2px);
+    border-bottom-color: var(--tabpanel-categories-border-color, #222222);
     user-select: none;
 }
 .category {
     display: inline-flex;
     margin: 0 2px;
     padding: 5px;
-    color: var(--category-color, black);
-    background-color: var(--category-background-color, white);
-    border: solid 1px var(--category-color, black);
-    border-radius: 2px;
+    color: var(--button-text-color, #000000);
+    background-color: var(--button-back-color, #ffffff);
+    border-width: var(--button-border-width, 2px);
+    border-color: var(--button-border-color, #222222);
+    border-radius: var(--button-border-radius, 6px) var(--button-border-radius, 6px) 0px 0px;
     align-items: center;
     justify-content: center;
     cursor: pointer;
@@ -27,11 +30,16 @@
     appearance: none;
 }
 .category:hover {
-    background-color: var(--category-hover-color, lightgray);
+    color: var(--button-hover-text-color, #ffffff);
+    background-color: var(--button-hover-back-color, #696969);
 }
 .category.active {
-    color: var(--category-marked-color, white);
-    background-color: var(--category-marked-background-color, black);
+    color: var(--button-active-text-color, #ffffff);
+    background-color: var(--button-active-back-color, #222222);
+}
+.category.active:hover {
+    color: var(--button-active-hover-text-color, #ffffff);
+    background-color: var(--button-active-hover-back-color, #222222);
 }
 #body {
     flex: 1;

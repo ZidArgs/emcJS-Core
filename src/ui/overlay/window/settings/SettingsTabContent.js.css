@@ -8,9 +8,12 @@
     align-items: stretch;
     justify-content: flex-start;
     flex-direction: column;
+    color: var(--form-text-color, #000000);
+    background-color: var(--form-back-color, #ffffff);
 }
 .settings-option:hover {
-    background-color: lightgray;
+    color: var(--form-hover-text-color, #ffffff);
+    background-color: var(--form-hover-back-color, #696969);
 }
 .settings-option .option-container {
     display: flex;

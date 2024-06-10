@@ -3,7 +3,9 @@
     width: min-content;
     height: 2em;
     margin: 10px;
-    border: solid var(--button-border-width, 2px) var(--form-border-color, #000000);
+    border-style: solid;
+    border-width: var(--button-border-width, 2px);
+    border-color: var(--button-border-color, #000000);
     border-radius: var(--button-border-radius, 6px);
     user-select: none;
     overflow: hidden;

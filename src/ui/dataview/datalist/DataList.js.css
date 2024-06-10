@@ -9,7 +9,9 @@
     margin: 8px;
     background-color: var(--datalist-back-color, #ffffff);
     background-image: var(--datalist-back-image, none);
-    border: solid var(--datalist-border-width, 2px) var(--datalist-border-color, #000000);
+    border-style: solid;
+    border-width: var(--datalist-border-width, 2px);
+    border-color: var(--datalist-border-color, #000000);
     border-radius: var(--datalist-border-radius, 30px);
 }
 #scroll-container {

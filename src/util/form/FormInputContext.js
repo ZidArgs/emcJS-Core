@@ -1,5 +1,6 @@
 import ObservableStorage from "../../data/storage/observable/ObservableStorage.js";
 import AbstractFormField from "../../ui/form/abstract/AbstractFormField.js";
+import AbstractFormInput from "../../ui/form/element/input/AbstractFormInput.js";
 import {
     debounce
 } from "../Debouncer.js";
@@ -69,7 +70,7 @@ export default class FormFieldContext {
         if (CONTEXTS.has(node)) {
             throw new Error("context already exists");
         }
-        if (!(node instanceof AbstractFormField)) {
+        if (!(node instanceof AbstractFormField || node instanceof AbstractFormInput)) {
             throw new TypeError("FormFieldContext can only work on AbstractFormField");
         }
         this.#element = node;
@@ -95,7 +96,8 @@ export default class FormFieldContext {
         this.#storageEventManager.set("change", (event) => {
             this.#elementEventManager.setActive(false);
             if (this.#element.name in event.data) {
-                this.#element.value = event.data[this.#element.name];
+                const value = event.data[this.#element.name];
+                this.#element.value = value;
             }
             this.#callUpdateVisible();
             this.#callUpdateEnabled();

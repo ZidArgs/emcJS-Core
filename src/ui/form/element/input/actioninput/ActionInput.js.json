@@ -1,0 +1,62 @@
+[
+    {
+        "type": "StringInput",
+        "name": "name",
+        "label": "Name",
+        "value": ""
+    },
+    {
+        "type": "StringInput",
+        "name": "label",
+        "label": "Label",
+        "value": ""
+    },
+    {
+        "type": "TextInput",
+        "name": "desc",
+        "label": "Description",
+        "value": ""
+    },
+    {
+        "type": "TextInput",
+        "name": "tooltip",
+        "label": "Tooltip",
+        "value": ""
+    },
+    {
+        "type": "StringInput",
+        "name": "placeholder",
+        "label": "Placeholder",
+        "value": ""
+    },
+    {
+        "type": "SwitchInput",
+        "name": "resettable",
+        "label": "Resettable",
+        "value": false
+    },
+    {
+        "type": "SwitchInput",
+        "name": "readonly",
+        "label": "Readonly",
+        "value": false
+    },
+    {
+        "type": "SwitchInput",
+        "name": "required",
+        "label": "Required",
+        "value": false
+    },
+    {
+        "type": "BoolOrLogicInput",
+        "name": "enabled",
+        "label": "Enabled",
+        "value": true
+    },
+    {
+        "type": "BoolOrLogicInput",
+        "name": "visible",
+        "label": "Visible",
+        "value": true
+    }
+]

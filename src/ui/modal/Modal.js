@@ -217,15 +217,15 @@ export default class Modal extends CustomElement {
     initialFocus() {
         const textEls = this.#getTextFocusable();
         if (textEls.length) {
-            textEls.at(-1).focus();
+            textEls[0].focus();
         } else {
             const contentEls = this.#getContentFocusable();
             if (contentEls.length) {
-                contentEls.at(-1).focus();
+                contentEls[0].focus();
             } else  {
                 const footerEls = this.#getFooterFocusable();
                 if (footerEls.length) {
-                    footerEls.at(-1).focus();
+                    footerEls[0].focus();
                 } else {
                     this.#closeEl.focus();
                 }

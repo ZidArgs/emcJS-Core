@@ -11,6 +11,9 @@
     "tooltip": {
         "label": "Tooltip"
     },
+    "form-alt": {
+        "label": "Form (alternative)"
+    },
     "form": {
         "label": "Form",
         "children": {

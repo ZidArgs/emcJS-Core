@@ -13,7 +13,9 @@
     margin: 0;
     background-color: var(--button-back-color, #eaeaea);
     background-image: var(--button-back-image, none);
-    border: solid var(--form-border-width, 2px) var(--button-border-color, #222222);
+    border-style: solid;
+    border-width: var(--input-border-width, 2px);
+    border-color: var(--button-border-color, #222222);
     user-select: none;
     overflow: hidden;
     font-size: 1rem;
@@ -49,14 +51,14 @@
 }
 #sort-up {
     margin-bottom: -1px;
-    border-radius: var(--form-border-radius, 6px) var(--form-border-radius, 6px) 0px 0px;
+    border-radius: var(--input-border-radius, 6px) var(--input-border-radius, 6px) 0px 0px;
 }
 #sort-up:after {
     transform: translateY(0.15em) rotate(-135deg);
 }
 #sort-down {
     margin-top: -1px;
-    border-radius: 0px 0px var(--form-border-radius, 6px) var(--form-border-radius, 6px);
+    border-radius: 0px 0px var(--input-border-radius, 6px) var(--input-border-radius, 6px);
 }
 #sort-down:after {
     transform: translateY(-0.15em) rotate(45deg);

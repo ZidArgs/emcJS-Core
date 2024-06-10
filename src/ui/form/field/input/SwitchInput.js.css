@@ -12,19 +12,21 @@
     margin-right: auto;
     color: var(--input-text-color, #000000);
     background-color: var(--switch-unchecked-back-color, #ffd68a);
-    background-image: var(--input-unchecked-back-image, none);
-    border: solid var(--form-border-width, 2px) var(--input-border-color, #222222);
-    border-radius: var(--form-border-radius, 6px);
+    background-image: var(--switch-unchecked-back-image, none);
+    border-style: solid;
+    border-width: var(--input-border-width, 2px);
+    border-color: var(--input-border-color, #222222);
+    border-radius: var(--input-border-radius, 6px);
     font-size: 1em;
     cursor: pointer;
 }
 #input:checked {
     background-color: var(--switch-checked-back-color, #9ee1ec);
-    background-image: var(--input-checked-back-image, none);
+    background-image: var(--switch-checked-back-image, none);
 }
 #input:indeterminate {
     background-color: var(--switch-indeterminate-back-color, #ffffff);
-    background-image: var(--input-indeterminate-back-image, none);
+    background-image: var(--switch-indeterminate-back-image, none);
 }
 #input:focus {
     box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
@@ -37,23 +39,22 @@
 :host(:invalid) #input:focus {
     box-shadow: 0 0 2px 3px var(--input-invalid-focus-color, #ff2500);
 }
-/*
-TODO add switch button variable
-*/
 #input::after {
     display: block;
-    width: calc(2em - (2 * var(--form-border-width, 2px)));
-    height: calc(2em - (4 * var(--form-border-width, 2px)));
-    background-color: var(--button-back-color, #cccccc);
-    background-image: var(--button-back-image, none);
-    border: solid var(--form-border-width, 2px) var(--input-border-color, #222222);
-    border-radius: calc(var(--form-border-radius, 6px) / 2);
+    width: calc(2em - (2 * var(--switch-button-border-width, 2px)));
+    height: calc(2em - (4 * var(--switch-button-border-width, 2px)));
+    background-color: var(--switch-button-back-color, #000000);
+    background-image: var(--switch-button-back-image, none);
+    border-style: solid;
+    border-width: var(--input-button-border-width, 2px);
+    border-color: var(--input-button-border-color, #222222);
+    border-radius: calc(var(--input-border-radius, 6px) / 2);
     box-sizing: border-box;
     content: "";
 }
 #input:hover::after {
-    background-color: var(--button-hover-back-color, #000000);
-    background-image: var(--button-hover-back-image, none);
+    background-color: var(--switch-button-hover-back-color, #004472);
+    background-image: var(--switch-button-hover-back-image, none);
 }
 #input:checked::after {
     margin-left: auto;
@@ -63,6 +64,6 @@ TODO add switch button variable
     margin-right: auto;
 }
 #input:disabled::after {
-    background-color: var(--button-disabled-back-color, #999999);
-    background-image: var(--button-disabled-back-image, none);
+    background-color: var(--switch-button-disabled-back-color, #696969);
+    background-image: var(--switch-button-disabled-back-image, none);
 }

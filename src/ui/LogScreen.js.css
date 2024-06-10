@@ -16,7 +16,7 @@
     padding: 5px;
     resize: none;
     overflow: scroll;
-    background-color: var(--edit-background-color, #ffffff);
+    background-color: var(--edit-back-color, #ffffff);
     color: var(--edit-text-color, #000000);
     word-wrap: unset;
     white-space: pre;

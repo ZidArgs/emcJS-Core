@@ -29,7 +29,9 @@
     padding: 10px;
     background-color: var(--fieldset-back-color, #ffffff);
     background-image: var(--fieldset-back-image, none);
-    border: solid var(--fieldset-border-width, 2px) var(--form-border-color, #000000);
+    border-style: solid;
+    border-width: var(--fieldset-border-width, 2px);
+    border-color: var(--fieldset-border-color, #222222);
     border-radius: var(--fieldset-border-radius, 6px);
 }
 /*
@@ -41,7 +43,9 @@ TODO add legend variables
     color: var(--form-text-color, #000000);
     background-color: var(--fieldset-back-color, #ffffff);
     background-image: var(--fieldset-back-image, none);
-    border: solid var(--fieldset-border-width, 2px) var(--form-border-color, #000000);
+    border-style: solid;
+    border-width: var(--fieldset-border-width, 2px);
+    border-color: var(--fieldset-border-color, #222222);
     border-radius: var(--fieldset-border-radius, 6px);
 }
 #description {
