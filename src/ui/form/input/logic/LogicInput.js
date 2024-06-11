@@ -1,19 +1,19 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../data/registry/form/FormElementRegistry.js";
-import ContextMenuManagerMixin from "../../../../mixin/ContextMenuManagerMixin.js";
+import DragDropMemory from "../../../../data/DragDropMemory.js";
+import ContextMenuManagerMixin from "../../../mixin/ContextMenuManagerMixin.js";
 import {
     mix
-} from "../../../../../util/Mixin.js";
-import DragDropMemory from "../../../../../data/DragDropMemory.js";
+} from "../../../../util/Mixin.js";
 import {
     reduceLogic
-} from "../../../../../util/logic/LogicReducer.js";
+} from "../../../../util/logic/LogicReducer.js";
 import LogicEditorContextMenuElement from "./components/contexmenu/LogicEditorContextMenuElement.js";
 import LogicElementModal from "./components/modal/LogicElementModal.js";
 import LogicJSONModal from "./components/modal/LogicJSONModal.js";
 import LogicAbstractElement from "./components/elements/abstract/AbstractElement.js";
-import "../../../FormRow.js";
-import "../../../button/Button.js";
+import "../../FormRow.js";
+import "../../button/Button.js";
 import "./components/elements/ComparatorEqual.js";
 import "./components/elements/ComparatorGreaterThan.js";
 import "./components/elements/ComparatorGreaterThanEqual.js";
@@ -59,7 +59,12 @@ const mutationObserver = new MutationObserver((mutationsList) => {
     for (const mutation of mutationsList) {
         if (mutation.type == "childList") {
             const target = mutation.target.closest("emc-input-logic");
-            target.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
+            const el = target.children[0];
+            if (el) {
+                target.value = el.toJSON();
+            } else {
+                target.value = null;
+            }
         }
     }
 });
@@ -88,7 +93,7 @@ export default class LogicInput extends BaseClass {
 
     constructor() {
         super();
-        this.shadowRoot.append(TPL.generate());
+        this.shadowRoot.getElementById("field").append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.setContextMenu("element", LogicEditorContextMenuElement);
@@ -236,6 +241,7 @@ export default class LogicInput extends BaseClass {
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
             case "name": {
                 if (oldValue != newValue) {

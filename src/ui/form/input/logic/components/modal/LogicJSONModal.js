@@ -1,10 +1,10 @@
-import Modal from "../../../../../../modal/Modal.js";
+import Modal from "../../../../../modal/Modal.js";
 import {
     debounce
-} from "../../../../../../../util/Debouncer.js";
-import LogicValidator from "../../../../../../../util/logic/LogicValidator.js";
-import Logger from "../../../../../../../util/log/Logger.js";
-import "../../../../../button/Button.js";
+} from "../../../../../../util/Debouncer.js";
+import LogicValidator from "../../../../../../util/logic/LogicValidator.js";
+import Logger from "../../../../../../util/log/Logger.js";
+import "../../../../button/Button.js";
 import TPL from "./LogicJSONModal.js.html" assert {type: "html"};
 import STYLE from "./LogicJSONModal.js.css" assert {type: "css"};
 

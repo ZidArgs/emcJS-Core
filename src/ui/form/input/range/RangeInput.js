@@ -10,7 +10,6 @@ import FormElementRegistry from "../../../../data/registry/form/FormElementRegis
 import {
     safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
-import "../../element/input/range/RangeInput.js";
 import TPL from "./RangeInput.js.html" assert {type: "html"};
 import STYLE from "./RangeInput.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./RangeInput.js.json" assert {type: "json"};
@@ -78,7 +77,7 @@ export default class RangeInput extends AbstractFormElement {
     }
 
     get value() {
-        return super.value;
+        return super.value ?? 0;
     }
 
     static get observedAttributes() {
@@ -111,8 +110,8 @@ export default class RangeInput extends AbstractFormElement {
     }
 
     renderValue(value) {
-        this.#inputEl.value = value;
-        this.#numberEl.value = value;
+        this.#inputEl.value = value ?? 0;
+        this.#numberEl.value = value ?? 0;
         this.#applyValueToBar(value);
     }
 

@@ -1,13 +1,13 @@
-import Modal from "../../../../../../modal/Modal.js";
+import Modal from "../../../../../modal/Modal.js";
 import AbstractElement from "../elements/abstract/AbstractElement.js";
-import LogicOperatorRegistry from "../../../../../../../data/registry/LogicOperatorRegistry.js";
+import LogicOperatorRegistry from "../../../../../../data/registry/LogicOperatorRegistry.js";
 import {
     debounce
-} from "../../../../../../../util/Debouncer.js";
-import BusyIndicatorManager from "../../../../../../../util/BusyIndicatorManager.js";
-import "../../../../../../FilteredList.js";
-import "../../../../../../container/CollapsePanel.js";
-import "../../../../../button/Button.js";
+} from "../../../../../../util/Debouncer.js";
+import BusyIndicatorManager from "../../../../../../util/BusyIndicatorManager.js";
+import "../../../../../FilteredList.js";
+import "../../../../../container/CollapsePanel.js";
+import "../../../../button/Button.js";
 import "../elements/ComparatorEqual.js";
 import "../elements/ComparatorGreaterThan.js";
 import "../elements/ComparatorGreaterThanEqual.js";

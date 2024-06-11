@@ -22,7 +22,6 @@
     align-items: stretch;
     justify-content: flex-start;
     width: 100%;
-    padding: 4px;
 }
 #field {
     display: flex;
@@ -59,11 +58,11 @@
     width: 100%;
     cursor: pointer;
     user-select: none;
-    padding: 4px 8px 0px;
+    padding:  0 4px 4px;
 }
 :host(:disabled) #label {
     cursor: default;
 }
-#label-text:empty {
+#label:has(#label-text:empty) {
     display: none;
 }

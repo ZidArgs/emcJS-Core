@@ -143,14 +143,17 @@
     --input-button-text-color: var(--input-text-color);
     --input-button-back-color: var(--input-back-color);
     --input-button-back-image: none;
+    --input-button-border-color: var(--input-border-color);
 
     --input-button-hover-text-color: var(--input-back-color);
     --input-button-hover-back-color: var(--input-text-color);
     --input-button-hover-back-image: none;
+    --input-button-hover-border-color: var(--input-border-color);
 
     --input-button-disabled-text-color: var(--input-disabled-text-color);
     --input-button-disabled-back-color: var(--input-disabled-back-color);
     --input-button-disabled-back-image: none;
+    --input-button-disabled-border-color: var(--input-disabled-border-color);
 
     /* === image/icon === */
     --image-checker-back-color: #2c2c2c;

@@ -17,6 +17,9 @@
     border-radius: var(--input-border-radius, 6px) 0px 0px var(--input-border-radius, 6px);
     font-size: 1em;
 }
+#text.placeholder {
+    color: var(--input-placeholder-text-color, #757575);
+}
 :host(:invalid) #text {
     background-color: var(--input-invalid-back-color, #ffebeb);
     background-image: var(--input-invalid-back-image, none);

@@ -1,4 +1,6 @@
 import ObservableStorage from "../../data/storage/observable/ObservableStorage.js";
+import AbstractFormField from "../../ui/form/abstract/AbstractFormField.js";
+import AbstractFormElement from "../../ui/form/AbstractFormElement.js";
 import {
     debounce
 } from "../Debouncer.js";
@@ -8,7 +10,7 @@ import LogicCompiler from "../logic/processor/LogicCompiler.js";
 const CONTEXTS = new WeakMap();
 const MUTATION_CONFIG = {
     attributes: true,
-    attributeFilter: ["visible", "enabled"]
+    attributeFilter: ["name", "visible", "enabled"]
 };
 
 const mutationObserver = new MutationObserver((mutationsList) => {
@@ -16,7 +18,22 @@ const mutationObserver = new MutationObserver((mutationsList) => {
         if (mutation.type == "attributes") {
             const target = mutation.target;
             const context = CONTEXTS.get(target);
-            if (mutation.attributeName === "visible") {
+            if (mutation.attributeName === "name") {
+                if (context.storage != null) {
+                    const elName = target.name;
+                    const defaultValue = context.storage.getRootValue(elName);
+                    if (defaultValue != null) {
+                        if (typeof value === "object") {
+                            target.setAttribute("value", JSON.stringify(defaultValue));
+                        } else {
+                            target.setAttribute("value", defaultValue);
+                        }
+                    } else {
+                        target.removeAttribute("value");
+                    }
+                    target.value = context.storage.get(elName);
+                }
+            } else if (mutation.attributeName === "visible") {
                 context.setVisibleLogic(JSON.parse(target.getAttribute("visible")));
             } else if (mutation.attributeName === "enabled") {
                 context.setEnabledLogic(JSON.parse(target.getAttribute("enabled")));
@@ -28,8 +45,6 @@ const mutationObserver = new MutationObserver((mutationsList) => {
 export default class FormElementContext {
 
     #element;
-
-    #valueAttributeName = "value";
 
     #elementEventManager = new EventTargetManager();
 
@@ -55,21 +70,25 @@ export default class FormElementContext {
         if (CONTEXTS.has(node)) {
             throw new Error("context already exists");
         }
-        if (!(node instanceof Node)) {
-            throw new TypeError("FormElementContext can only work on Node");
+        if (!(node instanceof AbstractFormField || node instanceof AbstractFormElement)) {
+            throw new TypeError("FormFieldContext can only work on AbstractFormField");
         }
         this.#element = node;
         CONTEXTS.set(node, this);
-        if (node.type === "checkbox" || node.type === "radio") {
-            this.#valueAttributeName = "checked";
-        }
         /* --- */
         mutationObserver.observe(this.#element, MUTATION_CONFIG);
         this.#elementEventManager.switchTarget(this.#element);
         this.#elementEventManager.set("change", () => {
             if (this.#storage != null) {
                 this.#storageEventManager.setActive(false);
-                this.#storage.set(this.#element.name, this.#element[this.#valueAttributeName]);
+                this.#storage.set(this.#element.name, this.#element.value);
+                this.#storageEventManager.setActive(true);
+            }
+        });
+        this.#elementEventManager.set("default", () => {
+            if (this.#storage != null) {
+                this.#storageEventManager.setActive(false);
+                this.#storage.resetValueChange(this.#element.name);
                 this.#storageEventManager.setActive(true);
             }
         });
@@ -77,8 +96,8 @@ export default class FormElementContext {
         this.#storageEventManager.set("change", (event) => {
             this.#elementEventManager.setActive(false);
             if (this.#element.name in event.data) {
-                const value = event.data[this.#element.name] ?? "";
-                this.#element[this.#valueAttributeName] = value;
+                const value = event.data[this.#element.name];
+                this.#element.value = value;
             }
             this.#callUpdateVisible();
             this.#callUpdateEnabled();
@@ -86,17 +105,17 @@ export default class FormElementContext {
         });
         this.#storageEventManager.set(["load", "clear"], (event) => {
             this.#elementEventManager.setActive(false);
-            const value = event.data[this.#element.name] ?? "";
+            const value = event.data[this.#element.name];
             if (value != null) {
                 if (typeof value === "object") {
-                    this.#element.setAttribute(this.#valueAttributeName, JSON.stringify(value));
+                    this.#element.setAttribute("value", JSON.stringify(value));
                 } else {
-                    this.#element.setAttribute(this.#valueAttributeName, value);
+                    this.#element.setAttribute("value", value);
                 }
             } else {
-                this.#element.removeAttribute(this.#valueAttributeName);
+                this.#element.removeAttribute("value");
             }
-            this.#element[this.#valueAttributeName] = value;
+            this.#element.value = value;
             this.#callUpdateVisible();
             this.#callUpdateEnabled();
             this.#elementEventManager.setActive(true);
@@ -104,6 +123,9 @@ export default class FormElementContext {
         /* --- */
         const visibleValue = this.#element.getAttribute("visible");
         this.setVisibleLogic(JSON.parse(visibleValue));
+        /* --- */
+        const enabledValue = this.#element.getAttribute("enabled");
+        this.setEnabledLogic(JSON.parse(enabledValue));
     }
 
     set storage(value) {
@@ -112,6 +134,20 @@ export default class FormElementContext {
         }
         if (this.#storage != value) {
             this.#storage = value;
+            if (value != null) {
+                const elName = this.#element.name;
+                const defaultValue = value.getRootValue(elName);
+                if (defaultValue != null) {
+                    if (typeof defaultValue === "object") {
+                        this.#element.setAttribute("value", JSON.stringify(defaultValue));
+                    } else {
+                        this.#element.setAttribute("value", defaultValue);
+                    }
+                } else {
+                    this.#element.removeAttribute("value");
+                }
+                this.#element.value = value.get(elName);
+            }
             this.#storageEventManager.switchTarget(value);
             this.#callUpdateVisible();
             this.#callUpdateEnabled();
@@ -124,6 +160,22 @@ export default class FormElementContext {
 
     get node() {
         return this.#element;
+    }
+
+    async revalidate() {
+        return await this.#element.revalidate();
+    }
+
+    addValidator(validator) {
+        this.#element.addValidator(validator);
+    }
+
+    removeValidator(validator) {
+        this.#element.removeValidator(validator);
+    }
+
+    get errors() {
+        return this.#element.errors;
     }
 
     /* visible logic */
@@ -176,7 +228,7 @@ export default class FormElementContext {
                 if (value) {
                     this.#element.style.opacity = "";
                 } else {
-                    this.#element.style.opacity = "0.5";
+                    this.#element.style.opacity = "0.2";
                 }
             } else if (value) {
                 this.#element.style.display = "";

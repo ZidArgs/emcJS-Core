@@ -74,7 +74,6 @@ export default class AbstractFormElement extends CustomFormElement {
         this.renderValue(this.value);
         this.refreshFormValue();
         this.revalidate();
-        console.log(`label for "${this.name}":`, this.internals.labels[0]?.textContent);
     }
 
     formDisabledCallback(disabled) {

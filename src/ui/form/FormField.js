@@ -43,6 +43,14 @@ export default class FormField extends CustomElement {
         });
     }
 
+    set noError(value) {
+        this.setAttribute("noerror", value);
+    }
+
+    get noError() {
+        return this.getAttribute("noerror");
+    }
+
     set desc(value) {
         this.setAttribute("desc", value);
     }

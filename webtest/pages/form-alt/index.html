@@ -33,19 +33,14 @@
     <emc-page id="page" style="padding: 8px;">
         <emc-form-container id="form" hasfooter="">
             <form>
-                <emc-form-fieldset label="string" desc="test.desc" tooltip="lorem ipsum dolor sit amet">
-                    <emc-form-field desc="test.desc">
-                        <emc-input-string name="string.resettable" label="string resettable" placeholder="Enter text..." resettable required></emc-input-string>
-                    </emc-form-field>
-                    <emc-input-string name="string.nofield" label="string nofield" placeholder="Enter text..." resettable required></emc-input-string>
-                    <emc-form-field>
-                        <label>
-                            string default
-                            <input name="string.default" placeholder="Enter text..." required></input>
-                        </label>
-                    </emc-form-field>
-                    <emc-form-field desc="test.desc"></emc-form-field>
-                </emc-form-fieldset>
+                <emc-input-action id="action" name="action" label="action" placeholder="Enter text..." resettable required></emc-input-action>
+                <emc-input-boolorlogic name="boolorlogic" label="boolorlogic" placeholder="Enter text..." resettable required></emc-input-boolorlogic>
+                <emc-input-logic name="logic" label="logic" placeholder="Enter text..." resettable required></emc-input-logic>
+                <emc-input-password name="password" label="password" placeholder="Enter text..." resettable required></emc-input-password>
+                <emc-input-range name="range" label="range" placeholder="Enter text..." resettable required></emc-input-range>
+                <emc-input-string name="string" label="string" placeholder="Enter text..." resettable required minlength="10" maxlength="20"></emc-input-string>
+                <emc-input-switch name="switch" label="switch" placeholder="Enter text..." resettable required></emc-input-switch>
+                <emc-input-text name="text" label="text" placeholder="Enter text..." resettable required minlength="10" maxlength="100"></emc-input-text>
             </form>
             <form>
                 <input type="hidden" name="test" value="foobar">

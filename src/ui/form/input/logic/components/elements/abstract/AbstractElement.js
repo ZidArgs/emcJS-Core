@@ -1,8 +1,8 @@
-import CustomElement from "../../../../../../../element/CustomElement.js";
-import DragDropMemory from "../../../../../../../../data/DragDropMemory.js";
+import CustomElement from "../../../../../../element/CustomElement.js";
+import DragDropMemory from "../../../../../../../data/DragDropMemory.js";
 import {
     appUID
-} from "../../../../../../../../util/helper/UniqueGenerator.js";
+} from "../../../../../../../util/helper/UniqueGenerator.js";
 import TPL from "./AbstractElement.js.html" assert {type: "html"};
 import STYLE from "./AbstractElement.js.css" assert {type: "css"};
 import STYLE_ERROR from "./AbstractElement.js.ErrorElement.css" assert {type: "css"};

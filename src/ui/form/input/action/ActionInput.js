@@ -15,7 +15,7 @@ export default class ActionInput extends AbstractFormElement {
 
     constructor() {
         super();
-        this.shadowRoot.append(TPL.generate());
+        this.shadowRoot.getElementById("field").append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#textEl = this.shadowRoot.getElementById("text");
@@ -33,8 +33,9 @@ export default class ActionInput extends AbstractFormElement {
     }
 
     renderValue(value) {
+        this.#textEl.classList.toggle("placeholder", !value);
         if (this.#valueRenderer != null) {
-            this.#valueRenderer(value);
+            this.#textEl.i18nValue = this.#valueRenderer(value);
         } else {
             this.#textEl.i18nValue = value;
         }
@@ -43,8 +44,10 @@ export default class ActionInput extends AbstractFormElement {
     setValueRenderer(renderer) {
         if (typeof renderer === "function") {
             this.#valueRenderer = renderer;
+            this.#textEl.i18nValue = this.#valueRenderer(this.value);
         } else {
             this.#valueRenderer = null;
+            this.#textEl.i18nValue = this.value;
         }
     }
 

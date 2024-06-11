@@ -14,8 +14,7 @@ import TPL from "./TextInput.js.html" assert {type: "html"};
 import STYLE from "./TextInput.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./TextInput.js.json" assert {type: "json"};
 
-// TODO add maxLength - don't accept further input
-// TODO add minLength - validation
+// TODO add indicator for max length
 export default class TextInput extends AbstractFormElement {
 
     static get formConfigurationFields() {
@@ -23,6 +22,10 @@ export default class TextInput extends AbstractFormElement {
     }
 
     #inputEl;
+
+    #minLength;
+
+    #maxLength;
 
     constructor() {
         super();
@@ -32,6 +35,12 @@ export default class TextInput extends AbstractFormElement {
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#inputEl.addEventListener("input", () => {
             this.#onInput();
+        });
+        this.#inputEl.addEventListener("keydown", (event) => {
+            if (event.keyCode === 13 && event.shiftKey === this.sendOnShift) {
+                event.stopPropagation();
+                return false;
+            }
         });
     }
 
@@ -48,8 +57,32 @@ export default class TextInput extends AbstractFormElement {
         this.#inputEl.focus(options);
     }
 
+    set maxLength(value) {
+        this.setIntAttribute("maxlength", value, 0);
+    }
+
+    get maxLength() {
+        return this.getIntAttribute("maxlength");
+    }
+
+    set minLength(value) {
+        this.setIntAttribute("minlength", value, 0);
+    }
+
+    get minLength() {
+        return this.getIntAttribute("minlength");
+    }
+
+    set sendOnShift(value) {
+        this.setBooleanAttribute("sendonshift", value);
+    }
+
+    get sendOnShift() {
+        return this.getBooleanAttribute("sendonshift");
+    }
+
     static get observedAttributes() {
-        return [...super.observedAttributes, "placeholder", "readonly", "autocomplete"];
+        return [...super.observedAttributes, "placeholder", "readonly", "autocomplete", "minlength", "maxlength"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -66,7 +99,32 @@ export default class TextInput extends AbstractFormElement {
                     safeSetAttribute(this.#inputEl, "i18n-placeholder", newValue);
                 }
             } break;
+            case "minlength": {
+                if (oldValue != newValue) {
+                    this.#minLength = parseInt(newValue) || null;
+                    this.revalidate();
+                }
+            } break;
+            case "maxlength": {
+                if (oldValue != newValue) {
+                    this.#maxLength = parseInt(newValue) || null;
+                    this.revalidate();
+                }
+            } break;
         }
+    }
+
+    checkValid() {
+        const value = this.value ?? "";
+        const min = this.#minLength;
+        if (min != null && value.length < min) {
+            return `The minimum length for this field is ${min} characters`;
+        }
+        const max = this.#maxLength;
+        if (max != null && value.length > max) {
+            return `The maximum length for this field is ${max} characters`;
+        }
+        return super.checkValid();
     }
 
     applyValueAttribute(value) {

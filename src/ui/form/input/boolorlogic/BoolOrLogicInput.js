@@ -5,6 +5,7 @@ import {
     safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
 import "../logic/LogicInput.js";
+import "../../../i18n/builtin/I18nOption.js";
 import TPL from "./BoolOrLogicInput.js.html" assert {type: "html"};
 import STYLE from "./BoolOrLogicInput.js.css" assert {type: "css"};
 
@@ -142,4 +143,4 @@ export default class BoolOrLogicInput extends AbstractFormElement {
 }
 
 FormElementRegistry.register("BoolOrLogicInput", BoolOrLogicInput);
-customElements.define("emc-field-input-boolorlogic", BoolOrLogicInput);
+customElements.define("emc-input-boolorlogic", BoolOrLogicInput);

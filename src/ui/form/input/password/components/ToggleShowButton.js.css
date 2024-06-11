@@ -1,0 +1,93 @@
+:host {
+    width: 2em;
+    height: 2em;
+    border-style: solid;
+    border-width: var(--input-border-width, 2px);
+    border-color: var(--input-border-color, #222222);
+    border-radius: var(--input-border-radius, 6px);
+    overflow: hidden;
+    font-size: 1rem;
+}
+:host(:disabled) {
+    border-color: var(--input-disabled-border-color, #6a6a6a);
+}
+:host(:focus) {
+    box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
+    outline: none;
+}
+#button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    padding: 0px;
+    margin: 0px;
+    appearance: none;
+    color: var(--button-text-color, #000000);
+    background-color: var(--button-back-color, #cccccc);
+    background-image: var(--button-back-image, none);
+    border: none;
+    font-size: 1.5em;
+    font-weight: bold;
+    cursor: pointer;
+}
+#button:hover {
+    color: var(--button-hover-text-color, #ffffff);
+    background-color: var(--button-hover-back-color, #000000);
+}
+#button:disabled {
+    color: var(--input-disabled-text-color, #757575);
+    background-color: var(--button-disabled-back-color, #999999);
+    background-image: var(--button-disabled-back-image, none);
+    cursor: default;
+}
+#button:focus {
+    box-shadow: none;
+    outline: none;
+}
+#button::before {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    line-height: 1em;
+    font-family: monospace;
+    content: "👁";
+}
+#button::after {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    font-size: 0.6em;
+    line-height: 0.8em;
+    text-shadow:
+        1px 1px var(--button-back-color, #cccccc),
+        -1px 1px var(--button-back-color, #cccccc),
+        1px -1px var(--button-back-color, #cccccc),
+        -1px -1px var(--button-back-color, #cccccc);
+    font-family: monospace;
+    content: "╱";
+}
+#button:checked::after {
+    display: none;
+}
+#button:hover::after {
+    text-shadow:
+        1px 1px var(--button-hover-back-color, #000000),
+        -1px 1px var(--button-hover-back-color, #000000),
+        1px -1px var(--button-hover-back-color, #000000),
+        -1px -1px var(--button-hover-back-color, #000000);
+}
+#button:disabled::after {
+    text-shadow:
+        1px 1px var(--button-disabled-back-color, #999999),
+        -1px 1px var(--button-disabled-back-color, #999999),
+        1px -1px var(--button-disabled-back-color, #999999),
+        -1px -1px var(--button-disabled-back-color, #999999);
+}

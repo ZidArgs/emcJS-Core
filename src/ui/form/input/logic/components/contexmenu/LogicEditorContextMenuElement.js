@@ -1,4 +1,4 @@
-import ContextMenu from "../../../../../../overlay/ctxmenu/ContextMenu.js";
+import ContextMenu from "../../../../../overlay/ctxmenu/ContextMenu.js";
 
 export default class LogicEditorContextMenuElement extends ContextMenu {
 

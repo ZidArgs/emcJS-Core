@@ -10,9 +10,11 @@ import "/emcJS/ui/form/button/SubmitButton.js";
 import "/emcJS/ui/form/button/ResetButton.js";
 import "/emcJS/ui/form/button/ActionButton.js";
 import "/emcJS/ui/form/button/LinkButton.js";
-import "/emcJS/ui/form/element/input/string/StringInput.js";
+import "/emcJS/ui/form/input/FormInputLoader.js";
+import Dialog from "../../emcJS/ui/overlay/window/Dialog.js";
 
 const formContext = new FormContext();
+formContext.allowEnter = true;
 const formContainerEl = document.getElementById("form");
 formContext.registerFormContainer(formContainerEl);
 
@@ -32,5 +34,17 @@ formContext.addEventListener("error", (event) => {
     const {errors} = event;
     console.group("error");
     console.log("errors", errors);
+    console.log("data", formContext.getFormFieldsData());
     console.groupEnd("error");
+});
+
+const actionEl = document.getElementById("action");
+actionEl.setValueRenderer((value) => value ? `Entered value: ${value}` : "A whole lot of nothing");
+actionEl.addEventListener("action", async () => {
+    const value = await Dialog.prompt("enter text", "enter text to display");
+    if (value) {
+        actionEl.value = value;
+    } else {
+        actionEl.value = null;
+    }
 });

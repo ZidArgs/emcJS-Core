@@ -1,5 +1,5 @@
 import AbstractElement from "./AbstractElement.js";
-import LogicOperatorRegistry from "../../../../../../../../data/registry/LogicOperatorRegistry.js";
+import LogicOperatorRegistry from "../../../../../../../data/registry/LogicOperatorRegistry.js";
 import TPL from "./AbstractLiteralStateElement.js.html" assert {type: "html"};
 import STYLE from "./AbstractLiteralStateElement.js.css" assert {type: "css"};
 

@@ -2,8 +2,7 @@
     position: relative;
     box-sizing: border-box;
 }
-:host {
-    display: flex;
+#field {
     flex-direction: column;
     min-height: 200px;
     max-height: 60dvh;
@@ -16,7 +15,7 @@
     user-select: none;
     overflow: hidden;
 }
-:host(:disabled) {
+:host(:disabled) #field {
     color: var(--input-disabled-text-color, #757575) !important;
     background-color: var(--input-disabled-back-color, #999999) !important;
     background-image: var(--input-disabled-back-image, none) !important;
@@ -24,11 +23,11 @@
     cursor: default !important;
     pointer-events: none;
 }
-:host(:focus),
-:host(:focus-within) {
+:host(:focus) #field,
+:host(:focus-within) #field {
     outline: none;
 }
-:host(:invalid) {
+:host(:invalid) #field {
     background-color: var(--input-invalid-back-color, #ffebeb);
     background-image: var(--input-invalid-back-image, none);
     border-color: var(--input-invalid-border-color, #ff4444);

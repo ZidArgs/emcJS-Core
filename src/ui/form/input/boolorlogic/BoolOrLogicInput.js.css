@@ -32,6 +32,7 @@
 }
 #logic {
     margin-top: 8px;
+    padding: 0;
 }
 #logic:not(.active) {
     display: none;

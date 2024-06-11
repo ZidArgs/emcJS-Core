@@ -17,8 +17,8 @@ import {
     extractFormData
 } from "../helper/ui/Form.js";
 import MutationObserverManager from "../observer/MutationObserverManager.js";
+import FormInputContext from "./FormInputContext.js";
 import FormElementContext from "./FormElementContext.js";
-import FormFieldContext from "./FormInputContext.js";
 
 const FORM_ELEMENTS = [
     HTMLInputElement,
@@ -56,6 +56,8 @@ export default class FormContext extends EventTarget {
 
     #ghostInvisible = false;
 
+    #allowEnter = false;
+
     #mutationObserver = new MutationObserverManager(MUTATION_CONFIG, (mutationsList) => {
         for (const mutation of mutationsList) {
             if (mutation.type == "childList") {
@@ -75,15 +77,27 @@ export default class FormContext extends EventTarget {
 
     constructor(initValues = {}) {
         super();
+        this.#formEventManager.set("keydown", (event) => {
+            if (event.keyCode === 13) {
+                if (this.#allowEnter) {
+                    this.submit();
+                }
+                event.preventDefault();
+                event.stopPropagation();
+                return false;
+            }
+        });
         this.#formEventManager.set("submit", (event) => {
             this.submit();
             event.preventDefault();
             event.stopPropagation();
+            return false;
         });
         this.#formEventManager.set("reset", (event) => {
             this.reset();
             event.preventDefault();
             event.stopPropagation();
+            return false;
         });
         /* --- */
         this.#dataStorage.deserialize(initValues);
@@ -201,6 +215,14 @@ export default class FormContext extends EventTarget {
 
     get ghostInvisible() {
         return this.#ghostInvisible;
+    }
+
+    set allowEnter(value) {
+        this.#allowEnter = !!value;
+    }
+
+    get allowEnter() {
+        return this.#allowEnter;
     }
 
     registerFormContainer(formContainerEl) {
@@ -374,14 +396,14 @@ export default class FormContext extends EventTarget {
 
     #registerNode(node) {
         if (node instanceof AbstractFormField || node instanceof AbstractFormElement) {
-            const context = FormFieldContext.getContext(node);
+            const context = FormElementContext.getContext(node);
             context.storage = this.#dataStorage;
             context.ghostInvisible = this.#ghostInvisible;
             this.#formFieldContextList.add(context);
             node.addValidator(this.#doGlobalValidationFromField);
             node.formContextAssociatedCallback(this);
         } else if (instanceOfOne(node, ...FORM_ELEMENTS) && !INPUT_TYPE_BLACKLIST.includes(node.type)) {
-            const context = FormElementContext.getContext(node);
+            const context = FormInputContext.getContext(node);
             context.storage = this.#dataStorage;
             context.ghostInvisible = this.#ghostInvisible;
         }
@@ -389,13 +411,13 @@ export default class FormContext extends EventTarget {
 
     #unregisterNode(node) {
         if (node instanceof AbstractFormField || node instanceof AbstractFormElement) {
-            const context = FormFieldContext.getContext(node);
+            const context = FormElementContext.getContext(node);
             context.storage = null;
             context.ghostInvisible = false;
             this.#formFieldContextList.delete(context);
             node.removeValidator(this.#doGlobalValidationFromField);
         } else if (instanceOfOne(node, ...FORM_ELEMENTS) && !INPUT_TYPE_BLACKLIST.includes(node.type)) {
-            const context = FormElementContext.getContext(node);
+            const context = FormInputContext.getContext(node);
             context.storage = null;
             context.ghostInvisible = false;
         }
