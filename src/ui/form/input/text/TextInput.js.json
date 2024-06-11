@@ -13,12 +13,6 @@
     },
     {
         "type": "TextInput",
-        "name": "desc",
-        "label": "Description",
-        "value": ""
-    },
-    {
-        "type": "TextInput",
         "name": "tooltip",
         "label": "Tooltip",
         "value": ""
@@ -30,6 +24,22 @@
         "value": ""
     },
     {
+        "type": "SimpleSelect",
+        "name": "autocomplete",
+        "label": "Autocomplete",
+        "value": "off",
+        "options": {
+            "off": "off",
+            "on": "on"
+        }
+    },
+    {
+        "type": "SwitchInput",
+        "name": "required",
+        "label": "Required",
+        "value": false
+    },
+    {
         "type": "SwitchInput",
         "name": "resettable",
         "label": "Resettable",
@@ -39,12 +49,6 @@
         "type": "SwitchInput",
         "name": "readonly",
         "label": "Readonly",
-        "value": false
-    },
-    {
-        "type": "SwitchInput",
-        "name": "required",
-        "label": "Required",
         "value": false
     },
     {

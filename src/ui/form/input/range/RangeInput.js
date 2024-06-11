@@ -1,17 +1,27 @@
-import CustomFormElementDelegating from "../../../../element/CustomFormElementDelegating.js";
-import "../../../../i18n/builtin/I18nInput.js";
-import {
-    safeSetAttribute
-} from "../../../../../util/helper/ui/NodeAttributes.js";
-import TPL from "./RangeInput.js.html" assert {type: "html"};
-import STYLE from "./RangeInput.js.css" assert {type: "css"};
+import AbstractFormElement from "../../AbstractFormElement.js";
+import "../../../i18n/builtin/I18nInput.js";
 import {
     debounce
-} from "../../../../../util/Debouncer.js";
+} from "../../../../util/Debouncer.js";
+import {
+    deepClone
+} from "../../../../util/helper/DeepClone.js";
+import FormElementRegistry from "../../../../data/registry/form/FormElementRegistry.js";
+import {
+    safeSetAttribute
+} from "../../../../util/helper/ui/NodeAttributes.js";
+import "../../element/input/range/RangeInput.js";
+import TPL from "./RangeInput.js.html" assert {type: "html"};
+import STYLE from "./RangeInput.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./RangeInput.js.json" assert {type: "json"};
 
 // TODO react to to change instead of input on number to update slider
 // TODO react to keypress for up and down arrow on number to update slider
-export default class RangeInput extends CustomFormElementDelegating {
+export default class RangeInput extends AbstractFormElement {
+
+    static get formConfigurationFields() {
+        return deepClone(CONFIG_FIELDS);
+    }
 
     #inputEl;
 
@@ -21,7 +31,7 @@ export default class RangeInput extends CustomFormElementDelegating {
 
     constructor() {
         super();
-        this.shadowRoot.append(TPL.generate());
+        this.shadowRoot.getElementById("field").append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#inputContainerEl = this.shadowRoot.getElementById("input-container");
@@ -32,7 +42,7 @@ export default class RangeInput extends CustomFormElementDelegating {
             this.#applyValueToBar(this.#inputEl.value);
             const ev = new Event("input", {bubbles: true});
             this.dispatchEvent(ev);
-            this.#notifyChange();
+            this.#onInput();
         });
         new ResizeObserver(() => {
             this.#applyScratchValue();
@@ -45,30 +55,18 @@ export default class RangeInput extends CustomFormElementDelegating {
             this.#applyValueToBar(this.#inputEl.value);
             const ev = new Event("input", {bubbles: true});
             this.dispatchEvent(ev);
-            this.#notifyChange();
+            this.#onInput();
         });
     }
 
-    connectedCallback() {
-        const value = this.value;
-        const convertedValue = parseInt(value) || 0;
-        this.#inputEl.value = convertedValue;
-        this.#numberEl.value = convertedValue;
-        this.#applyValueToBar(convertedValue);
-        this.#setRange();
-    }
+    #onInput = debounce(() => {
+        this.value = this.#inputEl.value;
+    }, 300);
 
     formDisabledCallback(disabled) {
+        super.formDisabledCallback(disabled);
         this.#inputEl.disabled = disabled;
         this.#numberEl.disabled = disabled;
-    }
-
-    formResetCallback() {
-        const value = this.value;
-        const convertedValue = parseInt(value) || 0;
-        this.#inputEl.value = convertedValue;
-        this.#numberEl.value = convertedValue;
-        this.#applyValueToBar(convertedValue);
     }
 
     focus(options) {
@@ -76,34 +74,20 @@ export default class RangeInput extends CustomFormElementDelegating {
     }
 
     set value(value) {
-        const convertedValue = parseInt(value ?? this.defaultValue) || 0;
-        this.#inputEl.value = convertedValue;
-        this.#numberEl.value = convertedValue;
-        this.#applyValueToBar(convertedValue);
+        super.value = value != null ? parseInt(value) : null;
     }
 
     get value() {
-        return this.#inputEl.value;
+        return super.value;
     }
 
     static get observedAttributes() {
-        return ["value", "min", "max", "scratched"];
+        return [...super.observedAttributes, "min", "max", "scratched"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
-            case "value": {
-                if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, "value", newValue);
-                    safeSetAttribute(this.#numberEl, "value", newValue);
-                    if (!this.isChanged) {
-                        const value = this.value;
-                        this.#inputEl.value = value;
-                        this.#numberEl.value = value;
-                        this.#applyValueToBar(this.value);
-                    }
-                }
-            } break;
             case "min":
             case "max": {
                 if (oldValue != newValue) {
@@ -119,6 +103,17 @@ export default class RangeInput extends CustomFormElementDelegating {
                 }
             } break;
         }
+    }
+
+    applyValueAttribute(value) {
+        safeSetAttribute(this.#inputEl, "value", value);
+        safeSetAttribute(this.#numberEl, "value", value);
+    }
+
+    renderValue(value) {
+        this.#inputEl.value = value;
+        this.#numberEl.value = value;
+        this.#applyValueToBar(value);
     }
 
     #setRange() {
@@ -168,11 +163,7 @@ export default class RangeInput extends CustomFormElementDelegating {
         this.#inputContainerEl.classList.remove("scratched");
     }
 
-    #notifyChange = debounce(() => {
-        const ev = new Event("change", {bubbles: true});
-        this.dispatchEvent(ev);
-    }, 300);
-
 }
 
+FormElementRegistry.register("RangeInput", RangeInput);
 customElements.define("emc-input-range", RangeInput);

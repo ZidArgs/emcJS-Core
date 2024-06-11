@@ -1,6 +1,6 @@
 import ObservableStorage from "../../data/storage/observable/ObservableStorage.js";
 import AbstractFormField from "../../ui/form/abstract/AbstractFormField.js";
-import AbstractFormInput from "../../ui/form/element/input/AbstractFormInput.js";
+import AbstractFormElement from "../../ui/form/AbstractFormElement.js";
 import FormContainer from "../../ui/form/FormContainer.js";
 import {
     debounce
@@ -373,7 +373,7 @@ export default class FormContext extends EventTarget {
     }
 
     #registerNode(node) {
-        if (node instanceof AbstractFormField || node instanceof AbstractFormInput) {
+        if (node instanceof AbstractFormField || node instanceof AbstractFormElement) {
             const context = FormFieldContext.getContext(node);
             context.storage = this.#dataStorage;
             context.ghostInvisible = this.#ghostInvisible;
@@ -388,7 +388,7 @@ export default class FormContext extends EventTarget {
     }
 
     #unregisterNode(node) {
-        if (node instanceof AbstractFormField || node instanceof AbstractFormInput) {
+        if (node instanceof AbstractFormField || node instanceof AbstractFormElement) {
             const context = FormFieldContext.getContext(node);
             context.storage = null;
             context.ghostInvisible = false;

@@ -1,21 +1,15 @@
 [
     {
-        "type": "StringInput",
-        "name": "label",
-        "label": "Label",
-        "value": ""
-    },
-    {
         "type": "TextInput",
         "name": "desc",
         "label": "Description",
         "value": ""
     },
     {
-        "type": "TextInput",
-        "name": "tooltip",
-        "label": "Tooltip",
-        "value": ""
+        "type": "SwitchInput",
+        "name": "errors",
+        "label": "Show Error-Field",
+        "value": true
     },
     {
         "type": "BoolOrLogicInput",

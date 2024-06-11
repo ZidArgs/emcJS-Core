@@ -1,0 +1,11 @@
+#modal {
+    width: 100%;
+    min-width: 20vw;
+}
+#cancel {
+    margin: 2px;
+    text-transform: uppercase;
+}
+#elements [template] {
+    cursor: pointer;
+}

@@ -1,17 +1,17 @@
-import CustomFormElement from "../../../element/CustomFormElement.js";
+import CustomFormElement from "../element/CustomFormElement.js";
 import {
     deepClone
-} from "../../../../util/helper/DeepClone.js";
+} from "../../util/helper/DeepClone.js";
 import {
     debounce
-} from "../../../../util/Debouncer.js";
+} from "../../util/Debouncer.js";
 import {
     isEqual
-} from "../../../../util/helper/Comparator.js";
-import "../../button/Button.js";
-import TPL from "./AbstractFormInput.js.html" assert {type: "html"};
-import STYLE from "./AbstractFormInput.js.css" assert {type: "css"};
-import CONFIG_FIELDS from "./AbstractFormInput.js.json" assert {type: "json"};
+} from "../../util/helper/Comparator.js";
+import "./button/Button.js";
+import TPL from "./AbstractFormElement.js.html" assert {type: "html"};
+import STYLE from "./AbstractFormElement.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./AbstractFormElement.js.json" assert {type: "json"};
 
 // https://web.dev/more-capable-form-controls/#form-associated-custom-elements
 
@@ -34,7 +34,7 @@ function isValueSet(value) {
     return true;
 }
 
-export default class AbstractFormInput extends CustomFormElement {
+export default class AbstractFormElement extends CustomFormElement {
 
     static get formConfigurationFields() {
         return deepClone(CONFIG_FIELDS);
@@ -53,7 +53,7 @@ export default class AbstractFormInput extends CustomFormElement {
     #errorList = new Set();
 
     constructor() {
-        if (new.target === AbstractFormInput) {
+        if (new.target === AbstractFormElement) {
             throw new Error("can not construct abstract class");
         }
         super();
@@ -71,6 +71,7 @@ export default class AbstractFormInput extends CustomFormElement {
     }
 
     connectedCallback() {
+        this.renderValue(this.value);
         this.refreshFormValue();
         this.revalidate();
         console.log(`label for "${this.name}":`, this.internals.labels[0]?.textContent);
@@ -82,6 +83,7 @@ export default class AbstractFormInput extends CustomFormElement {
 
     formResetCallback() {
         this.#value = undefined;
+        this.renderValue(this.value);
         this.refreshFormValue();
         this.revalidate();
         /* --- */
@@ -105,13 +107,14 @@ export default class AbstractFormInput extends CustomFormElement {
         return this.#value !== undefined;
     }
 
-    get isEmpty() {
-        return this.#value == null;
+    get isDefault() {
+        return this.#value === undefined;
     }
 
     set value(value) {
         if (!isEqual(this.#value, value)) {
             this.#value = value;
+            this.renderValue(value);
             this.refreshFormValue();
             this.revalidate();
             if (!this.#errorList.size) {
@@ -129,6 +132,10 @@ export default class AbstractFormInput extends CustomFormElement {
         if (this.#value === undefined) {
             return super.value;
         }
+        return this.#value;
+    }
+
+    get rawValue() {
         return this.#value;
     }
 
@@ -189,7 +196,9 @@ export default class AbstractFormInput extends CustomFormElement {
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {
-                    if (!this.isChanged) {
+                    this.applyValueAttribute(newValue);
+                    if (this.isDefault) {
+                        this.renderValue(this.value);
                         this.refreshFormValue();
                         this.revalidate();
                     }
@@ -283,6 +292,14 @@ export default class AbstractFormInput extends CustomFormElement {
     }
 
     formContextAssociatedCallback(/* formContext */) {
+        // ignore
+    }
+
+    applyValueAttribute(/* value */) {
+        // ignore
+    }
+
+    renderValue(/* value */) {
         // ignore
     }
 

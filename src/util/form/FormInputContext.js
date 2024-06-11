@@ -1,6 +1,6 @@
 import ObservableStorage from "../../data/storage/observable/ObservableStorage.js";
 import AbstractFormField from "../../ui/form/abstract/AbstractFormField.js";
-import AbstractFormInput from "../../ui/form/element/input/AbstractFormInput.js";
+import AbstractFormElement from "../../ui/form/AbstractFormElement.js";
 import {
     debounce
 } from "../Debouncer.js";
@@ -70,7 +70,7 @@ export default class FormFieldContext {
         if (CONTEXTS.has(node)) {
             throw new Error("context already exists");
         }
-        if (!(node instanceof AbstractFormField || node instanceof AbstractFormInput)) {
+        if (!(node instanceof AbstractFormField || node instanceof AbstractFormElement)) {
             throw new TypeError("FormFieldContext can only work on AbstractFormField");
         }
         this.#element = node;

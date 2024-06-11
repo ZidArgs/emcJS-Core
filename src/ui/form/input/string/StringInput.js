@@ -1,20 +1,23 @@
-import AbstractFormInput from "../AbstractFormInput.js";
-import "../../../../i18n/builtin/I18nInput.js";
+import AbstractFormElement from "../../AbstractFormElement.js";
+import FormElementRegistry from "../../../../data/registry/form/FormElementRegistry.js";
+import "../../../i18n/builtin/I18nInput.js";
 import {
     debounce
-} from "../../../../../util/Debouncer.js";
+} from "../../../../util/Debouncer.js";
 import {
     deepClone
-} from "../../../../../util/helper/DeepClone.js";
-import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
+} from "../../../../util/helper/DeepClone.js";
 import {
     safeSetAttribute
-} from "../../../../../util/helper/ui/NodeAttributes.js";
+} from "../../../../util/helper/ui/NodeAttributes.js";
 import TPL from "./StringInput.js.html" assert {type: "html"};
 import STYLE from "./StringInput.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./StringInput.js.json" assert {type: "json"};
 
-export default class StringInput extends AbstractFormInput {
+// TODO add maxLength - don't accept further input
+// TODO add minLength - validation
+// TODO add pattern (expected pattern as regexp) - validation
+export default class StringInput extends AbstractFormElement {
 
     static get formConfigurationFields() {
         return deepClone(CONFIG_FIELDS);
@@ -32,6 +35,10 @@ export default class StringInput extends AbstractFormInput {
             this.#onInput();
         });
     }
+
+    #onInput = debounce(() => {
+        this.value = this.#inputEl.value;
+    }, 300);
 
     connectedCallback() {
         super.connectedCallback();
@@ -52,35 +59,13 @@ export default class StringInput extends AbstractFormInput {
         this.#inputEl.focus(options);
     }
 
-    #onInput = debounce(() => {
-        this.value = this.#inputEl.value;
-    }, 300);
-
-    set value(value) {
-        this.#inputEl.value = value ?? this.defaultValue;
-        super.value = value;
-    }
-
-    get value() {
-        return super.value;
-    }
-
     static get observedAttributes() {
-        return [...super.observedAttributes, "value", "placeholder", "readonly", "autocomplete"];
+        return [...super.observedAttributes, "placeholder", "readonly", "autocomplete"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
-            case "value": {
-                if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, "value", newValue);
-                    if (!this.isChanged) {
-                        const value = this.value;
-                        this.#inputEl.value = value;
-                    }
-                }
-            } break;
             case "readonly":
             case "autocomplete": {
                 if (oldValue != newValue) {
@@ -93,6 +78,14 @@ export default class StringInput extends AbstractFormInput {
                 }
             } break;
         }
+    }
+
+    applyValueAttribute(value) {
+        safeSetAttribute(this.#inputEl, "value", value);
+    }
+
+    renderValue(value) {
+        this.#inputEl.value = value;
     }
 
 }
