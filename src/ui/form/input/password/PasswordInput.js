@@ -5,6 +5,9 @@ import {
     debounce
 } from "../../../../util/Debouncer.js";
 import {
+    registerFocusable
+} from "../../../../util/helper/html/getFocusableElements.js";
+import {
     safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
 import "../../../i18n/I18nTooltip.js";
@@ -12,11 +15,16 @@ import "./components/ToggleShowButton.js";
 import TPL from "./PasswordInput.js.html" assert {type: "html"};
 import STYLE from "./PasswordInput.js.css" assert {type: "css"};
 
+// TODO add required [lowercase,uppercase,digit,{symbol_declaration}]
 export default class PasswordInput extends AbstractFormElement {
 
     #inputEl;
 
     #showEl;
+
+    #minLength;
+
+    #maxLength;
 
     constructor() {
         super();
@@ -57,6 +65,14 @@ export default class PasswordInput extends AbstractFormElement {
         this.#inputEl.value = value;
     }
 
+    validityCallback(message) {
+        if (message == "") {
+            this.#showEl.classList.remove("invalid");
+        } else {
+            this.#showEl.classList.add("invalid");
+        }
+    }
+
     focus(options) {
         this.#inputEl.focus(options);
     }
@@ -70,8 +86,24 @@ export default class PasswordInput extends AbstractFormElement {
         return super.value;
     }
 
+    set maxLength(value) {
+        this.setIntAttribute("maxlength", value, 0);
+    }
+
+    get maxLength() {
+        return this.getIntAttribute("maxlength");
+    }
+
+    set minLength(value) {
+        this.setIntAttribute("minlength", value, 0);
+    }
+
+    get minLength() {
+        return this.getIntAttribute("minlength");
+    }
+
     static get observedAttributes() {
-        return [...super.observedAttributes, "placeholder", "readonly"];
+        return [...super.observedAttributes, "placeholder", "readonly", "minlength", "maxlength"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -87,18 +119,44 @@ export default class PasswordInput extends AbstractFormElement {
                     safeSetAttribute(this.#inputEl, "readonly", newValue);
                 }
             } break;
+            case "minlength": {
+                if (oldValue != newValue) {
+                    this.#minLength = parseInt(newValue) || null;
+                    this.revalidate();
+                }
+            } break;
+            case "maxlength": {
+                if (oldValue != newValue) {
+                    this.#maxLength = parseInt(newValue) || null;
+                    this.revalidate();
+                }
+            } break;
         }
     }
 
+    checkValid() {
+        const value = this.value ?? "";
+        const min = this.#minLength;
+        if (min != null && value.length < min) {
+            return `The minimum length for this field is {{0::${min}}} characters`;
+        }
+        const max = this.#maxLength;
+        if (max != null && value.length > max) {
+            return `The maximum length for this field is {{0::${max}}} characters`;
+        }
+        return super.checkValid();
+    }
+
     applyValueAttribute(value) {
-        safeSetAttribute(this.#inputEl, "value", value);
+        safeSetAttribute(this.#inputEl, "value", value ?? "");
     }
 
     renderValue(value) {
-        this.#inputEl.value = value;
+        this.#inputEl.value = value ?? "";
     }
 
 }
 
 FormElementRegistry.register("PasswordInput", PasswordInput);
 customElements.define("emc-input-password", PasswordInput);
+registerFocusable("emc-input-password");

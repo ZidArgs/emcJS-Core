@@ -207,11 +207,11 @@ export default class ModalDialog extends Modal {
         } else if (typeof value === "number") {
             inputEl.value = value.toString();
         }
-        inputEl.addEventListener("keypress", (event) => {
+        inputEl.addEventListener("keydown", (event) => {
             if (event.key == "Enter") {
                 dialogEl.submit();
+                event.stopPropagation();
             }
-            event.stopPropagation();
         });
         dialogEl.append(inputEl);
         dialogEl.initialFocusElement = inputEl;
@@ -237,11 +237,11 @@ export default class ModalDialog extends Modal {
         if (typeof value === "number" && !isNaN(value)) {
             inputEl.value = value;
         }
-        inputEl.addEventListener("keypress", (event) => {
+        inputEl.addEventListener("keydown", (event) => {
             if (event.key == "Enter") {
                 dialogEl.submit();
+                event.stopPropagation();
             }
-            event.stopPropagation();
         });
         dialogEl.append(inputEl);
         dialogEl.initialFocusElement = inputEl;
@@ -260,7 +260,10 @@ export default class ModalDialog extends Modal {
         // ---
         if (errors.length > 0) {
             const inputEl = document.createElement("textarea");
+            inputEl.style.flexShrink = "1";
+            inputEl.style.flexGrow = "1";
             inputEl.style.width = "100%";
+            inputEl.style.minHeight = "100px";
             inputEl.style.maxHeight = "300px";
             inputEl.style.padding = "5px";
             inputEl.style.color = "black";

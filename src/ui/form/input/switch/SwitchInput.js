@@ -1,5 +1,8 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../data/registry/form/FormElementRegistry.js";
+import {
+    registerFocusable
+} from "../../../../util/helper/html/getFocusableElements.js";
 import TPL from "./SwitchInput.js.html" assert {type: "html"};
 import STYLE from "./SwitchInput.js.css" assert {type: "css"};
 
@@ -59,3 +62,4 @@ export default class SwitchInput extends AbstractFormElement {
 
 FormElementRegistry.register("SwitchInput", SwitchInput);
 customElements.define("emc-input-switch", SwitchInput);
+registerFocusable("emc-input-switch");

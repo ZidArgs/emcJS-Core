@@ -1,4 +1,7 @@
 import CustomFormElementDelegating from "../../../../element/CustomFormElementDelegating.js";
+import {
+    registerFocusable
+} from "../../../../../util/helper/html/getFocusableElements.js";
 import "../../../../i18n/I18nTooltip.js";
 import TPL from "./ToggleShowButton.js.html" assert {type: "html"};
 import STYLE from "./ToggleShowButton.js.css" assert {type: "css"};
@@ -42,4 +45,5 @@ export default class ToggleShowButton extends CustomFormElementDelegating {
 
 }
 
-customElements.define("emc-toggle-show-button", ToggleShowButton);
+customElements.define("emc-input-password-toggle-show-button", ToggleShowButton);
+registerFocusable("emc-input-password-toggle-show-button");

@@ -1,5 +1,8 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../data/registry/form/FormElementRegistry.js";
+import {
+    registerFocusable
+} from "../../../../util/helper/html/getFocusableElements.js";
 import "../../../i18n/I18nLabel.js";
 import "../../../i18n/I18nTooltip.js";
 import TPL from "./ActionInput.js.html" assert {type: "html"};
@@ -32,6 +35,10 @@ export default class ActionInput extends AbstractFormElement {
         this.#buttonEl.classList.toggle("disabled", disabled);
     }
 
+    focus(options) {
+        this.#buttonEl.focus(options);
+    }
+
     renderValue(value) {
         this.#textEl.classList.toggle("placeholder", !value);
         if (this.#valueRenderer != null) {
@@ -55,3 +62,4 @@ export default class ActionInput extends AbstractFormElement {
 
 FormElementRegistry.register("ActionInput", ActionInput);
 customElements.define("emc-input-action", ActionInput);
+registerFocusable("emc-input-action");

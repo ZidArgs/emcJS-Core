@@ -41,7 +41,7 @@
     flex-shrink: 0;
     width: calc(100% - 8px);
     padding: 0px 5px;
-    margin: 0 4px;
+    margin: 4px 4px 0;
     color: var(--form-invalid-text-color, #a70000);
     background-color: var(--form-invalid-back-color, #ffeeee);
     background-image: var(--form-invalid-back-image, none);
@@ -59,6 +59,7 @@
     display: block;
     flex-shrink: 0;
     padding: 0px 5px;
+    margin: 4px 4px 0;
     font-size: 0.9em;
     line-height: 1.4em;
     font-style: italic;

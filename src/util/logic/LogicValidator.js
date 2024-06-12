@@ -105,7 +105,7 @@ class LogicValidator {
             case "max": {
                 this.#validate(node["content"], noEmpty, path, errors);
                 const val = parseInt(node["value"]);
-                if (!isNaN(val)) {
+                if (isNaN(val)) {
                     errors.push(`value has to be a number [ ${path.join(" > ")} ]`);
                 }
             } break;

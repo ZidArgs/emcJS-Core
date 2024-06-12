@@ -8,6 +8,9 @@ import {
 import {
     reduceLogic
 } from "../../../../util/logic/LogicReducer.js";
+import {
+    registerFocusable
+} from "../../../../util/helper/html/getFocusableElements.js";
 import LogicEditorContextMenuElement from "./components/contexmenu/LogicEditorContextMenuElement.js";
 import LogicElementModal from "./components/modal/LogicElementModal.js";
 import LogicJSONModal from "./components/modal/LogicJSONModal.js";
@@ -49,6 +52,7 @@ import STYLE from "./LogicInput.js.css" assert {type: "css"};
 // TODO add import/export (button opens dialog to copy/paste logic)
 // TODO add optimize button (optimize logic e.g. merge contained AND with parent AND)
 // TODO add negate function to contextmenu (add optional negation readonly property to logic elements)
+// TODO detect valid logic (no empty elements that expect children)
 
 const MUTATION_CONFIG = {
     childList: true,
@@ -76,7 +80,6 @@ const BaseClass = mix(
 );
 
 // TODO use modal handler
-// XXX rework this as it is not a fully implemented input
 export default class LogicInput extends BaseClass {
 
     #optimizeButtonEl;
@@ -201,6 +204,15 @@ export default class LogicInput extends BaseClass {
         }
     }
 
+    focus(options) {
+        const el = this.children[0];
+        if (el) {
+            el.focus(options);
+        } else {
+            this.#placeholderEl.focus(options);
+        }
+    }
+
     addOperatorGroup(...groupList) {
         this.#logicElementModal?.addOperatorGroup(...groupList);
     }
@@ -259,6 +271,14 @@ export default class LogicInput extends BaseClass {
         }
     }
 
+    checkValid() {
+        const el = this.children[0];
+        if (el != null && !el.checkValidity()) {
+            return "Not a valid logic";
+        }
+        return super.checkValid();
+    }
+
     renderValue(value) {
         if (value == null) {
             this.innerHTML = "";
@@ -277,3 +297,4 @@ export default class LogicInput extends BaseClass {
 
 FormElementRegistry.register("LogicInput", LogicInput);
 customElements.define("emc-input-logic", LogicInput);
+registerFocusable("emc-input-logic");

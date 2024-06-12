@@ -1,18 +1,12 @@
 :host {
     width: 2em;
     height: 2em;
-    border-style: solid;
-    border-width: var(--input-border-width, 2px);
-    border-color: var(--input-border-color, #222222);
-    border-radius: var(--input-border-radius, 6px);
-    overflow: hidden;
     font-size: 1rem;
 }
 :host(:disabled) {
     border-color: var(--input-disabled-border-color, #6a6a6a);
 }
 :host(:focus) {
-    box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
     outline: none;
 }
 #button {
@@ -24,27 +18,47 @@
     padding: 0px;
     margin: 0px;
     appearance: none;
-    color: var(--button-text-color, #000000);
-    background-color: var(--button-back-color, #cccccc);
-    background-image: var(--button-back-image, none);
-    border: none;
+    color: var(--input-button-text-color, #000000);
+    background-color: var(--input-button-back-color, #ffffff);
+    background-image: var(--input-button-back-image, none);
+    border-style: solid;
+    border-width: var(--input-border-width, 2px);
+    border-color: var(--input-border-color, #222222);
+    border-radius: 0 var(--input-border-radius, 6px) var(--input-border-radius, 6px) 0;
     font-size: 1.5em;
     font-weight: bold;
     cursor: pointer;
 }
+:host(.invalid) #button {
+    color: var(--input-button-invalid-text-color, #000000);
+    background-color: var(--input-button-invalid-back-color, #ffebeb);
+    background-image: var(--input-button-invalid-back-image, none);
+    border-color: var(--input-invalid-border-color, #ff4444);
+}
 #button:hover {
-    color: var(--button-hover-text-color, #ffffff);
-    background-color: var(--button-hover-back-color, #000000);
+    color: var(--input-button-hover-text-color, #000000);
+    background-color: var(--input-button-hover-back-color, #b3e5ec);
+    background-image: var(--input-button-hover-back-image, none);
+}
+:host(.invalid) #button:hover {
+    color: var(--input-button-invalid-hover-text-color, #000000);
+    background-color: var(--input-button-invalid-hover-back-color, #ff9987);
+    background-image: var(--input-button-invalid-hover-back-image, none);
 }
 #button:disabled {
-    color: var(--input-disabled-text-color, #757575);
-    background-color: var(--button-disabled-back-color, #999999);
-    background-image: var(--button-disabled-back-image, none);
-    cursor: default;
+    color: var(--input-button-disabled-text-color, #757575) !important;
+    background-color: var(--input-button-disabled-back-color, #999999) !important;
+    background-image: var(--input-button-disabled-back-image, none) !important;
+    border-color: var(--input-disabled-border-color, #6a6a6a) !important;
+    cursor: default !important;
 }
-#button:focus {
-    box-shadow: none;
+#button:focus,
+:host(:focus) #button {
+    box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
     outline: none;
+}
+:host(.invalid) #button:focus {
+    box-shadow: 0 0 2px 3px var(--input-invalid-focus-color, #ff2500);
 }
 #button::before {
     position: absolute;
@@ -67,27 +81,41 @@
     font-size: 0.6em;
     line-height: 0.8em;
     text-shadow:
-        1px 1px var(--button-back-color, #cccccc),
-        -1px 1px var(--button-back-color, #cccccc),
-        1px -1px var(--button-back-color, #cccccc),
-        -1px -1px var(--button-back-color, #cccccc);
+        1px 1px var(--input-button-back-color, #cccccc),
+        -1px 1px var(--input-button-back-color, #cccccc),
+        1px -1px var(--input-button-back-color, #cccccc),
+        -1px -1px var(--input-button-back-color, #cccccc);
     font-family: monospace;
     content: "╱";
+}
+:host(.invalid) #button::after {
+    text-shadow:
+        1px 1px var(--input-button-invalid-back-color, #ffacac),
+        -1px 1px var(--input-button-invalid-back-color, #ffacac),
+        1px -1px var(--input-button-invalid-back-color, #ffacac),
+        -1px -1px var(--input-button-invalid-back-color, #ffacac);
 }
 #button:checked::after {
     display: none;
 }
 #button:hover::after {
     text-shadow:
-        1px 1px var(--button-hover-back-color, #000000),
-        -1px 1px var(--button-hover-back-color, #000000),
-        1px -1px var(--button-hover-back-color, #000000),
-        -1px -1px var(--button-hover-back-color, #000000);
+        1px 1px var(--input-button-hover-back-color, #000000),
+        -1px 1px var(--input-button-hover-back-color, #000000),
+        1px -1px var(--input-button-hover-back-color, #000000),
+        -1px -1px var(--input-button-hover-back-color, #000000);
+}
+:host(.invalid) #button:hover::after {
+    text-shadow:
+        1px 1px var(--input-button-invalid-hover-back-color, #ff7373),
+        -1px 1px var(--input-button-invalid-hover-back-color, #ff7373),
+        1px -1px var(--input-button-invalid-hover-back-color, #ff7373),
+        -1px -1px var(--input-button-invalid-hover-back-color, #ff7373);
 }
 #button:disabled::after {
     text-shadow:
-        1px 1px var(--button-disabled-back-color, #999999),
-        -1px 1px var(--button-disabled-back-color, #999999),
-        1px -1px var(--button-disabled-back-color, #999999),
-        -1px -1px var(--button-disabled-back-color, #999999);
+        1px 1px var(--input-button-disabled-back-color, #999999),
+        -1px 1px var(--input-button-disabled-back-color, #999999),
+        1px -1px var(--input-button-disabled-back-color, #999999),
+        -1px -1px var(--input-button-disabled-back-color, #999999);
 }

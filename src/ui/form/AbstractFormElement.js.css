@@ -41,12 +41,9 @@
 :host([resettable]:not([resettable="false"])) #reset {
     display: block;
 }
-:disabled {
-    color: var(--input-disabled-text-color, #757575) !important;
-    background-color: var(--input-disabled-back-color, #999999) !important;
-    background-image: var(--input-disabled-back-image, none) !important;
-    border-color: var(--input-disabled-border-color, #6a6a6a) !important;
-    cursor: default !important;
+#reset.inactive {
+    opacity: 0.5;
+    pointer-events: none;
 }
 #label {
     display: flex;

@@ -121,7 +121,7 @@
     --input-border-color: var(--page-content-border-color); /* all; top_bottom right_left; top right bottom left*/
     --input-border-width: var(--form-border-width);
     --input-border-radius: var(--form-border-radius);
-    --input-emphasize-color: #9ee1ec;
+    --input-emphasize-color: #b3e5ec;
     --input-insignify-color: #cccccc;
     --input-focus-color: var(--page-focus-color);
     --input-placeholder-text-color: #757575;
@@ -130,8 +130,8 @@
     --input-invalid-back-image: none;
     --input-invalid-border-color: #ff2500; /* all; top_bottom right_left; top right bottom left*/
     --input-invalid-focus-color: #ff2500;
-    --input-invalid-emphasize-color: #a70000;
-    --input-invalid-insignify-color: #ff9987;
+    --input-invalid-emphasize-color: #ff9987;
+    --input-invalid-insignify-color: #d8b5ad;
 
     --input-disabled-text-color: #757575;
     --input-disabled-back-color: #999999;
@@ -145,8 +145,8 @@
     --input-button-back-image: none;
     --input-button-border-color: var(--input-border-color);
 
-    --input-button-hover-text-color: var(--input-back-color);
-    --input-button-hover-back-color: var(--input-text-color);
+    --input-button-hover-text-color: var(--input-text-color);
+    --input-button-hover-back-color: var(--input-emphasize-color);
     --input-button-hover-back-image: none;
     --input-button-hover-border-color: var(--input-border-color);
 
@@ -154,6 +154,16 @@
     --input-button-disabled-back-color: var(--input-disabled-back-color);
     --input-button-disabled-back-image: none;
     --input-button-disabled-border-color: var(--input-disabled-border-color);
+
+    --input-button-invalid-text-color: var(--input-invalid-text-color);
+    --input-button-invalid-back-color: var(--input-invalid-back-color);
+    --input-button-invalid-back-image: none;
+    --input-button-invalid-border-color: var(--input-invalid-border-color);
+
+    --input-button-invalid-hover-text-color: var(--input-button-invalid-text-color);
+    --input-button-invalid-hover-back-color: var(--input-invalid-emphasize-color);
+    --input-button-invalid-hover-back-image: none;
+    --input-button-invalid-hover-border-color: var(--input-button-invalid-border-color); /* all; top_bottom right_left; top right bottom left*/
 
     /* === image/icon === */
     --image-checker-back-color: #2c2c2c;
@@ -178,16 +188,16 @@
     --select-option-selected-marked-back-image: none;
 
     /* === button === */
-    --button-text-color: var(--input-text-color);
-    --button-back-color: var(--input-back-color);
+    --button-text-color: #000000;
+    --button-back-color: #cdcdcd;
     --button-back-image: none;
-    --button-border-color: var(--input-border-color); /* all; top_bottom right_left; top right bottom left*/
+    --button-border-color: #222222; /* all; top_bottom right_left; top right bottom left*/
     --button-border-width: var(--input-border-width);
     --button-border-radius: var(--input-border-radius);
     --button-focus-color: var(--input-focus-color);
 
-    --button-hover-text-color: var(--page-hover-text-color);
-    --button-hover-back-color: var(--page-hover-back-color);
+    --button-hover-text-color: #ffffff;
+    --button-hover-back-color: #444444;
     --button-hover-back-image: none;
     --button-hover-border-color: var(--button-border-color); /* all; top_bottom right_left; top right bottom left*/
 
@@ -202,22 +212,22 @@
     --button-active-hover-border-color: var(--button-active-border-color); /* all; top_bottom right_left; top right bottom left*/
 
     --button-primary-text-color: #000000;
-    --button-primary-back-color: #00dbd0;
+    --button-primary-back-color: #9ec9fb;
     --button-primary-back-image: none;
-    --button-primary-border-color: #007b75; /* all; top_bottom right_left; top right bottom left*/
+    --button-primary-border-color: #003067; /* all; top_bottom right_left; top right bottom left*/
 
-    --button-primary-hover-text-color: #000000;
-    --button-primary-hover-back-color: #a2fffa;
+    --button-primary-hover-text-color: #ffffff;
+    --button-primary-hover-back-color: #0054b5;
     --button-primary-hover-back-image: none;
     --button-primary-hover-border-color: var(--button-primary-border-color); /* all; top_bottom right_left; top right bottom left*/
 
     --button-secondary-text-color: #000000;
-    --button-secondary-back-color: #ff7373;
+    --button-secondary-back-color: #ffdb8e;
     --button-secondary-back-image: none;
-    --button-secondary-border-color: #7b0e00; /* all; top_bottom right_left; top right bottom left*/
+    --button-secondary-border-color: #ad7600; /* all; top_bottom right_left; top right bottom left*/
 
     --button-secondary-hover-text-color: #000000;
-    --button-secondary-hover-back-color: #ffacac;
+    --button-secondary-hover-back-color: #ffae00;
     --button-secondary-hover-back-image: none;
     --button-secondary-hover-border-color: var(--button-secondary-border-color); /* all; top_bottom right_left; top right bottom left*/
 
@@ -236,10 +246,11 @@
     --switch-indeterminate-back-color: var(--switch-unchecked-back-color);
     --switch-indeterminate-back-image: var(--switch-unchecked-back-image);
 
-    --switch-button-back-color: #000000;
+    --switch-button-back-color: #cdcdcd;
     --switch-button-back-image: none;
+    --switch-button-border-color: var(--input-border-color);
 
-    --switch-button-hover-back-color: #004472;
+    --switch-button-hover-back-color: #444444;
     --switch-button-hover-back-image: none;
 
     --switch-button-disabled-back-color: #696969;

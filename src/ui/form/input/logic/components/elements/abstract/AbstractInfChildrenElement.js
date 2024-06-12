@@ -70,4 +70,8 @@ export default class AbstractInfChildrenElement extends AbstractElement {
         }
     }
 
+    checkValidity() {
+        return this.childList.length > 0 && this.childList.every((el) => el.checkValidity());
+    }
+
 }

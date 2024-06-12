@@ -32,8 +32,12 @@ export default class LinkButton extends CustomFormElementDelegating {
         this.#textEl = this.shadowRoot.getElementById("text");
         this.#buttonEl = this.shadowRoot.getElementById("button");
         this.#buttonEl.addEventListener("click", (event) => {
-            this.dispatchEvent(new MouseEvent("click", event));
+            const ev = new MouseEvent("click", event);
+            this.dispatchEvent(ev);
             event.stopPropagation();
+            if (ev.defaultPrevented) {
+                event.preventDefault();
+            }
         });
     }
 

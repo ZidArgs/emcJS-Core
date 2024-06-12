@@ -1,4 +1,5 @@
 // main
+import ModalDialog from "/emcJS/ui/modal/ModalDialog.js";
 import "/emcJS/ui/Page.js";
 // form
 import FormContext from "/emcJS/util/form/FormContext.js";
@@ -11,7 +12,6 @@ import "/emcJS/ui/form/button/ResetButton.js";
 import "/emcJS/ui/form/button/ActionButton.js";
 import "/emcJS/ui/form/button/LinkButton.js";
 import "/emcJS/ui/form/input/FormInputLoader.js";
-import Dialog from "../../emcJS/ui/overlay/window/Dialog.js";
 
 const formContext = new FormContext();
 formContext.allowEnter = true;
@@ -41,7 +41,7 @@ formContext.addEventListener("error", (event) => {
 const actionEl = document.getElementById("action");
 actionEl.setValueRenderer((value) => value ? `Entered value: ${value}` : "A whole lot of nothing");
 actionEl.addEventListener("action", async () => {
-    const value = await Dialog.prompt("enter text", "enter text to display");
+    const value = await ModalDialog.prompt("enter text", "enter text to display");
     if (value) {
         actionEl.value = value;
     } else {

@@ -6,6 +6,9 @@ import {
 import {
     deepClone
 } from "../../../../util/helper/DeepClone.js";
+import {
+    registerFocusable
+} from "../../../../util/helper/html/getFocusableElements.js";
 import FormElementRegistry from "../../../../data/registry/form/FormElementRegistry.js";
 import {
     safeSetAttribute
@@ -118,24 +121,25 @@ export default class TextInput extends AbstractFormElement {
         const value = this.value ?? "";
         const min = this.#minLength;
         if (min != null && value.length < min) {
-            return `The minimum length for this field is ${min} characters`;
+            return `The minimum length for this field is {{0::${min}}} characters`;
         }
         const max = this.#maxLength;
         if (max != null && value.length > max) {
-            return `The maximum length for this field is ${max} characters`;
+            return `The maximum length for this field is {{0::${max}}} characters`;
         }
         return super.checkValid();
     }
 
     applyValueAttribute(value) {
-        safeSetAttribute(this.#inputEl, "value", value);
+        safeSetAttribute(this.#inputEl, "value", value ?? "");
     }
 
     renderValue(value) {
-        this.#inputEl.value = value;
+        this.#inputEl.value = value ?? "";
     }
 
 }
 
 FormElementRegistry.register("TextInput", TextInput);
 customElements.define("emc-input-text", TextInput);
+registerFocusable("emc-input-text");

@@ -374,6 +374,10 @@ export default class AbstractElement extends CustomElement {
         return false;
     }
 
+    checkValidity() {
+        return true;
+    }
+
 }
 
 class ErrorElement extends AbstractElement {
@@ -400,6 +404,10 @@ class ErrorElement extends AbstractElement {
 
     loadLogic(logic) {
         this.shadowRoot.getElementById("body").innerHTML = logic.type || "UNKNOWN TYPE";
+    }
+
+    checkValidity() {
+        return false;
     }
 
 }

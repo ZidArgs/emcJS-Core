@@ -6,6 +6,9 @@ import {
 import {
     deepClone
 } from "../../../../util/helper/DeepClone.js";
+import {
+    registerFocusable
+} from "../../../../util/helper/html/getFocusableElements.js";
 import FormElementRegistry from "../../../../data/registry/form/FormElementRegistry.js";
 import {
     safeSetAttribute
@@ -166,3 +169,4 @@ export default class RangeInput extends AbstractFormElement {
 
 FormElementRegistry.register("RangeInput", RangeInput);
 customElements.define("emc-input-range", RangeInput);
+registerFocusable("emc-input-range");

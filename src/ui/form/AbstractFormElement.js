@@ -68,6 +68,16 @@ export default class AbstractFormElement extends CustomFormElement {
             event.preventDefault();
             this.formResetCallback();
         });
+        this.#resetEl.addEventListener("keydown", (event) => {
+            if (event.keyCode === 13) {
+                event.stopPropagation();
+                event.preventDefault();
+                this.formResetCallback();
+            }
+        });
+        this.addEventListener("invalid", (event) => {
+            event.preventDefault();
+        });
     }
 
     connectedCallback() {
@@ -82,6 +92,7 @@ export default class AbstractFormElement extends CustomFormElement {
 
     formResetCallback() {
         this.#value = undefined;
+        this.#setResetActive(false);
         this.renderValue(this.value);
         this.refreshFormValue();
         this.revalidate();
@@ -116,6 +127,7 @@ export default class AbstractFormElement extends CustomFormElement {
             this.renderValue(value);
             this.refreshFormValue();
             this.revalidate();
+            this.#setResetActive(!this.isDefault);
             if (!this.#errorList.size) {
                 const event = new Event("value", {bubbles: true, cancelable: true});
                 event.value = value;
@@ -300,6 +312,17 @@ export default class AbstractFormElement extends CustomFormElement {
 
     renderValue(/* value */) {
         // ignore
+    }
+
+    #setResetActive(value) {
+        if (!value) {
+            this.#resetEl.classList.add("inactive");
+            this.#resetEl.setAttribute("tabindex", "-1");
+            this.#resetEl.blur();
+        } else {
+            this.#resetEl.classList.remove("inactive");
+            this.#resetEl.removeAttribute("tabindex");
+        }
     }
 
 }

@@ -34,7 +34,9 @@ export default class FormField extends CustomElement {
         this.#errorEl = this.shadowRoot.getElementById("error");
         this.#errorEl.addEventListener("click", (event) => {
             const focusEls = getFocusableElements(this);
-            focusEls[0].focus();
+            if (focusEls.length > 0) {
+                focusEls[0].focus();
+            }
             event.preventDefault();
         });
         /* --- */
@@ -51,21 +53,21 @@ export default class FormField extends CustomElement {
         return this.getAttribute("noerror");
     }
 
-    set desc(value) {
-        this.setAttribute("desc", value);
+    set description(value) {
+        this.setAttribute("description", value);
     }
 
-    get desc() {
-        return this.getAttribute("desc");
+    get description() {
+        return this.getAttribute("description");
     }
 
     static get observedAttributes() {
-        return ["desc"];
+        return ["description"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
-            case "desc": {
+            case "description": {
                 if (oldValue != newValue) {
                     this.#descriptionEl.i18nContent = newValue;
                 }

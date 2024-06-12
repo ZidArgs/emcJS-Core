@@ -119,4 +119,8 @@ export default class AbstractRestrictorElement extends AbstractElement {
         }
     }
 
+    checkValidity() {
+        return this.childList.length === 1 && this.childList[0].checkValidity();
+    }
+
 }

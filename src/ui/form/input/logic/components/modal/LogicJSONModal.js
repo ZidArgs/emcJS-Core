@@ -7,6 +7,7 @@ import Logger from "../../../../../../util/log/Logger.js";
 import "../../../../button/Button.js";
 import TPL from "./LogicJSONModal.js.html" assert {type: "html"};
 import STYLE from "./LogicJSONModal.js.css" assert {type: "css"};
+import ModalDialog from "../../../../../modal/ModalDialog.js";
 
 // TODO use ModalDialog instead
 export default class LogicJSONModal extends Modal {
@@ -41,8 +42,7 @@ export default class LogicJSONModal extends Modal {
             if (this.#jsonEl.validationMessage === "") {
                 const errors = LogicValidator.validate(this.value);
                 if (errors.length > 0) {
-                    this.#jsonEl.setCustomValidity("Invalid Logic");
-                    this.#errorEl.i18nContent = "Invalid Logic";
+                    ModalDialog.error("Invalid Logic", null, errors);
                     Logger.error(`Invalid Logic\n${errors.map((s) => `\t${s}`).join("\n")}`);
                 } else {
                     this.dispatchEvent(new Event("submit"));

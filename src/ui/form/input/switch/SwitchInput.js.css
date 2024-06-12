@@ -47,7 +47,7 @@
     background-image: var(--switch-button-back-image, none);
     border-style: solid;
     border-width: var(--input-button-border-width, 2px);
-    border-color: var(--input-button-border-color, #222222);
+    border-color: var(--switch-button-border-color, #222222);
     border-radius: calc(var(--input-border-radius, 6px) / 2);
     box-sizing: border-box;
     content: "";

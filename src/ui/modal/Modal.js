@@ -19,6 +19,8 @@ const visibleModals = new UniqueEntriesStack();
 
 export default class Modal extends CustomElement {
 
+    #modalEl;
+
     #titleIconEl;
 
     #titleTextEl;
@@ -36,6 +38,7 @@ export default class Modal extends CustomElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
+        this.#modalEl = this.shadowRoot.getElementById("modal");
         this.#titleIconEl = this.shadowRoot.getElementById("title-icon");
         this.#titleTextEl = this.shadowRoot.getElementById("title-text");
         this.#closeEl = this.shadowRoot.getElementById("close");
@@ -43,11 +46,11 @@ export default class Modal extends CustomElement {
         this.#footerEl = this.shadowRoot.getElementById("footer");
         this.caption = caption;
         /* --- */
-        this.addEventListener("keypress", (event) => {
+        this.#modalEl.addEventListener("keydown", (event) => {
             if (event.key == "Escape") {
                 this.close();
+                event.stopPropagation();
             }
-            event.stopPropagation();
         });
         const closeEl = this.shadowRoot.getElementById("close");
         closeEl.addEventListener("click", () => this.close());

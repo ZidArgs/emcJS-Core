@@ -7,6 +7,10 @@ export default class AbstractTwoChildrenElement extends AbstractElement {
 
     #placeholder1El;
 
+    #child0El;
+
+    #child1El;
+
     #type;
 
     constructor(type, caption) {
@@ -16,6 +20,8 @@ export default class AbstractTwoChildrenElement extends AbstractElement {
         this.shadowRoot.getElementById("body").append(els);
         this.#type = type;
         /* --- */
+        this.#child0El = this.shadowRoot.getElementById("child0");
+        this.#child1El = this.shadowRoot.getElementById("child1");
         this.#placeholder0El = this.shadowRoot.getElementById("droptarget0");
         this.#placeholder1El = this.shadowRoot.getElementById("droptarget1");
         this.#placeholder0El.ondragover = AbstractElement.allowDrop;
@@ -59,8 +65,8 @@ export default class AbstractTwoChildrenElement extends AbstractElement {
 
     get childList() {
         const res = [];
-        const ch0 = this.#placeholder0El.assignedElements()[0];
-        const ch1 = this.#placeholder1El.assignedElements()[0];
+        const ch0 = this.#child0El.assignedElements()[0];
+        const ch1 = this.#child1El.assignedElements()[0];
         if (ch0 != null && ch0 instanceof AbstractElement) {
             res.push(ch0);
         }
@@ -87,6 +93,10 @@ export default class AbstractTwoChildrenElement extends AbstractElement {
                 }
             } break;
         }
+    }
+
+    checkValidity() {
+        return this.childList.length === 2 && this.childList.every((el) => el.checkValidity());
     }
 
 }
