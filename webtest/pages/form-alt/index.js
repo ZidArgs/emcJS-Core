@@ -11,12 +11,15 @@ import "/emcJS/ui/form/button/SubmitButton.js";
 import "/emcJS/ui/form/button/ResetButton.js";
 import "/emcJS/ui/form/button/ActionButton.js";
 import "/emcJS/ui/form/button/LinkButton.js";
+import "/emcJS/ui/form/button/ErrorButton.js";
 import "/emcJS/ui/form/input/FormInputLoader.js";
 
 const formContext = new FormContext();
 formContext.allowEnter = true;
 const formContainerEl = document.getElementById("form");
 formContext.registerFormContainer(formContainerEl);
+
+const errorButtonEl = document.getElementById("error-button");
 
 formContext.addEventListener("submit", (event) => {
     const {errors, data, hiddenData, changes} = event;
@@ -28,6 +31,7 @@ formContext.addEventListener("submit", (event) => {
     console.log("[E] changes", changes);
     console.log("formData", formContext.getInternalFormData());
     console.groupEnd(`submit (${valid})`);
+    errorButtonEl.setErrors();
 });
 
 formContext.addEventListener("error", (event) => {
@@ -36,6 +40,7 @@ formContext.addEventListener("error", (event) => {
     console.log("errors", errors);
     console.log("data", formContext.getFormFieldsData());
     console.groupEnd("error");
+    errorButtonEl.setErrors(errors);
 });
 
 const actionEl = document.getElementById("action");

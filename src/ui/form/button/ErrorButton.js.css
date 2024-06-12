@@ -1,0 +1,11 @@
+#text[error-count]::after {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 2.4em;
+    height: 1.4em;
+    border-radius: 0.7em;
+    color: rgb(0, 0, 0);
+    background-color: rgb(255, 166, 0);
+    content: attr(error-count);
+}
