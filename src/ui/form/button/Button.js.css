@@ -109,3 +109,45 @@
 :host(.rotate-icon-270) #button::before {
     rotate: 270deg;
 }
+#button[count-value]::after {
+    box-sizing: border-box;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 1.4em;
+    height: 1.4em;
+    padding: 0 6px;
+    border-radius: 0.7em;
+    color: var(--button-count-text-color, #ffffff);
+    background-color: var(--button-count-back-color, #222222);
+    line-height: 1.2em;
+    content: attr(count-value);
+}
+#button[count-value][count-type="alert"]::after {
+    background-color: var(--button-count-alert-back-color, #e98e2d);
+}
+#button[count-value][count-type="info"]::after {
+    background-color: var(--button-count-info-back-color, #0000ff);
+}
+#button[count-value][count-type="success"]::after {
+    background-color: var(--button-count-success-back-color, #009952);
+}
+#button[count-value][count-type="error"]::after {
+    background-color: var(--button-count-error-back-color, #c50000);
+}
+:host(:hover) #button[count-value]::after {
+    color: var(--button-hover-count-text-color, #000000);
+    background-color: var(--button-hover-count-back-color, #ffffff);
+}
+:host(:hover) #button[count-value][count-type="alert"]::after {
+    background-color: var(--button-hover-count-alert-back-color, #ffd7ac);
+}
+:host(:hover) #button[count-value][count-type="info"]::after {
+    background-color: var(--button-hover-count-info-back-color, #b9b9ff);
+}
+:host(:hover) #button[count-value][count-type="success"]::after {
+    background-color: var(--button-hover-count-success-back-color, #aefffb);
+}
+:host(:hover) #button[count-value][count-type="error"]::after {
+    background-color: var(--button-hover-count-error-back-color, #ffb7b7);
+}

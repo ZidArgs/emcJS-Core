@@ -1,11 +1,48 @@
-#text[error-count]::after {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    width: 2.4em;
-    height: 1.4em;
-    border-radius: 0.7em;
-    color: rgb(0, 0, 0);
-    background-color: rgb(255, 166, 0);
-    content: attr(error-count);
+#scroll-container {
+    position: fixed;
+    display: none;
+    max-height: 300px;
+    margin: 4px 0px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    color: var(--input-text-color, #000000);
+    background-color: var(--input-back-color, #ffffff);
+    background-image: var(--input-back-image, none);
+    border-style: solid;
+    border-width: var(--input-border-width, 2px);
+    border-color: var(--input-border-color, #222222);
+    border-radius: var(--input-border-radius, 6px);
+    z-index: 1000;
+    box-shadow: #000000 4px 4px 8px -4px;
+    text-align: left;
+}
+#error-container {
+    display: block;
+    width: 100%;
+    padding: 2px;
+}
+#error-container:not(:empty) + #empty {
+    display: none;
+}
+.error-label {
+    display: block;
+    flex-shrink: 0;
+    max-width: 100%;
+    padding: 4px;
+    margin: 2px;
+    color: var(--form-invalid-text-color, #a70000);
+    background-color: var(--form-invalid-back-color, #ffeeee);
+    background-image: var(--form-invalid-back-image, none);
+    font-size: 0.9em;
+    line-height: 1.4em;
+    cursor: pointer;
+    user-select: none;
+}
+.error-label ul {
+    margin: 0px;
+    padding-inline-start: 8px;
+    list-style-type: "•";
+}
+.error-label ul li {
+    padding-left: 4px;
 }

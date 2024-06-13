@@ -31,14 +31,18 @@ export default class LinkButton extends CustomFormElementDelegating {
         this.#tooltipEl = this.shadowRoot.getElementById("tooltip");
         this.#textEl = this.shadowRoot.getElementById("text");
         this.#buttonEl = this.shadowRoot.getElementById("button");
-        this.#buttonEl.addEventListener("click", (event) => {
-            const ev = new MouseEvent("click", event);
-            this.dispatchEvent(ev);
-            event.stopPropagation();
-            if (ev.defaultPrevented) {
-                event.preventDefault();
-            }
-        });
+        this.#buttonEl.addEventListener("click", (event) => this.clickHandler(event));
+    }
+
+    clickHandler(event) {
+        event.stopPropagation();
+        const ev = new MouseEvent("click", event);
+        this.dispatchEvent(ev);
+        if (ev.defaultPrevented) {
+            event.preventDefault();
+            return false;
+        }
+        return true;
     }
 
     formDisabledCallback(disabled) {

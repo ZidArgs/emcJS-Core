@@ -170,6 +170,7 @@ export default class FormContext extends EventTarget {
                     } else if (!node.reportValidity()) {
                         validations.push(Promise.resolve({
                             name: node.name,
+                            label: node.label,
                             element: node,
                             errors: [node.validationMessage]
                         }));

@@ -41,7 +41,7 @@
     --modal-border-color: var(--page-border-color);
     --modal-border-width: var(--page-border-width);
 
-    --modal-header-text-color: var(--page-hover-text-color);
+    --modal-header-text-color: var(--page-text-color);
     --modal-header-back-color: var(--page-border-color);
     --modal-header-back-image: none;
 
@@ -49,10 +49,10 @@
     --modal-footer-back-color: var(--modal-header-back-color);
     --modal-footer-back-image: var(--modal-header-back-image);
 
-    --modal-icon-default-color: #000000;
+    --modal-icon-default-color: #222222;
     --modal-icon-alert-color: #e98e2d;
-    --modal-icon-confirm-color: #0000ff;
-    --modal-icon-prompt-color: #01ada4;
+    --modal-icon-info-color: #0000ff;
+    --modal-icon-success-color: #009952;
     --modal-icon-error-color: #c50000;
 
     --modal-link-text-color: #004472;
@@ -235,6 +235,21 @@
     --button-disabled-back-color: var(--input-disabled-back-color);
     --button-disabled-back-image: none;
     --button-disabled-border-color: var(--input-disabled-border-color); /* all; top_bottom right_left; top right bottom left*/
+
+    /*TODO add different colors for hover*/
+    --button-count-text-color: #ffffff;
+    --button-count-back-color: #222222;
+    --button-count-alert-back-color: #e98e2d;
+    --button-count-info-back-color: #0000ff;
+    --button-count-success-back-color: #009952;
+    --button-count-error-back-color: #c50000;
+
+    --button-hover-count-text-color: #000000;
+    --button-hover-count-back-color: #ffffff;
+    --button-hover-count-alert-back-color: #ffd7ac;
+    --button-hover-count-info-back-color: #b9b9ff;
+    --button-hover-count-success-back-color: #98ffa6;
+    --button-hover-count-error-back-color: #ffb7b7;
 
     /* === switch === */
     --switch-unchecked-back-color: var(--page-back-color);

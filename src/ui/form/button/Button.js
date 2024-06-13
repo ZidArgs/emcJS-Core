@@ -31,10 +31,18 @@ export default class Button extends CustomFormElementDelegating {
         this.#tooltipEl = this.shadowRoot.getElementById("tooltip");
         this.#textEl = this.shadowRoot.getElementById("text");
         this.#buttonEl = this.shadowRoot.getElementById("button");
+        this.#buttonEl.addEventListener("click", (event) => this.clickHandler(event));
     }
 
     formDisabledCallback(disabled) {
         this.#buttonEl.disabled = disabled;
+    }
+
+    clickHandler(event) {
+        event.stopPropagation();
+        const ev = new MouseEvent("click", event);
+        this.dispatchEvent(ev);
+        return !ev.defaultPrevented;
     }
 
     get type() {
@@ -110,6 +118,20 @@ export default class Button extends CustomFormElementDelegating {
                     this.#tooltipEl.i18nTooltip = newValue;
                 }
             } break;
+        }
+    }
+
+    setCount(value, type) {
+        value = parseInt(value);
+        if (!isNaN(value) && value >= 0) {
+            this.#buttonEl.setAttribute("count-value", value > 99 ? "99+" : value);
+        } else {
+            this.#buttonEl.removeAttribute("count-value");
+        }
+        if (typeof type === "string" && type !== "") {
+            this.#buttonEl.setAttribute("count-type", type);
+        } else {
+            this.#buttonEl.removeAttribute("count-type");
         }
     }
 

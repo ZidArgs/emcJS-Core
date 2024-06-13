@@ -14,20 +14,15 @@ export default class ActionButton extends Button {
         return deepClone(CONFIG_FIELDS);
     }
 
-    #buttonEl;
-
-    constructor() {
-        super();
-        /* --- */
-        this.#buttonEl = this.shadowRoot.getElementById("button");
-        this.#buttonEl.addEventListener("click", (event) => {
+    clickHandler(event) {
+        if (super.clickHandler(event)) {
             const customAction = CustomActionRegistry.current.get(this.action);
             if (customAction != null) {
                 customAction(this);
             }
-            this.dispatchEvent(new MouseEvent("click", event));
-            event.stopPropagation();
-        });
+            return true;
+        }
+        return false;
     }
 
     set action(value) {

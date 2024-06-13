@@ -6,18 +6,24 @@ import STYLE from "./SubmitButton.js.css" assert {type: "css"};
 
 export default class SubmitButton extends Button {
 
+    #textEl;
+
     constructor() {
         super();
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const textEl = this.shadowRoot.getElementById("text");
-        textEl.i18nValue = "Submit";
-        const buttonEl = this.shadowRoot.getElementById("button");
-        buttonEl.addEventListener("click", () => {
+        this.#textEl = this.shadowRoot.getElementById("text");
+        this.#textEl.i18nValue = "Submit";
+    }
+
+    clickHandler(event) {
+        if (super.clickHandler(event)) {
             if (this.form != null) {
                 this.form.requestSubmit();
             }
-        });
+            return true;
+        }
+        return false;
     }
 
 }

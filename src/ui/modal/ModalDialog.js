@@ -16,8 +16,8 @@ const DEFAULT_DIALOG_ICONS = {
         method: "font",
         content: "?",
         style: {
-            color: "var(--modal-icon-confirm-color, #0000ff)",
-            circle: "var(--modal-icon-confirm-color, #0000ff)"
+            color: "var(--modal-icon-info-color, #0000ff)",
+            circle: "var(--modal-icon-info-color, #0000ff)"
         }
     },
     promt: {
@@ -25,8 +25,8 @@ const DEFAULT_DIALOG_ICONS = {
         content: "🖉",
         style: {
             size: "1.4em",
-            color: "var(--modal-icon-prompt-color, #01ada4)",
-            circle: "var(--modal-icon-prompt-color, #01ada4)"
+            color: "var(--modal-icon-success-color, #009952)",
+            circle: "var(--modal-icon-success-color, #009952)"
         }
     },
     error: {

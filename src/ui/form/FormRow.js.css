@@ -52,3 +52,10 @@
 ::slotted(:not(:first-child)) {
     margin-left: 0px
 }
+
+::slotted([distance~="right"]) {
+    margin-right: auto !important;
+}
+::slotted([distance~="left"]) {
+    margin-left: auto !important;
+}
