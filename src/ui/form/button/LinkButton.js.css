@@ -90,3 +90,19 @@
 :host([text]:not([text=""])) #button::before {
     margin-right: 5px;
 }
+:host([connected~="left"]) #button {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+:host([connected~="right"]) #button {
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+:host([connected~="top"]) #button {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+:host([connected~="bottom"]) #button {
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}

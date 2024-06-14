@@ -9,6 +9,7 @@
 }
 :host(:focus) {
     outline: none;
+    z-index: 1;
 }
 #button {
     display: flex;
@@ -150,4 +151,20 @@
 }
 :host(:hover) #button[count-value][count-type="error"]::after {
     background-color: var(--button-hover-count-error-back-color, #ffb7b7);
+}
+:host([connected~="left"]) #button {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+:host([connected~="right"]) #button {
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+:host([connected~="top"]) #button {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+:host([connected~="bottom"]) #button {
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
 }
