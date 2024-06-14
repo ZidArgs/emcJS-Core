@@ -34,6 +34,15 @@
     word-break: keep-all;
     cursor: inherit;
 }
+:host([slim]:not([slim="false"])) #button {
+    padding: 0px 4px;
+}
+:host(.active) #button {
+    color: var(--button-active-text-color, #ffffff);
+    background-color: var(--button-active-back-color, #222222);
+    background-image: var(--button-active-back-image, none);
+    border-color: var(--button-active-border-color, #222222);
+}
 :host([primary]:not([primary="false"])) #button {
     color: var(--button-primary-text-color, #000000);
     background-color: var(--button-primary-back-color, #00dbd0);
@@ -51,6 +60,12 @@
     background-color: var(--button-hover-back-color, #353935);
     background-image: var(--button-hover-back-image, none);
     border-color: var(--button-hover-border-color, #222222);
+}
+:host(.active:hover) #button {
+    color: var(--button-active-hover-text-color, #ffffff);
+    background-color: var(--button-active-hover-back-color, #222222);
+    background-image: var(--button-active-hover-back-image, none);
+    border-color: var(--button-active-hover-border-color, #222222);
 }
 :host([primary]:not([primary="false"]):hover) #button {
     color: var(--button-primary-hover-text-color, #ffffff);
@@ -85,8 +100,7 @@
     box-shadow: 0 0 2px 3px var(--button-focus-color, #06b5ff);
     outline: none;
 }
-#button[icon]:not([icon=""])::before {
-    display: inline-flex;
+#button::before {
     align-items: center;
     justify-content: center;
     height: 1em;
@@ -96,10 +110,19 @@
     font-family: "monospace", monospace;
     font-weight: bold;
     transform-origin: center;
+}
+#button[icon]::before {
+    display: inline-flex;
     content: attr(icon);
+}
+#button[icon=""]::before {
+    display: none;
 }
 :host([text]:not([text=""])) #button::before {
     margin-right: 5px;
+}
+:host(.rotate-icon-0) #button::before {
+    rotate: 0deg;
 }
 :host(.rotate-icon-90) #button::before {
     rotate: 90deg;
@@ -152,19 +175,40 @@
 :host(:hover) #button[count-value][count-type="error"]::after {
     background-color: var(--button-hover-count-error-back-color, #ffb7b7);
 }
-:host([connected~="left"]) #button {
+:host([border-flat~="left"]) #button {
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
 }
-:host([connected~="right"]) #button {
+:host([border-flat~="right"]) #button {
     border-top-right-radius: 0px;
     border-bottom-right-radius: 0px;
 }
-:host([connected~="top"]) #button {
+:host([border-flat~="top"]) #button {
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
 }
-:host([connected~="bottom"]) #button {
+:host([border-flat~="bottom"]) #button {
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
+}
+:host([border-flat~="all"]) #button {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+:host([border-open~="left"]) #button {
+    border-left-style: none;
+}
+:host([border-open~="right"]) #button {
+    border-right-style: none;
+}
+:host([border-open~="top"]) #button {
+    border-top-style: none;
+}
+:host([border-open~="bottom"]) #button {
+    border-bottom-style: none;
+}
+:host([border-open~="all"]) #button {
+    border-style: none;
 }

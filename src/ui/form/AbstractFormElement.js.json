@@ -18,6 +18,18 @@
         "value": ""
     },
     {
+        "type": "TextInput",
+        "name": "desc",
+        "label": "Description",
+        "value": ""
+    },
+    {
+        "type": "SwitchInput",
+        "name": "hide-errors",
+        "label": "Hide Error-Label",
+        "value": false
+    },
+    {
         "type": "SwitchInput",
         "name": "required",
         "label": "Required",

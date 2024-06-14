@@ -18,6 +18,12 @@
         "value": ""
     },
     {
+        "type": "TextInput",
+        "name": "desc",
+        "label": "Description",
+        "value": ""
+    },
+    {
         "type": "NumberInput",
         "name": "min",
         "label": "Min",
@@ -33,6 +39,12 @@
         "type": "SwitchInput",
         "name": "scratched",
         "label": "Scratched",
+        "value": false
+    },
+    {
+        "type": "SwitchInput",
+        "name": "hide-errors",
+        "label": "Hide Error-Label",
         "value": false
     },
     {

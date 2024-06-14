@@ -163,6 +163,21 @@ export default createMixin((superclass) => class CustomElementMixin extends supe
         }
     }
 
+    setListAttrinute(name, value, allowedValues) {
+        if (Array.isArray(value)) {
+            const acceptedValues = value.filter((val) => allowedValues.includes(val));
+            this.setAttribute(name, acceptedValues.join(" "));
+        } else if (allowedValues.includes(value)) {
+            this.setAttribute(name, value);
+        } else {
+            this.removeAttribute(name);
+        }
+    }
+
+    getEnumAttrinute(name) {
+        return this.getAttribute(name).split(" ");
+    }
+
     scrollIntoViewIfNeeded(options) {
         scrollIntoViewIfNeeded(this, options);
     }

@@ -8,6 +8,9 @@ import {
 import {
     isEqual
 } from "../../util/helper/Comparator.js";
+import {
+    getFocusableElements
+} from "../../util/helper/html/getFocusableElements.js";
 import "./button/Button.js";
 import TPL from "./AbstractFormElement.js.html" assert {type: "html"};
 import STYLE from "./AbstractFormElement.js.css" assert {type: "css"};
@@ -48,6 +51,10 @@ export default class AbstractFormElement extends CustomFormElement {
 
     #resetEl;
 
+    #descriptionEl;
+
+    #errorEl;
+
     #validators = new Set();
 
     #errorList = new Set();
@@ -63,6 +70,8 @@ export default class AbstractFormElement extends CustomFormElement {
         this.#tooltipEl = this.shadowRoot.getElementById("tooltip");
         this.#labelTextEl = this.shadowRoot.getElementById("label-text");
         this.#resetEl = this.shadowRoot.getElementById("reset");
+        this.#descriptionEl = this.shadowRoot.getElementById("description");
+        this.#errorEl = this.shadowRoot.getElementById("error");
         this.#resetEl.addEventListener("click", (event) => {
             event.stopPropagation();
             event.preventDefault();
@@ -74,6 +83,17 @@ export default class AbstractFormElement extends CustomFormElement {
                 event.preventDefault();
                 this.formResetCallback();
             }
+        });
+        this.#errorEl.addEventListener("click", (event) => {
+            const focusEls = getFocusableElements(this);
+            if (focusEls.length > 0) {
+                focusEls[0].focus();
+            }
+            event.preventDefault();
+        });
+        /* --- */
+        this.addEventListener("validity", (event) => {
+            this.#errorEl.i18nContent = event.message ?? "";
         });
         this.addEventListener("invalid", (event) => {
             event.preventDefault();
@@ -198,8 +218,24 @@ export default class AbstractFormElement extends CustomFormElement {
         return this.getAttribute("placeholder");
     }
 
+    set hideErrors(value) {
+        this.setBooleanAttribute("hide-errors", value);
+    }
+
+    get hideErrors() {
+        return this.getBooleanAttribute("hide-errors");
+    }
+
+    set description(value) {
+        this.setAttribute("description", value);
+    }
+
+    get description() {
+        return this.getAttribute("description");
+    }
+
     static get observedAttributes() {
-        return [...super.observedAttributes, "value", "required", "label", "tooltip"];
+        return [...super.observedAttributes, "value", "required", "label", "tooltip", "description"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -228,6 +264,11 @@ export default class AbstractFormElement extends CustomFormElement {
             case "tooltip": {
                 if (oldValue != newValue) {
                     this.#tooltipEl.i18nTooltip = newValue;
+                }
+            } break;
+            case "description": {
+                if (oldValue != newValue) {
+                    this.#descriptionEl.i18nContent = newValue;
                 }
             } break;
         }

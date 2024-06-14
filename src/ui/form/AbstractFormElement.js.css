@@ -63,3 +63,37 @@
 #label:has(#label-text:empty) {
     display: none;
 }
+#error {
+    display: block;
+    flex-shrink: 0;
+    max-width: 100%;
+    padding: 0px 5px;
+    margin: 4px 0 0;
+    color: var(--form-invalid-text-color, #a70000);
+    background-color: var(--form-invalid-back-color, #ffeeee);
+    background-image: var(--form-invalid-back-image, none);
+    font-size: 0.9em;
+    line-height: 1.4em;
+    font-style: italic;
+    cursor: pointer;
+    user-select: none;
+}
+:host([hide-errors]:not([hide-errors="false"])) #error,
+#error:empty {
+    display: none;
+}
+#description {
+    display: block;
+    flex-shrink: 0;
+    max-width: 100%;
+    padding: 0px 5px;
+    margin: 4px 0 0;
+    font-size: 0.9em;
+    line-height: 1.4em;
+    font-style: italic;
+    cursor: default;
+    user-select: none;
+}
+#description:empty {
+    display: none;
+}

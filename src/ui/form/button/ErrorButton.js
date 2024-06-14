@@ -5,6 +5,9 @@ import {
 import {
     deepClone
 } from "../../../util/helper/DeepClone.js";
+import {
+    debounce
+} from "../../../util/Debouncer.js";
 import TPL from "./ErrorButton.js.html" assert {type: "html"};
 import STYLE from "./ErrorButton.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./ErrorButton.js.json" assert {type: "json"};
@@ -15,11 +18,13 @@ export default class ErrorButton extends Button {
         return deepClone(CONFIG_FIELDS);
     }
 
-    #isEditMode = false;
+    #isPopupVisible = false;
 
     #scrollContainerEl;
 
     #errorContainerEl;
+
+    #errorList = new Map();
 
     constructor() {
         super();
@@ -33,17 +38,17 @@ export default class ErrorButton extends Button {
         }, {passive: true});
         /* --- */
         window.addEventListener("wheel", () => {
-            if (this.#isEditMode) {
+            if (this.#isPopupVisible) {
                 this.#closePopup();
             }
         }, {passive: true});
         window.addEventListener("blur", () => {
-            if (this.#isEditMode) {
+            if (this.#isPopupVisible) {
                 this.#closePopup();
             }
         }, {passive: true});
         window.addEventListener("mousedown", (event) => {
-            if (this.#isEditMode && !this.contains(event.target)) {
+            if (this.#isPopupVisible && !this.contains(event.target)) {
                 this.#closePopup();
             }
         }, {passive: true});
@@ -53,7 +58,7 @@ export default class ErrorButton extends Button {
 
     clickHandler(event) {
         if (super.clickHandler(event)) {
-            if (this.#isEditMode) {
+            if (this.#isPopupVisible) {
                 this.#closePopup();
             } else {
                 this.#openPopup();
@@ -72,20 +77,37 @@ export default class ErrorButton extends Button {
     }
 
     setErrors(errors) {
-        const errorCount = errors?.length ?? 0;
+        this.#errorList.clear();
         this.#errorContainerEl.innerHTML = "";
-        if (errorCount > 0) {
-            super.setCount(errorCount, "error");
-            for (const errorEntry of errors) {
-                this.#errorContainerEl.append(this.#createErrorLabel(errorEntry));
-            }
-        } else {
-            super.setCount("0", "success");
+        for (const errorEntry of errors) {
+            this.addError(errorEntry);
         }
     }
 
+    addError(errorEntry) {
+        const inputEl = errorEntry.element;
+        if (this.#errorList.has(inputEl)) {
+            const errorEl = this.#errorList.get(inputEl);
+            this.#renderErrorLabel(errorEl);
+        } else {
+            const errorLabelEl = this.#renderErrorLabel(errorEntry);
+            this.#errorList.set(inputEl, errorLabelEl);
+            this.#errorContainerEl.append(errorLabelEl);
+        }
+        this.#updateErrorCount();
+    }
+
+    removeError(inputEl) {
+        if (this.#errorList.has(inputEl)) {
+            const errorLabelEl = this.#errorList.get(inputEl);
+            errorLabelEl.remove();
+            this.#errorList.delete(inputEl);
+        }
+        this.#updateErrorCount();
+    }
+
     #openPopup() {
-        this.#isEditMode = true;
+        this.#isPopupVisible = true;
         const thisRect = this.getBoundingClientRect();
         this.#scrollContainerEl.style.display = "block";
         this.#scrollContainerEl.style.minWidth = `${thisRect.width}px`;
@@ -109,7 +131,7 @@ export default class ErrorButton extends Button {
     }
 
     #closePopup() {
-        this.#isEditMode = false;
+        this.#isPopupVisible = false;
         this.#scrollContainerEl.style.display = "";
         this.#scrollContainerEl.style.bottom = "";
         this.#scrollContainerEl.style.top = "";
@@ -118,9 +140,9 @@ export default class ErrorButton extends Button {
         this.#scrollContainerEl.style.zIndex = "";
     }
 
-    #createErrorLabel(errorEntry) {
+    #renderErrorLabel(errorEntry, errorEl) {
         const name = errorEntry.label ? `<emc-i18n-label i18n-value="${errorEntry.label}"></emc-i18n-label>` : errorEntry.name ?? "";
-        const errorEl = document.createElement("div");
+        errorEl = errorEl ?? document.createElement("div");
         errorEl.className = "error-label";
         errorEl.innerHTML = `Errors in field "${name}":`;
         // ---
@@ -140,6 +162,15 @@ export default class ErrorButton extends Button {
         });
         return errorEl;
     }
+
+    #updateErrorCount = debounce(() => {
+        const errorCount = this.#errorList.size;
+        if (errorCount > 0) {
+            super.setCount(errorCount, "error");
+        } else {
+            super.setCount("0", "success");
+        }
+    });
 
 }
 

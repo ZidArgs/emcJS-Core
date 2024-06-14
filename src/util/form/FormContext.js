@@ -58,6 +58,8 @@ export default class FormContext extends EventTarget {
 
     #allowEnter = false;
 
+    #hideErrors = null;
+
     #mutationObserver = new MutationObserverManager(MUTATION_CONFIG, (mutationsList) => {
         for (const mutation of mutationsList) {
             if (mutation.type == "childList") {
@@ -98,6 +100,16 @@ export default class FormContext extends EventTarget {
             event.preventDefault();
             event.stopPropagation();
             return false;
+        });
+        this.#formEventManager.set("validity", (event) => {
+            const ev = new Event("validity");
+            ev.value = event.value;
+            ev.valid = event.valid;
+            ev.message = event.message;
+            ev.name = event.name;
+            ev.fieldId = event.fieldId;
+            ev.element = event.target;
+            this.dispatchEvent(ev);
         });
         /* --- */
         this.#dataStorage.deserialize(initValues);
@@ -283,8 +295,8 @@ export default class FormContext extends EventTarget {
     loadData(data, merge = false) {
         setTimeout(() => {
             const res = {};
-            for (const formEl of this.#formFieldContextList) {
-                const name = formEl.node.name;
+            for (const context of this.#formFieldContextList) {
+                const name = context.node.name;
                 if (name != null) {
                     const value = getFromObjectByPath(data, name.split("."));
                     if (value != null) {
@@ -327,9 +339,9 @@ export default class FormContext extends EventTarget {
 
     getFormFieldsData() {
         const res = {};
-        for (const fieldEl of this.#formFieldContextList) {
-            if (!fieldEl.node.disabled) {
-                res[fieldEl.node.name] = fieldEl.node.getSubmitValue();
+        for (const context of this.#formFieldContextList) {
+            if (!context.node.disabled) {
+                res[context.node.name] = context.node.getSubmitValue();
             }
         }
         return res;
@@ -367,14 +379,30 @@ export default class FormContext extends EventTarget {
         return true;
     }
 
+    set hideErrors(value) {
+        if (value != null) {
+            value = !!value;
+        }
+        if (this.#hideErrors !== value) {
+            this.#hideErrors = value;
+            for (const context of this.#formFieldContextList) {
+                context.globalHideErrors = value;
+            }
+        }
+    }
+
+    get hideErrors() {
+        return this.#hideErrors;
+    }
+
     getErrors() {
         const res = [];
-        for (const fieldEl of this.#formFieldContextList) {
-            if (fieldEl.errors.length) {
+        for (const context of this.#formFieldContextList) {
+            if (context.errors.length) {
                 res.push({
-                    name: fieldEl.node.name,
-                    errors: fieldEl.errors,
-                    element: fieldEl.node
+                    name: context.node.name,
+                    errors: context.errors,
+                    element: context.node
                 });
             }
         }
@@ -403,6 +431,9 @@ export default class FormContext extends EventTarget {
             this.#formFieldContextList.add(context);
             node.addValidator(this.#doGlobalValidationFromField);
             node.formContextAssociatedCallback(this);
+            if (this.#hideErrors != null) {
+                node.hideErrors = this.#hideErrors;
+            }
         } else if (instanceOfOne(node, ...FORM_ELEMENTS) && !INPUT_TYPE_BLACKLIST.includes(node.type)) {
             const context = FormInputContext.getContext(node);
             context.storage = this.#dataStorage;
@@ -432,9 +463,9 @@ export default class FormContext extends EventTarget {
 
     findFields(callback) {
         const res = [];
-        for (const fieldEl of this.#formFieldContextList) {
-            if (callback(fieldEl.node)) {
-                res.push(fieldEl.node);
+        for (const context of this.#formFieldContextList) {
+            if (callback(context.node)) {
+                res.push(context.node);
             }
         }
         return res;
@@ -442,9 +473,9 @@ export default class FormContext extends EventTarget {
 
     findFieldsByName(name) {
         const res = [];
-        for (const fieldEl of this.#formFieldContextList) {
-            if (fieldEl.node.name === name) {
-                res.push(fieldEl.node);
+        for (const context of this.#formFieldContextList) {
+            if (context.node.name === name) {
+                res.push(context.node);
             }
         }
         return res;
@@ -452,9 +483,9 @@ export default class FormContext extends EventTarget {
 
     findFieldContexts(callback) {
         const res = [];
-        for (const fieldEl of this.#formFieldContextList) {
-            if (callback(fieldEl)) {
-                res.push(fieldEl);
+        for (const context of this.#formFieldContextList) {
+            if (callback(context)) {
+                res.push(context);
             }
         }
         return res;

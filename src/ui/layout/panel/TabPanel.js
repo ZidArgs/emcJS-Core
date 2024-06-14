@@ -190,6 +190,9 @@ export default class TabPanel extends Panel {
             buttonEl.classList.add("active");
         }
         buttonEl.setAttribute("target", category);
+        buttonEl.setAttribute("border-flat", "bottom");
+        buttonEl.setAttribute("border-open", "bottom");
+        buttonEl.setAttribute("slim", "");
         buttonEl.text = name;
         this.#buttonList.set(category, buttonEl);
         this.#categoryEl.append(buttonEl);

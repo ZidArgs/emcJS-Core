@@ -97,6 +97,30 @@ export default class Button extends CustomFormElementDelegating {
         return this.getBooleanAttribute("secondary");
     }
 
+    set slim(value) {
+        this.setBooleanAttribute("slim", value);
+    }
+
+    get slim() {
+        return this.getBooleanAttribute("slim");
+    }
+
+    set borderFlat(value) {
+        this.setListAttribute("border-flat", value, ["all", "left", "right", "top", "bottom"]);
+    }
+
+    get borderFlat() {
+        return this.getListAttribute("border-flat");
+    }
+
+    set borderOpen(value) {
+        this.setListAttribute("border-open", value, ["all", "left", "right", "top", "bottom"]);
+    }
+
+    get borderOpen() {
+        return this.getListAttribute("border-open");
+    }
+
     static get observedAttributes() {
         return ["text", "icon", "tooltip"];
     }

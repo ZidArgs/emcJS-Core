@@ -32,6 +32,9 @@
     white-space: nowrap;
     cursor: pointer;
 }
+:host([slim]:not([slim="false"])) #button {
+    padding: 0px 4px;
+}
 :host(:disabled) #button {
     border-color: var(--button-disabled-border-color, #6a6a6a);
     pointer-events: none;
@@ -75,8 +78,7 @@
     stroke: var(--button-disabled-text-color, #757575);
     fill: var(--button-disabled-text-color, #757575);
 }
-#button[icon]:not([icon=""])::before {
-    display: inline-flex;
+#button[icon]::before {
     align-items: center;
     justify-content: center;
     height: 1em;
@@ -85,24 +87,51 @@
     line-height: 1em;
     font-family: "monospace", monospace;
     font-weight: bold;
+}
+#button[icon]::before {
+    display: inline-flex;
     content: attr(icon);
+}
+#button[icon=""]::before {
+    display: none;
 }
 :host([text]:not([text=""])) #button::before {
     margin-right: 5px;
 }
-:host([connected~="left"]) #button {
+:host([border-flat~="left"]) #button {
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
 }
-:host([connected~="right"]) #button {
+:host([border-flat~="right"]) #button {
     border-top-right-radius: 0px;
     border-bottom-right-radius: 0px;
 }
-:host([connected~="top"]) #button {
+:host([border-flat~="top"]) #button {
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
 }
-:host([connected~="bottom"]) #button {
+:host([border-flat~="bottom"]) #button {
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
+}
+:host([border-flat~="all"]) #button {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+:host([border-open~="left"]) #button {
+    border-left-style: none;
+}
+:host([border-open~="right"]) #button {
+    border-right-style: none;
+}
+:host([border-open~="top"]) #button {
+    border-top-style: none;
+}
+:host([border-open~="bottom"]) #button {
+    border-bottom-style: none;
+}
+:host([border-open~="all"]) #button {
+    border-style: none;
 }

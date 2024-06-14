@@ -104,9 +104,15 @@ export default class BoolOrLogicInput extends AbstractFormElement {
     }
 
     checkValid() {
-        const value = this.value;
-        if (value == null) {
-            return "Logic must not be empty";
+        if (this.required) {
+            const value = this.value;
+            if (typeof value !== "boolean" && this.#logicEl.children.length === 0) {
+                return "Logic must not be empty";
+            }
+        }
+        const el = this.#logicEl.children[0];
+        if (el != null && !el.checkValidity()) {
+            return "Not a valid logic";
         }
         return super.checkValid();
     }

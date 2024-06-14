@@ -27,7 +27,7 @@ export default class AbstractFormField extends CustomFormElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.addEventListener("validity", (event) => {
-            this.shadowRoot.getElementById("error").i18nContent = event.target.validationMessage ?? "";
+            this.shadowRoot.getElementById("error").i18nContent = event.message ?? "";
         });
         /* --- */
         const errorEl = this.shadowRoot.getElementById("error");

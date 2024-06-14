@@ -272,6 +272,9 @@ export default class LogicInput extends BaseClass {
     }
 
     checkValid() {
+        if (this.required && this.children.length === 0) {
+            return "Logic must not be empty";
+        }
         const el = this.children[0];
         if (el != null && !el.checkValidity()) {
             return "Not a valid logic";

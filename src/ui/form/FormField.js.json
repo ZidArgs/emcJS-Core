@@ -7,9 +7,9 @@
     },
     {
         "type": "SwitchInput",
-        "name": "errors",
-        "label": "Show Error-Field",
-        "value": true
+        "name": "hide-errors",
+        "label": "Hide Error-Label",
+        "value": false
     },
     {
         "type": "BoolOrLogicInput",

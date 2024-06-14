@@ -18,6 +18,12 @@
         "value": ""
     },
     {
+        "type": "TextInput",
+        "name": "desc",
+        "label": "Description",
+        "value": ""
+    },
+    {
         "type": "StringInput",
         "name": "placeholder",
         "label": "Placeholder",
@@ -44,6 +50,12 @@
             "off": "off",
             "on": "on"
         }
+    },
+    {
+        "type": "SwitchInput",
+        "name": "hide-errors",
+        "label": "Hide Error-Label",
+        "value": false
     },
     {
         "type": "SwitchInput",

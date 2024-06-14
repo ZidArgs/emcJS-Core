@@ -6,7 +6,7 @@
 }
 #categories {
     flex-shrink: 0;
-    padding: 5px 5px 0px;
+    padding: 4px 3px 0;
     overflow-x: auto;
     overflow-y: none;
     border-bottom-style: solid;
@@ -16,31 +16,9 @@
 }
 .category {
     display: inline-flex;
-    margin: 0 2px;
-    padding: 5px;
-    color: var(--button-text-color, #000000);
-    background-color: var(--button-back-color, #ffffff);
-    border-bottom-style: none;
-    border-width: var(--button-border-width, 2px);
-    border-color: var(--button-border-color, #222222);
-    border-radius: var(--button-border-radius, 6px) var(--button-border-radius, 6px) 0px 0px;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    user-select: none;
-    appearance: none;
-}
-.category:hover {
-    color: var(--button-hover-text-color, #ffffff);
-    background-color: var(--button-hover-back-color, #696969);
-}
-.category.active {
-    color: var(--button-active-text-color, #ffffff);
-    background-color: var(--button-active-back-color, #222222);
-}
-.category.active:hover {
-    color: var(--button-active-hover-text-color, #ffffff);
-    background-color: var(--button-active-hover-back-color, #222222);
+    margin: 0 1px;
 }
 #body {
     flex: 1;

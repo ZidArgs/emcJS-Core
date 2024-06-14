@@ -62,6 +62,10 @@ export default class FormElementContext {
 
     #enabledValue = true;
 
+    #hideErrors = null;
+
+    #globalHideErrors = null;
+
     static getContext(node) {
         return CONTEXTS.get(node) ?? new FormElementContext(node);
     }
@@ -75,6 +79,7 @@ export default class FormElementContext {
         }
         this.#element = node;
         CONTEXTS.set(node, this);
+        this.#hideErrors = node.hideErrors;
         /* --- */
         mutationObserver.observe(this.#element, MUTATION_CONFIG);
         this.#elementEventManager.switchTarget(this.#element);
@@ -172,6 +177,40 @@ export default class FormElementContext {
 
     removeValidator(validator) {
         this.#element.removeValidator(validator);
+    }
+
+    set hideErrors(value) {
+        if (value != null) {
+            value = !!value;
+        }
+        if (this.#hideErrors !== value) {
+            this.#hideErrors = value;
+            if (this.#globalHideErrors == null) {
+                this.#element.hideErrors = value;
+            }
+        }
+    }
+
+    get hideErrors() {
+        return this.#hideErrors;
+    }
+
+    set globalHideErrors(value) {
+        if (value != null) {
+            value = !!value;
+        }
+        if (this.#globalHideErrors !== value) {
+            this.#globalHideErrors = value;
+            if (value != null) {
+                this.#element.hideErrors = value;
+            } else {
+                this.#element.hideErrors = this.#hideErrors;
+            }
+        }
+    }
+
+    get globalHideErrors() {
+        return this.#globalHideErrors;
     }
 
     get errors() {

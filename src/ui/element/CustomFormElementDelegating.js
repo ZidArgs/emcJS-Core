@@ -123,7 +123,7 @@ export default class CustomFormElementDelegating extends CustomElementDelegating
             const event = new Event("validity", {bubbles: true, cancelable: true});
             event.value = this.value;
             event.valid = message === "";
-            event.error = message;
+            event.message = message;
             event.name = this.name;
             event.fieldId = this.id;
             this.dispatchEvent(event);

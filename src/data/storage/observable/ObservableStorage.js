@@ -67,7 +67,10 @@ export default class ObservableStorage extends EventTarget {
     }
 
     get(key) {
-        return deepClone(this.#buffer.get(key) ?? this.getDefault(key));
+        if (this.#buffer.has(key)) {
+            return deepClone(this.#buffer.get(key));
+        }
+        return deepClone(this.getDefault(key));
     }
 
     getAll() {
@@ -129,6 +132,50 @@ export default class ObservableStorage extends EventTarget {
         const ev = new Event("load");
         ev.data = this.getAll();
         this.dispatchEvent(ev);
+    }
+
+    deserializeAsChange(data = {}) {
+        this.#rootData.clear();
+        this.#changeData.clear();
+        const values = {};
+        const changes = {};
+        const unused = new Set(this.#buffer.keys());
+        for (const key in data) {
+            unused.delete(key);
+            const newValue = data[key];
+            const oldValue = this.get(key);
+            if (!isEqual(oldValue, newValue)) {
+                if (newValue == null) {
+                    this.#buffer.delete(key);
+                    const defaultValue = this.getDefault(key);
+                    values[key] = defaultValue;
+                    changes[key] = {oldValue, newValue: defaultValue};
+                } else {
+                    const clonedValue = deepClone(newValue);
+                    this.#buffer.set(key, clonedValue);
+                    this.#rootData.set(key, clonedValue);
+                    values[key] = newValue;
+                    changes[key] = {oldValue, newValue};
+                }
+            }
+        }
+        for (const key in unused) {
+            const oldValue = this.get(key);
+            if (oldValue != null) {
+                this.#buffer.delete(key);
+                this.#writeChangeData(key);
+                const defaultValue = this.getDefault(key);
+                values[key] = defaultValue;
+                changes[key] = {oldValue, newValue: defaultValue};
+            }
+        }
+        // change event
+        if (Object.keys(values).length) {
+            const ev = new Event("change");
+            ev.data = values;
+            ev.changes = changes;
+            this.dispatchEvent(ev);
+        }
     }
 
     overwrite(data = {}) {

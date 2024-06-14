@@ -16,6 +16,7 @@ import "/emcJS/ui/form/input/FormInputLoader.js";
 
 const formContext = new FormContext();
 formContext.allowEnter = true;
+formContext.hideErrors = true;
 const formContainerEl = document.getElementById("form");
 formContext.registerFormContainer(formContainerEl);
 
@@ -43,6 +44,20 @@ formContext.addEventListener("error", (event) => {
     errorButtonEl.setErrors(errors);
 });
 
+formContext.addEventListener("validity", (event) => {
+    const {valid} = event;
+    if (valid) {
+        errorButtonEl.removeError(event.element);
+    } else {
+        errorButtonEl.addError({
+            name: event.name,
+            label: event.element.label,
+            element: event.element,
+            errors: [event.message]
+        });
+    }
+});
+
 const actionEl = document.getElementById("action");
 actionEl.setValueRenderer((value) => value ? `Entered value: ${value}` : "A whole lot of nothing");
 actionEl.addEventListener("action", async () => {
@@ -53,3 +68,5 @@ actionEl.addEventListener("action", async () => {
         actionEl.value = null;
     }
 });
+
+window.formContext = formContext;

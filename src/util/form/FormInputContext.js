@@ -83,7 +83,7 @@ export default class FormInputContext {
                 const event = new Event("validity", {bubbles: true, cancelable: true});
                 event.value = this.#element[this.#valueAttributeName];
                 event.valid = message === "";
-                event.error = message;
+                event.message = message;
                 event.name = this.#element.name;
                 event.fieldId = this.#element.id;
                 this.#element.dispatchEvent(event);
@@ -132,7 +132,7 @@ export default class FormInputContext {
             const event = new Event("validity", {bubbles: true, cancelable: true});
             event.value = this.#element[this.#valueAttributeName];
             event.valid = message === "";
-            event.error = message;
+            event.message = message;
             event.name = this.#element.name;
             event.fieldId = this.#element.id;
             this.#element.dispatchEvent(event);

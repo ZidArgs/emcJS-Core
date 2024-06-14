@@ -41,7 +41,7 @@ export default class FormField extends CustomElement {
         });
         /* --- */
         this.addEventListener("validity", (event) => {
-            this.#errorEl.i18nContent = event.target.validationMessage ?? "";
+            this.#errorEl.i18nContent = event.message ?? "";
         });
     }
 
