@@ -113,6 +113,29 @@ export default class ObservableStorage extends EventTarget {
         this.dispatchEvent(ev);
     }
 
+    clearAsChange() {
+        this.#rootData.clear();
+        this.#changeData.clear();
+        const values = {};
+        const changes = {};
+        for (const key of this.#buffer.keys()) {
+            const oldValue = this.get(key);
+            if (oldValue != null) {
+                const defaultValue = this.getDefault(key);
+                values[key] = defaultValue;
+                changes[key] = {oldValue, newValue: defaultValue};
+            }
+        }
+        this.#buffer.clear();
+        // change event
+        if (Object.keys(values).length) {
+            const ev = new Event("change");
+            ev.data = values;
+            ev.changes = changes;
+            this.dispatchEvent(ev);
+        }
+    }
+
     serialize() {
         return this.getAll();
     }
@@ -163,7 +186,6 @@ export default class ObservableStorage extends EventTarget {
             const oldValue = this.get(key);
             if (oldValue != null) {
                 this.#buffer.delete(key);
-                this.#writeChangeData(key);
                 const defaultValue = this.getDefault(key);
                 values[key] = defaultValue;
                 changes[key] = {oldValue, newValue: defaultValue};
