@@ -1,6 +1,5 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../data/registry/form/FormElementRegistry.js";
-import "../../../i18n/builtin/I18nInput.js";
 import {
     debounce
 } from "../../../../util/Debouncer.js";
@@ -13,19 +12,23 @@ import {
 import {
     safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
-import TPL from "./StringInput.js.html" assert {type: "html"};
-import STYLE from "./StringInput.js.css" assert {type: "css"};
-import CONFIG_FIELDS from "./StringInput.js.json" assert {type: "json"};
+import "../../../i18n/builtin/I18nInput.js";
+import "../../../i18n/I18nTooltip.js";
+import TPL from "./ColorInput.js.html" assert {type: "html"};
+import STYLE from "./ColorInput.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./ColorInput.js.json" assert {type: "json"};
 
-// TODO add indicator for max length
-// TODO add pattern (expected pattern as regexp) - validation
-export default class StringInput extends AbstractFormElement {
+const REGEX_HEX = /^#[0-9a-f]{6}$/;
+
+export default class ColorInput extends AbstractFormElement {
 
     static get formConfigurationFields() {
         return deepClone(CONFIG_FIELDS);
     }
 
     #inputEl;
+
+    #buttonEl;
 
     constructor() {
         super();
@@ -36,6 +39,19 @@ export default class StringInput extends AbstractFormElement {
         this.#inputEl.addEventListener("input", () => {
             this.#onInput();
         });
+        /* --- */
+        this.#buttonEl = this.shadowRoot.getElementById("button");
+        this.#buttonEl.addEventListener("input", () => {
+            this.#inputEl.value = this.#buttonEl.value;
+        });
+        this.#buttonEl.addEventListener("change", () => {
+            this.value = this.#buttonEl.value;
+        });
+        this.#buttonEl.addEventListener("click", () => {
+            if (this.#inputEl.value === "") {
+                this.value = this.#buttonEl.value;
+            }
+        });
     }
 
     #onInput = debounce(() => {
@@ -45,83 +61,57 @@ export default class StringInput extends AbstractFormElement {
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
         this.#inputEl.disabled = disabled;
-    }
-
-    formResetCallback() {
-        super.formResetCallback();
-        this.#inputEl.value = this.value;
+        this.#buttonEl.disabled = disabled;
     }
 
     focus(options) {
-        this.#inputEl.focus(options);
-    }
-
-    set maxLength(value) {
-        this.setIntAttribute("maxlength", value, 0);
-    }
-
-    get maxLength() {
-        return this.getIntAttribute("maxlength");
-    }
-
-    set minLength(value) {
-        this.setIntAttribute("minlength", value, 0);
-    }
-
-    get minLength() {
-        return this.getIntAttribute("minlength");
+        this.#buttonEl.focus(options);
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "placeholder", "readonly", "autocomplete", "minlength", "maxlength"];
+        return [...super.observedAttributes, "placeholder", "readonly"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
-            case "readonly":
-            case "autocomplete": {
-                if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, name, newValue);
-                }
-            } break;
             case "placeholder": {
                 if (oldValue != newValue) {
                     safeSetAttribute(this.#inputEl, "i18n-placeholder", newValue);
                 }
             } break;
-            case "minlength":
-            case "maxlength": {
+            case "readonly": {
                 if (oldValue != newValue) {
-                    this.revalidate();
+                    safeSetAttribute(this.#inputEl, "readonly", newValue);
                 }
             } break;
         }
     }
 
     checkValid() {
-        const value = this.value ?? "";
-        const min = this.minLength;
-        if (min != null && value.length < min) {
-            return `The minimum length for this field is {{0::${min}}} characters`;
-        }
-        const max = this.maxLength;
-        if (max != null && value.length > max) {
-            return `The maximum length for this field is {{0::${max}}} characters`;
+        const value = this.value;
+        if (value != null && value !== "" && !REGEX_HEX.test(value)) {
+            return "Please enter a valid hexadecimal color (#000000 - #FFFFFF)";
         }
         return super.checkValid();
     }
 
     applyValueAttribute(value) {
         safeSetAttribute(this.#inputEl, "value", value ?? "");
+        safeSetAttribute(this.#buttonEl, "value", value ?? "");
     }
 
     renderValue(value) {
         this.#inputEl.value = value ?? "";
+        if (REGEX_HEX.test(value)) {
+            this.#buttonEl.value = value;
+        } else {
+            this.#buttonEl.value = "#000000";
+        }
     }
 
 }
 
-FormElementRegistry.register("StringInput", StringInput);
-customElements.define("emc-input-string", StringInput);
-registerFocusable("emc-input-string");
+FormElementRegistry.register("ColorInput", ColorInput);
+customElements.define("emc-input-color", ColorInput);
+registerFocusable("emc-input-color");

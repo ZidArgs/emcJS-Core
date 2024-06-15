@@ -2,12 +2,12 @@
 import "./action/ActionInput.js";
 import "./boolorlogic/BoolOrLogicInput.js";
 // import "./input/BoolOrLogicListInput.js";
-// import "./input/ColorInput.js";
-// import "./input/HotkeyInput.js";
+import "./color/ColorInput.js";
+import "./hotkey/HotkeyInput.js";
 // import "./input/KeyValueListInput.js";
 // import "./input/ListInput.js";
 import "./logic/LogicInput.js";
-// import "./input/NumberInput.js";
+import "./number/NumberInput.js";
 // import "./input/OptionAmountListInput.js";
 import "./password/PasswordInput.js";
 import "./range/RangeInput.js";

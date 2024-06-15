@@ -11,7 +11,6 @@ import {
     safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
 import "../../../i18n/I18nTooltip.js";
-import "./components/ToggleShowButton.js";
 import TPL from "./PasswordInput.js.html" assert {type: "html"};
 import STYLE from "./PasswordInput.js.css" assert {type: "css"};
 
@@ -20,11 +19,7 @@ export default class PasswordInput extends AbstractFormElement {
 
     #inputEl;
 
-    #showEl;
-
-    #minLength;
-
-    #maxLength;
+    #buttonEl;
 
     constructor() {
         super();
@@ -36,41 +31,34 @@ export default class PasswordInput extends AbstractFormElement {
             this.#onInput();
         });
         /* --- */
-        this.#showEl = this.shadowRoot.getElementById("show");
-        this.#inputEl.type = this.#showEl.checked ? "text" : "password";
-        this.#showEl.addEventListener("change", () => {
-            this.#inputEl.type = this.#showEl.checked ? "text" : "password";
+        this.#buttonEl = this.shadowRoot.getElementById("button");
+        const tooltipEl = this.shadowRoot.getElementById("tooltip");
+        this.#buttonEl.addEventListener("change", (event) => {
+            const showValue = this.#buttonEl.checked;
+            tooltipEl.i18nTooltip = showValue ? "Input shown" : "Input hidden";
+            this.#inputEl.type = showValue ? "text" : "password";
+            event.stopPropagation();
         });
+        this.#inputEl.type = this.#buttonEl.checked ? "text" : "password";
     }
 
     #onInput = debounce(() => {
         this.value = this.#inputEl.value;
     }, 300);
 
-    connectedCallback() {
-        super.connectedCallback();
-        this.#inputEl.value = this.value;
-    }
-
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
         this.#inputEl.disabled = disabled;
-        this.#showEl.disabled = disabled;
-        this.#showEl.checked = false;
+        this.#buttonEl.disabled = disabled;
+        if (disabled) {
+            this.#buttonEl.checked = false;
+        }
     }
 
     formResetCallback() {
         super.formResetCallback();
         const value = this.value;
         this.#inputEl.value = value;
-    }
-
-    validityCallback(message) {
-        if (message == "") {
-            this.#showEl.classList.remove("invalid");
-        } else {
-            this.#showEl.classList.add("invalid");
-        }
     }
 
     focus(options) {
@@ -119,15 +107,9 @@ export default class PasswordInput extends AbstractFormElement {
                     safeSetAttribute(this.#inputEl, "readonly", newValue);
                 }
             } break;
-            case "minlength": {
-                if (oldValue != newValue) {
-                    this.#minLength = parseInt(newValue) || null;
-                    this.revalidate();
-                }
-            } break;
+            case "minlength":
             case "maxlength": {
                 if (oldValue != newValue) {
-                    this.#maxLength = parseInt(newValue) || null;
                     this.revalidate();
                 }
             } break;
@@ -136,11 +118,11 @@ export default class PasswordInput extends AbstractFormElement {
 
     checkValid() {
         const value = this.value ?? "";
-        const min = this.#minLength;
+        const min = this.minLength;
         if (min != null && value.length < min) {
             return `The minimum length for this field is {{0::${min}}} characters`;
         }
-        const max = this.#maxLength;
+        const max = this.maxLength;
         if (max != null && value.length > max) {
             return `The maximum length for this field is {{0::${max}}} characters`;
         }

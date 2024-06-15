@@ -10,6 +10,7 @@
     border-color: var(--input-border-color, #222222);
     border-radius: var(--input-border-radius, 6px) 0px 0px var(--input-border-radius, 6px);
     font-size: 1em;
+    text-transform: uppercase;
 }
 #input:focus {
     box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
@@ -26,23 +27,13 @@
 }
 #input::placeholder {
     color: var(--input-placeholder-text-color, #757575);
-}
-:disabled {
-    color: var(--input-disabled-text-color, #757575) !important;
-    background-color: var(--input-disabled-back-color, #999999) !important;
-    background-image: var(--input-disabled-back-image, none) !important;
-    border-color: var(--input-disabled-border-color, #6a6a6a) !important;
-    cursor: default !important;
+    text-transform: none;
 }
 /* --- */
 #button {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     width: 2em;
     height: 2em;
-    padding: 0px;
+    padding: 0.25em;
     margin: 0 0 0 calc(-1 * var(--input-border-width, 2px));
     color: var(--input-button-text-color, #000000);
     background-color: var(--input-button-back-color, #ffffff);
@@ -51,10 +42,8 @@
     border-width: var(--input-border-width, 2px);
     border-color: var(--input-border-color, #222222);
     border-radius: 0 var(--input-border-radius, 6px) var(--input-border-radius, 6px) 0;
-    font-size: 1rem;
-    font-weight: bold;
     cursor: pointer;
-    appearance: none;
+    font-size: 1em;
 }
 #button:hover {
     color: var(--input-button-hover-text-color, #000000);
@@ -87,63 +76,9 @@
     border-color: var(--input-disabled-border-color, #6a6a6a) !important;
     cursor: default !important;
 }
-#button::before {
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    font-size: 1.5rem;
-    line-height: 1em;
-    font-family: monospace;
-    content: "👁";
+#button[readonly]:not([readonly="false"]) {
+    pointer-events: none;
 }
-#button::after {
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    font-size: 1rem;
-    line-height: 0.8em;
-    text-shadow:
-        1px 1px var(--input-button-back-color, #cccccc),
-        -1px 1px var(--input-button-back-color, #cccccc),
-        1px -1px var(--input-button-back-color, #cccccc),
-        -1px -1px var(--input-button-back-color, #cccccc);
-    font-family: monospace;
-    content: "╱";
-}
-:host(:invalid) #button::after {
-    text-shadow:
-        1px 1px var(--input-button-invalid-back-color, #ffacac),
-        -1px 1px var(--input-button-invalid-back-color, #ffacac),
-        1px -1px var(--input-button-invalid-back-color, #ffacac),
-        -1px -1px var(--input-button-invalid-back-color, #ffacac);
-}
-#button:checked::after {
-    display: none;
-}
-#button:hover::after {
-    text-shadow:
-        1px 1px var(--input-button-hover-back-color, #000000),
-        -1px 1px var(--input-button-hover-back-color, #000000),
-        1px -1px var(--input-button-hover-back-color, #000000),
-        -1px -1px var(--input-button-hover-back-color, #000000);
-}
-:host(:invalid) #button:hover::after {
-    text-shadow:
-        1px 1px var(--input-button-invalid-hover-back-color, #ff7373),
-        -1px 1px var(--input-button-invalid-hover-back-color, #ff7373),
-        1px -1px var(--input-button-invalid-hover-back-color, #ff7373),
-        -1px -1px var(--input-button-invalid-hover-back-color, #ff7373);
-}
-#button:disabled::after {
-    text-shadow:
-        1px 1px var(--input-button-disabled-back-color, #999999),
-        -1px 1px var(--input-button-disabled-back-color, #999999),
-        1px -1px var(--input-button-disabled-back-color, #999999),
-        -1px -1px var(--input-button-disabled-back-color, #999999);
+#button::-webkit-color-swatch-wrapper {
+    padding: 0px;
 }

@@ -26,10 +26,6 @@ export default class TextInput extends AbstractFormElement {
 
     #inputEl;
 
-    #minLength;
-
-    #maxLength;
-
     constructor() {
         super();
         this.shadowRoot.getElementById("field").append(TPL.generate());
@@ -102,15 +98,9 @@ export default class TextInput extends AbstractFormElement {
                     safeSetAttribute(this.#inputEl, "i18n-placeholder", newValue);
                 }
             } break;
-            case "minlength": {
-                if (oldValue != newValue) {
-                    this.#minLength = parseInt(newValue) || null;
-                    this.revalidate();
-                }
-            } break;
+            case "minlength":
             case "maxlength": {
                 if (oldValue != newValue) {
-                    this.#maxLength = parseInt(newValue) || null;
                     this.revalidate();
                 }
             } break;
@@ -119,11 +109,11 @@ export default class TextInput extends AbstractFormElement {
 
     checkValid() {
         const value = this.value ?? "";
-        const min = this.#minLength;
+        const min = this.minLength;
         if (min != null && value.length < min) {
             return `The minimum length for this field is {{0::${min}}} characters`;
         }
-        const max = this.#maxLength;
+        const max = this.maxLength;
         if (max != null && value.length > max) {
             return `The maximum length for this field is {{0::${max}}} characters`;
         }
