@@ -10,7 +10,6 @@
     border-color: var(--input-border-color, #222222);
     border-radius: var(--input-border-radius, 6px) 0px 0px var(--input-border-radius, 6px);
     font-size: 1em;
-    text-transform: uppercase;
 }
 #input:focus {
     box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
@@ -27,7 +26,13 @@
 }
 #input::placeholder {
     color: var(--input-placeholder-text-color, #757575);
-    text-transform: none;
+}
+#input:disabled {
+    color: var(--input-disabled-text-color, #757575) !important;
+    background-color: var(--input-disabled-back-color, #999999) !important;
+    background-image: var(--input-disabled-back-image, none) !important;
+    border-color: var(--input-disabled-border-color, #6a6a6a) !important;
+    cursor: default !important;
 }
 /* --- */
 #button {

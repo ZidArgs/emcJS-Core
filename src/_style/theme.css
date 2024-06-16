@@ -126,6 +126,7 @@
     --input-focus-color: var(--page-focus-color);
     --input-placeholder-text-color: #757575;
 
+    --input-invalid-text-color: var(--page-text-color);
     --input-invalid-back-color: #ffebeb;
     --input-invalid-back-image: none;
     --input-invalid-border-color: #ff2500; /* all; top_bottom right_left; top right bottom left*/

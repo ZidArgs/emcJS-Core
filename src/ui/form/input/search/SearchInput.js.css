@@ -1,0 +1,101 @@
+#input {
+    flex-grow: 1;
+    height: 2em;
+    padding: 0px 7px;
+    color: var(--input-text-color, #000000);
+    background-color: var(--input-back-color, #ffffff);
+    background-image: var(--input-back-image, none);
+    border-style: solid;
+    border-width: var(--input-border-width, 2px);
+    border-color: var(--input-border-color, #222222);
+    border-radius: var(--input-border-radius, 6px) 0px 0px var(--input-border-radius, 6px);
+    font-size: 1em;
+}
+#input:focus {
+    box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
+    outline: none;
+    z-index: 1;
+}
+:host(:invalid) #input {
+    background-color: var(--input-invalid-back-color, #ffebeb);
+    background-image: var(--input-invalid-back-image, none);
+    border-color: var(--input-invalid-border-color, #ff4444);
+}
+:host(:invalid) #input:focus {
+    box-shadow: 0 0 2px 3px var(--input-invalid-focus-color, #ff2500);
+}
+#input::placeholder {
+    color: var(--input-placeholder-text-color, #757575);
+}
+#input:disabled {
+    color: var(--input-disabled-text-color, #757575) !important;
+    background-color: var(--input-disabled-back-color, #999999) !important;
+    background-image: var(--input-disabled-back-image, none) !important;
+    border-color: var(--input-disabled-border-color, #6a6a6a) !important;
+    cursor: default !important;
+}
+/* --- */
+#button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2em;
+    height: 2em;
+    padding: 0px;
+    margin: 0 0 0 calc(-1 * var(--input-border-width, 2px));
+    color: var(--input-button-text-color, #000000);
+    background-color: var(--input-button-back-color, #ffffff);
+    background-image: var(--input-button-back-image, none);
+    border-style: solid;
+    border-width: var(--input-border-width, 2px);
+    border-color: var(--input-border-color, #222222);
+    border-radius: 0 var(--input-border-radius, 6px) var(--input-border-radius, 6px) 0;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    appearance: none;
+}
+#button:hover {
+    color: var(--input-button-hover-text-color, #000000);
+    background-color: var(--input-button-hover-back-color, #b3e5ec);
+    background-image: var(--input-button-hover-back-image, none);
+}
+#button:focus {
+    box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
+    outline: none;
+    z-index: 1;
+}
+:host(:invalid) #button {
+    color: var(--input-button-invalid-text-color, #000000);
+    background-color: var(--input-button-invalid-back-color, #ffebeb);
+    background-image: var(--input-button-invalid-back-image, none);
+    border-color: var(--input-invalid-border-color, #ff4444);
+}
+:host(:invalid) #button:hover {
+    color: var(--input-button-invalid-hover-text-color, #000000);
+    background-color: var(--input-button-invalid-hover-back-color, #ff9987);
+    background-image: var(--input-button-invalid-hover-back-image, none);
+}
+:host(:invalid) #button:focus {
+    box-shadow: 0 0 2px 3px var(--input-invalid-focus-color, #ff2500);
+}
+#button:disabled {
+    color: var(--input-button-disabled-text-color, #757575) !important;
+    background-color: var(--input-button-disabled-back-color, #999999) !important;
+    background-image: var(--input-button-disabled-back-image, none) !important;
+    border-color: var(--input-disabled-border-color, #6a6a6a) !important;
+    cursor: default !important;
+}
+#button::before {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    font-size: 1.2em;
+    line-height: 1em;
+    font-family: monospace;
+    content: "✖";
+}

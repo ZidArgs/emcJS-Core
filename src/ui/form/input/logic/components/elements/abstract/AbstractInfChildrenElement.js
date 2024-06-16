@@ -57,8 +57,7 @@ export default class AbstractInfChildrenElement extends AbstractElement {
         super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
             case "disabled":
-            case "template":
-            case "readonly": {
+            case "template": {
                 if (oldValue != newValue) {
                     if (this.editable) {
                         this.#placeholderEl.disabled = false;

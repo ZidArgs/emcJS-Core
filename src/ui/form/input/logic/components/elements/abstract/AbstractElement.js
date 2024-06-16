@@ -266,8 +266,9 @@ export default class AbstractElement extends CustomElement {
             } break;
             case "visualize": {
                 if (oldValue != newValue) {
+                    const value = newValue != null && newValue != "false";
                     for (const ch of this.children) {
-                        ch.visualize = newValue;
+                        ch.visualize = value;
                     }
                 }
             } break;
@@ -278,8 +279,9 @@ export default class AbstractElement extends CustomElement {
                     } else {
                         this.removeAttribute("draggable");
                     }
+                    const value = newValue != null && newValue != "false";
                     for (const ch of this.children) {
-                        ch.disabled = newValue;
+                        ch.disabled = value;
                     }
                 }
             } break;
@@ -290,8 +292,9 @@ export default class AbstractElement extends CustomElement {
                     } else {
                         this.removeAttribute("draggable");
                     }
+                    const value = newValue != null && newValue != "false";
                     for (const ch of this.children) {
-                        ch.readonly = newValue;
+                        ch.readonly = value;
                     }
                 }
             } break;

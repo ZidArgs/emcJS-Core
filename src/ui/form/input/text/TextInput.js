@@ -1,5 +1,4 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
-import "../../../i18n/builtin/I18nTextarea.js";
 import {
     debounce
 } from "../../../../util/Debouncer.js";
@@ -13,6 +12,7 @@ import FormElementRegistry from "../../../../data/registry/form/FormElementRegis
 import {
     safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
+import "../../../i18n/builtin/I18nTextarea.js";
 import TPL from "./TextInput.js.html" assert {type: "html"};
 import STYLE from "./TextInput.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./TextInput.js.json" assert {type: "json"};

@@ -1,6 +1,5 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../data/registry/form/FormElementRegistry.js";
-import "../../../i18n/builtin/I18nInput.js";
 import {
     debounce
 } from "../../../../util/Debouncer.js";
@@ -13,6 +12,7 @@ import {
 import {
     safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
+import "../../../i18n/builtin/I18nInput.js";
 import TPL from "./StringInput.js.html" assert {type: "html"};
 import STYLE from "./StringInput.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./StringInput.js.json" assert {type: "json"};

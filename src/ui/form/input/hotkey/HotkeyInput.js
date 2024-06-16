@@ -51,6 +51,8 @@ export default class HotkeyInput extends AbstractFormElement {
 
     #inputEl;
 
+    #buttonEl;
+
     #eventTargetManager;
 
     constructor() {
@@ -69,17 +71,18 @@ export default class HotkeyInput extends AbstractFormElement {
                     this.#value.altKey = false;
                     this.#value.metaKey = false;
                     this.#value.key = null;
-                    this.#inputEl.value = this.#stringifyValue(this.#value);
+                    this.renderValue(this.#stringifyValue(this.#value));
                     this.#onInput();
                 } else if (CONTROL_KEYS.includes(key)) {
-                    this.#inputEl.value = this.#stringifyValue({ctrlKey, shiftKey, altKey, metaKey, key: null});
+                    this.renderValue(this.#stringifyValue({ctrlKey, shiftKey, altKey, metaKey, key: null}));
+                    this.#onInput();
                 } else {
                     this.#value.ctrlKey = ctrlKey;
                     this.#value.shiftKey = shiftKey;
                     this.#value.altKey = altKey;
                     this.#value.metaKey = metaKey;
                     this.#value.key = key;
-                    this.#inputEl.value = this.#stringifyValue(this.#value);
+                    this.renderValue(this.#stringifyValue(this.#value));
                     this.#onInput();
                 }
                 event.preventDefault();
@@ -92,7 +95,8 @@ export default class HotkeyInput extends AbstractFormElement {
                 const value = this.#parseValue(this.#inputEl.value);
                 if (value.key == null) {
                     const {ctrlKey, shiftKey, altKey, metaKey} = event;
-                    this.#inputEl.value = this.#stringifyValue({ctrlKey, shiftKey, altKey, metaKey, key: null});
+                    this.renderValue(this.#stringifyValue({ctrlKey, shiftKey, altKey, metaKey, key: null}));
+                    this.#onInput();
                 }
                 event.preventDefault();
                 event.stopPropagation();
@@ -101,6 +105,10 @@ export default class HotkeyInput extends AbstractFormElement {
         });
         this.#inputEl.addEventListener("blur", () => {
             this.#inputEl.value = this.#stringifyValue(this.#value);
+        });
+        this.#buttonEl = this.shadowRoot.getElementById("button");
+        this.#buttonEl.addEventListener("click", () => {
+            this.value = "";
         });
     }
 

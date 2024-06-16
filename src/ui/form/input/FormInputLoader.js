@@ -11,6 +11,7 @@ import "./number/NumberInput.js";
 // import "./input/OptionAmountListInput.js";
 import "./password/PasswordInput.js";
 import "./range/RangeInput.js";
+import "./search/SearchInput.js";
 import "./string/StringInput.js";
 import "./switch/SwitchInput.js";
 import "./text/TextInput.js";

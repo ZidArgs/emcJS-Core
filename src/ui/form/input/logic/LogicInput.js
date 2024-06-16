@@ -11,6 +11,9 @@ import {
 import {
     registerFocusable
 } from "../../../../util/helper/html/getFocusableElements.js";
+import {
+    safeSetAttribute
+} from "../../../../util/helper/ui/NodeAttributes.js";
 import LogicEditorContextMenuElement from "./components/contexmenu/LogicEditorContextMenuElement.js";
 import LogicElementModal from "./components/modal/LogicElementModal.js";
 import LogicJSONModal from "./components/modal/LogicJSONModal.js";
@@ -221,13 +224,8 @@ export default class LogicInput extends BaseClass {
         this.#logicElementModal?.removeOperatorGroup(...groupList);
     }
 
-    #removeElement(id) {
-        const el = this.querySelector(`#${id}`);
-        if (el != null && (typeof el.template != "string" || el.template == "false")) {
-            const parentEl = el.parentElement;
-            parentEl.removeChild(el);
-            parentEl.focus();
-        }
+    get defaultValue() {
+        return this.getJSONAttribute("value");
     }
 
     set value(value) {
@@ -261,6 +259,14 @@ export default class LogicInput extends BaseClass {
                     this.#logicElementModal.name = newValue;
                 }
             } break;
+            case "readonly": {
+                if (oldValue != newValue) {
+                    const el = this.children[0];
+                    if (el != null) {
+                        safeSetAttribute(el, "readonly", newValue);
+                    }
+                }
+            } break;
         }
     }
 
@@ -284,6 +290,15 @@ export default class LogicInput extends BaseClass {
             this.innerHTML = "";
         } else {
             this.#buildLogic(value);
+        }
+    }
+
+    #removeElement(id) {
+        const el = this.querySelector(`#${id}`);
+        if (el != null && (typeof el.template != "string" || el.template == "false")) {
+            const parentEl = el.parentElement;
+            parentEl.removeChild(el);
+            parentEl.focus();
         }
     }
 

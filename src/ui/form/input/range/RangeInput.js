@@ -1,5 +1,4 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
-import "../../../i18n/builtin/I18nInput.js";
 import {
     debounce
 } from "../../../../util/Debouncer.js";
@@ -13,6 +12,7 @@ import FormElementRegistry from "../../../../data/registry/form/FormElementRegis
 import {
     safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
+import "../../../i18n/builtin/I18nInput.js";
 import TPL from "./RangeInput.js.html" assert {type: "html"};
 import STYLE from "./RangeInput.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./RangeInput.js.json" assert {type: "json"};

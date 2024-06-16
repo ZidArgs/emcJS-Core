@@ -80,8 +80,7 @@ export default class AbstractTwoChildrenElement extends AbstractElement {
         super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
             case "disabled":
-            case "template":
-            case "readonly": {
+            case "template": {
                 if (oldValue != newValue) {
                     if (this.editable) {
                         this.#placeholder0El.disabled = false;

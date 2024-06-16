@@ -12,8 +12,8 @@ import {
 import {
     safeSetAttribute
 } from "../../../../util/helper/ui/NodeAttributes.js";
-import "../../../i18n/builtin/I18nInput.js";
 import "../../../i18n/I18nTooltip.js";
+import "../../../i18n/builtin/I18nInput.js";
 import TPL from "./ColorInput.js.html" assert {type: "html"};
 import STYLE from "./ColorInput.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./ColorInput.js.json" assert {type: "json"};
