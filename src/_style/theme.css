@@ -1,3 +1,8 @@
+/*
+border color can be defined as one of the following
+all; top_bottom right_left; top right bottom left
+*/
+
 :root {
 
     --default-unknown-back-image: url('data:image/webp;base64,UklGRjQCAABXRUJQVlA4TCgCAAAvH8AHEC/jIJIkRaruPmb275T+RThsI0mRqrqP8Tn/TN9hG0mKHHT3HD3zs40kyWm45xE2FpbGJwEwgUDgA4FAYAOBQOACMwgM0D+YQSCQ4wADDLCDQKD77wf9wAECgVVGOmTIkCGjGBZO1fMuHdW0kZEOp5yq5127njTLwal0pKMcV9fvr5o26ei2MxlOpaMcN+W4ckrG9norhoWMet4Vw6JZDu16MhxX5bhySsb6fHFKhlMyynFVjiun0pGOdMhwSgag27ZtvFlxUrdJbePUtm3b7Xn/d+h37/m+6n9E/xW2bdsYSNJddR4BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACQqm9ubW2uT0UsSVR3i4iIiHTl4xGsuEdExE9050KtciDAmdo6PtmdDwgGKkKszKFde1FVfd92IPKmFTnp6RfVpwfVz1UnmbNG63VID1QPB2VT9dzB6En4qnE341qfx0TkVu8krMib9eLqNBjpRp+8ST3LiD3X+KteeghJVw0h2lXd9hDqXDXbtvCmtxMeQ5OrdtOGr/VjyYdoddVmakd134BocdVk2dC9Po4YFI0Rmqyo7n1RhDVJWyRbqstfFP5A3sZ3GSTrFxczBkSnf27VIiIiIuKdQOi5xjp8lMnZ2VHj9lqXNzfgsRypLnoI/Vnz4pVGUVXIxS3pc2A2zs7m3HR5cPHtqxsMbo2ejfBw4tVdRqoQj/ou65paWppqk//qLwA=');
@@ -6,14 +11,14 @@
     --page-text-color: #000000;
     --page-back-color: #ffffff;
     --page-back-image: none;
-    --page-border-color: #cccccc; /* all; top_bottom right_left; top right bottom left*/
+    --page-border-color: #cccccc;
     --page-border-width: 2px;
     --page-border-radius: 6px;
     --page-hover-text-color: #ffffff;
     --page-hover-back-color: #696969;
     --page-marked-text-color: #ffffff;
     --page-marked-back-color: #222222;
-    --page-content-border-color: #222222; /* all; top_bottom right_left; top right bottom left*/
+    --page-content-border-color: #222222;
     --page-focus-color: #06b5ff;
 
     /* === navigation === */
@@ -95,7 +100,7 @@
     --form-text-color: var(--page-text-color);
     --form-back-color: var(--page-back-color);
     --form-back-image: none;
-    --form-border-color: var(--page-border-color); /* all; top_bottom right_left; top right bottom left*/
+    --form-border-color: var(--page-border-color);
     --form-border-width: var(--page-border-width);
     --form-border-radius: var(--page-border-radius);
 
@@ -110,7 +115,7 @@
     /* === fieldset === */
     --fieldset-back-color: var(--page-back-color);
     --fieldset-back-image: none;
-    --fieldset-border-color: var(--page-content-border-color); /* all; top_bottom right_left; top right bottom left*/
+    --fieldset-border-color: var(--page-content-border-color);
     --fieldset-border-width: var(--form-border-width);
     --fieldset-border-radius: var(--form-border-radius);
 
@@ -118,7 +123,7 @@
     --input-text-color: var(--page-text-color);
     --input-back-color: var(--page-back-color);
     --input-back-image: none;
-    --input-border-color: var(--page-content-border-color); /* all; top_bottom right_left; top right bottom left*/
+    --input-border-color: var(--page-content-border-color);
     --input-border-width: var(--form-border-width);
     --input-border-radius: var(--form-border-radius);
     --input-emphasize-color: #b3e5ec;
@@ -129,7 +134,7 @@
     --input-invalid-text-color: var(--page-text-color);
     --input-invalid-back-color: #ffebeb;
     --input-invalid-back-image: none;
-    --input-invalid-border-color: #ff2500; /* all; top_bottom right_left; top right bottom left*/
+    --input-invalid-border-color: #ff2500;
     --input-invalid-focus-color: #ff2500;
     --input-invalid-emphasize-color: #ff9987;
     --input-invalid-insignify-color: #d8b5ad;
@@ -137,7 +142,7 @@
     --input-disabled-text-color: #757575;
     --input-disabled-back-color: #999999;
     --input-disabled-back-image: none;
-    --input-disabled-border-color: #6a6a6a; /* all; top_bottom right_left; top right bottom left*/
+    --input-disabled-border-color: #6a6a6a;
     --input-disabled-emphasize-color: #3f3f3f;
     --input-disabled-insignify-color: #757575;
 
@@ -164,7 +169,7 @@
     --input-button-invalid-hover-text-color: var(--input-button-invalid-text-color);
     --input-button-invalid-hover-back-color: var(--input-invalid-emphasize-color);
     --input-button-invalid-hover-back-image: none;
-    --input-button-invalid-hover-border-color: var(--input-button-invalid-border-color); /* all; top_bottom right_left; top right bottom left*/
+    --input-button-invalid-hover-border-color: var(--input-button-invalid-border-color);
 
     /* === image/icon === */
     --image-checker-back-color: #2c2c2c;
@@ -192,7 +197,7 @@
     --button-text-color: #000000;
     --button-back-color: #cdcdcd;
     --button-back-image: none;
-    --button-border-color: #222222; /* all; top_bottom right_left; top right bottom left*/
+    --button-border-color: #222222;
     --button-border-width: var(--input-border-width);
     --button-border-radius: var(--input-border-radius);
     --button-focus-color: var(--input-focus-color);
@@ -200,42 +205,42 @@
     --button-hover-text-color: #ffffff;
     --button-hover-back-color: #444444;
     --button-hover-back-image: none;
-    --button-hover-border-color: var(--button-border-color); /* all; top_bottom right_left; top right bottom left*/
+    --button-hover-border-color: var(--button-border-color);
 
     --button-active-text-color: var(--page-marked-text-color);
     --button-active-back-color: var(--page-marked-back-color);
     --button-active-back-image: none;
-    --button-active-border-color: var(--button-border-color); /* all; top_bottom right_left; top right bottom left*/
+    --button-active-border-color: var(--button-border-color);
 
     --button-active-hover-text-color: var(--button-active-text-color);
     --button-active-hover-back-color: var(--button-active-back-color);
     --button-active-hover-back-image: var(--button-active-back-image);
-    --button-active-hover-border-color: var(--button-active-border-color); /* all; top_bottom right_left; top right bottom left*/
+    --button-active-hover-border-color: var(--button-active-border-color);
 
     --button-primary-text-color: #000000;
     --button-primary-back-color: #9ec9fb;
     --button-primary-back-image: none;
-    --button-primary-border-color: #003067; /* all; top_bottom right_left; top right bottom left*/
+    --button-primary-border-color: #003067;
 
     --button-primary-hover-text-color: #ffffff;
     --button-primary-hover-back-color: #0054b5;
     --button-primary-hover-back-image: none;
-    --button-primary-hover-border-color: var(--button-primary-border-color); /* all; top_bottom right_left; top right bottom left*/
+    --button-primary-hover-border-color: var(--button-primary-border-color);
 
     --button-secondary-text-color: #000000;
     --button-secondary-back-color: #ffdb8e;
     --button-secondary-back-image: none;
-    --button-secondary-border-color: #ad7600; /* all; top_bottom right_left; top right bottom left*/
+    --button-secondary-border-color: #ad7600;
 
     --button-secondary-hover-text-color: #000000;
     --button-secondary-hover-back-color: #ffae00;
     --button-secondary-hover-back-image: none;
-    --button-secondary-hover-border-color: var(--button-secondary-border-color); /* all; top_bottom right_left; top right bottom left*/
+    --button-secondary-hover-border-color: var(--button-secondary-border-color);
 
     --button-disabled-text-color: var(--input-disabled-text-color);
     --button-disabled-back-color: var(--input-disabled-back-color);
     --button-disabled-back-image: none;
-    --button-disabled-border-color: var(--input-disabled-border-color); /* all; top_bottom right_left; top right bottom left*/
+    --button-disabled-border-color: var(--input-disabled-border-color);
 
     /*TODO add different colors for hover*/
     --button-count-text-color: #ffffff;
@@ -314,15 +319,17 @@
     --tree-hover-back-color: var(--page-hover-back-color);
     --tree-hover-back-image: none;
 
-    --tree-marked-text-color: var(--page-marked-text-color);;
-    --tree-marked-back-color: var(--page-marked-back-color);;
+    --tree-marked-text-color: var(--page-marked-text-color);
+    ;
+    --tree-marked-back-color: var(--page-marked-back-color);
+    ;
     --tree-marked-back-image: none;
 
     /* === datagrid === */
     --datagrid-text-color: var(--page-text-color);
     --datagrid-back-color: var(--page-back-color);
     --datagrid-back-image: none;
-    --datagrid-border-color: var(--page-border-color); /* all; top_bottom right_left; top right bottom left*/
+    --datagrid-border-color: var(--page-border-color);
     --datagrid-border-width: var(--page-border-width);
     --datagrid-border-radius: 6px;
 
@@ -347,7 +354,7 @@
     /* === datalist === */
     --datalist-back-color: var(--page-back-color);
     --datalist-back-image: none;
-    --datalist-border-color: var(--page-border-color); /* all; top_bottom right_left; top right bottom left*/
+    --datalist-border-color: var(--page-border-color);
     --datalist-border-width: var(--page-border-width);
     --datalist-border-radius: 6px;
 
@@ -362,14 +369,14 @@
     --datalist-entry-hover-text-color: var(--page-hover-text-color);
     --datalist-entry-hover-back-color: var(--page-hover-back-color);
     --datalist-entry-hover-back-image: none;
-    
-    --datalist-entry-border-color: #000000; /* all; top_bottom right_left; top right bottom left*/
+
+    --datalist-entry-border-color: #000000;
     --datalist-entry-border-width: var(--page-border-width);
     --datalist-entry-border-radius: 10px;
 
     /* === pagination === */
     --pagination-border-width: var(--page-border-width);
-    --pagination-border-color: var(--page-border-color); /* all; top_bottom right_left; top right bottom left*/
+    --pagination-border-color: var(--page-border-color);
     --pagination-border-radius: var(--page-border-radius);
     --pagination-focus-color: var(--input-focus-color);
 
@@ -408,10 +415,12 @@
     --scrollbar-disabled-thumb-border-color: var(--input-disabled-insignify-color);
 
 }
+
 body {
     color: var(--page-text-color);
     background-color: var(--page-back-color);
 }
+
 form {
     color: var(--form-text-color);
     background-color: var(--form-back-color);
@@ -420,14 +429,17 @@ form {
     border-color: var(--form-border-color);
     border-radius: var(--form-border-radius);
 }
+
 ::-webkit-scrollbar {
     width: var(--scrollbar-size);
     height: var(--scrollbar-size);
 }
+
 ::-webkit-scrollbar-button {
     width: 0px;
     height: 0px;
 }
+
 ::-webkit-scrollbar-track {
     background-color: var(--scrollbar-track-color);
     border-style: solid;
@@ -435,6 +447,7 @@ form {
     border-color: var(--scrollbar-track-border-color);
     border-radius: var(--scrollbar-track-border-radius);
 }
+
 ::-webkit-scrollbar-corner {
     background-color: var(--scrollbar-corner-color);
     border-style: solid;
@@ -442,9 +455,11 @@ form {
     border-color: var(--scrollbar-corner-border-color);
     border-radius: var(--scrollbar-corner-border-radius);
 }
+
 ::-webkit-resizer {
     background: radial-gradient(var(--scrollbar-resizer-color) calc(var(--scrollbar-size) / 2 - 2px), transparent calc(var(--scrollbar-size) / 2 - 1px));
 }
+
 ::-webkit-scrollbar-thumb {
     background-color: var(--scrollbar-thumb-color);
     border-style: solid;
@@ -452,25 +467,31 @@ form {
     border-color: var(--scrollbar-thumb-border-color);
     border-radius: var(--scrollbar-thumb-border-radius);
 }
+
 ::-webkit-scrollbar-thumb:hover {
     background-color: var(--scrollbar-thumb-hover-color);
     border-color: var(--scrollbar-thumb-hover-border-color);
 }
+
 ::-webkit-scrollbar-thumb:active {
     background-color: var(--scrollbar-thumb-active-color);
     border-color: var(--scrollbar-thumb-active-border-color);
 }
+
 .scroll-disabled::-webkit-scrollbar-track {
     background-color: var(--scrollbar-disabled-track-color);
     border-color: var(--scrollbar-disabled-track-border-color);
 }
+
 .scroll-disabled::-webkit-scrollbar-corner {
     background-color: var(--scrollbar-disabled-corner-color);
     border-color: var(--scrollbar-disabled-corner-border-color);
 }
+
 .scroll-disabled::-webkit-resizer {
     background: radial-gradient(var(--scrollbar-disabled-resizer-color) calc(var(--scrollbar-size) / 2 - 2px), transparent calc(var(--scrollbar-size) / 2 - 1px));
 }
+
 .scroll-disabled::-webkit-scrollbar-thumb {
     background-color: var(--scrollbar-disabled-thumb-color);
     border-color: var(--scrollbar-disabled-thumb-border-color);
