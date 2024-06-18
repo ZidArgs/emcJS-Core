@@ -58,23 +58,19 @@ export default class RemoteDataProvider extends AbstractDataProvider {
             })
         });
 
-        const result = await this.#getJSON(response);
+        if (response.status < 200 || response.status >= 300) {
+            throw new Error(`error providing data [${this.#source.href}] - status: ${response.status}`);
+        }
+
+        const result = await response.json();
 
         if (!result.success && result.error) {
             throw new Error(`error providing data [${this.#source.href}] - ${result.error}`);
         }
 
-        if (response.status < 200 || response.status >= 300) {
-            throw new Error(`error providing data [${this.#source.href}] - status: ${response.status}`);
-        }
-
         this.#resultSize = result.length;
 
         return result.records;
-    }
-
-    #getJSON(input) {
-        return input.json();
     }
 
     setOptions(value) {

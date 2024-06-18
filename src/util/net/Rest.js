@@ -1,5 +1,5 @@
 async function sendRequest(url, query, config) {
-    url = new URL(url);
+    url = new URL(url, self.location.origin);
     if (query != null) {
         if (typeof query == "object") {
             if (Array.isArray(query)) {
@@ -21,23 +21,29 @@ async function sendRequest(url, query, config) {
     config.headers["Cache-Control"] = "no-cache";
     const response = await fetch(url, config);
     if (response.status < 200 || response.status >= 300) {
-        throw new Error(`error on ${config.method} for url "${url}" - status: ${response.status} - ${response.statusText}`);
+        throw new Error(`error providing data [${config.method}: ${url.href}] - status: ${response.status} - ${response.statusText}`);
     }
-    let data = null;
     if (response.headers.get("content-type").indexOf("application/json") >= 0) {
+        let result = null;
+
         try {
-            data = await response.json();
+            result = await response.json();
         } catch (err) {
-            console.error(err);
+            throw new Error(`error reading response [${config.method}: ${url.href}]`, {cause: err});
         }
+
+        if (!result.success && result.error) {
+            throw new Error(`error providing data [${config.method}: ${url.href}] - ${result.error}`);
+        }
+
+        return result;
     } else {
         try {
-            data = await response.text();
+            return await response.text();
         } catch (err) {
-            console.error(err);
+            throw new Error(`error reading response [${config.method}: ${url.href}]`, {cause: err});
         }
     }
-    return data;
 }
 
 class Rest {
