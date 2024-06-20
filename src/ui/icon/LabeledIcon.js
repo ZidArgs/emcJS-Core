@@ -15,11 +15,14 @@ function getAlign(value) {
 
 export default class LabeledIcon extends CustomElement {
 
+    #iconEl;
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
+        this.#iconEl = this.shadowRoot.getElementById("icon");
     }
 
     get src() {
@@ -62,16 +65,16 @@ export default class LabeledIcon extends CustomElement {
         if (oldValue != newValue) {
             switch (name) {
                 case "src":
-                    this.shadowRoot.getElementById("value").style.backgroundImage = `url("${newValue}")`;
+                    this.#iconEl.style.backgroundImage = `url("${newValue}")`;
                     break;
                 case "text":
-                    this.shadowRoot.getElementById("value").innerHTML = newValue;
+                    this.#iconEl.innerHTML = newValue;
                     break;
                 case "halign":
-                    this.shadowRoot.getElementById("value").style.justifyContent = getAlign(newValue);
+                    this.#iconEl.style.justifyContent = getAlign(newValue);
                     break;
                 case "valign":
-                    this.shadowRoot.getElementById("value").style.alignItems = getAlign(newValue);
+                    this.#iconEl.style.alignItems = getAlign(newValue);
                     break;
             }
         }
