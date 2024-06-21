@@ -62,7 +62,7 @@ export default class TypeStorageProvider extends AbstractDataProvider {
             return [key, new CharacterSearch(value)];
         });
 
-        const result = [...this.#source.keys()].map(([name, value]) => {
+        const result = [...this.#source].map(([name, value]) => {
             return {
                 ...deepClone(value),
                 key: `${name}\n[${typeName}]`,

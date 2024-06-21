@@ -242,7 +242,6 @@ all; top_bottom right_left; top right bottom left
     --button-disabled-back-image: none;
     --button-disabled-border-color: var(--input-disabled-border-color);
 
-    /*TODO add different colors for hover*/
     --button-count-text-color: #ffffff;
     --button-count-back-color: #222222;
     --button-count-alert-back-color: #e98e2d;
