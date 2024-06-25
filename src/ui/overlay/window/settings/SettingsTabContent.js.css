@@ -1,8 +1,17 @@
 :host {
-    display: block;
+    position: relative;
+    display: flex;
+    min-height: 100%;
+    min-width: 100%;
     overflow-wrap: break-word;
     resize: none;
 }
+
+#container {
+    position: relative;
+    flex: 1;
+}
+
 .settings-option {
     display: flex;
     align-items: stretch;
@@ -11,16 +20,19 @@
     color: var(--form-text-color, #000000);
     background-color: var(--form-back-color, #ffffff);
 }
+
 .settings-option:hover {
     color: var(--form-hover-text-color, #ffffff);
     background-color: var(--form-hover-back-color, #696969);
 }
+
 .settings-option .option-container {
     display: flex;
     align-items: center;
     justify-content: flex-start;
     min-height: 40px;
 }
+
 .settings-option .option-container .option-text {
     display: flex;
     align-items: center;
@@ -31,35 +43,43 @@
     cursor: pointer;
     user-select: none;
 }
+
 .settings-option .option-container .option-input {
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
     flex: 1;
 }
+
 .settings-option .option-container .option-input .settings-input:focus {
     box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
     outline: none;
 }
+
 .settings-option .option-container .option-input .settings-input:focus:not(:focus-visible) {
     box-shadow: none;
     outline: none;
 }
+
 .settings-option .option-container .option-input .settings-input[type="checkbox"] {
     margin-right: 10px;
 }
+
 .settings-option .option-container .option-input .settings-input:not([type="checkbox"]) {
     flex: 1;
 }
+
 .settings-option .option-container .option-input emc-listselect.settings-input {
     max-height: 300px;
 }
+
 .settings-option .option-container .option-input .option-reset button {
     position: sticky;
     top: 0px;
     bottom: 0px;
     margin-left: auto;
 }
+
 .settings-option .option-desc {
     display: block;
     flex-shrink: 0;

@@ -3,17 +3,26 @@
     z-index: 900900;
     pointer-events: all;
 }
+
 #modal {
-    max-width: 500px;
+    max-width: min(600px, calc(100vw - 50px));
+    min-height: min(100px, calc(100vh - 50px));
 }
+
 #footer {
     display: flex;
 }
+
+#content {
+    padding: 10px;
+}
+
 #submit,
 #cancel {
     min-width: 100px;
     margin: 0px 0px 0px 10px;
 }
+
 ::slotted(input.prompt-input) {
     height: 2em;
     padding: 0px 7px;
@@ -26,13 +35,16 @@
     border-radius: var(--input-border-radius, 6px);
     font-size: 1em;
 }
+
 ::slotted(input.prompt-input[type="number"]) {
     text-align: end;
 }
+
 ::slotted(input.prompt-input:focus) {
     box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
     outline: none;
 }
+
 ::slotted(input.prompt-input::placeholder) {
     color: var(--input-placeholder-text-color, #757575);
 }

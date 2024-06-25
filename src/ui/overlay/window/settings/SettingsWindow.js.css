@@ -1,19 +1,23 @@
 :host {
     box-sizing: border-box;
 }
-#body {
-    height: 50vh;
+
+#window {
+    height: 600px;
+    width: 1000px;
 }
+
 #footer,
 #submit,
 #cancel {
     display: flex;
 }
+
 #categories {
-    padding: 5px;
     overflow-x: auto;
-    overflow-y: none;
+    overflow-y: hidden;
 }
+
 #footer {
     height: 50px;
     padding: 10px 30px 10px;
@@ -23,6 +27,7 @@
     background-image: var(--modal-footer-back-image, none);
     border-top: solid var(--modal-border-width, 2px) var(--modal-border-color, #cccccc);
 }
+
 #submit,
 #cancel {
     margin-left: 10px;
@@ -41,6 +46,7 @@
     user-select: none;
     appearance: none;
 }
+
 #submit:hover,
 #cancel:hover {
     color: var(--button-hover-text-color, #ffffff);

@@ -17,22 +17,29 @@
     z-index: 900600;
     pointer-events: all !important;
 }
+
 :host(.inactive) {
     background-color: transparent !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     z-index: 900599;
 }
+
 :host,
 .button {
     display: flex;
 }
+
 #window {
     display: flex;
     flex-direction: column;
-    width: 100%;
-    max-width: 1000px;
-    margin-top: 100px;
+    width: auto;
+    height: auto;
+    min-width: min(400px, calc(100vw - 50px));
+    max-width: min(1000px, calc(100vw - 50px));
+    min-height: min(200px, calc(100vh - 50px));
+    max-height: min(800px, calc(100vh - 50px));
+    margin-top: min(100px, calc(25px + max(0px, calc(55vh - 480px))));
     color: var(--modal-text-color, #000000);
     background-color: var(--modal-back-color, #ffffff);
     background-image: var(--modal-back-image, none);
@@ -43,10 +50,12 @@
     resize: both;
     pointer-events: all;
 }
+
 :host(.inactive) #window {
     pointer-events: none;
     filter: blur(2px);
 }
+
 #header {
     display: flex;
     color: var(--modal-header-text-color, #000000);
@@ -54,6 +63,7 @@
     background-image: var(--modal-header-back-image, none);
     border-bottom: solid var(--modal-border-width, 2px) var(--modal-border-color, #cccccc);
 }
+
 #title {
     display: flex;
     align-items: center;
@@ -67,22 +77,24 @@
     font-size: 1em;
     line-height: 1em;
 }
+
 #body {
     display: flex;
     flex-direction: column;
-    padding: 5px;
-    min-height: 10vh;
-    max-height: 50vh;
+    flex: 1;
     overflow: auto;
 }
+
 :focus {
     box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
     outline: none;
 }
+
 :focus:not(:focus-visible) {
     box-shadow: none;
     outline: none;
 }
+
 #close {
     display: flex;
     width: 40px;
@@ -98,15 +110,18 @@
     font-size: 1.2em;
     line-height: 1em;
 }
+
 #close:hover {
     color: var(--modal-close-hover-text-color, #ffffff);
     background-color: var(--modal-close-hover-back-color, #ff0000);
     background-image: var(--modal-close-hover-back-image, none);
 }
+
 #close:focus {
     box-shadow: inset var(--modal-close-focus-color, #000000) 0 0px 3px 4px;
     outline: none;
 }
+
 #close:focus:not(:focus-visible) {
     box-shadow: none;
     outline: none;
