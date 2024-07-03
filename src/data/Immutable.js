@@ -27,7 +27,7 @@ const TYPE_TAG = Symbol("Immutable");
  * @returns {Proxy} the Proxy immuting the data
  */
 export function immute(data) {
-    if (typeof data == "object" && !data[TYPE_TAG]) {
+    if (data != null && typeof data == "object" && !data[TYPE_TAG]) {
         if (Array.isArray(data)) {
             const res = data.map(immute);
             const proxy = new Proxy(res, HANDLER);
