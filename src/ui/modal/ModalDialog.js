@@ -256,15 +256,15 @@ export default class ModalDialog extends Modal {
             text,
             submit: "ok"
         });
+        dialogEl.streched = true;
         this.#applyDialogIcon(dialogEl, "error");
         // ---
-        if (errors.length > 0) {
+        if (this.#hasErrors(errors)) {
             const inputEl = document.createElement("textarea");
             inputEl.style.flexShrink = "1";
             inputEl.style.flexGrow = "1";
-            inputEl.style.width = "100%";
             inputEl.style.minHeight = "100px";
-            inputEl.style.maxHeight = "300px";
+            inputEl.style.maxHeight = "500px";
             inputEl.style.padding = "5px";
             inputEl.style.color = "black";
             inputEl.style.backgroundColor = "white";
@@ -274,12 +274,26 @@ export default class ModalDialog extends Modal {
             inputEl.style.resize = "none";
             inputEl.readOnly = true;
             inputEl.value = Array.isArray(errors) ? errors.join("\n") : errors.toString();
+            inputEl.setSelectionRange(0, 0);
             dialogEl.append(inputEl);
             dialogEl.initialFocusElement = inputEl;
+            setTimeout(() => {
+                inputEl.style.height = `${inputEl.scrollHeight}px`;
+            }, 0);
         }
         // ---
         const result = await dialogEl.show();
         return result;
+    }
+
+    static #hasErrors(errors) {
+        if (Array.isArray(errors)) {
+            errors.filter((err) => {
+                return err instanceof Error || typeof err === "string";
+            });
+            return errors.length > 0;
+        }
+        return errors instanceof Error || typeof errors === "string";
     }
 
     initialFocus() {

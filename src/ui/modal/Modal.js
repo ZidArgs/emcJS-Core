@@ -81,6 +81,14 @@ export default class Modal extends CustomElement {
         return this.getStringAttribute("caption");
     }
 
+    set streched(value) {
+        this.setBooleanAttribute("streched", value);
+    }
+
+    get streched() {
+        return this.getBooleanAttribute("streched");
+    }
+
     static get observedAttributes() {
         return ["caption"];
     }
