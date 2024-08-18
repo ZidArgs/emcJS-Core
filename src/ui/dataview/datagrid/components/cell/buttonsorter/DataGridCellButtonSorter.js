@@ -25,6 +25,23 @@ export default class DataGridCellButtonSorter extends DataGridCell {
         });
     }
 
+    static get observedAttributes() {
+        return [...super.observedAttributes, "disabled", "readonly"];
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback(name, oldValue, newValue);
+        if (oldValue != newValue) {
+            switch (name) {
+                case "disabled":
+                case "readonly": {
+                    this.#sortUpEl.disabled = this.disabled || this.readonly;
+                    this.#sortDownEl.disabled = this.disabled || this.readonly;
+                } break;
+            }
+        }
+    }
+
     #onClickUp(event) {
         event.stopPropagation();
         event.preventDefault();

@@ -2,15 +2,17 @@
     display: flex;
     width: min-content;
     height: 2em;
-    margin: 10px;
+    margin: 6px;
     user-select: none;
     font-size: 1rem;
     cursor: pointer;
 }
+
 :host(:focus) {
     outline: none;
     z-index: 1;
 }
+
 #button {
     display: flex;
     align-items: center;
@@ -34,51 +36,60 @@
     word-break: keep-all;
     cursor: inherit;
 }
+
 :host([slim]:not([slim="false"])) #button {
     padding: 0px 4px;
 }
+
 :host(.active) #button {
     color: var(--button-active-text-color, #ffffff);
     background-color: var(--button-active-back-color, #222222);
     background-image: var(--button-active-back-image, none);
     border-color: var(--button-active-border-color, #222222);
 }
+
 :host([primary]:not([primary="false"])) #button {
     color: var(--button-primary-text-color, #000000);
     background-color: var(--button-primary-back-color, #00dbd0);
     background-image: var(--button-primary-back-image, none);
     border-color: var(--button-primary-border-color, #007b75);
 }
+
 :host([secondary]:not([secondary="false"])) #button {
     color: var(--button-secondary-text-color, #000000);
     background-color: var(--button-secondary-back-color, #00dbd0);
     background-image: var(--button-secondary-back-image, none);
     border-color: var(--button-secondary-border-color, #007b75);
 }
+
 :host(:hover) #button {
     color: var(--button-hover-text-color, #ffffff);
     background-color: var(--button-hover-back-color, #353935);
     background-image: var(--button-hover-back-image, none);
     border-color: var(--button-hover-border-color, #222222);
 }
+
 :host(.active:hover) #button {
     color: var(--button-active-hover-text-color, #ffffff);
     background-color: var(--button-active-hover-back-color, #222222);
     background-image: var(--button-active-hover-back-image, none);
     border-color: var(--button-active-hover-border-color, #222222);
 }
+
 :host([primary]:not([primary="false"]):hover) #button {
     color: var(--button-primary-hover-text-color, #ffffff);
     background-color: var(--button-primary-hover-back-color, #353935);
     background-image: var(--button-primary-hover-back-image, none);
     border-color: var(--button-primary-hover-border-color, #222222);
 }
+
 :host([secondary]:not([secondary="false"]):hover) #button {
     color: var(--button-secondary-hover-text-color, #ffffff);
     background-color: var(--button-secondary-hover-back-color, #353935);
     background-image: var(--button-secondary-hover-back-image, none);
     border-color: var(--button-secondary-hover-border-color, #222222);
 }
+
 :host(:disabled) #button {
     color: var(--button-disabled-text-color, #757575) !important;
     background-color: var(--button-disabled-back-color, #999999) !important;
@@ -86,53 +97,66 @@
     border-color: var(--button-disabled-border-color, #6a6a6a) !important;
     cursor: default !important;
 }
+
 :host([text-transform="lowercase"]) #button {
     text-transform: lowercase;
 }
+
 :host([text-transform="uppercase"]) #button {
     text-transform: uppercase;
 }
+
 :host([text-transform="capitalize"]) #button {
     text-transform: capitalize;
 }
+
 #button:focus,
 :host(:focus) #button {
     box-shadow: 0 0 2px 3px var(--button-focus-color, #06b5ff);
     outline: none;
 }
+
 #button::before {
     align-items: center;
     justify-content: center;
     height: 1em;
-    width: 1em;
+    min-width: 1em;
     font-size: 1.3em;
     line-height: 1em;
     font-family: "monospace", monospace;
     font-weight: bold;
     transform-origin: center;
 }
+
 #button[icon]::before {
     display: inline-flex;
     content: attr(icon);
 }
+
 #button[icon=""]::before {
     display: none;
 }
+
 :host([text]:not([text=""])) #button::before {
     margin-right: 5px;
 }
+
 :host(.rotate-icon-0) #button::before {
     rotate: 0deg;
 }
+
 :host(.rotate-icon-90) #button::before {
     rotate: 90deg;
 }
+
 :host(.rotate-icon-180) #button::before {
     rotate: 180deg;
 }
+
 :host(.rotate-icon-270) #button::before {
     rotate: 270deg;
 }
+
 #button[count-value]::after {
     box-sizing: border-box;
     display: inline-flex;
@@ -147,68 +171,87 @@
     line-height: 1.2em;
     content: attr(count-value);
 }
+
 #button[count-value][count-type="alert"]::after {
     background-color: var(--button-count-alert-back-color, #e98e2d);
 }
+
 #button[count-value][count-type="info"]::after {
     background-color: var(--button-count-info-back-color, #0000ff);
 }
+
 #button[count-value][count-type="success"]::after {
     background-color: var(--button-count-success-back-color, #009952);
 }
+
 #button[count-value][count-type="error"]::after {
     background-color: var(--button-count-error-back-color, #c50000);
 }
+
 :host(:hover) #button[count-value]::after {
     color: var(--button-hover-count-text-color, #000000);
     background-color: var(--button-hover-count-back-color, #ffffff);
 }
+
 :host(:hover) #button[count-value][count-type="alert"]::after {
     background-color: var(--button-hover-count-alert-back-color, #ffd7ac);
 }
+
 :host(:hover) #button[count-value][count-type="info"]::after {
     background-color: var(--button-hover-count-info-back-color, #b9b9ff);
 }
+
 :host(:hover) #button[count-value][count-type="success"]::after {
     background-color: var(--button-hover-count-success-back-color, #aefffb);
 }
+
 :host(:hover) #button[count-value][count-type="error"]::after {
     background-color: var(--button-hover-count-error-back-color, #ffb7b7);
 }
+
 :host([border-flat~="left"]) #button {
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
 }
+
 :host([border-flat~="right"]) #button {
     border-top-right-radius: 0px;
     border-bottom-right-radius: 0px;
 }
+
 :host([border-flat~="top"]) #button {
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
 }
+
 :host([border-flat~="bottom"]) #button {
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
 }
+
 :host([border-flat~="all"]) #button {
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
 }
+
 :host([border-open~="left"]) #button {
     border-left-style: none;
 }
+
 :host([border-open~="right"]) #button {
     border-right-style: none;
 }
+
 :host([border-open~="top"]) #button {
     border-top-style: none;
 }
+
 :host([border-open~="bottom"]) #button {
     border-bottom-style: none;
 }
+
 :host([border-open~="all"]) #button {
     border-style: none;
 }

@@ -1,23 +1,30 @@
-import CustomFormElementDelegating from "../../../../element/CustomFormElementDelegating.js";
+import AbstractFormElement from "../../AbstractFormElement.js";
+import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
 import {
     debounce
 } from "../../../../../util/Debouncer.js";
 import {
+    deepClone
+} from "../../../../../util/helper/DeepClone.js";
+import {
+    registerFocusable
+} from "../../../../../util/helper/html/getFocusableElements.js";
+import {
     safeSetAttribute
 } from "../../../../../util/helper/ui/NodeAttributes.js";
-import {
-    isEqual
-} from "../../../../../util/helper/Comparator.js";
 import "../../../../i18n/I18nTooltip.js";
 import "../../../../i18n/builtin/I18nInput.js";
 import TPL from "./ColorInput.js.html" assert {type: "html"};
 import STYLE from "./ColorInput.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./ColorInput.js.json" assert {type: "json"};
 
 const REGEX_HEX = /^#[0-9a-f]{6}$/;
 
-export default class ColorInput extends CustomFormElementDelegating {
+export default class ColorInput extends AbstractFormElement {
 
-    #value;
+    static get formConfigurationFields() {
+        return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
+    }
 
     #inputEl;
 
@@ -25,13 +32,13 @@ export default class ColorInput extends CustomFormElementDelegating {
 
     constructor() {
         super();
-        this.shadowRoot.append(TPL.generate());
+        this.shadowRoot.getElementById("field").append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.#inputEl.addEventListener("input", debounce(() => {
-            this.value = this.#inputEl.value;
-        }, 300));
+        this.#inputEl.addEventListener("input", () => {
+            this.#onInput();
+        });
         /* --- */
         this.#buttonEl = this.shadowRoot.getElementById("button");
         this.#buttonEl.addEventListener("input", () => {
@@ -47,16 +54,9 @@ export default class ColorInput extends CustomFormElementDelegating {
         });
     }
 
-    connectedCallback() {
-        super.connectedCallback();
-        const value = this.value;
-        this.#inputEl.value = value;
-        if (REGEX_HEX.test(value)) {
-            this.#buttonEl.value = value;
-        } else {
-            this.#buttonEl.value = "#000000";
-        }
-    }
+    #onInput = debounce(() => {
+        this.value = this.#inputEl.value;
+    }, 300);
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
@@ -64,59 +64,25 @@ export default class ColorInput extends CustomFormElementDelegating {
         this.#buttonEl.disabled = disabled;
     }
 
-    formResetCallback() {
-        super.formResetCallback();
-        const value = this.value;
-        this.#inputEl.value = value;
-        if (REGEX_HEX.test(value)) {
-            this.#buttonEl.value = value;
-        } else {
-            this.#buttonEl.value = "#000000";
-        }
-    }
-
     focus(options) {
-        this.#inputEl.focus(options);
+        this.#buttonEl.focus(options);
     }
 
-    set value(value) {
-        if (!isEqual(this.#value, value)) {
-            this.#value = value;
-            this.#applyValue(value ?? "");
-            this.internals.setFormValue(value);
-            /* --- */
-            this.dispatchEvent(new Event("change"));
-        }
+    set placeholder(value) {
+        this.setAttribute("placeholder", value);
     }
 
-    get value() {
-        return this.#value ?? super.value;
-    }
-
-    getSubmitValue() {
-        const value = this.value;
-        if (value == null) {
-            return "";
-        }
-        return value;
+    get placeholder() {
+        return this.getAttribute("placeholder");
     }
 
     static get observedAttributes() {
-        return ["value", "placeholder", "readonly"];
+        return [...super.observedAttributes, "placeholder", "readonly"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
-            case "value": {
-                if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, "value", newValue);
-                    safeSetAttribute(this.#buttonEl, "value", newValue);
-                    if (!this.isChanged) {
-                        const value = this.value;
-                        this.#applyValue(value ?? "");
-                    }
-                }
-            } break;
             case "placeholder": {
                 if (oldValue != newValue) {
                     safeSetAttribute(this.#inputEl, "i18n-placeholder", newValue);
@@ -126,18 +92,26 @@ export default class ColorInput extends CustomFormElementDelegating {
                 if (oldValue != newValue) {
                     safeSetAttribute(this.#inputEl, "readonly", newValue);
                     safeSetAttribute(this.#buttonEl, "readonly", newValue);
-                    if (newValue != null && newValue != "false") {
-                        this.#buttonEl.setAttribute("tabindex", -1);
-                    } else {
-                        this.#buttonEl.setAttribute("tabindex", 0);
-                    }
                 }
             } break;
         }
     }
 
-    #applyValue(value) {
-        this.#inputEl.value = value ?? this.defaultValue;
+    checkValid() {
+        const value = this.value;
+        if (value != null && value !== "" && !REGEX_HEX.test(value)) {
+            return "Please enter a valid hexadecimal color (#000000 - #FFFFFF)";
+        }
+        return super.checkValid();
+    }
+
+    applyValueAttribute(value) {
+        safeSetAttribute(this.#inputEl, "value", value ?? "");
+        safeSetAttribute(this.#buttonEl, "value", value ?? "");
+    }
+
+    renderValue(value) {
+        this.#inputEl.value = value ?? "";
         if (REGEX_HEX.test(value)) {
             this.#buttonEl.value = value;
         } else {
@@ -147,4 +121,6 @@ export default class ColorInput extends CustomFormElementDelegating {
 
 }
 
+FormElementRegistry.register("ColorInput", ColorInput);
 customElements.define("emc-input-color", ColorInput);
+registerFocusable("emc-input-color");

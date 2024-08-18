@@ -1,0 +1,195 @@
+#field {
+    display: flex;
+    flex-direction: column;
+    min-height: 10em;
+    max-height: 40em;
+    padding: 0px;
+    color: var(--input-text-color, #000000);
+    background-color: var(--input-back-color, #ffffff);
+    background-image: var(--input-back-image, none);
+    border-style: solid;
+    border-width: var(--input-border-width, 2px);
+    border-color: var(--input-border-color, #222222);
+    border-radius: var(--input-border-radius, 6px);
+    overflow: hidden;
+}
+
+#field.expanded {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    min-width: 100%;
+    min-height: 100%;
+    border-style: none;
+    border-radius: 0px;
+    z-index: 1000000000;
+}
+
+#field:not(.expanded):focus-within {
+    box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
+    z-index: 1;
+}
+
+:host(:invalid) #field:not(.expanded):focus-within {
+    box-shadow: 0 0 2px 3px var(--input-invalid-focus-color, #ff2500);
+}
+
+/* --- */
+#container {
+    --num-digits: 1;
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex: 1;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    color: #ffffff;
+    background-color: #474747;
+    font-family: monospace;
+    font-size: 14px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+#line-numbers {
+    box-sizing: border-box;
+    width: calc(var(--num-digits, 1) * 0.55em + 1.8em);
+    min-height: 100%;
+    height: max-content;
+    padding-bottom: var(--scrollbar-size);
+    border-right-style: solid;
+    border-right-width: 1px;
+    border-color: #ffffff1a;
+    user-select: none;
+}
+
+#line-numbers > div {
+    position: relative;
+    box-sizing: border-box;
+    display: inline-flex;
+    justify-content: end;
+    min-height: 1.4em;
+    left: 0;
+    width: calc(var(--num-digits, 1) * 0.55em + 2em);
+    padding: 0 1em 0 1em;
+    color: #d3e1ff;
+    font-family: monospace;
+    font-size: 1em;
+    font-weight: bold;
+    text-align: end;
+    z-index: 1;
+    content: counter(step-counter);
+}
+
+#line-numbers > div.caret {
+    color: #ffffff;
+}
+
+#input {
+    position: sticky;
+    box-sizing: border-box;
+    flex: 1;
+    top: 0;
+    left: calc(var(--num-digits, 1) * 0.55em + 2em);
+    bottom: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    color: #ffffff;
+    background-color: #474747;
+    font-family: monospace;
+    font-size: 14px;
+    overflow-y: hidden;
+    overflow-x: scroll;
+}
+
+#input:focus {
+    outline: none;
+}
+
+#input > div {
+    counter-increment: step-counter;
+    box-sizing: border-box;
+    min-height: 1.4em;
+    padding: 0 4px;
+    border-top-style: solid;
+    border-bottom-style: solid;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-color: #ffffff00;
+    white-space-collapse: preserve;
+    text-wrap: nowrap;
+}
+
+#input > div.caret {
+    border-color: #ffffff1a;
+}
+
+/* --- */
+.header {
+    display: flex;
+    justify-content: flex-end;
+    border-bottom-style: solid;
+    border-bottom-width: var(--input-border-width, 2px);
+    border-bottom-color: var(--input-border-color, #222222);
+}
+
+:host(:invalid) .header {
+    border-bottom-color: var(--input-invalid-border-color, #ff4444);
+}
+
+:host(:disabled) .header {
+    border-bottom-color: var(--input-disabled-border-color, #6a6a6a) !important;
+}
+
+.footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 2px 20px;
+    border-top-style: solid;
+    border-top-width: var(--input-border-width, 2px);
+    border-top-color: var(--input-border-color, #222222);
+}
+
+:host(:invalid) .footer {
+    border-top-color: var(--input-invalid-border-color, #ff4444);
+}
+
+:host(:disabled) .footer {
+    border-top-color: var(--input-disabled-border-color, #6a6a6a) !important;
+}
+
+#line-info {
+    font-size: 0.7em;
+    user-select: none;
+}
+
+#expand-button {
+    display: flex;
+    width: 1.5em;
+    height: 1.5em;
+    border: none;
+    align-items: center;
+    justify-content: center;
+    color: var(--button-text-color, #000000);
+    background-color: var(--button-back-color, #eaeaea);
+    background-image: var(--button-back-image, none);
+    cursor: pointer;
+    user-select: none;
+    appearance: none;
+    font-size: 1em;
+    line-height: 1em;
+}
+
+#expand-button:focus {
+    outline: none;
+}
+
+#expand-button:hover {
+    color: var(--button-hover-text-color, #ffffff);
+    background-color: var(--button-hover-back-color, #353935);
+    background-image: var(--button-hover-back-image, none);
+}

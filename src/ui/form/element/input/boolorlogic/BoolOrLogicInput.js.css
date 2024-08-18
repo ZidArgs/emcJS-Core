@@ -1,74 +1,22 @@
-#container {
-    display: flex;
-    min-width: 200px;
-    width: 100%;
+#field {
+    flex-direction: column;
 }
-#text {
-    justify-content: flex-start;
-    flex-grow: 1;
-    height: 2em;
-    padding: 0px 7px;
-    color: var(--input-text-color, #000000);
-    background-color: var(--input-back-color, #ffffff);
-    background-image: var(--input-back-image, none);
-    border-style: solid;
-    border-width: var(--input-border-width, 2px);
-    border-color: var(--input-border-color, #222222);
-    border-radius: var(--input-border-radius, 6px) 0px 0px var(--input-border-radius, 6px);
-    font-size: 1em;
-}
-:host(:invalid) #text {
-    background-color: var(--input-invalid-back-color, #ffebeb);
-    background-image: var(--input-invalid-back-image, none);
-    border-color: var(--input-invalid-border-color, #ff4444);
-}
-#button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2em;
-    height: 2em;
+
+/* --- */
+#input {
     padding: 0px;
-    margin: 0px;
-    margin-left: calc(-1 * var(--input-border-width, 2px));
-    appearance: none;
-    color: var(--button-text-color, #000000);
-    background-color: var(--button-back-color, #cccccc);
-    background-image: var(--button-back-image, none);
-    border-style: solid;
-    border-width: var(--input-border-width, 2px);
-    border-color: var(--input-border-color, #222222);
-    border-radius: 0px var(--input-border-radius, 6px) var(--input-border-radius, 6px) 0px;
-    font-size: 1em;
-    font-weight: bold;
-    cursor: pointer;
 }
-#button:hover {
-    color: var(--button-hover-text-color, #ffffff);
-    background-color: var(--button-hover-back-color, #353935);
-    background-image: var(--button-hover-back-image, none);
-}
-#button:focus {
-    box-shadow: 0 0 2px 3px var(--button-focus-color, #06b5ff);
+
+#input:focus {
     outline: none;
-    z-index: 1;
 }
-:host(:invalid) #button {
-    border-color: var(--button-invalid-border-color, #ff4444);
+
+/* --- */
+#logic {
+    margin-top: 5px;
+    padding: 0;
 }
-:host(:invalid) #button:focus {
-    box-shadow: 0 0 2px 3px var(--button-invalid-focus-color, #ff2500);
-}
-#button:disabled {
-    color: var(--button-disabled-text-color, #757575);
-    background-color: var(--button-disabled-back-color, #999999);
-    background-image: var(--button-disabled-back-image, none);
-    border-color: var(--button-disabled-border-color, #6a6a6a);
-    cursor: default;
-}
-#button > .button-text {
-    font-size: 1.5em;
-}
-#options-container {
+
+#logic:not(.active) {
     display: none;
 }

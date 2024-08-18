@@ -1,4 +1,4 @@
-<input is="emc-i18n-input" id="input" i18n-placeholder="Search..." autocomplete="off" name="internal_search">
+<input is="emc-i18n-input" id="input" i18n-placeholder="Search..." autocomplete="off">
 <div id="view" mode="view">
     <emc-i18n-label id="placeholder"></emc-i18n-label>
     <div id="value">
@@ -8,7 +8,7 @@
 </div>
 <div id="button"></div>
 <div id="scroll-container">
-    <slot id="options-container">
-        <div id="empty">no entries</div>
-    </slot>
+    <div id="options-container"></div>
+    <emc-i18n-label id="empty" i18n-value="no entries"></emc-i18n-label>
+    <emc-i18n-label id="nomatch" i18n-value="no match"></emc-i18n-label>
 </div>

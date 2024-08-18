@@ -1,0 +1,74 @@
+[
+    {
+        "type": "StringInput",
+        "name": "name",
+        "label": "Name",
+        "value": ""
+    },
+    {
+        "type": "StringInput",
+        "name": "label",
+        "label": "Label",
+        "value": ""
+    },
+    {
+        "type": "TextInput",
+        "name": "tooltip",
+        "label": "Tooltip",
+        "value": ""
+    },
+    {
+        "type": "TextInput",
+        "name": "description",
+        "label": "Description",
+        "value": ""
+    },
+    {
+        "type": "SwitchInput",
+        "name": "required",
+        "label": "Required",
+        "value": false
+    },
+    {
+        "type": "SwitchInput",
+        "name": "resettable",
+        "label": "Resettable",
+        "value": false
+    },
+    {
+        "type": "BoolOrLogicInput",
+        "name": "visible",
+        "label": "Visible",
+        "value": true
+    },
+    {
+        "type": "BoolOrLogicInput",
+        "name": "editable",
+        "label": "Editable",
+        "value": true
+    },
+    {
+        "type": "BoolOrLogicInput",
+        "name": "enabled",
+        "label": "Enabled",
+        "value": true
+    },
+    {
+        "type": "SwitchInput",
+        "name": "hideerrors",
+        "label": "Hide Error-Label",
+        "value": false
+    },
+    {
+        "type": "SwitchInput",
+        "name": "nohover",
+        "label": "Remove hover background effect",
+        "value": false
+    },
+    {
+        "type": "SwitchInput",
+        "name": "novalidate",
+        "label": "Don't include this input in the auto validation",
+        "value": false
+    }
+]

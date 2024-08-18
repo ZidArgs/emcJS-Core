@@ -5,7 +5,7 @@
     justify-content: stretch;
     flex-wrap: wrap;
     box-sizing: border-box;
-    padding: 0px;
+    padding: 2px;
 }
 
 #fieldset {
@@ -47,6 +47,7 @@
 
 ::slotted(*) {
     width: auto;
+    margin: 4px;
 }
 
 ::slotted(:not(:first-child)) {
@@ -56,6 +57,7 @@
 ::slotted([distance~="right"]) {
     margin-right: auto !important;
 }
+
 ::slotted([distance~="left"]) {
     margin-left: auto !important;
 }

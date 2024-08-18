@@ -1,0 +1,57 @@
+[
+    {
+        "type": "SwitchSelect",
+        "name": "sorted",
+        "label": "Sorted",
+        "options": {
+            "false": "No",
+            "true": "Yes",
+            "manual": "Manually"
+        },
+        "value": "false"
+    },
+    {
+        "type": "GridInput",
+        "name": "columns",
+        "label": "Columns",
+        "stretched": "key",
+        "sorted": "manual",
+        "columns": [
+            {
+                "key": "key",
+                "type": "string",
+                "caption": "Column Name",
+                "width": 200,
+                "editable": false
+            },
+            {
+                "key": "type",
+                "type": "string",
+                "caption": "Type",
+                "width": 300,
+                "editable": true
+            },
+            {
+                "key": "caption",
+                "type": "string",
+                "caption": "Caption",
+                "width": 300,
+                "editable": true
+            },
+            {
+                "key": "width",
+                "type": "number",
+                "caption": "Width",
+                "width": 150,
+                "editable": true
+            },
+            {
+                "key": "editable",
+                "type": "boolean",
+                "caption": "Editable",
+                "width": 100,
+                "editable": true
+            }
+        ]
+    }
+]

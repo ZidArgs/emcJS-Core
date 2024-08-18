@@ -64,6 +64,10 @@ export default class CustomFormElementDelegating extends CustomElementDelegating
         return this.defaultValue;
     }
 
+    set defaultValue(value) {
+        this.setAttribute("value", value);
+    }
+
     get defaultValue() {
         return this.getAttribute("value");
     }

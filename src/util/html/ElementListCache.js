@@ -4,22 +4,16 @@ export default class ElementListCache {
 
     #elementList = new IndexedSet();
 
-    append(node) {
-        if (node instanceof Element) {
-            this.#elementList.add(node);
-        }
+    append(...nodes) {
+        this.#elementList.add(...nodes.filter((node) => node instanceof Element));
     }
 
-    prepend(node) {
-        if (node instanceof Element) {
-            this.#elementList.insertAt(0, node);
-        }
+    prepend(...nodes) {
+        this.#elementList.insertAt(0, ...nodes.filter((node) => node instanceof Element));
     }
 
-    removeNode(node) {
-        if (node instanceof Element) {
-            this.#elementList.delete(node);
-        }
+    removeNode(...nodes) {
+        this.#elementList.delete(...nodes.filter((node) => node instanceof Element));
     }
 
     purge() {

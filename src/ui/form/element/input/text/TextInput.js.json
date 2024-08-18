@@ -1,0 +1,26 @@
+[
+    {
+        "type": "StringInput",
+        "name": "placeholder",
+        "label": "Placeholder",
+        "value": ""
+    },
+    {
+        "type": "NumberInput",
+        "name": "minlength",
+        "label": "Minimum Length",
+        "value": null
+    },
+    {
+        "type": "NumberInput",
+        "name": "maxlength",
+        "label": "Maximum Length",
+        "value": null
+    },
+    {
+        "type": "SwitchInput",
+        "name": "sendonshift",
+        "label": "Hold shift to send on Enter (if off hold shift for newline)",
+        "value": false
+    }
+]

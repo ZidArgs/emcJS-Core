@@ -1,54 +1,58 @@
-import CustomFormElementDelegating from "../../../../element/CustomFormElementDelegating.js";
+import AbstractFormElement from "../../AbstractFormElement.js";
+import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
 import {
     debounce
 } from "../../../../../util/Debouncer.js";
 import {
+    registerFocusable
+} from "../../../../../util/helper/html/getFocusableElements.js";
+import {
     safeSetAttribute
 } from "../../../../../util/helper/ui/NodeAttributes.js";
-import {
-    isEqual
-} from "../../../../../util/helper/Comparator.js";
-import "../../../../i18n/builtin/I18nInput.js";
 import "../../../../i18n/I18nTooltip.js";
-import "./components/ToggleShowButton.js";
+import "../../../../i18n/builtin/I18nInput.js";
 import TPL from "./PasswordInput.js.html" assert {type: "html"};
 import STYLE from "./PasswordInput.js.css" assert {type: "css"};
 
-export default class PasswordInput extends CustomFormElementDelegating {
-
-    #value;
+// TODO add required [lowercase,uppercase,digit,{symbol_declaration}]
+export default class PasswordInput extends AbstractFormElement {
 
     #inputEl;
 
-    #showEl;
+    #buttonEl;
 
     constructor() {
         super();
-        this.shadowRoot.append(TPL.generate());
+        this.shadowRoot.getElementById("field").append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.#inputEl.addEventListener("input", debounce(() => {
-            this.value = this.#inputEl.value;
-        }, 300));
-        /* --- */
-        this.#showEl = this.shadowRoot.getElementById("show");
-        this.#inputEl.type = this.#showEl.checked ? "text" : "password";
-        this.#showEl.addEventListener("change", () => {
-            this.#inputEl.type = this.#showEl.checked ? "text" : "password";
+        this.#inputEl.addEventListener("input", () => {
+            this.#onInput();
         });
+        /* --- */
+        this.#buttonEl = this.shadowRoot.getElementById("button");
+        const tooltipEl = this.shadowRoot.getElementById("tooltip");
+        this.#buttonEl.addEventListener("change", (event) => {
+            const showValue = this.#buttonEl.checked;
+            tooltipEl.i18nTooltip = showValue ? "Input shown" : "Input hidden";
+            this.#inputEl.type = showValue ? "text" : "password";
+            event.stopPropagation();
+        });
+        this.#inputEl.type = this.#buttonEl.checked ? "text" : "password";
     }
 
-    connectedCallback() {
-        super.connectedCallback();
-        this.#inputEl.value = this.value;
-    }
+    #onInput = debounce(() => {
+        this.value = this.#inputEl.value;
+    }, 300);
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
         this.#inputEl.disabled = disabled;
-        this.#showEl.disabled = disabled;
-        this.#showEl.checked = false;
+        this.#buttonEl.disabled = disabled;
+        if (disabled) {
+            this.#buttonEl.checked = false;
+        }
     }
 
     formResetCallback() {
@@ -62,42 +66,45 @@ export default class PasswordInput extends CustomFormElementDelegating {
     }
 
     set value(value) {
-        if (!isEqual(this.#value, value)) {
-            this.#value = value;
-            this.#applyValue(value ?? "");
-            this.internals.setFormValue(value);
-            /* --- */
-            this.dispatchEvent(new Event("change"));
-        }
+        this.#inputEl.value = value ?? this.defaultValue;
+        super.value = value;
     }
 
     get value() {
-        return this.#value ?? super.value;
+        return super.value;
     }
 
-    set readonly(val) {
-        this.setBooleanAttribute("readonly", val);
+    set placeholder(value) {
+        this.setAttribute("placeholder", value);
     }
 
-    get readonly() {
-        return this.getBooleanAttribute("readonly");
+    get placeholder() {
+        return this.getAttribute("placeholder");
+    }
+
+    set minLength(value) {
+        this.setIntAttribute("minlength", value, 0);
+    }
+
+    get minLength() {
+        return this.getIntAttribute("minlength");
+    }
+
+    set maxLength(value) {
+        this.setIntAttribute("maxlength", value, 0);
+    }
+
+    get maxLength() {
+        return this.getIntAttribute("maxlength");
     }
 
     static get observedAttributes() {
-        return ["value", "placeholder", "readonly"];
+        return [...super.observedAttributes, "placeholder", "readonly", "minlength", "maxlength"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
-            case "value": {
-                if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, "value", newValue);
-                    if (!this.isChanged) {
-                        const value = this.value;
-                        this.#applyValue(value ?? "");
-                    }
-                }
-            } break;
             case "placeholder": {
                 if (oldValue != newValue) {
                     safeSetAttribute(this.#inputEl, "i18n-placeholder", newValue);
@@ -106,15 +113,43 @@ export default class PasswordInput extends CustomFormElementDelegating {
             case "readonly": {
                 if (oldValue != newValue) {
                     safeSetAttribute(this.#inputEl, "readonly", newValue);
+                    safeSetAttribute(this.#buttonEl, "readonly", newValue);
+                }
+            } break;
+            case "minlength":
+            case "maxlength": {
+                if (oldValue != newValue) {
+                    this.revalidate();
                 }
             } break;
         }
     }
 
-    #applyValue(value) {
-        this.#inputEl.value = value ?? this.defaultValue;
+    checkValid() {
+        const value = this.value;
+        if (value != null && value !== "") {
+            const min = this.minLength;
+            if (min != null && value.length < min) {
+                return `The minimum length for this field is {{0::${min}}} characters`;
+            }
+            const max = this.maxLength;
+            if (max != null && value.length > max) {
+                return `The maximum length for this field is {{0::${max}}} characters`;
+            }
+        }
+        return super.checkValid();
+    }
+
+    applyValueAttribute(value) {
+        safeSetAttribute(this.#inputEl, "value", value ?? "");
+    }
+
+    renderValue(value) {
+        this.#inputEl.value = value ?? "";
     }
 
 }
 
+FormElementRegistry.register("PasswordInput", PasswordInput);
 customElements.define("emc-input-password", PasswordInput);
+registerFocusable("emc-input-password");

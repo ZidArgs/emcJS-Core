@@ -11,6 +11,9 @@
     "tooltip": {
         "label": "Tooltip"
     },
+    "form-element": {
+        "label": "Form Element"
+    },
     "form-alt": {
         "label": "Form (alternative)"
     },
@@ -37,9 +40,6 @@
             },
             "input/keyvaluelistinput": {
                 "label": "KeyValueListInput"
-            },
-            "input/optionamountlist": {
-                "label": "OptionAmountListInput"
             },
             "input/password": {
                 "label": "PasswordInput"

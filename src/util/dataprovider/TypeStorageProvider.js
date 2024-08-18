@@ -26,7 +26,7 @@ export default class TypeStorageProvider extends AbstractDataProvider {
         }
         /* --- */
         this.#eventManager.set(["change", "clear", "load"], () => {
-            this.triggerUpdate();
+            this.refresh();
         });
         /* --- */
         this.#source = source;
@@ -47,7 +47,7 @@ export default class TypeStorageProvider extends AbstractDataProvider {
         if (source != null) {
             this.#eventManager.switchTarget(source);
         }
-        this.triggerUpdate();
+        this.refresh();
     }
 
     async getData(options = {}) {
@@ -55,7 +55,14 @@ export default class TypeStorageProvider extends AbstractDataProvider {
             return [];
         }
 
-        const {sort = [], page = 0, pageSize = 0, filter = {}, filterFunction = false} = options;
+        const {
+            sort = [],
+            page = 0,
+            pageSize = 0,
+            filter = {},
+            sortFunction = false,
+            filterFunction = false
+        } = options;
         const typeName = this.#source.typeName;
 
         const convertedFilter = Object.entries(filter).map(([key, value]) => {
@@ -63,6 +70,9 @@ export default class TypeStorageProvider extends AbstractDataProvider {
         });
 
         const result = [...this.#source].map(([name, value]) => {
+            if (typeof value !== "object") {
+                throw new Error("source contained non object value");
+            }
             return {
                 ...deepClone(value),
                 key: `${name}\n[${typeName}]`,
@@ -74,21 +84,28 @@ export default class TypeStorageProvider extends AbstractDataProvider {
                 }
             };
         }).filter((record) => {
-            if (typeof record !== "object") {
-                throw new Error("source contained non object value");
-            }
-
+            // apply filter by column
             for (const [key, filter] of convertedFilter) {
                 const value = record[key];
                 if (!filter.test(value)) {
                     return false;
                 }
             }
+            // apply filter function
             if (typeof filterFunction === "function") {
                 return filterFunction(record);
             }
+            // not filtered
             return true;
         }).sort((recordA, recordB) => {
+            // apply sort function
+            if (typeof sortFunction === "function") {
+                const res = sortFunction(recordA, recordB);
+                if (res != 0) {
+                    return res;
+                }
+            }
+            // apply sort by column
             for (const sortKey of sort) {
                 const [, desc = "", key = ""] = sortKey.match(SORT_PATTERN) ?? [];
                 if (key === "") {
@@ -96,11 +113,17 @@ export default class TypeStorageProvider extends AbstractDataProvider {
                 }
                 const valueA = recordA[key];
                 const valueB = recordB[key];
+
+                if (valueA == null || valueB == null) {
+                    continue;
+                }
+
                 const compareResult = numberedStringComparator(valueA, valueB);
                 if (compareResult !== 0) {
                     return !desc ? compareResult : -compareResult;
                 }
             }
+            // default sort order
             return 0;
         });
 

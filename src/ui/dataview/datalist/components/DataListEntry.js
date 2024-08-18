@@ -1,4 +1,4 @@
-import CustomElement from "/emcJS/ui/element/CustomElement.js";
+import CustomElement from "../../../element/CustomElement.js";
 import TPL from "./DataListEntry.js.html" assert {type: "html"};
 import STYLE from "./DataListEntry.js.css" assert {type: "css"};
 

@@ -7,7 +7,7 @@
     },
     {
         "type": "SwitchInput",
-        "name": "hide-errors",
+        "name": "hideerrors",
         "label": "Hide Error-Label",
         "value": false
     },

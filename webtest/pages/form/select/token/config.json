@@ -7,6 +7,17 @@
             "label": "token-select default",
             "name": "token-select.default",
             "tokengroup": "TokenSelect",
+            "options": {
+                "nanu": "Nanu",
+                "nana": "Nana",
+                "a": "",
+                "b": "",
+                "c": "",
+                "d": "",
+                "e": "",
+                "f": "",
+                "g": ""
+            },
             "multiple": true,
             "placeholder": "Select or create token..."
         },
@@ -15,6 +26,17 @@
             "label": "token-select choose only",
             "name": "token-select.chooseonly",
             "tokengroup": "TokenSelect",
+            "options": {
+                "nanu": "Nanu",
+                "nana": "Nana",
+                "a": "",
+                "b": "",
+                "c": "",
+                "d": "",
+                "e": "",
+                "f": "",
+                "g": ""
+            },
             "multiple": true,
             "chooseonly": true,
             "placeholder": "Select token..."

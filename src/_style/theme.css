@@ -119,6 +119,13 @@ all; top_bottom right_left; top right bottom left
     --fieldset-border-width: var(--form-border-width);
     --fieldset-border-radius: var(--form-border-radius);
 
+    --fieldset-legend-text-color: var(--form-text-color);
+    --fieldset-legend-back-color: var(--fieldset-back-color);
+    --fieldset-legend-back-image: none;
+    --fieldset-legend-border-color: var(--fieldset-border-color);
+    --fieldset-legend-border-width: var(--fieldset-border-width);
+    --fieldset-legend-border-radius: var(--fieldset-border-radius);
+
     /* === input === */
     --input-text-color: var(--page-text-color);
     --input-back-color: var(--page-back-color);
@@ -146,6 +153,7 @@ all; top_bottom right_left; top right bottom left
     --input-disabled-emphasize-color: #3f3f3f;
     --input-disabled-insignify-color: #757575;
 
+    /* === input-button === */
     --input-button-text-color: var(--input-text-color);
     --input-button-back-color: var(--input-back-color);
     --input-button-back-image: none;
@@ -154,12 +162,27 @@ all; top_bottom right_left; top right bottom left
     --input-button-hover-text-color: var(--input-text-color);
     --input-button-hover-back-color: var(--input-emphasize-color);
     --input-button-hover-back-image: none;
-    --input-button-hover-border-color: var(--input-border-color);
+    --input-button-hover-border-color: var(--input-button-border-color);
+
+    --input-button-active-text-color: var(--page-marked-text-color);
+    --input-button-active-back-color: var(--page-marked-back-color);
+    --input-button-active-back-image: none;
+    --input-button-active-border-color: var(--input-button-border-color);
+
+    --input-button-active-hover-text-color: var(--input-button-active-text-color);
+    --input-button-active-hover-back-color: var(--input-button-active-back-color);
+    --input-button-active-hover-back-image: none;
+    --input-button-active-hover-border-color: var(--input-button-active-border-color);
 
     --input-button-disabled-text-color: var(--input-disabled-text-color);
     --input-button-disabled-back-color: var(--input-disabled-back-color);
     --input-button-disabled-back-image: none;
     --input-button-disabled-border-color: var(--input-disabled-border-color);
+
+    --input-button-active-disabled-text-color: var(--input-disabled-text-color);
+    --input-button-active-disabled-back-color: var(--input-disabled-emphasize-color);
+    --input-button-active-disabled-back-image: none;
+    --input-button-active-disabled-border-color: var(--input-button-disabled-border-color);
 
     --input-button-invalid-text-color: var(--input-invalid-text-color);
     --input-button-invalid-back-color: var(--input-invalid-back-color);
@@ -207,15 +230,15 @@ all; top_bottom right_left; top right bottom left
     --button-hover-back-image: none;
     --button-hover-border-color: var(--button-border-color);
 
-    --button-active-text-color: var(--page-marked-text-color);
-    --button-active-back-color: var(--page-marked-back-color);
-    --button-active-back-image: none;
-    --button-active-border-color: var(--button-border-color);
+    --button-active-text-color: var(--button-active-text-color);
+    --button-active-back-color: var(--button-active-back-color);
+    --button-active-back-image: var(--button-active-back-image);
+    --button-active-border-color: var(--button-active-border-color);
 
-    --button-active-hover-text-color: var(--button-active-text-color);
-    --button-active-hover-back-color: var(--button-active-back-color);
-    --button-active-hover-back-image: var(--button-active-back-image);
-    --button-active-hover-border-color: var(--button-active-border-color);
+    --button-active-hover-text-color: var(--button-active-hover-text-color);
+    --button-active-hover-back-color: var(--button-active-hover-back-color);
+    --button-active-hover-back-image: var(--button-active-hover-back-image);
+    --button-active-hover-border-color: var(--button-active-hover-border-color);
 
     --button-primary-text-color: #000000;
     --button-primary-back-color: #9ec9fb;
@@ -332,9 +355,17 @@ all; top_bottom right_left; top right bottom left
     --datagrid-border-width: var(--page-border-width);
     --datagrid-border-radius: 6px;
 
+    --datagrid-disabled-text-color: #757575;
+    --datagrid-disabled-back-color: #999999;
+    --datagrid-disabled-back-image: none;
+    --datagrid-disabled-border-color: #757575;
+
     --datagrid-empty-text-color: #666666;
     --datagrid-empty-back-color: #dadada;
     --datagrid-empty-back-image: none;
+    --datagrid-empty-border-color: #666666;
+    --datagrid-empty-border-width: 2px;
+    --datagrid-empty-border-radius: 6px;
 
     --datagrid-column-seperator-width: 2px;
 
@@ -343,12 +374,41 @@ all; top_bottom right_left; top right bottom left
     --datagrid-header-back-image: none;
     --datagrid-header-seperator-color: var(--datagrid-back-color);
 
+    --datagrid-disabled-header-text-color: #999999;
+    --datagrid-disabled-header-back-color: #757575;
+    --datagrid-disabled-header-back-image: none;
+    --datagrid-disabled-header-seperator-color: #999999;
+
     --datagrid-row-seperator-width: 1px;
     --datagrid-row-seperator-color: var(--datagrid-border-color);
+
+    --datagrid-disabled-row-seperator-color: #757575;
 
     --datagrid-row-hover-text-color: var(--page-hover-text-color);
     --datagrid-row-hover-back-color: var(--page-hover-back-color);
     --datagrid-row-hover-back-image: none;
+
+    --datagrid-select-cell-text-color: var(--datagrid-text-color);
+    --datagrid-select-cell-back-color: var(--datagrid-back-color);
+    --datagrid-select-cell-border-color: var(--datagrid-select-cell-text-color);
+
+    --datagrid-select-cell-checked-text-color: var(--datagrid-select-cell-back-color);
+    --datagrid-select-cell-checked-back-color: var(--datagrid-select-cell-text-color);
+
+    --datagrid-disabled-select-cell-text-color: #757575;
+    --datagrid-disabled-select-cell-back-color: #999999;
+    --datagrid-disabled-select-cell-border-color: #6a6a6a;
+
+    --datagrid-header-select-cell-text-color: var(--datagrid-header-text-color);
+    --datagrid-header-select-cell-back-color: var(--datagrid-header-back-color);
+    --datagrid-header-select-cell-border-color: var(--datagrid-header-select-cell-text-color);
+
+    --datagrid-header-select-cell-checked-text-color: var(--datagrid-select-cell-checked-text-color);
+    --datagrid-header-select-cell-checked-back-color: var(--datagrid-select-cell-checked-back-color);
+
+    --datagrid-header-disabled-select-cell-text-color: var(--datagrid-disabled-select-cell-text-color);
+    --datagrid-header-disabled-select-cell-back-color: var(--datagrid-disabled-select-cell-back-color);
+    --datagrid-header-disabled-select-cell-border-color: var(--datagrid-disabled-select-cell-border-color);
 
     /* === datalist === */
     --datalist-back-color: var(--page-back-color);
@@ -360,6 +420,9 @@ all; top_bottom right_left; top right bottom left
     --datalist-empty-text-color: #666666;
     --datalist-empty-back-color: #dadada;
     --datalist-empty-back-image: none;
+    --datalist-empty-border-color: #666666;
+    --datalist-empty-border-width: 2px;
+    --datalist-empty-border-radius: 6px;
 
     --datalist-entry-text-color: var(--page-text-color);
     --datalist-entry-back-color: var(--page-back-color);

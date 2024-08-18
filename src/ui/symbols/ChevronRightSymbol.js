@@ -1,4 +1,4 @@
-import CustomElement from "../CustomElement/CustomElement.js";
+import CustomElement from "../element/CustomElement.js";
 // import TPL from "./ChevronRightSymbol.js.html" assert {type: "html"};
 import STYLE from "./ChevronRightSymbol.js.css" assert {type: "css"};
 

@@ -3,22 +3,10 @@
 <head>
     <title>emcJS sandbox</title>
     <meta charset="UTF-8">
-    <meta
-        name="description"
-        content="Test for emcJS components"
-    >
-    <meta
-        name="robots"
-        content="none"
-    >
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-    <meta
-        name="theme-color"
-        content="#000000"
-    >
+    <meta name="description" content="Test for emcJS components">
+    <meta name="robots" content="none">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#000000">
     <style>
         :root {
             font-family: Arial, Helvetica, sans-serif;
@@ -38,132 +26,36 @@
             height: 100%;
         }
     </style>
-    <script
-        type="module"
-        src="./index.js"
-    ></script>
+    <script type="module" src="./index.js"></script>
 </head>
 
 <body style="display: flex; flex-direction: column;">
-    <emc-page
-        id="page"
-        style="padding: 8px;"
-    >
-        <emc-form-container
-            id="form"
-            hasfooter=""
-        >
+    <emc-page id="page" style="padding: 8px;">
+        <emc-form-container id="form" hasfooter="">
             <form>
-                <emc-input-action
-                    id="action"
-                    name="action"
-                    label="action"
-                    placeholder="Empty"
-                    description="Test description"
-                    resettable
-                    required
-                ></emc-input-action>
-                <emc-input-boolorlogic
-                    name="boolorlogic"
-                    label="boolorlogic"
-                    resettable
-                    required
-                ></emc-input-boolorlogic>
-                <emc-input-color
-                    name="color"
-                    label="color"
-                    placeholder="Enter color..."
-                    resettable
-                    required
-                ></emc-input-color>
-                <emc-input-hotkey
-                    name="hotkey"
-                    label="hotkey"
-                    placeholder="Enter hotkey..."
-                    resettable
-                    required
-                ></emc-input-hotkey>
-                <emc-input-logic
-                    name="logic"
-                    label="logic"
-                    resettable
-                    required
-                    hide-errors
-                ></emc-input-logic>
-                <emc-input-number
-                    name="number"
-                    label="number"
-                    placeholder="Enter number..."
-                    resettable
-                    required
-                    spinner
-                ></emc-input-number>
-                <emc-input-password
-                    name="password"
-                    label="password"
-                    placeholder="Enter password..."
-                    resettable
-                    required
-                ></emc-input-password>
-                <emc-input-range
-                    name="range"
-                    label="range"
-                    resettable
-                    required
-                ></emc-input-range>
-                <emc-input-search
-                    name="search"
-                    label="search"
-                    placeholder="Enter search..."
-                    resettable
-                    required
-                ></emc-input-search>
-                <emc-input-string
-                    name="string"
-                    label="string"
-                    placeholder="Enter text..."
-                    resettable
-                    required
-                    minlength="10"
-                    maxlength="20"
-                ></emc-input-string>
-                <emc-input-switch
-                    name="switch"
-                    label="switch"
-                    resettable
-                    required
-                ></emc-input-switch>
-                <emc-input-text
-                    name="text"
-                    label="text"
-                    placeholder="Enter text..."
-                    resettable
-                    required
-                    minlength="10"
-                    maxlength="100"
-                ></emc-input-text>
+                <emc-input-action id="action" name="action" label="action" placeholder="A whole lot of nothing" description="Test description" resettable required></emc-input-action>
+                <emc-input-boolorlogic name="boolorlogic" label="boolorlogic" resettable required></emc-input-boolorlogic>
+                <emc-input-color name="color" label="color" placeholder="Enter color..." resettable required></emc-input-color>
+                <emc-input-hotkey name="hotkey" label="hotkey" placeholder="Enter hotkey..." resettable required></emc-input-hotkey>
+                <emc-input-list name="list" label="list" resettable required></emc-input-list>
+                <emc-input-logic name="logic" label="logic" resettable required></emc-input-logic>
+                <emc-input-number name="number" label="number" placeholder="Enter number..." resettable required spinner></emc-input-number>
+                <emc-input-password name="password" label="password" placeholder="Enter password..." resettable required></emc-input-password>
+                <emc-input-range name="range" label="range" resettable required></emc-input-range>
+                <emc-input-search name="search" label="search" placeholder="Enter search..." resettable required></emc-input-search>
+                <emc-input-string name="string" label="string" placeholder="Enter text..." resettable required minlength="10" maxlength="20"></emc-input-string>
+                <emc-input-switch name="switch" label="switch" resettable required></emc-input-switch>
+                <emc-input-text name="text" label="text" placeholder="Enter text..." resettable required minlength="10" maxlength="100"></emc-input-text>
             </form>
             <form>
-                <input
-                    type="hidden"
-                    name="test"
-                    value="foobar"
-                >
+                <emc-select-image name="image-select" label="image-select" placeholder="Select image..." resettable required></emc-select-image>
+            </form>
+            <form>
+                <input type="hidden" name="test" value="foobar">
                 <emc-form-row align="end">
-                    <emc-button-error
-                        id="error-button"
-                        visible="true"
-                        enabled="true"
-                        distance="right"
-                    ></emc-button-error>
-                    <emc-button-reset
-                        visible="true"
-                        enabled="true"
-                    ></emc-button-reset>
-                    <emc-button-submit
-                        visible="true"
-                        enabled="true"
-                    ></emc-button-submit>
+                    <emc-button-error id="error-button" visible="true" enabled="true" distance="right"></emc-button-error>
+                    <emc-button-reset visible="true" enabled="true"></emc-button-reset>
+                    <emc-button-submit visible="true" enabled="true"></emc-button-submit>
                 </emc-form-row>
             </form>
         </emc-form-container>

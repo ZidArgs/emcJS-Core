@@ -58,8 +58,8 @@
         "type": "A",
         "name": "test"
     },
-    "keyvaluelist.default": [
-        "foobar",
-        "barfoo"
-    ]
+    "keyvaluelist.default": {
+        "foobar": "",
+        "barfoo": ""
+    }
 }

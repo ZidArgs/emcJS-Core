@@ -35,6 +35,8 @@ export default class CellManager {
 
     #selectCellEl;
 
+    #selectEnd = false;
+
     #selectCheckboxEl;
 
     #lastCellEl;
@@ -61,11 +63,25 @@ export default class CellManager {
             };
             this.#selectCheckboxEl.dispatchEvent(ev);
         });
-        this.#selectCellEl.className = "select-cell";
+        this.#selectCellEl.className = "select-cell select-cell-start";
         this.#selectCellEl.append(this.#selectCheckboxEl);
 
         this.#lastCellEl = document.createElement("td");
         this.#lastCellEl.classList.add("lastCell");
+    }
+
+    set selectEnd(value) {
+        value = !!value;
+        if (this.#selectEnd !== value) {
+            this.#selectEnd = value;
+            this.#selectCellEl.classList.toggle("select-cell-start", !value);
+            this.#selectCellEl.classList.toggle("select-cell-end", value);
+            this.#render();
+        }
+    }
+
+    get selectEnd() {
+        return this.#selectEnd;
     }
 
     purge() {
@@ -74,8 +90,12 @@ export default class CellManager {
         this.#elements.clear();
         this.#columnDefinitionCache.clear();
 
+        if (this.#selectEnd) {
+            this.#target.append(this.#selectCellEl);
+        } else {
+            this.#target.prepend(this.#selectCellEl);
+        }
         this.#target.append(this.#lastCellEl);
-        this.#target.prepend(this.#selectCellEl);
     }
 
     manage(columnDefinition, rowData, isSelected) {
@@ -269,8 +289,12 @@ export default class CellManager {
             this.#target.append(...els);
         }
         // add special cells
+        if (this.#selectEnd) {
+            this.#target.append(this.#selectCellEl);
+        } else {
+            this.#target.prepend(this.#selectCellEl);
+        }
         this.#target.append(this.#lastCellEl);
-        this.#target.prepend(this.#selectCellEl);
     });
 
 }

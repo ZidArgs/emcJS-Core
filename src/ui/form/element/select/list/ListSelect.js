@@ -1,27 +1,38 @@
-import CustomFormElementDelegating from "../../../../element/CustomFormElementDelegating.js";
-import BusyIndicatorManager from "../../../../../util/BusyIndicatorManager.js";
+import AbstractFormElement from "../../AbstractFormElement.js";
+import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
+import SimpleDataProvider from "../../../../../util/dataprovider/SimpleDataProvider.js";
 import {
-    isEqual
-} from "../../../../../util/helper/Comparator.js";
+    deepClone
+} from "../../../../../util/helper/DeepClone.js";
 import {
     debounce
 } from "../../../../../util/Debouncer.js";
-import ElementListCache from "../../../../../util/html/ElementListCache.js";
-import SimpleDataProvider from "../../../../../util/dataprovider/SimpleDataProvider.js";
+import {
+    registerFocusable
+} from "../../../../../util/helper/html/getFocusableElements.js";
+import {
+    safeSetAttribute
+} from "../../../../../util/helper/ui/NodeAttributes.js";
+import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
 import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
-import "../../input/search/SearchInput.js";
-import "../../../../dataview/datagrid/DataGrid.js";
+import ElementListCache from "../../../../../util/html/ElementListCache.js";
+import BusyIndicatorManager from "../../../../../util/BusyIndicatorManager.js";
+import i18n from "../../../../../util/I18n.js";
+import I18nOption from "../../../../i18n/builtin/I18nOption.js";
 import TPL from "./ListSelect.js.html" assert {type: "html"};
 import STYLE from "./ListSelect.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./ListSelect.js.json" assert {type: "json"};
 
 const MUTATION_CONFIG = {
     attributes: true,
     attributeFilter: ["value"]
 };
 
-export default class ListSelect extends CustomFormElementDelegating {
+export default class ListSelect extends AbstractFormElement {
 
-    #value;
+    static get formConfigurationFields() {
+        return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
+    }
 
     #searchEl;
 
@@ -33,22 +44,16 @@ export default class ListSelect extends CustomFormElementDelegating {
 
     #optionNodeList = new ElementListCache();
 
+    #i18nEventManager = new EventTargetManager(i18n, false);
+
     #mutationObserver = new MutationObserverManager(MUTATION_CONFIG, () => {
         this.#onSlotChange();
     });
 
     constructor() {
         super();
-        this.shadowRoot.append(TPL.generate());
+        this.shadowRoot.getElementById("field").append(TPL.generate());
         STYLE.apply(this.shadowRoot);
-        /* --- */
-        this.addEventListener("keydown", () => {
-            // TODO
-        });
-        this.addEventListener("blur", (event) => {
-            // TODO
-            event.stopPropagation();
-        });
         /* --- */
         this.#optionsContainerEl = this.shadowRoot.getElementById("options-container");
         this.#optionsContainerEl.addEventListener("slotchange", () => {
@@ -63,9 +68,6 @@ export default class ListSelect extends CustomFormElementDelegating {
         });
         /* --- */
         this.#dataManager = new SimpleDataProvider(this.#gridEl);
-        this.#dataManager.setOptions({
-            sort: ["name"]
-        });
         /* --- */
         this.#searchEl = this.shadowRoot.getElementById("search");
         this.#searchEl.addEventListener("change", () => {
@@ -77,59 +79,42 @@ export default class ListSelect extends CustomFormElementDelegating {
             }
             this.#dataManager.updateOptions(options);
         }, true);
-    }
-
-    connectedCallback() {
-        super.connectedCallback();
-        const value = this.value;
-        this.#value = value;
-        this.#applyValue(value ?? []);
-        this.internals.setFormValue(value);
-        this.#gridEl.selectable = this.multi ? "multi" : "single";
-        if (this.header === "show") {
-            this.#gridEl.nohead = "false";
-        } else if (this.header === "hide") {
-            this.#gridEl.nohead = "true";
-        } else {
-            this.#gridEl.nohead = this.multi ? "false" : "true";
-        }
-        this.#updateSort(this.sorted);
+        /* --- */
+        this.#i18nEventManager.set("language", () => {
+            this.#dataManager.refresh();
+        });
+        this.#i18nEventManager.set("translation", () => {
+            this.#dataManager.refresh();
+        });
     }
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
         this.#searchEl.disabled = disabled;
-        // TODO disable grid
+        this.#gridEl.disabled = disabled;
     }
 
-    formResetCallback() {
-        this.value = super.value || "";
+    focus(options) {
+        this.#searchEl.focus(options);
     }
 
-    formStateRestoreCallback(state/* , mode */) {
-        this.value = state;
+    set defaultValue(value) {
+        this.setJSONAttribute("value", value);
+    }
+
+    get defaultValue() {
+        return this.getJSONAttribute("value") ?? [];
     }
 
     set value(value) {
-        if (!isEqual(this.#value, value)) {
-            this.#value = value;
-            this.#applyValue(value ?? []);
-            this.internals.setFormValue(value);
-            /* --- */
-            this.dispatchEvent(new Event("change"));
+        if (typeof value === "string") {
+            value = JSON.parse(value);
         }
+        super.value = value;
     }
 
     get value() {
-        return this.#value ?? super.value;
-    }
-
-    set readonly(value) {
-        this.setBooleanAttribute("readonly", value);
-    }
-
-    get readonly() {
-        return this.getBooleanAttribute("readonly");
+        return super.value;
     }
 
     set sorted(value) {
@@ -140,42 +125,41 @@ export default class ListSelect extends CustomFormElementDelegating {
         return this.getBooleanAttribute("sorted");
     }
 
-    set multi(val) {
-        this.setBooleanAttribute("multi", val);
+    set multiple(val) {
+        this.setBooleanAttribute("multiple", val);
     }
 
-    get multi() {
-        return this.getBooleanAttribute("multi");
+    get multiple() {
+        return this.getBooleanAttribute("multiple");
     }
 
-    set header(val) {
-        this.setAttribute("header", val);
+    set header(value) {
+        this.setAttribute("header", value);
     }
 
     get header() {
         return this.getAttribute("header");
     }
 
+    set selectEnd(value) {
+        this.setAttribute("selectend", value);
+    }
+
+    get selectEnd() {
+        return this.getAttribute("selectend");
+    }
+
     static get observedAttributes() {
-        return ["value", "readonly", "sorted", "multi", "header"];
+        return [...super.observedAttributes, "readonly", "sorted", "multiple", "selectend", "header"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
-            case "value": {
-                if (oldValue != newValue) {
-                    if (this.#value == null) {
-                        try {
-                            this.#applyValue(JSON.parse(newValue));
-                        } catch {
-                            this.#applyValue([]);
-                        }
-                    }
-                }
-            } break;
             case "readonly": {
                 if (oldValue != newValue) {
-                    // TODO make everything readonly
+                    const value = newValue != null && newValue != "false";
+                    this.#gridEl.readonly = value;
                 }
             } break;
             case "sorted": {
@@ -183,42 +167,46 @@ export default class ListSelect extends CustomFormElementDelegating {
                     this.#updateSort(this.sorted);
                 }
             } break;
-            case "multi": {
+            case "multiple": {
                 if (oldValue != newValue) {
-                    this.#gridEl.selectable = this.multi ? "multi" : "single";
-                    if (this.header !== "hide" && this.header !== "show") {
-                        this.#gridEl.nohead = this.multi ? "false" : "true";
-                    }
+                    this.#gridEl.multiple = this.multiple;
+                }
+            } break;
+            case "selectend": {
+                if (oldValue != newValue) {
+                    this.#gridEl.selectEnd = this.selectEnd;
                 }
             } break;
             case "header": {
                 if (oldValue != newValue) {
                     if (newValue === "show") {
-                        this.#gridEl.nohead = "false";
+                        this.#gridEl.nohead = false;
                     } else if (newValue === "hide") {
-                        this.#gridEl.nohead = "true";
+                        this.#gridEl.nohead = true;
                     } else {
-                        this.#gridEl.nohead = this.multi ? "false" : "true";
+                        this.#gridEl.nohead = null;
                     }
                 }
             } break;
         }
     }
 
-    #updateSort(value) {
-        if (value) {
-            this.#dataManager.setOptions({
-                sort: ["name"]
-            });
-        } else {
-            this.#dataManager.setOptions({
-                sort: []
-            });
-        }
+    renderValue(value) {
+        this.#gridEl.setSelected(value);
     }
 
-    #applyValue(value) {
-        this.#gridEl.setSelected(value);
+    #updateSort(value) {
+        if (value) {
+            this.#i18nEventManager.setActive(true);
+            this.#dataManager.setOptions({
+                sortFunction: (record0, record1) => i18n.compareNumberedValuesTranslated(record0.name, record1.name)
+            });
+        } else {
+            this.#i18nEventManager.setActive(false);
+            this.#dataManager.setOptions({
+                sortFunction: false
+            });
+        }
     }
 
     #onSlotChange = debounce(async () => {
@@ -231,8 +219,8 @@ export default class ListSelect extends CustomFormElementDelegating {
         const newNodes = new Set();
         for (const el of optionNodeList) {
             data.push({
-                key: el.value,
-                name: el.value
+                key: el.value || el.innerText,
+                name: el.i18nValue || el.label || el.innerText
             });
             /* --- */
             if (oldNodes.has(el)) {
@@ -251,6 +239,28 @@ export default class ListSelect extends CustomFormElementDelegating {
         await BusyIndicatorManager.unbusy();
     });
 
+    static fromConfig(config) {
+        const selectEl = new ListSelect();
+        const {options = {}, ...params} = config;
+
+        for (const key in options) {
+            const value = options[key];
+            const optionEl = I18nOption.create();
+            optionEl.value = key;
+            optionEl.i18nValue = value;
+            selectEl.append(optionEl);
+        }
+
+        for (const name in params) {
+            const value = params[name];
+            safeSetAttribute(selectEl, name, value);
+        }
+
+        return selectEl;
+    }
+
 }
 
+FormElementRegistry.register("ListSelect", ListSelect);
 customElements.define("emc-select-list", ListSelect);
+registerFocusable("emc-select-list");

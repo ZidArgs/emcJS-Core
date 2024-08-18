@@ -2,13 +2,15 @@
     display: flex;
     width: min-content;
     height: 2em;
-    margin: 10px;
+    margin: 6px;
     user-select: none;
     font-size: 1rem;
 }
+
 :host(:focus) {
     outline: none;
 }
+
 #button {
     display: flex;
     align-items: center;
@@ -32,106 +34,131 @@
     white-space: nowrap;
     cursor: pointer;
 }
+
 :host([slim]:not([slim="false"])) #button {
     padding: 0px 4px;
 }
+
 :host(:disabled) #button {
     border-color: var(--button-disabled-border-color, #6a6a6a);
     pointer-events: none;
 }
+
 :host([text-transform="lowercase"]) #button {
     text-transform: lowercase;
 }
+
 :host([text-transform="uppercase"]) #button {
     text-transform: uppercase;
 }
+
 :host([text-transform="capitalize"]) #button {
     text-transform: capitalize;
 }
+
 #button:focus,
 :host(:focus) #button {
     box-shadow: 0 0 2px 3px var(--button-focus-color, #06b5ff);
     outline: none;
 }
+
 #button:hover {
     color: var(--button-hover-text-color, #ffffff);
     background-color: var(--button-hover-back-color, #000000);
     background-image: var(--button-hover-back-image, none);
 }
+
 #button[disabled]:not([disabled="false"]) {
     color: var(--input-disabled-text-color, #757575);
     background-color: var(--button-disabled-back-color, #999999);
     background-image: var(--button-disabled-back-image, none);
     cursor: default;
 }
+
 #button #link-icon {
     position: relative;
     height: 1em;
     width: 1em;
     margin-left: 5px;
 }
+
 #button:hover #link-icon path {
     stroke: var(--button-back-color, #ffffff);
     fill: var(--button-back-color, #ffffff);
 }
+
 #button[disabled]:not([disabled="false"]) #link-icon path {
     stroke: var(--button-disabled-text-color, #757575);
     fill: var(--button-disabled-text-color, #757575);
 }
-#button[icon]::before {
+
+#button::before {
     align-items: center;
     justify-content: center;
     height: 1em;
-    width: 1em;
+    width: min-width;
     font-size: 1.3em;
     line-height: 1em;
     font-family: "monospace", monospace;
     font-weight: bold;
 }
+
 #button[icon]::before {
     display: inline-flex;
     content: attr(icon);
 }
+
 #button[icon=""]::before {
     display: none;
 }
+
 :host([text]:not([text=""])) #button::before {
     margin-right: 5px;
 }
+
 :host([border-flat~="left"]) #button {
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
 }
+
 :host([border-flat~="right"]) #button {
     border-top-right-radius: 0px;
     border-bottom-right-radius: 0px;
 }
+
 :host([border-flat~="top"]) #button {
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
 }
+
 :host([border-flat~="bottom"]) #button {
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
 }
+
 :host([border-flat~="all"]) #button {
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
 }
+
 :host([border-open~="left"]) #button {
     border-left-style: none;
 }
+
 :host([border-open~="right"]) #button {
     border-right-style: none;
 }
+
 :host([border-open~="top"]) #button {
     border-top-style: none;
 }
+
 :host([border-open~="bottom"]) #button {
     border-bottom-style: none;
 }
+
 :host([border-open~="all"]) #button {
     border-style: none;
 }

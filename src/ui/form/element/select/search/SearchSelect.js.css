@@ -1,8 +1,8 @@
-:host {
-    display: flex;
+#input {
+    position: relative;
+    flex-grow: 1;
     height: 2em;
-    min-width: 200px;
-    padding: 0px calc(7px + 2em) 0px 7px;
+    padding: 0px calc(2em + 7px) 0px 7px;
     color: var(--input-text-color, #000000);
     background-color: var(--input-back-color, #ffffff);
     background-image: var(--input-back-image, none);
@@ -10,98 +10,72 @@
     border-width: var(--input-border-width, 2px);
     border-color: var(--input-border-color, #222222);
     border-radius: var(--input-border-radius, 6px);
+    font-size: 1em;
+    z-index: -100;
 }
-:host(:disabled) {
+
+#input.active {
+    z-index: 0;
+}
+
+#input:focus {
+    box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
+    outline: none;
+    z-index: 1;
+}
+
+:host(:invalid) #input {
+    background-color: var(--input-invalid-back-color, #ffebeb);
+    background-image: var(--input-invalid-back-image, none);
+    border-color: var(--input-invalid-border-color, #ff4444);
+}
+
+:host(:invalid) #input:focus {
+    box-shadow: 0 0 2px 3px var(--input-invalid-focus-color, #ff2500);
+}
+
+#input::placeholder {
+    color: var(--input-placeholder-text-color, #757575);
+}
+
+#input:disabled {
     color: var(--input-disabled-text-color, #757575) !important;
     background-color: var(--input-disabled-back-color, #999999) !important;
     background-image: var(--input-disabled-back-image, none) !important;
     border-color: var(--input-disabled-border-color, #6a6a6a) !important;
     cursor: default !important;
+    opacity: 1 !important;
 }
-:host(:focus) {
-    box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
-    outline: none;
-}
-:host(:invalid) {
-    background-color: var(--input-invalid-back-color, #ffebeb);
-    background-image: var(--input-invalid-back-image, none);
-    border-color: var(--input-invalid-border-color, #ff4444);
-}
-:host(:invalid:focus) {
-    box-shadow: 0 0 2px 3px var(--input-invalid-focus-color, #ff2500);
-}
-#input {
-    position: absolute;
-    flex-grow: 1;
-    height: 100%;
-    width: 0px;
-    background-color: transparent;
-    border: none;
-    font-size: 1em;
-    opacity: 0;
-    z-index: -100;
-}
-#input.active {
-    position: relative;
-    opacity: 1;
-    z-index: 0;
-}
-#input:focus {
-    outline: none;
-}
-#input[readonly] {
-    cursor: pointer;
-}
-#input::placeholder {
-    color: var(--input-placeholder-text-color, #757575);
-}
-#view {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    flex-grow: 1;
-    width: 0px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    cursor: pointer;
-}
-#view:focus {
-    outline: none;
-}
-#view.disabled {
-    cursor: default;
-    pointer-events: none;
-}
-#input.active + #view {
-    display: none;
-}
-#placeholder {
-    color: var(--input-placeholder-text-color, #757575);
-}
+
+/* --- */
 #button {
     position: absolute;
     display: flex;
-    justify-content: center;
     align-items: center;
-    right: 0px;
+    justify-content: center;
+    flex-shrink: 0;
     width: 2em;
-    height: 100%;
-    line-height: 1.2em;
-    cursor: pointer;
-}
-#button.disabled {
-    color: var(--input-disabled-text-color, #757575);
-    background-color: var(--input-disabled-back-color, #999999);
-    background-image: var(--input-disabled-back-image, none);
-    cursor: default;
+    height: 2em;
+    right: 0px;
+    padding: 0px;
+    margin: 0 0 0 calc(-1 * var(--input-border-width, 2px));
+    background-color: transparent;
+    border-style: solid;
+    border-width: var(--input-border-width, 2px);
+    border-color: transparent;
+    border-radius: 0 var(--input-border-radius, 6px) var(--input-border-radius, 6px) 0;
+    border-left-style: none;
+    font-size: 1rem;
+    font-weight: bold;
     pointer-events: none;
+    z-index: 2;
 }
-#input:focus + #button {
-    outline: none;
-    z-index: 1;
+
+#button:disabled {
+    opacity: 1 !important;
 }
-#button:after {
+
+#button::before {
     position: relative;
     display: block;
     border: solid 0.25em transparent;
@@ -110,11 +84,105 @@
     transform: translateY(-0.125em) rotate(45deg);
     content: " ";
 }
+
+:host(:invalid) #button::before {
+    border-bottom-color: var(--input-invalid-text-color, #000000);
+    border-right-color: var(--input-invalid-text-color, #000000);
+}
+
+:host(:disabled) #button::before {
+    border-bottom-color: var(--input-disabled-text-color, #757575) !important;
+    border-right-color: var(--input-disabled-text-color, #757575) !important;
+}
+
+#button[readonly]:not([readonly="false"]) {
+    opacity: 0.3;
+}
+
+/* --- */
+#view {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-grow: 1;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    padding: 0;
+    color: var(--input-text-color, #000000);
+    background-color: var(--input-back-color, #ffffff);
+    background-image: var(--input-back-image, none);
+    border-style: solid;
+    border-width: var(--input-border-width, 2px);
+    border-color: var(--input-border-color, #222222);
+    border-radius: var(--input-border-radius, 6px);
+    font-size: 1em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+}
+
+:host(:invalid) #view {
+    background-color: var(--input-invalid-back-color, #ffebeb);
+    background-image: var(--input-invalid-back-image, none);
+    border-color: var(--input-invalid-border-color, #ff4444);
+}
+
+:host(:invalid) #view:focus {
+    box-shadow: 0 0 2px 3px var(--input-invalid-focus-color, #ff2500);
+}
+
+#input:focus + #view {
+    z-index: 1;
+}
+
+#input.active + #view {
+    display: none;
+}
+
+#input[readonly]:not([readonly="false"]) + #view {
+    cursor: default;
+}
+
+#input:disabled + #view {
+    color: var(--input-disabled-text-color, #757575) !important;
+    background-color: var(--input-disabled-back-color, #999999) !important;
+    background-image: var(--input-disabled-back-image, none) !important;
+    border-color: var(--input-disabled-border-color, #6a6a6a) !important;
+    cursor: default !important;
+    opacity: 1 !important;
+    pointer-events: none !important;
+}
+
+/* --- */
+#placeholder,
+#value {
+    height: 100%;
+    width: 100%;
+    justify-content: flex-start;
+    padding: 0px calc(2em + 7px) 0px 7px;
+    border-radius: var(--input-border-radius, 6px);
+}
+
+#placeholder {
+    color: var(--input-placeholder-text-color, #757575);
+}
+
+#value {
+    user-select: text;
+    pointer-events: all;
+}
+
+/* --- */
 #scroll-container {
     position: fixed;
     display: none;
     max-height: 300px;
-    margin: 4px 0px;
+    margin-top: calc(-1 * var(--input-border-width, 2px));
     overflow-x: hidden;
     overflow-y: auto;
     color: var(--input-text-color, #000000);
@@ -127,52 +195,39 @@
     z-index: 1000;
     box-shadow: #000000 4px 4px 8px -4px;
 }
+
 #options-container {
     display: block;
     width: 100%;
 }
-::slotted([value]) {
+
+/* --- */
+emc-select-entry {
     display: flex;
     align-items: center;
-    min-height: 2rem;
-    padding: 5px;
     white-space: normal;
     color: var(--select-option-text-color, #000000);
     background-color: var(--select-option-back-color, #ffffff);
     background-image: var(--select-option-back-image, none);
     font-size: 1rem;
+    cursor: pointer;
 }
-::slotted([value]:not(:last-child)) {
+
+emc-select-entry:not(:last-child) {
     border-bottom: solid 1px var(--select-option-divider-color, #949494);
 }
-::slotted([value][disabled]) {
-    display: none;
-}
-::slotted([value]:hover),
-::slotted([value].marked) {
+
+emc-select-entry:hover,
+emc-select-entry.marked {
     color: var(--select-option-marked-text-color, #000000);
     background-color: var(--select-option-marked-back-color, #b1f4ff);
     background-image: var(--select-option-marked-back-image, none);
 }
-::slotted([value].selected) {
-    color: var(--select-option-selected-text-color, #000000);
-    background-color: var(--select-option-selected-back-color, #dbdbdb);
-    background-image: var(--select-option-selected-back-image, none);
-}
-::slotted([value].selected:hover),
-::slotted([value].selected.marked) {
-    color: var(--select-option-selected-marked-text-color, #000000);
-    background-color: var(--select-option-selected-marked-back-color, #26e0ff);
-    background-image: var(--select-option-selected-marked-back-image, none);
-}
-:host(:not([readonly])) ::slotted([value]:not(.active)),
-:host([readonly="false"]) ::slotted([value]:not(.active)),
-:host([multiple]:not([multiple="false"]):not([readonly])) ::slotted([value].active),
-:host([readonly="false"][multiple]:not([multiple="false"])) ::slotted([value].active) {
-    cursor: pointer;
-}
-#empty {
-    display: flex;
+
+/* --- */
+#empty,
+#nomatch {
+    display: none;
     align-items: center;
     justify-content: center;
     font-style: italic;
@@ -181,6 +236,70 @@
     margin: 5px 2px;
     white-space: normal;
 }
-.hidden {
+
+#native-empty {
+    font-style: italic;
+    text-align: center;
+}
+
+.hidden,
+#options-slot {
     display: none !important;
+}
+
+/* --- */
+#native-select {
+    display: none;
+    flex-grow: 1;
+    height: 2em;
+    padding: 0px calc(2em + 7px) 0px 7px;
+    color: var(--input-text-color, #000000);
+    background-color: var(--input-back-color, #ffffff);
+    background-image: var(--input-back-image, none);
+    border-style: solid;
+    border-width: var(--input-border-width, 2px);
+    border-color: var(--input-border-color, #222222);
+    border-radius: var(--input-border-radius, 6px);
+    font-size: 1em;
+}
+
+#native-select:focus {
+    box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
+    outline: none;
+    z-index: 1;
+}
+
+:host(:invalid) #native-select {
+    background-color: var(--input-invalid-back-color, #ffebeb);
+    background-image: var(--input-invalid-back-image, none);
+    border-color: var(--input-invalid-border-color, #ff4444);
+}
+
+:host(:invalid) #native-select:focus {
+    box-shadow: 0 0 2px 3px var(--input-invalid-focus-color, #ff2500);
+}
+
+#native-select::placeholder {
+    color: var(--input-placeholder-text-color, #757575);
+}
+
+#native-select:disabled {
+    color: var(--input-disabled-text-color, #757575) !important;
+    background-color: var(--input-disabled-back-color, #999999) !important;
+    background-image: var(--input-disabled-back-image, none) !important;
+    border-color: var(--input-disabled-border-color, #6a6a6a) !important;
+    cursor: default !important;
+    opacity: 1 !important;
+}
+
+@media (hover: none) {
+
+    #input,
+    #view {
+        display: none;
+    }
+
+    #native-select {
+        display: block;
+    }
 }

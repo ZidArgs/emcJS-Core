@@ -1,9 +1,8 @@
-<div id="container">
-    <div id="icon-background">
-        <div id="icon"></div>
-    </div>
-    <emc-i18n-label id="text"></emc-i18n-label>
-    <emc-i18n-tooltip i18n-tooltip="choose">
-        <button id="button"><span class="button-text">...</span></button>
-    </emc-i18n-tooltip>
+<div id="icon-background">
+    <div id="icon"></div>
 </div>
+<input is="emc-i18n-input" id="input" type="text" readonly tabindex="-1">
+<emc-i18n-tooltip i18n-tooltip="choose">
+    <button id="button"></button>
+</emc-i18n-tooltip>
+<slot id="options-slot"></slot>

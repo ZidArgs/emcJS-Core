@@ -4,21 +4,23 @@ import {
 } from "../../../../../../../util/Debouncer.js";
 import LogicValidator from "../../../../../../../util/logic/LogicValidator.js";
 import Logger from "../../../../../../../util/log/Logger.js";
+import "../../../text/TextInput.js";
 import "../../../../../button/Button.js";
 import TPL from "./LogicJSONModal.js.html" assert {type: "html"};
 import STYLE from "./LogicJSONModal.js.css" assert {type: "css"};
+import ModalDialog from "../../../../../../modal/ModalDialog.js";
 
 // TODO use ModalDialog instead
 export default class LogicJSONModal extends Modal {
 
     #submitEl;
 
+    #cancelEl;
+
     #jsonEl;
 
-    #errorEl;
-
     constructor() {
-        super("Edit JSON...");
+        super("Logic - JSON-Representation");
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
@@ -26,23 +28,20 @@ export default class LogicJSONModal extends Modal {
         const contentEl = this.shadowRoot.getElementById("content");
         contentEl.innerHTML = "";
         this.#jsonEl = els.getElementById("json");
-        this.#errorEl = els.getElementById("error");
         contentEl.append(this.#jsonEl);
-        contentEl.append(this.#errorEl);
         /* --- */
-        const cancelEl = els.getElementById("cancel");
-        cancelEl.addEventListener("click", () => {
+        this.#cancelEl = els.getElementById("cancel");
+        this.#cancelEl.addEventListener("click", () => {
             this.close();
         });
-        footerEl.append(cancelEl);
+        footerEl.append(this.#cancelEl);
         /* --- */
         this.#submitEl = els.getElementById("submit");
         this.#submitEl.addEventListener("click", () => {
             if (this.#jsonEl.validationMessage === "") {
                 const errors = LogicValidator.validate(this.value);
                 if (errors.length > 0) {
-                    this.#jsonEl.setCustomValidity("Invalid Logic");
-                    this.#errorEl.i18nContent = "Invalid Logic";
+                    ModalDialog.error("Invalid Logic", null, errors);
                     Logger.error(`Invalid Logic\n${errors.map((s) => `\t${s}`).join("\n")}`);
                 } else {
                     this.dispatchEvent(new Event("submit"));
@@ -57,15 +56,26 @@ export default class LogicJSONModal extends Modal {
         });
     }
 
+    show(readonly = false) {
+        if (readonly) {
+            this.#jsonEl.readonly = true;
+            this.#cancelEl.style.display = "none";
+            this.#submitEl.style.display = "none";
+        } else {
+            this.#jsonEl.readonly = false;
+            this.#cancelEl.style.display = "";
+            this.#submitEl.style.display = "";
+        }
+        super.show();
+    }
+
     #validateInput = debounce(() => {
         try {
             JSON.parse(this.#jsonEl.value);
             this.#jsonEl.setCustomValidity("");
-            this.#errorEl.i18nContent = "";
             this.#submitEl.disabled = false;
         } catch {
             this.#jsonEl.setCustomValidity("Invalid JSON");
-            this.#errorEl.i18nContent = "Invalid JSON";
             this.#submitEl.disabled = true;
         }
     });

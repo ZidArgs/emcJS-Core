@@ -3,11 +3,13 @@
     max-height: 100%;
     max-width: 100%;
 }
+
 #container {
     flex: 1;
     padding: 2px;
     overflow: auto;
 }
+
 #content {
     position: relative;
     display: flex;
@@ -17,9 +19,11 @@
     min-width: max(100%, 500px);
     max-width: min(100%, 500px);
 }
+
 :host([noscroll]:not([noscroll="false"])) #content {
     max-height: 100%;
 }
+
 ::slotted(form) {
     position: relative;
     box-sizing: border-box;
@@ -36,18 +40,22 @@
     border-color: var(--form-border-color, #222222);
     border-radius: 0px !important;
 }
+
 ::slotted(form:first-child) {
     border-top-left-radius: var(--form-border-radius, 6px) !important;
     border-top-right-radius: var(--form-border-radius, 6px) !important;
 }
+
 ::slotted(form:not(:first-child)) {
     margin-top: calc(-1 * var(--form-border-width, 2px));
 }
+
 ::slotted(form:last-child) {
     flex-grow: 1;
     border-bottom-left-radius: var(--form-border-radius, 6px) !important;
     border-bottom-right-radius: var(--form-border-radius, 6px) !important;
 }
+
 :host([hasheader]:not([hasheader="false"])) ::slotted(form:first-child) {
     position: sticky;
     flex-grow: 0;
@@ -55,6 +63,7 @@
     box-shadow: var(--page-back-color, #ffffff) 0px calc(-1 * var(--form-border-radius, 6px)) 0px 0px;
     z-index: 100 !important;
 }
+
 :host([hasfooter]:not([hasfooter="false"])) ::slotted(form:last-child) {
     position: sticky;
     flex-grow: 0;
@@ -62,6 +71,7 @@
     box-shadow: var(--page-back-color, #ffffff) 0px var(--form-border-radius, 6px) 0px 0px;
     z-index: 100 !important;
 }
+
 :host([hasfooter]:not([hasfooter="false"])) ::slotted(form:nth-last-child(2)) {
     flex-grow: 1;
 }

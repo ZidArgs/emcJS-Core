@@ -6,7 +6,7 @@ const path = new Path(import.meta.url);
 
 async function getWorker() {
     if ("SharedWorker" in window) {
-        const [SharedWorkerRegistry] = await Import.module("/emcJS/worker/SharedWorkerRegistry.js");
+        const [SharedWorkerRegistry] = await Import.module("../../worker/SharedWorkerRegistry.js");
         if (SharedWorkerRegistry.supports("module")) {
             const workerPath = path.getAbsolute("./ThreadDataSync.w.js");
             return SharedWorkerRegistry.register("ThreadDataSync", workerPath, "module");

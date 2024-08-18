@@ -43,6 +43,14 @@ export default class RelationSelectEntry extends CustomElement {
         };
     }
 
+    set selected(value) {
+        this.setBooleanAttribute("selected", value);
+    }
+
+    get selected() {
+        return this.getBooleanAttribute("selected");
+    }
+
     static get observedAttributes() {
         return ["name", "type"];
     }

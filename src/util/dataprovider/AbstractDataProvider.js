@@ -38,7 +38,7 @@ export default class AbstractDataProvider extends EventTarget {
         }
         super();
         this.#reciever = reciever;
-        this.triggerUpdate();
+        this.refresh();
         /* --- */
         this.#paginationEventManager.set("page", (event) => {
             const page = event.data - 1;
@@ -73,7 +73,15 @@ export default class AbstractDataProvider extends EventTarget {
     }
 
     setOptions(value) {
-        const {sort, page, pageSize, filter, filterFunction} = value;
+        const {
+            sort,
+            page,
+            pageSize,
+            filter,
+            filterFunction,
+            sortFunction
+        } = value;
+
         const newOptions = deepClone(DEFAULT_OPTIONS);
 
         if (Array.isArray(sort)) {
@@ -91,15 +99,26 @@ export default class AbstractDataProvider extends EventTarget {
         if (filterFunction === false || typeof filterFunction === "function") {
             newOptions.filterFunction = filterFunction;
         }
+        if (sortFunction === false || typeof sortFunction === "function") {
+            newOptions.sortFunction = sortFunction;
+        }
 
         if (!isEqual(this.#options, newOptions)) {
             this.#options = newOptions;
-            this.triggerUpdate();
+            this.refresh();
         }
     }
 
     updateOptions(value) {
-        const {sort, page, pageSize, filter, filterFunction} = value;
+        const {
+            sort,
+            page,
+            pageSize,
+            filter,
+            filterFunction,
+            sortFunction
+        } = value;
+
         const newOptions = deepClone(this.#options);
 
         if (Array.isArray(sort)) {
@@ -117,10 +136,13 @@ export default class AbstractDataProvider extends EventTarget {
         if (filterFunction === false || typeof filterFunction === "function") {
             newOptions.filterFunction = filterFunction;
         }
+        if (sortFunction === false || typeof sortFunction === "function") {
+            newOptions.sortFunction = sortFunction;
+        }
 
         if (!isEqual(this.#options, newOptions)) {
             this.#options = newOptions;
-            this.triggerUpdate();
+            this.refresh();
         }
     }
 
@@ -128,7 +150,7 @@ export default class AbstractDataProvider extends EventTarget {
         return deepClone(this.#options);
     }
 
-    triggerUpdate = debounce(async () => {
+    refresh = debounce(async () => {
         await this.#reciever.busy();
         try {
             const data = await this.getData(this.#options);

@@ -1,5 +1,6 @@
 export function moveInArray(array, from, to) {
-    return array.splice(to, 0, array.splice(from, 1)[0]), array;
+    array.splice(to, 0, array.splice(from, 1)[0]);
+    return array;
 }
 
 export function moveInArrayImmuted(array, from, to) {
@@ -8,7 +9,8 @@ export function moveInArrayImmuted(array, from, to) {
 }
 
 export function deleteAtIndex(array, index) {
-    return array.splice(index, 1), array;
+    array.splice(index, 1);
+    return array;
 }
 
 export function deleteAtIndexImmuted(array, index) {
@@ -16,11 +18,22 @@ export function deleteAtIndexImmuted(array, index) {
 }
 
 export function insertAtIndex(array, index, value) {
-    return array.splice(index, 0, value), array;
+    array.splice(index, 0, value);
+    return array;
 }
 
 export function insertAtIndexImmuted(array, index, value) {
     return array.toSpliced(index, 0, value);
+}
+
+export function filterInPlace(array, cond) {
+    if (typeof cond === "function") {
+        for (let i = array.length - 1; i >= 0; i -= 1) {
+            if (!cond(array[i])) {
+                array.splice(i, 1);
+            }
+        }
+    }
 }
 
 // analytical functions

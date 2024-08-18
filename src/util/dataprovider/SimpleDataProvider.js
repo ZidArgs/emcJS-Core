@@ -34,7 +34,7 @@ export default class SimpleDataProvider extends AbstractDataProvider {
             throw new Error("source must be an Array");
         }
         this.#source = deepClone(source);
-        this.triggerUpdate();
+        this.refresh();
     }
 
     async getData(options = {}) {
@@ -42,30 +42,47 @@ export default class SimpleDataProvider extends AbstractDataProvider {
             return [];
         }
 
-        const {sort = [], page = 0, pageSize = 0, filter = {}, filterFunction = false} = options;
+        const {
+            sort = [],
+            page = 0,
+            pageSize = 0,
+            filter = {},
+            sortFunction = false,
+            filterFunction = false
+        } = options;
 
         const convertedFilter = Object.entries(filter).map(([key, value]) => {
             return [key, new CharacterSearch(value)];
         });
 
         const result = this.#source.map((record) => {
-            return deepClone(record);
-        }).filter((record) => {
             if (typeof record !== "object") {
                 throw new Error("source contained non object value");
             }
-
+            return deepClone(record);
+        }).filter((record) => {
+            // apply filter by column
             for (const [key, filter] of convertedFilter) {
                 const value = record[key];
                 if (!filter.test(value)) {
                     return false;
                 }
             }
+            // apply filter function
             if (typeof filterFunction === "function") {
                 return filterFunction(record);
             }
+            // not filtered
             return true;
         }).sort((recordA, recordB) => {
+            // apply sort function
+            if (typeof sortFunction === "function") {
+                const res = sortFunction(recordA, recordB);
+                if (res != 0) {
+                    return res;
+                }
+            }
+            // apply sort by column
             for (const sortKey of sort) {
                 const [, desc = "", key = ""] = sortKey.match(SORT_PATTERN) ?? [];
                 if (key === "") {
@@ -73,11 +90,17 @@ export default class SimpleDataProvider extends AbstractDataProvider {
                 }
                 const valueA = recordA[key];
                 const valueB = recordB[key];
+
+                if (valueA == null || valueB == null) {
+                    continue;
+                }
+
                 const compareResult = numberedStringComparator(valueA, valueB);
                 if (compareResult !== 0) {
                     return !desc ? compareResult : -compareResult;
                 }
             }
+            // default sort order
             return 0;
         });
 

@@ -7,12 +7,14 @@
     box-sizing: border-box;
     width: 100%;
 }
+
 * {
     position: relative;
     box-sizing: border-box;
     margin: 0px;
     font-size: 1em;
 }
+
 #container {
     position: relative;
     display: flex;
@@ -23,10 +25,11 @@
     width: 100%;
     padding: 5px;
 }
+
 #fieldset {
     min-width: 0px;
     width: 100%;
-    padding: 10px;
+    padding: 5px;
     background-color: var(--fieldset-back-color, #ffffff);
     background-image: var(--fieldset-back-image, none);
     border-style: solid;
@@ -34,20 +37,23 @@
     border-color: var(--fieldset-border-color, #222222);
     border-radius: var(--fieldset-border-radius, 6px);
 }
+
 /*
 TODO add legend variables
 */
 #legend {
     min-width: 50%;
-    padding: 4px 12px;
-    color: var(--form-text-color, #000000);
-    background-color: var(--fieldset-back-color, #ffffff);
-    background-image: var(--fieldset-back-image, none);
+    padding: 5px 12px;
+    margin: 0px 6px;
+    color: var(--fieldset-legend-text-color, #000000);
+    background-color: var(--fieldset-legend-back-color, #ffffff);
+    background-image: var(--fieldset-legend-back-image, none);
     border-style: solid;
-    border-width: var(--fieldset-border-width, 2px);
-    border-color: var(--fieldset-border-color, #222222);
-    border-radius: var(--fieldset-border-radius, 6px);
+    border-width: var(--fieldset-legend-border-width, 2px);
+    border-color: var(--fieldset-legend-border-color, #222222);
+    border-radius: var(--fieldset-legend-border-radius, 6px);
 }
+
 #description {
     display: block;
     flex-shrink: 0;
@@ -58,6 +64,7 @@ TODO add legend variables
     line-height: 1.4em;
     font-style: italic;
 }
+
 #description:empty {
     display: none;
 }

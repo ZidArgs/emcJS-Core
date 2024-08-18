@@ -1,18 +1,25 @@
-import CustomFormElementDelegating from "../../../../element/CustomFormElementDelegating.js";
-import {
-    isEqual
-} from "../../../../../util/helper/Comparator.js";
+import AbstractFormElement from "../../AbstractFormElement.js";
+import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
 import SimpleDataProvider from "../../../../../util/dataprovider/SimpleDataProvider.js";
 import ModalDialog from "../../../../modal/ModalDialog.js";
+import {
+    deepClone
+} from "../../../../../util/helper/DeepClone.js";
+import {
+    registerFocusable
+} from "../../../../../util/helper/html/getFocusableElements.js";
 import "../search/SearchInput.js";
 import "../../../button/Button.js";
 import "../../../../dataview/datagrid/DataGrid.js";
 import TPL from "./ListInput.js.html" assert {type: "html"};
 import STYLE from "./ListInput.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./ListInput.js.json" assert {type: "json"};
 
-export default class ListInput extends CustomFormElementDelegating {
+export default class ListInput extends AbstractFormElement {
 
-    #value;
+    static get formConfigurationFields() {
+        return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
+    }
 
     #searchEl;
 
@@ -24,55 +31,24 @@ export default class ListInput extends CustomFormElementDelegating {
 
     constructor() {
         super();
-        this.shadowRoot.append(TPL.generate());
+        this.shadowRoot.getElementById("field").append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.addEventListener("keydown", () => {
-            // TODO
-        });
-        this.addEventListener("blur", (event) => {
-            // TODO
+        this.#gridEl = this.shadowRoot.getElementById("grid");
+        this.#addEl = this.shadowRoot.getElementById("add");
+        this.#dataManager = new SimpleDataProvider(this.#gridEl);
+        /* --- */
+        this.#addEl.addEventListener("click", (event) => {
             event.stopPropagation();
+            event.preventDefault();
+            this.#addElement();
         });
         /* --- */
-        this.#gridEl = this.shadowRoot.getElementById("grid");
         this.#gridEl.addEventListener("action::delete", (event) => {
             event.stopPropagation();
             event.preventDefault();
             const {rowKey} = event.data;
-            const index = this.#value.indexOf(rowKey);
-            if (index >= 0) {
-                const newValue = [
-                    ...this.#value.slice(0, index),
-                    ...this.#value.slice(index + 1)
-                ];
-                this.value = newValue;
-            }
-        });
-        /* --- */
-        this.#addEl = this.shadowRoot.getElementById("add");
-        this.#addEl.addEventListener("click", async () => {
-            let rowKey = null;
-            const currentValue = this.value ?? [];
-            while (rowKey == null) {
-                rowKey = await ModalDialog.prompt("Add item", "Please enter a new key");
-                if (typeof rowKey !== "string") {
-                    return;
-                }
-                if (currentValue.includes(rowKey)) {
-                    await ModalDialog.alert("Key already exists", `The key "${rowKey}" does already exist. Please enter another one!`);
-                    rowKey = null;
-                }
-            }
-            this.value = [
-                ...currentValue,
-                rowKey
-            ];
-        });
-        /* --- */
-        this.#dataManager = new SimpleDataProvider(this.#gridEl);
-        this.#dataManager.setOptions({
-            sort: ["name"]
+            this.#removeElement(rowKey);
         });
         /* --- */
         this.#searchEl = this.shadowRoot.getElementById("search");
@@ -80,57 +56,62 @@ export default class ListInput extends CustomFormElementDelegating {
             const options = {filter: {}};
             if (this.#searchEl.value != "") {
                 options.filter = {
-                    name: this.#searchEl.value
+                    key: this.#searchEl.value
                 };
             }
             this.#dataManager.updateOptions(options);
         }, true);
-    }
-
-    connectedCallback() {
-        super.connectedCallback();
-        const value = this.value;
-        this.#value = value;
-        this.#applyValue(value ?? []);
-        this.internals.setFormValue(value);
-        this.#updateSort(this.sorted);
+        /* --- */
+        const labelEl = this.shadowRoot.getElementById("label");
+        labelEl.addEventListener("click", (event) => {
+            event.preventDefault();
+            this.#searchEl.focus();
+        });
     }
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
         this.#searchEl.disabled = disabled;
-        this.#addEl.disabled = disabled;
-        // TODO disable grid
+        this.#gridEl.disabled = disabled;
+        this.#addEl.disabled = disabled || this.readonly;
     }
 
-    formResetCallback() {
-        this.value = super.value || "";
+    focus(options) {
+        this.#searchEl.focus(options);
     }
 
-    formStateRestoreCallback(state/* , mode */) {
-        this.value = state;
+    set defaultValue(value) {
+        this.setJSONAttribute("value", value);
+    }
+
+    get defaultValue() {
+        const value = this.getJSONAttribute("value");
+        if (value != null && typeof value === "object") {
+            if (Array.isArray(value)) {
+                return value;
+            }
+            return Object.keys(value);
+        }
+        return [];
     }
 
     set value(value) {
-        if (!isEqual(this.#value, value)) {
-            this.#value = value;
-            this.#applyValue(value ?? []);
-            this.internals.setFormValue(value);
-            /* --- */
-            this.dispatchEvent(new Event("change"));
+        if (typeof value === "string") {
+            value = JSON.parse(value);
+        }
+        if (value != null && typeof value === "object") {
+            if (Array.isArray(value)) {
+                super.value = value;
+            } else {
+                super.value = Object.keys(value);
+            }
+        } else {
+            super.value = [];
         }
     }
 
     get value() {
-        return this.#value ?? super.value;
-    }
-
-    set readonly(value) {
-        this.setBooleanAttribute("readonly", value);
-    }
-
-    get readonly() {
-        return this.getBooleanAttribute("readonly");
+        return super.value;
     }
 
     set sorted(value) {
@@ -142,25 +123,16 @@ export default class ListInput extends CustomFormElementDelegating {
     }
 
     static get observedAttributes() {
-        return ["value", "readonly", "sorted"];
+        return [...super.observedAttributes, "readonly", "sorted"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
-            case "value": {
-                if (oldValue != newValue) {
-                    if (this.#value == null) {
-                        try {
-                            this.#applyValue(JSON.parse(newValue));
-                        } catch {
-                            this.#applyValue([]);
-                        }
-                    }
-                }
-            } break;
             case "readonly": {
                 if (oldValue != newValue) {
-                    // TODO make everything readonly
+                    this.#gridEl.readonly = this.readonly;
+                    this.#addEl.disabled = this.disabled || this.readonly;
                 }
             } break;
             case "sorted": {
@@ -171,10 +143,19 @@ export default class ListInput extends CustomFormElementDelegating {
         }
     }
 
+    renderValue(value) {
+        const data = value.map((row) => {
+            return {
+                key: row
+            };
+        });
+        this.#dataManager.setSource(data);
+    }
+
     #updateSort(value) {
         if (value) {
             this.#dataManager.setOptions({
-                sort: ["name"]
+                sort: ["key"]
             });
         } else {
             this.#dataManager.setOptions({
@@ -183,16 +164,39 @@ export default class ListInput extends CustomFormElementDelegating {
         }
     }
 
-    #applyValue(value) {
-        const data = value.map((row) => {
-            return {
-                key: row,
-                name: row
-            };
-        });
-        this.#dataManager.setSource(data);
+    async #addElement() {
+        let rowKey = null;
+        const currentValue = this.value ?? [];
+        while (rowKey == null) {
+            rowKey = await ModalDialog.prompt("Add item", "Please enter a new key");
+            if (typeof rowKey !== "string") {
+                return;
+            }
+            if (currentValue.includes(rowKey)) {
+                await ModalDialog.alert("Key already exists", `The key "${rowKey}" does already exist. Please enter another one!`);
+                rowKey = null;
+            }
+        }
+        this.value = [
+            ...currentValue,
+            rowKey
+        ];
+    }
+
+    async #removeElement(rowKey) {
+        const result = await ModalDialog.confirm("Remove entry", `Do you really want to remove the entry?\n\n${rowKey}`);
+        if (result !== true) {
+            return;
+        }
+        const currentValue = this.value;
+        const index = currentValue.indexOf(rowKey);
+        if (index >= 0) {
+            this.value = currentValue.toSpliced(index, 1);
+        }
     }
 
 }
 
+FormElementRegistry.register("ListInput", ListInput);
 customElements.define("emc-input-list", ListInput);
+registerFocusable("emc-input-list");

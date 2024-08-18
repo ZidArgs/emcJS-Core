@@ -27,8 +27,24 @@ export default class DataGridCellButton extends DataGridCell {
         this.setAttribute("text", val);
     }
 
+    get icon() {
+        return this.getAttribute("icon");
+    }
+
+    set icon(val) {
+        this.setAttribute("icon", val);
+    }
+
+    get tooltip() {
+        return this.getAttribute("tooltip");
+    }
+
+    set tooltip(val) {
+        this.setAttribute("tooltip", val);
+    }
+
     static get observedAttributes() {
-        return [...super.observedAttributes, "text"];
+        return [...super.observedAttributes, "text", "icon", "tooltip", "disabled", "readonly"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -38,14 +54,24 @@ export default class DataGridCellButton extends DataGridCell {
                 case "text": {
                     this.onValueChange(this.value);
                 } break;
+                case "icon": {
+                    this.#inputEl.icon = this.icon;
+                } break;
+                case "tooltip": {
+                    this.#inputEl.tooltip = this.tooltip;
+                } break;
+                case "disabled":
+                case "readonly": {
+                    this.#inputEl.disabled = this.disabled || this.readonly;
+                } break;
             }
         }
     }
 
     onValueChange(value) {
-        if (this.text != null && this.text != "") {
+        if (this.text != null) {
             this.#inputEl.text = this.text;
-        } else if (value != null && value != "") {
+        } else if (value != null) {
             this.#inputEl.text = value;
         } else {
             this.#inputEl.text = "...";
@@ -66,5 +92,5 @@ export default class DataGridCellButton extends DataGridCell {
 
 }
 
-DataGridCell.registerCellType("button", DataGridCellButton, 100);
+DataGridCell.registerCellType("button", DataGridCellButton, 50);
 customElements.define("emc-datagrid-cell-button", DataGridCellButton);

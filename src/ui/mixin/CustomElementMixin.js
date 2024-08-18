@@ -70,7 +70,10 @@ export default createMixin((superclass) => class CustomElementMixin extends supe
         if (value == null || value === "false") {
             return false;
         }
-        return true;
+        if (value === "" || value === "true") {
+            return true;
+        }
+        return value;
     }
 
     setStringAttribute(name, value) {

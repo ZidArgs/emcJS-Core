@@ -2,6 +2,7 @@
     flex-direction: column;
     justify-content: center;
 }
+
 #sort-up,
 #sort-down {
     position: relative;
@@ -22,6 +23,7 @@
     cursor: pointer;
     appearance: none;
 }
+
 #sort-up:hover,
 #sort-down:hover {
     color: var(--button-primary-hover-text-color, #ffffff);
@@ -29,12 +31,14 @@
     background-image: var(--button-primary-hover-back-image, none);
     border-color: var(--button-primary-hover-border-color, #000000);
 }
+
 #sort-up:focus,
 #sort-down:focus {
     box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
     outline: none;
     z-index: 1;
 }
+
 #sort-up:after,
 #sort-down:after {
     position: relative;
@@ -44,22 +48,27 @@
     border-right-color: var(--button-text-color, #000000);
     content: " ";
 }
+
 #sort-up:hover:after,
 #sort-down:hover:after {
     border-bottom-color: var(--button-primary-hover-text-color, #ffffff);
     border-right-color: var(--button-primary-hover-text-color, #ffffff);
 }
+
 #sort-up {
     margin-bottom: -1px;
     border-radius: var(--input-border-radius, 6px) var(--input-border-radius, 6px) 0px 0px;
 }
+
 #sort-up:after {
     transform: translateY(0.15em) rotate(-135deg);
 }
+
 #sort-down {
     margin-top: -1px;
     border-radius: 0px 0px var(--input-border-radius, 6px) var(--input-border-radius, 6px);
 }
+
 #sort-down:after {
     transform: translateY(-0.15em) rotate(45deg);
 }

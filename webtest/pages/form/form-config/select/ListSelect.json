@@ -7,12 +7,12 @@
             "label": "list-select default",
             "name": "list-select.default",
             "optiongroup": "ListSelect",
-            "options": [
-                "Nana",
-                "Foobar"
-            ],
+            "options": {
+                "nana": "Nana",
+                "foobar": "Foobar"
+            },
             "placeholder": "Select entry...",
-            "multi": true,
+            "multiple": true,
             "sorted": true
         },
         {
@@ -21,7 +21,7 @@
             "name": "list-select.default",
             "optiongroup": "ListSelect",
             "placeholder": "Select entry...",
-            "multi": true,
+            "multiple": true,
             "sorted": true
         },
         {
@@ -30,7 +30,7 @@
             "name": "list-select.resettable",
             "optiongroup": "ListSelect",
             "placeholder": "Select entry...",
-            "multi": true,
+            "multiple": true,
             "sorted": true,
             "resettable": true
         },
@@ -40,7 +40,7 @@
             "name": "list-select.required",
             "optiongroup": "ListSelect",
             "placeholder": "Select entry...",
-            "multi": true,
+            "multiple": true,
             "sorted": true,
             "required": true
         },
@@ -50,7 +50,7 @@
             "name": "list-select.disabled",
             "optiongroup": "ListSelect",
             "placeholder": "Select entry...",
-            "multi": true,
+            "multiple": true,
             "sorted": true,
             "disabled": true
         },

@@ -1,0 +1,38 @@
+[
+    {
+        "type": "SwitchInput",
+        "name": "sorted",
+        "label": "Sorted",
+        "value": false
+    },
+    {
+        "type": "SwitchInput",
+        "name": "multiple",
+        "label": "Multiple",
+        "value": false
+    },
+    {
+        "type": "SwitchInput",
+        "name": "header",
+        "label": "Show selection header",
+        "value": false
+    },
+    {
+        "type": "SwitchInput",
+        "name": "selectend",
+        "label": "Move select boxes to the end",
+        "value": false
+    },
+    {
+        "type": "KeyValueListInput",
+        "name": "options",
+        "label": "Options",
+        "value": {}
+    },
+    {
+        "type": "StringInput",
+        "name": "optiongroup",
+        "label": "Option Group",
+        "value": ""
+    }
+]

@@ -104,6 +104,18 @@ class ImportAnalyzer {
         this.#reportImport = !!value;
     }
 
+    getUnresolvedImports() {
+        const unresolved = new Set();
+        for (const [srcFile, imports] of allImports) {
+            for (const current of imports) {
+                if (!allImports.has(current)) {
+                    unresolved.add([current, srcFile]);
+                }
+            }
+        }
+        return Array.from(unresolved);
+    }
+
 }
 
 export default new ImportAnalyzer();

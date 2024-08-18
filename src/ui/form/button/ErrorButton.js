@@ -88,7 +88,7 @@ export default class ErrorButton extends Button {
         const inputEl = errorEntry.element;
         if (this.#errorList.has(inputEl)) {
             const errorEl = this.#errorList.get(inputEl);
-            this.#renderErrorLabel(errorEl);
+            this.#renderErrorLabel(errorEntry, errorEl);
         } else {
             const errorLabelEl = this.#renderErrorLabel(errorEntry);
             this.#errorList.set(inputEl, errorLabelEl);

@@ -1,6 +1,5 @@
 import ObservableStorage from "../../data/storage/observable/ObservableStorage.js";
-import AbstractFormField from "../../ui/form/abstract/AbstractFormField.js";
-import AbstractFormElement from "../../ui/form/AbstractFormElement.js";
+import AbstractFormElement from "../../ui/form/element/AbstractFormElement.js";
 import FormContainer from "../../ui/form/FormContainer.js";
 import {
     debounce
@@ -177,7 +176,7 @@ export default class FormContext extends EventTarget {
         for (const formEl of this.#formElList) {
             if (!formEl.noValidate) {
                 for (const node of formEl.elements) {
-                    if (node instanceof AbstractFormField) {
+                    if (node instanceof AbstractFormElement) {
                         validations.push(this.#doFormFieldValidation(node));
                     } else if (!node.reportValidity()) {
                         validations.push(Promise.resolve({
@@ -424,7 +423,7 @@ export default class FormContext extends EventTarget {
     }
 
     #registerNode(node) {
-        if (node instanceof AbstractFormField || node instanceof AbstractFormElement) {
+        if (node instanceof AbstractFormElement) {
             const context = FormElementContext.getContext(node);
             context.storage = this.#dataStorage;
             context.ghostInvisible = this.#ghostInvisible;
@@ -442,7 +441,7 @@ export default class FormContext extends EventTarget {
     }
 
     #unregisterNode(node) {
-        if (node instanceof AbstractFormField || node instanceof AbstractFormElement) {
+        if (node instanceof AbstractFormElement) {
             const context = FormElementContext.getContext(node);
             context.storage = null;
             context.ghostInvisible = false;

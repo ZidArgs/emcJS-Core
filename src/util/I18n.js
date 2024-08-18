@@ -1,5 +1,8 @@
 import FileLoader from "./file/FileLoader.js";
 import {
+    numberedStringComparator
+} from "./helper/Comparator.js";
+import {
     flattenObject
 } from "./helper/collection/ObjectContent.js";
 import Import from "./import/Import.js";
@@ -390,6 +393,18 @@ class I18n extends EventTarget {
             }
             return entries;
         }
+    }
+
+    compareValuesTranslated(value0, value1) {
+        const translated0 = this.get(value0);
+        const translated1 = this.get(value1);
+        return translated0.localeCompare(translated1);
+    }
+
+    compareNumberedValuesTranslated(value0, value1) {
+        const translated0 = this.get(value0);
+        const translated1 = this.get(value1);
+        return numberedStringComparator(translated0, translated1);
     }
 
 }

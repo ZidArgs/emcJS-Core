@@ -23,6 +23,8 @@ export default class HeaderManager {
 
     #selectHeaderCellEl;
 
+    #selectEnd = false;
+
     #lastHeaderCellEl;
 
     constructor(target, headerSelectEl) {
@@ -35,11 +37,25 @@ export default class HeaderManager {
         this.#target = target;
 
         this.#selectHeaderCellEl = document.createElement("th");
-        this.#selectHeaderCellEl.className = "select-cell";
+        this.#selectHeaderCellEl.className = "select-cell select-cell-start";
         this.#selectHeaderCellEl.append(headerSelectEl);
 
         this.#lastHeaderCellEl = document.createElement("th");
         this.#lastHeaderCellEl.classList.add("lastCell");
+    }
+
+    set selectEnd(value) {
+        value = !!value;
+        if (this.#selectEnd !== value) {
+            this.#selectEnd = value;
+            this.#selectHeaderCellEl.classList.toggle("select-cell-start", !value);
+            this.#selectHeaderCellEl.classList.toggle("select-cell-end", value);
+            this.#render();
+        }
+    }
+
+    get selectEnd() {
+        return this.#selectEnd;
     }
 
     purge() {
@@ -48,8 +64,12 @@ export default class HeaderManager {
         this.#elements.clear();
         this.#columnDefinitionCache.clear();
 
+        if (this.#selectEnd) {
+            this.#target.append(this.#selectHeaderCellEl);
+        } else {
+            this.#target.prepend(this.#selectHeaderCellEl);
+        }
         this.#target.append(this.#lastHeaderCellEl);
-        this.#target.prepend(this.#selectHeaderCellEl);
     }
 
     manage(columnDefinition) {
@@ -178,8 +198,12 @@ export default class HeaderManager {
             this.#target.append(...els);
         }
         // add special cells
+        if (this.#selectEnd) {
+            this.#target.append(this.#selectHeaderCellEl);
+        } else {
+            this.#target.prepend(this.#selectHeaderCellEl);
+        }
         this.#target.append(this.#lastHeaderCellEl);
-        this.#target.prepend(this.#selectHeaderCellEl);
     });
 
 }

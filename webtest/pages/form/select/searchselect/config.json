@@ -7,11 +7,11 @@
             "label": "search-select default",
             "name": "search-select.default",
             "optiongroup": "SearchSelect",
+            "placeholder": "Select entry...",
             "options": {
                 "": "",
                 "nana": "Nana"
             },
-            "placeholder": "Select entry...",
             "sorted": true
         },
         {
@@ -20,6 +20,10 @@
             "name": "search-select.default",
             "optiongroup": "SearchSelect",
             "placeholder": "Select entry...",
+            "options": {
+                "": "",
+                "nana": "Nana"
+            },
             "sorted": true
         },
         {
@@ -28,6 +32,10 @@
             "name": "search-select.resettable",
             "optiongroup": "SearchSelect",
             "placeholder": "Select entry...",
+            "options": {
+                "": "",
+                "nana": "Nana"
+            },
             "sorted": true,
             "resettable": true
         },
@@ -37,6 +45,10 @@
             "name": "search-select.required",
             "optiongroup": "SearchSelect",
             "placeholder": "Select entry...",
+            "options": {
+                "": "",
+                "nana": "Nana"
+            },
             "sorted": true,
             "required": true
         },
@@ -46,8 +58,26 @@
             "name": "search-select.disabled",
             "optiongroup": "SearchSelect",
             "placeholder": "Select entry...",
+            "options": {
+                "": "",
+                "nana": "Nana"
+            },
             "sorted": true,
             "disabled": true
+        },
+        {
+            "type": "SearchSelect",
+            "label": "search-select readonly",
+            "name": "search-select.readonly",
+            "optiongroup": "SearchSelect",
+            "placeholder": "Select entry...",
+            "options": {
+                "": "",
+                "nana": "Nana"
+            },
+            "value": "nana",
+            "sorted": true,
+            "readonly": true
         }
     ]
 }

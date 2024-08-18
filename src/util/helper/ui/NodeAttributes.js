@@ -59,7 +59,8 @@ export function getJSONAttribute(node, name) {
 export function getAllAttributes(node) {
     const res = {};
     for (const attr of node.attributes) {
-        res[dashedToCamelCase(attr.name)] = attr.value;
+        const attrName = dashedToCamelCase(attr.name);
+        res[attrName] = node[attrName] ?? attr.value;
     }
     return res;
 }

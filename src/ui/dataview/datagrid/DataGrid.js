@@ -14,6 +14,9 @@ import {
 import {
     getAllAttributes
 } from "../../../util/helper/ui/NodeAttributes.js";
+import {
+    filterInPlace
+} from "../../../util/helper/collection/ArrayMutations.js";
 import BusyIndicatorManager from "../../../util/BusyIndicatorManager.js";
 import MutationObserverManager from "../../../util/observer/MutationObserverManager.js";
 import DataRecieverMixin from "../../../util/dataprovider/DataRecieverMixin.js";
@@ -24,6 +27,7 @@ import Column from "./Column.js";
 import DataGridCell from "./components/cell/DataGridCell.js";
 import CellCache from "./data/CellCache.js";
 import BusyIndicator from "../../BusyIndicator.js";
+import "../../i18n/I18nLabel.js";
 import "./components/CellTypeLoader.js";
 import TPL from "./DataGrid.js.html" assert {type: "html"};
 import STYLE from "./DataGrid.js.css" assert {type: "css"};
@@ -45,6 +49,8 @@ function getStyleLengthValue(type, value) {
     return 200;
 }
 
+// TODO add "no match" label
+// TODO add choice to have select column at the end
 export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(CustomElement)) {
 
     #internalId = appUID("data-grid");
@@ -57,7 +63,9 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
 
     #bodyEl;
 
-    #emptyEl;
+    #nocolumnsContainerEl;
+
+    #emptyContainerEl;
 
     #columnContainerEl;
 
@@ -110,7 +118,8 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
         this.#tableEl = this.shadowRoot.getElementById("table");
         this.#headerEl = this.shadowRoot.getElementById("header");
         this.#bodyEl = this.shadowRoot.getElementById("body");
-        this.#emptyEl = this.shadowRoot.getElementById("empty");
+        this.#nocolumnsContainerEl = this.shadowRoot.getElementById("nocolumns-container");
+        this.#emptyContainerEl = this.shadowRoot.getElementById("empty-container");
         /* --- */
         this.#columnContainerEl = this.shadowRoot.getElementById("column-container");
         this.#columnContainerEl.addEventListener("slotchange", () => {
@@ -121,7 +130,7 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
         this.#headerManager = new HeaderManager(this.#headerEl, this.#headerSelectEl);
         this.#rowManager = new RowManager(this.#bodyEl, this.#cellCache, this.#internalId);
         this.#rowManager.addEventListener("afterrender", () => {
-            this.#emptyEl.classList.toggle("hidden", this.#bodyEl.childNodes.length > 0);
+            this.#emptyContainerEl.classList.toggle("hidden", this.#bodyEl.childNodes.length > 0);
         });
         /* --- */
         this.#tableEl.addEventListener("move-row-up", (event) => {
@@ -162,38 +171,53 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
             event.stopPropagation();
             event.preventDefault();
             const {action, columnName, rowKey} = event.data;
-            if (action == null) {
-                return;
+            if (action == null || typeof action !== "string" || action === "") {
+                const ev = new Event("action");
+                ev.data = {
+                    columnName,
+                    rowKey,
+                    source: event.srcElement
+                };
+                this.dispatchEvent(ev);
+            } else {
+                const ev = new Event(`action::${action}`);
+                ev.data = {
+                    columnName,
+                    rowKey,
+                    source: event.srcElement
+                };
+                this.dispatchEvent(ev);
             }
-            const ev = new Event(`action::${action}`);
-            ev.data = {
-                columnName,
-                rowKey,
-                source: event.srcElement
-            };
-            this.dispatchEvent(ev);
         });
         this.#tableEl.addEventListener("edit", (event) => {
             event.stopPropagation();
             event.preventDefault();
             const {value, action, columnName, rowKey} = event.data;
-            if (action == null) {
-                return;
+            if (action == null || typeof action !== "string" || action === "") {
+                const ev = new Event("edit");
+                ev.data = {
+                    value,
+                    columnName,
+                    rowKey,
+                    source: event.srcElement
+                };
+                this.dispatchEvent(ev);
+            } else {
+                const ev = new Event(`edit::${action}`);
+                ev.data = {
+                    value,
+                    columnName,
+                    rowKey,
+                    source: event.srcElement
+                };
+                this.dispatchEvent(ev);
             }
-            const ev = new Event(`edit::${action}`);
-            ev.data = {
-                value,
-                columnName,
-                rowKey,
-                source: event.srcElement
-            };
-            this.dispatchEvent(ev);
         });
         this.#tableEl.addEventListener("selection", (event) => {
             event.stopPropagation();
             event.preventDefault();
             const {value, rowKey} = event.data;
-            if (this.selectable === "single") {
+            if (!this.multiple) {
                 const oldrowKey = [...this.#selected][0];
                 const selectEl = this.shadowRoot.querySelectorAll(`.select-cell input[type="checkbox"][row-key="${oldrowKey}"]`);
                 if (selectEl != null) {
@@ -231,11 +255,27 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
     }
 
     set selectable(value) {
-        this.setAttribute("selectable", value);
+        this.setBooleanAttribute("selectable", value);
     }
 
     get selectable() {
-        return this.getAttribute("selectable");
+        return this.getBooleanAttribute("selectable");
+    }
+
+    set multiple(value) {
+        this.setBooleanAttribute("multiple", value);
+    }
+
+    get multiple() {
+        return this.getBooleanAttribute("multiple");
+    }
+
+    set selectEnd(value) {
+        this.setBooleanAttribute("selectend", value);
+    }
+
+    get selectEnd() {
+        return this.getBooleanAttribute("selectend");
     }
 
     set stretched(value) {
@@ -246,15 +286,41 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
         return this.getAttribute("stretched");
     }
 
+    set disabled(val) {
+        this.setBooleanAttribute("disabled", val);
+    }
+
+    get disabled() {
+        return this.getBooleanAttribute("disabled");
+    }
+
+    set readonly(val) {
+        this.setBooleanAttribute("readonly", val);
+    }
+
+    get readonly() {
+        return this.getBooleanAttribute("readonly");
+    }
+
     static get observedAttributes() {
-        return ["selectable", "stretched"];
+        return ["selectable", "selectend", "multiple", "stretched", "readonly"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         if (oldValue != newValue) {
             switch (name) {
                 case "selectable": {
-                    if (newValue == null || newValue === "false" || newValue === "single" || oldValue === "single") {
+                    if (!this.selectable) {
+                        this.clearSelected();
+                    }
+                } break;
+                case "selectend": {
+                    const selectEnd = this.selectEnd;
+                    this.#headerManager.selectEnd = selectEnd;
+                    this.#rowManager.selectEnd = selectEnd;
+                } break;
+                case "multiple": {
+                    if (!this.multiple) {
                         this.clearSelected();
                     }
                 } break;
@@ -270,18 +336,35 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
                     this.#stretched = this.#columnDefinition.find((definition) => definition.name === newValue);
                     this.resizeCallback();
                 } break;
+                case "disabled": {
+                    for (const [,, cell] of this.#cellCache.getAllCells()) {
+                        cell.disabled = this.disabled;
+                    }
+                } break;
+                case "readonly": {
+                    for (const [,, cell] of this.#cellCache.getAllCells()) {
+                        cell.readonly = this.readonly;
+                    }
+                } break;
             }
         }
     }
 
     setSelected(selected) {
-        if (this.selectable != null && this.selectable !== "false") {
+        if (selected != null && this.selectable) {
+            if (!Array.isArray(selected)) {
+                if (typeof selected === "string") {
+                    selected = [selected];
+                } else {
+                    selected = [];
+                }
+            }
             this.#selected.clear();
-            if (this.selectable !== "single") {
+            if (this.multiple) {
                 for (const entry of selected) {
                     this.#selected.add(entry);
                 }
-            } else {
+            } else if (selected.length > 0) {
                 this.#selected.add(selected[0]);
             }
             const selectEls = this.shadowRoot.querySelectorAll(`.select-cell input[type="checkbox"]`);
@@ -305,7 +388,7 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
         for (const selectEl of selectEls) {
             selectEl.checked = false;
         }
-        if (this.selectable != null && this.selectable !== "false") {
+        if (this.selectable) {
             const ev = new Event("selection");
             ev.data = [];
             this.dispatchEvent(ev);
@@ -333,6 +416,12 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
     }
 
     #notifyRowUpdate = debounce(() => {
+        if (this.readonly || this.disabled) {
+            for (const [,, cell] of this.#cellCache.getAllCells()) {
+                cell.readonly = this.readonly;
+                cell.disabled = this.disabled;
+            }
+        }
         const ev = new Event("rows-updated");
         this.dispatchEvent(ev);
     });
@@ -355,6 +444,19 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
 
         for (const columnEl of columnNodeList) {
             const columnData = getAllAttributes(columnEl);
+
+            if (columnData.hidden && columnData.hidden !== "false") {
+                continue;
+            }
+
+            filterInPlace(newColumnDefinition, (entry) => {
+                if (columnData.name !== entry.name) {
+                    return true;
+                }
+                console.warn(`duplicate column definition for "${columnData.name}" in DataGrid`, this);
+                return false;
+            });
+
             newColumnDefinition.push(columnData);
             if (oldNodes.has(columnEl)) {
                 oldNodes.delete(columnEl);
@@ -388,6 +490,9 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
             const ev = new Event("rows-updated");
             this.dispatchEvent(ev);
         }
+        /* --- */
+        this.#nocolumnsContainerEl.classList.toggle("hidden", newColumnDefinition.length > 0);
+        /* --- */
         await BusyIndicatorManager.unbusy();
     }
 
@@ -427,7 +532,7 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
                     }
                 }
             }
-            if (this.selectable != null && this.selectable !== false) {
+            if (this.selectable) {
                 diff += 40;
             }
             let resultWidth = gridWidth - diff;

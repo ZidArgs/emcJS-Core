@@ -11,10 +11,12 @@
     user-select: none;
     overflow: hidden;
 }
+
 :host(:focus) {
     box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
     outline: none;
 }
+
 #container {
     display: flex;
     flex-direction: column;
@@ -27,22 +29,26 @@
     appearance: none;
     cursor: pointer;
 }
+
 #container:hover {
     color: var(--button-hover-text-color, #ffffff);
     background-color: var(--button-hover-back-color, #353935);
     background-image: var(--button-hover-back-image, none);
 }
+
 :host(.selected) #container {
     color: var(--button-primary-text-color, #000000);
     background-color: var(--button-primary-back-color, #00dbd0);
     background-image: var(--button-primary-back-image, none);
     border-color: var(--button-primary-border-color, #007b75);
 }
+
 :host(.selected) #container:hover {
     color: var(--button-primary-hover-text-color, #ffffff);
     background-color: var(--button-primary-hover-back-color, #353935);
     background-image: var(--button-primary-hover-back-image, none);
 }
+
 #icon-background {
     width: var(--icon-preview-size, 100px);
     height: var(--icon-preview-size, 100px);
@@ -52,9 +58,10 @@
         linear-gradient(-45deg, var(--image-checker-back-color) 25%, transparent 25%),
         linear-gradient(45deg, transparent 75%, var(--image-checker-back-color) 75%),
         linear-gradient(-45deg, transparent 75%, var(--image-checker-back-color) 75%);
-    background-size:10px 10px;
+    background-size: 10px 10px;
     background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
 }
+
 #icon {
     width: 100%;
     height: 100%;
@@ -64,6 +71,7 @@
     background-origin: content-box;
     pointer-events: none;
 }
+
 #text {
     width: 100%;
     overflow: hidden;

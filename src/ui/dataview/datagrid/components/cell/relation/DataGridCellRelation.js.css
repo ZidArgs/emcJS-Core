@@ -1,3 +1,28 @@
+:host([editable]:not([editable="false"])) #value {
+    display: none;
+}
+
+:host([editable]:not([editable="false"])) #input {
+    display: flex;
+}
+
+#value {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-start;
+    overflow: hidden;
+}
+
+#value #name {
+    font-size: 1em;
+}
+
+#value #type {
+    font-size: 0.7em;
+}
+
+/* --- */
 #input {
     display: none;
     appearance: none;
@@ -7,23 +32,4 @@
     height: 2em;
     margin-right: auto;
     font-size: 1rem;
-}
-:host([editable]:not([editable="false"])) #value {
-    display: none;
-}
-:host([editable]:not([editable="false"])) #input {
-    display: flex;
-}
-#value {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: flex-start;
-    overflow: hidden;
-}
-#value #name {
-    font-size: 1em;
-}
-#value #type {
-    font-size: 0.7em;
 }

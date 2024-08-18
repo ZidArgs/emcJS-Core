@@ -1,6 +1,10 @@
 export function getInnerText(node) {
+    const children = node.shadowRoot?.childNodes ?? node.childNodes;
+    if (children == null) {
+        return;
+    }
     let res = "";
-    for (const ch of node.shadowRoot?.childNodes ?? node.childNodes) {
+    for (const ch of children) {
         res += recursiveExtractText(ch);
     }
     return res;

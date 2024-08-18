@@ -231,6 +231,21 @@ export default class ObservableStorage extends EventTarget {
         }
     }
 
+    setRootValue(key, value) {
+        const oldValue = this.#rootData.get(key);
+        if (!isEqual(oldValue, value)) {
+            this.#rootData.set(key, value);
+            if (!this.#changeData.has(key)) {
+                this.#buffer.set(key, value);
+                // change event
+                const ev = new Event("change");
+                ev.data = {[key]: value};
+                ev.changes = {[key]: {oldValue, newValue: value}};
+                this.dispatchEvent(ev);
+            }
+        }
+    }
+
     getRootValue(key) {
         return this.#rootData.get(key);
     }

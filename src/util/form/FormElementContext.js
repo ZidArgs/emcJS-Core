@@ -1,6 +1,5 @@
 import ObservableStorage from "../../data/storage/observable/ObservableStorage.js";
-import AbstractFormField from "../../ui/form/abstract/AbstractFormField.js";
-import AbstractFormElement from "../../ui/form/AbstractFormElement.js";
+import AbstractFormElement from "../../ui/form/element/AbstractFormElement.js";
 import {
     debounce
 } from "../Debouncer.js";
@@ -10,8 +9,27 @@ import LogicCompiler from "../logic/processor/LogicCompiler.js";
 const CONTEXTS = new WeakMap();
 const MUTATION_CONFIG = {
     attributes: true,
-    attributeFilter: ["name", "visible", "enabled"]
+    attributeFilter: ["name", "visible", "enabled", "editable"]
 };
+
+function applyDefaultValue(storage, target) {
+    const elName = target.name;
+    const defaultValue = storage.getRootValue(elName);
+    if (defaultValue != null) {
+        if (typeof value === "object") {
+            target.setAttribute("value", JSON.stringify(defaultValue));
+        } else {
+            target.setAttribute("value", defaultValue);
+        }
+    } else if (target.hasAttribute("value")) {
+        const value = target.getAttribute("value");
+        try {
+            storage.setRootValue(JSON.parse(value));
+        } catch {
+            storage.setRootValue(value);
+        }
+    }
+}
 
 const mutationObserver = new MutationObserver((mutationsList) => {
     for (const mutation of mutationsList) {
@@ -20,17 +38,8 @@ const mutationObserver = new MutationObserver((mutationsList) => {
             const context = CONTEXTS.get(target);
             if (mutation.attributeName === "name") {
                 if (context.storage != null) {
+                    applyDefaultValue(context.storage, target);
                     const elName = target.name;
-                    const defaultValue = context.storage.getRootValue(elName);
-                    if (defaultValue != null) {
-                        if (typeof value === "object") {
-                            target.setAttribute("value", JSON.stringify(defaultValue));
-                        } else {
-                            target.setAttribute("value", defaultValue);
-                        }
-                    } else {
-                        target.removeAttribute("value");
-                    }
                     target.value = context.storage.get(elName);
                 }
             } else if (mutation.attributeName === "visible") {
@@ -62,6 +71,10 @@ export default class FormElementContext {
 
     #enabledValue = true;
 
+    #editableLogic;
+
+    #editableValue = true;
+
     #hideErrors = null;
 
     #globalHideErrors = null;
@@ -74,8 +87,8 @@ export default class FormElementContext {
         if (CONTEXTS.has(node)) {
             throw new Error("context already exists");
         }
-        if (!(node instanceof AbstractFormField || node instanceof AbstractFormElement)) {
-            throw new TypeError("FormFieldContext can only work on AbstractFormField");
+        if (!(node instanceof AbstractFormElement)) {
+            throw new TypeError("FormFieldContext can only work on AbstractFormElement");
         }
         this.#element = node;
         CONTEXTS.set(node, this);
@@ -126,11 +139,14 @@ export default class FormElementContext {
             this.#elementEventManager.setActive(true);
         });
         /* --- */
-        const visibleValue = this.#element.getAttribute("visible");
-        this.setVisibleLogic(JSON.parse(visibleValue));
+        const visibleLogicAttribute = this.#element.getAttribute("visible");
+        this.setVisibleLogic(JSON.parse(visibleLogicAttribute));
         /* --- */
-        const enabledValue = this.#element.getAttribute("enabled");
-        this.setEnabledLogic(JSON.parse(enabledValue));
+        const enabledLogicAttribute = this.#element.getAttribute("enabled");
+        this.setEnabledLogic(JSON.parse(enabledLogicAttribute));
+        /* --- */
+        const editableLogicAttribute = this.#element.getAttribute("editable");
+        this.setEditableLogic(JSON.parse(editableLogicAttribute));
     }
 
     set storage(value) {
@@ -140,17 +156,8 @@ export default class FormElementContext {
         if (this.#storage != value) {
             this.#storage = value;
             if (value != null) {
+                applyDefaultValue(value, this.#element);
                 const elName = this.#element.name;
-                const defaultValue = value.getRootValue(elName);
-                if (defaultValue != null) {
-                    if (typeof defaultValue === "object") {
-                        this.#element.setAttribute("value", JSON.stringify(defaultValue));
-                    } else {
-                        this.#element.setAttribute("value", defaultValue);
-                    }
-                } else {
-                    this.#element.removeAttribute("value");
-                }
                 this.#element.value = value.get(elName);
             }
             this.#storageEventManager.switchTarget(value);
@@ -301,12 +308,12 @@ export default class FormElementContext {
 
     #updateEnabled = debounce(() => {
         if (typeof this.#enabledLogic === "function") {
-            const value = this.#executeEnabledeLogic();
+            const value = this.#executeEnabledLogic();
             this.#setEnabledValue(value);
         }
     });
 
-    #executeEnabledeLogic() {
+    #executeEnabledLogic() {
         return !!this.#enabledLogic((key) => {
             return this.#getValue(key);
         });
@@ -319,6 +326,52 @@ export default class FormElementContext {
                 this.#element.removeAttribute("disabled");
             } else {
                 this.#element.setAttribute("disabled", "");
+            }
+        }
+    }
+
+    /* editable logic */
+    get editable() {
+        return this.#editableValue;
+    }
+
+    setEditableLogic(logic) {
+        if (logic != null && typeof logic === "object") {
+            this.#editableLogic = LogicCompiler.compile(logic);
+            this.#callUpdateEditable();
+        } else {
+            const value = logic == null || !!logic;
+            this.#editableLogic = logic;
+            this.#setEditableValue(value);
+        }
+    }
+
+    #callUpdateEditable() {
+        if (typeof this.#editableLogic === "function") {
+            this.#updateEditable();
+        }
+    }
+
+    #updateEditable = debounce(() => {
+        if (typeof this.#editableLogic === "function") {
+            const value = this.#executeEditableLogic();
+            this.#setEditableValue(value);
+        }
+    });
+
+    #executeEditableLogic() {
+        return !!this.#editableLogic((key) => {
+            return this.#getValue(key);
+        });
+    }
+
+    #setEditableValue(value) {
+        if (this.#editableValue != value) {
+            this.#editableValue = value;
+            if (value) {
+                this.#element.removeAttribute("readonly");
+            } else {
+                this.#element.setAttribute("readonly", "");
             }
         }
     }

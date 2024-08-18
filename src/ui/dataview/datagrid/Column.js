@@ -26,12 +26,28 @@ export default class Column extends CustomElement {
         return this.getAttribute("type");
     }
 
+    set width(value) {
+        this.setIntAttribute("width", value);
+    }
+
+    get width() {
+        return this.getIntAttribute("width");
+    }
+
     set editable(value) {
         this.setBooleanAttribute("editable", value);
     }
 
     get editable() {
         return this.getBooleanAttribute("editable");
+    }
+
+    set hidden(value) {
+        this.setBooleanAttribute("hidden", value);
+    }
+
+    get hidden() {
+        return this.getBooleanAttribute("hidden");
     }
 
 }

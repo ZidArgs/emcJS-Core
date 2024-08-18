@@ -1,0 +1,14 @@
+[
+    {
+        "type": "SwitchInput",
+        "name": "sorted",
+        "label": "Sorted",
+        "value": false
+    },
+    {
+        "type": "StringInput",
+        "name": "valueoptiongroup",
+        "label": "Value to Option Group",
+        "value": ""
+    }
+]

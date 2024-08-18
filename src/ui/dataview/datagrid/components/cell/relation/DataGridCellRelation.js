@@ -57,7 +57,7 @@ export default class DataGridCellRelation extends DataGridCell {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "editable", "optiongroup"];
+        return [...super.observedAttributes, "editable", "disabled", "readonly", "optiongroup"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -69,6 +69,16 @@ export default class DataGridCellRelation extends DataGridCell {
                         this.#inputEventManager.setActive(true);
                     } else {
                         this.#inputEventManager.setActive(false);
+                    }
+                } break;
+                case "disabled": {
+                    this.#inputEl.disabled = this.disabled;
+                } break;
+                case "readonly": {
+                    if (this.readonly) {
+                        this.#inputEl.setAttribute("readonly", "");
+                    } else {
+                        this.#inputEl.removeAttribute("readonly");
                     }
                 } break;
                 case "optiongroup": {

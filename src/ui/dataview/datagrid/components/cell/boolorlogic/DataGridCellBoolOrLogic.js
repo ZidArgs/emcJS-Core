@@ -1,6 +1,7 @@
 import EventTargetManager from "../../../../../../util/event/EventTargetManager.js";
 import DataGridCell from "../DataGridCell.js";
-import "../../../../../form/element/input/boolorlogic/BoolOrLogicInput.js";
+import BoolOrLogicModal from "./components/BoolOrLogicModal.js";
+import "../../../../../form/element/input/action/ActionInput.js";
 import TPL from "./DataGridCellBoolOrLogic.js.html" assert {type: "html"};
 import STYLE from "./DataGridCellBoolOrLogic.js.css" assert {type: "css"};
 
@@ -11,6 +12,8 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
     #inputEl;
 
     #inputEventManager;
+
+    #boolOrLogicModal = new BoolOrLogicModal();
 
     constructor(dataGridId) {
         super(dataGridId);
@@ -24,26 +27,58 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
         this.#inputEventManager.set("change", (event) => {
             this.#onInput(event);
         });
+        this.#inputEl.setValueRenderer((value) => this.#getRenderValue(value));
+        this.#inputEl.addEventListener("action", () => {
+            this.#boolOrLogicModal.value = this.value;
+            this.#boolOrLogicModal.onsubmit = (event) => {
+                this.value = this.#boolOrLogicModal.value;
+                this.#onInput();
+                event.stopPropagation();
+                event.preventDefault();
+            };
+            this.#boolOrLogicModal.show();
+        });
+    }
+
+    #onInput() {
+        const value = this.#inputEl.value;
+        this.value = value;
+        const ev = new Event("edit", {bubbles: true});
+        ev.data = {
+            value,
+            action: this.action,
+            columnName: this.columnName,
+            rowKey: this.rowKey
+        };
+        this.dispatchEvent(ev);
     }
 
     addOperatorGroup(...groupList) {
-        this.#inputEl.addOperatorGroup(...groupList);
+        this.#boolOrLogicModal.addOperatorGroup(...groupList);
     }
 
     removeOperatorGroup(...groupList) {
-        this.#inputEl.removeOperatorGroup(...groupList);
+        this.#boolOrLogicModal.removeOperatorGroup(...groupList);
     }
 
-    get value() {
-        return this.getJSONAttribute("value");
+    set name(value) {
+        this.#boolOrLogicModal.name = value;
+    }
+
+    get name() {
+        return this.#boolOrLogicModal.name;
     }
 
     set value(val) {
         this.setJSONAttribute("value", val);
     }
 
+    get value() {
+        return this.getJSONAttribute("value");
+    }
+
     static get observedAttributes() {
-        return [...super.observedAttributes, "editable", "row-name"];
+        return [...super.observedAttributes, "editable", "disabled", "readonly", "row-name"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -57,6 +92,16 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
                         this.#inputEventManager.setActive(false);
                     }
                 } break;
+                case "disabled": {
+                    this.#inputEl.disabled = this.disabled;
+                } break;
+                case "readonly": {
+                    if (this.readonly) {
+                        this.#inputEl.setAttribute("readonly", "");
+                    } else {
+                        this.#inputEl.removeAttribute("readonly");
+                    }
+                } break;
                 case "row-name": {
                     this.#inputEl.setModalRefName(newValue);
                 } break;
@@ -68,32 +113,20 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
     }
 
     onValueChange(value) {
-        if (value === true) {
-            this.#valueEl.innerText = "True";
-            this.#valueEl.title = "True";
-        } else if (value === false) {
-            this.#valueEl.innerText = "False";
-            this.#valueEl.title = "False";
-        } else {
-            this.#valueEl.innerText = "Logic";
-            this.#valueEl.title = "Logic";
-        }
+        const renderedValue = this.#getRenderValue(value);
+        this.#valueEl.innerText = renderedValue;
+        this.#valueEl.title = renderedValue;
         this.#inputEl.value = value;
     }
 
-    #onInput(event) {
-        event.stopPropagation();
-        event.preventDefault();
-        const value = this.#inputEl.value;
-        this.value = value;
-        const ev = new Event("edit", {bubbles: true});
-        ev.data = {
-            value,
-            action: this.action,
-            columnName: this.columnName,
-            rowKey: this.rowKey
-        };
-        this.dispatchEvent(ev);
+    #getRenderValue(value) {
+        if (value === true) {
+            return "True";
+        } else if (value === false) {
+            return "False";
+        } else {
+            return "Logic";
+        }
     }
 
 }

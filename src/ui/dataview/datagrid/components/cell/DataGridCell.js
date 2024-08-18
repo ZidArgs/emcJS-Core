@@ -99,6 +99,22 @@ export default class DataGridCell extends CustomElementDelegating {
         return this.getBooleanAttribute("editable");
     }
 
+    set disabled(val) {
+        this.setBooleanAttribute("disabled", val);
+    }
+
+    get disabled() {
+        return this.getBooleanAttribute("disabled");
+    }
+
+    set readonly(val) {
+        this.setBooleanAttribute("readonly", val);
+    }
+
+    get readonly() {
+        return this.getBooleanAttribute("readonly");
+    }
+
     static get observedAttributes() {
         return ["value", "col-name"];
     }
@@ -111,8 +127,8 @@ export default class DataGridCell extends CustomElementDelegating {
                 } break;
                 case "col-name": {
                     const styleWidth = `var(--width-${this.columnName}, 100%)`;
-                    this.#contentEl.style.minWidth = styleWidth;
-                    this.#contentEl.style.width = styleWidth;
+                    this.style.minWidth = styleWidth;
+                    this.style.width = styleWidth;
                 } break;
             }
         }

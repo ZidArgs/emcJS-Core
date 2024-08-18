@@ -6,21 +6,44 @@
             "type": "KeyValueListInput",
             "label": "key value list default",
             "name": "keyvaluelist.default",
-            "sorted": true
+            "sorted": true,
+            "value": {
+                "nana": "Nana",
+                "foobar": "Foobar"
+            }
         },
         {
             "type": "KeyValueListInput",
             "label": "key value list resettable",
             "name": "keyvaluelist.resettable",
             "sorted": true,
-            "resettable": true
+            "resettable": true,
+            "value": {
+                "nana": "Nana",
+                "foobar": "Foobar"
+            }
         },
         {
             "type": "KeyValueListInput",
             "label": "key value list disabled",
             "name": "keyvaluelist.disabled",
             "sorted": true,
-            "disabled": true
+            "disabled": true,
+            "value": {
+                "nana": "Nana",
+                "foobar": "Foobar"
+            }
+        },
+        {
+            "type": "KeyValueListInput",
+            "label": "key value list readonly",
+            "name": "keyvaluelist.readonly",
+            "sorted": true,
+            "readonly": true,
+            "value": {
+                "nana": "Nana",
+                "foobar": "Foobar"
+            }
         }
     ]
 }

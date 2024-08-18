@@ -31,6 +31,8 @@ export default class RowManager extends EventTarget {
 
     #cellManagers = new Map();
 
+    #selectEnd = false;
+
     constructor(target, cellCache, dataGridId) {
         if (!(target instanceof HTMLTableSectionElement)) {
             throw new TypeError("target must be of type HTMLTableSectionElement");
@@ -42,6 +44,20 @@ export default class RowManager extends EventTarget {
         this.#dataGridId = dataGridId;
         this.#cellCache = cellCache;
         this.#target = target;
+    }
+
+    set selectEnd(value) {
+        value = !!value;
+        if (this.#selectEnd !== value) {
+            this.#selectEnd = value;
+            for (const [, manager] of this.#cellManagers) {
+                manager.selectEnd = value;
+            }
+        }
+    }
+
+    get selectEnd() {
+        return this.#selectEnd;
     }
 
     purge() {
@@ -130,6 +146,7 @@ export default class RowManager extends EventTarget {
         const rowEl = document.createElement("tr");
 
         const cellManager = new CellManager(rowEl, this.#cellCache, this.#dataGridId);
+        cellManager.selectEnd = this.#selectEnd;
         this.#cellManagers.set(key, cellManager);
         cellManager.manage(columnData, rowData, isSelected);
 

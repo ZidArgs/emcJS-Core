@@ -3,75 +3,95 @@ function filterNull(input) {
 }
 
 function filterTrue(input) {
-    return input.type != "true";
+    return input.type === "true";
+}
+
+function filterNoTrue(input) {
+    return input.type !== "true";
 }
 
 function filterFalse(input) {
-    return input.type != "false";
+    return input.type === "false";
+}
+
+function filterNoFalse(input) {
+    return input.type !== "false";
 }
 
 export function reduceLogic(input) {
     switch (input?.type) {
         case "and": {
+            if (input.content.every(filterTrue)) {
+                return {type: "true"};
+            }
             const output = {
                 type: input.type,
-                content: input.content.map(reduceLogic).filter(filterNull).filter(filterTrue)
+                content: input.content.map(reduceLogic).filter(filterNull).filter(filterNoTrue)
             };
-            if (output.content.length == 0) {
+            if (output.content.length === 0) {
                 return;
             }
-            if (output.content.length == 1) {
+            if (output.content.length === 1) {
                 return output.content[0];
             }
-            if (output.content.some((e) => e.type == "false")) {
+            if (output.content.some(filterFalse)) {
                 return {type: "false"};
             }
             return output;
         }
         case "nand": {
+            if (input.content.every(filterTrue)) {
+                return {type: "false"};
+            }
             const output = {
                 type: input.type,
-                content: input.content.map(reduceLogic).filter(filterNull).filter(filterTrue)
+                content: input.content.map(reduceLogic).filter(filterNull).filter(filterNoTrue)
             };
-            if (output.content.length == 0) {
+            if (output.content.length === 0) {
                 return;
             }
-            if (output.content.length == 1) {
+            if (output.content.length === 1) {
                 return output.content[0];
             }
-            if (output.content.some((e) => e.type == "false")) {
+            if (output.content.some((e) => e.type === "false")) {
                 return {type: "true"};
             }
             return output;
         }
         case "or": {
+            if (input.content.every(filterFalse)) {
+                return {type: "false"};
+            }
             const output = {
                 type: input.type,
-                content: input.content.map(reduceLogic).filter(filterNull).filter(filterFalse)
+                content: input.content.map(reduceLogic).filter(filterNull).filter(filterNoFalse)
             };
-            if (output.content.length == 0) {
+            if (output.content.length === 0) {
                 return;
             }
-            if (output.content.length == 1) {
+            if (output.content.length === 1) {
                 return output.content[0];
             }
-            if (output.content.some((e) => e.type == "true")) {
+            if (output.content.some((e) => e.type === "true")) {
                 return {type: "true"};
             }
             return output;
         }
         case "nor": {
+            if (input.content.every(filterFalse)) {
+                return {type: "true"};
+            }
             const output = {
                 type: input.type,
-                content: input.content.map(reduceLogic).filter(filterNull).filter(filterFalse)
+                content: input.content.map(reduceLogic).filter(filterNull).filter(filterNoFalse)
             };
-            if (output.content.length == 0) {
+            if (output.content.length === 0) {
                 return;
             }
-            if (output.content.length == 1) {
+            if (output.content.length === 1) {
                 return output.content[0];
             }
-            if (output.content.some((e) => e.type == "true")) {
+            if (output.content.some((e) => e.type === "true")) {
                 return {type: "false"};
             }
             return output;
@@ -81,16 +101,16 @@ export function reduceLogic(input) {
                 type: input.type,
                 content: input.content.map(reduceLogic).filter(filterNull)
             };
-            if (output.content.length == 0) {
+            if (output.content.length === 0) {
                 return;
             }
-            if (output.content.length == 1) {
+            if (output.content.length === 1) {
                 return output.content[0];
             }
-            if (output.content[0].type == "true" && output.content[1].type == "true" || output.content[0].type == "false" && output.content[1].type == "false") {
+            if (output.content[0].type === "true" && output.content[1].type === "true" || output.content[0].type === "false" && output.content[1].type === "false") {
                 return {type: "false"};
             }
-            if (output.content[0].type == "false" && output.content[1].type == "true" || output.content[0].type == "true" && output.content[1].type == "false") {
+            if (output.content[0].type === "false" && output.content[1].type === "true" || output.content[0].type === "true" && output.content[1].type === "false") {
                 return {type: "true"};
             }
             return output;
@@ -100,16 +120,16 @@ export function reduceLogic(input) {
                 type: input.type,
                 content: input.content.map(reduceLogic).filter(filterNull)
             };
-            if (output.content.length == 0) {
+            if (output.content.length === 0) {
                 return;
             }
-            if (output.content.length == 1) {
+            if (output.content.length === 1) {
                 return output.content[0];
             }
-            if (output.content[0].type == "true" && output.content[1].type == "true" || output.content[0].type == "false" && output.content[1].type == "false") {
+            if (output.content[0].type === "true" && output.content[1].type === "true" || output.content[0].type === "false" && output.content[1].type === "false") {
                 return {type: "true"};
             }
-            if (output.content[0].type == "false" && output.content[1].type == "true" || output.content[0].type == "true" && output.content[1].type == "false") {
+            if (output.content[0].type === "false" && output.content[1].type === "true" || output.content[0].type === "true" && output.content[1].type === "false") {
                 return {type: "false"};
             }
             return output;
@@ -130,10 +150,10 @@ export function reduceLogic(input) {
                 type: input.type,
                 content: input.content.map(reduceLogic).filter(filterNull)
             };
-            if (output.content.length == 0) {
+            if (output.content.length === 0) {
                 return;
             }
-            if (output.content.length == 1) {
+            if (output.content.length === 1) {
                 return output.content[0];
             }
             return output;
@@ -158,13 +178,13 @@ export function reduceLogic(input) {
             if (output.content == null) {
                 return;
             }
-            if (output.content.type == "false") {
+            if (output.content.type === "false") {
                 return {type: "true"};
             }
-            if (output.content.type == "true") {
+            if (output.content.type === "true") {
                 return {type: "false"};
             }
-            if (output.content.type == "not") {
+            if (output.content.type === "not") {
                 return output.content.content;
             }
             return output;

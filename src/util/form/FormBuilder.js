@@ -10,7 +10,10 @@ import "../../ui/form/button/SubmitButton.js";
 import "../../ui/form/button/ResetButton.js";
 import "../../ui/form/button/ActionButton.js";
 import "../../ui/form/button/LinkButton.js";
-import "../../ui/form/field/DefaultFormFieldsLoader.js";
+import "../../ui/form/element/FormElementsLoader.js";
+import OptionGroupRegistryChoiceManager from "./manager/OptionGroupRegistryChoiceManager.js";
+import OptionGroupRegistryValuesManager from "./manager/OptionGroupRegistryValuesManager.js";
+import TokenRegistryManager from "./manager/TokenRegistryManager.js";
 
 class FormBuilder {
 
@@ -77,9 +80,7 @@ class FormBuilder {
             formEl.dataset[key] = data[key];
         }
 
-        this.replaceForm(formEl, content, defaultValues, formParams, label);
-
-        return formEl;
+        return this.replaceForm(formEl, content, defaultValues, formParams, label);
     }
 
     replaceForm(formEl, content, defaultValues, params, label = null) {
@@ -105,7 +106,7 @@ class FormBuilder {
         } = params ?? {};
 
         this.#applyHiddenValues(formEl, values);
-        this.#fillFormElements(formEl, content, defaultValues, label);
+        this.#fillFormComponents(formEl, content, defaultValues, label);
 
         if (!isNullOrFalse(submitButton) || !isNullOrFalse(resetButton)) {
             const buttonRowEl = document.createElement("emc-form-row");
@@ -134,6 +135,8 @@ class FormBuilder {
             }
             formEl.append(buttonRowEl);
         }
+
+        return formEl;
     }
 
     #applyHiddenValues(containerEl, values) {
@@ -157,7 +160,7 @@ class FormBuilder {
         }
     }
 
-    #fillFormElements(containerEl, content, defaultValues, label = null) {
+    #fillFormComponents(containerEl, content, defaultValues, label = null) {
         if (!(containerEl instanceof HTMLElement)) {
             throw new TypeError("containerEl must be of type HTMLElement");
         }
@@ -173,18 +176,24 @@ class FormBuilder {
                     if (config instanceof HTMLElement) {
                         containerEl.append(config);
                     } else {
-                        containerEl.append(this.#createFormElement(config, defaultValues ?? {}, label));
+                        containerEl.append(this.#createFormComponent(config, defaultValues ?? {}, label));
                     }
                 }
             } else if (content instanceof HTMLElement) {
                 containerEl.append(content);
             } else {
-                containerEl.append(this.#createFormElement(content, defaultValues ?? {}, label));
+                containerEl.append(this.#createFormComponent(content, defaultValues ?? {}, label));
             }
         }
     }
 
-    #createFormElement(config = {}, defaultValues = {}, label = null) {
+    replaceFormComponent(oldFormEl, config, defaultValues = {}, label = null) {
+        const newFormEl = this.#createFormComponent(config, defaultValues, label);
+        oldFormEl.replaceWith(newFormEl);
+        return newFormEl;
+    }
+
+    #createFormComponent(config = {}, defaultValues = {}, label = null) {
         const {type, id, visible, enabled, data, ...params} = config;
         switch (type) {
             case "SubmitButton": {
@@ -209,13 +218,13 @@ class FormBuilder {
                 return this.#createRow(id, visible, enabled, params, data, defaultValues);
             }
             default: {
-                return this.#createField(type, id, visible, enabled, params, data, defaultValues, label);
+                return this.#createFormElement(type, id, visible, enabled, params, data, defaultValues, label);
             }
         }
     }
 
-    #createField(type, id, visible, enabled, config = {}, data = {}, defaultValues = {}, label = null) {
-        const {value, ...params} = config;
+    #createFormElement(type, id, visible, enabled, config = {}, data = {}, defaultValues = {}, label = null) {
+        const {value, optiongroup, valueoptiongroup, tokengroup, ...params} = config;
         const el = FormElementRegistry.create(type, params, label);
         if (id != null) {
             el.id = id;
@@ -229,6 +238,7 @@ class FormBuilder {
         if (enabled != null) {
             el.setAttribute("enabled", JSON.stringify(enabled));
         }
+        // default value
         if (params.name != null && defaultValues[params.name] != null) {
             const value = defaultValues[params.name];
             if (typeof value === "object") {
@@ -244,6 +254,19 @@ class FormBuilder {
             }
         } else {
             el.removeAttribute("value");
+        }
+        // group managers
+        if (optiongroup != null) {
+            const manager = new OptionGroupRegistryChoiceManager(el);
+            manager.optionGroup = optiongroup;
+        }
+        if (valueoptiongroup != null) {
+            const manager = new OptionGroupRegistryValuesManager(el);
+            manager.optionGroup = optiongroup;
+        }
+        if (tokengroup != null) {
+            const manager = new TokenRegistryManager(el);
+            manager.tokenGroup = tokengroup;
         }
         return el;
     }
@@ -467,7 +490,7 @@ class FormBuilder {
         if (params.tooltip != null) {
             el.tooltip = params.tooltip;
         }
-        this.#fillFormElements(el, params.children, defaultValues, label);
+        this.#fillFormComponents(el, params.children, defaultValues, label);
         return el;
     }
 
@@ -488,7 +511,7 @@ class FormBuilder {
         if (params.align != null) {
             el.align = params.align;
         }
-        this.#fillFormElements(el, params.children, defaultValues, label);
+        this.#fillFormComponents(el, params.children, defaultValues, label);
         return el;
     }
 

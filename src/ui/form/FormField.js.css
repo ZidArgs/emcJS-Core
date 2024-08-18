@@ -8,13 +8,16 @@
     width: 100%;
     box-sizing: border-box;
 }
+
 :host:not(:has(:visible)) {
     display: none;
 }
+
 * {
     box-sizing: border-box;
     font-size: 1em;
 }
+
 #container {
     display: flex;
     align-items: flex-start;
@@ -23,11 +26,13 @@
     padding: 6px;
     color: var(--form-text-color, #000000);
 }
+
 #container:hover {
     color: var(--form-hover-text-color, #000000);
     background-color: var(--form-hover-back-color, #eeeeee);
     background-image: var(--form-hover-back-image, none);
 }
+
 #field-container {
     position: relative;
     display: flex;
@@ -36,6 +41,7 @@
     width: 100%;
     min-width: 100px;
 }
+
 #error {
     display: block;
     flex-shrink: 0;
@@ -51,10 +57,12 @@
     cursor: pointer;
     user-select: none;
 }
+
 :host([noerror]:not([noerror="false"])) #error,
 #error:empty {
     display: none;
 }
+
 #description {
     display: block;
     flex-shrink: 0;
@@ -67,9 +75,11 @@
     cursor: default;
     user-select: none;
 }
+
 #description:empty {
     display: none;
 }
+
 ::slotted(*) {
     color: inherit;
     padding: 0;

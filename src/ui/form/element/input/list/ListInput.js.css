@@ -1,4 +1,4 @@
-:host {
+#field {
     display: flex;
     flex-direction: column;
     height: 300px;
@@ -12,55 +12,53 @@
     border-color: var(--input-border-color, #222222);
     border-radius: var(--input-border-radius, 6px);
 }
-:host(:disabled) {
+
+:host(:invalid) #field {
+    background-color: var(--input-invalid-back-color, #ffebeb);
+    background-image: var(--input-invalid-back-image, none);
+    border-color: var(--input-invalid-border-color, #ff4444);
+}
+
+:host(:disabled) #field {
     color: var(--input-disabled-text-color, #757575) !important;
     background-color: var(--input-disabled-back-color, #999999) !important;
     background-image: var(--input-disabled-back-image, none);
     border-color: var(--input-disabled-border-color, #6a6a6a) !important;
     cursor: default !important;
+    opacity: 1 !important;
 }
-:host(:focus) {
-    outline: none;
-}
+
 .header {
     display: flex;
     border-bottom-style: solid;
     border-bottom-width: var(--input-border-width, 2px);
     border-bottom-color: var(--input-border-color, #222222);
 }
-:host([disabled]:not([disabled="false"])) .header {
-    border-color: var(--input-disabled-border-color, #6a6a6a) !important;
+
+:host(:invalid) .header {
+    border-bottom-color: var(--input-invalid-border-color, #ff4444);
 }
-#search {
-    flex-grow: 1;
-    margin: 5px;
+
+:host(:disabled) .header {
+    border-bottom-color: var(--input-disabled-border-color, #6a6a6a) !important;
 }
-#search.disabled {
-    flex-grow: 1;
-}
+
 .footer {
     display: flex;
-    padding: 5px;
+    padding: 6px;
     border-top-style: solid;
     border-top-width: var(--input-border-width, 2px);
     border-top-color: var(--input-border-color, #222222);
 }
+
 :host(:invalid) .footer {
     border-top-color: var(--input-invalid-border-color, #ff4444);
 }
+
 :host(:disabled) .footer {
     border-top-color: var(--input-disabled-border-color, #6a6a6a) !important;
 }
-#empty {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-style: italic;
-    min-height: 2rem;
-    padding: 5px;
-    margin: 5px 2px;
-    white-space: normal;
-}
+
 #grid {
     flex: 1;
     width: auto;
@@ -68,6 +66,7 @@
     border: none;
     border-radius: 0;
 }
+
 #add {
     margin: 0px;
 }

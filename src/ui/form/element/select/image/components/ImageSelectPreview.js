@@ -60,6 +60,14 @@ export default class ImageSelectPreview extends CustomFormElementDelegating {
         return this.#textEl.innerText;
     }
 
+    static create(value, label = value) {
+        const el = new ImageSelectPreview();
+        el.value = value;
+        el.src = value;
+        el.text = label;
+        return el;
+    }
+
 }
 
 customElements.define("emc-select-image-preview", ImageSelectPreview);

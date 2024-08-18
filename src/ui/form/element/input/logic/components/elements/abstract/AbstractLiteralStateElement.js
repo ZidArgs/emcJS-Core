@@ -1,5 +1,4 @@
 import AbstractElement from "./AbstractElement.js";
-import "../../../../../select/search/SearchSelect.js";
 import LogicOperatorRegistry from "../../../../../../../../data/registry/LogicOperatorRegistry.js";
 import TPL from "./AbstractLiteralStateElement.js.html" assert {type: "html"};
 import STYLE from "./AbstractLiteralStateElement.js.css" assert {type: "css"};
@@ -119,8 +118,7 @@ export default class AbstractLiteralStateElement extends AbstractElement {
         super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
             case "disabled":
-            case "template":
-            case "readonly": {
+            case "template": {
                 if (oldValue != newValue) {
                     if (this.editable) {
                         this.#inputEl.removeAttribute("disabled");

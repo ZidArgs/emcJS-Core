@@ -1,138 +1,169 @@
-import CustomFormElementDelegating from "../../../../element/CustomFormElementDelegating.js";
+import AbstractFormElement from "../../AbstractFormElement.js";
+import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
+import "../../../../i18n/builtin/I18nInput.js";
 import {
-    isEqual
-} from "../../../../../util/helper/Comparator.js";
-import BoolOrLogicModal from "./components/BoolOrLogicModal.js";
-import "../../../../i18n/I18nLabel.js";
-import "../../../../i18n/I18nTooltip.js";
+    registerFocusable
+} from "../../../../../util/helper/html/getFocusableElements.js";
+import {
+    safeSetAttribute
+} from "../../../../../util/helper/ui/NodeAttributes.js";
+import "../../../../i18n/builtin/I18nOption.js";
+import "../logic/LogicInput.js";
+import "../../select/switch/SwitchSelect.js";
 import TPL from "./BoolOrLogicInput.js.html" assert {type: "html"};
 import STYLE from "./BoolOrLogicInput.js.css" assert {type: "css"};
 
-// TODO use modal handler
-export default class BoolOrLogicInput extends CustomFormElementDelegating {
+export default class BoolOrLogicInput extends AbstractFormElement {
 
-    #value;
+    #inputEl;
 
-    #textEl;
-
-    #buttonEl;
-
-    #boolOrLogicModal = new BoolOrLogicModal();
+    #logicEl;
 
     constructor() {
         super();
-        this.shadowRoot.append(TPL.generate());
+        this.shadowRoot.getElementById("field").append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.#textEl = this.shadowRoot.getElementById("text");
-        this.#buttonEl = this.shadowRoot.getElementById("button");
-        this.#buttonEl.addEventListener("click", () => {
-            this.#boolOrLogicModal.value = this.value;
-            this.#boolOrLogicModal.onsubmit = () => {
-                this.value = this.#boolOrLogicModal.value;
-            };
-            this.#boolOrLogicModal.show();
+        this.#inputEl = this.shadowRoot.getElementById("input");
+        this.#logicEl = this.shadowRoot.getElementById("logic");
+        this.#inputEl.addEventListener("change", () => {
+            const value = this.#inputEl.value;
+            if (value === "logic") {
+                this.#logicEl.classList.add("active");
+                this.value = this.#logicEl.value;
+            } else {
+                this.#logicEl.classList.remove("active");
+                this.#logicEl.value = null;
+                this.value = value === "true";
+            }
         });
-    }
-
-    setModalRefName(name) {
-        this.#boolOrLogicModal.caption = name;
-    }
-
-    connectedCallback() {
-        const value = this.value;
-        this.#value = value;
-        this.#boolOrLogicModal.value = value;
-        this.internals.setFormValue(value);
+        this.#logicEl.addEventListener("change", () => {
+            const value = this.#inputEl.value;
+            if (value === "logic") {
+                this.value = this.#logicEl.value;
+            }
+        });
+        this.#logicEl.addValidator(() => {
+            return this.validationMessage;
+        });
     }
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
-        this.#buttonEl.classList.toggle("disabled", disabled);
+        this.#inputEl.disabled = disabled;
+        this.#logicEl.disabled = disabled;
     }
 
     formResetCallback() {
-        this.value = super.value || "";
+        super.formResetCallback();
+        this.#inputEl.formResetCallback();
+        this.#logicEl.formResetCallback();
     }
 
-    formStateRestoreCallback(state/* , mode */) {
-        this.value = state;
+    validityCallback(message) {
+        this.#logicEl.setCustomValidity(message);
+    }
+
+    focus(options) {
+        this.#inputEl.focus(options);
     }
 
     addOperatorGroup(...groupList) {
-        this.#boolOrLogicModal.addOperatorGroup(...groupList);
+        this.#logicEl.addOperatorGroup(...groupList);
     }
 
     removeOperatorGroup(...groupList) {
-        this.#boolOrLogicModal.removeOperatorGroup(...groupList);
+        this.#logicEl.removeOperatorGroup(...groupList);
+    }
+
+    set defaultValue(value) {
+        this.setJSONAttribute("value", value);
+    }
+
+    get defaultValue() {
+        return this.getJSONAttribute("value");
     }
 
     set value(value) {
-        if (!isEqual(this.#value, value)) {
-            this.#value = value;
-            this.#boolOrLogicModal.value = value;
-            this.#applyValue(value);
-            this.internals.setFormValue(value);
-            /* --- */
-            this.dispatchEvent(new Event("change"));
+        if (value === "true") {
+            value = true;
+        } else if (value === "false") {
+            value = false;
         }
+        super.value = value;
     }
 
     get value() {
-        return this.#value ?? super.value;
-    }
-
-    set readonly(value) {
-        this.setBooleanAttribute("readonly", value);
-    }
-
-    get readonly() {
-        return this.getBooleanAttribute("readonly");
-    }
-
-    set required(value) {
-        this.setBooleanAttribute("required", value);
-    }
-
-    get required() {
-        return this.getBooleanAttribute("required");
+        return super.value;
     }
 
     static get observedAttributes() {
-        return ["name", "value", "sorted"];
+        return [...super.observedAttributes, "name", "readonly"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
             case "name":{
                 if (oldValue != newValue) {
-                    this.#boolOrLogicModal = BoolOrLogicModal.getModalByName(newValue);
-                    this.#boolOrLogicModal.name = newValue;
+                    this.#logicEl.name = newValue;
                 }
             } break;
-            case "value": {
+            case "readonly": {
                 if (oldValue != newValue) {
-                    if (this.#value === undefined) {
-                        this.#applyValue(this.value);
-                        this.internals.setFormValue(this.value);
-                        /* --- */
-                        this.dispatchEvent(new Event("change"));
-                    }
+                    this.#inputEl.readonly = this.readonly;
+                    this.#logicEl.readonly = this.readonly;
                 }
             } break;
         }
     }
 
-    #applyValue(value) {
-        if (value === true) {
-            this.#textEl.i18nValue = "True";
+    checkValid() {
+        const el = this.#logicEl.children[0];
+        if (el != null && !el.checkValidity()) {
+            return "Not a valid logic";
+        }
+        return super.checkValid();
+    }
+
+    applyValueAttribute(value) {
+        if (typeof value === "object") {
+            safeSetAttribute(this.#inputEl, "value", "logic");
+            safeSetAttribute(this.#logicEl, "value", value);
         } else if (value === false) {
-            this.#textEl.i18nValue = "False";
+            safeSetAttribute(this.#inputEl, "value", "false");
+            safeSetAttribute(this.#logicEl, "value");
         } else {
-            this.#textEl.i18nValue = "Logic";
+            safeSetAttribute(this.#inputEl, "value", "true");
+            safeSetAttribute(this.#logicEl, "value");
+        }
+    }
+
+    renderValue(value) {
+        if (typeof value === "object") {
+            this.#inputEl.value = "logic";
+            this.#logicEl.value = value;
+        } else if (value === false) {
+            this.#inputEl.value = "false";
+            this.#logicEl.value = null;
+        } else {
+            this.#inputEl.value = "true";
+            this.#logicEl.value = null;
+        }
+    }
+
+    onDisplayValueChange(value) {
+        if (typeof value === "object") {
+            this.#logicEl.classList.add("active");
+        } else if (value === false) {
+            this.#logicEl.classList.remove("active");
+        } else {
+            this.#logicEl.classList.remove("active");
         }
     }
 
 }
 
+FormElementRegistry.register("BoolOrLogicInput", BoolOrLogicInput);
 customElements.define("emc-input-boolorlogic", BoolOrLogicInput);
+registerFocusable("emc-input-boolorlogic");

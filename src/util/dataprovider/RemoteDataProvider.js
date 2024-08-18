@@ -34,7 +34,7 @@ export default class RemoteDataProvider extends AbstractDataProvider {
             throw new Error("source must be a valid HTTP URL");
         }
         this.#source = new URL(source, self.location.origin);
-        this.triggerUpdate();
+        this.refresh();
     }
 
     async getData(options = {}) {

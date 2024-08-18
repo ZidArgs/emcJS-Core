@@ -1,15 +1,16 @@
-import CustomFormElementDelegating from "../../../../element/CustomFormElementDelegating.js";
+import AbstractFormElement from "../../AbstractFormElement.js";
+import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
+import DragDropMemory from "../../../../../data/DragDropMemory.js";
 import ContextMenuManagerMixin from "../../../../mixin/ContextMenuManagerMixin.js";
 import {
     mix
 } from "../../../../../util/Mixin.js";
-import DragDropMemory from "../../../../../data/DragDropMemory.js";
-import {
-    isEqual
-} from "../../../../../util/helper/Comparator.js";
 import {
     reduceLogic
 } from "../../../../../util/logic/LogicReducer.js";
+import {
+    registerFocusable
+} from "../../../../../util/helper/html/getFocusableElements.js";
 import LogicEditorContextMenuElement from "./components/contexmenu/LogicEditorContextMenuElement.js";
 import LogicElementModal from "./components/modal/LogicElementModal.js";
 import LogicJSONModal from "./components/modal/LogicJSONModal.js";
@@ -51,6 +52,7 @@ import STYLE from "./LogicInput.js.css" assert {type: "css"};
 // TODO add import/export (button opens dialog to copy/paste logic)
 // TODO add optimize button (optimize logic e.g. merge contained AND with parent AND)
 // TODO add negate function to contextmenu (add optional negation readonly property to logic elements)
+// TODO detect valid logic (no empty elements that expect children)
 
 const MUTATION_CONFIG = {
     childList: true,
@@ -61,13 +63,18 @@ const mutationObserver = new MutationObserver((mutationsList) => {
     for (const mutation of mutationsList) {
         if (mutation.type == "childList") {
             const target = mutation.target.closest("emc-input-logic");
-            target.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
+            const el = target.children[0];
+            if (el) {
+                target.value = el.toJSON();
+            } else {
+                target.value = null;
+            }
         }
     }
 });
 
 const BaseClass = mix(
-    CustomFormElementDelegating
+    AbstractFormElement
 ).with(
     ContextMenuManagerMixin
 );
@@ -89,7 +96,7 @@ export default class LogicInput extends BaseClass {
 
     constructor() {
         super();
-        this.shadowRoot.append(TPL.generate());
+        this.shadowRoot.getElementById("field").append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.setContextMenu("element", LogicEditorContextMenuElement);
@@ -139,7 +146,7 @@ export default class LogicInput extends BaseClass {
         });
         this.#jsonButtonEl.addEventListener("click", (event) => {
             this.#logicJSONModal.value = this.value;
-            this.#logicJSONModal.show();
+            this.#logicJSONModal.show(this.readonly);
             event.stopPropagation();
         });
         this.#logicJSONModal.addEventListener("submit", () => {
@@ -175,18 +182,14 @@ export default class LogicInput extends BaseClass {
             }
         });
         this.addEventListener("valuechange", (event) => {
-            this.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
             event.stopPropagation();
+            const el = this.children[0];
+            if (el) {
+                this.value = el.toJSON();
+            } else {
+                this.value = null;
+            }
         });
-    }
-
-    connectedCallback() {
-        const data = this.value;
-        if (data == null) {
-            this.innerHTML = "";
-        } else {
-            this.#buildLogic(data);
-        }
     }
 
     formDisabledCallback(disabled) {
@@ -201,12 +204,87 @@ export default class LogicInput extends BaseClass {
         }
     }
 
+    focus(options) {
+        const el = this.children[0];
+        if (el) {
+            el.focus(options);
+        } else {
+            this.#placeholderEl.focus(options);
+        }
+    }
+
     addOperatorGroup(...groupList) {
         this.#logicElementModal?.addOperatorGroup(...groupList);
     }
 
     removeOperatorGroup(...groupList) {
         this.#logicElementModal?.removeOperatorGroup(...groupList);
+    }
+
+    set defaultValue(value) {
+        this.setJSONAttribute("value", value);
+    }
+
+    get defaultValue() {
+        return this.getJSONAttribute("value");
+    }
+
+    set value(value) {
+        if (value == null || typeof value === "object" && !Array.isArray(value)) {
+            super.value = value;
+        }
+    }
+
+    get value() {
+        return super.value;
+    }
+
+    static get observedAttributes() {
+        return [...super.observedAttributes, "name"];
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback(name, oldValue, newValue);
+        switch (name) {
+            case "name": {
+                if (oldValue != newValue) {
+                    this.#logicElementModal = LogicElementModal.getModalByName(newValue);
+                    this.#logicElementModal.name = newValue;
+                }
+            } break;
+            case "readonly": {
+                if (oldValue != newValue) {
+                    const el = this.children[0];
+                    const value = newValue != null && newValue != "false";
+                    if (el != null) {
+                        el.readonly = value;
+                    }
+                }
+            } break;
+        }
+    }
+
+    append(el) {
+        const isActive = (!this.readonly || this.readonly === "false") && (!this.disabled || this.disabled === "false");
+        if (el instanceof LogicAbstractElement && isActive) {
+            return super.append(el);
+        }
+    }
+
+    checkValid() {
+        const el = this.children[0];
+        if (el != null && !el.checkValidity()) {
+            return "Not a valid logic";
+        }
+        return super.checkValid();
+    }
+
+    renderValue(value) {
+        if (value == null) {
+            this.innerHTML = "";
+        } else {
+            this.#buildLogic(value);
+        }
     }
 
     #removeElement(id) {
@@ -218,70 +296,15 @@ export default class LogicInput extends BaseClass {
         }
     }
 
-    set value(data) {
-        if (data == null) {
-            this.innerHTML = "";
-        } else if (!isEqual(this.value, data)) {
-            this.#buildLogic(data);
-        }
-    }
-
-    get value() {
-        const el = this.children[0];
-        if (el) {
-            return el.toJSON();
-        }
-        return null;
-    }
-
-    set readonly(val) {
-        this.setBooleanAttribute("readonly", val);
-    }
-
-    get readonly() {
-        return this.getBooleanAttribute("readonly");
-    }
-
-    static get observedAttributes() {
-        return ["name", "value"];
-    }
-
-    attributeChangedCallback(name, oldValue, newValue) {
-        switch (name) {
-            case "name": {
-                if (oldValue != newValue) {
-                    this.#logicElementModal = LogicElementModal.getModalByName(newValue);
-                    this.#logicElementModal.name = newValue;
-                }
-            } break;
-            case "value": {
-                if (oldValue != newValue) {
-                    if (!this.isChanged) {
-                        const data = this.value;
-                        if (data == null) {
-                            this.innerHTML = "";
-                        } else {
-                            this.#buildLogic(data);
-                        }
-                    }
-                }
-            } break;
-        }
-    }
-
     #buildLogic(data) {
         this.innerHTML = "";
         const logicEl = LogicAbstractElement.buildLogic(data);
+        logicEl.readonly = this.readonly;
         super.append(logicEl);
-    }
-
-    append(el) {
-        const isActive = (!this.readonly || this.readonly === "false") && (!this.disabled || this.disabled === "false");
-        if (el instanceof LogicAbstractElement && isActive) {
-            return super.append(el);
-        }
     }
 
 }
 
+FormElementRegistry.register("LogicInput", LogicInput);
 customElements.define("emc-input-logic", LogicInput);
+registerFocusable("emc-input-logic");

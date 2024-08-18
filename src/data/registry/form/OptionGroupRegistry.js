@@ -17,13 +17,16 @@ export default class OptionGroupRegistry extends EventTarget {
     }
 
     set(key, value) {
-        this.#options.set(key, value);
-        const event = new Event("change");
-        this.dispatchEvent(event);
+        const oldValue = this.#options.get(key);
+        if (oldValue != value) {
+            this.#options.set(key, value);
+            const event = new Event("change");
+            this.dispatchEvent(event);
+        }
     }
 
     add(key) {
-        this.#options.set(key, key);
+        this.#options.set(key, "");
         const event = new Event("change");
         this.dispatchEvent(event);
     }
@@ -48,18 +51,37 @@ export default class OptionGroupRegistry extends EventTarget {
         if (options == null || typeof options !== "object") {
             throw new TypeError("options has to be a dict or an array");
         }
+        let changed = false;
         if (Array.isArray(options)) {
-            for (const value of options) {
-                this.#options.set(value, value);
+            for (const key of options) {
+                const oldValue = this.#options.get(key);
+                if (oldValue !== "") {
+                    this.#options.set(key, "");
+                    changed = true;
+                }
             }
         } else {
             for (const key in options) {
                 const value = options[key];
-                this.#options.set(key, value);
+                const oldValue = this.#options.get(key);
+                if (oldValue !== value) {
+                    this.#options.set(key, value);
+                    changed = true;
+                }
             }
         }
-        const event = new Event("change");
-        this.dispatchEvent(event);
+        if (changed) {
+            const event = new Event("change");
+            this.dispatchEvent(event);
+        }
+    }
+
+    getAll() {
+        const res = {};
+        for (const [key, value] of this.#options) {
+            res[key] = value;
+        }
+        return res;
     }
 
     entries() {

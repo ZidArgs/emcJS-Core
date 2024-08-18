@@ -1,5 +1,7 @@
-.container {
+#container {
     display: flex;
+    min-width: 200px;
+    width: 100%;
 }
 #number {
     appearance: textfield;
@@ -153,12 +155,14 @@
     background-color: var(--input-disabled-back-color, #999999) !important;
     background-image: var(--input-disabled-back-image, none) !important;
     border-color: var(--input-disabled-border-color, #6a6a6a) !important;
+    opacity: 1 !important;
 }
 #number:disabled + #input-container {
     color: var(--input-disabled-text-color, #757575) !important;
     background-color: var(--input-disabled-back-color, #999999) !important;
     background-image: var(--input-disabled-back-image, none) !important;
     border-color: var(--input-disabled-border-color, #6a6a6a) !important;
+    opacity: 1 !important;
 }
 #number:disabled + #input-container::before {
     background-color: var(--range-disabled-track-color, #b5b5b5);

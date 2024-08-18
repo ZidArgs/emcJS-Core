@@ -7,12 +7,13 @@
             "label": "list-select default",
             "name": "list-select.default",
             "optiongroup": "ListSelect",
-            "options": [
-                "Nana",
-                "Foobar"
-            ],
+            "options": {
+                "nana": "Nana",
+                "foobar": "Foobar"
+            },
             "placeholder": "Select entry...",
-            "multi": true,
+            "multiple": true,
+            "selectend": true,
             "sorted": true
         },
         {
@@ -21,7 +22,11 @@
             "name": "list-select.default",
             "optiongroup": "ListSelect",
             "placeholder": "Select entry...",
-            "multi": true,
+            "options": {
+                "nana": "Nana",
+                "foobar": "Foobar"
+            },
+            "multiple": true,
             "sorted": true
         },
         {
@@ -30,7 +35,11 @@
             "name": "list-select.resettable",
             "optiongroup": "ListSelect",
             "placeholder": "Select entry...",
-            "multi": true,
+            "options": {
+                "nana": "Nana",
+                "foobar": "Foobar"
+            },
+            "multiple": true,
             "sorted": true,
             "resettable": true
         },
@@ -40,7 +49,11 @@
             "name": "list-select.required",
             "optiongroup": "ListSelect",
             "placeholder": "Select entry...",
-            "multi": true,
+            "options": {
+                "nana": "Nana",
+                "foobar": "Foobar"
+            },
+            "multiple": true,
             "sorted": true,
             "required": true
         },
@@ -50,9 +63,27 @@
             "name": "list-select.disabled",
             "optiongroup": "ListSelect",
             "placeholder": "Select entry...",
-            "multi": true,
+            "options": {
+                "nana": "Nana",
+                "foobar": "Foobar"
+            },
+            "multiple": true,
             "sorted": true,
             "disabled": true
+        },
+        {
+            "type": "ListSelect",
+            "label": "list-select readonly",
+            "name": "list-select.readonly",
+            "optiongroup": "ListSelect",
+            "placeholder": "Select entry...",
+            "options": {
+                "nana": "Nana",
+                "foobar": "Foobar"
+            },
+            "multiple": true,
+            "sorted": true,
+            "readonly": true
         },
         {
             "type": "ListSelect",
@@ -60,6 +91,10 @@
             "name": "list-select.single",
             "optiongroup": "ListSelect",
             "placeholder": "Select entry...",
+            "options": {
+                "nana": "Nana",
+                "foobar": "Foobar"
+            },
             "sorted": true
         },
         {
@@ -68,7 +103,11 @@
             "name": "list-select.multi_nohead",
             "optiongroup": "ListSelect",
             "placeholder": "Select entry...",
-            "multi": true,
+            "options": {
+                "nana": "Nana",
+                "foobar": "Foobar"
+            },
+            "multiple": true,
             "header": "hide",
             "sorted": true
         },
@@ -78,6 +117,10 @@
             "name": "list-select.single_head",
             "optiongroup": "ListSelect",
             "placeholder": "Select entry...",
+            "options": {
+                "nana": "Nana",
+                "foobar": "Foobar"
+            },
             "header": "show",
             "sorted": true
         }

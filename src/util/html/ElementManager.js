@@ -86,6 +86,13 @@ export default class ElementManager extends EventTarget {
         this.#sortEntries();
     }
 
+    /**
+     * forces the ElementManager to call its internal render function
+     */
+    rerender() {
+        this.#render();
+    }
+
     registerSortFunction(sorter) {
         if (typeof sorter === "function") {
             if (this.#sorter !== sorter) {
@@ -98,11 +105,11 @@ export default class ElementManager extends EventTarget {
         }
     }
 
-    sort() {
+    sort = debounce(() => {
         if (this.#sorter != null) {
             this.#sortEntries();
         }
-    }
+    });
 
     #sortEntries() {
         if (this.#sorter != null && this.#data.size > 0) {

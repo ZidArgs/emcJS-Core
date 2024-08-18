@@ -1,0 +1,220 @@
+#input {
+    position: relative;
+    flex-grow: 1;
+    height: 2em;
+    padding: 0px calc(2em + 7px) 0px 7px;
+    color: var(--input-text-color, #000000);
+    background-color: var(--input-back-color, #ffffff);
+    background-image: var(--input-back-image, none);
+    border-style: solid;
+    border-width: var(--input-border-width, 2px);
+    border-color: var(--input-border-color, #222222);
+    border-radius: var(--input-border-radius, 6px);
+    font-size: 1em;
+    cursor: pointer;
+}
+
+#input:focus {
+    box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
+    outline: none;
+    z-index: 1;
+}
+
+:host(:invalid) #input {
+    background-color: var(--input-invalid-back-color, #ffebeb);
+    background-image: var(--input-invalid-back-image, none);
+    border-color: var(--input-invalid-border-color, #ff4444);
+}
+
+:host(:invalid) #input:focus {
+    box-shadow: 0 0 2px 3px var(--input-invalid-focus-color, #ff2500);
+}
+
+#input::placeholder {
+    color: var(--input-placeholder-text-color, #757575);
+}
+
+#input:disabled {
+    color: var(--input-disabled-text-color, #757575) !important;
+    background-color: var(--input-disabled-back-color, #999999) !important;
+    background-image: var(--input-disabled-back-image, none) !important;
+    border-color: var(--input-disabled-border-color, #6a6a6a) !important;
+    cursor: default !important;
+    opacity: 1 !important;
+}
+
+:host([readonly]:not([readonly="false"])) #input {
+    cursor: default;
+}
+
+/* --- */
+#button {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 2em;
+    height: 2em;
+    right: 0px;
+    padding: 0px;
+    margin: 0 0 0 calc(-1 * var(--input-border-width, 2px));
+    background-color: transparent;
+    border-style: solid;
+    border-width: var(--input-border-width, 2px);
+    border-color: transparent;
+    border-radius: 0 var(--input-border-radius, 6px) var(--input-border-radius, 6px) 0;
+    border-left-style: none;
+    font-size: 1rem;
+    font-weight: bold;
+    pointer-events: none;
+    z-index: 2;
+}
+
+#button:disabled {
+    opacity: 1 !important;
+}
+
+#button::before {
+    position: relative;
+    display: block;
+    border: solid 0.25em transparent;
+    border-bottom-color: var(--input-text-color, #000000);
+    border-right-color: var(--input-text-color, #000000);
+    transform: translateY(-0.125em) rotate(45deg);
+    content: " ";
+}
+
+:host(:invalid) #button::before {
+    border-bottom-color: var(--input-invalid-text-color, #000000);
+    border-right-color: var(--input-invalid-text-color, #000000);
+}
+
+:host(:disabled) #button::before {
+    border-bottom-color: var(--input-disabled-text-color, #757575) !important;
+    border-right-color: var(--input-disabled-text-color, #757575) !important;
+}
+
+#button[readonly]:not([readonly="false"]) {
+    opacity: 0.3;
+}
+
+/* --- */
+#scroll-container {
+    position: fixed;
+    display: none;
+    max-height: 300px;
+    margin-top: calc(-1 * var(--input-border-width, 2px));
+    overflow-x: hidden;
+    overflow-y: auto;
+    color: var(--input-text-color, #000000);
+    background-color: var(--input-back-color, #ffffff);
+    background-image: var(--input-back-image, none);
+    border-style: solid;
+    border-width: var(--input-border-width, 2px);
+    border-color: var(--input-border-color, #222222);
+    border-radius: var(--input-border-radius, 6px);
+    z-index: 1000;
+    box-shadow: #000000 4px 4px 8px -4px;
+}
+
+/* --- */
+emc-select-entry {
+    display: flex;
+    align-items: center;
+    white-space: normal;
+    color: var(--select-option-text-color, #000000);
+    background-color: var(--select-option-back-color, #ffffff);
+    background-image: var(--select-option-back-image, none);
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+emc-select-entry:not(:last-child) {
+    border-bottom: solid 1px var(--select-option-divider-color, #949494);
+}
+
+emc-select-entry:hover,
+emc-select-entry.marked {
+    color: var(--select-option-marked-text-color, #000000);
+    background-color: var(--select-option-marked-back-color, #b1f4ff);
+    background-image: var(--select-option-marked-back-image, none);
+}
+
+/* --- */
+#empty {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-style: italic;
+    min-height: 2rem;
+    padding: 5px;
+    margin: 5px 2px;
+    white-space: normal;
+}
+
+#native-empty {
+    font-style: italic;
+    text-align: center;
+}
+
+.hidden,
+#options-slot {
+    display: none !important;
+}
+
+/* --- */
+#native-select {
+    display: none;
+    flex-grow: 1;
+    height: 2em;
+    padding: 0px calc(2em + 7px) 0px 7px;
+    color: var(--input-text-color, #000000);
+    background-color: var(--input-back-color, #ffffff);
+    background-image: var(--input-back-image, none);
+    border-style: solid;
+    border-width: var(--input-border-width, 2px);
+    border-color: var(--input-border-color, #222222);
+    border-radius: var(--input-border-radius, 6px);
+    font-size: 1em;
+}
+
+#native-select:focus {
+    box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
+    outline: none;
+    z-index: 1;
+}
+
+:host(:invalid) #native-select {
+    background-color: var(--input-invalid-back-color, #ffebeb);
+    background-image: var(--input-invalid-back-image, none);
+    border-color: var(--input-invalid-border-color, #ff4444);
+}
+
+:host(:invalid) #native-select:focus {
+    box-shadow: 0 0 2px 3px var(--input-invalid-focus-color, #ff2500);
+}
+
+#native-select::placeholder {
+    color: var(--input-placeholder-text-color, #757575);
+}
+
+#native-select:disabled {
+    color: var(--input-disabled-text-color, #757575) !important;
+    background-color: var(--input-disabled-back-color, #999999) !important;
+    background-image: var(--input-disabled-back-image, none) !important;
+    border-color: var(--input-disabled-border-color, #6a6a6a) !important;
+    cursor: default !important;
+    opacity: 1 !important;
+}
+
+@media (hover: none) {
+
+    #input {
+        display: none;
+    }
+
+    #native-select {
+        display: block;
+    }
+}

@@ -1,6 +1,16 @@
 #content {
     justify-content: flex-end;
 }
+
+:host([editable]:not([editable="false"])) #value {
+    display: none;
+}
+
+:host([editable]:not([editable="false"])) #input {
+    display: flex;
+}
+
+/* --- */
 #input {
     display: none;
     appearance: none;
@@ -10,10 +20,4 @@
     height: 2em;
     margin-right: auto;
     font-size: 1rem;
-}
-:host([editable]:not([editable="false"])) #value {
-    display: none;
-}
-:host([editable]:not([editable="false"])) #input {
-    display: flex;
 }

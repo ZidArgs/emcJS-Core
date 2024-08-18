@@ -21,6 +21,16 @@ export default class CellCache {
         return this.#columns.get(column)?.entries() ?? [];
     }
 
+    getAllCells() {
+        const res = [];
+        for (const [row, columns] of this.#rows) {
+            for (const [column, cell] of columns) {
+                res.push([row, column, cell]);
+            }
+        }
+        return res;
+    }
+
     removeCell(row, column) {
         this.#rows.get(row)?.delete(column);
         this.#columns.get(column)?.delete(row);

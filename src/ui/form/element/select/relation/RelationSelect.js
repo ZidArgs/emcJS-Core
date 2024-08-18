@@ -1,8 +1,12 @@
-import CustomFormElementDelegating from "../../../../element/CustomFormElementDelegating.js";
+import AbstractFormElement from "../../AbstractFormElement.js";
+import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
 import BusyIndicatorManager from "../../../../../util/BusyIndicatorManager.js";
 import TypeStorage from "../../../../../data/type/TypeStorage.js";
 import EventMultiTargetManager from "../../../../../util/event/EventMultiTargetManager.js";
 import CharacterSearch from "../../../../../util/search/CharacterSearch.js";
+import {
+    deepClone
+} from "../../../../../util/helper/DeepClone.js";
 import {
     sortNodeList
 } from "../../../../../util/helper/ui/NodeListSort.js";
@@ -12,11 +16,15 @@ import {
 import {
     isEqual
 } from "../../../../../util/helper/Comparator.js";
+import {
+    registerFocusable
+} from "../../../../../util/helper/html/getFocusableElements.js";
 import ElementListCache from "../../../../../util/html/ElementListCache.js";
 import "../../../../i18n/builtin/I18nInput.js";
 import "./components/RelationSelectEntry.js";
 import TPL from "./RelationSelect.js.html" assert {type: "html"};
 import STYLE from "./RelationSelect.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./RelationSelect.js.json" assert {type: "json"};
 
 const ESCAPE_KEYS = [
     "Tab",
@@ -24,11 +32,15 @@ const ESCAPE_KEYS = [
     "Enter"
 ];
 
-export default class RelationSelect extends CustomFormElementDelegating {
+export default class RelationSelect extends AbstractFormElement {
+
+    static get formConfigurationFields() {
+        return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
+    }
 
     #isEditMode = false;
 
-    #value;
+    #fieldEl;
 
     #typesWildcarded = false;
 
@@ -46,9 +58,15 @@ export default class RelationSelect extends CustomFormElementDelegating {
 
     #placeholderEl;
 
-    #emptyEl = document.createElement("emc-select-relation-entry");
-
     #scrollContainerEl;
+
+    #optionsContainerEl;
+
+    #emptyEl;
+
+    #nomatchEl;
+
+    #voidEl = document.createElement("emc-select-relation-entry");
 
     #typeStorageEventManager = new EventMultiTargetManager();
 
@@ -58,7 +76,8 @@ export default class RelationSelect extends CustomFormElementDelegating {
 
     constructor() {
         super();
-        this.shadowRoot.append(TPL.generate());
+        this.#fieldEl = this.shadowRoot.getElementById("field");
+        this.#fieldEl.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#optionSelectEventManager.set("mousedown", (event) => {
@@ -87,16 +106,19 @@ export default class RelationSelect extends CustomFormElementDelegating {
             this.#fillSelectElements();
         });
         /* --- */
-        this.#emptyEl.name = "";
-        this.#emptyEl.type = "";
+        this.#voidEl.name = "";
+        this.#voidEl.type = "";
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#valueEl = this.shadowRoot.getElementById("value");
         this.#nameEl = this.shadowRoot.getElementById("name");
         this.#typeEl = this.shadowRoot.getElementById("type");
         this.#viewEl = this.shadowRoot.getElementById("view");
+        this.#emptyEl = this.shadowRoot.getElementById("empty");
+        this.#nomatchEl = this.shadowRoot.getElementById("nomatch");
         this.#placeholderEl = this.shadowRoot.getElementById("placeholder");
         this.#scrollContainerEl = this.shadowRoot.getElementById("scroll-container");
+        this.#optionsContainerEl = this.shadowRoot.getElementById("options-container");
         this.#buttonEl = this.shadowRoot.getElementById("button");
         /* --- */
         this.#scrollContainerEl.addEventListener("mousedown", (event) => {
@@ -163,12 +185,22 @@ export default class RelationSelect extends CustomFormElementDelegating {
         this.#inputEl.addEventListener("input", () => {
             const all = this.#optionNodeList.getNodeList();
             const regEx = new CharacterSearch(this.#inputEl.value);
-            for (const el of all) {
-                const testText = el.comparatorText ?? el.innerText;
-                if (regEx.test(testText.trim())) {
-                    el.style.display = "";
-                } else {
-                    el.style.display = "none";
+            const elCount = all.length;
+            if (elCount > 0) {
+                let hiddenCount = 0;
+                for (const el of all) {
+                    const testText = el.comparatorText ?? el.innerText;
+                    if (regEx.test(testText.trim())) {
+                        el.style.display = "";
+                    } else {
+                        el.style.display = "none";
+                        hiddenCount++;
+                    }
+                    if (elCount <= hiddenCount) {
+                        this.#nomatchEl.style.display = "flex";
+                    } else {
+                        this.#nomatchEl.style.display = "";
+                    }
                 }
             }
         }, true);
@@ -198,27 +230,11 @@ export default class RelationSelect extends CustomFormElementDelegating {
         this.#fillSelectElements();
     }
 
-    connectedCallback() {
-        const value = this.value ?? this.defaultValue;
-        this.#value = value;
-        this.#applyValue(value);
-        this.internals.setFormValue(value);
-        this.#typesWildcarded = this.types.includes("*");
-    }
-
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
         this.#inputEl.disabled = disabled;
         this.#viewEl.classList.toggle("disabled", disabled);
         this.#buttonEl.classList.toggle("disabled", disabled);
-    }
-
-    formResetCallback() {
-        this.value = super.value || "";
-    }
-
-    formStateRestoreCallback(state/* , mode */) {
-        this.value = state;
     }
 
     set value(value) {
@@ -231,17 +247,15 @@ export default class RelationSelect extends CustomFormElementDelegating {
                 value = null;
             }
         }
-        if (!isEqual(this.#value, value)) {
-            this.#value = value;
-            this.#applyValue(value);
-            this.internals.setFormValue(value);
-            /* --- */
-            this.dispatchEvent(new Event("change"));
-        }
+        super.value = value;
     }
 
     get value() {
-        return this.#value ?? super.value;
+        return super.value;
+    }
+
+    set defaultValue(value) {
+        this.setJSONAttribute("value", value);
     }
 
     get defaultValue() {
@@ -258,36 +272,12 @@ export default class RelationSelect extends CustomFormElementDelegating {
         return value;
     }
 
-    set readonly(value) {
-        this.setBooleanAttribute("readonly", value);
-    }
-
-    get readonly() {
-        return this.getBooleanAttribute("readonly");
-    }
-
-    set required(value) {
-        this.setBooleanAttribute("required", value);
-    }
-
-    get required() {
-        return this.getBooleanAttribute("required");
-    }
-
     set placeholder(value) {
         this.setAttribute("placeholder", value);
     }
 
     get placeholder() {
         return this.getAttribute("placeholder");
-    }
-
-    set sorted(value) {
-        this.setBooleanAttribute("sorted", value);
-    }
-
-    get sorted() {
-        return this.getBooleanAttribute("sorted");
     }
 
     set types(value) {
@@ -305,22 +295,21 @@ export default class RelationSelect extends CustomFormElementDelegating {
         return value;
     }
 
+    set sorted(value) {
+        this.setBooleanAttribute("sorted", value);
+    }
+
+    get sorted() {
+        return this.getBooleanAttribute("sorted");
+    }
+
     static get observedAttributes() {
-        return ["value", "placeholder", "sorted", "types"];
+        return [...super.observedAttributes, "placeholder", "sorted", "types"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
-            case "value": {
-                if (oldValue != newValue) {
-                    if (this.#value === undefined) {
-                        this.#applyValue(this.value);
-                        this.internals.setFormValue(this.value);
-                        /* --- */
-                        this.dispatchEvent(new Event("change"));
-                    }
-                }
-            } break;
             case "placeholder": {
                 if (oldValue != newValue) {
                     this.#placeholderEl.setAttribute("i18n-value", newValue);
@@ -343,6 +332,26 @@ export default class RelationSelect extends CustomFormElementDelegating {
         }
     }
 
+    renderValue(value) {
+        if (value != null && value !== "") {
+            const selectedEl = this.#optionNodeList.querySelector(`[type="${value.type}"][name="${value.name}"]`);
+            if (selectedEl != null) {
+                this.#nameEl.innerText = selectedEl.name;
+                this.#typeEl.innerText = selectedEl.type;
+            } else {
+                this.#nameEl.innerText = "";
+                this.#typeEl.innerText = "";
+            }
+            this.#valueEl.classList.remove("hidden");
+            this.#placeholderEl.classList.add("hidden");
+        } else {
+            this.#nameEl.innerText = "";
+            this.#typeEl.innerText = "";
+            this.#valueEl.classList.add("hidden");
+            this.#placeholderEl.classList.remove("hidden");
+        }
+    }
+
     #choose(value) {
         if (!this.getBooleanAttribute("readonly")) {
             this.value = value;
@@ -352,7 +361,7 @@ export default class RelationSelect extends CustomFormElementDelegating {
     }
 
     #cancelSelection() {
-        this.#applyValue(this.#value);
+        this.renderValue(this.value);
         this.#stopEditMode();
     }
 
@@ -376,10 +385,11 @@ export default class RelationSelect extends CustomFormElementDelegating {
             }
             for (const el of this.#optionNodeList) {
                 el.style.display = "";
-                if ((el.value?.type ?? "") === (this.#value?.type ?? "") && (el.value?.name ?? "") === (this.#value?.name ?? "")) {
-                    el.classList.add("selected");
+                const value = this.value;
+                if ((el.value?.type ?? "") === (value?.type ?? "") && (el.value?.name ?? "") === (value?.name ?? "")) {
+                    el.selected = true;
                 } else {
-                    el.classList.remove("selected");
+                    el.selected = false;
                 }
             }
         }
@@ -403,32 +413,12 @@ export default class RelationSelect extends CustomFormElementDelegating {
             marked.classList.remove("marked");
             this.value = marked.value;
         } else {
-            this.#applyValue(this.#value);
-        }
-    }
-
-    #applyValue(value) {
-        if (value != null && value !== "") {
-            const selectedEl = this.#optionNodeList.querySelector(`[type="${value.type}"][name="${value.name}"]`);
-            if (selectedEl != null) {
-                this.#nameEl.innerText = selectedEl.name;
-                this.#typeEl.innerText = selectedEl.type;
-            } else {
-                this.#nameEl.innerText = "";
-                this.#typeEl.innerText = "";
-            }
-            this.#valueEl.classList.remove("hidden");
-            this.#placeholderEl.classList.add("hidden");
-        } else {
-            this.#nameEl.innerText = "";
-            this.#typeEl.innerText = "";
-            this.#valueEl.classList.add("hidden");
-            this.#placeholderEl.classList.remove("hidden");
+            this.renderValue(this.value);
         }
     }
 
     #switchSelected(modeUp = false) {
-        const value = this.#value;
+        const value = this.value;
         const currentEl = this.#optionNodeList.querySelector(`[type="${value?.type ?? ""}"][name="${value?.name ?? ""}"]`);
         const el = this.#switchOption(currentEl, modeUp);
         if (el != null) {
@@ -461,19 +451,19 @@ export default class RelationSelect extends CustomFormElementDelegating {
         if (oldEl != null) {
             if (modeUp) {
                 nextEl = this.#getPrevOption(oldEl);
-                if (nextEl == null && oldEl.style.display == "none") {
+                if (nextEl == null && oldEl.style.display === "none") {
                     nextEl = this.#getNextOption(oldEl);
                 }
             } else {
                 nextEl = this.#getNextOption(oldEl);
-                if (nextEl == null && oldEl.style.display == "none") {
+                if (nextEl == null && oldEl.style.display === "none") {
                     nextEl = this.#getPrevOption(oldEl);
                 }
             }
         } else {
-            const value = this.#value;
+            const value = this.value;
             nextEl = this.#optionNodeList.querySelector(`[type="${value?.type ?? ""}"][name="${value?.name ?? ""}"]`);
-            if (nextEl == null || nextEl.style.display == "none") {
+            if (nextEl == null || nextEl.style.display === "none") {
                 nextEl = this.#getFirstOption();
             }
         }
@@ -482,30 +472,30 @@ export default class RelationSelect extends CustomFormElementDelegating {
 
     #getFirstOption() {
         let nextEl = this.#optionNodeList.first;
-        while (nextEl != null && (nextEl.style.display == "none" || !nextEl.matches("emc-select-relation-entry"))) {
+        while (nextEl != null && nextEl.style.display === "none") {
             nextEl = this.#optionNodeList.getNext(nextEl);
         }
-        if (nextEl != null && nextEl.style.display != "none" && nextEl.matches("emc-select-relation-entry")) {
+        if (nextEl != null && nextEl.style.display !== "none") {
             return nextEl;
         }
     }
 
     #getPrevOption(oldEl) {
         let nextEl = this.#optionNodeList.getPrev(oldEl);
-        while (nextEl != null && (nextEl.style.display == "none" || !nextEl.matches("emc-select-relation-entry"))) {
+        while (nextEl != null && nextEl.style.display === "none") {
             nextEl = this.#optionNodeList.getPrev(nextEl);
         }
-        if (nextEl != null && nextEl.style.display != "none" && nextEl.matches("emc-select-relation-entry")) {
+        if (nextEl != null && nextEl.style.display !== "none") {
             return nextEl;
         }
     }
 
     #getNextOption(oldEl) {
         let nextEl = this.#optionNodeList.getNext(oldEl);
-        while (nextEl != null && (nextEl.style.display == "none" || !nextEl.matches("emc-select-relation-entry"))) {
+        while (nextEl != null && nextEl.style.display === "none") {
             nextEl = this.#optionNodeList.getNext(nextEl);
         }
-        if (nextEl != null && nextEl.style.display != "none" && nextEl.matches("emc-select-relation-entry")) {
+        if (nextEl != null && nextEl.style.display !== "none") {
             return nextEl;
         }
     }
@@ -523,55 +513,42 @@ export default class RelationSelect extends CustomFormElementDelegating {
 
     async #fillSelectElements() {
         await BusyIndicatorManager.busy();
-        this.innerHTML = "";
+        this.#optionsContainerEl.innerHTML = "";
         this.#optionNodeList.purge();
         this.#optionSelectEventManager.clearTargets();
         /* --- */
+        let acceptedTypes = this.types;
         if (this.#typesWildcarded) {
-            const allTypes = TypeStorage.getAllStorageNames();
-            for (const acceptedType of allTypes) {
-                const storage = TypeStorage.getStorage(acceptedType);
-                if (storage != null) {
-                    this.#typeStorageEventManager.addTarget(storage);
-                    for (const name of storage.keys()) {
-                        const el = document.createElement("emc-select-relation-entry");
-                        el.name = name;
-                        el.type = acceptedType;
-                        this.#optionNodeList.append(el);
-                        this.#optionSelectEventManager.addTarget(el);
-                        this.append(el);
-                    }
-                }
-            }
-        } else {
-            const acceptedTypes = this.types;
-            for (const acceptedType of acceptedTypes) {
-                const storage = TypeStorage.getStorage(acceptedType);
-                if (storage != null) {
-                    this.#typeStorageEventManager.addTarget(storage);
-                    for (const name of storage.keys()) {
-                        const el = document.createElement("emc-select-relation-entry");
-                        el.name = name;
-                        el.type = acceptedType;
-                        this.#optionNodeList.append(el);
-                        this.#optionSelectEventManager.addTarget(el);
-                        this.append(el);
-                    }
+            acceptedTypes = TypeStorage.getAllStorageNames();
+        }
+        for (const acceptedType of acceptedTypes) {
+            const storage = TypeStorage.getStorage(acceptedType);
+            if (storage != null) {
+                this.#typeStorageEventManager.addTarget(storage);
+                for (const name of storage.keys()) {
+                    const el = document.createElement("emc-select-relation-entry");
+                    el.name = name;
+                    el.type = acceptedType;
+                    this.#optionNodeList.append(el);
+                    this.#optionSelectEventManager.addTarget(el);
+                    this.#optionsContainerEl.append(el);
                 }
             }
         }
         /* --- */
         if (this.#optionNodeList.size > 0) {
-            this.#optionNodeList.prepend(this.#emptyEl);
-            this.#optionSelectEventManager.addTarget(this.#emptyEl);
-            this.prepend(this.#emptyEl);
+            this.#emptyEl.style.display = "";
+            this.#optionNodeList.prepend(this.#voidEl);
+            this.#optionSelectEventManager.addTarget(this.#voidEl);
+            this.#optionsContainerEl.prepend(this.#voidEl);
+        } else {
+            this.#emptyEl.style.display = "flex";
         }
-        /* --- */
         /* --- */
         if (this.sorted) {
             this.#sort();
         }
-        this.#applyValue(this.#value);
+        this.renderValue(this.value);
         await BusyIndicatorManager.unbusy();
     }
 
@@ -591,4 +568,6 @@ export default class RelationSelect extends CustomFormElementDelegating {
 
 }
 
+FormElementRegistry.register("RelationSelect", RelationSelect);
 customElements.define("emc-select-relation", RelationSelect);
+registerFocusable("emc-select-relation");

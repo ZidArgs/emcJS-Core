@@ -1,36 +1,71 @@
-import CustomFormElementDelegating from "../../../../element/CustomFormElementDelegating.js";
-import ElementListCache from "../../../../../util/html/ElementListCache.js";
+import AbstractFormElement from "../../AbstractFormElement.js";
+import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
+import BusyIndicatorManager from "../../../../../util/BusyIndicatorManager.js";
+import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
 import {
-    isEqual
-} from "../../../../../util/helper/Comparator.js";
+    deepClone
+} from "../../../../../util/helper/DeepClone.js";
+import {
+    debounce
+} from "../../../../../util/Debouncer.js";
+import {
+    nodeTextComparator
+} from "../../../../../util/helper/ui/NodeListSort.js";
+import {
+    registerFocusable
+} from "../../../../../util/helper/html/getFocusableElements.js";
+import {
+    safeSetAttribute
+} from "../../../../../util/helper/ui/NodeAttributes.js";
+import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
 import ImageSelectModal from "./components/ImageSelectModal.js";
-import "../../../../i18n/I18nLabel.js";
-import "../../../../i18n/I18nTooltip.js";
+import I18nOption from "../../../../i18n/builtin/I18nOption.js";
+import i18n from "../../../../../util/I18n.js";
+import ImageSelectPreviewManager from "./components/ImageSelectPreviewManager.js";
 import TPL from "./ImageSelect.js.html" assert {type: "html"};
 import STYLE from "./ImageSelect.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./ImageSelect.js.json" assert {type: "json"};
 
-// TODO use modal handler
-export default class ImageSelect extends CustomFormElementDelegating {
+const MUTATION_CONFIG = {
+    attributes: true,
+    attributeFilter: ["value", "label"]
+};
 
-    #value;
+// TODO use option slot like the other select elements
+export default class ImageSelect extends AbstractFormElement {
+
+    static get formConfigurationFields() {
+        return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
+    }
 
     #iconEl;
 
-    #textEl;
+    #inputEl;
 
     #buttonEl;
 
+    #optionsSlotEl;
+
     #imageIconModal = new ImageSelectModal();
 
-    #optionNodeList = new ElementListCache();
+    #i18nEventManager = new EventTargetManager(i18n);
+
+    #mutationObserver = new MutationObserverManager(MUTATION_CONFIG, () => {
+        this.#onSlotChange();
+    });
+
+    #imageSelectPreviewManager;
 
     constructor() {
         super();
-        this.shadowRoot.append(TPL.generate());
+        this.shadowRoot.getElementById("field").append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#iconEl = this.shadowRoot.getElementById("icon");
-        this.#textEl = this.shadowRoot.getElementById("text");
+        this.#inputEl = this.shadowRoot.getElementById("input");
+        this.#inputEl.addEventListener("focus", () => {
+            this.#buttonEl.focus();
+        });
         this.#buttonEl = this.shadowRoot.getElementById("button");
         this.#buttonEl.addEventListener("click", () => {
             this.#imageIconModal.value = this.value;
@@ -39,114 +74,163 @@ export default class ImageSelect extends CustomFormElementDelegating {
             };
             this.#imageIconModal.show();
         });
-    }
-
-    connectedCallback() {
-        const value = this.value;
-        this.#value = value;
-        this.internals.setFormValue(value);
+        this.#optionsSlotEl = this.shadowRoot.getElementById("options-slot");
+        this.#optionsSlotEl.addEventListener("slotchange", () => {
+            this.#onSlotChange();
+        });
+        /* --- */
+        this.#imageSelectPreviewManager = new ImageSelectPreviewManager(this.#imageIconModal);
+        this.#imageSelectPreviewManager.addEventListener("afterrender", () => {
+            this.renderValue(this.value);
+        });
+        /* --- */
+        this.#i18nEventManager.setActive(this.getBooleanAttribute("sorted"));
+        this.#i18nEventManager.set("language", () => {
+            this.#imageSelectPreviewManager.sort();
+        });
+        this.#i18nEventManager.set("translation", () => {
+            this.#imageSelectPreviewManager.sort();
+        });
     }
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
-        this.#buttonEl.classList.toggle("disabled", disabled);
+        this.#inputEl.disabled = disabled;
     }
 
-    formResetCallback() {
-        this.value = super.value || "";
+    validityCallback(message) {
+        this.#inputEl.setCustomValidity(message);
     }
 
-    formStateRestoreCallback(state/* , mode */) {
-        this.value = state;
+    focus(options) {
+        this.#inputEl.focus(options);
     }
 
     set value(value) {
-        if (!isEqual(this.#value, value)) {
-            this.#value = value;
-            this.#applyValue(value);
-            this.internals.setFormValue(value);
-            /* --- */
-            this.dispatchEvent(new Event("change"));
-        }
+        this.#inputEl.value = value ?? this.defaultValue;
+        super.value = value;
     }
 
     get value() {
-        return this.#value ?? super.value;
+        return super.value;
     }
 
-    set optiongroup(value) {
-        this.setAttribute("optiongroup", value);
+    set placeholder(value) {
+        this.setAttribute("placeholder", value);
     }
 
-    get optiongroup() {
-        return this.getAttribute("optiongroup");
+    get placeholder() {
+        return this.getAttribute("placeholder");
     }
 
-    set readonly(value) {
-        this.setBooleanAttribute("readonly", value);
+    set sorted(value) {
+        this.setBooleanAttribute("sorted", value);
     }
 
-    get readonly() {
-        return this.getBooleanAttribute("readonly");
-    }
-
-    set required(value) {
-        this.setBooleanAttribute("required", value);
-    }
-
-    get required() {
-        return this.getBooleanAttribute("required");
+    get sorted() {
+        return this.getBooleanAttribute("sorted");
     }
 
     static get observedAttributes() {
-        return ["name", "value", "optiongroup", "placeholder", "sorted"];
+        return [...super.observedAttributes, "placeholder", "readonly", "sorted"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
-            case "name": {
+            case "placeholder": {
                 if (oldValue != newValue) {
-                    this.#imageIconModal = ImageSelectModal.getModalByName(newValue);
+                    safeSetAttribute(this.#inputEl, "i18n-placeholder", newValue);
                 }
             } break;
-            case "value": {
+            case "readonly": {
                 if (oldValue != newValue) {
-                    if (this.#value === undefined) {
-                        this.#applyValue(this.value);
-                        this.internals.setFormValue(this.value);
-                        /* --- */
-                        this.dispatchEvent(new Event("change"));
+                    safeSetAttribute(this.#inputEl, name, newValue);
+                }
+            } break;
+            case "sorted": {
+                if (oldValue != newValue) {
+                    const sorted = this.sorted;
+                    if (sorted) {
+                        this.#imageSelectPreviewManager.registerSortFunction(this.#sortByNameFunction);
+                    } else {
+                        this.#imageSelectPreviewManager.registerSortFunction();
                     }
                 }
             } break;
-            case "optiongroup": {
-                if (oldValue != newValue) {
-                    this.#imageIconModal.optiongroup = newValue;
-                }
-            } break;
-            // case "placeholder": {
-            //     if (oldValue != newValue) {
-            //         this.#placeholderEl.setAttribute("i18n-value", newValue)
-            //     }
-            // } break;
         }
     }
 
-    #applyValue(value) {
+    renderValue(value) {
         if (value != null && value !== "") {
             this.#iconEl.style.backgroundImage = `url(${value})`;
-            const selectedEl = this.#optionNodeList.querySelector(`[value="${value}"]`);
-            if (selectedEl != null) {
-                this.#textEl.i18nValue = selectedEl.i18nValue ?? selectedEl.innerHTML;
-            } else {
-                this.#textEl.i18nValue = value;
-            }
+            this.#inputEl.value = value;
         } else {
             this.#iconEl.style.backgroundImage = "";
-            this.#textEl.i18nValue = "";
+            this.#inputEl.value = "";
         }
+    }
+
+    #onSlotChange = debounce(async () => {
+        await BusyIndicatorManager.busy();
+        const data = [];
+        const optionNodeList = this.#optionsSlotEl.assignedElements({flatten: true}).filter((el) => el.matches("option"));
+        /* --- */
+        const oldNodes = new Set(this.#mutationObserver.getObservedNodes());
+        const newNodes = new Set();
+        for (const el of optionNodeList) {
+            data.push({
+                key: el.value || el.innerText,
+                label: el.i18nValue || el.label || el.innerText
+            });
+            /* --- */
+            if (oldNodes.has(el)) {
+                oldNodes.delete(el);
+            } else {
+                newNodes.add(el);
+            }
+        }
+        for (const node of oldNodes) {
+            this.#mutationObserver.unobserve(node);
+        }
+        for (const node of newNodes) {
+            this.#mutationObserver.observe(node);
+        }
+        /* --- */
+        this.#imageSelectPreviewManager.manage(data);
+        /* --- */
+        this.renderValue(this.value);
+        await BusyIndicatorManager.unbusy();
+    });
+
+    #sortByNameFunction(entry0, entry1) {
+        const {element: el0} = entry0;
+        const {element: el1} = entry1;
+        return nodeTextComparator(el0, el1);
+    }
+
+    static fromConfig(config) {
+        const selectEl = new ImageSelect();
+        const {options = {}, ...params} = config;
+
+        for (const key in options) {
+            const value = options[key];
+            const optionEl = I18nOption.create();
+            optionEl.value = key;
+            optionEl.i18nValue = value;
+            selectEl.append(optionEl);
+        }
+
+        for (const name in params) {
+            const value = params[name];
+            safeSetAttribute(selectEl, name, value);
+        }
+
+        return selectEl;
     }
 
 }
 
+FormElementRegistry.register("ImageSelect", ImageSelect);
 customElements.define("emc-select-image", ImageSelect);
+registerFocusable("emc-select-image");

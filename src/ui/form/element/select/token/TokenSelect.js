@@ -1,28 +1,36 @@
-import CustomFormElementDelegating from "../../../../element/CustomFormElementDelegating.js";
+import AbstractFormElement from "../../AbstractFormElement.js";
+import ResizeObserverMixin from "../../../../mixin/ResizeObserverMixin.js";
+import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
 import BusyIndicatorManager from "../../../../../util/BusyIndicatorManager.js";
-import TokenRegistry from "../../../../../data/registry/form/TokenRegistry.js";
 import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
 import EventMultiTargetManager from "../../../../../util/event/EventMultiTargetManager.js";
 import i18n from "../../../../../util/I18n.js";
 import CharacterSearch from "../../../../../util/search/CharacterSearch.js";
 import {
-    sortNodeList,
+    deepClone
+} from "../../../../../util/helper/DeepClone.js";
+import {
     nodeTextComparator
 } from "../../../../../util/helper/ui/NodeListSort.js";
 import {
     debounce
 } from "../../../../../util/Debouncer.js";
 import {
-    isEqual
-} from "../../../../../util/helper/Comparator.js";
-import ElementListCache from "../../../../../util/html/ElementListCache.js";
+    registerFocusable
+} from "../../../../../util/helper/html/getFocusableElements.js";
+import {
+    safeSetAttribute
+} from "../../../../../util/helper/ui/NodeAttributes.js";
 import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
 import TokenSelectedElementManager from "./manager/TokenSelectedElementManager.js";
+import I18nOption from "../../../../i18n/builtin/I18nOption.js";
+import SelectEntryManager from "../../components/SelectEntryManager.js";
+import I18nOptionManager from "../../components/I18nOptionManager.js";
 import "../../../../i18n/builtin/I18nInput.js";
-import "../../../../i18n/builtin/I18nOption.js";
 import "../../../../i18n/I18nLabel.js";
 import TPL from "./TokenSelect.js.html" assert {type: "html"};
 import STYLE from "./TokenSelect.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./TokenSelect.js.json" assert {type: "json"};
 
 const ESCAPE_KEYS = [
     "Tab",
@@ -32,29 +40,34 @@ const ESCAPE_KEYS = [
 const MUTATION_CONFIG = {
     attributes: true,
     characterData: true,
-    attributeFilter: ["value"]
+    attributeFilter: ["value", "label"]
 };
-
-// TODO use ElementManager for options?
 
 // TODO add manage token option (?)
 // TODO add token usage detection (?)
+export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement) {
 
-export default class TokenSelect extends CustomFormElementDelegating {
-
-    #tokenRegistry = null;
-
-    #tokenRegistryEventTargetManager = new EventTargetManager();
+    static get formConfigurationFields() {
+        return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
+    }
 
     #isEditMode = false;
 
-    #value;
+    #fieldEl;
 
     #inputEl;
+
+    #nativeSelectEl;
+
+    #nativeEmptyEl;
 
     #viewEl;
 
     #valueEl;
+
+    #tokenContainerEl;
+
+    #overflowCounterEl;
 
     #buttonEl;
 
@@ -64,9 +77,11 @@ export default class TokenSelect extends CustomFormElementDelegating {
 
     #optionsContainerEl;
 
-    #elementManager;
+    #emptyEl;
 
-    #optionNodeList = new ElementListCache();
+    #nomatchEl;
+
+    #optionsSlotEl;
 
     #optionSelectEventManager = new EventMultiTargetManager();
 
@@ -76,9 +91,16 @@ export default class TokenSelect extends CustomFormElementDelegating {
         this.#onSlotChange();
     });
 
+    #tokenSelectedManager;
+
+    #selectEntryManager;
+
+    #i18nOptionManager;
+
     constructor() {
         super();
-        this.shadowRoot.append(TPL.generate());
+        this.#fieldEl = this.shadowRoot.getElementById("field");
+        this.#fieldEl.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#optionSelectEventManager.set("mousedown", (event) => {
@@ -87,49 +109,59 @@ export default class TokenSelect extends CustomFormElementDelegating {
         });
         this.#optionSelectEventManager.set("click", (event) => {
             const el = event.currentTarget;
-            el.classList.toggle("selected");
             const value = el.getAttribute("value");
             this.#toggleToken(value, el);
             event.preventDefault();
             event.stopPropagation();
         });
         this.#optionSelectEventManager.set("mouseover", () => {
-            const marked = this.#optionNodeList.querySelector(".marked");
+            const marked = this.#optionsContainerEl.querySelector(".marked");
             if (marked != null) {
                 marked.classList.remove("marked");
             }
         });
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
+        this.#nativeSelectEl = this.shadowRoot.getElementById("native-select");
+        this.#nativeEmptyEl = this.shadowRoot.getElementById("native-empty");
         this.#valueEl = this.shadowRoot.getElementById("value");
         this.#viewEl = this.shadowRoot.getElementById("view");
+        this.#tokenContainerEl = this.shadowRoot.getElementById("token-container");
+        this.#overflowCounterEl = this.shadowRoot.getElementById("overflow-counter");
+        this.#emptyEl = this.shadowRoot.getElementById("empty");
+        this.#nomatchEl = this.shadowRoot.getElementById("nomatch");
         this.#placeholderEl = this.shadowRoot.getElementById("placeholder");
         this.#scrollContainerEl = this.shadowRoot.getElementById("scroll-container");
         this.#buttonEl = this.shadowRoot.getElementById("button");
         this.#optionsContainerEl = this.shadowRoot.getElementById("options-container");
-        this.#optionsContainerEl.addEventListener("slotchange", () => {
+        this.#optionsSlotEl = this.shadowRoot.getElementById("options-slot");
+        this.#optionsSlotEl.addEventListener("slotchange", () => {
             this.#onSlotChange();
         });
         /* --- */
         this.#scrollContainerEl.addEventListener("mousedown", (event) => {
             event.stopPropagation();
         });
-        /* --- */
-        this.#buttonEl.addEventListener("click", (event) => {
-            if (!this.#isEditMode) {
-                this.#startEditMode();
-            } else {
-                this.#stopEditMode();
-            }
-            event.stopPropagation();
-            event.preventDefault();
+        this.#scrollContainerEl.addEventListener("click", () => {
+            this.focus();
         });
+        /* --- */
         this.#viewEl.addEventListener("click", (event) => {
-            if (!this.#isEditMode) {
+            if (!this.readonly && !this.#isEditMode) {
                 this.#startEditMode();
+                event.preventDefault();
+                event.stopPropagation();
             }
+        });
+        this.#inputEl.addEventListener("click", (event) => {
+            if (!this.readonly && !this.#isEditMode) {
+                this.#startEditMode();
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        });
+        this.#inputEl.addEventListener("mousedown", (event) => {
             event.stopPropagation();
-            event.preventDefault();
         });
         this.#inputEl.addEventListener("keydown", (event) => {
             if (!this.getBooleanAttribute("readonly")) {
@@ -173,20 +205,21 @@ export default class TokenSelect extends CustomFormElementDelegating {
             event.stopPropagation();
         });
         this.#inputEl.addEventListener("input", () => {
-            const all = this.#optionNodeList.getNodeList();
-            const regEx = new CharacterSearch(this.#inputEl.value);
-            for (const el of all) {
-                const testText = el.comparatorText ?? el.innerText;
-                if (regEx.test(testText.trim())) {
-                    el.style.display = "";
-                } else {
-                    el.style.display = "none";
-                }
-            }
+            this.#onSearch();
         }, true);
         this.#scrollContainerEl.addEventListener("wheel", (event) => {
             event.stopPropagation();
         }, {passive: true});
+        /* --- */
+        this.#nativeSelectEl.addEventListener("mousedown", (event) => {
+            if (this.readonly) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        });
+        this.#nativeSelectEl.addEventListener("change", () => {
+            this.value = this.#nativeSelectEl.value;
+        });
         /* --- */
         window.addEventListener("wheel", () => {
             if (this.#isEditMode) {
@@ -199,105 +232,96 @@ export default class TokenSelect extends CustomFormElementDelegating {
             }
         }, {passive: true});
         window.addEventListener("mousedown", (event) => {
-            if (this.#isEditMode && !this.contains(event.target)) {
-                this.#cancelSelection();
+            if (!this.readonly && this.#isEditMode) {
+                if (!this.#fieldEl.contains(event.target)) {
+                    this.#cancelSelection();
+                } else {
+                    this.focus();
+                }
             }
         }, {passive: true});
         /* --- */
-        this.#elementManager = new TokenSelectedElementManager(this.#valueEl);
-        this.#elementManager.registerSortFunction(this.#sortByNameFunction);
-        /* --- */
-        this.#tokenRegistryEventTargetManager.set("change", () => {
-            this.#loadTokenFromGroup();
+        this.#tokenSelectedManager = new TokenSelectedElementManager(this.#tokenContainerEl);
+        this.#tokenSelectedManager.registerSortFunction(this.#sortByNameFunction);
+        this.#tokenSelectedManager.addEventListener("afterrender", () => {
+            this.#handleOverflowItems();
+        });
+        this.#selectEntryManager = new SelectEntryManager(this.#optionsContainerEl, this.#optionSelectEventManager);
+        this.#selectEntryManager.registerSortFunction(this.#sortByNameFunction);
+        this.#selectEntryManager.addEventListener("afterrender", () => {
+            this.#refreshSelect(this.#optionsContainerEl);
+            this.renderValue(this.value);
+        });
+        this.#i18nOptionManager = new I18nOptionManager(this.#nativeSelectEl);
+        this.#i18nOptionManager.registerSortFunction(this.#sortByNameFunction);
+        this.#i18nOptionManager.addEventListener("afterrender", () => {
+            this.#refreshSelect(this.#nativeSelectEl);
         });
         /* --- */
         this.#i18nEventManager.set("language", () => {
-            this.#sort();
-            this.#sortOptions();
+            this.#selectEntryManager.sort();
+            this.#i18nOptionManager.sort();
+            this.#tokenSelectedManager.sort();
         });
         this.#i18nEventManager.set("translation", () => {
-            this.#sort();
-            this.#sortOptions();
+            this.#selectEntryManager.sort();
+            this.#i18nOptionManager.sort();
+            this.#tokenSelectedManager.sort();
         });
     }
 
-    connectedCallback() {
-        const value = this.value;
-        this.#value = value;
-        this.#applyValue(value);
-        this.internals.setFormValue(value);
-        this.#resolveSlottedElements();
+    resizeCallback() {
+        this.#tokenSelectedManager.rerender();
+        super.resizeCallback();
     }
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
         this.#inputEl.disabled = disabled;
-        this.#viewEl.classList.toggle("disabled", disabled);
-        this.#buttonEl.classList.toggle("disabled", disabled);
+        this.#nativeSelectEl.disabled = disabled;
+        this.#buttonEl.disabled = disabled;
     }
 
-    formResetCallback() {
-        this.value = super.value || "";
-    }
-
-    formStateRestoreCallback(state/* , mode */) {
-        this.value = state;
-    }
-
-    get defaultValue() {
-        return this.getJSONAttribute("value");
+    focus(options) {
+        const mediaQuery = window.matchMedia("(hover: none)");
+        if (mediaQuery.matches) {
+            this.#nativeSelectEl.focus(options);
+        } else {
+            this.#inputEl.focus(options);
+        }
     }
 
     set value(value) {
-        if (!isEqual(this.#value, value)) {
-            if (value == null || value === "") {
-                value = [];
-            } else if (!Array.isArray(value)) {
-                value = [value];
-            } else {
-                value = [...value];
-            }
-            if (!this.chooseonly && this.#tokenRegistry != null) {
-                for (const token of value) {
-                    this.#tokenRegistry.add(token);
+        if (value == null) {
+            value = [];
+        }
+        if (typeof value === "string") {
+            value = JSON.parse(value);
+        }
+        if (!Array.isArray(value)) {
+            throw new TypeError("value must be an array or null");
+        }
+        if (!this.chooseonly) {
+            for (const v of value) {
+                const el = this.#optionsContainerEl.querySelector(`[value="${v}"]`);
+                if (el == null) {
+                    const optionEl = I18nOption.create();
+                    optionEl.value = v;
+                    optionEl.i18nValue = v;
+                    this.append(optionEl);
                 }
             }
-            this.#value = value;
-            this.#applyValue(value);
-            this.internals.setFormValue(JSON.stringify(value));
-            /* --- */
-            this.dispatchEvent(new Event("change"));
+        } else {
+            value = value.filter((v) => {
+                const el = this.#optionsContainerEl.querySelector(`[value="${v}"]`);
+                return el != null;
+            });
         }
+        super.value = value;
     }
 
     get value() {
-        if (this.#value != null) {
-            return this.#value;
-        }
-        const value = super.value;
-        if (value == null) {
-            return [];
-        }
-        if (!Array.isArray(value)) {
-            return [value];
-        }
-        return value;
-    }
-
-    set readonly(value) {
-        this.setBooleanAttribute("readonly", value);
-    }
-
-    get readonly() {
-        return this.getBooleanAttribute("readonly");
-    }
-
-    set required(value) {
-        this.setBooleanAttribute("required", value);
-    }
-
-    get required() {
-        return this.getBooleanAttribute("required");
+        return super.value;
     }
 
     set placeholder(value) {
@@ -308,20 +332,12 @@ export default class TokenSelect extends CustomFormElementDelegating {
         return this.getAttribute("placeholder");
     }
 
-    set multiple(value) {
-        this.setBooleanAttribute("multiple", value);
+    set multiple(val) {
+        this.setBooleanAttribute("multiple", val);
     }
 
     get multiple() {
         return this.getBooleanAttribute("multiple");
-    }
-
-    set tokengroup(value) {
-        this.setAttribute("tokengroup", value);
-    }
-
-    get tokengroup() {
-        return this.getAttribute("tokengroup");
     }
 
     set chooseonly(value) {
@@ -333,24 +349,21 @@ export default class TokenSelect extends CustomFormElementDelegating {
     }
 
     static get observedAttributes() {
-        return ["value", "placeholder", "multiple", "tokengroup"];
+        return [...super.observedAttributes, "placeholder", "readonly"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback(name, oldValue, newValue);
         switch (name) {
-            case "value": {
-                if (oldValue != newValue) {
-                    if (this.#value === undefined) {
-                        this.#applyValue(this.value);
-                        this.internals.setFormValue(this.value);
-                        /* --- */
-                        this.dispatchEvent(new Event("change"));
-                    }
-                }
-            } break;
             case "placeholder": {
                 if (oldValue != newValue) {
-                    this.#placeholderEl.setAttribute("i18n-value", newValue);
+                    safeSetAttribute(this.#placeholderEl, "i18n-value", newValue);
+                }
+            } break;
+            case "readonly": {
+                if (oldValue != newValue) {
+                    safeSetAttribute(this.#inputEl, "readonly", newValue);
+                    safeSetAttribute(this.#buttonEl, "readonly", newValue);
                 }
             } break;
             case "multiple": {
@@ -363,33 +376,48 @@ export default class TokenSelect extends CustomFormElementDelegating {
                     }
                 }
             } break;
-            case "tokengroup": {
-                if (oldValue != newValue) {
-                    if (newValue == null || newValue === "") {
-                        this.#tokenRegistry = null;
-                    } else {
-                        this.#tokenRegistry = new TokenRegistry(newValue);
-                    }
-                    this.#tokenRegistryEventTargetManager.switchTarget(this.#tokenRegistry);
-                    this.#loadTokenFromGroup();
+        }
+    }
+
+    renderValue(value) {
+        if (value != null && value.length > 0) {
+            const data = [];
+            for (const val of value ?? []) {
+                const selectedEl = this.#optionsContainerEl.querySelector(`[value="${val}"]`);
+                if (selectedEl != null) {
+                    data.push({
+                        key: val,
+                        label: selectedEl.label ?? selectedEl.innerText,
+                        tokenAction: this.#tokenAction
+                    });
                 }
-            } break;
+            }
+            this.#valueEl.classList.remove("hidden");
+            this.#placeholderEl.classList.add("hidden");
+            this.#tokenSelectedManager.manage(data);
+        } else {
+            this.#nativeSelectEl.value = "";
+            this.#tokenContainerEl.innerHTML = "";
+            this.#valueEl.classList.add("hidden");
+            this.#placeholderEl.classList.remove("hidden");
         }
     }
 
     #cancelSelection() {
-        this.#applyValue(this.#value);
+        this.renderValue(this.value);
         this.#stopEditMode();
     }
 
-    #startEditMode() {
-        if (!this.getBooleanAttribute("readonly")) {
+    #startEditMode(keepSearchInput = false) {
+        if (!this.readonly) {
             this.#isEditMode = true;
-            this.#inputEl.value = "";
+            if (!keepSearchInput) {
+                this.#inputEl.value = "";
+            }
             this.#inputEl.classList.add("active");
-            this.#inputEl.focus();
+            this.focus();
             /* --- */
-            const thisRect = this.getBoundingClientRect();
+            const thisRect = this.#fieldEl.getBoundingClientRect();
             this.#scrollContainerEl.style.display = "block";
             this.#scrollContainerEl.style.left = `${thisRect.left}px`;
             this.#scrollContainerEl.style.width = `${thisRect.width}px`;
@@ -400,14 +428,14 @@ export default class TokenSelect extends CustomFormElementDelegating {
             } else {
                 this.#scrollContainerEl.style.top = `${thisRect.bottom}px`;
             }
-            const all = this.#optionNodeList.querySelectorAll(`[value]`);
-            const valueBuffer = new Set(this.value);
+            const all = this.#optionsContainerEl.querySelectorAll(`[value]`);
+            const value = this.value;
             for (const el of all) {
                 el.style.display = "";
-                if (valueBuffer.has(el.value)) {
-                    el.classList.add("selected");
+                if (value != null && value.includes(el.value)) {
+                    el.selected = true;
                 } else {
-                    el.classList.remove("selected");
+                    el.selected = false;
                 }
             }
         }
@@ -415,10 +443,12 @@ export default class TokenSelect extends CustomFormElementDelegating {
 
     #createToken() {
         const value = this.#inputEl.value;
+        this.#inputEl.value = "";
+        this.#nomatchEl.style.display = "";
         if (value != null && value !== "") {
             const valueBuffer = new Set(this.value);
             if (this.chooseonly) {
-                const el = this.#optionNodeList.querySelector(`[value="${value}"]`);
+                const el = this.#optionsContainerEl.querySelector(`[value="${value}"]`);
                 if (el != null) {
                     if (this.multiple) {
                         valueBuffer.add(value);
@@ -427,28 +457,23 @@ export default class TokenSelect extends CustomFormElementDelegating {
                         valueBuffer.add(value);
                     }
                 }
+            } else if (this.multiple) {
+                valueBuffer.add(value);
             } else {
-                if (this.#tokenRegistry != null) {
-                    this.#tokenRegistry.add(value);
-                }
-                if (this.multiple) {
-                    valueBuffer.add(value);
-                } else {
-                    valueBuffer.clear();
-                    valueBuffer.add(value);
-                }
+                valueBuffer.clear();
+                valueBuffer.add(value);
             }
             this.value = Array.from(valueBuffer);
-            this.#applyValue(this.value);
         }
+        this.#onSearch();
         this.focus();
-        this.#stopEditMode();
     }
 
     #stopEditMode() {
         this.#isEditMode = false;
         this.#inputEl.classList.remove("active");
-        this.#viewEl.focus();
+        this.#inputEl.value = "";
+        this.#nomatchEl.style.display = "";
         /* --- */
         this.#scrollContainerEl.style.display = "";
         this.#scrollContainerEl.style.bottom = "";
@@ -458,30 +483,39 @@ export default class TokenSelect extends CustomFormElementDelegating {
         for (const el of all) {
             el.style.display = "";
         }
-        const marked = this.#optionNodeList.querySelector(".marked");
+        const marked = this.#optionsContainerEl.querySelector(".marked");
         if (marked != null) {
             marked.classList.remove("marked");
         }
-        this.#applyValue(this.value);
+        this.#tokenSelectedManager.rerender();
     }
 
-    #applyValue(value) {
-        const data = [];
-        for (const val of value ?? []) {
-            const selectedEl = this.#optionNodeList.querySelector(`[value="${val}"]`);
-            if (selectedEl != null) {
-                data.push({
-                    key: val,
-                    content: selectedEl.i18nValue ?? selectedEl.innerHTML,
-                    tokenAction: this.#tokenAction
-                });
+    #handleOverflowItems() {
+        const els = [...this.#tokenContainerEl.children];
+        const containerWidth = this.#tokenContainerEl.clientWidth;
+        let overflowItems = 0;
+        for (let i = 0; i < els.length; ++i) {
+            const el = els[i];
+            if (el != null) {
+                const elLeft = el.offsetLeft;
+                const elWidth = el.offsetWidth;
+                const elRight = elLeft + elWidth;
+                if (elRight > containerWidth) {
+                    el.remove();
+                    overflowItems++;
+                    i -= 2;
+                }
             }
         }
-        this.#elementManager.manage(data);
+        if (overflowItems > 0) {
+            this.#overflowCounterEl.innerText = `+${overflowItems}`;
+        } else {
+            this.#overflowCounterEl.innerText = "";
+        }
     }
 
     #moveMarker(modeUp = false) {
-        const marked = this.#optionNodeList.querySelector(".marked");
+        const marked = this.#optionsContainerEl.querySelector(".marked");
         const el = this.#switchOption(marked, modeUp);
         if (el != null) {
             if (marked != null) {
@@ -505,18 +539,18 @@ export default class TokenSelect extends CustomFormElementDelegating {
         if (oldEl != null) {
             if (modeUp) {
                 nextEl = this.#getPrevOption(oldEl);
-                if (nextEl == null && oldEl.style.display == "none") {
+                if (nextEl == null && oldEl.style.display === "none") {
                     nextEl = this.#getNextOption(oldEl);
                 }
             } else {
                 nextEl = this.#getNextOption(oldEl);
-                if (nextEl == null && oldEl.style.display == "none") {
+                if (nextEl == null && oldEl.style.display === "none") {
                     nextEl = this.#getPrevOption(oldEl);
                 }
             }
         } else {
-            nextEl = this.#optionNodeList.querySelector(`[value="${this.#value}"]`);
-            if (nextEl == null) {
+            nextEl = this.#optionsContainerEl.querySelector(`[value="${this.value}"]`);
+            if (nextEl == null || nextEl.style.display === "none") {
                 nextEl = this.#getFirstOption();
             }
         }
@@ -524,44 +558,48 @@ export default class TokenSelect extends CustomFormElementDelegating {
     }
 
     #getFirstOption() {
-        let nextEl = this.#optionNodeList.first;
-        while (nextEl != null && (nextEl.style.display == "none" || !nextEl.matches("[value]"))) {
-            nextEl = this.#optionNodeList.getNext(nextEl);
+        let nextEl = this.#optionsContainerEl.firstElementChild;
+        while (nextEl != null && (nextEl.style.display === "none" || !nextEl.matches("[value]"))) {
+            nextEl = nextEl.nextElementSibling;
         }
-        if (nextEl != null && nextEl.style.display != "none" && nextEl.matches("[value]")) {
+        if (nextEl != null && nextEl.style.display !== "none" && nextEl.matches("[value]")) {
             return nextEl;
         }
     }
 
     #getPrevOption(oldEl) {
-        let nextEl = this.#optionNodeList.getPrev(oldEl);
-        while (nextEl != null && (nextEl.style.display == "none" || !nextEl.matches("[value]"))) {
-            nextEl = this.#optionNodeList.getPrev(nextEl);
+        let nextEl = oldEl.previousElementSibling;
+        while (nextEl != null && (nextEl.style.display === "none" || !nextEl.matches("[value]"))) {
+            nextEl = nextEl.previousElementSibling;
         }
-        if (nextEl != null && nextEl.style.display != "none" && nextEl.matches("[value]")) {
+        if (nextEl != null && nextEl.style.display !== "none" && nextEl.matches("[value]")) {
             return nextEl;
         }
     }
 
     #getNextOption(oldEl) {
-        let nextEl = this.#optionNodeList.getNext(oldEl);
-        while (nextEl != null && (nextEl.style.display == "none" || !nextEl.matches("[value]"))) {
-            nextEl = this.#optionNodeList.getNext(nextEl);
+        let nextEl = oldEl.nextElementSibling;
+        while (nextEl != null && (nextEl.style.display === "none" || !nextEl.matches("[value]"))) {
+            nextEl = nextEl.nextElementSibling;
         }
-        if (nextEl != null && nextEl.style.display != "none" && nextEl.matches("[value]")) {
+        if (nextEl != null && nextEl.style.display !== "none" && nextEl.matches("[value]")) {
             return nextEl;
         }
     }
 
-    #resolveSlottedElements() {
-        const optionNodeList = this.#optionsContainerEl.assignedElements({flatten: true}).filter((el) => el.matches("[value]"));
-        this.#optionNodeList.setNodeList(optionNodeList);
+    async #resolveSlottedElements() {
+        await BusyIndicatorManager.busy();
+        const data = [];
+        const optionNodeList = this.#optionsSlotEl.assignedElements({flatten: true}).filter((el) => el.matches("option"));
         /* --- */
         const oldNodes = new Set(this.#mutationObserver.getObservedNodes());
         const newNodes = new Set();
-        this.#optionSelectEventManager.clearTargets();
         for (const el of optionNodeList) {
-            this.#optionSelectEventManager.addTarget(el);
+            data.push({
+                key: el.value || el.innerText,
+                label: el.i18nValue || el.label || el.innerText
+            });
+            /* --- */
             if (oldNodes.has(el)) {
                 oldNodes.delete(el);
             } else {
@@ -575,8 +613,19 @@ export default class TokenSelect extends CustomFormElementDelegating {
             this.#mutationObserver.observe(node);
         }
         /* --- */
-        this.#sortOptions();
-        this.#applyValue(this.#value);
+        this.#selectEntryManager.manage(data);
+        this.#i18nOptionManager.manage(data);
+        /* --- */
+        if (newNodes.size > 0) {
+            this.#emptyEl.style.display = "";
+            this.#nativeEmptyEl.remove();
+        } else if (this.#nativeSelectEl.children.length <= 0) {
+            this.#emptyEl.style.display = "flex";
+            this.#nativeSelectEl.append(this.#nativeEmptyEl);
+        }
+        /* --- */
+        this.renderValue(this.value);
+        await BusyIndicatorManager.unbusy();
     }
 
     #onSlotChange = debounce(() => {
@@ -593,7 +642,7 @@ export default class TokenSelect extends CustomFormElementDelegating {
     };
 
     #toggleMarkedToken() {
-        const el = this.#optionNodeList.querySelector(".marked");
+        const el = this.#optionsContainerEl.querySelector(".marked");
         if (el != null) {
             const value = el.getAttribute("value");
             this.#toggleToken(value, el);
@@ -606,56 +655,26 @@ export default class TokenSelect extends CustomFormElementDelegating {
             if (this.multiple) {
                 if (valueBuffer.has(value)) {
                     valueBuffer.delete(value);
-                    toggledEl.classList.remove("selected");
+                    toggledEl.selected = false;
                 } else {
                     valueBuffer.add(value);
-                    toggledEl.classList.add("selected");
+                    toggledEl.selected = true;
                 }
             } else if (valueBuffer.has(value)) {
                 valueBuffer.delete(value);
-                toggledEl.classList.remove("selected");
+                toggledEl.selected = false;
             } else {
                 valueBuffer.clear();
                 valueBuffer.add(value);
-                const currentEls = this.#optionNodeList.querySelectorAll(".selected");
+                const currentEls = this.#optionsContainerEl.querySelectorAll("[selected]:not([selected=false])");
                 for (const el of currentEls) {
-                    el.classList.remove("selected");
+                    el.selected = false;
                 }
-                toggledEl.classList.add("selected");
+                toggledEl.selected = true;
             }
             this.value = Array.from(valueBuffer);
-            this.#applyValue(this.value);
         }
     }
-
-    async #loadTokenFromGroup() {
-        await BusyIndicatorManager.busy();
-        this.innerHTML = "";
-        if (this.#tokenRegistry != null) {
-            for (const value of this.#tokenRegistry) {
-                const optionEl = document.createElement("option");
-                optionEl.setAttribute("value", value);
-                optionEl.innerHTML = value;
-                this.append(optionEl);
-            }
-        }
-        await BusyIndicatorManager.unbusy();
-    }
-
-    #sortOptions = debounce(() => {
-        const optionNodeList = this.#optionNodeList.getNodeList();
-        const sortedNodeList = sortNodeList(optionNodeList);
-        if (!isEqual(optionNodeList, sortedNodeList)) {
-            for (const el of sortedNodeList) {
-                (el.parentElement ?? el.getRootNode() ?? document).append(el);
-            }
-        }
-        this.#optionNodeList.setNodeList(sortedNodeList);
-    });
-
-    #sort = debounce(() => {
-        this.#elementManager.sort();
-    }, 1000);
 
     #sortByNameFunction(entry0, entry1) {
         const {element: el0} = entry0;
@@ -663,6 +682,71 @@ export default class TokenSelect extends CustomFormElementDelegating {
         return nodeTextComparator(el0, el1);
     }
 
+    #refreshSelect(containerEl) {
+        const all = containerEl.querySelectorAll(`[value]`);
+        const value = this.value;
+        for (const el of all) {
+            el.style.display = "";
+            if (value != null && value.includes(el.value)) {
+                el.selected = true;
+            } else {
+                el.selected = false;
+            }
+        }
+    }
+
+    #onSearch() {
+        if (!this.#isEditMode) {
+            this.#startEditMode(true);
+        }
+        const all = this.#optionsContainerEl.children;
+        const regEx = new CharacterSearch(this.#inputEl.value);
+        const elCount = all.length;
+        if (elCount > 0) {
+            let hiddenCount = 0;
+            for (const el of all) {
+                const testText = el.comparatorText ?? el.innerText;
+                if (regEx.test(testText.trim())) {
+                    el.style.display = "";
+                } else {
+                    el.style.display = "none";
+                    hiddenCount++;
+                }
+            }
+            if (elCount <= hiddenCount) {
+                this.#nomatchEl.style.display = "flex";
+            } else {
+                this.#nomatchEl.style.display = "";
+            }
+        }
+    }
+
+    static fromConfig(config) {
+        const selectEl = new TokenSelect();
+        const {options = {}, ...params} = config;
+
+        for (const value in options) {
+            const optionEl = I18nOption.create();
+            optionEl.value = value;
+            const label = options[value];
+            if (typeof label === "string" && label !== "") {
+                optionEl.i18nValue = label;
+            } else if (value !== "") {
+                optionEl.i18nValue = value;
+            }
+            selectEl.append(optionEl);
+        }
+
+        for (const name in params) {
+            const value = params[name];
+            safeSetAttribute(selectEl, name, value);
+        }
+
+        return selectEl;
+    }
+
 }
 
+FormElementRegistry.register("TokenSelect", TokenSelect);
 customElements.define("emc-select-token", TokenSelect);
+registerFocusable("emc-select-token");

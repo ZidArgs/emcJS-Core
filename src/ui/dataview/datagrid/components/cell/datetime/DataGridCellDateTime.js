@@ -31,7 +31,7 @@ export default class DataGridCellDateTime extends DataGridCell {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "editable"];
+        return [...super.observedAttributes, "editable", "disabled", "readonly"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -43,6 +43,16 @@ export default class DataGridCellDateTime extends DataGridCell {
                         this.#inputEventManager.setActive(true);
                     } else {
                         this.#inputEventManager.setActive(false);
+                    }
+                } break;
+                case "disabled": {
+                    this.#inputEl.disabled = this.disabled;
+                } break;
+                case "readonly": {
+                    if (this.readonly) {
+                        this.#inputEl.setAttribute("readonly", "");
+                    } else {
+                        this.#inputEl.removeAttribute("readonly");
                     }
                 } break;
             }
