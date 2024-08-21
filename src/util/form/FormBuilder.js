@@ -194,7 +194,7 @@ class FormBuilder {
     }
 
     #createFormComponent(config = {}, defaultValues = {}, label = null) {
-        const {type, id, visible, enabled, data, ...params} = config;
+        const {type, id, visible, enabled, editable, data, ...params} = config;
         switch (type) {
             case "SubmitButton": {
                 return this.#createSubmitButton(id, visible, enabled, params, data);
@@ -218,12 +218,12 @@ class FormBuilder {
                 return this.#createRow(id, visible, enabled, params, data, defaultValues);
             }
             default: {
-                return this.#createFormElement(type, id, visible, enabled, params, data, defaultValues, label);
+                return this.#createFormElement(type, id, visible, enabled, editable, params, data, defaultValues, label);
             }
         }
     }
 
-    #createFormElement(type, id, visible, enabled, config = {}, data = {}, defaultValues = {}, label = null) {
+    #createFormElement(type, id, visible, enabled, editable, config = {}, data = {}, defaultValues = {}, label = null) {
         const {value, optiongroup, valueoptiongroup, tokengroup, ...params} = config;
         const el = FormElementRegistry.create(type, params, label);
         if (id != null) {
@@ -237,6 +237,9 @@ class FormBuilder {
         }
         if (enabled != null) {
             el.setAttribute("enabled", JSON.stringify(enabled));
+        }
+        if (editable != null) {
+            el.setAttribute("editable", JSON.stringify(editable));
         }
         // default value
         if (params.name != null && defaultValues[params.name] != null) {
