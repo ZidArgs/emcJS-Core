@@ -140,10 +140,6 @@ export default class PasswordInput extends AbstractFormElement {
         return super.checkValid();
     }
 
-    applyValueAttribute(value) {
-        safeSetAttribute(this.#inputEl, "value", value ?? "");
-    }
-
     renderValue(value) {
         this.#inputEl.value = value ?? "";
     }

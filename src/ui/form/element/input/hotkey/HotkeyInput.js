@@ -223,15 +223,10 @@ export default class HotkeyInput extends AbstractFormElement {
         this.#eventTargetManager.setActive(!ignoreInput);
     }
 
-    applyValueAttribute(value) {
-        safeSetAttribute(this.#inputEl, "value", value ?? "");
-        if (this.isDefault) {
-            this.#value = this.#parseValue(value);
-        }
-    }
-
     renderValue(value) {
-        this.#inputEl.value = value ?? "";
+        value = value ?? "";
+        this.#inputEl.value = value;
+        this.#value = this.#parseValue(value);
     }
 
 }

@@ -4,9 +4,6 @@ import "../../../../i18n/builtin/I18nInput.js";
 import {
     registerFocusable
 } from "../../../../../util/helper/html/getFocusableElements.js";
-import {
-    safeSetAttribute
-} from "../../../../../util/helper/ui/NodeAttributes.js";
 import "../../../../i18n/builtin/I18nOption.js";
 import "../logic/LogicInput.js";
 import "../../select/switch/SwitchSelect.js";
@@ -124,19 +121,6 @@ export default class BoolOrLogicInput extends AbstractFormElement {
             return "Not a valid logic";
         }
         return super.checkValid();
-    }
-
-    applyValueAttribute(value) {
-        if (typeof value === "object") {
-            safeSetAttribute(this.#inputEl, "value", "logic");
-            safeSetAttribute(this.#logicEl, "value", value);
-        } else if (value === false) {
-            safeSetAttribute(this.#inputEl, "value", "false");
-            safeSetAttribute(this.#logicEl, "value");
-        } else {
-            safeSetAttribute(this.#inputEl, "value", "true");
-            safeSetAttribute(this.#logicEl, "value");
-        }
     }
 
     renderValue(value) {

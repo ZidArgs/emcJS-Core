@@ -86,10 +86,6 @@ export default class SearchInput extends AbstractFormElement {
         }
     }
 
-    applyValueAttribute(value) {
-        safeSetAttribute(this.#inputEl, "value", value ?? "");
-    }
-
     renderValue(value) {
         this.#inputEl.value = value ?? "";
     }

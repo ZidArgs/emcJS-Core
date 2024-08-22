@@ -6,9 +6,6 @@ import {
     registerFocusable
 } from "../../../../../util/helper/html/getFocusableElements.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
-import {
-    safeSetAttribute
-} from "../../../../../util/helper/ui/NodeAttributes.js";
 import TPL from "./CodeInput.js.html" assert {type: "html"};
 import STYLE from "./CodeInput.js.css" assert {type: "css"};
 
@@ -167,10 +164,6 @@ export default class CodeInput extends AbstractFormElement {
                 }
             } break;
         }
-    }
-
-    applyValueAttribute(value) {
-        safeSetAttribute(this.#inputEl, "value", value ?? "");
     }
 
     renderValue(value) {

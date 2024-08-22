@@ -105,11 +105,6 @@ export default class ColorInput extends AbstractFormElement {
         return super.checkValid();
     }
 
-    applyValueAttribute(value) {
-        safeSetAttribute(this.#inputEl, "value", value ?? "");
-        safeSetAttribute(this.#buttonEl, "value", value ?? "");
-    }
-
     renderValue(value) {
         this.#inputEl.value = value ?? "";
         if (REGEX_HEX.test(value)) {

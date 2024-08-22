@@ -182,11 +182,6 @@ export default class TextInput extends AbstractFormElement {
         return super.checkValid();
     }
 
-    applyValueAttribute(value) {
-        safeSetAttribute(this.#inputEl, "value", value ?? "");
-        this.#printLengthToMax();
-    }
-
     renderValue(value) {
         this.#inputEl.value = value ?? "";
         this.#printLengthToMax();

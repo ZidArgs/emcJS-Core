@@ -105,11 +105,6 @@ export default class RangeInput extends AbstractFormElement {
         }
     }
 
-    applyValueAttribute(value) {
-        safeSetAttribute(this.#inputEl, "value", value);
-        safeSetAttribute(this.#numberEl, "value", value);
-    }
-
     renderValue(value) {
         this.#inputEl.value = value ?? 0;
         this.#numberEl.value = value ?? 0;

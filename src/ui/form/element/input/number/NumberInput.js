@@ -181,10 +181,6 @@ export default class NumberInput extends AbstractFormElement {
         return super.checkValid();
     }
 
-    applyValueAttribute(value) {
-        safeSetAttribute(this.#inputEl, "value", value ?? "");
-    }
-
     renderValue(value) {
         this.#inputEl.value = !isNaN(value) ? value : "";
     }

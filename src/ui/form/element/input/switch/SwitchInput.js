@@ -30,19 +30,6 @@ export default class SwitchInput extends AbstractFormElement {
         this.#inputEl.focus(options);
     }
 
-    applyValueAttribute(value) {
-        if (value == null || value === "") {
-            this.#inputEl.removeAttribute("checked");
-            this.#inputEl.setAttribute("indeterminate", "");
-        } else if (!value || value === "false") {
-            this.#inputEl.removeAttribute("checked");
-            this.#inputEl.removeAttribute("indeterminate");
-        } else {
-            this.#inputEl.setAttribute("checked", "");
-            this.#inputEl.removeAttribute("indeterminate");
-        }
-    }
-
     set defaultValue(value) {
         this.setBooleanAttribute("value", value);
     }
