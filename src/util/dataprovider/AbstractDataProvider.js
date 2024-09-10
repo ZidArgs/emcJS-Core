@@ -40,6 +40,20 @@ export default class AbstractDataProvider extends EventTarget {
         this.#reciever = reciever;
         this.refresh();
         /* --- */
+        this.#reciever.addEventListener("sort", (event) => {
+            const {columnName} = event.data;
+            const currentSort = this.#options.sort;
+            const index = currentSort.findIndex((entry) => entry === columnName || entry === `!${columnName}`);
+            const newSort = [...currentSort];
+            if (index >= 0) {
+                const current = currentSort[index];
+                newSort[index] = current.startsWith("!") ? columnName : `!${columnName}`;
+            } else {
+                newSort.push(columnName);
+            }
+            this.updateOptions({sort: newSort});
+        });
+        /* --- */
         this.#paginationEventManager.set("page", (event) => {
             const page = event.data - 1;
             this.updateOptions({page});
@@ -152,6 +166,7 @@ export default class AbstractDataProvider extends EventTarget {
 
     refresh = debounce(async () => {
         await this.#reciever.busy();
+        this.#reciever.setSortIndicators(deepClone(this.#options.sort ?? []));
         try {
             const data = await this.getData(this.#options);
             if (Array.isArray(data)) {

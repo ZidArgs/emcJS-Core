@@ -1,12 +1,12 @@
 import CustomElementDelegating from "../../../../element/CustomElementDelegating.js";
-import TPL from "./DataGridCell.js.html" assert {type: "html"};
-import STYLE from "./DataGridCell.js.css" assert {type: "css"};
 import {
     deepClone
 } from "../../../../../util/helper/DeepClone.js";
 import {
     isEqual
 } from "../../../../../util/helper/Comparator.js";
+import TPL from "./DataGridCell.js.html" assert {type: "html"};
+import STYLE from "./DataGridCell.js.css" assert {type: "css"};
 
 const CELL_TYPES = new Map();
 const MIN_WIDTH = new Map();

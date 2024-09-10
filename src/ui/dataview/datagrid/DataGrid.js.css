@@ -35,12 +35,14 @@
     border-spacing: 0px;
 }
 
-:host([nohead]:not([nohead="false"])) .head th {
+:host([nohead]:not([nohead="false"])) .head th,
+:host([nohead]:not([nohead="false"])) .head emc-datagrid-headercell {
     height: 0px;
     font-size: 0px;
 }
 
-.head th {
+.head th,
+.head emc-datagrid-headercell {
     position: sticky;
     box-sizing: border-box;
     top: 0px;
@@ -50,13 +52,13 @@
     color: var(--datagrid-header-text-color, #ffffff);
     background-color: var(--datagrid-header-back-color, #000000);
     background-image: var(--datagrid-header-back-image, none);
-    white-space: pre;
     overflow: hidden;
     text-overflow: ellipsis;
     z-index: 10;
 }
 
-:host([disabled]:not([disabled="false"])) .head th {
+:host([disabled]:not([disabled="false"])) .head th,
+:host([disabled]:not([disabled="false"])) .head emc-datagrid-headercell {
     color: var(--datagrid-disabled-header-text-color, #999999) !important;
     background-color: var(--datagrid-disabled-header-back-color, #757575) !important;
     background-image: var(--datagrid-disabled-header-back-image, none) !important;
@@ -66,23 +68,27 @@
     width: 100%;
 }
 
-.head th:not(:first-child):not(:nth-child(2)):not(.lastCell) {
+.head th:not(:first-child):not(:nth-child(2)):not(.lastCell),
+.head emc-datagrid-headercell:not(:first-child):not(:nth-child(2)):not(.lastCell) {
     border-left-style: solid;
     border-left-width: var(--datagrid-column-seperator-width, 2px);
     border-left-color: var(--datagrid-header-seperator-color, #ffffff);
 }
 
-:host([disabled]:not([disabled="false"])) .head th:not(:first-child):not(:nth-child(2)):not(.lastCell) {
+:host([disabled]:not([disabled="false"])) .head th:not(:first-child):not(:nth-child(2)):not(.lastCell),
+:host([disabled]:not([disabled="false"])) .head emc-datagrid-headercell:not(:first-child):not(:nth-child(2)):not(.lastCell) {
     border-left-color: var(--datagrid-disabled-header-seperator-color, #999999) !important;
 }
 
-.head th.lastCell {
+.head th.lastCell,
+.head emc-datagrid-headercell.lastCell {
     padding: 0px;
     min-width: 0px;
     width: 100%;
 }
 
-.head th.lastCell:not(:first-child) {
+.head th.lastCell:not(:first-child),
+.head emc-datagrid-headercell.lastCell:not(:first-child) {
     box-shadow: inset var(--datagrid-header-seperator-color, #ffffff) var(--datagrid-column-seperator-width, 2px) 0px 0px;
 }
 

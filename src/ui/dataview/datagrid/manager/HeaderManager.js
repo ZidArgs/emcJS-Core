@@ -10,8 +10,11 @@ import {
 import {
     getArrayMutations
 } from "../../../../util/helper/collection/ArrayMutations.js";
+import DataGridHeaderCell from "../components/cell/DataGridHeaderCell.js";
 
 export default class HeaderManager {
+
+    #dataGridId;
 
     #target;
 
@@ -27,13 +30,14 @@ export default class HeaderManager {
 
     #lastHeaderCellEl;
 
-    constructor(target, headerSelectEl) {
+    constructor(target, headerSelectEl, dataGridId) {
         if (!(target instanceof HTMLTableRowElement)) {
             throw new TypeError("target must be of type HTMLTableRowElement");
         }
         if (!(headerSelectEl instanceof HTMLInputElement)) {
             throw new TypeError("headerSelectEl must be of type HTMLInputElement");
         }
+        this.#dataGridId = dataGridId;
         this.#target = target;
 
         this.#selectHeaderCellEl = document.createElement("th");
@@ -56,6 +60,10 @@ export default class HeaderManager {
 
     get selectEnd() {
         return this.#selectEnd;
+    }
+
+    getCellByColumnName(name) {
+        return this.#elements.get(name);
     }
 
     purge() {
@@ -135,15 +143,12 @@ export default class HeaderManager {
     }
 
     composer(name, columnData) {
-        const headerCellEl = document.createElement("th");
-        const {caption} = columnData;
+        const headerCellEl = new DataGridHeaderCell(this.#dataGridId);
+        const {caption, sortable = false} = columnData;
 
-        headerCellEl.innerText = caption ?? name;
+        headerCellEl.innerText = (caption ?? name).trim();
         headerCellEl.title = caption ?? name;
-        const styleWidth = `var(--width-${name}, 100%)`;
-        headerCellEl.style.maxWidth = styleWidth;
-        headerCellEl.style.minWidth = styleWidth;
-        headerCellEl.style.width = styleWidth;
+        headerCellEl.sortable = sortable;
 
         return headerCellEl;
     }

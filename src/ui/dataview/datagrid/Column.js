@@ -50,6 +50,14 @@ export default class Column extends CustomElement {
         return this.getBooleanAttribute("hidden");
     }
 
+    set sortable(value) {
+        this.setBooleanAttribute("sortable", value);
+    }
+
+    get sortable() {
+        return this.getBooleanAttribute("sortable");
+    }
+
 }
 
 customElements.define("emc-datagrid-column", Column);

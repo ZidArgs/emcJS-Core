@@ -1,0 +1,54 @@
+:host {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+}
+
+#content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* height: 100%; */
+    padding: 0px 10px;
+    white-space: pre;
+    font-weight: bold;
+    overflow: hidden;
+}
+
+:host([sortable]:not([sortable="false"])) {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#sort-indicator {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    width: 20px;
+}
+
+:host([sortdir="inc"]) #sort-indicator:after {
+    position: absolute;
+    display: block;
+    border: solid 0.25em transparent;
+    border-bottom-color: var(--input-text-color, #000000);
+    border-right-color: var(--input-text-color, #000000);
+    transform: translateY(0.125em) rotate(225deg);
+    content: " ";
+}
+
+:host([sortdir="dec"]) #sort-indicator:after {
+    position: relative;
+    display: block;
+    border: solid 0.25em transparent;
+    border-bottom-color: var(--input-text-color, #000000);
+    border-right-color: var(--input-text-color, #000000);
+    transform: translateY(-0.125em) rotate(45deg);
+    content: " ";
+}

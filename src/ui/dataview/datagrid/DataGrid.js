@@ -127,7 +127,7 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
         });
         this.#onSlotChange();
         /* --- */
-        this.#headerManager = new HeaderManager(this.#headerEl, this.#headerSelectEl);
+        this.#headerManager = new HeaderManager(this.#headerEl, this.#headerSelectEl, this.#internalId);
         this.#rowManager = new RowManager(this.#bodyEl, this.#cellCache, this.#internalId);
         this.#rowManager.addEventListener("afterrender", () => {
             this.#emptyContainerEl.classList.toggle("hidden", this.#bodyEl.childNodes.length > 0);
@@ -233,6 +233,16 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
             this.#updateSelectHeader();
             const ev = new Event("selection");
             ev.data = [...this.#selected].sort();
+            this.dispatchEvent(ev);
+        });
+        /* --- */
+        this.#tableEl.addEventListener("sort", (event) => {
+            event.stopPropagation();
+            const {columnName} = event.data;
+            const ev = new Event("sort");
+            ev.data = {
+                columnName
+            };
             this.dispatchEvent(ev);
         });
     }
@@ -392,6 +402,19 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
             const ev = new Event("selection");
             ev.data = [];
             this.dispatchEvent(ev);
+        }
+    }
+
+    setSortIndicators(columns = []) {
+        for (const colDef of this.#columnDefinition) {
+            const {name} = colDef;
+            const headerCellEl = this.#headerManager.getCellByColumnName(name);
+            const sort = columns.find((entry) => entry === name || entry === `!${name}`);
+            if (sort != null) {
+                headerCellEl.sortDirection = sort.startsWith("!") ? "dec" : "inc";
+            } else {
+                headerCellEl.sortDirection = null;
+            }
         }
     }
 
