@@ -52,6 +52,10 @@ export function isStringNotEmpty(value) {
     return typeof value === "string" && value !== "";
 }
 
+export function isObject(value) {
+    return typeof value === "object" && !isNull(value) && !Array.isArray(value);
+}
+
 export function isDict(value) {
     if (typeof value === "object" && !isNull(value) && !Array.isArray(value)) {
         return value.constructor === Object;

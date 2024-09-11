@@ -1,9 +1,7 @@
 import ServiceModule from "jswebservice/ServiceModule.js";
 import {
-    numberedStringComparator
-} from "../../src/util/helper/Comparator.js";
-
-const SORT_PATTERN = /^(!?)(.+)$/;
+    extractData
+} from "../../src/util/helper/collection/ExtractDataFromArray.js";
 
 const SAMPLE_DATA = [
     {
@@ -72,40 +70,21 @@ export default class DataProviderService extends ServiceModule {
     }
 
     #getResponseData(sort, page, pageSize, filter) {
-        const data = [...SAMPLE_DATA].sort((recordA, recordB) => {
-            // apply sort by column
-            for (const sortKey of sort) {
-                const [, desc = "", key = ""] = sortKey.match(SORT_PATTERN) ?? [];
-                if (key === "") {
-                    continue;
-                }
-                const valueA = recordA[key];
-                const valueB = recordB[key];
+        const options = {
+            sort,
+            page,
+            pageSize,
+            filter
+        };
 
-                if (valueA == null || valueB == null) {
-                    continue;
-                }
-
-                const compareResult = numberedStringComparator(valueA, valueB);
-                if (compareResult !== 0) {
-                    return !desc ? compareResult : -compareResult;
-                }
-            }
-            // default sort order
-            return 0;
-        });
+        const {records, total} = extractData([...SAMPLE_DATA], options);
 
         return {
             success: true,
             error: false,
-            params: {
-                sort,
-                page,
-                pageSize,
-                filter
-            },
-            length: 10,
-            records: data
+            params: options,
+            length: total,
+            records
         };
     }
 

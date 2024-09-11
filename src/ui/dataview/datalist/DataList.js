@@ -40,10 +40,6 @@ export default class DataList extends DataRecieverMixin(CustomElement) {
         });
     }
 
-    setSortIndicators() {
-        // ignore
-    }
-
     setData(records) {
         this.#elementManager.manage(records);
     }

@@ -5,7 +5,10 @@ import {
 export default createMixin((superclass) => class DataRecieverMixin extends superclass {
 
     // eslint-disable-next-line no-unused-vars
-    setData(data) {}
+    setSortIndicators(columns = []) {}
+
+    // eslint-disable-next-line no-unused-vars
+    setData(data = []) {}
 
     busy() {}
 
@@ -14,4 +17,3 @@ export default createMixin((superclass) => class DataRecieverMixin extends super
     reset() {}
 
 });
-
