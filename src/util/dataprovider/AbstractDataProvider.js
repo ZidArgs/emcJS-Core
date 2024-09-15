@@ -179,7 +179,8 @@ export default class AbstractDataProvider extends EventTarget {
                 this.#reciever.setData([]);
             }
             this.dispatchEvent(new Event("updated"));
-        } catch {
+        } catch (err) {
+            console.error("error providing data:\n", err);
             this.#reciever.setData([]);
             this.dispatchEvent(new Event("error"));
         } finally {

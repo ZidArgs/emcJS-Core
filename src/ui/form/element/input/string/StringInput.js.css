@@ -8,7 +8,7 @@
     border-style: solid;
     border-width: var(--input-border-width, 2px);
     border-color: var(--input-border-color, #222222);
-    border-radius: var(--input-border-radius, 6px) 0px 0px var(--input-border-radius, 6px);
+    border-radius: var(--input-border-radius, 6px);
     font-size: 1em;
 }
 
