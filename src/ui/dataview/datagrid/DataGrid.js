@@ -50,7 +50,6 @@ function getStyleLengthValue(type, value) {
 }
 
 // TODO add "no match" label
-// TODO add choice to have select column at the end
 export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(CustomElement)) {
 
     #internalId = appUID("data-grid");

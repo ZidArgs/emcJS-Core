@@ -36,6 +36,10 @@ export function filterInPlace(array, cond) {
     }
 }
 
+export function repeatArray(arr, times) {
+    return Array(times).fill(arr).flat();
+}
+
 // analytical functions
 export function getArrayMutations(a, b) {
     const sequenceData = getArrayMutationSequence(a, b);

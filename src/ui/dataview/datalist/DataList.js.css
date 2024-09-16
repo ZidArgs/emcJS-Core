@@ -13,6 +13,7 @@
     border-width: var(--datalist-border-width, 2px);
     border-color: var(--datalist-border-color, #000000);
     border-radius: var(--datalist-border-radius, 6px);
+    overflow: hidden;
 }
 
 #scroll-container {
