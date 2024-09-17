@@ -2,10 +2,8 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    min-height: 100px;
-    min-width: 200px;
-    height: 200px;
-    width: 300px;
+    min-height: 200px;
+    min-width: 300px;
     margin: 8px;
     color: var(--datagrid-text-color, #000000);
     background-color: var(--datagrid-back-color, #ffffff);
@@ -15,6 +13,7 @@
     border-color: var(--datagrid-border-color, #000000);
     border-radius: var(--datagrid-border-radius, 6px);
     overflow: auto;
+    line-height: normal;
     scroll-padding-top: 3em;
     scroll-padding-bottom: 0.5em;
 }
@@ -47,8 +46,7 @@
     box-sizing: border-box;
     top: 0px;
     min-width: 50px;
-    height: 2.5em;
-    padding: 0px 8px;
+    padding: 0px 25px;
     color: var(--datagrid-header-text-color, #ffffff);
     background-color: var(--datagrid-header-back-color, #000000);
     background-image: var(--datagrid-header-back-image, none);
@@ -106,7 +104,6 @@
 
 #body tr > * {
     box-sizing: border-box;
-    height: 2.5em;
     padding: 0;
     border-bottom-style: solid;
     border-bottom-width: var(--datagrid-row-seperator-width, 1px);
@@ -123,10 +120,6 @@
 
 #body tr > :not(:first-child):not(:nth-child(2)):not(.lastCell) {
     padding: 0 0 0 var(--datagrid-column-seperator-width, 2px);
-}
-
-#body tr > .empty {
-    color: #00000019;
 }
 
 #body tr > .lastCell {

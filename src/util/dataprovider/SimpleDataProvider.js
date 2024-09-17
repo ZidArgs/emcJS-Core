@@ -5,6 +5,9 @@ import {
     deepClone
 } from "../helper/DeepClone.js";
 import {
+    deleteAtIndex
+} from "../helper/collection/ArrayMutations.js";
+import {
     extractData
 } from "../helper/collection/ExtractDataFromArray.js";
 import AbstractDataProvider from "./AbstractDataProvider.js";
@@ -40,6 +43,14 @@ export default class SimpleDataProvider extends AbstractDataProvider {
     addEntry(entry) {
         if (!isObject(entry)) {
             throw new Error("entry must be an object");
+        }
+        if ("key" in entry) {
+            const found = this.#source.findIndex((e) => {
+                return e.key === entry.key;
+            });
+            if (found >= 0) {
+                deleteAtIndex(this.#source, found);
+            }
         }
         this.#source.push(entry);
         this.refresh();

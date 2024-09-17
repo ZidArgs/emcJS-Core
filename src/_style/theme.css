@@ -342,9 +342,7 @@ all; top_bottom right_left; top right bottom left
     --tree-hover-back-image: none;
 
     --tree-marked-text-color: var(--page-marked-text-color);
-    ;
     --tree-marked-back-color: var(--page-marked-back-color);
-    ;
     --tree-marked-back-image: none;
 
     /* === datagrid === */

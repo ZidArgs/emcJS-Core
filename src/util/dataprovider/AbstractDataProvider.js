@@ -29,6 +29,8 @@ export default class AbstractDataProvider extends EventTarget {
 
     #paginationEventManager = new EventMultiTargetManager();
 
+    #multiSort = false;
+
     constructor(reciever) {
         if (new.target === AbstractDataProvider) {
             throw new Error("can not construct abstract class");
@@ -42,16 +44,25 @@ export default class AbstractDataProvider extends EventTarget {
         /* --- */
         this.#reciever.addEventListener("sort", (event) => {
             const {columnName} = event.data;
-            const currentSort = this.#options.sort;
-            const index = currentSort.findIndex((entry) => entry === columnName || entry === `!${columnName}`);
-            const newSort = [...currentSort];
-            if (index >= 0) {
-                const current = currentSort[index];
-                newSort[index] = current.startsWith("!") ? columnName : `!${columnName}`;
+            if (!this.#multiSort) {
+                const currentSort = this.#options.sort[0];
+                if (currentSort != null && currentSort === columnName) {
+                    this.updateOptions({sort: [`!${columnName}`]});
+                } else {
+                    this.updateOptions({sort: [columnName]});
+                }
             } else {
-                newSort.push(columnName);
+                const currentSort = this.#options.sort;
+                const index = currentSort.findIndex((entry) => entry === columnName || entry === `!${columnName}`);
+                const newSort = [...currentSort];
+                if (index >= 0) {
+                    const current = currentSort[index];
+                    newSort[index] = current.startsWith("!") ? columnName : `!${columnName}`;
+                } else {
+                    newSort.push(columnName);
+                }
+                this.updateOptions({sort: newSort});
             }
-            this.updateOptions({sort: newSort});
         });
         /* --- */
         this.#paginationEventManager.set("page", (event) => {
@@ -66,6 +77,20 @@ export default class AbstractDataProvider extends EventTarget {
 
     get resultSize() {
         return 0;
+    }
+
+    set multiSort(value) {
+        this.#multiSort = value;
+        if (!value) {
+            const currentSort = this.#options.sort[0];
+            if (currentSort != null) {
+                this.updateOptions({sort: [currentSort]});
+            }
+        }
+    }
+
+    get multiSort() {
+        return this.#multiSort;
     }
 
     setPagination(paginationEl) {

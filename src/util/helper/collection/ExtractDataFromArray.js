@@ -2,6 +2,9 @@ import {
     numberedStringComparator
 } from "../Comparator.js";
 import CharacterSearch from "../../search/CharacterSearch.js";
+import {
+    isBoolean, isNumber
+} from "../CheckType.js";
 
 const SORT_PATTERN = /^(!?)(.+)$/;
 
@@ -76,9 +79,16 @@ export function extractData(source = [], options = {}) {
                 continue;
             }
 
-            const compareResult = numberedStringComparator(valueA, valueB);
-            if (compareResult !== 0) {
-                return !desc ? compareResult : -compareResult;
+            if ((isBoolean(valueA) && isBoolean(valueB)) || (isNumber(valueA) && isNumber(valueB))) {
+                const compareResult = valueA - valueB;
+                if (compareResult !== 0) {
+                    return !desc ? compareResult : -compareResult;
+                }
+            } else {
+                const compareResult = numberedStringComparator(valueA.toString(), valueB.toString());
+                if (compareResult !== 0) {
+                    return !desc ? compareResult : -compareResult;
+                }
             }
         }
         // default sort order
