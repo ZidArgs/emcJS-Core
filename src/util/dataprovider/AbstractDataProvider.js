@@ -5,13 +5,17 @@ import {
     isEqual
 } from "../helper/Comparator.js";
 import {
+    isArray, isDict, isFunction, isNumberNotNaN, isString, isStringNotEmpty
+} from "../helper/CheckType.js";
+import {
     debounce
 } from "../Debouncer.js";
+import {
+    DEFAULT_OPTIONS
+} from "../helper/collection/ExtractDataFromArray.js";
 import EventMultiTargetManager from "../event/EventMultiTargetManager.js";
 import PaginationToolbar from "../../ui/dataview/toolbar/PaginationToolbar.js";
 import DataRecieverMixin from "./DataRecieverMixin.js";
-
-const DEFAULT_OPTIONS = {sort: [], page: 0, pageSize: 0, filter: {}, filterFunction: false};
 
 export default class AbstractDataProvider extends EventTarget {
 
@@ -118,28 +122,36 @@ export default class AbstractDataProvider extends EventTarget {
             pageSize,
             filter,
             filterFunction,
-            sortFunction
+            sortFunction,
+            search,
+            searchFields
         } = value;
 
         const newOptions = deepClone(DEFAULT_OPTIONS);
 
-        if (Array.isArray(sort)) {
-            newOptions.sort = sort.filter((e) => typeof e === "string" || e !== "");
+        if (isArray(sort)) {
+            newOptions.sort = sort.filter((e) => isStringNotEmpty(e));
         }
-        if (typeof page === "number" && !isNaN(page)) {
+        if (isNumberNotNaN(page)) {
             newOptions.page = page;
         }
-        if (typeof pageSize === "number" && !isNaN(pageSize)) {
+        if (isNumberNotNaN(pageSize)) {
             newOptions.pageSize = pageSize;
         }
-        if (typeof filter === "object" && !Array.isArray(filter)) {
+        if (isDict(filter)) {
             newOptions.filter = filter;
         }
-        if (filterFunction === false || typeof filterFunction === "function") {
+        if (isFunction(filterFunction)) {
             newOptions.filterFunction = filterFunction;
         }
-        if (sortFunction === false || typeof sortFunction === "function") {
+        if (isFunction(sortFunction)) {
             newOptions.sortFunction = sortFunction;
+        }
+        if (isString(search)) {
+            newOptions.search = search;
+        }
+        if (isArray(searchFields)) {
+            newOptions.searchFields = searchFields.filter((e) => isStringNotEmpty(e));
         }
 
         if (!isEqual(this.#options, newOptions)) {
@@ -155,28 +167,36 @@ export default class AbstractDataProvider extends EventTarget {
             pageSize,
             filter,
             filterFunction,
-            sortFunction
+            sortFunction,
+            search,
+            searchFields
         } = value;
 
         const newOptions = deepClone(this.#options);
 
-        if (Array.isArray(sort)) {
-            newOptions.sort = sort.filter((e) => typeof e === "string" || e !== "");
+        if (isArray(sort)) {
+            newOptions.sort = sort.filter((e) => isStringNotEmpty(e));
         }
-        if (typeof page === "number" && !isNaN(page)) {
+        if (isNumberNotNaN(page)) {
             newOptions.page = page;
         }
-        if (typeof pageSize === "number" && !isNaN(pageSize)) {
+        if (isNumberNotNaN(pageSize)) {
             newOptions.pageSize = pageSize;
         }
-        if (typeof filter === "object" && !Array.isArray(filter)) {
+        if (isDict(filter)) {
             newOptions.filter = filter;
         }
-        if (filterFunction === false || typeof filterFunction === "function") {
+        if (isFunction(filterFunction)) {
             newOptions.filterFunction = filterFunction;
         }
-        if (sortFunction === false || typeof sortFunction === "function") {
+        if (isFunction(sortFunction)) {
             newOptions.sortFunction = sortFunction;
+        }
+        if (isString(search)) {
+            newOptions.search = search;
+        }
+        if (isArray(searchFields)) {
+            newOptions.searchFields = searchFields.filter((e) => isStringNotEmpty(e));
         }
 
         if (!isEqual(this.#options, newOptions)) {

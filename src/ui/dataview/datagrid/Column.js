@@ -10,12 +10,12 @@ export default class Column extends CustomElement {
         return this.getAttribute("name");
     }
 
-    set caption(value) {
-        this.setAttribute("caption", value);
+    set label(value) {
+        this.setAttribute("label", value);
     }
 
-    get caption() {
-        return this.getAttribute("caption");
+    get label() {
+        return this.getAttribute("label");
     }
 
     set type(value) {

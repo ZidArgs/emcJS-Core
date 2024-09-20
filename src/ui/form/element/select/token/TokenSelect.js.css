@@ -339,12 +339,14 @@ emc-select-entry.marked {
 }
 
 #token-container {
+    flex-grow: 1;
     overflow: hidden;
 }
 
 #overflow-counter {
     display: flex;
     align-items: center;
+    flex-shrink: 0;
     height: 100%;
     padding-left: 8px;
     margin-left: auto;

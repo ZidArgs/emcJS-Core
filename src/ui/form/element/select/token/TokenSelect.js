@@ -291,6 +291,14 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
         }
     }
 
+    set defaultValue(value) {
+        this.setJSONAttribute("value", value);
+    }
+
+    get defaultValue() {
+        return this.getJSONAttribute("value") ?? [];
+    }
+
     set value(value) {
         if (value == null) {
             value = [];

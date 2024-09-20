@@ -3,10 +3,32 @@ import {
 } from "../Comparator.js";
 import CharacterSearch from "../../search/CharacterSearch.js";
 import {
-    isBoolean, isNumber
+    isArrayOf, isBoolean, isDict, isFunction, isNull, isNumber, isNumberNotNaN, isObject, isString, isStringNotEmpty
 } from "../CheckType.js";
 
 const SORT_PATTERN = /^(!?)(.+)$/;
+
+export const OPTION_PARAMS = {
+    PAGE: "page",
+    PAGE_SIZE: "pageSize",
+    SORT: "sort",
+    SORT_FUNCTION: "sortFunction",
+    FILTER: "filter",
+    FILTER_FUNCTION: "filterFunction",
+    SEARCH: "search",
+    SEARCH_FIELDS: "searchFields"
+};
+
+export const DEFAULT_OPTIONS = {
+    page: 0,
+    pageSize: 0,
+    sort: [],
+    sortFunction: null,
+    filter: {},
+    filterFunction: null,
+    search: "",
+    searchFields: []
+};
 
 /**
  * Extract data from an array using filter and sort options and cut out a page if needed
@@ -18,7 +40,9 @@ const SORT_PATTERN = /^(!?)(.+)$/;
  *      sort: string[],
  *      sortFunction: function,
  *      filter: Object.<string, *>,
- *      filterFunction: function
+ *      filterFunction: function,
+ *      search: string,
+ *      searchFields: string[]
  * }} options the manipulation options for the extraction
  * @returns {{records: Array.<Object.<string, *>>, total: number}} the resulting record list and its size before pagination
  */
@@ -28,39 +52,102 @@ export function extractData(source = [], options = {}) {
     }
 
     const {
-        page = 0,
-        pageSize = 0,
-        sort = [],
-        sortFunction = false,
-        filter = {},
-        filterFunction = false
+        page = DEFAULT_OPTIONS.page,
+        pageSize = DEFAULT_OPTIONS.pageSize,
+        sort = DEFAULT_OPTIONS.sort,
+        sortFunction = DEFAULT_OPTIONS.sortFunction,
+        filter = DEFAULT_OPTIONS.filter,
+        filterFunction = DEFAULT_OPTIONS.filterFunction,
+        search = DEFAULT_OPTIONS.search,
+        searchFields = DEFAULT_OPTIONS.searchFields
     } = options;
 
-    const convertedFilter = Object.entries(filter).map(([key, value]) => {
-        return [key, new CharacterSearch(value)];
+    if (!isArrayOf(sort, isStringNotEmpty)) {
+        throw new Error("\"sort\" must be an array of non empty strings");
+    }
+    if (!isNumberNotNaN(page)) {
+        throw new Error("\"page\" must be a valid number");
+    }
+    if (!isNumberNotNaN(pageSize)) {
+        throw new Error("\"pageSize\" must be a valid number");
+    }
+    if (!isDict(filter)) {
+        throw new Error("\"filter\" must be a dict");
+    }
+    if (!isFunction(filterFunction) && !isNull(filterFunction)) {
+        throw new Error("\"filterFunction\" must be a function or null");
+    }
+    if (!isFunction(sortFunction) && !isNull(sortFunction)) {
+        throw new Error("\"sortFunction\" must be a function or null");
+    }
+    if (!isString(search)) {
+        throw new Error("\"search\" must be a string");
+    }
+    if (!isArrayOf(searchFields, isStringNotEmpty) && !isNull(searchFields)) {
+        throw new Error("\"searchFields\" must be an array of non empty strings");
+    }
+
+    const convertedFilter = Object.entries(filter).filter(([, value]) => {
+        if (isNull(value)) {
+            return false;
+        }
+        if (isString(value)) {
+            return value !== "";
+        }
+        return true;
+    }).map(([key, value]) => {
+        if (isString(value)) {
+            return [key, new CharacterSearch(value)];
+        }
+        return [key, value];
     });
+
+    const convertedSearch = isStringNotEmpty(search) ? new CharacterSearch(search) : null;
 
     const result = source.filter((record) => {
         // filter all non object entries
-        if (typeof record !== "object") {
+        if (!isObject(record)) {
             return false;
         }
         // apply filter by column
         for (const [key, filter] of convertedFilter) {
             const value = record[key];
-            if (!filter.test(value)) {
+            if (filter instanceof CharacterSearch) {
+                if (!filter.test(value)) {
+                    return false;
+                }
+            } else if (filter !== value) {
                 return false;
             }
         }
         // apply filter function
-        if (typeof filterFunction === "function") {
+        if (filterFunction != null) {
             return filterFunction(record);
+        }
+        // apply search
+        if (convertedSearch != null) {
+            if (searchFields.length) {
+                for (const key of searchFields) {
+                    const value = record[key];
+                    if (convertedSearch.test(value)) {
+                        return true;
+                    }
+                }
+            } else {
+                for (const key in record) {
+                    const value = record[key];
+                    if (convertedSearch.test(value)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
         // not filtered
         return true;
     }).sort((recordA, recordB) => {
         // apply sort function
-        if (typeof sortFunction === "function") {
+        if (sortFunction != null) {
             const res = sortFunction(recordA, recordB);
             if (res != 0) {
                 return res;

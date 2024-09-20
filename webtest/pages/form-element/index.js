@@ -144,7 +144,7 @@ showHTMLButtonEl.addEventListener("click", () => {
 
                         const editableDef = editable ? ` editable` : "";
 
-                        content.push(`<emc-datagrid-column name="${key}" type="${type}" caption="${caption}"${widthDef}${editableDef}></emc-datagrid-column>`);
+                        content.push(`<emc-datagrid-column name="${key}" type="${type}" label="${caption}"${widthDef}${editableDef}></emc-datagrid-column>`);
                     }
                 } else if (typeof value === "boolean") {
                     if (value) {

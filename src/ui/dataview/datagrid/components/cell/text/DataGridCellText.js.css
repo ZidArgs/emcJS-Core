@@ -8,6 +8,7 @@
 
 /* --- */
 #input {
+    display: none;
     flex-grow: 1;
     height: 10em;
     min-height: 10em;
@@ -52,4 +53,8 @@
     border-color: var(--input-disabled-border-color, #6a6a6a) !important;
     cursor: default !important;
     opacity: 1 !important;
+}
+
+p {
+    white-space: pre-wrap;
 }

@@ -107,3 +107,21 @@ export function isHttpUrl(input) {
         return false;
     }
 }
+
+export function isArrayOf(input, callback) {
+    if (!isArray(input)) {
+        return false;
+    }
+    return input.every((value) => {
+        return callback(value);
+    });
+}
+
+export function isDictOf(input, callback) {
+    if (!isDict(input)) {
+        return false;
+    }
+    return Object.values(input).every((value) => {
+        return callback(value);
+    });
+}

@@ -144,20 +144,20 @@ export default class HeaderManager {
 
     composer(name, columnData) {
         const headerCellEl = new DataGridHeaderCell(this.#dataGridId);
-        const {caption, sortable = false} = columnData;
+        const {label, sortable = false} = columnData;
 
-        headerCellEl.innerText = (caption ?? name).trim();
-        headerCellEl.title = caption ?? name;
+        headerCellEl.innerText = (label ?? name).trim();
+        headerCellEl.title = label ?? name;
         headerCellEl.sortable = sortable;
 
         return headerCellEl;
     }
 
     mutator(headerCellEl, name, columnData) {
-        const {caption} = columnData;
+        const {label} = columnData;
 
-        headerCellEl.innerText = caption ?? name;
-        headerCellEl.title = caption ?? name;
+        headerCellEl.innerText = label ?? name;
+        headerCellEl.title = label ?? name;
     }
 
     #render = debounce(() => {
