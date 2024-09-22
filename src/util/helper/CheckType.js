@@ -44,12 +44,20 @@ export function isNumberNotNaN(value) {
     return typeof value === "number" && !isNaN(value);
 }
 
+export function isNumberIsNaN(value) {
+    return typeof value === "number" && isNaN(value);
+}
+
 export function isString(value) {
     return typeof value === "string";
 }
 
 export function isStringNotEmpty(value) {
     return typeof value === "string" && value !== "";
+}
+
+export function isStringIsEmpty(value) {
+    return typeof value === "string" && value === "";
 }
 
 export function isObject(value) {

@@ -3,7 +3,7 @@ import {
 } from "../Comparator.js";
 import CharacterSearch from "../../search/CharacterSearch.js";
 import {
-    isArrayOf, isBoolean, isDict, isFunction, isNull, isNumber, isNumberNotNaN, isObject, isString, isStringNotEmpty
+    isArray, isArrayOf, isBoolean, isDict, isFunction, isNull, isNumber, isNumberNotNaN, isObject, isString, isStringNotEmpty
 } from "../CheckType.js";
 
 const SORT_PATTERN = /^(!?)(.+)$/;
@@ -87,19 +87,10 @@ export function extractData(source = [], options = {}) {
         throw new Error("\"searchFields\" must be an array of non empty strings");
     }
 
-    const convertedFilter = Object.entries(filter).filter(([, value]) => {
-        if (isNull(value)) {
-            return false;
-        }
-        if (isString(value)) {
-            return value !== "";
-        }
-        return true;
-    }).map(([key, value]) => {
-        if (isString(value)) {
-            return [key, new CharacterSearch(value)];
-        }
-        return [key, value];
+    const convertedFilter = Object.entries(filter).map(([key, value]) => {
+        return [key, prepareFilter(value)];
+    }).filter(([, value]) => {
+        return isArray(value) && value.length > 0;
     });
 
     const convertedSearch = isStringNotEmpty(search) ? new CharacterSearch(search) : null;
@@ -110,13 +101,9 @@ export function extractData(source = [], options = {}) {
             return false;
         }
         // apply filter by column
-        for (const [key, filter] of convertedFilter) {
+        for (const [key, filterList] of convertedFilter) {
             const value = record[key];
-            if (filter instanceof CharacterSearch) {
-                if (!filter.test(value)) {
-                    return false;
-                }
-            } else if (filter !== value) {
+            if (!testFilterList(value, filterList)) {
                 return false;
             }
         }
@@ -197,4 +184,35 @@ export function extractData(source = [], options = {}) {
             total: resultSize
         };
     }
+}
+
+function prepareFilter(value) {
+    if (isNull(value)) {
+        return [];
+    }
+    if (!isArray(value)) {
+        value = [value];
+    }
+    const res = [];
+    for (const v of value) {
+        if (isStringNotEmpty(v)) {
+            res.push(new CharacterSearch(v));
+        } else if (isNumberNotNaN(v) || isBoolean(v)) {
+            res.push(v);
+        }
+    }
+    return res;
+}
+
+function testFilterList(value, filterList) {
+    for (const filter of filterList) {
+        if (filter instanceof CharacterSearch) {
+            if (filter.test(value)) {
+                return true;
+            }
+        } else if (filter === value) {
+            return true;
+        }
+    }
+    return false;
 }

@@ -500,11 +500,12 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
 
     #handleOverflowItems() {
         const els = [...this.#tokenContainerEl.children];
-        const containerWidth = this.#tokenContainerEl.clientWidth;
         let overflowItems = 0;
+        this.#overflowCounterEl.innerText = "";
         for (let i = 0; i < els.length; ++i) {
             const el = els[i];
             if (el != null) {
+                const containerWidth = this.#tokenContainerEl.clientWidth;
                 const elLeft = el.offsetLeft;
                 const elWidth = el.offsetWidth;
                 const elRight = elLeft + elWidth;
@@ -512,13 +513,9 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
                     el.remove();
                     overflowItems++;
                     i -= 2;
+                    this.#overflowCounterEl.innerText = `+${overflowItems}`;
                 }
             }
-        }
-        if (overflowItems > 0) {
-            this.#overflowCounterEl.innerText = `+${overflowItems}`;
-        } else {
-            this.#overflowCounterEl.innerText = "";
         }
     }
 
