@@ -58,6 +58,38 @@ export default class Column extends CustomElement {
         return this.getBooleanAttribute("sortable");
     }
 
+    set halign(value) {
+        this.setAttribute("halign", value);
+    }
+
+    get halign() {
+        return this.getAttribute("halign");
+    }
+
+    set valign(value) {
+        this.setAttribute("valign", value);
+    }
+
+    get valign() {
+        return this.getAttribute("valign");
+    }
+
+    set textcolor(value) {
+        this.setAttribute("textcolor", value);
+    }
+
+    get textcolor() {
+        return this.getAttribute("textcolor");
+    }
+
+    set backcolor(value) {
+        this.setAttribute("backcolor", value);
+    }
+
+    get backcolor() {
+        return this.getAttribute("backcolor");
+    }
+
 }
 
 customElements.define("emc-datagrid-column", Column);

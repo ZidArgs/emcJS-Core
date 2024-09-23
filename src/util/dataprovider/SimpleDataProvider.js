@@ -18,8 +18,8 @@ export default class SimpleDataProvider extends AbstractDataProvider {
 
     #source = [];
 
-    constructor(reciever, source) {
-        super(reciever);
+    constructor(reciever, source, initialOptions) {
+        super(reciever, initialOptions);
         if (source != null) {
             if (!Array.isArray(source)) {
                 throw new Error("source must be an Array or null");

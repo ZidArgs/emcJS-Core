@@ -115,6 +115,22 @@ export default class DataGridCell extends CustomElementDelegating {
         return this.getBooleanAttribute("readonly");
     }
 
+    set halign(val) {
+        this.setAttribute("halign", val);
+    }
+
+    get halign() {
+        return this.getAttribute("halign");
+    }
+
+    set valign(val) {
+        this.setAttribute("valign", val);
+    }
+
+    get valign() {
+        return this.getAttribute("valign");
+    }
+
     static get observedAttributes() {
         return ["value", "col-name"];
     }

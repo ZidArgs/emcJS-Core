@@ -55,6 +55,6 @@
     opacity: 1 !important;
 }
 
-p {
+#value {
     white-space: pre-wrap;
 }

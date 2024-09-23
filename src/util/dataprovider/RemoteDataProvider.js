@@ -12,8 +12,8 @@ export default class RemoteDataProvider extends AbstractDataProvider {
 
     #method = HTTPMethods.POST.toString();
 
-    constructor(reciever, source, method) {
-        super(reciever);
+    constructor(reciever, source, method, initialOptions) {
+        super(reciever, initialOptions);
         if (!isHttpUrl(source)) {
             throw new Error("source must be a valid HTTP URL");
         }

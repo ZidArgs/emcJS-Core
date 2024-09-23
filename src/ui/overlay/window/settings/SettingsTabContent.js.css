@@ -10,6 +10,7 @@
 #container {
     position: relative;
     flex: 1;
+    line-height: normal;
 }
 
 .settings-option {
@@ -33,15 +34,25 @@
     min-height: 40px;
 }
 
-.settings-option .option-container .option-text {
+.settings-option .option-container .option-text,
+.option-caption {
     display: flex;
     align-items: center;
     justify-content: flex-start;
     flex-basis: 500px;
-    flex-shrink: 1;
     padding: 10px;
-    cursor: pointer;
     user-select: none;
+}
+
+.settings-option .option-container .option-text {
+    flex-shrink: 1;
+    cursor: pointer;
+}
+
+.option-caption {
+    flex-grow: 1;
+    font-size: 1.5em;
+    pointer-events: none;
 }
 
 .settings-option .option-container .option-input {

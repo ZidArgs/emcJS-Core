@@ -5,7 +5,7 @@ import {
     isEqual
 } from "../helper/Comparator.js";
 import {
-    isArray, isDict, isFunction, isNumberNotNaN, isString, isStringNotEmpty
+    isArray, isBoolean, isDict, isFunction, isNumberNotNaN, isString, isStringNotEmpty
 } from "../helper/CheckType.js";
 import {
     debounce
@@ -35,7 +35,7 @@ export default class AbstractDataProvider extends EventTarget {
 
     #multiSort = false;
 
-    constructor(reciever) {
+    constructor(reciever, initialOptions = {}) {
         if (new.target === AbstractDataProvider) {
             throw new Error("can not construct abstract class");
         }
@@ -44,6 +44,7 @@ export default class AbstractDataProvider extends EventTarget {
         }
         super();
         this.#reciever = reciever;
+        this.#options = this.#extractOptions(initialOptions);
         this.refresh();
         /* --- */
         this.#reciever.addEventListener("sort", (event) => {
@@ -116,43 +117,7 @@ export default class AbstractDataProvider extends EventTarget {
     }
 
     setOptions(value) {
-        const {
-            sort,
-            page,
-            pageSize,
-            filter,
-            filterFunction,
-            sortFunction,
-            search,
-            searchFields
-        } = value;
-
-        const newOptions = deepClone(DEFAULT_OPTIONS);
-
-        if (isArray(sort)) {
-            newOptions.sort = sort.filter((e) => isStringNotEmpty(e));
-        }
-        if (isNumberNotNaN(page)) {
-            newOptions.page = page;
-        }
-        if (isNumberNotNaN(pageSize)) {
-            newOptions.pageSize = pageSize;
-        }
-        if (isDict(filter)) {
-            newOptions.filter = filter;
-        }
-        if (isFunction(filterFunction)) {
-            newOptions.filterFunction = filterFunction;
-        }
-        if (isFunction(sortFunction)) {
-            newOptions.sortFunction = sortFunction;
-        }
-        if (isString(search)) {
-            newOptions.search = search;
-        }
-        if (isArray(searchFields)) {
-            newOptions.searchFields = searchFields.filter((e) => isStringNotEmpty(e));
-        }
+        const newOptions = this.#extractOptions(value);
 
         if (!isEqual(this.#options, newOptions)) {
             this.#options = newOptions;
@@ -161,43 +126,7 @@ export default class AbstractDataProvider extends EventTarget {
     }
 
     updateOptions(value) {
-        const {
-            sort,
-            page,
-            pageSize,
-            filter,
-            filterFunction,
-            sortFunction,
-            search,
-            searchFields
-        } = value;
-
-        const newOptions = deepClone(this.#options);
-
-        if (isArray(sort)) {
-            newOptions.sort = sort.filter((e) => isStringNotEmpty(e));
-        }
-        if (isNumberNotNaN(page)) {
-            newOptions.page = page;
-        }
-        if (isNumberNotNaN(pageSize)) {
-            newOptions.pageSize = pageSize;
-        }
-        if (isDict(filter)) {
-            newOptions.filter = filter;
-        }
-        if (isFunction(filterFunction)) {
-            newOptions.filterFunction = filterFunction;
-        }
-        if (isFunction(sortFunction)) {
-            newOptions.sortFunction = sortFunction;
-        }
-        if (isString(search)) {
-            newOptions.search = search;
-        }
-        if (isArray(searchFields)) {
-            newOptions.searchFields = searchFields.filter((e) => isStringNotEmpty(e));
-        }
+        const newOptions = this.#extractOptions(value, this.#options);
 
         if (!isEqual(this.#options, newOptions)) {
             this.#options = newOptions;
@@ -257,6 +186,52 @@ export default class AbstractDataProvider extends EventTarget {
 
     async getData() {
         return [];
+    }
+
+    #extractOptions(newOptions, oldOptions = DEFAULT_OPTIONS) {
+        const {
+            page,
+            pageSize,
+            sort,
+            sortFunction,
+            filter,
+            filterFunction,
+            filterIgnoreNullValues,
+            search,
+            searchFields
+        } = newOptions;
+
+        const result = deepClone(oldOptions);
+
+        if (isNumberNotNaN(page)) {
+            result.page = page;
+        }
+        if (isNumberNotNaN(pageSize)) {
+            result.pageSize = pageSize;
+        }
+        if (isArray(sort)) {
+            result.sort = sort.filter((e) => isStringNotEmpty(e));
+        }
+        if (isFunction(sortFunction)) {
+            result.sortFunction = sortFunction;
+        }
+        if (isDict(filter)) {
+            result.filter = filter;
+        }
+        if (isFunction(filterFunction)) {
+            result.filterFunction = filterFunction;
+        }
+        if (isBoolean(filterIgnoreNullValues)) {
+            result.filterIgnoreNullValues = filterIgnoreNullValues;
+        }
+        if (isString(search)) {
+            result.search = search;
+        }
+        if (isArray(searchFields)) {
+            result.searchFields = searchFields.filter((e) => isStringNotEmpty(e));
+        }
+
+        return result;
     }
 
 }

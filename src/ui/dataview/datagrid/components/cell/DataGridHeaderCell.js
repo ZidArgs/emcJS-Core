@@ -64,7 +64,8 @@ export default class DataGridHeaderCell extends CustomElementDelegating {
         if (oldValue != newValue) {
             switch (name) {
                 case "col-name": {
-                    const styleWidth = `var(--width-${this.columnName}, 100%)`;
+                    const escapedColumnName = this.columnName.replace(/\./g, "\\.");
+                    const styleWidth = `var(--width-${escapedColumnName}, 100%)`;
                     this.style.maxWidth = styleWidth;
                     this.style.minWidth = styleWidth;
                     this.style.width = styleWidth;

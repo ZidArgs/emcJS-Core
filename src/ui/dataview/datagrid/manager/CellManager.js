@@ -10,8 +10,25 @@ import {
 import {
     getArrayMutations
 } from "../../../../util/helper/collection/ArrayMutations.js";
+import {
+    getFromObjectByPath
+} from "../../../../util/helper/collection/ObjectContent.js";
 import DataGridCell from "../components/cell/DataGridCell.js";
 import CellCache from "../data/CellCache.js";
+
+const BLACKLISTED_ATTRIBUTES = [
+    "id",
+    "class",
+    "width",
+    "height",
+    "caption",
+    "col-name",
+    "row-key",
+    "value",
+    "style",
+    "textcolor",
+    "backcolor"
+];
 
 export default class CellManager {
 
@@ -123,7 +140,7 @@ export default class CellManager {
                 throw new TypeError("column type must be a string");
             }
 
-            const value = rowData[name];
+            const value = getFromObjectByPath(rowData, name.split("."));
             newOrder.push(name);
 
             if (!this.#elements.has(name)) {
@@ -202,20 +219,30 @@ export default class CellManager {
     composer(columnName, rowKey, type, options, value, rowData) {
         const cellEl = DataGridCell.createCell(type, this.#dataGridId);
 
-        cellEl.columnName = columnName;
-        cellEl.rowKey = rowKey;
-
         for (const [attrName, attrValue] of Object.entries(options)) {
-            if (attrName === "caption" || attrName === "value") {
+            if (BLACKLISTED_ATTRIBUTES.includes(attrName)) {
                 continue;
             }
             cellEl[attrName] = attrValue;
+        }
+
+        if (options.textcolor) {
+            cellEl.style.color = options.textcolor;
+        } else {
+            cellEl.style.color = "";
+        }
+        if (options.backcolor) {
+            cellEl.style.backgroundColor = options.backcolor;
+        } else {
+            cellEl.style.backgroundColor = "";
         }
 
         if (value != null) {
             cellEl.value = value;
         }
 
+        cellEl.columnName = columnName;
+        cellEl.rowKey = rowKey;
         cellEl.rowData = rowData;
 
         return cellEl;
@@ -225,10 +252,10 @@ export default class CellManager {
         const currentAttributes = new Set([...cellEl.attributes].map((a) => {
             return a.name;
         }).filter((a) => {
-            return a !== "class" && a !== "width" && a !== "caption" && a !== "col-name" && a !== "row-key" && a !== "value";
+            return !BLACKLISTED_ATTRIBUTES.includes(a);
         }));
         for (const [attrName, attrValue] of Object.entries(options)) {
-            if (attrName === "caption" || attrName === "value") {
+            if (BLACKLISTED_ATTRIBUTES.includes(attrName)) {
                 continue;
             }
             currentAttributes.delete(attrName);
@@ -237,6 +264,17 @@ export default class CellManager {
 
         for (const attrName of currentAttributes) {
             cellEl[attrName] = null;
+        }
+
+        if (options.textcolor) {
+            cellEl.style.color = options.textcolor;
+        } else {
+            cellEl.style.color = "";
+        }
+        if (options.backcolor) {
+            cellEl.style.backgroundColor = options.backcolor;
+        } else {
+            cellEl.style.backgroundColor = "";
         }
 
         cellEl.rowData = rowData;

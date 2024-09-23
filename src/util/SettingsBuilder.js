@@ -1,3 +1,5 @@
+import I18nLabel from "../ui/i18n/I18nLabel.js";
+
 class SettingsBuilder {
 
     build(window, options) {
@@ -41,6 +43,15 @@ class SettingsBuilder {
                         event.action = option.action;
                         window.dispatchEvent(event);
                     });
+                } break;
+                case "caption": {
+                    const captionEl = document.createElement("div");
+                    captionEl.className = "option-caption";
+
+                    const labelEl = I18nLabel.getLabel(label);
+                    captionEl.append(labelEl);
+
+                    window.addElements(category, captionEl);
                 } break;
             }
         }
