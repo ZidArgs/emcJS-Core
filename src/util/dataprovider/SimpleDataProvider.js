@@ -40,6 +40,10 @@ export default class SimpleDataProvider extends AbstractDataProvider {
         this.refresh();
     }
 
+    getSource() {
+        return deepClone(this.#source);
+    }
+
     addEntry(entry) {
         if (!isObject(entry)) {
             throw new Error("entry must be an object");

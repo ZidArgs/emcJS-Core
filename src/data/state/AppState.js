@@ -234,6 +234,15 @@ export default class AppState extends EventTarget {
     }
 
     /**
+     * Delete data from the meta storage.
+     *
+     * @param {string} key the key of the data to delete
+     */
+    deleteMeta(key) {
+        this.#meta.delete(key);
+    }
+
+    /**
      * Register an {@link ObservableStorage} or an extended class of it to a specified category if no Storage was previously registered.
      * This can be used to register custom Storages as the default is always {@link ObservableStorage}.
      *
