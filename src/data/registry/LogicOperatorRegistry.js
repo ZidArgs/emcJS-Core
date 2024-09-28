@@ -17,8 +17,8 @@ class LogicOperatorRegistry extends EventTarget {
     #captions = new Map();
 
     setAndLinkOperator(ref, operatorConfig, ...groupNames) {
-        LogicOperatorRegistry.setOperator(ref, operatorConfig);
-        LogicOperatorRegistry.linkOperator(ref, ...groupNames);
+        this.setOperator(ref, operatorConfig);
+        this.linkOperator(ref, ...groupNames);
     }
 
     setOperator(ref, operatorConfig) {

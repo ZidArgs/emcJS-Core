@@ -239,7 +239,13 @@ export default class AppState extends EventTarget {
      * @param {string} key the key of the data to delete
      */
     deleteMeta(key) {
-        this.#meta.delete(key);
+        const oldValue = this.#meta.get(key);
+        if (oldValue != null) {
+            this.#meta.delete(key);
+            const ev = new Event("meta");
+            ev.data = {key, value: null};
+            this.dispatchEvent(ev);
+        }
     }
 
     /**
