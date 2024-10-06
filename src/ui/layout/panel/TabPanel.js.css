@@ -49,3 +49,9 @@
 ::slotted(.panel.active) {
     display: block;
 }
+
+::slotted(.panel.bottom-border) {
+    border-bottom-style: solid;
+    border-bottom-width: var(--tabpanel-categories-border-width, 2px);
+    border-bottom-color: var(--tabpanel-categories-border-color, #222222);
+}
