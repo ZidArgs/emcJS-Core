@@ -3,12 +3,16 @@
 </div>
 <div id="container">
     <div id="line-numbers">
-        <div>1</div>
+        <div class="caret">1</div>
     </div>
-    <div id="input" contenteditable no-wrap>
-        <div><br /></div>
+    <div id="input-wrapper">
+        <textarea id="input" spellcheck="false"></textarea>
+        <div id="output-wrapper">
+            <code id="input-mirror"></code>
+            <div id="line-marker"></div>
+        </div>
     </div>
 </div>
 <div class="footer">
-    <span id="line-info">Ln 0, Col 0</span>
+    <span id="line-info">Ln 1, Col 1</span>
 </div>
