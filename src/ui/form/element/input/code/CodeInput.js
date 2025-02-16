@@ -151,6 +151,7 @@ export default class CodeInput extends AbstractFormElement {
 
     renderValue(value) {
         this.#inputEl.value = value ?? "";
+        this.#updateText(value);
     }
 
     #updateText(value) {
