@@ -32,6 +32,10 @@
     z-index: 1;
 }
 
+:host {
+    font-size: 14px;
+}
+
 :host(:invalid) #field:not(.expanded):focus-within {
     box-shadow: 0 0 2px 3px var(--input-invalid-focus-color, #ff2500);
 }
@@ -72,7 +76,7 @@
     box-sizing: border-box;
     display: inline-flex;
     justify-content: end;
-    height: 1.4em;
+    height: 1.5em;
     left: 0;
     width: calc(var(--num-digits, 1) * 0.55em + 2em);
     padding: 0 1em 0 1em;
@@ -81,7 +85,7 @@
     font-size: 1em;
     font-weight: bold;
     text-align: end;
-    line-height: 1.4em;
+    line-height: 1.5em;
     z-index: 1;
     content: counter(step-counter);
 }
@@ -123,7 +127,7 @@
     border: none;
     font-family: monospace;
     font-size: 1em;
-    line-height: 1.4em;
+    line-height: 1.5em;
     white-space: pre;
     tab-size: 4;
 }
@@ -159,8 +163,9 @@
     position: absolute;
     box-sizing: border-box;
     display: inline-flex;
-    height: 1.4em;
+    top: calc(1.5em * var(--current-line, 0) + 5px);
     left: 0;
+    height: 1.5em;
     width: 100%;
     border-top-style: solid;
     border-bottom-style: solid;

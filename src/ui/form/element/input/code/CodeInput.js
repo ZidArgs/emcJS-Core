@@ -88,13 +88,13 @@ export default class CodeInput extends AbstractFormElement {
             this.#inputEl.scrollTop = scrollTop;
             this.#outputWrapperEl.scrollTop = scrollTop;
             this.#updateCaretPosition(true);
-        }, {passive: true});
+        }, {passive: false});
         this.#inputEl.addEventListener("scroll", () => {
             const scrollTop = this.#inputEl.scrollTop;
             this.#containerEl.scrollTop = scrollTop;
             this.#outputWrapperEl.scrollTop = scrollTop;
             this.#updateCaretPosition(true);
-        }, {passive: true});
+        }, {passive: false});
         /* --- */
         this.#inputEl.addEventListener("focus", (event) => {
             event.stopPropagation();
@@ -186,7 +186,7 @@ export default class CodeInput extends AbstractFormElement {
                 numberEl.classList.add("caret");
             }
 
-            this.#lineMarkerEl.style.top = `calc(${1.4 * currentLine}em + 5px)`;
+            this.#lineMarkerEl.style.setProperty("--current-line", currentLine);
         }
 
         const length = Math.abs(selectionEnd - selectionStart);

@@ -8,6 +8,10 @@
     cursor: pointer;
 }
 
+:host([disabled]:not([disabled="false"])) {
+    cursor: default !important;
+}
+
 :host(:focus) {
     outline: none;
     z-index: 1;
@@ -35,6 +39,15 @@
     white-space: pre;
     word-break: keep-all;
     cursor: inherit;
+}
+
+#button:disabled {
+    color: var(--button-disabled-text-color, #757575) !important;
+    background-color: var(--button-disabled-back-color, #999999) !important;
+    background-image: var(--button-disabled-back-image, none) !important;
+    border-color: var(--button-disabled-border-color, #6a6a6a) !important;
+    cursor: default !important;
+    pointer-events: none !important;
 }
 
 :host([slim]:not([slim="false"])) #button {
@@ -88,14 +101,6 @@
     background-color: var(--button-secondary-hover-back-color, #353935);
     background-image: var(--button-secondary-hover-back-image, none);
     border-color: var(--button-secondary-hover-border-color, #222222);
-}
-
-:host(:disabled) #button {
-    color: var(--button-disabled-text-color, #757575) !important;
-    background-color: var(--button-disabled-back-color, #999999) !important;
-    background-image: var(--button-disabled-back-image, none) !important;
-    border-color: var(--button-disabled-border-color, #6a6a6a) !important;
-    cursor: default !important;
 }
 
 :host([text-transform="lowercase"]) #button {

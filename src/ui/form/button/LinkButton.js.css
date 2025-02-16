@@ -7,6 +7,11 @@
     font-size: 1rem;
 }
 
+:host([disabled]:not([disabled="false"])) {
+    cursor: default !important;
+    pointer-events: none !important;
+}
+
 :host(:focus) {
     outline: none;
 }
@@ -35,13 +40,17 @@
     cursor: pointer;
 }
 
-:host([slim]:not([slim="false"])) #button {
-    padding: 0px 4px;
+#button[disabled]:not([disabled="false"]) {
+    color: var(--button-disabled-text-color, #757575) !important;
+    background-color: var(--button-disabled-back-color, #999999) !important;
+    background-image: var(--button-disabled-back-image, none) !important;
+    border-color: var(--button-disabled-border-color, #6a6a6a) !important;
+    cursor: default !important;
+    pointer-events: none !important;
 }
 
-:host(:disabled) #button {
-    border-color: var(--button-disabled-border-color, #6a6a6a);
-    pointer-events: none;
+:host([slim]:not([slim="false"])) #button {
+    padding: 0px 4px;
 }
 
 :host([text-transform="lowercase"]) #button {
@@ -66,13 +75,6 @@
     color: var(--button-hover-text-color, #ffffff);
     background-color: var(--button-hover-back-color, #000000);
     background-image: var(--button-hover-back-image, none);
-}
-
-#button[disabled]:not([disabled="false"]) {
-    color: var(--input-disabled-text-color, #757575);
-    background-color: var(--button-disabled-back-color, #999999);
-    background-image: var(--button-disabled-back-image, none);
-    cursor: default;
 }
 
 #button #link-icon {
