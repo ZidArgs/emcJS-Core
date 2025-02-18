@@ -1,17 +1,15 @@
-class IndexedSetIterator {
+class IndexedSetIterator extends Iterator {
 
     #values;
 
-    #withKey;
-
-    constructor(values, withKey = false) {
+    constructor(values) {
+        super();
         this.#values = Array.from(values);
-        this.#withKey = withKey;
     }
 
     static {
         Object.defineProperty(this.prototype, Symbol.toStringTag, {
-            value: "Indexed Set Iterator",
+            value: "IndexedSet Iterator",
             configurable: true,
             enumerable: false,
             writable: false
@@ -24,7 +22,7 @@ class IndexedSetIterator {
         if (this.#values.length) {
             const value = this.#values.shift();
             return {
-                value: this.#withKey ? [value, value] : value,
+                value: value,
                 done: false
             };
         }
@@ -105,7 +103,7 @@ export default class IndexedSet {
     }
 
     entries() {
-        return new IndexedSetIterator(this.#values, true);
+        return new IndexedSetIterator(this.#values.map((entry) => [entry, entry]));
     }
 
     forEach(callback, thisArg) {
