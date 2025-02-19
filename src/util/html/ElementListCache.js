@@ -1,8 +1,8 @@
-import IndexedSet from "../../data/collection/IndexedSet.js";
+import ArraySet from "../../data/collection/ArraySet.js";
 
 export default class ElementListCache {
 
-    #elementList = new IndexedSet();
+    #elementList = new ArraySet();
 
     append(...nodes) {
         this.#elementList.add(...nodes.filter((node) => node instanceof Element));
@@ -37,7 +37,7 @@ export default class ElementListCache {
     }
 
     setNodeList(list) {
-        this.#elementList = new IndexedSet(list.filter((node) => node instanceof Element));
+        this.#elementList = new ArraySet(list.filter((node) => node instanceof Element));
     }
 
     getNodeList() {

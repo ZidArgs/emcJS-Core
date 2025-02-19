@@ -1,5 +1,5 @@
 import assert from "assert";
-import IndexedSet from "../../../../src/data/collection/IndexedSet.js";
+import ArraySet from "../../../../src/data/collection/ArraySet.js";
 import {
     getArrayMutations
 } from "../../../../src/util/helper/collection/ArrayMutations.js";
@@ -13,11 +13,11 @@ const TARGET_4 = [1, 2, 3, 4, 5, 6, 10, 11, 12, 13, 14, 9, 20, 15, 16, 17, 18, 1
 const TARGET_5 = [2, 3, 4, 6, 10, 1, 5, 11, 12, 13, 14, 15, 16, 17, 9, 18, 19, 20];
 
 describe("ArrayMutations", function() {
-    const source = new IndexedSet(SOURCE);
+    const source = new ArraySet(SOURCE);
 
     describe("move, delete and add values to/at various positions", function() {
         const mutations = getArrayMutations(SOURCE, TARGET_0);
-        const mutated = new IndexedSet(source);
+        const mutated = new ArraySet(source);
 
         mutated.delete(...mutations.deleted);
         for (const {sequence} of mutations.changes) {
@@ -37,7 +37,7 @@ describe("ArrayMutations", function() {
 
     describe("switch first and last", function() {
         const mutations = getArrayMutations(SOURCE, TARGET_1);
-        const mutated = new IndexedSet(source);
+        const mutated = new ArraySet(source);
 
         mutated.delete(...mutations.deleted);
         for (const {sequence} of mutations.changes) {
@@ -57,7 +57,7 @@ describe("ArrayMutations", function() {
 
     describe("move sequence to sequence", function() {
         const mutations = getArrayMutations(SOURCE, TARGET_2);
-        const mutated = new IndexedSet(source);
+        const mutated = new ArraySet(source);
 
         mutated.delete(...mutations.deleted);
         for (const {sequence} of mutations.changes) {
@@ -77,7 +77,7 @@ describe("ArrayMutations", function() {
 
     describe("move sequence into split positions", function() {
         const mutations = getArrayMutations(SOURCE, TARGET_3);
-        const mutated = new IndexedSet(source);
+        const mutated = new ArraySet(source);
 
         mutated.delete(...mutations.deleted);
         for (const {sequence} of mutations.changes) {
@@ -97,7 +97,7 @@ describe("ArrayMutations", function() {
 
     describe("move split values into sequence left", function() {
         const mutations = getArrayMutations(SOURCE, TARGET_4);
-        const mutated = new IndexedSet(source);
+        const mutated = new ArraySet(source);
 
         mutated.delete(...mutations.deleted);
         for (const {sequence} of mutations.changes) {
@@ -117,7 +117,7 @@ describe("ArrayMutations", function() {
 
     describe("move split values into sequence right", function() {
         const mutations = getArrayMutations(SOURCE, TARGET_5);
-        const mutated = new IndexedSet(source);
+        const mutated = new ArraySet(source);
 
         mutated.delete(...mutations.deleted);
         for (const {sequence} of mutations.changes) {

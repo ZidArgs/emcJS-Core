@@ -1,4 +1,4 @@
-class IndexedSetIterator extends Iterator {
+class ArraySetIterator extends Iterator {
 
     #values;
 
@@ -9,7 +9,7 @@ class IndexedSetIterator extends Iterator {
 
     static {
         Object.defineProperty(this.prototype, Symbol.toStringTag, {
-            value: "IndexedSet Iterator",
+            value: "ArraySet Iterator",
             configurable: true,
             enumerable: false,
             writable: false
@@ -34,7 +34,7 @@ class IndexedSetIterator extends Iterator {
 
 }
 
-export default class IndexedSet {
+export default class ArraySet {
 
     #values = [];
 
@@ -95,15 +95,15 @@ export default class IndexedSet {
     }
 
     keys() {
-        return new IndexedSetIterator(this.#values);
+        return new ArraySetIterator(this.#values);
     }
 
     values() {
-        return new IndexedSetIterator(this.#values);
+        return new ArraySetIterator(this.#values);
     }
 
     entries() {
-        return new IndexedSetIterator(this.#values.map((entry) => [entry, entry]));
+        return new ArraySetIterator(this.#values.map((entry) => [entry, entry]));
     }
 
     forEach(callback, thisArg) {
@@ -120,7 +120,7 @@ export default class IndexedSet {
         if (typeof callback !== "function") {
             throw new TypeError("callback must be a function");
         }
-        return new IndexedSet(this.#values.filter((value, index) => {
+        return new ArraySet(this.#values.filter((value, index) => {
             return callback.call(thisArg, value, index, this);
         }));
     }
@@ -151,7 +151,7 @@ export default class IndexedSet {
     }
 
     slice(start, end) {
-        return new IndexedSet(this.#values.slice(start, end));
+        return new ArraySet(this.#values.slice(start, end));
     }
 
     indexOf(value) {
@@ -159,7 +159,7 @@ export default class IndexedSet {
     }
 
     [Symbol.iterator]() {
-        return new IndexedSetIterator(this.#values);
+        return new ArraySetIterator(this.#values);
     }
 
 }
