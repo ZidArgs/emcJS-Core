@@ -99,6 +99,17 @@ export default class Observable extends EventTarget {
         return new Proxy(this, HANDLER);
     }
 
+    static {
+        Object.defineProperty(this.prototype, Symbol.toStringTag, {
+            value: "Observable",
+            configurable: true,
+            enumerable: false,
+            writable: false
+        });
+
+        delete this.prototype.constructor;
+    }
+
     #notifyChange = debounceCacheData((data) => {
         const changes = {};
         for (const {key, value, change} of data) {
@@ -220,10 +231,6 @@ export default class Observable extends EventTarget {
 
     toJSON() {
         return Object.fromEntries(this.#buffer);
-    }
-
-    toString() {
-        return "[object Observable]";
     }
 
 }
