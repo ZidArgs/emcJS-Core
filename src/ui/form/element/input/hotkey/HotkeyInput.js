@@ -5,9 +5,6 @@ import {
     deepClone
 } from "../../../../../util/helper/DeepClone.js";
 import {
-    debounce
-} from "../../../../../util/Debouncer.js";
-import {
     toStartUppercaseEndLowercase
 } from "../../../../../util/helper/string/ConvertCase.js";
 import {
@@ -81,10 +78,10 @@ export default class HotkeyInput extends AbstractFormElement {
                     this.#value.metaKey = false;
                     this.#value.key = null;
                     this.renderValue(this.#stringifyValue(this.#value));
-                    this.#onInput();
+                    this.value = this.#inputEl.value;
                 } else if (CONTROL_KEYS.includes(key)) {
                     this.renderValue(this.#stringifyValue({ctrlKey, shiftKey, altKey, metaKey, key: null}));
-                    this.#onInput();
+                    this.value = this.#inputEl.value;
                 } else {
                     this.#value.ctrlKey = ctrlKey;
                     this.#value.shiftKey = shiftKey;
@@ -92,7 +89,7 @@ export default class HotkeyInput extends AbstractFormElement {
                     this.#value.metaKey = metaKey;
                     this.#value.key = key;
                     this.renderValue(this.#stringifyValue(this.#value));
-                    this.#onInput();
+                    this.value = this.#inputEl.value;
                 }
                 event.preventDefault();
                 event.stopPropagation();
@@ -105,7 +102,7 @@ export default class HotkeyInput extends AbstractFormElement {
                 if (value.key == null) {
                     const {ctrlKey, shiftKey, altKey, metaKey} = event;
                     this.renderValue(this.#stringifyValue({ctrlKey, shiftKey, altKey, metaKey, key: null}));
-                    this.#onInput();
+                    this.value = this.#inputEl.value;
                 }
                 event.preventDefault();
                 event.stopPropagation();
@@ -120,10 +117,6 @@ export default class HotkeyInput extends AbstractFormElement {
             this.value = "";
         });
     }
-
-    #onInput = debounce(() => {
-        this.value = this.#inputEl.value;
-    }, 300);
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);

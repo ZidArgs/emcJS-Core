@@ -1,9 +1,6 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
 import {
-    debounce
-} from "../../../../../util/Debouncer.js";
-import {
     deepClone
 } from "../../../../../util/helper/DeepClone.js";
 import {
@@ -36,7 +33,7 @@ export default class NumberInput extends AbstractFormElement {
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#inputEl.addEventListener("input", () => {
-            this.#onInput();
+            this.value = this.#inputEl.value;
         });
         /* --- */
         this.#upButtonEl = this.shadowRoot.getElementById("upButton");
@@ -75,10 +72,6 @@ export default class NumberInput extends AbstractFormElement {
             event.stopPropagation();
         });
     }
-
-    #onInput = debounce(() => {
-        this.value = this.#inputEl.value;
-    }, 300);
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
@@ -191,7 +184,7 @@ export default class NumberInput extends AbstractFormElement {
         if (max == null || currentValue < max) {
             this.#inputEl.value = currentValue + 1;
         }
-        this.#onInput();
+        this.value = this.#inputEl.value;
     }
 
     #decreaseValue() {
@@ -200,7 +193,7 @@ export default class NumberInput extends AbstractFormElement {
         if (min == null || currentValue > min) {
             this.#inputEl.value = currentValue - 1;
         }
-        this.#onInput();
+        this.value = this.#inputEl.value;
     }
 
 }

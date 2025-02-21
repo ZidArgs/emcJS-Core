@@ -1,8 +1,5 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import {
-    debounce
-} from "../../../../../util/Debouncer.js";
-import {
     deepClone
 } from "../../../../../util/helper/DeepClone.js";
 import {
@@ -41,7 +38,7 @@ export default class TextInput extends AbstractFormElement {
         this.#lengthInfoEl = this.shadowRoot.getElementById("length-info");
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#inputEl.addEventListener("input", () => {
-            this.#onInput();
+            this.value = this.#inputEl.value;
             this.#printLengthToMax();
         });
         this.#inputEl.addEventListener("keydown", (event) => {
@@ -61,10 +58,6 @@ export default class TextInput extends AbstractFormElement {
             }
         });
     }
-
-    #onInput = debounce(() => {
-        this.value = this.#inputEl.value;
-    }, 300);
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);

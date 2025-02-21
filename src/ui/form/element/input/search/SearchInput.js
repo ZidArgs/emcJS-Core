@@ -4,9 +4,6 @@ import {
     deepClone
 } from "../../../../../util/helper/DeepClone.js";
 import {
-    debounce
-} from "../../../../../util/Debouncer.js";
-import {
     registerFocusable
 } from "../../../../../util/helper/html/getFocusableElements.js";
 import {
@@ -35,17 +32,13 @@ export default class SearchInput extends AbstractFormElement {
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#inputEl.addEventListener("input", () => {
-            this.#onInput();
+            this.value = this.#inputEl.value;
         });
         this.#buttonEl = this.shadowRoot.getElementById("button");
         this.#buttonEl.addEventListener("click", () => {
             this.value = "";
         });
     }
-
-    #onInput = debounce(() => {
-        this.value = this.#inputEl.value;
-    }, 300);
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);

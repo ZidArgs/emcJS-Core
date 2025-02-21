@@ -57,8 +57,8 @@ export default class CodeInput extends AbstractFormElement {
         this.#inputEl.addEventListener("input", () => {
             const value = this.#inputEl.value;
             this.#updateText(value);
-            this.#onInput(value);
-        }, {passive: true});
+            this.value = value;
+        });
         this.#inputEl.addEventListener("keydown", (event) => {
             if (event.key === "Tab") {
                 const value = this.#inputEl.value;
@@ -72,7 +72,7 @@ export default class CodeInput extends AbstractFormElement {
                 this.#inputEl.selectionEnd = cursor_pos;
 
                 this.#updateText(newValue);
-                this.#onInput(newValue);
+                this.value = newValue;
 
                 event.preventDefault();
                 return false;
@@ -120,10 +120,6 @@ export default class CodeInput extends AbstractFormElement {
             }
         });
     }
-
-    #onInput = debounce((value) => {
-        this.value = value;
-    }, 300);
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);

@@ -159,20 +159,7 @@ export default class AbstractFormElement extends CustomFormElement {
     set value(value) {
         if (!isEqual(this.value, value)) {
             this.#value = value;
-            const newValue = this.value;
-            this.renderValue(newValue);
-            this.onDisplayValueChange(newValue);
-            this.refreshFormValue();
-            this.revalidate();
-            this.#setResetActive(!this.isDefault);
-            if (!this.#errorList.size) {
-                const event = new Event("value", {bubbles: true, cancelable: true});
-                event.value = value;
-                event.name = this.name;
-                event.fieldId = this.id;
-                this.dispatchEvent(event);
-            }
-            this.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
+            this.#onUpdateValue();
         }
     }
 
@@ -323,6 +310,23 @@ export default class AbstractFormElement extends CustomFormElement {
             } break;
         }
     }
+
+    #onUpdateValue = debounce(() => {
+        const newValue = this.value;
+        this.renderValue(newValue);
+        this.onDisplayValueChange(newValue);
+        this.refreshFormValue();
+        this.revalidate();
+        this.#setResetActive(!this.isDefault);
+        if (!this.#errorList.size) {
+            const event = new Event("value", {bubbles: true, cancelable: true});
+            event.value = newValue;
+            event.name = this.name;
+            event.fieldId = this.id;
+            this.dispatchEvent(event);
+        }
+        this.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
+    }, 300);
 
     async revalidate() {
         if (!this.noValidate) {

@@ -1,8 +1,5 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import {
-    debounce
-} from "../../../../../util/Debouncer.js";
-import {
     deepClone
 } from "../../../../../util/helper/DeepClone.js";
 import {
@@ -40,11 +37,12 @@ export default class RangeInput extends AbstractFormElement {
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#inputEl.addEventListener("input", (event) => {
             event.stopPropagation();
-            this.#numberEl.value = this.#inputEl.value;
-            this.#applyValueToBar(this.#inputEl.value);
+            const value = this.#inputEl.value;
+            this.#numberEl.value = value;
+            this.#applyValueToBar(value);
             const ev = new Event("input", {bubbles: true});
             this.dispatchEvent(ev);
-            this.#onInput();
+            this.value = value;
         });
         new ResizeObserver(() => {
             this.#applyScratchValue();
@@ -53,15 +51,12 @@ export default class RangeInput extends AbstractFormElement {
         this.#numberEl = this.shadowRoot.getElementById("number");
         this.#numberEl.addEventListener("change", (event) => {
             event.stopPropagation();
-            this.#inputEl.value = this.#numberEl.value;
-            this.#applyValueToBar(this.#inputEl.value);
-            this.#onInput();
+            const value = this.#numberEl.value;
+            this.#inputEl.value = value;
+            this.#applyValueToBar(value);
+            this.value = value;
         });
     }
-
-    #onInput = debounce(() => {
-        this.value = this.#inputEl.value;
-    }, 300);
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);

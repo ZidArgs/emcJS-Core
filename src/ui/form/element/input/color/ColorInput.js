@@ -1,9 +1,6 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
 import {
-    debounce
-} from "../../../../../util/Debouncer.js";
-import {
     deepClone
 } from "../../../../../util/helper/DeepClone.js";
 import {
@@ -37,7 +34,7 @@ export default class ColorInput extends AbstractFormElement {
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#inputEl.addEventListener("input", () => {
-            this.#onInput();
+            this.value = this.#inputEl.value;
         });
         /* --- */
         this.#buttonEl = this.shadowRoot.getElementById("button");
@@ -53,10 +50,6 @@ export default class ColorInput extends AbstractFormElement {
             }
         });
     }
-
-    #onInput = debounce(() => {
-        this.value = this.#inputEl.value;
-    }, 300);
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
