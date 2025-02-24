@@ -41,4 +41,38 @@ export default class SetLocker {
         return this.#inst[Symbol.iterator]();
     }
 
+    forEach(callbackFn, thisArg) {
+        this.#inst.forEach((value, key) => {
+            callbackFn.call(thisArg, value, key, this);
+        });
+    }
+
+    difference(other) {
+        return this.#inst.difference(other);
+    }
+
+    intersection(other) {
+        return this.#inst.intersection(other);
+    }
+
+    isDisjointFrom(other) {
+        return this.#inst.isDisjointFrom(other);
+    }
+
+    isSubsetOf(other) {
+        return this.#inst.isSubsetOf(other);
+    }
+
+    isSupersetOf(other) {
+        return this.#inst.isSupersetOf(other);
+    }
+
+    symmetricDifference(other) {
+        return this.#inst.symmetricDifference(other);
+    }
+
+    union(other) {
+        return this.#inst.union(other);
+    }
+
 }

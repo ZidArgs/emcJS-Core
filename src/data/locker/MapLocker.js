@@ -45,4 +45,10 @@ export default class MapLocker {
         return this.#inst[Symbol.iterator]();
     }
 
+    forEach(callbackFn, thisArg) {
+        this.#inst.forEach((value, key) => {
+            callbackFn.call(thisArg, value, key, this);
+        });
+    }
+
 }

@@ -172,7 +172,7 @@ export default class Comparator {
             if (!Array.isArray(b) || a.length != b.length) {
                 return false;
             }
-            return a.every((i, j) => isEqual(i, b[j]));
+            return a.every((i, j) => this.isEqual(i, b[j]));
         }
         if (Array.isArray(b)) {
             return false;
@@ -183,7 +183,7 @@ export default class Comparator {
         if (c.length != Object.keys(b).length) {
             return false;
         }
-        return c.every((i) => isEqual(a[i], b[i]));
+        return c.every((i) => this.isEqual(a[i], b[i]));
     }
 
 }

@@ -15,13 +15,15 @@ export default class ObservableSet extends EventTarget {
             this.#data.add(value);
             this.#notifyChange();
         }
+        return this;
     }
 
     delete(value) {
-        if (this.#data.has(value)) {
-            this.#data.delete(value);
+        if (this.#data.delete(value)) {
             this.#notifyChange();
+            return true;
         }
+        return false;
     }
 
     clear() {
@@ -53,6 +55,40 @@ export default class ObservableSet extends EventTarget {
 
     [Symbol.iterator]() {
         return this.#data[Symbol.iterator]();
+    }
+
+    forEach(callbackFn, thisArg) {
+        this.#data.forEach((value, key) => {
+            callbackFn.call(thisArg, value, key, this);
+        });
+    }
+
+    difference(other) {
+        return this.#data.difference(other);
+    }
+
+    intersection(other) {
+        return this.#data.intersection(other);
+    }
+
+    isDisjointFrom(other) {
+        return this.#data.isDisjointFrom(other);
+    }
+
+    isSubsetOf(other) {
+        return this.#data.isSubsetOf(other);
+    }
+
+    isSupersetOf(other) {
+        return this.#data.isSupersetOf(other);
+    }
+
+    symmetricDifference(other) {
+        return this.#data.symmetricDifference(other);
+    }
+
+    union(other) {
+        return this.#data.union(other);
     }
 
 }

@@ -106,13 +106,13 @@ export default class ArraySet {
         return new ArraySetIterator(this.#values.map((entry) => [entry, entry]));
     }
 
-    forEach(callback, thisArg) {
-        if (typeof callback !== "function") {
+    forEach(callbackFn, thisArg) {
+        if (typeof callbackFn !== "function") {
             throw new TypeError("callback must be a function");
         }
         for (let index = 0; index < this.#values.length; ++index) {
             const value = this.#values[index];
-            callback.call(thisArg, value, index, this);
+            callbackFn.call(thisArg, value, index, this);
         }
     }
 
