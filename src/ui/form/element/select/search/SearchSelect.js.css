@@ -127,6 +127,7 @@
 }
 
 :host(:invalid) #view {
+    color: var(--input-invalid-text-color, #000000);
     background-color: var(--input-invalid-back-color, #ffebeb);
     background-image: var(--input-invalid-back-image, none);
     border-color: var(--input-invalid-border-color, #ff4444);
