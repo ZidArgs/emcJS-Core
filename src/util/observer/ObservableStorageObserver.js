@@ -1,4 +1,10 @@
 import ObservableStorage from "../../data/storage/observable/ObservableStorage.js";
+import {
+    debounce
+} from "../Debouncer.js";
+import {
+    isEqual
+} from "../helper/Comparator.js";
 
 export default class ObservableStorageObserver extends EventTarget {
 
@@ -46,43 +52,37 @@ export default class ObservableStorageObserver extends EventTarget {
         /* --- */
         storage.addEventListener("change", (event) => {
             if (this.#key != null && event.changes[this.#key] != null) {
-                const oldValue = this.#value;
                 const newValue = event.changes[this.#key].newValue;
-                this.#value = newValue;
-                // ---
-                const ev = new Event("change");
-                ev.value = newValue;
-                ev.oldValue = oldValue;
-                this.dispatchEvent(ev);
+                this.#updateValue(newValue);
             }
         });
         storage.addEventListener("clear", (event) => {
             if (this.#key != null) {
-                const oldValue = this.#value;
                 const newValue = event.data[this.#key];
-                this.#value = newValue;
-                // ---
-                const ev = new Event("change");
-                ev.value = newValue;
-                ev.oldValue = oldValue;
-                this.dispatchEvent(ev);
+                this.#updateValue(newValue);
             }
         });
         storage.addEventListener("load", (event) => {
             if (this.#key != null) {
-                const oldValue = this.#value;
                 const newValue = event.data[this.#key];
-                this.#value = newValue;
-                // ---
-                const ev = new Event("change");
-                ev.value = newValue;
-                ev.oldValue = oldValue;
-                this.dispatchEvent(ev);
+                this.#updateValue(newValue);
             }
         });
         /* --- */
         ObservableStorageObserver.#setInstance(storage, key, this);
     }
+
+    #updateValue = debounce((newValue) => {
+        if (!isEqual(this.#value, newValue)) {
+            const oldValue = this.#value;
+            this.#value = newValue;
+            // ---
+            const ev = new Event("change");
+            ev.value = newValue;
+            ev.oldValue = oldValue;
+            this.dispatchEvent(ev);
+        }
+    });
 
     get key() {
         return this.#key;
