@@ -43,6 +43,7 @@ export function debounceCacheData(func, wait = 0) {
     };
     fn.cancel = () => {
         clearTimeout(timeout);
+        cache = [];
     };
     return fn;
 }
