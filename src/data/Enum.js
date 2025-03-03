@@ -26,7 +26,7 @@ export default class Enum {
     }
 
     static includes(value) {
-        return this.asArray().includes(value);
+        return this.asArray().includes(value.toString());
     }
 
     static asArray() {
