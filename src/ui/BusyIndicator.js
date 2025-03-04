@@ -3,6 +3,9 @@ import ActiveCounter from "../util/ActiveCounter.js";
 import TPL from "./BusyIndicator.js.html" assert {type: "html"};
 import STYLE from "./BusyIndicator.js.css" assert {type: "css"};
 
+// TODO test with 0 delay
+const DOM_CHANGE_DELAY = 10;
+
 export default class BusyIndicator extends CustomElement {
 
     #isActive = false;
@@ -10,6 +13,8 @@ export default class BusyIndicator extends CustomElement {
     #targetEl = document.body;
 
     #activeCounter = new ActiveCounter();
+
+    #promiseCounter = new ActiveCounter();
 
     constructor() {
         super();
@@ -19,12 +24,12 @@ export default class BusyIndicator extends CustomElement {
 
     busy() {
         return new Promise((resolve) => {
-            if (this.#activeCounter.add()) {
+            if (this.#activeCounter.add() && !this.#isActive) {
                 this.#isActive = true;
                 this.#targetEl.append(this);
                 setTimeout(()=> {
                     resolve();
-                }, 10);
+                }, DOM_CHANGE_DELAY);
             } else {
                 resolve();
             }
@@ -33,7 +38,7 @@ export default class BusyIndicator extends CustomElement {
 
     unbusy() {
         return new Promise((resolve) => {
-            if (this.#activeCounter.remove()) {
+            if (this.#activeCounter.remove() && this.#isActive) {
                 this.#isActive = false;
                 this.remove();
                 setTimeout(()=> {
@@ -47,7 +52,7 @@ export default class BusyIndicator extends CustomElement {
 
     reset() {
         return new Promise((resolve) => {
-            if (this.#activeCounter.reset()) {
+            if (this.#activeCounter.reset() && this.#isActive) {
                 this.#isActive = false;
                 this.remove();
                 setTimeout(()=> {
@@ -59,6 +64,21 @@ export default class BusyIndicator extends CustomElement {
         });
     }
 
+    async promise(promise) {
+        if (promise instanceof Promise) {
+            await this.#busyPromise();
+            try {
+                const value = await promise;
+                await this.#unbusyPromise();
+                return value;
+            } catch (error) {
+                await this.#unbusyPromise();
+                throw error;
+            }
+        }
+        return promise;
+    }
+
     setTarget(element) {
         if (element instanceof HTMLElement || element instanceof ShadowRoot) {
             this.#targetEl = element;
@@ -68,6 +88,34 @@ export default class BusyIndicator extends CustomElement {
         if (this.#isActive) {
             this.#targetEl.append(this);
         }
+    }
+
+    #busyPromise() {
+        return new Promise((resolve) => {
+            if (this.#promiseCounter.add() && !this.#isActive) {
+                this.#isActive = true;
+                this.#targetEl.append(this);
+                setTimeout(()=> {
+                    resolve();
+                }, DOM_CHANGE_DELAY);
+            } else {
+                resolve();
+            }
+        });
+    }
+
+    #unbusyPromise() {
+        return new Promise((resolve) => {
+            if (this.#promiseCounter.remove() && this.#isActive) {
+                this.#isActive = false;
+                this.remove();
+                setTimeout(()=> {
+                    resolve();
+                }, 0);
+            } else {
+                resolve();
+            }
+        });
     }
 
 }

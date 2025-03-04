@@ -24,4 +24,8 @@ export default class ActiveCounter {
         return false;
     }
 
+    isActive() {
+        return this.#count > 0;
+    }
+
 }
