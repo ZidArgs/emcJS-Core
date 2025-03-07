@@ -1,3 +1,5 @@
+import LogicStatement from "../processor/components/LogicStatement.js";
+
 const TRANSPILERS = {
     /* literals */
     "true":     () => "1",
@@ -6,6 +8,8 @@ const TRANSPILERS = {
     "number":   (logic) => `${escapeNumber(logic.value)}`,
     "value":    (logic) => `(val(${escapeString(logic.ref)})??0)`,
     "state":    (logic) => `((val(${escapeString(logic.ref)})??0)==${escapeValue(logic.value)})`,
+    "param":    (logic) => `(params[${escapeString(logic.ref)}]??0)`,
+    "data":     (logic) => `(data(${escapeString(logic.ref)})??0)`,
 
     /* operators */
     "and":      (logic) => `${multiElementOperation(logic.content, "&&")}`,
@@ -35,15 +39,21 @@ const TRANSPILERS = {
     "mul":      (logic) => mathMultiElementOperation(logic.content, "*"),
     "div":      (logic) => mathMultiElementOperation(logic.content, "/"),
     "mod":      (logic) => mathMultiElementOperation(logic.content, "%"),
-    "pow":      (logic) => mathTwoElementOperation(logic.content, "**")
+    "pow":      (logic) => mathTwoElementOperation(logic.content, "**"),
+
+    /* logic */
+    "function":    (logic) => `exec(${escapeString(logic.ref)}${functionParams(logic.params)})`,
+
+    /* referrer */
+    "at":       (logic) => logic.content ? `at(${escapeString(logic.node)},(${LogicStatement.parameterString})=>${buildLogic(logic.content)})` : `at(${escapeString(logic.node)})`
 };
 
 const dependencies = new Set();
 
 /* STRINGS */
 function escapeString(str) {
-    if (typeof str !== "string") {
-        if (typeof str === "number" && !isNaN(str)) {
+    if (typeof str != "string") {
+        if (typeof str == "number" && !isNaN(str)) {
             return `"${str}"`;
         }
         return `""`;
@@ -54,8 +64,8 @@ function escapeString(str) {
 
 /* VALUE */
 function escapeValue(str) {
-    if (typeof str !== "string") {
-        if (typeof str === "number") {
+    if (typeof str != "string") {
+        if (typeof str == "number") {
             if (isNaN(str)) {
                 return 0;
             }
@@ -74,7 +84,7 @@ function twoElementOperation(els, join) {
 }
 
 function multiElementOperation(els, join) {
-    if (els.length === 0) {
+    if (els.length == 0) {
         return 0;
     }
     return `(${els.map(buildLogic).join(join)})`;
@@ -98,15 +108,28 @@ function mathTwoElementOperation(els, join) {
 }
 
 function mathMultiElementOperation(els, join) {
-    if (els.length === 0) {
+    if (els.length == 0) {
         return 0;
     }
     return `${els.map(buildLogic).map(toNumber).join(join)}`;
 }
 
+/* FUNCTION PARAMS */
+function functionParams(params) {
+    if (params == null || typeof params !== "object" || Array.isArray(params)) {
+        return ",{}";
+    }
+    const escapedParams = [];
+    for (const [key, value] of Object.entries(params)) {
+        const buildValue = buildLogic(value);
+        escapedParams.push(`${key}:${buildValue}`);
+    }
+    return `,{${escapedParams.join(",")}}`;
+}
+
 /* INITIATOR */
 function buildLogic(logic) {
-    if (typeof logic !== "object") {
+    if (typeof logic != "object") {
         logic = {type: logic};
     }
     if (TRANSPILERS[logic.type] != null) {
@@ -115,16 +138,15 @@ function buildLogic(logic) {
     return 0;
 }
 
-class LogicCompiler {
+class StatementCompiler {
 
-    compile(logic) {
-        const buf = buildLogic(logic);
-        const fn = new Function("val", `return ${buf}`);
-        Object.defineProperty(fn, "requires", {value: dependencies});
+    compile(source, params = {}) {
+        const statement = buildLogic(source);
+        const fn = new LogicStatement(statement, {dependencies, params, source});
         dependencies.clear();
         return fn;
     }
 
 }
 
-export default new LogicCompiler();
+export default new StatementCompiler();
