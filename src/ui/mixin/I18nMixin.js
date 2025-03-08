@@ -44,7 +44,7 @@ export default createMixin((superclass) => class I18nMixin extends superclass {
             super.connectedCallback();
         }
         /* --- */
-        this.#i18nEventManager.setActive(true);
+        this.#i18nEventManager.active = true;
         /* --- */
         for (const attr of this.constructor.i18nObservedAttributes) {
             const key = this.getAttribute(attr);
@@ -61,7 +61,7 @@ export default createMixin((superclass) => class I18nMixin extends superclass {
             super.disconnectedCallback();
         }
         /* --- */
-        this.#i18nEventManager.setActive(false);
+        this.#i18nEventManager.active = false;
     }
 
     static get i18nObservedAttributes() {

@@ -190,7 +190,7 @@ export default class SearchSelect extends CustomElementDelegating {
             }
         }, true);
         /* --- */
-        this.#i18nEventManager.setActive(this.getBooleanAttribute("sort"));
+        this.#i18nEventManager.active = this.getBooleanAttribute("sort");
         this.#i18nEventManager.set("language", () => {
             this.#sort();
         });
@@ -260,7 +260,7 @@ export default class SearchSelect extends CustomElementDelegating {
             } break;
             case "sort": {
                 if (oldValue != newValue) {
-                    this.#i18nEventManager.setActive(this.getBooleanAttribute("sort"));
+                    this.#i18nEventManager.active = this.getBooleanAttribute("sort");
                 }
             } break;
         }
@@ -320,9 +320,9 @@ export default class SearchSelect extends CustomElementDelegating {
     }
 
     #sort = debounce(() => {
-        this.#slotEventManager.setActive(false);
+        this.#slotEventManager.active = false;
         sortChildren(this, `[value]`);
-        this.#slotEventManager.setActive(true);
+        this.#slotEventManager.active = true;
     });
 
 }

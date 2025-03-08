@@ -197,12 +197,12 @@ export default class ListSelect extends AbstractFormElement {
 
     #updateSort(value) {
         if (value) {
-            this.#i18nEventManager.setActive(true);
+            this.#i18nEventManager.active = true;
             this.#dataManager.setOptions({
                 sortFunction: (record0, record1) => i18n.compareNumberedValuesTranslated(record0.name, record1.name)
             });
         } else {
-            this.#i18nEventManager.setActive(false);
+            this.#i18nEventManager.active = false;
             this.#dataManager.setOptions({
                 sortFunction: false
             });

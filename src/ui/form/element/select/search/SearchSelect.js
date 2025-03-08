@@ -323,7 +323,7 @@ export default class SearchSelect extends AbstractFormElement {
             case "sorted": {
                 if (oldValue != newValue) {
                     const sorted = this.sorted;
-                    this.#i18nEventManager.setActive(sorted);
+                    this.#i18nEventManager.active = sorted;
                     if (sorted) {
                         this.#selectEntryManager.registerSortFunction(this.#sortByNameFunction);
                         this.#i18nOptionManager.registerSortFunction(this.#sortByNameFunction);

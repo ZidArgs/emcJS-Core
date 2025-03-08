@@ -47,7 +47,7 @@ export default createMixin((superclass) => class EventTargetListenerMixin extend
 
     setEventTargetListenerActive(value) {
         for (const [, targetManager] of this.#manager) {
-            targetManager.setActive(value);
+            targetManager.active = value;
         }
     }
 

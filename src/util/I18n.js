@@ -249,6 +249,7 @@ class I18n extends EventTarget {
      * @deprecated
      */
     translate(key) {
+        console.warn("Used instance.translate(key); will not be supported anymore in the future. Use instance.get(key, ...substitutions); instead;");
         return this.get(key);
     }
 

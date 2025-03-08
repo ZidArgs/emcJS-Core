@@ -72,9 +72,9 @@ export default class FormInputContext {
             const isValid = this.#element.checkValidity();
             if (isValid) {
                 if (this.#storage != null) {
-                    this.#storageEventManager.setActive(false);
+                    this.#storageEventManager.active = false;
                     this.#storage.set(this.#element.name, this.#element[this.#valueAttributeName]);
-                    this.#storageEventManager.setActive(true);
+                    this.#storageEventManager.active = true;
                 }
             }
             const message = this.#element.validationMessage;
@@ -96,17 +96,17 @@ export default class FormInputContext {
         });
         /* --- */
         this.#storageEventManager.set("change", (event) => {
-            this.#elementEventManager.setActive(false);
+            this.#elementEventManager.active = false;
             if (this.#element.name in event.data) {
                 const value = event.data[this.#element.name] ?? "";
                 this.#element[this.#valueAttributeName] = value;
             }
             this.#callUpdateVisible();
             this.#callUpdateEnabled();
-            this.#elementEventManager.setActive(true);
+            this.#elementEventManager.active = true;
         });
         this.#storageEventManager.set(["load", "clear"], (event) => {
-            this.#elementEventManager.setActive(false);
+            this.#elementEventManager.active = false;
             const value = event.data[this.#element.name] ?? "";
             if (value != null) {
                 if (typeof value === "object") {
@@ -120,7 +120,7 @@ export default class FormInputContext {
             this.#element[this.#valueAttributeName] = value;
             this.#callUpdateVisible();
             this.#callUpdateEnabled();
-            this.#elementEventManager.setActive(true);
+            this.#elementEventManager.active = true;
         });
         /* --- */
         const visibleValue = this.#element.getAttribute("visible");

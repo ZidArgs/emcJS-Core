@@ -39,9 +39,9 @@ export default class DataGridCellString extends DataGridCell {
             switch (name) {
                 case "editable": {
                     if (this.editable) {
-                        this.#inputEventManager.setActive(true);
+                        this.#inputEventManager.active = true;
                     } else {
-                        this.#inputEventManager.setActive(false);
+                        this.#inputEventManager.active = false;
                     }
                 } break;
                 case "disabled": {

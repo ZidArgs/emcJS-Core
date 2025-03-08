@@ -137,7 +137,7 @@ export default class TreeNode extends CustomElement {
             this.#elementManager.registerSortFunction(this.#sortByNameFunction);
         }
         /* --- */
-        this.#i18nEventManager.setActive(this.sorted);
+        this.#i18nEventManager.active = this.sorted;
         this.#i18nEventManager.set("language", () => {
             this.#sort();
         });
@@ -148,7 +148,7 @@ export default class TreeNode extends CustomElement {
 
     connectedCallback() {
         const sorted = this.sorted;
-        this.#i18nEventManager.setActive(sorted);
+        this.#i18nEventManager.active = sorted;
         if (sorted) {
             this.#elementManager.registerSortFunction(this.#sortByNameFunction);
         }
@@ -209,7 +209,7 @@ export default class TreeNode extends CustomElement {
                 case "sorted": {
                     if (oldValue != newValue) {
                         const sorted = this.sorted;
-                        this.#i18nEventManager.setActive(sorted);
+                        this.#i18nEventManager.active = sorted;
                         if (sorted) {
                             this.#elementManager.registerSortFunction(this.#sortByNameFunction);
                         } else {

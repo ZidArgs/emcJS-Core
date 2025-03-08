@@ -135,7 +135,7 @@ export default class SwitchSelect extends AbstractFormElement {
             case "sorted": {
                 if (oldValue != newValue) {
                     const sorted = this.sorted;
-                    this.#i18nEventManager.setActive(sorted);
+                    this.#i18nEventManager.active = sorted;
                     if (sorted) {
                         this.#switchButtonManager.registerSortFunction(this.#sortByNameFunction);
                     } else {

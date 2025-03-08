@@ -213,7 +213,7 @@ export default class HotkeyInput extends AbstractFormElement {
         const readonly = this.getAttribute("readonly");
         const disabled = this.#inputEl.disabled;
         const ignoreInput = disabled || (readonly != null && readonly != "false");
-        this.#eventTargetManager.setActive(!ignoreInput);
+        this.#eventTargetManager.active = !ignoreInput;
     }
 
     renderValue(value) {

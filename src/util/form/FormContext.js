@@ -308,13 +308,13 @@ export default class FormContext extends EventTarget {
     }
 
     loadDataFlat(data, merge = false) {
-        this.#formEventManager.setActive(false);
+        this.#formEventManager.active = false;
         if (merge) {
             this.#dataStorage.setAll(data);
         } else {
             this.#dataStorage.deserialize(data);
         }
-        this.#formEventManager.setActive(true);
+        this.#formEventManager.active = true;
     }
 
     getData() {

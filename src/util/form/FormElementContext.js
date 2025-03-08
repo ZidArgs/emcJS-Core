@@ -98,31 +98,31 @@ export default class FormElementContext {
         this.#elementEventManager.switchTarget(this.#element);
         this.#elementEventManager.set("change", () => {
             if (this.#storage != null) {
-                this.#storageEventManager.setActive(false);
+                this.#storageEventManager.active = false;
                 this.#storage.set(this.#element.name, this.#element.value);
-                this.#storageEventManager.setActive(true);
+                this.#storageEventManager.active = true;
             }
         });
         this.#elementEventManager.set("default", () => {
             if (this.#storage != null) {
-                this.#storageEventManager.setActive(false);
+                this.#storageEventManager.active = false;
                 this.#storage.resetValueChange(this.#element.name);
-                this.#storageEventManager.setActive(true);
+                this.#storageEventManager.active = true;
             }
         });
         /* --- */
         this.#storageEventManager.set("change", (event) => {
-            this.#elementEventManager.setActive(false);
+            this.#elementEventManager.active = false;
             if (this.#element.name in event.data) {
                 const value = event.data[this.#element.name];
                 this.#element.value = value;
             }
             this.#callUpdateVisible();
             this.#callUpdateEnabled();
-            this.#elementEventManager.setActive(true);
+            this.#elementEventManager.active = true;
         });
         this.#storageEventManager.set(["load", "clear"], (event) => {
-            this.#elementEventManager.setActive(false);
+            this.#elementEventManager.active = false;
             const value = event.data[this.#element.name];
             if (value != null) {
                 if (typeof value === "object") {
@@ -136,7 +136,7 @@ export default class FormElementContext {
             this.#element.value = value;
             this.#callUpdateVisible();
             this.#callUpdateEnabled();
-            this.#elementEventManager.setActive(true);
+            this.#elementEventManager.active = true;
         });
         /* --- */
         const visibleLogicAttribute = this.#element.getAttribute("visible");

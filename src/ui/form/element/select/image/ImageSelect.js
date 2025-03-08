@@ -84,7 +84,7 @@ export default class ImageSelect extends AbstractFormElement {
             this.renderValue(this.value);
         });
         /* --- */
-        this.#i18nEventManager.setActive(this.getBooleanAttribute("sorted"));
+        this.#i18nEventManager.active = this.getBooleanAttribute("sorted");
         this.#i18nEventManager.set("language", () => {
             this.#imageSelectPreviewManager.sort();
         });

@@ -2,6 +2,7 @@ import ObservableStorage from "../../data/storage/observable/ObservableStorage.j
 import {
     debounce
 } from "../Debouncer.js";
+import EventTargetManager from "../event/EventTargetManager.js";
 import {
     isEqual
 } from "../helper/Comparator.js";
@@ -26,7 +27,7 @@ export default class ObservableStorageObserver extends EventTarget {
         return insts?.get(key);
     }
 
-    #storage;
+    #storageEventManager;
 
     #key;
 
@@ -46,26 +47,33 @@ export default class ObservableStorageObserver extends EventTarget {
         }
         super();
         /* --- */
-        this.#storage = storage;
+        this.#storageEventManager = new EventTargetManager(storage);
         this.#key = key;
         this.#value = storage.get(key);
         /* --- */
-        storage.addEventListener("change", (event) => {
+        this.#storageEventManager.set("change", (event) => {
             if (this.#key != null && event.changes[this.#key] != null) {
                 const newValue = event.changes[this.#key].newValue;
                 this.#updateValue(newValue);
             }
         });
-        storage.addEventListener("clear", (event) => {
+        this.#storageEventManager.set("clear", (event) => {
             if (this.#key != null) {
                 const newValue = event.data[this.#key];
                 this.#updateValue(newValue);
             }
         });
-        storage.addEventListener("load", (event) => {
+        this.#storageEventManager.set("load", (event) => {
             if (this.#key != null) {
                 const newValue = event.data[this.#key];
                 this.#updateValue(newValue);
+            }
+        });
+        this.#storageEventManager.set("observer::replace_with", (event) => {
+            const {newStorage} = event;
+            if (newStorage instanceof ObservableStorage) {
+                this.#storageEventManager.switchTarget(newStorage);
+                this.#updateValue(newStorage.get(key));
             }
         });
         /* --- */
@@ -89,11 +97,11 @@ export default class ObservableStorageObserver extends EventTarget {
     }
 
     get value() {
-        return this.#storage.get(this.#key);
+        return this.#storageEventManager.target.get(this.#key);
     }
 
     set value(value) {
-        this.#storage.set(this.#key, value);
+        this.#storageEventManager.target.set(this.#key, value);
     }
 
 }

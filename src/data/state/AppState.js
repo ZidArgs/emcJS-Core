@@ -276,10 +276,15 @@ export default class AppState extends EventTarget {
             oldStorage.removeEventListener("change", handler);
             dataStorage.deserialize(oldStorage.serialize());
             this.#requestedStorages.delete(storageCategory);
+            // event
+            const ev = new Event("observer::replace_with");
+            ev.newStorage = dataStorage;
+            oldStorage.dispatchEvent(ev);
         }
         this.#registeredStorages.set(storageCategory, dataStorage);
         this.#eventNames.set(storageCategory, eventName);
         dataStorage.addEventListener(eventName, handler);
+        // event
         const ev = new Event("register");
         ev.data = {category, dataStorage};
         this.dispatchEvent(ev);

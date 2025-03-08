@@ -17,9 +17,6 @@ import "../symbols/ChevronDownSymbol.js";
 import TPL from "./TokenSelect.js.html" assert {type: "html"};
 import STYLE from "./TokenSelect.js.css" assert {type: "css"};
 
-/**
- * @deprecated
- */
 class TokenElementManager extends ElementManager {
 
     composer(key, params) {
@@ -40,6 +37,9 @@ class TokenElementManager extends ElementManager {
 
 }
 
+/**
+ * @deprecated
+ */
 export default class TokenSelect extends CustomElementDelegating {
 
     #elManager;
@@ -237,7 +237,7 @@ export default class TokenSelect extends CustomElementDelegating {
         /* --- */
         this.#elManager = new TokenElementManager(view);
         /* --- */
-        this.#i18nEventManager.setActive(this.getBooleanAttribute("sort"));
+        this.#i18nEventManager.active = this.getBooleanAttribute("sort");
         this.#i18nEventManager.set("language", () => {
             this.#sort();
         });
@@ -337,7 +337,7 @@ export default class TokenSelect extends CustomElementDelegating {
             } break;
             case "sort": {
                 if (oldValue != newValue) {
-                    this.#i18nEventManager.setActive(this.getBooleanAttribute("sort"));
+                    this.#i18nEventManager.active = this.getBooleanAttribute("sort");
                 }
             } break;
         }
@@ -404,9 +404,9 @@ export default class TokenSelect extends CustomElementDelegating {
     }
 
     #sort = debounce(() => {
-        this.#slotEventManager.setActive(false);
+        this.#slotEventManager.active = false;
         sortChildren(this, `[value]`);
-        this.#slotEventManager.setActive(true);
+        this.#slotEventManager.active = true;
     });
 
 }
