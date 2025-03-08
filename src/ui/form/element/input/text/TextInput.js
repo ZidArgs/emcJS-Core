@@ -42,7 +42,13 @@ export default class TextInput extends AbstractFormElement {
             this.#printLengthToMax();
         });
         this.#inputEl.addEventListener("keydown", (event) => {
-            if (event.keyCode === 13 && event.shiftKey === this.sendOnShift) {
+            if (event.key === "Enter") {
+                if (!event.shiftKey === this.newlineOnShift) {
+                    if (this.form != null) {
+                        event.preventDefault();
+                        this.form.requestSubmit();
+                    }
+                }
                 event.stopPropagation();
                 return false;
             }
@@ -92,12 +98,12 @@ export default class TextInput extends AbstractFormElement {
         return this.getIntAttribute("maxlength");
     }
 
-    set sendOnShift(value) {
-        this.setBooleanAttribute("sendonshift", value);
+    set newlineOnShift(value) {
+        this.setBooleanAttribute("newlineonshift", value);
     }
 
-    get sendOnShift() {
-        return this.getBooleanAttribute("sendonshift");
+    get newlineOnShift() {
+        return this.getBooleanAttribute("newlineonshift");
     }
 
     set spellcheck(value) {

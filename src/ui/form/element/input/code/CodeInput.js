@@ -8,15 +8,24 @@ import {
 import {
     safeSetAttribute
 } from "../../../../../util/helper/ui/NodeAttributes.js";
+import {
+    deepClone
+} from "../../../../../util/helper/DeepClone.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
 import TPL from "./CodeInput.js.html" assert {type: "html"};
 import STYLE from "./CodeInput.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./CodeInput.js.json" assert {type: "json"};
 
 const LAST_CHARACTER_NEWLINE = /\n$/;
 
+// TODO add enter and escape action to not trap keyboard
 // TODO add css variables for code editor colors
 // TODO customize scrollbars to have sharp corners and transparent backgrounds
 export default class CodeInput extends AbstractFormElement {
+
+    static get formConfigurationFields() {
+        return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
+    }
 
     #fieldEl;
 
@@ -77,7 +86,13 @@ export default class CodeInput extends AbstractFormElement {
                 event.preventDefault();
                 return false;
             }
-            if (event.key === "Enter" && event.shiftKey === this.sendOnShift) {
+            if (event.key === "Enter") {
+                if (!event.shiftKey === this.newlineOnShift) {
+                    if (this.form != null) {
+                        event.preventDefault();
+                        this.form.requestSubmit();
+                    }
+                }
                 event.stopPropagation();
                 return false;
             }
@@ -128,6 +143,14 @@ export default class CodeInput extends AbstractFormElement {
 
     focus(options) {
         this.#inputEl.focus(options);
+    }
+
+    set newlineOnShift(value) {
+        this.setBooleanAttribute("newlineonshift", value);
+    }
+
+    get newlineOnShift() {
+        return this.getBooleanAttribute("newlineonshift");
     }
 
     static get observedAttributes() {

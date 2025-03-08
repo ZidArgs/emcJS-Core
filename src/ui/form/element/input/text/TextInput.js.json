@@ -19,7 +19,7 @@
     },
     {
         "type": "SwitchInput",
-        "name": "sendonshift",
+        "name": "newlineonshift",
         "label": "Hold shift to send on Enter (if off hold shift for newline)",
         "value": false
     }
