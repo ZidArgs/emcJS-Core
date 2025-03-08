@@ -21,9 +21,13 @@ export default class TreeNode extends CustomElement {
 
     #nodeEl;
 
+    #subTreeEl;
+
     #labelEl;
 
     #contentEl;
+
+    #collapseEl;
 
     #elementManager;
 
@@ -81,8 +85,8 @@ export default class TreeNode extends CustomElement {
             this.dispatchEvent(contentContextmenuEvent);
         });
         /* --- */
-        const subTreeEl = this.shadowRoot.getElementById("tree");
-        subTreeEl.addEventListener("select", (event) => {
+        this.#subTreeEl = this.shadowRoot.getElementById("tree");
+        this.#subTreeEl.addEventListener("select", (event) => {
             event.stopPropagation();
             const {element, index, ref, isSelected, path, refPath, left, top} = event.data;
             const targetIndex = Array.from(this.parentElement.children).indexOf(this);
@@ -102,7 +106,7 @@ export default class TreeNode extends CustomElement {
                 event.preventDefault();
             }
         });
-        subTreeEl.addEventListener("menu", (event) => {
+        this.#subTreeEl.addEventListener("menu", (event) => {
             event.stopPropagation();
             const {element, index, ref, isSelected, path, refPath, left, top} = event.data;
             const targetIndex = Array.from(this.parentElement.children).indexOf(this);
@@ -121,8 +125,8 @@ export default class TreeNode extends CustomElement {
         });
         /* --- */
         this.#nodeEl = this.shadowRoot.getElementById("node");
-        const collapseEl = this.shadowRoot.getElementById("collapse");
-        collapseEl.addEventListener("click", (event) => {
+        this.#collapseEl = this.shadowRoot.getElementById("collapse");
+        this.#collapseEl.addEventListener("click", (event) => {
             event.stopPropagation();
             event.preventDefault();
             this.toggleCollapsed();

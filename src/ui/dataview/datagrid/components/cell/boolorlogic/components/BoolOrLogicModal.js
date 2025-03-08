@@ -9,6 +9,12 @@ export default class BoolOrLogicModal extends Modal {
 
     #inputEl;
 
+    #footerEl;
+
+    #submitEl;
+
+    #cancelEl;
+
     constructor(name) {
         if (typeof name === "string" && name !== "") {
             super(`Edit logic: ${name}`);
@@ -18,18 +24,18 @@ export default class BoolOrLogicModal extends Modal {
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const footerEl = this.shadowRoot.getElementById("footer");
+        this.#footerEl = this.shadowRoot.getElementById("footer");
 
         this.#inputEl = els.getElementById("input");
         this.append(this.#inputEl);
 
-        const cancelEl = els.getElementById("cancel");
-        cancelEl.addEventListener("click", () => this.cancel());
-        footerEl.append(cancelEl);
+        this.#cancelEl = els.getElementById("cancel");
+        this.#cancelEl.addEventListener("click", () => this.cancel());
+        this.#footerEl.append(this.#cancelEl);
 
-        const submitEl = els.getElementById("submit");
-        submitEl.addEventListener("click", () => this.submit());
-        footerEl.append(submitEl);
+        this.#submitEl = els.getElementById("submit");
+        this.#submitEl.addEventListener("click", () => this.submit());
+        this.#footerEl.append(this.#submitEl);
     }
 
     set caption(value) {

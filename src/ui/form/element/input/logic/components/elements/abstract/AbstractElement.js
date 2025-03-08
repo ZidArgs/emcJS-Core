@@ -19,6 +19,8 @@ export default class AbstractElement extends CustomElement {
 
     #id;
 
+    #headerEl;
+
     constructor(caption) {
         if (new.target === AbstractElement) {
             throw new Error("can not construct abstract class");
@@ -28,7 +30,8 @@ export default class AbstractElement extends CustomElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.shadowRoot.getElementById("header").innerText = caption;
+        this.#headerEl = this.shadowRoot.getElementById("header");
+        this.#headerEl.innerText = caption;
         this.#id = appUID("logic-element");
         /* --- */
         this.addEventListener("contextmenu", (event) => {
@@ -74,9 +77,8 @@ export default class AbstractElement extends CustomElement {
     }
 
     getHeader() {
-        const headerEl = this.shadowRoot.getElementById("header");
-        if (headerEl) {
-            return headerEl.innerText;
+        if (this.#headerEl) {
+            return this.#headerEl.innerText;
         }
     }
 

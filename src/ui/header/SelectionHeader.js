@@ -6,20 +6,24 @@ import STYLE from "./SelectionHeader.js.css" assert {type: "css"};
 
 export default class SelectionHeader extends CustomElementDelegating {
 
+    #selectionEl;
+
+    #searchEl;
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const selectionEl = this.shadowRoot.getElementById("selection");
-        selectionEl.addEventListener("change", (ev) => {
+        this.#selectionEl = this.shadowRoot.getElementById("selection");
+        this.#selectionEl.addEventListener("change", (ev) => {
             this.checked = ev.currentTarget.checked;
             const event = new Event("check");
             event.value = ev.currentTarget.checked;
             this.dispatchEvent(event);
         });
-        const searchEl = this.shadowRoot.getElementById("search");
-        searchEl.addEventListener("change", (ev) => {
+        this.#searchEl = this.shadowRoot.getElementById("search");
+        this.#searchEl.addEventListener("change", (ev) => {
             this.search = ev.currentTarget.value;
             const event = new Event("search");
             event.value = ev.currentTarget.value;
@@ -59,18 +63,16 @@ export default class SelectionHeader extends CustomElementDelegating {
         if (oldValue != newValue) {
             switch (name) {
                 case "checked": {
-                    const selectionEl = this.shadowRoot.getElementById("selection");
                     if (newValue == "mixed") {
-                        selectionEl.checked = true;
-                        selectionEl.indeterminate = true;
+                        this.#selectionEl.checked = true;
+                        this.#selectionEl.indeterminate = true;
                     } else {
-                        selectionEl.checked = newValue != "false";
-                        selectionEl.indeterminate = false;
+                        this.#selectionEl.checked = newValue != "false";
+                        this.#selectionEl.indeterminate = false;
                     }
                 } break;
                 case "search": {
-                    const searchEl = this.shadowRoot.getElementById("search");
-                    searchEl.value = newValue;
+                    this.#searchEl.value = newValue;
                 } break;
             }
         }

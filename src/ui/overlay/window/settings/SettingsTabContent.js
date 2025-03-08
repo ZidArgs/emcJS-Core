@@ -119,11 +119,14 @@ function convertValueList(values = {}) {
 
 export default class SettingsTabContent extends CustomElement {
 
+    #containerEl;
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
+        this.#containerEl = this.shadowRoot.getElementById("container");
     }
 
     addStringInput(storage, ref, label, desc, visible, resettable) {
@@ -151,8 +154,7 @@ export default class SettingsTabContent extends CustomElement {
         // add element
         const resetEl = resettable && createResetButton(storage, ref);
         const labelEl = generateField(label, desc, inputEl, storage, visible, resetEl);
-        const containerEl = this.shadowRoot.getElementById("container");
-        containerEl.append(labelEl);
+        this.#containerEl.append(labelEl);
     }
 
     addNumberInput(storage, ref, label, desc, visible, resettable, min, max) {
@@ -186,8 +188,7 @@ export default class SettingsTabContent extends CustomElement {
         // add element
         const resetEl = resettable && createResetButton(storage, ref);
         const labelEl = generateField(label, desc, inputEl, storage, visible, resetEl);
-        const containerEl = this.shadowRoot.getElementById("container");
-        containerEl.append(labelEl);
+        this.#containerEl.append(labelEl);
     }
 
     addRangeInput(storage, ref, label, desc, visible, resettable, min, max) {
@@ -221,8 +222,7 @@ export default class SettingsTabContent extends CustomElement {
         // add element
         const resetEl = resettable && createResetButton(storage, ref);
         const labelEl = generateField(label, desc, inputEl, storage, visible, resetEl);
-        const containerEl = this.shadowRoot.getElementById("container");
-        containerEl.append(labelEl);
+        this.#containerEl.append(labelEl);
     }
 
     addCheckInput(storage, ref, label, desc, visible, resettable) {
@@ -250,8 +250,7 @@ export default class SettingsTabContent extends CustomElement {
         // add element
         const resetEl = resettable && createResetButton(storage, ref);
         const labelEl = generateField(label, desc, inputEl, storage, visible, resetEl);
-        const containerEl = this.shadowRoot.getElementById("container");
-        containerEl.append(labelEl);
+        this.#containerEl.append(labelEl);
     }
 
     addColorInput(storage, ref, label, desc, visible, resettable) {
@@ -279,8 +278,7 @@ export default class SettingsTabContent extends CustomElement {
         // add element
         const resetEl = resettable && createResetButton(storage, ref);
         const labelEl = generateField(label, desc, inputEl, storage, visible, resetEl);
-        const containerEl = this.shadowRoot.getElementById("container");
-        containerEl.append(labelEl);
+        this.#containerEl.append(labelEl);
     }
 
     addKeyInput(storage, ref, label, desc, visible, resettable) {
@@ -308,8 +306,7 @@ export default class SettingsTabContent extends CustomElement {
         // add element
         const resetEl = resettable && createResetButton(storage, ref);
         const labelEl = generateField(label, desc, inputEl, storage, visible, resetEl);
-        const containerEl = this.shadowRoot.getElementById("container");
-        containerEl.append(labelEl);
+        this.#containerEl.append(labelEl);
     }
 
     addChoiceInput(storage, ref, label, desc, visible, resettable, values = {}) {
@@ -341,8 +338,7 @@ export default class SettingsTabContent extends CustomElement {
         // add element
         const resetEl = resettable && createResetButton(storage, ref);
         const labelEl = generateField(label, desc, inputEl, storage, visible, resetEl);
-        const containerEl = this.shadowRoot.getElementById("container");
-        containerEl.append(labelEl);
+        this.#containerEl.append(labelEl);
     }
 
     addListSelectInput(storage, ref, label, desc, visible, resettable, multiple = true, values = {}) {
@@ -407,8 +403,7 @@ export default class SettingsTabContent extends CustomElement {
             storage.resetAll(Object.keys(convertedValues));
         });
         const labelEl = generateField(label, desc, inputEl, storage, visible, resetEl);
-        const containerEl = this.shadowRoot.getElementById("container");
-        containerEl.append(labelEl);
+        this.#containerEl.append(labelEl);
     }
 
     addButton(storage, ref, label, desc, visible, text = "", callback = null) {
@@ -427,8 +422,7 @@ export default class SettingsTabContent extends CustomElement {
         }
         const labelEl = generateField(label, desc, inputEl, storage, visible);
         // add element
-        const containerEl = this.shadowRoot.getElementById("container");
-        containerEl.append(labelEl);
+        this.#containerEl.append(labelEl);
     }
 
     addCustomInput(inputEl, storage, ref, label, desc, visible, resettable) {
@@ -455,14 +449,12 @@ export default class SettingsTabContent extends CustomElement {
         // add element
         const resetEl = resettable && createResetButton(storage, ref);
         const labelEl = generateField(label, desc, inputEl, storage, visible, resetEl);
-        const containerEl = this.shadowRoot.getElementById("container");
-        containerEl.append(labelEl);
+        this.#containerEl.append(labelEl);
     }
 
     addElements(content) {
         // add element
-        const containerEl = this.shadowRoot.getElementById("container");
-        containerEl.append(content);
+        this.#containerEl.append(content);
     }
 
 }

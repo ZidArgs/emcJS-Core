@@ -51,6 +51,8 @@ export default class ModalDialog extends Modal {
 
     #textEl;
 
+    #footerEl;
+
     #cancelEl;
 
     #submitEl;
@@ -62,7 +64,7 @@ export default class ModalDialog extends Modal {
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const footerEl = this.shadowRoot.getElementById("footer");
+        this.#footerEl = this.shadowRoot.getElementById("footer");
 
         if (!!options.text && typeof options.text === "string") {
             this.#textEl = this.shadowRoot.getElementById("text");
@@ -82,7 +84,7 @@ export default class ModalDialog extends Modal {
                 this.#cancelEl.text = options.cancel;
             }
             this.#cancelEl.addEventListener("click", () => this.cancel());
-            footerEl.append(this.#cancelEl);
+            this.#footerEl.append(this.#cancelEl);
         }
 
         if (options.submit) {
@@ -94,7 +96,7 @@ export default class ModalDialog extends Modal {
                 this.#submitEl.text = options.submit;
             }
             this.#submitEl.addEventListener("click", () => this.submit());
-            footerEl.append(this.#submitEl);
+            this.#footerEl.append(this.#submitEl);
         }
     }
 

@@ -5,10 +5,14 @@ import STYLE from "./I18nTooltip.js.css" assert {type: "css"};
 
 export default class I18nTooltip extends I18nMixin(CustomElement) {
 
+    #targetEl;
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
+        /* --- */
+        this.#targetEl = this.shadowRoot.getElementById("target");
     }
 
     set i18nTooltip(val) {
@@ -30,8 +34,7 @@ export default class I18nTooltip extends I18nMixin(CustomElement) {
     applyI18n(key, value) {
         switch (key) {
             case "i18n-tooltip": {
-                const el = this.shadowRoot.getElementById("target");
-                el.title = value;
+                this.#targetEl.title = value;
             } break;
         }
     }

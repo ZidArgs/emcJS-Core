@@ -9,19 +9,21 @@ import STYLE from "./FilteredList.js.css" assert {type: "css"};
 
 export default class FilteredList extends CustomElement {
 
+    #headerEl;
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const header = this.shadowRoot.getElementById("header");
+        this.#headerEl = this.shadowRoot.getElementById("header");
         this.shadowRoot.getElementById("container").addEventListener("slotchange", () => {
             // TODO only check new elements
             // TODO reset removed elements
             // header.search
         });
         /* header */
-        header.addEventListener("search", (event) => {
+        this.#headerEl.addEventListener("search", (event) => {
             const all = this.querySelectorAll(":host > :not(emc-collapsepanel), emc-collapsepanel > :not(emc-collapsepanel)");
             const panels = this.querySelectorAll("emc-collapsepanel");
             if (event.value) {

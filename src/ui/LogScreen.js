@@ -4,11 +4,14 @@ import STYLE from "./LogScreen.js.css" assert {type: "css"};
 
 export default class LogScreen extends CustomElement {
 
+    #titleEl;
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
+        this.#titleEl = this.shadowRoot.getElementById("title");
     }
 
     set title(value) {
@@ -27,8 +30,7 @@ export default class LogScreen extends CustomElement {
         switch (name) {
             case "title":
                 if (oldValue != newValue) {
-                    const title = this.shadowRoot.getElementById("title");
-                    title.innerText = newValue;
+                    this.#titleEl.innerText = newValue;
                 }
                 break;
         }

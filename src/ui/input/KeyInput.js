@@ -13,13 +13,19 @@ const BLACKLIST = [
 ];
 const VALUE_PARSE = /(ctrl\+)?(shift\+)?(alt\+)?(meta\+)?(.+)?/i;
 
+/**
+ * @deprecated
+ */
 export default class KeyInput extends CustomElementDelegating {
+
+    #displayEl;
 
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
+        this.#displayEl = this.shadowRoot.getElementById("display");
         this.addEventListener("keydown", (event) => {
             const {key, ctrlKey, shiftKey, altKey, metaKey} = event;
             if (key !== "Tab") {
@@ -67,8 +73,7 @@ export default class KeyInput extends CustomElementDelegating {
     }
 
     #display(value) {
-        const displayEl = this.shadowRoot.getElementById("display");
-        displayEl.value = value.split("+").map((s) => toStartUppercaseEndLowercase(s)).join(" + ");
+        this.#displayEl.value = value.split("+").map((s) => toStartUppercaseEndLowercase(s)).join(" + ");
     }
 
     set value(val) {

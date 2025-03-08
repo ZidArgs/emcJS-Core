@@ -5,10 +5,14 @@ import STYLE from "./I18nTextbox.js.css" assert {type: "css"};
 
 export default class I18nTextbox extends I18nMixin(CustomElement) {
 
+    #targetEl;
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
+        /* --- */
+        this.#targetEl = this.shadowRoot.getElementById("target");
     }
 
     set i18nContent(val) {
@@ -49,8 +53,7 @@ export default class I18nTextbox extends I18nMixin(CustomElement) {
                 this.innerText = value;
             } break;
             case "i18n-tooltip": {
-                const el = this.shadowRoot.getElementById("target");
-                el.title = value;
+                this.#targetEl.title = value;
             } break;
         }
     }

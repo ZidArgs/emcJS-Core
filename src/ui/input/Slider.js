@@ -2,6 +2,9 @@ import CustomElement from "../element/CustomElement.js";
 import TPL from "./Slider.js.html" assert {type: "html"};
 import STYLE from "./Slider.js.css" assert {type: "css"};
 
+/**
+ * @deprecated
+ */
 export default class Slider extends CustomElement {
 
     constructor() {

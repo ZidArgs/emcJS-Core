@@ -28,6 +28,16 @@ function convertValueList(values = {}) {
 
 export default class SettingsWindow extends Window {
 
+    #windowEl;
+
+    #bodyEl;
+
+    #categoriesEl;
+
+    #submitEl;
+
+    #cancelEl;
+
     #storage = new ObservableDefaultingStorage();
 
     constructor(title = "Settings", options = {}) {
@@ -35,14 +45,14 @@ export default class SettingsWindow extends Window {
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const windowEl = this.shadowRoot.getElementById("window");
-        const bodyEl = this.shadowRoot.getElementById("body");
-        bodyEl.innerHTML = "";
-        const categoriesEl = els.getElementById("categories");
-        bodyEl.append(categoriesEl);
-        windowEl.append(els.getElementById("footer"));
+        this.#windowEl = this.shadowRoot.getElementById("window");
+        this.#bodyEl = this.shadowRoot.getElementById("body");
+        this.#bodyEl.innerHTML = "";
+        this.#categoriesEl = els.getElementById("categories");
+        this.#bodyEl.append(this.#categoriesEl);
+        this.#windowEl.append(els.getElementById("footer"));
 
-        categoriesEl.onclick = (event) => {
+        this.#categoriesEl.onclick = (event) => {
             const targetEl = event.target.getAttribute("target");
             if (targetEl) {
                 this.active = targetEl;
@@ -51,27 +61,26 @@ export default class SettingsWindow extends Window {
             }
         };
 
-        const submitEl = this.shadowRoot.getElementById("submit");
+        this.#submitEl = this.shadowRoot.getElementById("submit");
         if (!!options.submit && typeof options.submit === "string") {
-            submitEl.innerHTML = options.submit;
-            submitEl.setAttribute("title", options.submit);
+            this.#submitEl.innerHTML = options.submit;
+            this.#submitEl.setAttribute("title", options.submit);
         }
-        submitEl.addEventListener("click", () => this.submit());
+        this.#submitEl.addEventListener("click", () => this.submit());
 
-        const cancelEl = this.shadowRoot.getElementById("cancel");
+        this.#cancelEl = this.shadowRoot.getElementById("cancel");
         if (!!options.cancel && typeof options.cancel === "string") {
-            cancelEl.innerHTML = options.cancel;
-            cancelEl.setAttribute("title", options.cancel);
+            this.#cancelEl.innerHTML = options.cancel;
+            this.#cancelEl.setAttribute("title", options.cancel);
         }
-        cancelEl.addEventListener("click", () => this.cancel());
+        this.#cancelEl.addEventListener("click", () => this.cancel());
     }
 
     show(data = {}, category = "") {
-        const categoriesEl = this.shadowRoot.getElementById("categories");
         if (category) {
-            categoriesEl.active = category;
+            this.#categoriesEl.active = category;
         } else {
-            categoriesEl.active = "";
+            this.#categoriesEl.active = "";
         }
         this.#storage.setAll(data);
         super.show();
@@ -95,13 +104,12 @@ export default class SettingsWindow extends Window {
     }
 
     getTab(category) {
-        const categoriesEl = this.shadowRoot.getElementById("categories");
-        const tabEl = categoriesEl.getTab(category);
+        const tabEl = this.#categoriesEl.getTab(category);
         if (tabEl != null) {
             const containerEl = tabEl.querySelector(".container");
             return containerEl;
         } else {
-            const tabEl = categoriesEl.setTab(category, this.constructor.getTabLabel(category));
+            const tabEl = this.#categoriesEl.setTab(category, this.constructor.getTabLabel(category));
             const containerEl = document.createElement("emc-window-settings-tab");
             containerEl.className = "container";
             containerEl.id = `settings_${category}`;

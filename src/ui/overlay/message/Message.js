@@ -9,22 +9,26 @@ const TIME = 0;
 
 export default class Message extends AbstractMessage {
 
+    #closeEl;
+
+    #autocloseEL;
+
     constructor({text, time = TIME} = {}) {
         super({text});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const closeEl = this.shadowRoot.getElementById("close");
-        closeEl.addEventListener("click", (event) => {
+        this.#closeEl = this.shadowRoot.getElementById("close");
+        this.#closeEl.addEventListener("click", (event) => {
             event.stopPropagation();
             this.remove();
         });
         /* --- */
         time = parseInt(time) || TIME;
         if (time > 0) {
-            const autocloseEL = this.shadowRoot.getElementById("autoclose");
-            autocloseEL.style.animation = `autoclose ${time}s linear 1`;
-            autocloseEL.addEventListener("animationend", (event) => {
+            this.#autocloseEL = this.shadowRoot.getElementById("autoclose");
+            this.#autocloseEL.style.animation = `autoclose ${time}s linear 1`;
+            this.#autocloseEL.addEventListener("animationend", (event) => {
                 event.stopPropagation();
                 this.remove();
             });

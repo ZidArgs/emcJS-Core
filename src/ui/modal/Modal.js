@@ -31,6 +31,10 @@ export default class Modal extends CustomElement {
 
     #footerEl;
 
+    #focusTopEl;
+
+    #focusBottomEl;
+
     #assocName = "";
 
     constructor(caption) {
@@ -52,15 +56,14 @@ export default class Modal extends CustomElement {
                 event.stopPropagation();
             }
         });
-        const closeEl = this.shadowRoot.getElementById("close");
-        closeEl.addEventListener("click", () => this.close());
+        this.#closeEl.addEventListener("click", () => this.close());
         /* --- */
-        const focusTopEl = this.shadowRoot.getElementById("focus_catcher_top");
-        focusTopEl.addEventListener("focus", () => {
+        this.#focusTopEl = this.shadowRoot.getElementById("focus_catcher_top");
+        this.#focusTopEl.addEventListener("focus", () => {
             this.focusLast();
         });
-        const focusBottomEl = this.shadowRoot.getElementById("focus_catcher_bottom");
-        focusBottomEl.addEventListener("focus", () => {
+        this.#focusBottomEl = this.shadowRoot.getElementById("focus_catcher_bottom");
+        this.#focusBottomEl.addEventListener("focus", () => {
             this.focusFirst();
         });
     }

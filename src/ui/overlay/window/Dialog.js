@@ -6,49 +6,59 @@ import STYLE from "./Dialog.js.css" assert {type: "css"};
 
 export default class Dialog extends Window {
 
+    #windowEl;
+
+    #textEl;
+
+    #footerEl;
+
+    #submitEl;
+
+    #cancelEl;
+
     constructor(options = {}) {
         super(options.title, options.close);
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const windowEl = this.shadowRoot.getElementById("window");
-        const footerEl = els.getElementById("footer");
-        windowEl.append(footerEl);
+        this.#windowEl = this.shadowRoot.getElementById("window");
+        this.#footerEl = els.getElementById("footer");
+        this.#windowEl.append(this.#footerEl);
 
         if (!!options.text && typeof options.text === "string") {
-            const textEl = els.getElementById("text");
-            this.shadowRoot.getElementById("body").insertBefore(textEl, this.shadowRoot.getElementById("body").children[0]);
+            this.#textEl = els.getElementById("text");
+            this.shadowRoot.getElementById("body").insertBefore(this.#textEl, this.shadowRoot.getElementById("body").children[0]);
             if (options.text instanceof HTMLElement) {
-                textEl.append(options.text);
+                this.#textEl.append(options.text);
             } else if (typeof options.text === "string") {
-                textEl.innerHTML = options.text;
+                this.#textEl.innerHTML = options.text;
             }
         }
 
-        const submitEl = this.shadowRoot.getElementById("submit");
+        this.#submitEl = this.shadowRoot.getElementById("submit");
         if (options.submit) {
             if (options.submit instanceof HTMLElement) {
-                submitEl.innerHTML = "";
-                submitEl.append(options.submit);
+                this.#submitEl.innerHTML = "";
+                this.#submitEl.append(options.submit);
             } else if (typeof options.submit === "string") {
-                submitEl.innerHTML = options.submit;
+                this.#submitEl.innerHTML = options.submit;
             }
-            submitEl.addEventListener("click", () => this.submit());
+            this.#submitEl.addEventListener("click", () => this.submit());
         } else {
-            submitEl.remove();
+            this.#submitEl.remove();
         }
 
-        const cancelEl = this.shadowRoot.getElementById("cancel");
+        this.#cancelEl = this.shadowRoot.getElementById("cancel");
         if (options.cancel) {
             if (options.cancel instanceof HTMLElement) {
-                cancelEl.innerHTML = "";
-                cancelEl.append(options.cancel);
+                this.#cancelEl.innerHTML = "";
+                this.#cancelEl.append(options.cancel);
             } else if (typeof options.cancel === "string") {
-                cancelEl.innerHTML = options.cancel;
+                this.#cancelEl.innerHTML = options.cancel;
             }
-            cancelEl.addEventListener("click", () => this.cancel());
+            this.#cancelEl.addEventListener("click", () => this.cancel());
         } else {
-            cancelEl.remove();
+            this.#cancelEl.remove();
         }
     }
 

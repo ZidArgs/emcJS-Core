@@ -14,6 +14,9 @@ import "./Option.js";
 import TPL from "./ListSelect.js.html" assert {type: "html"};
 import STYLE from "./ListSelect.js.css" assert {type: "css"};
 
+/**
+ * @deprecated
+ */
 export default class ListSelect extends CustomElementDelegating {
 
     #slotEventManager;

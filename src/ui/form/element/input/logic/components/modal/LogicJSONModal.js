@@ -13,6 +13,10 @@ import ModalDialog from "../../../../../../modal/ModalDialog.js";
 // TODO use ModalDialog instead
 export default class LogicJSONModal extends Modal {
 
+    #contentEl;
+
+    #footerEl;
+
     #submitEl;
 
     #cancelEl;
@@ -24,17 +28,17 @@ export default class LogicJSONModal extends Modal {
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const footerEl = this.shadowRoot.getElementById("footer");
-        const contentEl = this.shadowRoot.getElementById("content");
-        contentEl.innerHTML = "";
+        this.#contentEl = this.shadowRoot.getElementById("content");
+        this.#footerEl = this.shadowRoot.getElementById("footer");
+        this.#contentEl.innerHTML = "";
         this.#jsonEl = els.getElementById("json");
-        contentEl.append(this.#jsonEl);
+        this.#contentEl.append(this.#jsonEl);
         /* --- */
         this.#cancelEl = els.getElementById("cancel");
         this.#cancelEl.addEventListener("click", () => {
             this.close();
         });
-        footerEl.append(this.#cancelEl);
+        this.#footerEl.append(this.#cancelEl);
         /* --- */
         this.#submitEl = els.getElementById("submit");
         this.#submitEl.addEventListener("click", () => {
@@ -49,7 +53,7 @@ export default class LogicJSONModal extends Modal {
                 }
             }
         });
-        footerEl.append(this.#submitEl);
+        this.#footerEl.append(this.#submitEl);
         /* --- */
         this.#jsonEl.addEventListener("input", () => {
             this.#validateInput();

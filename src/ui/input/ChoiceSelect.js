@@ -5,6 +5,9 @@ import "./Option.js";
 import TPL from "./ChoiceSelect.js.html" assert {type: "html"};
 import STYLE from "./ChoiceSelect.js.css" assert {type: "css"};
 
+/**
+ * @deprecated
+ */
 export default class ChoiceSelect extends ChildlistMutationObserverMixin(CustomElement) {
 
     #eventManager = new EventMultiTargetManager();

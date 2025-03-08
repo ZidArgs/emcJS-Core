@@ -49,10 +49,15 @@ const DEFAULT_LOGIC_OPERATORS = [
     "add", "sub", "mul", "div", "mod", "pow"
 ];
 
-// TODO use ModalDialog instead
 export default class LogicElementModal extends Modal {
 
+    #contentEl;
+
+    #footerEl;
+
     #containerEl;
+
+    #cancelEl;
 
     #operatorGroups = new Set();
 
@@ -61,17 +66,17 @@ export default class LogicElementModal extends Modal {
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const footerEl = this.shadowRoot.getElementById("footer");
-        const contentEl = this.shadowRoot.getElementById("content");
-        contentEl.innerHTML = "";
+        this.#contentEl = this.shadowRoot.getElementById("content");
+        this.#footerEl = this.shadowRoot.getElementById("footer");
+        this.#contentEl.innerHTML = "";
         this.#containerEl = els.getElementById("elements");
-        contentEl.append(this.#containerEl);
+        this.#contentEl.append(this.#containerEl);
         /* --- */
-        const cancelEl = els.getElementById("cancel");
-        cancelEl.addEventListener("click", () => {
+        this.#cancelEl = els.getElementById("cancel");
+        this.#cancelEl.addEventListener("click", () => {
             this.close();
         });
-        footerEl.append(cancelEl);
+        this.#footerEl.append(this.#cancelEl);
         /* --- */
         this.#containerEl.addEventListener("click", (event) => {
             const targetEl = event.target;

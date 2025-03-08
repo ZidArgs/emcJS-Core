@@ -35,6 +35,12 @@ export default class NavBar extends CustomElement {
 
     #containerEl;
 
+    #contentEl;
+
+    #coverEl;
+
+    #hamburgerEl;
+
     #navigationHandler = null;
 
     constructor() {
@@ -45,25 +51,25 @@ export default class NavBar extends CustomElement {
 
         // layout
         this.#containerEl = this.shadowRoot.getElementById("container");
-        const coverEl = this.shadowRoot.getElementById("cover");
-        const contentEl = this.shadowRoot.getElementById("content");
-        const hamburgerEl = this.shadowRoot.getElementById("hamburger-button");
-        hamburgerEl.addEventListener("click", () => {
+        this.#contentEl = this.shadowRoot.getElementById("content");
+        this.#hamburgerEl = this.shadowRoot.getElementById("hamburger-button");
+        this.#coverEl = this.shadowRoot.getElementById("cover");
+        this.#hamburgerEl.addEventListener("click", () => {
             if (this.#containerEl.classList.contains("open")) {
                 this.#containerEl.classList.remove("open");
                 this.#containerEl.classList.remove("cover");
-                closeAll(contentEl);
-                hamburgerEl.open = false;
+                closeAll(this.#contentEl);
+                this.#hamburgerEl.open = false;
             } else {
                 this.#containerEl.classList.add("open");
-                hamburgerEl.open = true;
+                this.#hamburgerEl.open = true;
             }
         });
-        coverEl.addEventListener("click", () => {
+        this.#coverEl.addEventListener("click", () => {
             this.#containerEl.classList.remove("open");
             this.#containerEl.classList.remove("cover");
-            closeAll(contentEl);
-            hamburgerEl.open = false;
+            closeAll(this.#contentEl);
+            this.#hamburgerEl.open = false;
         });
     }
 
@@ -88,10 +94,9 @@ export default class NavBar extends CustomElement {
     }
 
     loadNavigation(config) {
-        const contentEl = this.shadowRoot.getElementById("content");
-        contentEl.innerHTML = "";
+        this.#contentEl.innerHTML = "";
         for (const item of config) {
-            this.#generateElement(contentEl, item);
+            this.#generateElement(this.#contentEl, item);
         }
     }
 
@@ -104,7 +109,6 @@ export default class NavBar extends CustomElement {
     }
 
     #generateElement(contentEl, config) {
-        const containerEl = this.shadowRoot.getElementById("container");
         const IS_MAIN_NAV = contentEl.id == "content";
         if (config["visible"] == null || !!config["visible"]) {
             if (config["mixin"]) {
@@ -128,10 +132,9 @@ export default class NavBar extends CustomElement {
                 // action
                 if (isFunction(config.handler)) {
                     btnEl.addEventListener("click", (event) => {
-                        const hamburger = this.shadowRoot.getElementById("hamburger-button");
-                        hamburger.open = false;
-                        containerEl.classList.remove("cover");
-                        containerEl.classList.remove("open");
+                        this.#hamburgerEl.open = false;
+                        this.#containerEl.classList.remove("cover");
+                        this.#containerEl.classList.remove("open");
                         closeAll(contentEl);
                         config.handler();
                         event.stopPropagation();
@@ -141,10 +144,9 @@ export default class NavBar extends CustomElement {
                 // href
                 if (isHttpUrl(config.href)) {
                     btnEl.addEventListener("click", (event) => {
-                        const hamburger = this.shadowRoot.getElementById("hamburger-button");
-                        hamburger.open = false;
-                        containerEl.classList.remove("cover");
-                        containerEl.classList.remove("open");
+                        this.#hamburgerEl.open = false;
+                        this.#containerEl.classList.remove("cover");
+                        this.#containerEl.classList.remove("open");
                         closeAll(contentEl);
                         const target = event.ctrlKey ? "_blank" : config.target;
                         if (target) {
@@ -167,7 +169,7 @@ export default class NavBar extends CustomElement {
                             const pBtnEl = pListEl.children[0];
                             pBtnEl.expand = "closed";
                             pListEl.classList.remove("open");
-                            containerEl.classList.remove("cover");
+                            this.#containerEl.classList.remove("cover");
                             event.preventDefault();
                         }
                     });
@@ -177,7 +179,7 @@ export default class NavBar extends CustomElement {
                             const pBtnEl = pListEl.children[0];
                             pBtnEl.expand = "open";
                             pListEl.classList.add("open");
-                            containerEl.classList.add("cover");
+                            this.#containerEl.classList.add("cover");
                             event.preventDefault();
                         }
                     });
@@ -196,13 +198,13 @@ export default class NavBar extends CustomElement {
                             btnEl.expand = "closed";
                             if (IS_MAIN_NAV) {
                                 listEl.classList.remove("open");
-                                containerEl.classList.remove("cover");
+                                this.#containerEl.classList.remove("cover");
                             }
                         } else {
                             if (IS_MAIN_NAV) {
                                 closeAll(contentEl);
                                 listEl.classList.add("open");
-                                containerEl.classList.add("cover");
+                                this.#containerEl.classList.add("cover");
                             }
                             btnEl.expand = "open";
                         }

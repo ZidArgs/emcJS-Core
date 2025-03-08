@@ -18,6 +18,8 @@ export default class PasswordInput extends AbstractFormElement {
 
     #buttonEl;
 
+    #tooltipEl;
+
     constructor() {
         super();
         this.shadowRoot.getElementById("field").append(TPL.generate());
@@ -29,10 +31,10 @@ export default class PasswordInput extends AbstractFormElement {
         });
         /* --- */
         this.#buttonEl = this.shadowRoot.getElementById("button");
-        const tooltipEl = this.shadowRoot.getElementById("tooltip");
+        this.#tooltipEl = this.shadowRoot.getElementById("tooltip");
         this.#buttonEl.addEventListener("change", (event) => {
             const showValue = this.#buttonEl.checked;
-            tooltipEl.i18nTooltip = showValue ? "Input shown" : "Input hidden";
+            this.#tooltipEl.i18nTooltip = showValue ? "Input shown" : "Input hidden";
             this.#inputEl.type = showValue ? "text" : "password";
             event.stopPropagation();
         });

@@ -19,6 +19,9 @@ function getPrevElement(all, current) {
     }
 }
 
+/**
+ * @deprecated
+ */
 export default class SwitchButton extends CustomElement {
 
     constructor() {

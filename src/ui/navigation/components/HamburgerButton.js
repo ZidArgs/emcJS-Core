@@ -5,11 +5,14 @@ import STYLE from "./HamburgerButton.js.css" assert {type: "css"};
 
 export default class HamburgerButton extends CustomElement {
 
+    #tooltipEl;
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
+        this.#tooltipEl = this.shadowRoot.getElementById("tooltip");
     }
 
     get open() {
@@ -34,10 +37,9 @@ export default class HamburgerButton extends CustomElement {
 
     attributeChangedCallback(name, oldValue, newValue) {
         if (oldValue != newValue) {
-            const tooltip = this.shadowRoot.getElementById("tooltip");
             switch (name) {
                 case "tooltip":
-                    tooltip.i18nTooltip = newValue;
+                    this.#tooltipEl.i18nTooltip = newValue;
                     break;
             }
         }

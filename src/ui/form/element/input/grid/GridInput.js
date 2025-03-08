@@ -29,6 +29,8 @@ export default class GridInput extends AbstractFormElement {
         return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
     }
 
+    #labelEl;
+
     #searchEl;
 
     #gridEl;
@@ -108,8 +110,8 @@ export default class GridInput extends AbstractFormElement {
             this.#dataManager.updateOptions(options);
         }, true);
         /* --- */
-        const labelEl = this.shadowRoot.getElementById("label");
-        labelEl.addEventListener("click", (event) => {
+        this.#labelEl = this.shadowRoot.getElementById("label");
+        this.#labelEl.addEventListener("click", (event) => {
             event.preventDefault();
             this.#searchEl.focus();
         });

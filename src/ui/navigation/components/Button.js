@@ -6,11 +6,17 @@ import STYLE from "./Button.js.css" assert {type: "css"};
 
 export default class Button extends CustomElement {
 
+    #tooltipEl;
+
+    #labelEl;
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
+        this.#tooltipEl = this.shadowRoot.getElementById("tooltip");
+        this.#labelEl = this.shadowRoot.getElementById("label");
     }
 
     get expand() {
@@ -47,14 +53,12 @@ export default class Button extends CustomElement {
 
     attributeChangedCallback(name, oldValue, newValue) {
         if (oldValue != newValue) {
-            const tooltip = this.shadowRoot.getElementById("tooltip");
-            const label = this.shadowRoot.getElementById("label");
             switch (name) {
                 case "content":
-                    label.i18nValue = newValue;
+                    this.#labelEl.i18nValue = newValue;
                     break;
                 case "tooltip":
-                    tooltip.i18nTooltip = newValue;
+                    this.#tooltipEl.i18nTooltip = newValue;
                     break;
             }
         }

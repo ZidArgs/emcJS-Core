@@ -5,26 +5,34 @@ import STYLE from "./ModalDialogRelationSelect.js.css" assert {type: "css"};
 
 export default class ModalDialogRelationSelect extends ModalDialog {
 
+    #contentEl;
+
+    #footerEl;
+
     #inputEl;
+
+    #submitEl;
+
+    #cancelEl;
 
     constructor() {
         super({title: "Select entity"});
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const footerEl = this.shadowRoot.getElementById("footer");
-        const contentEl = this.shadowRoot.getElementById("content");
+        this.#contentEl = this.shadowRoot.getElementById("content");
+        this.#footerEl = this.shadowRoot.getElementById("footer");
 
         this.#inputEl = els.getElementById("input");
-        contentEl.append(this.#inputEl);
+        this.#contentEl.append(this.#inputEl);
 
-        const cancelEl = els.getElementById("cancel");
-        cancelEl.addEventListener("click", () => this.cancel());
-        footerEl.append(cancelEl);
+        this.#cancelEl = els.getElementById("cancel");
+        this.#cancelEl.addEventListener("click", () => this.cancel());
+        this.#footerEl.append(this.#cancelEl);
 
-        const submitEl = els.getElementById("submit");
-        submitEl.addEventListener("click", () => this.submit());
-        footerEl.append(submitEl);
+        this.#submitEl = els.getElementById("submit");
+        this.#submitEl.addEventListener("click", () => this.submit());
+        this.#footerEl.append(this.#submitEl);
     }
 
     async show(value) {

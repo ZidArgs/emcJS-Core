@@ -18,6 +18,14 @@ const visibleModals = new UniqueEntriesStack();
 
 export default class Window extends CustomElement {
 
+    #titleEl;
+
+    #closeEl;
+
+    #focusTopEl;
+
+    #focusBottomEl;
+
     constructor(title = "", close = "close") {
         super();
         this.shadowRoot.append(TPL.generate());
@@ -29,20 +37,20 @@ export default class Window extends CustomElement {
             }
             event.stopPropagation();
         });
-        const titleEl = this.shadowRoot.getElementById("title");
-        titleEl.append(I18nLabel.getLabel(title));
-        const closeEl = this.shadowRoot.getElementById("close");
+        this.#titleEl = this.shadowRoot.getElementById("title");
+        this.#titleEl.append(I18nLabel.getLabel(title));
+        this.#closeEl = this.shadowRoot.getElementById("close");
         if (!!close && typeof close === "string") {
-            closeEl.setAttribute("title", close);
+            this.#closeEl.setAttribute("title", close);
         }
-        closeEl.addEventListener("click", () => this.close());
+        this.#closeEl.addEventListener("click", () => this.close());
         /* --- */
-        const focusTopEl = this.shadowRoot.getElementById("focus_catcher_top");
-        focusTopEl.addEventListener("focus", () => {
+        this.#focusTopEl = this.shadowRoot.getElementById("focus_catcher_top");
+        this.#focusTopEl.addEventListener("focus", () => {
             this.focusLast();
         });
-        const focusBottomEl = this.shadowRoot.getElementById("focus_catcher_bottom");
-        focusBottomEl.addEventListener("focus", () => {
+        this.#focusBottomEl = this.shadowRoot.getElementById("focus_catcher_bottom");
+        this.#focusBottomEl.addEventListener("focus", () => {
             this.focusFirst();
         });
     }
@@ -98,8 +106,7 @@ export default class Window extends CustomElement {
             if (windowEls.length) {
                 windowEls[0].focus();
             } else {
-                const closeEl = this.shadowRoot.getElementById("close");
-                closeEl.focus();
+                this.#closeEl.focus();
             }
         }
     }
@@ -113,8 +120,7 @@ export default class Window extends CustomElement {
             if (bodyEls.length) {
                 bodyEls[0].focus();
             } else {
-                const closeEl = this.shadowRoot.getElementById("close");
-                closeEl.focus();
+                this.#closeEl.focus();
             }
         }
     }
@@ -128,8 +134,7 @@ export default class Window extends CustomElement {
             if (bodyEls.length) {
                 bodyEls[bodyEls.length - 1].focus();
             } else {
-                const closeEl = this.shadowRoot.getElementById("close");
-                closeEl.focus();
+                this.#closeEl.focus();
             }
         }
     }

@@ -17,6 +17,9 @@ import "../symbols/ChevronDownSymbol.js";
 import TPL from "./TokenSelect.js.html" assert {type: "html"};
 import STYLE from "./TokenSelect.js.css" assert {type: "css"};
 
+/**
+ * @deprecated
+ */
 class TokenElementManager extends ElementManager {
 
     composer(key, params) {

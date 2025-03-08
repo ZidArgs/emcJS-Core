@@ -10,13 +10,15 @@ const ALLOWED_SLOTS = [
 
 export default class AbstractMessage extends CustomElement {
 
+    #textEl;
+
     constructor({text = "[text missing]"} = {}) {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const textEl = this.shadowRoot.getElementById("text");
-        textEl.innerHTML = text;
+        this.#textEl = this.shadowRoot.getElementById("text");
+        this.#textEl.innerHTML = text;
         /* --- */
         MessageLayer.append(this);
     }

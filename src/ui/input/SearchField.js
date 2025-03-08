@@ -5,6 +5,9 @@ import "../i18n/I18nTooltip.js";
 import TPL from "./SearchField.js.html" assert {type: "html"};
 import STYLE from "./SearchField.js.css" assert {type: "css"};
 
+/**
+ * @deprecated
+ */
 export default class SearchField extends CustomElementDelegating {
 
     constructor() {

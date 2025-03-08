@@ -13,7 +13,27 @@ import STYLE from "./ImageSelectModal.js.css" assert {type: "css"};
 
 export default class ImageSelectModal extends Modal {
 
+    #contentEl;
+
+    #footerEl;
+
+    #submitEl;
+
+    #cancelEl;
+
     #slotEl;
+
+    #searchEl;
+
+    #viewControlEl;
+
+    #viewSizeSmallEl;
+
+    #viewSizeNormalEl;
+
+    #viewSizeBigEl;
+
+    #viewSizeGiganticEl;
 
     #optionNodeList = new ElementListCache();
 
@@ -24,15 +44,15 @@ export default class ImageSelectModal extends Modal {
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const footerEl = this.shadowRoot.getElementById("footer");
-        const contentEl = this.shadowRoot.getElementById("content");
+        this.#contentEl = this.shadowRoot.getElementById("content");
+        this.#footerEl = this.shadowRoot.getElementById("footer");
 
-        const searchEl = els.getElementById("search");
-        contentEl.before(searchEl);
-        searchEl.addEventListener("change", () => {
+        this.#searchEl = els.getElementById("search");
+        this.#contentEl.before(this.#searchEl);
+        this.#searchEl.addEventListener("change", () => {
             const all = this.children;
-            if (searchEl.value) {
-                const regEx = new CharacterSearch(searchEl.value);
+            if (this.#searchEl.value) {
+                const regEx = new CharacterSearch(this.#searchEl.value);
                 for (const el of all) {
                     const testText = el.comparatorText ?? el.innerText;
                     if (regEx.test(testText.trim())) {
@@ -48,37 +68,37 @@ export default class ImageSelectModal extends Modal {
             }
         });
 
-        const viewControlEl = els.getElementById("view-control");
-        const viewSizeSmallEl = els.getElementById("view-size-small");
-        const viewSizeNormalEl = els.getElementById("view-size-normal");
-        const viewSizeBigEl = els.getElementById("view-size-big");
-        const viewSizeGiganticEl = els.getElementById("view-size-gigantic");
+        this.#viewControlEl = els.getElementById("view-control");
+        this.#viewSizeSmallEl = els.getElementById("view-size-small");
+        this.#viewSizeNormalEl = els.getElementById("view-size-normal");
+        this.#viewSizeBigEl = els.getElementById("view-size-big");
+        this.#viewSizeGiganticEl = els.getElementById("view-size-gigantic");
 
-        contentEl.before(viewControlEl);
-        viewSizeSmallEl.addEventListener("click", () => {
-            contentEl.style.setProperty("--icon-preview-size", "50px");
-            viewControlEl.className = "size-small";
+        this.#contentEl.before(this.#viewControlEl);
+        this.#viewSizeSmallEl.addEventListener("click", () => {
+            this.#contentEl.style.setProperty("--icon-preview-size", "50px");
+            this.#viewControlEl.className = "size-small";
         });
-        viewSizeNormalEl.addEventListener("click", () => {
-            contentEl.style.setProperty("--icon-preview-size", "100px");
-            viewControlEl.className = "size-normal";
+        this.#viewSizeNormalEl.addEventListener("click", () => {
+            this.#contentEl.style.setProperty("--icon-preview-size", "100px");
+            this.#viewControlEl.className = "size-normal";
         });
-        viewSizeBigEl.addEventListener("click", () => {
-            contentEl.style.setProperty("--icon-preview-size", "200px");
-            viewControlEl.className = "size-big";
+        this.#viewSizeBigEl.addEventListener("click", () => {
+            this.#contentEl.style.setProperty("--icon-preview-size", "200px");
+            this.#viewControlEl.className = "size-big";
         });
-        viewSizeGiganticEl.addEventListener("click", () => {
-            contentEl.style.setProperty("--icon-preview-size", "400px");
-            viewControlEl.className = "size-gigantic";
+        this.#viewSizeGiganticEl.addEventListener("click", () => {
+            this.#contentEl.style.setProperty("--icon-preview-size", "400px");
+            this.#viewControlEl.className = "size-gigantic";
         });
 
-        const cancelEl = els.getElementById("cancel");
-        cancelEl.addEventListener("click", () => this.cancel());
-        footerEl.append(cancelEl);
+        this.#cancelEl = els.getElementById("cancel");
+        this.#cancelEl.addEventListener("click", () => this.cancel());
+        this.#footerEl.append(this.#cancelEl);
 
-        const submitEl = els.getElementById("submit");
-        submitEl.addEventListener("click", () => this.submit());
-        footerEl.append(submitEl);
+        this.#submitEl = els.getElementById("submit");
+        this.#submitEl.addEventListener("click", () => this.submit());
+        this.#footerEl.append(this.#submitEl);
         /* --- */
         this.#optionSelectEventManager.set("click", (event) => {
             this.value = event.currentTarget.getAttribute("value");

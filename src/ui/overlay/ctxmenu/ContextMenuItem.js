@@ -4,11 +4,14 @@ import STYLE from "./ContextMenuItem.js.css" assert {type: "css"};
 
 export default class ContextMenuItem extends CustomElement {
 
+    #infoEl;
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
+        this.#infoEl = this.shadowRoot.getElementById("info");
     }
 
     set info(val) {
@@ -31,11 +34,10 @@ export default class ContextMenuItem extends CustomElement {
         if (oldValue != newValue) {
             switch (name) {
                 case "info": {
-                    const infoEl = this.shadowRoot.getElementById("info");
                     if (newValue != null) {
-                        infoEl.innerHTML = newValue;
+                        this.#infoEl.innerHTML = newValue;
                     } else {
-                        infoEl.innerHTML = "";
+                        this.#infoEl.innerHTML = "";
                     }
                 } break;
             }

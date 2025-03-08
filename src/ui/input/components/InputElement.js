@@ -5,6 +5,7 @@ import I18nMixin from "../../mixin/I18nMixin.js";
  * ```html
  * <input is="emc-input" type="text" i18nValue="translation.placeholder.key">
  * ```
+ * @deprecated
  */
 export default class InputElement extends I18nMixin(HTMLInputElement) {
 

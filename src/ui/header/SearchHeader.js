@@ -10,6 +10,8 @@ export default class SearchHeader extends CustomElementDelegating {
 
     #inputEl;
 
+    #resetEl;
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
@@ -19,8 +21,8 @@ export default class SearchHeader extends CustomElementDelegating {
         this.#inputEl.addEventListener("input", () => {
             this.#onInput();
         });
-        const resetEl = this.shadowRoot.getElementById("reset");
-        resetEl.addEventListener("click", () => {
+        this.#resetEl = this.shadowRoot.getElementById("reset");
+        this.#resetEl.addEventListener("click", () => {
             this.value = "";
         });
     }

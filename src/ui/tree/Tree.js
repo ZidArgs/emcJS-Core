@@ -23,6 +23,8 @@ import STYLE from "./Tree.js.css" assert {type: "css"};
 // TODO for sort add ascending/descending option and folder handling
 export default class Tree extends CustomElement {
 
+    #treeEl;
+
     #elementManager;
 
     #i18nEventManager = new EventTargetManager(i18n);
@@ -36,8 +38,8 @@ export default class Tree extends CustomElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const treeEl = this.shadowRoot.getElementById("tree");
-        treeEl.addEventListener("select", (event) => {
+        this.#treeEl = this.shadowRoot.getElementById("tree");
+        this.#treeEl.addEventListener("select", (event) => {
             if (!event.data.isSelected) {
                 const {element, path, refPath} = event.data;
                 this.#currentSelectionPath = path;
@@ -56,13 +58,13 @@ export default class Tree extends CustomElement {
                 }
             }
         });
-        treeEl.addEventListener("blur", () => {
+        this.#treeEl.addEventListener("blur", () => {
             const keyboardMarked = this.querySelector(".keyboard-marked");
             if (keyboardMarked != null) {
                 keyboardMarked.classList.remove("keyboard-marked");
             }
         });
-        treeEl.addEventListener("focus", () => {
+        this.#treeEl.addEventListener("focus", () => {
             const currentEl = this.querySelector(".keyboard-marked") ?? this.querySelector(".marked");
             if (currentEl == null) {
                 const element = this.#getElementByPath([0]);

@@ -13,6 +13,9 @@ import "../symbols/ChevronDownSymbol.js";
 import TPL from "./SearchSelect.js.html" assert {type: "html"};
 import STYLE from "./SearchSelect.js.css" assert {type: "css"};
 
+/**
+ * @deprecated
+ */
 export default class SearchSelect extends CustomElementDelegating {
 
     #slotEventManager;
