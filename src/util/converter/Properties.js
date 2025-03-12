@@ -9,7 +9,7 @@ const ESCAPE_PATTERN_0 = /\\ /g;
 const ESCAPE_PATTERN_1 = /\\=/g;
 const ESCAPE_PATTERN_2 = /\\:/g;
 const VALUE_PATTERN_0 = /(.*?)(?:=|:)(.*)/;
-const VALUE_PATTERN_1 = /(.*?)(?: )(.*)/;
+const VALUE_PATTERN_1 = /(.*?)(?: |\t|\f)(.*)/;
 const MULTILINE_PATTERN = /(?:^\\|[^\\](?:\\\\)*\\)$/;
 
 function processLine(line) {
@@ -17,7 +17,11 @@ function processLine(line) {
         .replace(ESCAPE_PATTERN_0, "\\u0020")
         .replace(ESCAPE_PATTERN_1, "\\u003D")
         .replace(ESCAPE_PATTERN_2, "\\u003A");
-    const [, key = "", value = ""] = escaped.match(VALUE_PATTERN_0) ?? escaped.match(VALUE_PATTERN_1) ?? [];
+    const result = escaped.match(VALUE_PATTERN_0) ?? escaped.match(VALUE_PATTERN_1) ?? [];
+    if (result == null) {
+        return null;
+    }
+    const [, key = "", value = ""] = result;
     return [unescapeUnicode(key.trim()), unescapeUnicode(value.trim())];
 }
 
@@ -31,8 +35,9 @@ class Properties {
             if (!line.length || COMMENT.test(line)) {
                 continue;
             }
-            const [key, value] = processLine(line);
-            if (key) {
+            const lineRes = processLine(line);
+            if (lineRes != null) {
+                const [key, value] = lineRes;
                 if (typeof output[key] === "string") {
                     throw new SyntaxError(`duplicate key in PROPERTIES at line ${i + 1}:\n${line}`);
                 }

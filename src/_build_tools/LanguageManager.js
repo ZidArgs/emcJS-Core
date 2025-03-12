@@ -6,7 +6,7 @@ import through from "through";
 const LNBR_SEQ = /(?:\r\n|\n|\r)/g;
 const EXTRACTORS = [
     {
-        regEx: /@([^:]+):\s*(.+)\s*/,
+        regEx: /#\s*@([^\s]+)\s*(.+)\s*/,
         func: (result, matches) => {
             result[matches[1]] = matches[2];
         }
@@ -46,6 +46,7 @@ function analyzeFile(ref, file) {
     return result;
 }
 
+// TODO allow any kind of language file
 class LanguageManager {
 
     register(/* src = "/", dest = "/", sourcemaps = false */) {

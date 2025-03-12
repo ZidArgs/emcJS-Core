@@ -3,8 +3,8 @@ import {
 } from "../helper/string/Unicode.js";
 
 const LNBR_SEQ = /(?:\r\n|\n|\r)/g;
+const META_SEQUENCE = /#\s*@([^\s]+)\s*(.+)\s*/;
 const COMMENT = /^(?:#).*$/;
-const META_SEQUENCE = /^@(.*?): (.*)/;
 
 const ESCAPE_PATTERN_0 = /\\=/g;
 const ESCAPE_PATTERN_1 = /\\\\/g;
@@ -22,7 +22,11 @@ function processLine(line) {
         .replace(ESCAPE_PATTERN_1, "\\u005C")
         .replace(ESCAPE_PATTERN_2, "\n")
         .replace(ESCAPE_PATTERN_3, "\r");
-    const [, key = "", value = ""] = escaped.match(VALUE_PATTERN) ?? [];
+    const result = escaped.match(VALUE_PATTERN) ?? [];
+    if (result == null) {
+        return null;
+    }
+    const [, key = "", value = ""] = result;
     return [unescapeUnicode(key.trim()), unescapeUnicode(value.trim())];
 }
 
@@ -44,16 +48,24 @@ class Lang {
             if (!line.length) {
                 continue;
             }
+            const metaRes = line.match(META_SEQUENCE);
+            if (metaRes != null) {
+                const [, key, value] = metaRes;
+                output[`@${key}`] = value;
+                continue;
+            }
             if (COMMENT.test(line)) {
                 continue;
             }
-            const metaRes = line.match(META_SEQUENCE);
-            if (metaRes != null) {
-                output[`@${metaRes[1]}`] = metaRes[2];
-                continue;
-            }
-            const [key, value] = processLine(line);
-            if (key && !key.startsWith("@")) {
+            const lineRes = processLine(line);
+            if (lineRes != null) {
+                const [key, value] = lineRes;
+                if (!key) {
+                    throw new SyntaxError(`key can not be empty in LANG at line ${i + 1}:\n${line}`);
+                }
+                if (key.startsWith("@")) {
+                    throw new SyntaxError(`key can not start with @ in LANG at line ${i + 1}:\n${line}`);
+                }
                 if (typeof output[key] === "string") {
                     throw new SyntaxError(`duplicate key in LANG at line ${i + 1}:\n${line}`);
                 }
@@ -74,14 +86,13 @@ class Lang {
         for (const key in input) {
             const value = input[key];
             if (key.startsWith("@")) {
-                metaLines.push(`@${key.slice(1)}: ${value}`);
+                metaLines.push(`# @${key.slice(1)} ${value}`);
             } else {
                 lines.push(`${processToken(key)}=${processToken(value)}`);
             }
         }
         return [
             ...metaLines,
-            "",
             ...lines
         ].join("\n");
     }
