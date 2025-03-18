@@ -1,3 +1,4 @@
+import AppStateStorageWrapper from "../../data/state/AppStateStorageWrapper.js";
 import ObservableStorage from "../../data/storage/observable/ObservableStorage.js";
 import {
     debounce
@@ -34,8 +35,8 @@ export default class ObservableStorageObserver extends EventTarget {
     #value;
 
     constructor(storage, key) {
-        if (!(storage instanceof ObservableStorage)) {
-            throw new TypeError("wrong type on parameter 1, expected ObservableStorage");
+        if (!(storage instanceof ObservableStorage) && !(storage instanceof AppStateStorageWrapper)) {
+            throw new TypeError("wrong type on parameter 1, expected ObservableStorage or AppStateStorageWrapper");
         }
         if (key != null && typeof key != "string") {
             throw new TypeError("wrong type on parameter 2, expected string");

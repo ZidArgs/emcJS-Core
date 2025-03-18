@@ -1,4 +1,5 @@
 import ObservableStorage from "../storage/observable/ObservableStorage.js";
+import AppStateStorageWrapper from "./AppStateStorageWrapper.js";
 
 const CATEGORY_NAME_REGEX = /^[A-Za-z][A-Za-z0-9_]*$/;
 
@@ -291,12 +292,12 @@ export default class AppState extends EventTarget {
     }
 
     /**
-     * Returns a {@link ObservableStorage} or an extended class of it registered to a specified category.
+     * Returns a {@link AppStateStorageWrapper} containing a {@link ObservableStorage} or an extended class of it registered to a specified category.
      *
-     * If no {@link ObservableStorage} has been registered, it stores and returns a default Storage.
+     * If no {@link ObservableStorage} has been registered or previously requested, it creates a new one and returns a {@link AppStateStorageWrapper} containing the new Storage.
      *
      * @param {string} category the category for which to get the storage for (matches [A-Za-z][A-Za-z0-9_]* or empty string)
-     * @returns {ObservableStorage} the registered Storage or an default Storage
+     * @returns {AppStateStorageWrapper} an AppStateStorageWrapper with the registered Storage or an default Storage
      */
     getStorage(category) {
         const storageCategory = category.toString();
@@ -304,15 +305,15 @@ export default class AppState extends EventTarget {
             throw new Error(`failed to retrieve storage "${storageCategory}" - category does not match pattern [A-Za-z][A-Za-z0-9_]* or empty string`);
         }
         if (this.#registeredStorages.has(storageCategory)) {
-            return this.#registeredStorages.get(storageCategory);
+            return new AppStateStorageWrapper(this.#registeredStorages.get(storageCategory));
         }
         if (this.#requestedStorages.has(storageCategory)) {
-            return this.#requestedStorages.get(storageCategory);
+            return new AppStateStorageWrapper(this.#requestedStorages.get(storageCategory));
         }
         const dataStorage = new ObservableStorage();
         dataStorage.addEventListener("change", this.#getChangeHandler(storageCategory));
         this.#requestedStorages.set(storageCategory, dataStorage);
-        return dataStorage;
+        return new AppStateStorageWrapper(dataStorage);
     }
 
     #getChangeHandler(category) {

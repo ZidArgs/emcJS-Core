@@ -1,3 +1,4 @@
+import AppStateStorageWrapper from "../../data/state/AppStateStorageWrapper.js";
 import ObservableStorage from "../../data/storage/observable/ObservableStorage.js";
 import EventTargetManager from "../event/EventTargetManager.js";
 import {
@@ -21,8 +22,8 @@ export default class ObservableStorageProvider extends AbstractDataProvider {
 
     constructor(reciever, source, initialOptions) {
         super(reciever, initialOptions);
-        if (source != null && !(source instanceof ObservableStorage)) {
-            throw new Error("source must be a ObservableStorage");
+        if (source != null && !(source instanceof ObservableStorage) && !(source instanceof AppStateStorageWrapper)) {
+            throw new Error("source must be a ObservableStorage or AppStateStorageWrapper");
         }
         /* --- */
         this.#eventManager.set(["change", "clear", "load"], () => {
@@ -40,8 +41,8 @@ export default class ObservableStorageProvider extends AbstractDataProvider {
     }
 
     setSource(source) {
-        if (!(source != null && source instanceof ObservableStorage)) {
-            throw new Error("source must be a ObservableStorage");
+        if (!(source != null && source instanceof ObservableStorage) && !(source instanceof AppStateStorageWrapper)) {
+            throw new Error("source must be a ObservableStorage or AppStateStorageWrapper");
         }
         this.#source = source;
         if (source != null) {

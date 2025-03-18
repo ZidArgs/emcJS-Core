@@ -1,3 +1,4 @@
+import AppStateStorageWrapper from "../../data/state/AppStateStorageWrapper.js";
 import ObservableStorage from "../../data/storage/observable/ObservableStorage.js";
 import AbstractFormElement from "../../ui/form/element/AbstractFormElement.js";
 import {
@@ -150,8 +151,8 @@ export default class FormElementContext {
     }
 
     set storage(value) {
-        if (value != null && !(value instanceof ObservableStorage)) {
-            throw new TypeError("ObservableStorage expected");
+        if (value != null && !(value instanceof ObservableStorage) && !(value instanceof AppStateStorageWrapper)) {
+            throw new TypeError("ObservableStorage or AppStateStorageWrapper expected");
         }
         if (this.#storage != value) {
             this.#storage = value;

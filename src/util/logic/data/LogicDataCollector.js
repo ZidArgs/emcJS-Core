@@ -4,6 +4,7 @@ import {
 import ObservableStorage from "../../../data/storage/observable/ObservableStorage.js";
 import EventMultiTargetManager from "../../event/EventMultiTargetManager.js";
 import LogicDataStorage from "../../../data/storage/logic/LogicDataStorage.js";
+import AppStateStorageWrapper from "../../../data/state/AppStateStorageWrapper.js";
 
 export default class LogicDataCollector extends EventTarget {
 
@@ -85,8 +86,8 @@ export default class LogicDataCollector extends EventTarget {
     }
 
     registerStorage(storage, prefix = "", postfix = "", precall = null) {
-        if (!(storage instanceof ObservableStorage)) {
-            throw new TypeError("storage must be ObservableStorage");
+        if (!(storage instanceof ObservableStorage) && !(storage instanceof AppStateStorageWrapper)) {
+            throw new TypeError("storage must be ObservableStorage or AppStateStorageWrapper");
         }
         this.#eventManager.addTarget(storage);
         this.#storageRegister.set(storage, {prefix, postfix, precall});
@@ -94,8 +95,8 @@ export default class LogicDataCollector extends EventTarget {
     }
 
     unregisterStorage(storage) {
-        if (!(storage instanceof ObservableStorage)) {
-            throw new TypeError("storage must be ObservableStorage");
+        if (!(storage instanceof ObservableStorage) && !(storage instanceof AppStateStorageWrapper)) {
+            throw new TypeError("storage must be ObservableStorage or AppStateStorageWrapper");
         }
         this.#eventManager.removeTarget(storage);
         this.#storageRegister.delete(storage);
