@@ -66,7 +66,9 @@ export default class AbstractMessage extends CustomElement {
         if (params != null) {
             if (typeof params == "object") {
                 if (!Array.isArray(params)) {
-                    const {type = "", slot = this.defaultSlot, ...p} = params;
+                    const {
+                        type = "", slot = this.defaultSlot, ...p
+                    } = params;
                     const el = new this(p);
                     el.type = type;
                     el.slot = slot;
@@ -83,48 +85,72 @@ export default class AbstractMessage extends CustomElement {
     static success(params) {
         if (typeof params == "object") {
             if (!Array.isArray(params)) {
-                return this.show({...params, type: "success"});
+                return this.show({
+                    ...params,
+                    type: "success"
+                });
             } else {
                 throw new TypeError("Array is not a valid value");
             }
         } else {
-            return this.show({text: params, type: "success"});
+            return this.show({
+                text: params,
+                type: "success"
+            });
         }
     }
 
     static info(params) {
         if (typeof params == "object") {
             if (!Array.isArray(params)) {
-                return this.show({...params, type: "info"});
+                return this.show({
+                    ...params,
+                    type: "info"
+                });
             } else {
                 throw new TypeError("Array is not a valid value");
             }
         } else {
-            return this.show({text: params, type: "info"});
+            return this.show({
+                text: params,
+                type: "info"
+            });
         }
     }
 
     static warn(params) {
         if (typeof params == "object") {
             if (!Array.isArray(params)) {
-                return this.show({...params, type: "warning"});
+                return this.show({
+                    ...params,
+                    type: "warning"
+                });
             } else {
                 throw new TypeError("Array is not a valid value");
             }
         } else {
-            return this.show({text: params, type: "warning"});
+            return this.show({
+                text: params,
+                type: "warning"
+            });
         }
     }
 
     static error(params) {
         if (typeof params == "object") {
             if (!Array.isArray(params)) {
-                return this.show({...params, type: "error"});
+                return this.show({
+                    ...params,
+                    type: "error"
+                });
             } else {
                 throw new TypeError("Array is not a valid value");
             }
         } else {
-            return this.show({text: params, type: "error"});
+            return this.show({
+                text: params,
+                type: "error"
+            });
         }
     }
 

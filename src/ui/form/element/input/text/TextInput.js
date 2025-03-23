@@ -1,14 +1,8 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
-import {
-    deepClone
-} from "../../../../../util/helper/DeepClone.js";
-import {
-    registerFocusable
-} from "../../../../../util/helper/html/getFocusableElements.js";
+import {deepClone} from "../../../../../util/helper/DeepClone.js";
+import {registerFocusable} from "../../../../../util/helper/html/getFocusableElements.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
-import {
-    safeSetAttribute
-} from "../../../../../util/helper/ui/NodeAttributes.js";
+import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
 import "../../../../i18n/builtin/I18nTextarea.js";
 import TPL from "./TextInput.js.html" assert {type: "html"};
 import STYLE from "./TextInput.js.css" assert {type: "css"};

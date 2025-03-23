@@ -1,9 +1,7 @@
 import Modal from "../../../../../../modal/Modal.js";
 import AbstractElement from "../elements/abstract/AbstractElement.js";
 import LogicOperatorRegistry from "../../../../../../../data/registry/LogicOperatorRegistry.js";
-import {
-    debounce
-} from "../../../../../../../util/Debouncer.js";
+import {debounce} from "../../../../../../../util/Debouncer.js";
 import BusyIndicatorManager from "../../../../../../../util/BusyIndicatorManager.js";
 import "../../../../../../FilteredList.js";
 import "../../../../../../container/CollapsePanel.js";
@@ -97,7 +95,9 @@ export default class LogicElementModal extends Modal {
             }
         });
         LogicOperatorRegistry.addEventListener("caption", (event) => {
-            const {group, caption} = event;
+            const {
+                group, caption
+            } = event;
             if (this.#operatorGroups.has(group)) {
                 const groupEl = this.#containerEl.querySelector(`emc-collapsepanel[data-group="${group}"]`);
                 if (groupEl != null) {

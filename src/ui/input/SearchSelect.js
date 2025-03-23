@@ -2,12 +2,8 @@ import CustomElementDelegating from "../element/CustomElementDelegating.js";
 import EventTargetManager from "../../util/event/EventTargetManager.js";
 import i18n from "../../util/I18n.js";
 import SearchAnd from "../../util/search/SearchAnd.js";
-import {
-    sortChildren
-} from "../../util/helper/ui/NodeListSort.js";
-import {
-    debounce
-} from "../../util/Debouncer.js";
+import {sortChildren} from "../../util/helper/ui/NodeListSort.js";
+import {debounce} from "../../util/Debouncer.js";
 import "./Option.js";
 import "../symbols/ChevronDownSymbol.js";
 import TPL from "./SearchSelect.js.html" assert {type: "html"};

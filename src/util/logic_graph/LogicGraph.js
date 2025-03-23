@@ -129,7 +129,10 @@ export default class LogicGraph {
         if (this.#debug == "extended") {
             console.groupCollapsed("GRAPH LOGIC REDIRECT CHANGE");
         }
-        for (const {source, target, reroute} of redirects) {
+        for (const redirect of redirects) {
+            const {
+                source, target, reroute
+            } = redirect;
             if (this.#debug == "extended") {
                 console.log({[`${source} => ${target}`]: reroute});
             }

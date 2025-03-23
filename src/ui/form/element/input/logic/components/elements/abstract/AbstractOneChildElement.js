@@ -18,7 +18,10 @@ export default class AbstractOneChildElement extends AbstractElement {
         this.#placeholderEl.ondragover = AbstractElement.allowDrop;
         this.#placeholderEl.ondrop = AbstractElement.dropOnPlaceholder;
         this.#placeholderEl.onclick = (event) => {
-            const e = new Event("placeholderclicked", {bubbles: true, cancelable: true});
+            const e = new Event("placeholderclicked", {
+                bubbles: true,
+                cancelable: true
+            });
             this.dispatchEvent(e);
             event.stopPropagation();
         };

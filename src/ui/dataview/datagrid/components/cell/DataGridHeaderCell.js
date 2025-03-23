@@ -20,9 +20,7 @@ export default class DataGridHeaderCell extends CustomElementDelegating {
             event.stopPropagation();
             if (this.sortable) {
                 const ev = new Event("sort", {bubbles:true});
-                ev.data = {
-                    columnName: this.columnName
-                };
+                ev.data = {columnName: this.columnName};
                 this.dispatchEvent(ev);
             }
         });

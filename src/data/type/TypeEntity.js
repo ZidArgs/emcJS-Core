@@ -1,9 +1,5 @@
-import {
-    isEqual
-} from "../../util/helper/Comparator.js";
-import {
-    deepClone
-} from "../../util/helper/DeepClone.js";
+import {isEqual} from "../../util/helper/Comparator.js";
+import {deepClone} from "../../util/helper/DeepClone.js";
 import TypeValidator from "../../util/type/TypeValidator.js";
 
 export default class TypeEntity extends EventTarget {
@@ -27,9 +23,7 @@ export default class TypeEntity extends EventTarget {
         this.#typeName = typeName;
         this.#entityName = entityName;
         // validation
-        const validationErrors = TypeValidator.validate(this.#typeName, data, {
-            label: this.#entityName
-        });
+        const validationErrors = TypeValidator.validate(this.#typeName, data, {label: this.#entityName});
         if (validationErrors.length > 0) {
             const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
             throw new Error(`Error deserializing data as "${this.#typeName}"\n    ${msg}`);
@@ -65,7 +59,12 @@ export default class TypeEntity extends EventTarget {
             // event
             const ev = new Event("change");
             ev.data = {[this.#entityName]: value};
-            ev.changes = {[this.#entityName]: {oldValue, newValue: value}};
+            ev.changes = {
+                [this.#entityName]: {
+                    oldValue,
+                    newValue: value
+                }
+            };
             this.dispatchEvent(ev);
         }
     }
@@ -81,7 +80,12 @@ export default class TypeEntity extends EventTarget {
             // event
             const ev = new Event("change");
             ev.data = {[this.#entityName]: {}};
-            ev.changes = {[this.#entityName]: {oldValue, newValue: {}}};
+            ev.changes = {
+                [this.#entityName]: {
+                    oldValue,
+                    newValue: {}
+                }
+            };
             this.dispatchEvent(ev);
         }
     }
@@ -102,7 +106,12 @@ export default class TypeEntity extends EventTarget {
             // event
             const ev = new Event("change");
             ev.data = {[this.#entityName]: newValue};
-            ev.changes = {[this.#entityName]: {oldValue, newValue}};
+            ev.changes = {
+                [this.#entityName]: {
+                    oldValue,
+                    newValue
+                }
+            };
             this.dispatchEvent(ev);
         }
     }

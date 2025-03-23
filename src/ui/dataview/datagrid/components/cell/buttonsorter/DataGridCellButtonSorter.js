@@ -46,9 +46,7 @@ export default class DataGridCellButtonSorter extends DataGridCell {
         event.stopPropagation();
         event.preventDefault();
         const ev = new Event("move-row-up", {bubbles: true});
-        ev.data = {
-            rowKey: this.rowKey
-        };
+        ev.data = {rowKey: this.rowKey};
         this.dispatchEvent(ev);
     }
 
@@ -56,9 +54,7 @@ export default class DataGridCellButtonSorter extends DataGridCell {
         event.stopPropagation();
         event.preventDefault();
         const ev = new Event("move-row-down", {bubbles: true});
-        ev.data = {
-            rowKey: this.rowKey
-        };
+        ev.data = {rowKey: this.rowKey};
         this.dispatchEvent(ev);
     }
 

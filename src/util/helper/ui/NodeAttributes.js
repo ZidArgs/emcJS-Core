@@ -1,6 +1,4 @@
-import {
-    dashedToCamelCase
-} from "../string/ConvertCase.js";
+import {dashedToCamelCase} from "../string/ConvertCase.js";
 
 export function safeSetAttribute(node, name, value) {
     if (value != null) {

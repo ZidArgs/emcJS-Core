@@ -219,7 +219,10 @@ export default class AppState extends EventTarget {
         if (oldValue != value) {
             this.#meta.set(key, value);
             const ev = new Event("meta");
-            ev.data = {key, value};
+            ev.data = {
+                key,
+                value
+            };
             this.dispatchEvent(ev);
         }
     }
@@ -244,7 +247,10 @@ export default class AppState extends EventTarget {
         if (oldValue != null) {
             this.#meta.delete(key);
             const ev = new Event("meta");
-            ev.data = {key, value: null};
+            ev.data = {
+                key,
+                value: null
+            };
             this.dispatchEvent(ev);
         }
     }
@@ -287,7 +293,10 @@ export default class AppState extends EventTarget {
         dataStorage.addEventListener(eventName, handler);
         // event
         const ev = new Event("register");
-        ev.data = {category, dataStorage};
+        ev.data = {
+            category,
+            dataStorage
+        };
         this.dispatchEvent(ev);
     }
 

@@ -1,8 +1,6 @@
 import assert from "assert";
 import ArraySet from "../../../../src/data/collection/ArraySet.js";
-import {
-    getArrayMutations
-} from "../../../../src/util/helper/collection/ArrayMutations.js";
+import {getArrayMutations} from "../../../../src/util/helper/collection/ArrayMutations.js";
 
 const SOURCE = [1, 2, 3, 4, 5, 6, 10, 11, 12, 13, 14, 15, 16, 17, 9, 18, 19, 20];
 const TARGET_0 = [6, 1, 3, 4, 8, 2, 7, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
@@ -23,7 +21,9 @@ describe("ArrayMutations", function() {
         for (const {sequence} of mutations.changes) {
             mutated.delete(...sequence);
         }
-        for (const {position, sequence} of mutations.changes) {
+        for (const {
+            position, sequence
+        } of mutations.changes) {
             mutated.insertAt(position, ...sequence);
         }
 
@@ -43,7 +43,9 @@ describe("ArrayMutations", function() {
         for (const {sequence} of mutations.changes) {
             mutated.delete(...sequence);
         }
-        for (const {position, sequence} of mutations.changes) {
+        for (const {
+            position, sequence
+        } of mutations.changes) {
             mutated.insertAt(position, ...sequence);
         }
 
@@ -63,7 +65,9 @@ describe("ArrayMutations", function() {
         for (const {sequence} of mutations.changes) {
             mutated.delete(...sequence);
         }
-        for (const {position, sequence} of mutations.changes) {
+        for (const {
+            position, sequence
+        } of mutations.changes) {
             mutated.insertAt(position, ...sequence);
         }
 
@@ -83,7 +87,9 @@ describe("ArrayMutations", function() {
         for (const {sequence} of mutations.changes) {
             mutated.delete(...sequence);
         }
-        for (const {position, sequence} of mutations.changes) {
+        for (const {
+            position, sequence
+        } of mutations.changes) {
             mutated.insertAt(position, ...sequence);
         }
 
@@ -103,7 +109,9 @@ describe("ArrayMutations", function() {
         for (const {sequence} of mutations.changes) {
             mutated.delete(...sequence);
         }
-        for (const {position, sequence} of mutations.changes) {
+        for (const {
+            position, sequence
+        } of mutations.changes) {
             mutated.insertAt(position, ...sequence);
         }
 
@@ -123,7 +131,9 @@ describe("ArrayMutations", function() {
         for (const {sequence} of mutations.changes) {
             mutated.delete(...sequence);
         }
-        for (const {position, sequence} of mutations.changes) {
+        for (const {
+            position, sequence
+        } of mutations.changes) {
             mutated.insertAt(position, ...sequence);
         }
 

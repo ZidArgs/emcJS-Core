@@ -42,7 +42,10 @@ class SharedWorkerRegistry {
         if (WORKER.has(name)) {
             throw new Error(`Worker with name "${name}" already registered`);
         } else {
-            const worker = (new SharedWorker(path, {name, type})).port;
+            const worker = (new SharedWorker(path, {
+                name,
+                type
+            })).port;
             WORKER.set(name, worker);
             worker.start();
             return worker;

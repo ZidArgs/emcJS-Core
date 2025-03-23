@@ -4,21 +4,11 @@ import BusyIndicatorManager from "../../../../../util/BusyIndicatorManager.js";
 import TypeStorage from "../../../../../data/type/TypeStorage.js";
 import EventMultiTargetManager from "../../../../../util/event/EventMultiTargetManager.js";
 import CharacterSearch from "../../../../../util/search/CharacterSearch.js";
-import {
-    deepClone
-} from "../../../../../util/helper/DeepClone.js";
-import {
-    sortNodeList
-} from "../../../../../util/helper/ui/NodeListSort.js";
-import {
-    debounce
-} from "../../../../../util/Debouncer.js";
-import {
-    isEqual
-} from "../../../../../util/helper/Comparator.js";
-import {
-    registerFocusable
-} from "../../../../../util/helper/html/getFocusableElements.js";
+import {deepClone} from "../../../../../util/helper/DeepClone.js";
+import {sortNodeList} from "../../../../../util/helper/ui/NodeListSort.js";
+import {debounce} from "../../../../../util/Debouncer.js";
+import {isEqual} from "../../../../../util/helper/Comparator.js";
+import {registerFocusable} from "../../../../../util/helper/html/getFocusableElements.js";
 import ElementListCache from "../../../../../util/html/ElementListCache.js";
 import "../../../../i18n/builtin/I18nInput.js";
 import "./components/RelationSelectEntry.js";

@@ -1,6 +1,4 @@
-import {
-    delimitFloat
-} from "../../util/helper/number/Float.js";
+import {delimitFloat} from "../../util/helper/number/Float.js";
 import AnyState from "./AnyValue.js";
 
 function parseNumber(value) {

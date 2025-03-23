@@ -1,11 +1,7 @@
 import Button from "./Button.js";
-import {
-    registerFocusable
-} from "../../../util/helper/html/getFocusableElements.js";
+import {registerFocusable} from "../../../util/helper/html/getFocusableElements.js";
 import CustomActionRegistry from "../../../data/registry/CustomActionRegistry.js";
-import {
-    deepClone
-} from "../../../util/helper/DeepClone.js";
+import {deepClone} from "../../../util/helper/DeepClone.js";
 import CONFIG_FIELDS from "./ActionButton.js.json" assert {type: "json"};
 
 export default class ActionButton extends Button {

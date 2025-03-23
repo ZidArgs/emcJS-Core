@@ -13,7 +13,10 @@ export default class Message extends AbstractMessage {
 
     #autocloseEL;
 
-    constructor({text, time = TIME} = {}) {
+    constructor(opts = {}) {
+        const {
+            text, time = TIME
+        } = opts;
         super({text});
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
@@ -24,10 +27,10 @@ export default class Message extends AbstractMessage {
             this.remove();
         });
         /* --- */
-        time = parseInt(time) || TIME;
+        const waitTime = parseInt(time) || TIME;
         if (time > 0) {
             this.#autocloseEL = this.shadowRoot.getElementById("autoclose");
-            this.#autocloseEL.style.animation = `autoclose ${time}s linear 1`;
+            this.#autocloseEL.style.animation = `autoclose ${waitTime}s linear 1`;
             this.#autocloseEL.addEventListener("animationend", (event) => {
                 event.stopPropagation();
                 this.remove();

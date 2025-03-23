@@ -1,8 +1,6 @@
 import fs from "fs";
 import path from "path";
-import {
-    Transform
-} from "stream";
+import {Transform} from "stream";
 
 const HTMLTemplatePath = "util/html/Template.js";
 const HTMLGlobalStylePath = "util/html/GlobalStyle.js";
@@ -33,25 +31,29 @@ function augmentFile(emcJSPrefix, sourcePath, fileContent) {
             switch (assertType) {
                 case "html": {
                     importedHTML.push({
-                        name, contentPath
+                        name,
+                        contentPath
                     });
                     return null;
                 }
                 case "css": {
                     importedCSS.push({
-                        name, contentPath
+                        name,
+                        contentPath
                     });
                     return null;
                 }
                 case "json": {
                     importedJSON.push({
-                        name, contentPath
+                        name,
+                        contentPath
                     });
                     return null;
                 }
                 case "json-folder": {
                     importedJSONFolder.push({
-                        name, contentPath
+                        name,
+                        contentPath
                     });
                     return null;
                 }
@@ -86,7 +88,10 @@ function augmentFile(emcJSPrefix, sourcePath, fileContent) {
             const modulePath = normalizePath(`${emcJSPrefix}/${HTMLTemplatePath}`);
             result += `import Template from "${modulePath}";\n\n`;
             // include files
-            for (const {name, contentPath} of importedHTML) {
+            for (const importEntry of importedHTML) {
+                const {
+                    name, contentPath
+                } = importEntry;
                 const resolvedPath = path.resolve(sourceDir, contentPath);
                 // if the file exists
                 if (fs.existsSync(resolvedPath)) {
@@ -103,7 +108,10 @@ function augmentFile(emcJSPrefix, sourcePath, fileContent) {
             const modulePath = normalizePath(`${emcJSPrefix}/${HTMLGlobalStylePath}`);
             result += `import GlobalStyle from "${modulePath}";\n\n`;
             // include files
-            for (const {name, contentPath} of importedCSS) {
+            for (const importEntry of importedCSS) {
+                const {
+                    name, contentPath
+                } = importEntry;
                 const resolvedPath = path.resolve(sourceDir, contentPath);
                 // if the file exists
                 if (fs.existsSync(resolvedPath)) {
@@ -117,7 +125,10 @@ function augmentFile(emcJSPrefix, sourcePath, fileContent) {
         // JSON
         if (importedJSON.length) {
             // include files
-            for (const {name, contentPath} of importedJSON) {
+            for (const importEntry of importedJSON) {
+                const {
+                    name, contentPath
+                } = importEntry;
                 const resolvedPath = path.resolve(sourceDir, contentPath);
                 // if the file exists
                 if (fs.existsSync(resolvedPath)) {
@@ -131,7 +142,10 @@ function augmentFile(emcJSPrefix, sourcePath, fileContent) {
         // JSON-folder
         if (importedJSONFolder.length) {
             // include folders
-            for (const {name, contentPath} of importedJSONFolder) {
+            for (const importEntry of importedJSONFolder) {
+                const {
+                    name, contentPath
+                } = importEntry;
                 const resolvedFolderPath = path.resolve(sourceDir, contentPath);
                 // if the folder exists
                 if (fs.existsSync(resolvedFolderPath)) {

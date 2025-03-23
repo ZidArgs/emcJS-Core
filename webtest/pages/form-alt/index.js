@@ -24,7 +24,9 @@ formContext.registerFormContainer(formContainerEl);
 const errorButtonEl = document.getElementById("error-button");
 
 formContext.addEventListener("submit", (event) => {
-    const {errors, data, hiddenData, changes} = event;
+    const {
+        errors, data, hiddenData, changes
+    } = event;
     const valid = formContext.getFormValidity() ? "valid" : "invalid";
     console.group(`submit (${valid})`);
     console.log("[E] errors", errors);

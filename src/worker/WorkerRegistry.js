@@ -42,7 +42,10 @@ class WorkerRegistry {
         if (WORKER.has(name)) {
             throw new Error(`Worker with name "${name}" already registered`);
         } else {
-            const worker = new Worker(path, {name, type});
+            const worker = new Worker(path, {
+                name,
+                type
+            });
             WORKER.set(name, worker);
             return worker;
         }

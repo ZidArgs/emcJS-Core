@@ -142,7 +142,11 @@ class StatementCompiler {
 
     compile(source, params = {}) {
         const statement = buildLogic(source);
-        const fn = new LogicStatement(statement, {dependencies, params, source});
+        const fn = new LogicStatement(statement, {
+            dependencies,
+            params,
+            source
+        });
         dependencies.clear();
         return fn;
     }

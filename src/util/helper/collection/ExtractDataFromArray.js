@@ -1,13 +1,9 @@
-import {
-    numberedStringComparator
-} from "../Comparator.js";
+import {numberedStringComparator} from "../Comparator.js";
 import CharacterSearch from "../../search/CharacterSearch.js";
 import {
     isArray, isArrayOf, isBoolean, isDict, isFunction, isNull, isNumber, isNumberNotNaN, isObject, isString, isStringNotEmpty
 } from "../CheckType.js";
-import {
-    getFromObjectByPath
-} from "./ObjectContent.js";
+import {getFromObjectByPath} from "./ObjectContent.js";
 
 const SORT_PATTERN = /^(!?)(.+)$/;
 

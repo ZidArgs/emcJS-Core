@@ -1,6 +1,4 @@
-import {
-    isStringNotEmpty
-} from "../../../util/helper/CheckType.js";
+import {isStringNotEmpty} from "../../../util/helper/CheckType.js";
 import Panel from "../Panel.js";
 import "../../form/button/Button.js";
 import TPL from "./TabPanel.js.html" assert {type: "html"};

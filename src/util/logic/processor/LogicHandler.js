@@ -1,6 +1,4 @@
-import {
-    debounce
-} from "../../Debouncer.js";
+import {debounce} from "../../Debouncer.js";
 import EventTargetManager from "../../event/EventTargetManager.js";
 import LogicCompiler from "./LogicCompiler.js";
 

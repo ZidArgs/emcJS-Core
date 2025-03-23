@@ -1,13 +1,7 @@
-import {
-    debounceCacheData
-} from "../util/Debouncer.js";
+import {debounceCacheData} from "../util/Debouncer.js";
 import EventTargetManager from "../util/event/EventTargetManager.js";
-import {
-    mergeObjectsInto
-} from "../util/helper/collection/MergeObjects.js";
-import {
-    isEqual
-} from "../util/helper/Comparator.js";
+import {mergeObjectsInto} from "../util/helper/collection/MergeObjects.js";
+import {isEqual} from "../util/helper/Comparator.js";
 
 const BYPASS_PROPERTIES = [
     // Object
@@ -112,7 +106,10 @@ export default class Observable extends EventTarget {
 
     #notifyChange = debounceCacheData((data) => {
         const changes = {};
-        for (const {key, value, change} of data) {
+        for (const entry of data) {
+            const {
+                key, value, change
+            } = entry;
             if (change != null) {
                 mergeObjectsInto(changes, change);
             } else {

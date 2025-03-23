@@ -1,15 +1,7 @@
-import {
-    debounce
-} from "../Debouncer.js";
-import {
-    isEqual
-} from "../helper/Comparator.js";
-import {
-    deepClone
-} from "../helper/DeepClone.js";
-import {
-    getArrayMutations
-} from "../helper/collection/ArrayMutations.js";
+import {debounce} from "../Debouncer.js";
+import {isEqual} from "../helper/Comparator.js";
+import {deepClone} from "../helper/DeepClone.js";
+import {getArrayMutations} from "../helper/collection/ArrayMutations.js";
 
 export default class ElementManager extends EventTarget {
 
@@ -52,7 +44,9 @@ export default class ElementManager extends EventTarget {
                 throw new TypeError("data entries must be objects");
             }
 
-            const {key = index, ...values} = record;
+            const {
+                key = index, ...values
+            } = record;
             this.#definedOrder.push(key);
 
             if (!this.#elements.has(key)) {
@@ -156,7 +150,10 @@ export default class ElementManager extends EventTarget {
                     }
                 }
                 let missingOffset = 0;
-                for (const {sequence, position} of changes) {
+                for (const change of changes) {
+                    const {
+                        sequence, position
+                    } = change;
                     const adjustedPosition = position - missingOffset;
                     const els = [];
                     for (const key of sequence) {

@@ -1,22 +1,10 @@
 import CustomElement from "../../element/CustomElement.js";
-import {
-    isEqual
-} from "../../../util/helper/Comparator.js";
-import {
-    deepClone
-} from "../../../util/helper/DeepClone.js";
-import {
-    appUID
-} from "../../../util/helper/UniqueGenerator.js";
-import {
-    debounce
-} from "../../../util/Debouncer.js";
-import {
-    getAllAttributes
-} from "../../../util/helper/ui/NodeAttributes.js";
-import {
-    filterInPlace
-} from "../../../util/helper/collection/ArrayMutations.js";
+import {isEqual} from "../../../util/helper/Comparator.js";
+import {deepClone} from "../../../util/helper/DeepClone.js";
+import {appUID} from "../../../util/helper/UniqueGenerator.js";
+import {debounce} from "../../../util/Debouncer.js";
+import {getAllAttributes} from "../../../util/helper/ui/NodeAttributes.js";
+import {filterInPlace} from "../../../util/helper/collection/ArrayMutations.js";
 import BusyIndicatorManager from "../../../util/BusyIndicatorManager.js";
 import MutationObserverManager from "../../../util/observer/MutationObserverManager.js";
 import DataRecieverMixin from "../../../util/dataprovider/DataRecieverMixin.js";
@@ -32,9 +20,7 @@ import "./components/CellTypeLoader.js";
 import TPL from "./DataGrid.js.html" assert {type: "html"};
 import STYLE from "./DataGrid.js.css" assert {type: "css"};
 
-const MUTATION_CONFIG = {
-    attributes: true
-};
+const MUTATION_CONFIG = {attributes: true};
 
 const PX_REGEXP = /^[0-9]+(?:\.[0-9]+)?$/;
 
@@ -137,9 +123,7 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
             event.preventDefault();
             const {rowKey} = event.data;
             const ev = new Event("move-row-up");
-            ev.data = {
-                rowKey
-            };
+            ev.data = {rowKey};
             this.dispatchEvent(ev);
         });
         this.#tableEl.addEventListener("move-row-down", (event) => {
@@ -147,16 +131,16 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
             event.preventDefault();
             const {rowKey} = event.data;
             const ev = new Event("move-row-down");
-            ev.data = {
-                rowKey
-            };
+            ev.data = {rowKey};
             this.dispatchEvent(ev);
         });
         /* --- */
         this.#tableEl.addEventListener("menu", (event) => {
             event.stopPropagation();
             event.preventDefault();
-            const {value, columnName, rowKey} = event.data;
+            const {
+                value, columnName, rowKey
+            } = event.data;
             const ev = new PointerEvent("menu", event);
             ev.data = {
                 value,
@@ -169,7 +153,9 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
         this.#tableEl.addEventListener("action", (event) => {
             event.stopPropagation();
             event.preventDefault();
-            const {action, columnName, rowKey} = event.data;
+            const {
+                action, columnName, rowKey
+            } = event.data;
             if (action == null || typeof action !== "string" || action === "") {
                 const ev = new Event("action");
                 ev.data = {
@@ -191,7 +177,9 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
         this.#tableEl.addEventListener("edit", (event) => {
             event.stopPropagation();
             event.preventDefault();
-            const {value, action, columnName, rowKey} = event.data;
+            const {
+                value, action, columnName, rowKey
+            } = event.data;
             if (action == null || typeof action !== "string" || action === "") {
                 const ev = new Event("edit");
                 ev.data = {
@@ -215,7 +203,9 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
         this.#tableEl.addEventListener("selection", (event) => {
             event.stopPropagation();
             event.preventDefault();
-            const {value, rowKey} = event.data;
+            const {
+                value, rowKey
+            } = event.data;
             if (!this.multiple) {
                 const oldrowKey = [...this.#selected][0];
                 const selectEl = this.shadowRoot.querySelectorAll(`.select-cell input[type="checkbox"][row-key="${oldrowKey}"]`);
@@ -239,9 +229,7 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
             event.stopPropagation();
             const {columnName} = event.data;
             const ev = new Event("sort");
-            ev.data = {
-                columnName
-            };
+            ev.data = {columnName};
             this.dispatchEvent(ev);
         });
     }

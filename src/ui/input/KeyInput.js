@@ -1,7 +1,5 @@
 import CustomElementDelegating from "../element/CustomElementDelegating.js";
-import {
-    toStartUppercaseEndLowercase
-} from "../../util/helper/string/ConvertCase.js";
+import {toStartUppercaseEndLowercase} from "../../util/helper/string/ConvertCase.js";
 import TPL from "./KeyInput.js.html" assert {type: "html"};
 import STYLE from "./KeyInput.js.css" assert {type: "css"};
 
@@ -27,7 +25,9 @@ export default class KeyInput extends CustomElementDelegating {
         /* --- */
         this.#displayEl = this.shadowRoot.getElementById("display");
         this.addEventListener("keydown", (event) => {
-            const {key, ctrlKey, shiftKey, altKey, metaKey} = event;
+            const {
+                key, ctrlKey, shiftKey, altKey, metaKey
+            } = event;
             if (key !== "Tab") {
                 if (key === "Escape") {
                     this.value = "";
@@ -39,9 +39,20 @@ export default class KeyInput extends CustomElementDelegating {
                     ev.key = "";
                     this.dispatchEvent(ev);
                 } else if (BLACKLIST.includes(key)) {
-                    this.#display(KeyInput.stringifyKeys({ctrlKey, shiftKey, altKey, metaKey}));
+                    this.#display(KeyInput.stringifyKeys({
+                        ctrlKey,
+                        shiftKey,
+                        altKey,
+                        metaKey
+                    }));
                 } else {
-                    this.value = KeyInput.stringifyKeys({ctrlKey, shiftKey, altKey, metaKey, key});
+                    this.value = KeyInput.stringifyKeys({
+                        ctrlKey,
+                        shiftKey,
+                        altKey,
+                        metaKey,
+                        key
+                    });
                     const ev = new Event("change");
                     ev.ctrlKey = ctrlKey;
                     ev.shiftKey = shiftKey;
@@ -59,8 +70,15 @@ export default class KeyInput extends CustomElementDelegating {
             if (event.key !== "Tab") {
                 const value = KeyInput.parseKeys(this.value);
                 if (value.key == null) {
-                    const {ctrlKey, shiftKey, altKey, metaKey} = event;
-                    this.#display(KeyInput.stringifyKeys({ctrlKey, shiftKey, altKey, metaKey}));
+                    const {
+                        ctrlKey, shiftKey, altKey, metaKey
+                    } = event;
+                    this.#display(KeyInput.stringifyKeys({
+                        ctrlKey,
+                        shiftKey,
+                        altKey,
+                        metaKey
+                    }));
                 }
                 event.preventDefault();
                 event.stopPropagation();
@@ -109,7 +127,10 @@ export default class KeyInput extends CustomElementDelegating {
         };
     }
 
-    static stringifyKeys({ctrlKey, shiftKey, altKey, metaKey, key} = {}) {
+    static stringifyKeys(opts = {}) {
+        const {
+            ctrlKey, shiftKey, altKey, metaKey, key
+        } = opts;
         let res = "";
         if (ctrlKey) {
             res += "ctrl+";

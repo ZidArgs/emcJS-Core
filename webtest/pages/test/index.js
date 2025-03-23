@@ -91,12 +91,8 @@ try {
             "content": {
                 "type": "and",
                 "content": [
-                    {
-                        "type": "true"
-                    },
-                    {
-                        "type": "sdaggasdg"
-                    }
+                    {"type": "true"},
+                    {"type": "sdaggasdg"}
                 ]
             }
         }
@@ -156,9 +152,7 @@ try {
                 "name": "test"
             }
         },
-        "logic": {
-            "type": "true"
-        }
+        "logic": {"type": "true"}
     });
     console.log(entity.serialize());
     entity.set("label", "dafuq");

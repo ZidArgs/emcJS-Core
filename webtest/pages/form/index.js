@@ -47,9 +47,7 @@ import FormContext from "/emcJS/util/form/FormContext.js";
 
 const ALLOW_INVALID = false;
 
-i18n.setTranslation("en", {
-    "test.desc": "this is a test"
-});
+i18n.setTranslation("en", {"test.desc": "this is a test"});
 i18n.language = "en";
 
 const [defaultValues, optionGroups, tokenGroups, buttonConfig, extraConfig, ...formConfig] = await Promise.all([
@@ -93,18 +91,14 @@ const config = {
 /* add buttons in seperate form */
 config.forms.push({
     config: {
-        values: {
-            test: "foobar"
-        },
+        values: {test: "foobar"},
         allowsInvalid: ALLOW_INVALID
     },
     elements: buttonConfig
 });
 config.forms.push({
     config: {
-        values: {
-            test: "foobar"
-        },
+        values: {test: "foobar"},
         allowsInvalid: ALLOW_INVALID
     },
     elements: extraConfig
@@ -172,7 +166,9 @@ console.log("changed data", formContext.getChanges());
 console.groupEnd("init context");
 
 formContext.addEventListener("submit", (event) => {
-    const {errors, changes, data, formData, hiddenData} = event;
+    const {
+        errors, changes, data, formData, hiddenData
+    } = event;
     const valid = formContext.getFormValidity() ? "valid" : "invalid";
     console.group(`submit (${valid})`);
     console.log("errors", errors);
@@ -197,18 +193,10 @@ CustomActionRegistry.current.set("soup", () => {
 CustomActionRegistry.current.set("cheese", () => {
     alert("more cheese");
     formContext.loadData({
-        "search-select": {
-            "required": "foobar"
-        },
-        "text": {
-            "required": "nice"
-        },
-        "number": {
-            "required": 69
-        },
-        "password": {
-            "required": "password"
-        },
+        "search-select": {"required": "foobar"},
+        "text": {"required": "nice"},
+        "number": {"required": 69},
+        "password": {"required": "password"},
         "color": {
             "default": "#ff0000",
             "resettable": "#00ff00",
@@ -220,9 +208,7 @@ CustomActionRegistry.current.set("cheese", () => {
             "required": "ctrl s",
             "readonly": "ctrl d"
         },
-        "switch": {
-            "required": true
-        }
+        "switch": {"required": true}
     }, true);
 });
 
@@ -230,9 +216,7 @@ const logicTestEl = document.getElementById("logicTest");
 logicTestEl.addOperatorGroup("custom-settings");
 LogicOperatorRegistry.setGroupCaption("custom-settings", "custom settings");
 
-LogicOperatorRegistry.setOperator("value.test", {
-    "type": "value"
-});
+LogicOperatorRegistry.setOperator("value.test", {"type": "value"});
 LogicOperatorRegistry.linkOperator("value.test", "custom-settings");
 
 LogicOperatorRegistry.setOperator("state.test", {

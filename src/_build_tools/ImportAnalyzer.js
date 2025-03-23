@@ -1,8 +1,6 @@
 import fs from "fs";
 import path from "path";
-import {
-    Transform
-} from "stream";
+import {Transform} from "stream";
 
 const LNBR_SEQ = /(?:\r\n|\n|\r)/g;
 const CHECKS = [

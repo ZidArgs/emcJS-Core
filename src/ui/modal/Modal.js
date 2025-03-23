@@ -1,11 +1,7 @@
 import CustomElement from "../element/CustomElement.js";
 import UniqueEntriesStack from "../../data/stack/UniqueEntriesStack.js";
-import {
-    isColorString
-} from "../../util/helper/CheckType.js";
-import {
-    getFocusableElements
-} from "../../util/helper/html/getFocusableElements.js";
+import {isColorString} from "../../util/helper/CheckType.js";
+import {getFocusableElements} from "../../util/helper/html/getFocusableElements.js";
 import "../i18n/I18nLabel.js";
 import "../symbols/CloseSymbol.js";
 import TPL from "./Modal.js.html" assert {type: "html"};
@@ -106,7 +102,10 @@ export default class Modal extends CustomElement {
         }
     }
 
-    setFontIcon(content, {color, size, circle = false} = {}) {
+    setFontIcon(content, opts = {}) {
+        const {
+            color, size, circle = false
+        } = opts;
         if (typeof content === "string" && content !== "") {
             this.#titleIconEl.innerText = content;
             if (SIZE_REGEXP.test(size)) {

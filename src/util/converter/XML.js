@@ -30,9 +30,7 @@ class XML {
                 continue;
             }
 
-            const nodeObj = {
-                name: childNode.tagName
-            };
+            const nodeObj = {name: childNode.tagName};
             for (const attr of childNode.attributes) {
                 nodeObj[`_${attr.name}`] = attr.value;
             }

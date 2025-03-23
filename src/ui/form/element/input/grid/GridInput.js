@@ -1,14 +1,8 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
-import {
-    deepClone
-} from "../../../../../util/helper/DeepClone.js";
-import {
-    registerFocusable
-} from "../../../../../util/helper/html/getFocusableElements.js";
-import {
-    safeSetAttribute
-} from "../../../../../util/helper/ui/NodeAttributes.js";
+import {deepClone} from "../../../../../util/helper/DeepClone.js";
+import {registerFocusable} from "../../../../../util/helper/html/getFocusableElements.js";
+import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
 import {
     deleteAtIndexImmuted,
     moveInArrayImmuted
@@ -67,7 +61,9 @@ export default class GridInput extends AbstractFormElement {
         this.#gridEl.addEventListener("edit", (event) => {
             event.stopPropagation();
             event.preventDefault();
-            const {value, rowKey, columnName} = event.data;
+            const {
+                value, rowKey, columnName
+            } = event.data;
             const index = this.#getElementIndex(rowKey);
             if (index >= 0) {
                 const currentValue = [...this.value];
@@ -103,9 +99,7 @@ export default class GridInput extends AbstractFormElement {
         this.#searchEl.addEventListener("change", () => {
             const options = {filter: {}};
             if (this.#searchEl.value != "") {
-                options.filter = {
-                    name: this.#searchEl.value
-                };
+                options.filter = {name: this.#searchEl.value};
             }
             this.#dataManager.updateOptions(options);
         }, true);
@@ -201,13 +195,9 @@ export default class GridInput extends AbstractFormElement {
 
     #updateSort(value) {
         if (value && value !== "manual") {
-            this.#dataManager.setOptions({
-                sort: ["key"]
-            });
+            this.#dataManager.setOptions({sort: ["key"]});
         } else {
-            this.#dataManager.setOptions({
-                sort: []
-            });
+            this.#dataManager.setOptions({sort: []});
         }
 
         this.#sortColumn.hidden = value !== "manual";
@@ -254,20 +244,26 @@ export default class GridInput extends AbstractFormElement {
 
     static fromConfig(config) {
         const inputEl = new GridInput();
-        const {columns = [], ...params} = config;
+        const {
+            columns = [], ...params
+        } = config;
 
         for (const column of columns) {
             const columnEl = new Column();
             const {key = ""} = column;
             columnEl.name = key;
             if (key === "key") {
-                const {caption = "", width = 0} = column;
+                const {
+                    caption = "", width = 0
+                } = column;
                 columnEl.type = "string";
                 columnEl.caption = caption;
                 columnEl.width = width;
                 columnEl.editable = false;
             } else {
-                const {type = "string", caption = "", width = 0, editable = false} = column;
+                const {
+                    type = "string", caption = "", width = 0, editable = false
+                } = column;
                 columnEl.type = type;
                 columnEl.caption = caption;
                 columnEl.width = width;

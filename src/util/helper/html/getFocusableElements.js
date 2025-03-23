@@ -1,6 +1,4 @@
-import {
-    debounce
-} from "../../Debouncer.js";
+import {debounce} from "../../Debouncer.js";
 
 const DEFAULT_SELECTORS = [
     "button",

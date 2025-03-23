@@ -1,9 +1,7 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
 import "../../../../i18n/builtin/I18nInput.js";
-import {
-    registerFocusable
-} from "../../../../../util/helper/html/getFocusableElements.js";
+import {registerFocusable} from "../../../../../util/helper/html/getFocusableElements.js";
 import "../../../../i18n/builtin/I18nOption.js";
 import "../logic/LogicInput.js";
 import "../../select/switch/SwitchSelect.js";

@@ -2,21 +2,11 @@ import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
 import BusyIndicatorManager from "../../../../../util/BusyIndicatorManager.js";
 import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
-import {
-    deepClone
-} from "../../../../../util/helper/DeepClone.js";
-import {
-    debounce
-} from "../../../../../util/Debouncer.js";
-import {
-    nodeTextComparator
-} from "../../../../../util/helper/ui/NodeListSort.js";
-import {
-    registerFocusable
-} from "../../../../../util/helper/html/getFocusableElements.js";
-import {
-    safeSetAttribute
-} from "../../../../../util/helper/ui/NodeAttributes.js";
+import {deepClone} from "../../../../../util/helper/DeepClone.js";
+import {debounce} from "../../../../../util/Debouncer.js";
+import {nodeTextComparator} from "../../../../../util/helper/ui/NodeListSort.js";
+import {registerFocusable} from "../../../../../util/helper/html/getFocusableElements.js";
+import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
 import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
 import ImageSelectModal from "./components/ImageSelectModal.js";
 import I18nOption from "../../../../i18n/builtin/I18nOption.js";
@@ -211,7 +201,9 @@ export default class ImageSelect extends AbstractFormElement {
 
     static fromConfig(config) {
         const selectEl = new ImageSelect();
-        const {options = {}, ...params} = config;
+        const {
+            options = {}, ...params
+        } = config;
 
         for (const key in options) {
             const value = options[key];

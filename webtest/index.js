@@ -76,7 +76,9 @@ function scrollIntoViewIfNeeded(target) {
     }
 }
 
-function addEntry(targetEl, src, {label, children}, hashPrefix = "") {
+function addEntry(targetEl, src, {
+    label, children
+}, hashPrefix = "") {
     if (hashPrefix) {
         hashPrefix = hashPrefix + "::";
     }

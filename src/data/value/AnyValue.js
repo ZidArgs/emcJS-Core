@@ -1,6 +1,4 @@
-import {
-    isEqual
-} from "../../util/helper/Comparator.js";
+import {isEqual} from "../../util/helper/Comparator.js";
 
 /**
  * A state containing a value of any kind.

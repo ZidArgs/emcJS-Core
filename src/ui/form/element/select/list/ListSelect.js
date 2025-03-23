@@ -1,18 +1,10 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
 import SimpleDataProvider from "../../../../../util/dataprovider/SimpleDataProvider.js";
-import {
-    deepClone
-} from "../../../../../util/helper/DeepClone.js";
-import {
-    debounce
-} from "../../../../../util/Debouncer.js";
-import {
-    registerFocusable
-} from "../../../../../util/helper/html/getFocusableElements.js";
-import {
-    safeSetAttribute
-} from "../../../../../util/helper/ui/NodeAttributes.js";
+import {deepClone} from "../../../../../util/helper/DeepClone.js";
+import {debounce} from "../../../../../util/Debouncer.js";
+import {registerFocusable} from "../../../../../util/helper/html/getFocusableElements.js";
+import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
 import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
 import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
 import ElementListCache from "../../../../../util/html/ElementListCache.js";
@@ -73,9 +65,7 @@ export default class ListSelect extends AbstractFormElement {
         this.#searchEl.addEventListener("change", () => {
             const options = {filter: {}};
             if (this.#searchEl.value != "") {
-                options.filter = {
-                    name: this.#searchEl.value
-                };
+                options.filter = {name: this.#searchEl.value};
             }
             this.#dataManager.updateOptions(options);
         }, true);
@@ -198,14 +188,10 @@ export default class ListSelect extends AbstractFormElement {
     #updateSort(value) {
         if (value) {
             this.#i18nEventManager.active = true;
-            this.#dataManager.setOptions({
-                sortFunction: (record0, record1) => i18n.compareNumberedValuesTranslated(record0.name, record1.name)
-            });
+            this.#dataManager.setOptions({sortFunction: (record0, record1) => i18n.compareNumberedValuesTranslated(record0.name, record1.name)});
         } else {
             this.#i18nEventManager.active = false;
-            this.#dataManager.setOptions({
-                sortFunction: false
-            });
+            this.#dataManager.setOptions({sortFunction: false});
         }
     }
 
@@ -241,7 +227,9 @@ export default class ListSelect extends AbstractFormElement {
 
     static fromConfig(config) {
         const selectEl = new ListSelect();
-        const {options = {}, ...params} = config;
+        const {
+            options = {}, ...params
+        } = config;
 
         for (const key in options) {
             const value = options[key];

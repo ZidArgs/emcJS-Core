@@ -1,9 +1,7 @@
 import CustomElement from "../element/CustomElement.js";
 import TPL from "./FormContainer.js.html" assert {type: "html"};
 import STYLE from "./FormContainer.js.css" assert {type: "css"};
-import {
-    debounce
-} from "../../util/Debouncer.js";
+import {debounce} from "../../util/Debouncer.js";
 
 export default class FormContainer extends CustomElement {
 

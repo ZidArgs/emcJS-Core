@@ -1,10 +1,6 @@
 import FileLoader from "./file/FileLoader.js";
-import {
-    numberedStringComparator
-} from "./helper/Comparator.js";
-import {
-    flattenObject
-} from "./helper/collection/ObjectContent.js";
+import {numberedStringComparator} from "./helper/Comparator.js";
+import {flattenObject} from "./helper/collection/ObjectContent.js";
 import Import from "./import/Import.js";
 import Logger from "./log/Logger.js";
 
@@ -118,7 +114,9 @@ class I18n extends EventTarget {
             this.setBase(key, data["base"]);
             // fetch all translation files
             const transProm = [];
-            for (const {type, name} of data["fragments"] ?? []) {
+            for (const {
+                type, name
+            } of data["fragments"] ?? []) {
                 transProm.push(importFragment(basePath, type, name));
             }
             transProm.push(importBasefile(basePath, data["type"] ?? "lang", key));

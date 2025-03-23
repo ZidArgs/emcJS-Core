@@ -1,16 +1,8 @@
 import CustomElement from "../element/CustomElement.js";
-import {
-    nodeTextComparator
-} from "../../util/helper/ui/NodeListSort.js";
-import {
-    scrollIntoViewIfNeeded
-} from "../../util/helper/ui/Scroll.js";
-import {
-    deepClone
-} from "../../util/helper/DeepClone.js";
-import {
-    debounce
-} from "../../util/Debouncer.js";
+import {nodeTextComparator} from "../../util/helper/ui/NodeListSort.js";
+import {scrollIntoViewIfNeeded} from "../../util/helper/ui/Scroll.js";
+import {deepClone} from "../../util/helper/DeepClone.js";
+import {debounce} from "../../util/Debouncer.js";
 import TreeNodeElementManager from "./manager/TreeNodeElementManager.js";
 import EventTargetManager from "../../util/event/EventTargetManager.js";
 import i18n from "../../util/I18n.js";
@@ -41,7 +33,9 @@ export default class Tree extends CustomElement {
         this.#treeEl = this.shadowRoot.getElementById("tree");
         this.#treeEl.addEventListener("select", (event) => {
             if (!event.data.isSelected) {
-                const {element, path, refPath} = event.data;
+                const {
+                    element, path, refPath
+                } = event.data;
                 this.#currentSelectionPath = path;
                 this.#currentSelectionRefPath = refPath;
 
@@ -186,7 +180,10 @@ export default class Tree extends CustomElement {
         const data = [];
         for (const key in config) {
             const options = config[key];
-            data.push({...options, key});
+            data.push({
+                ...options,
+                key
+            });
         }
         this.#elementManager.manage(data);
     }
@@ -242,7 +239,10 @@ export default class Tree extends CustomElement {
             if (oldMarked != null) {
                 oldMarked.classList.remove("marked");
             }
-            const ev = new Event("select", {bubbles: true, cancelable: true});
+            const ev = new Event("select", {
+                bubbles: true,
+                cancelable: true
+            });
             ev.data = {
                 element: null,
                 ref: undefined,
@@ -271,7 +271,10 @@ export default class Tree extends CustomElement {
             if (oldMarked != null) {
                 oldMarked.classList.remove("marked");
             }
-            const ev = new Event("select", {bubbles: true, cancelable: true});
+            const ev = new Event("select", {
+                bubbles: true,
+                cancelable: true
+            });
             ev.data = {
                 element: null,
                 ref: undefined,

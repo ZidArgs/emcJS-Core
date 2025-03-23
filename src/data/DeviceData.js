@@ -1,6 +1,4 @@
-import {
-    immute
-} from "./Immutable.js";
+import {immute} from "./Immutable.js";
 
 const REQUEST_OS_DATA = ["platform", "platformVersion"];
 

@@ -1,9 +1,5 @@
-import {
-    isEqual
-} from "../../../util/helper/Comparator.js";
-import {
-    deepClone
-} from "../../../util/helper/DeepClone.js";
+import {isEqual} from "../../../util/helper/Comparator.js";
+import {deepClone} from "../../../util/helper/DeepClone.js";
 
 export default class ObservableStorage extends EventTarget {
 
@@ -38,7 +34,12 @@ export default class ObservableStorage extends EventTarget {
             // change event
             const ev = new Event("change");
             ev.data = {[key]: value};
-            ev.changes = {[key]: {oldValue, newValue: value}};
+            ev.changes = {
+                [key]: {
+                    oldValue,
+                    newValue: value
+                }
+            };
             this.dispatchEvent(ev);
         }
     }
@@ -54,7 +55,10 @@ export default class ObservableStorage extends EventTarget {
                 this.#writeChangeData(key, clonedValue);
                 this.#buffer.set(key, clonedValue);
                 values[key] = newValue;
-                changes[key] = {oldValue, newValue};
+                changes[key] = {
+                    oldValue,
+                    newValue
+                };
             }
         }
         // change event
@@ -90,7 +94,12 @@ export default class ObservableStorage extends EventTarget {
             // change event
             const ev = new Event("change");
             ev.data = {[key]: defaultValue};
-            ev.changes = {[key]: {oldValue, newValue: defaultValue}};
+            ev.changes = {
+                [key]: {
+                    oldValue,
+                    newValue: defaultValue
+                }
+            };
             this.dispatchEvent(ev);
         }
     }
@@ -123,7 +132,10 @@ export default class ObservableStorage extends EventTarget {
             if (oldValue != null) {
                 const defaultValue = this.getDefault(key);
                 values[key] = defaultValue;
-                changes[key] = {oldValue, newValue: defaultValue};
+                changes[key] = {
+                    oldValue,
+                    newValue: defaultValue
+                };
             }
         }
         this.#buffer.clear();
@@ -172,13 +184,19 @@ export default class ObservableStorage extends EventTarget {
                     this.#buffer.delete(key);
                     const defaultValue = this.getDefault(key);
                     values[key] = defaultValue;
-                    changes[key] = {oldValue, newValue: defaultValue};
+                    changes[key] = {
+                        oldValue,
+                        newValue: defaultValue
+                    };
                 } else {
                     const clonedValue = deepClone(newValue);
                     this.#buffer.set(key, clonedValue);
                     this.#rootData.set(key, clonedValue);
                     values[key] = newValue;
-                    changes[key] = {oldValue, newValue};
+                    changes[key] = {
+                        oldValue,
+                        newValue
+                    };
                 }
             }
         }
@@ -188,7 +206,10 @@ export default class ObservableStorage extends EventTarget {
                 this.#buffer.delete(key);
                 const defaultValue = this.getDefault(key);
                 values[key] = defaultValue;
-                changes[key] = {oldValue, newValue: defaultValue};
+                changes[key] = {
+                    oldValue,
+                    newValue: defaultValue
+                };
             }
         }
         // change event
@@ -212,13 +233,19 @@ export default class ObservableStorage extends EventTarget {
                     this.#writeChangeData(key);
                     const defaultValue = this.getDefault(key);
                     values[key] = defaultValue;
-                    changes[key] = {oldValue, newValue: defaultValue};
+                    changes[key] = {
+                        oldValue,
+                        newValue: defaultValue
+                    };
                 } else {
                     const clonedValue = deepClone(newValue);
                     this.#buffer.set(key, clonedValue);
                     this.#writeChangeData(key, clonedValue);
                     values[key] = newValue;
-                    changes[key] = {oldValue, newValue};
+                    changes[key] = {
+                        oldValue,
+                        newValue
+                    };
                 }
             }
         }
@@ -240,7 +267,12 @@ export default class ObservableStorage extends EventTarget {
                 // change event
                 const ev = new Event("change");
                 ev.data = {[key]: value};
-                ev.changes = {[key]: {oldValue, newValue: value}};
+                ev.changes = {
+                    [key]: {
+                        oldValue,
+                        newValue: value
+                    }
+                };
                 this.dispatchEvent(ev);
             }
         }
@@ -286,7 +318,12 @@ export default class ObservableStorage extends EventTarget {
         // change event
         const ev = new Event("change");
         ev.data = {[key]: defaultValue};
-        ev.changes = {[key]: {oldValue, newValue: defaultValue}};
+        ev.changes = {
+            [key]: {
+                oldValue,
+                newValue: defaultValue
+            }
+        };
         this.dispatchEvent(ev);
     }
 

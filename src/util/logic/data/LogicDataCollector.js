@@ -24,7 +24,9 @@ export default class LogicDataCollector extends EventTarget {
         });
         this.#eventManager.set("change", (event) => {
             const storage = event.target;
-            const {prefix, postfix, precall} = this.#storageRegister.get(storage);
+            const {
+                prefix, postfix, precall
+            } = this.#storageRegister.get(storage);
             const data = event.data;
             if (typeof precall === "function") {
                 this.#changeData(this.#renameKeys(precall(data), prefix, postfix));
@@ -36,7 +38,10 @@ export default class LogicDataCollector extends EventTarget {
 
     init = debounce(() => {
         const logicData = {};
-        for (const [storage, {prefix, postfix, precall}] of this.#storageRegister) {
+        for (const [storage, conf] of this.#storageRegister) {
+            const {
+                prefix, postfix, precall
+            } = conf;
             const data = storage.getAll();
             if (typeof precall === "function") {
                 this.#addRenameKeys(logicData, precall(data), prefix, postfix);
@@ -90,7 +95,11 @@ export default class LogicDataCollector extends EventTarget {
             throw new TypeError("storage must be ObservableStorage or AppStateStorageWrapper");
         }
         this.#eventManager.addTarget(storage);
-        this.#storageRegister.set(storage, {prefix, postfix, precall});
+        this.#storageRegister.set(storage, {
+            prefix,
+            postfix,
+            precall
+        });
         this.init();
     }
 

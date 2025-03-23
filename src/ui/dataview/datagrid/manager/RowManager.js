@@ -1,15 +1,7 @@
-import {
-    debounce
-} from "../../../../util/Debouncer.js";
-import {
-    isEqual
-} from "../../../../util/helper/Comparator.js";
-import {
-    deepClone
-} from "../../../../util/helper/DeepClone.js";
-import {
-    getArrayMutations
-} from "../../../../util/helper/collection/ArrayMutations.js";
+import {debounce} from "../../../../util/Debouncer.js";
+import {isEqual} from "../../../../util/helper/Comparator.js";
+import {deepClone} from "../../../../util/helper/DeepClone.js";
+import {getArrayMutations} from "../../../../util/helper/collection/ArrayMutations.js";
 import CellCache from "../data/CellCache.js";
 import CellManager from "./CellManager.js";
 
@@ -173,7 +165,10 @@ export default class RowManager extends EventTarget {
                     }
                 }
             }
-            for (const {sequence, position} of changes) {
+            for (const change of changes) {
+                const {
+                    sequence, position
+                } = change;
                 const els = [];
                 for (const key of sequence) {
                     const el = this.#elements.get(key);

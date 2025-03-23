@@ -8,7 +8,10 @@ const TIME = 5;
 
 export default class Toast extends AbstractMessage {
 
-    constructor({text, time = TIME} = {}) {
+    constructor(opts = {}) {
+        const {
+            text, time = TIME
+        } = opts;
         super({text});
         STYLE.apply(this.shadowRoot);
         /* --- */
@@ -17,11 +20,11 @@ export default class Toast extends AbstractMessage {
             this.remove();
         });
         /* --- */
-        time = parseInt(time) || TIME;
+        const waitTime = parseInt(time) || TIME;
         if (time > 0) {
             setTimeout(() => {
                 this.remove();
-            }, time * 1000);
+            }, waitTime * 1000);
         }
     }
 

@@ -1,13 +1,7 @@
 import CustomFormElement from "../../element/CustomFormElement.js";
-import {
-    deepClone
-} from "../../../util/helper/DeepClone.js";
-import {
-    debounce
-} from "../../../util/Debouncer.js";
-import {
-    isEqual
-} from "../../../util/helper/Comparator.js";
+import {deepClone} from "../../../util/helper/DeepClone.js";
+import {debounce} from "../../../util/Debouncer.js";
+import {isEqual} from "../../../util/helper/Comparator.js";
 import "../button/Button.js";
 import TPL from "./AbstractFormElement.js.html" assert {type: "html"};
 import STYLE from "./AbstractFormElement.js.css" assert {type: "css"};
@@ -120,7 +114,10 @@ export default class AbstractFormElement extends CustomFormElement {
         this.revalidate();
         this.#setResetActive(false);
         /* --- */
-        const event = new Event("default", {bubbles: true, cancelable: true});
+        const event = new Event("default", {
+            bubbles: true,
+            cancelable: true
+        });
         event.value = this.value;
         event.name = this.name;
         event.fieldId = this.id;
@@ -319,13 +316,19 @@ export default class AbstractFormElement extends CustomFormElement {
         this.revalidate();
         this.#setResetActive(!this.isDefault);
         if (!this.#errorList.size) {
-            const event = new Event("value", {bubbles: true, cancelable: true});
+            const event = new Event("value", {
+                bubbles: true,
+                cancelable: true
+            });
             event.value = newValue;
             event.name = this.name;
             event.fieldId = this.id;
             this.dispatchEvent(event);
         }
-        this.dispatchEvent(new Event("change", {bubbles: true, cancelable: true}));
+        this.dispatchEvent(new Event("change", {
+            bubbles: true,
+            cancelable: true
+        }));
     }, 300);
 
     async revalidate() {

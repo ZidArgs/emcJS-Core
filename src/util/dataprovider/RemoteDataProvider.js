@@ -1,7 +1,5 @@
 import HTTPMethods from "../../enum/http/HTTPMethods.js";
-import {
-    isHttpUrl
-} from "../helper/CheckType.js";
+import {isHttpUrl} from "../helper/CheckType.js";
 import AbstractDataProvider from "./AbstractDataProvider.js";
 
 export default class RemoteDataProvider extends AbstractDataProvider {
@@ -42,14 +40,14 @@ export default class RemoteDataProvider extends AbstractDataProvider {
             return [];
         }
 
-        const {sort = [], page = 0, pageSize = 0, filter = {}} = options;
+        const {
+            sort = [], page = 0, pageSize = 0, filter = {}
+        } = options;
 
         const response = await fetch(this.#source, {
             method: this.#method,
             cache: "no-cache",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
                 sort,
                 page,
@@ -74,13 +72,27 @@ export default class RemoteDataProvider extends AbstractDataProvider {
     }
 
     setOptions(value) {
-        const {sort, page, pageSize, filter} = value;
-        super.setOptions({sort, page, pageSize, filter});
+        const {
+            sort, page, pageSize, filter
+        } = value;
+        super.setOptions({
+            sort,
+            page,
+            pageSize,
+            filter
+        });
     }
 
     updateOptions(value) {
-        const {sort, page, pageSize, filter} = value;
-        super.updateOptions({sort, page, pageSize, filter});
+        const {
+            sort, page, pageSize, filter
+        } = value;
+        super.updateOptions({
+            sort,
+            page,
+            pageSize,
+            filter
+        });
     }
 
 }

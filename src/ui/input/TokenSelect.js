@@ -3,12 +3,8 @@ import EventTargetManager from "../../util/event/EventTargetManager.js";
 import i18n from "../../util/I18n.js";
 import SearchAnd from "../../util/search/SearchAnd.js";
 import ElementManager from "../../util/html/ElementManager.js";
-import {
-    sortChildren
-} from "../../util/helper/ui/NodeListSort.js";
-import {
-    debounce
-} from "../../util/Debouncer.js";
+import {sortChildren} from "../../util/helper/ui/NodeListSort.js";
+import {debounce} from "../../util/Debouncer.js";
 import "./components/InputElement.js";
 import "../i18n/I18nLabel.js";
 import "../i18n/I18nTooltip.js";

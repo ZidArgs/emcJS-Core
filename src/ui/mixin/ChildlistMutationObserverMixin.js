@@ -1,6 +1,4 @@
-import {
-    createMixin
-} from "../../util/Mixin.js";
+import {createMixin} from "../../util/Mixin.js";
 
 export default createMixin((superclass) => class ChildlistMutationObserverMixin extends superclass {
 

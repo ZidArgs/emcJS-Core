@@ -42,12 +42,34 @@ export function scrollIntoViewIfNeeded(node, options) {
 
     if (outOfBoundsY) {
         if (outOfBoundsX) {
-            scrollIntoView(node, {behavior, block, inline, offsetTop, offsetBottom, offsetLeft, offsetRight});
+            scrollIntoView(node, {
+                behavior,
+                block,
+                inline,
+                offsetTop,
+                offsetBottom,
+                offsetLeft,
+                offsetRight
+            });
         } else {
-            scrollIntoView(node, {behavior, block, offsetTop, offsetBottom, offsetLeft, offsetRight});
+            scrollIntoView(node, {
+                behavior,
+                block,
+                offsetTop,
+                offsetBottom,
+                offsetLeft,
+                offsetRight
+            });
         }
     } else if (outOfBoundsX) {
-        scrollIntoView(node, {behavior, inline, offsetTop, offsetBottom, offsetLeft, offsetRight});
+        scrollIntoView(node, {
+            behavior,
+            inline,
+            offsetTop,
+            offsetBottom,
+            offsetLeft,
+            offsetRight
+        });
     }
 }
 
@@ -68,7 +90,11 @@ export function scrollIntoView(node, options) {
     const top = translateScrollBlockOption(block, nodeRect, scrollRect, scrollEl, offsetTop, offsetBottom);
     const left = translateScrollInlineOption(inline, nodeRect, scrollRect, scrollEl, offsetLeft, offsetRight);
 
-    scrollEl.scroll({top, left, behavior});
+    scrollEl.scroll({
+        top,
+        left,
+        behavior
+    });
 }
 
 function translateScrollBlockOption(value, nodeRect, scrollRect, scrollEl, offsetTop = 0, offsetBottom = 0) {

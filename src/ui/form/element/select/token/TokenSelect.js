@@ -6,21 +6,11 @@ import EventTargetManager from "../../../../../util/event/EventTargetManager.js"
 import EventMultiTargetManager from "../../../../../util/event/EventMultiTargetManager.js";
 import i18n from "../../../../../util/I18n.js";
 import CharacterSearch from "../../../../../util/search/CharacterSearch.js";
-import {
-    deepClone
-} from "../../../../../util/helper/DeepClone.js";
-import {
-    nodeTextComparator
-} from "../../../../../util/helper/ui/NodeListSort.js";
-import {
-    debounce
-} from "../../../../../util/Debouncer.js";
-import {
-    registerFocusable
-} from "../../../../../util/helper/html/getFocusableElements.js";
-import {
-    safeSetAttribute
-} from "../../../../../util/helper/ui/NodeAttributes.js";
+import {deepClone} from "../../../../../util/helper/DeepClone.js";
+import {nodeTextComparator} from "../../../../../util/helper/ui/NodeListSort.js";
+import {debounce} from "../../../../../util/Debouncer.js";
+import {registerFocusable} from "../../../../../util/helper/html/getFocusableElements.js";
+import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
 import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
 import TokenSelectedElementManager from "./manager/TokenSelectedElementManager.js";
 import I18nOption from "../../../../i18n/builtin/I18nOption.js";
@@ -728,7 +718,9 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
 
     static fromConfig(config) {
         const selectEl = new TokenSelect();
-        const {options = {}, ...params} = config;
+        const {
+            options = {}, ...params
+        } = config;
 
         for (const value in options) {
             const optionEl = I18nOption.create();

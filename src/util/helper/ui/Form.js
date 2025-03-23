@@ -13,7 +13,9 @@ export function extractDefaultValuesFromConfig(formConfig, result) {
                 extractDefaultValuesFromConfig(option, result);
             }
         } else {
-            const {name, value, children} = formConfig;
+            const {
+                name, value, children
+            } = formConfig;
             if (name) {
                 result[name] = value;
                 if (children != null) {

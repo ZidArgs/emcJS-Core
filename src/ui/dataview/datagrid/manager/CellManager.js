@@ -1,18 +1,8 @@
-import {
-    debounce
-} from "../../../../util/Debouncer.js";
-import {
-    isEqual
-} from "../../../../util/helper/Comparator.js";
-import {
-    deepClone
-} from "../../../../util/helper/DeepClone.js";
-import {
-    getArrayMutations
-} from "../../../../util/helper/collection/ArrayMutations.js";
-import {
-    getFromObjectByPath
-} from "../../../../util/helper/collection/ObjectContent.js";
+import {debounce} from "../../../../util/Debouncer.js";
+import {isEqual} from "../../../../util/helper/Comparator.js";
+import {deepClone} from "../../../../util/helper/DeepClone.js";
+import {getArrayMutations} from "../../../../util/helper/collection/ArrayMutations.js";
+import {getFromObjectByPath} from "../../../../util/helper/collection/ObjectContent.js";
 import DataGridCell from "../components/cell/DataGridCell.js";
 import CellCache from "../data/CellCache.js";
 
@@ -73,7 +63,10 @@ export default class CellManager {
         this.#selectCheckboxEl = document.createElement("input");
         this.#selectCheckboxEl.type = "checkbox";
         this.#selectCheckboxEl.addEventListener("change", () => {
-            const ev = new Event("selection", {bubbles: true, cancelable: true});
+            const ev = new Event("selection", {
+                bubbles: true,
+                cancelable: true
+            });
             ev.data = {
                 value: this.#selectCheckboxEl.checked,
                 rowKey: this.#rowKey
@@ -132,7 +125,9 @@ export default class CellManager {
             if (typeof params !== "object" || Array.isArray(params)) {
                 throw new TypeError("data entries must be objects");
             }
-            const {name, type, ...columnData} = params;
+            const {
+                name, type, ...columnData
+            } = params;
             if (typeof name !== "string") {
                 throw new TypeError("column name must be a string");
             }
@@ -302,7 +297,10 @@ export default class CellManager {
                     }
                 }
             }
-            for (const {sequence, position} of changes) {
+            for (const change of changes) {
+                const {
+                    sequence, position
+                } = change;
                 const els = [];
                 for (const key of sequence) {
                     const el = this.#elements.get(key);

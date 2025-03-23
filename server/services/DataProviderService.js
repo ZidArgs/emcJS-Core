@@ -1,7 +1,5 @@
 import ServiceModule from "jswebservice/ServiceModule.js";
-import {
-    extractData
-} from "../../src/util/helper/collection/ExtractDataFromArray.js";
+import {extractData} from "../../src/util/helper/collection/ExtractDataFromArray.js";
 
 const SAMPLE_DATA = [
     {
@@ -38,7 +36,9 @@ export default class DataProviderService extends ServiceModule {
 
     async #onrequest(method, params, query, body) {
         if (method == "POST") {
-            const {sort, page, pageSize, filter} = body;
+            const {
+                sort, page, pageSize, filter
+            } = body;
             try {
                 const data = await this.#getResponseData(sort, page, pageSize, filter);
 
@@ -77,7 +77,9 @@ export default class DataProviderService extends ServiceModule {
             filter
         };
 
-        const {records, total} = extractData([...SAMPLE_DATA], options);
+        const {
+            records, total
+        } = extractData([...SAMPLE_DATA], options);
 
         return {
             success: true,

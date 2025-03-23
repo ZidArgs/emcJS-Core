@@ -3,12 +3,8 @@ import ListSelectionHelper from "../../util/helper/ui/ListSelectionHelper.js";
 import EventTargetManager from "../../util/event/EventTargetManager.js";
 import i18n from "../../util/I18n.js";
 import SearchAnd from "../../util/search/SearchAnd.js";
-import {
-    sortChildren
-} from "../../util/helper/ui/NodeListSort.js";
-import {
-    debounce
-} from "../../util/Debouncer.js";
+import {sortChildren} from "../../util/helper/ui/NodeListSort.js";
+import {debounce} from "../../util/Debouncer.js";
 import "../header/SelectionHeader.js";
 import "./Option.js";
 import TPL from "./ListSelect.js.html" assert {type: "html"};

@@ -1,6 +1,4 @@
-import {
-    debounce
-} from "../../util/Debouncer.js";
+import {debounce} from "../../util/Debouncer.js";
 
 export default class UsageCounter extends EventTarget {
 

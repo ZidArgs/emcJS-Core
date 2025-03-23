@@ -1,18 +1,10 @@
-import {
-    deepClone
-} from "../helper/DeepClone.js";
-import {
-    isEqual
-} from "../helper/Comparator.js";
+import {deepClone} from "../helper/DeepClone.js";
+import {isEqual} from "../helper/Comparator.js";
 import {
     isArray, isBoolean, isDict, isFunction, isNumberNotNaN, isString, isStringNotEmpty
 } from "../helper/CheckType.js";
-import {
-    debounce
-} from "../Debouncer.js";
-import {
-    DEFAULT_OPTIONS
-} from "../helper/collection/ExtractDataFromArray.js";
+import {debounce} from "../Debouncer.js";
+import {DEFAULT_OPTIONS} from "../helper/collection/ExtractDataFromArray.js";
 import EventMultiTargetManager from "../event/EventMultiTargetManager.js";
 import PaginationToolbar from "../../ui/dataview/toolbar/PaginationToolbar.js";
 import DataRecieverMixin from "./DataRecieverMixin.js";
@@ -76,7 +68,10 @@ export default class AbstractDataProvider extends EventTarget {
         });
         this.#paginationEventManager.set("size", (event) => {
             const pageSize = event.data;
-            this.updateOptions({page: 0, pageSize});
+            this.updateOptions({
+                page: 0,
+                pageSize
+            });
         });
     }
 

@@ -1,12 +1,8 @@
 import AppStateStorageWrapper from "../../data/state/AppStateStorageWrapper.js";
 import ObservableStorage from "../../data/storage/observable/ObservableStorage.js";
-import {
-    debounce
-} from "../Debouncer.js";
+import {debounce} from "../Debouncer.js";
 import EventTargetManager from "../event/EventTargetManager.js";
-import {
-    isEqual
-} from "../helper/Comparator.js";
+import {isEqual} from "../helper/Comparator.js";
 
 export default class ObservableStorageObserver extends EventTarget {
 

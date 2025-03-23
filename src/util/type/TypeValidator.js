@@ -1,11 +1,7 @@
-import {
-    isEqual
-} from "../helper/Comparator.js";
+import {isEqual} from "../helper/Comparator.js";
 import TypeConfigMap from "../../data/type/TypeConfigMap.js";
 import LogicValidator from "../logic/LogicValidator.js";
-import {
-    getFromObjectByPath
-} from "../helper/collection/ObjectContent.js";
+import {getFromObjectByPath} from "../helper/collection/ObjectContent.js";
 
 const IMAGE_PATTERN = /\.(?:apng|avif|gif|jpg|jpeg|jfif|pjpeg|pjp|png|svg|webp|bmp|ico|tiff)$/i;
 const COLOR_PATTERN = /#[0-9a-f]{6}/i;
@@ -27,7 +23,10 @@ class TypeValidator {
         }
 
         const errors = [];
-        this.#validate(typeName, value, [pathLabel], {forceAllOptional, ignoreDuplicateKeys}, errors);
+        this.#validate(typeName, value, [pathLabel], {
+            forceAllOptional,
+            ignoreDuplicateKeys
+        }, errors);
         if (throwErrors && errors.length > 0) {
             const msg = errors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
             throw new Error(`Error validating value as "${typeName}"\n    ${msg}`);
@@ -46,7 +45,9 @@ class TypeValidator {
             return;
         }
 
-        const {definition: typeDefinition, parameters: typeParameters} = typeConfig;
+        const {
+            definition: typeDefinition, parameters: typeParameters
+        } = typeConfig;
 
         if (!typeParameters.allowExtension) {
             for (const name in data) {

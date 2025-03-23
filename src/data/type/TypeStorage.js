@@ -1,12 +1,6 @@
-import {
-    debounceCacheData
-} from "../../util/Debouncer.js";
-import {
-    isEqual
-} from "../../util/helper/Comparator.js";
-import {
-    deepClone
-} from "../../util/helper/DeepClone.js";
+import {debounceCacheData} from "../../util/Debouncer.js";
+import {isEqual} from "../../util/helper/Comparator.js";
+import {deepClone} from "../../util/helper/DeepClone.js";
 import TypeValidator from "../../util/type/TypeValidator.js";
 
 const REGISTER_LISTENER = new Set();
@@ -53,12 +47,13 @@ export default class TypeStorage extends EventTarget {
         }
         // validation
         if (Object.keys(value).length) {
-            const validationErrors = TypeValidator.validate(this.#typeName, value, {
-                label: key
-            });
+            const validationErrors = TypeValidator.validate(this.#typeName, value, {label: key});
             if (validationErrors.length > 0) {
                 const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
-                this.#errorData.set(key, {value: deepClone(value), error: msg});
+                this.#errorData.set(key, {
+                    value: deepClone(value),
+                    error: msg
+                });
                 throw new Error(`Error validating value as "${this.#typeName}"\n    ${msg}`);
             }
             this.#errorData.delete(key);
@@ -72,7 +67,12 @@ export default class TypeStorage extends EventTarget {
             // event
             const ev = new Event("change");
             ev.data = {[key]: value};
-            ev.changes = {[key]: {oldValue, newValue: value}};
+            ev.changes = {
+                [key]: {
+                    oldValue,
+                    newValue: value
+                }
+            };
             this.dispatchEvent(ev);
         }
     }
@@ -88,12 +88,13 @@ export default class TypeStorage extends EventTarget {
             }
             // validation
             if (Object.keys(newValue).length) {
-                const validationErrors = TypeValidator.validate(this.#typeName, newValue, {
-                    label: key
-                });
+                const validationErrors = TypeValidator.validate(this.#typeName, newValue, {label: key});
                 if (validationErrors.length > 0) {
                     const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
-                    this.#errorData.set(key, {value: deepClone(newValue), error: msg});
+                    this.#errorData.set(key, {
+                        value: deepClone(newValue),
+                        error: msg
+                    });
                     allErrors.push(`Error validating value as "${this.#typeName}"\n    ${msg}`);
                     continue;
                 }
@@ -106,7 +107,10 @@ export default class TypeStorage extends EventTarget {
                 this.#writeChangeData(key, clonedValue);
                 this.#buffer.set(key, clonedValue);
                 values[key] = newValue;
-                changes[key] = {oldValue, newValue};
+                changes[key] = {
+                    oldValue,
+                    newValue
+                };
             }
         }
         // event
@@ -145,7 +149,12 @@ export default class TypeStorage extends EventTarget {
             this.#buffer.delete(key);
             const ev = new Event("change");
             ev.data = {[key]: undefined};
-            ev.changes = {[key]: {oldValue, newValue: undefined}};
+            ev.changes = {
+                [key]: {
+                    oldValue,
+                    newValue: undefined
+                }
+            };
             this.dispatchEvent(ev);
         }
     }
@@ -183,12 +192,13 @@ export default class TypeStorage extends EventTarget {
             }
             // validation
             if (Object.keys(newValue).length) {
-                const validationErrors = TypeValidator.validate(this.#typeName, newValue, {
-                    label: key
-                });
+                const validationErrors = TypeValidator.validate(this.#typeName, newValue, {label: key});
                 if (validationErrors.length > 0) {
                     const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
-                    this.#errorData.set(key, {value: deepClone(newValue), error: msg});
+                    this.#errorData.set(key, {
+                        value: deepClone(newValue),
+                        error: msg
+                    });
                     allErrors.push(`Error validating value as "${this.#typeName}"\n    ${msg}`);
                     continue;
                 }
@@ -218,12 +228,13 @@ export default class TypeStorage extends EventTarget {
             const newValue = data[key];
             // validation
             if (newValue != null && Object.keys(newValue).length) {
-                const validationErrors = TypeValidator.validate(this.#typeName, newValue, {
-                    label: key
-                });
+                const validationErrors = TypeValidator.validate(this.#typeName, newValue, {label: key});
                 if (validationErrors.length > 0) {
                     const msg = validationErrors.map((s) => s.split("\n").join("\n    ")).join("\n    ");
-                    this.#errorData.set(key, {value: deepClone(newValue), error: msg});
+                    this.#errorData.set(key, {
+                        value: deepClone(newValue),
+                        error: msg
+                    });
                     allErrors.push(`Error validating value as "${this.#typeName}"\n    ${msg}`);
                     continue;
                 }
@@ -236,13 +247,19 @@ export default class TypeStorage extends EventTarget {
                     this.#buffer.delete(key);
                     this.#writeChangeData(key);
                     values[key] = undefined;
-                    changes[key] = {oldValue, newValue: undefined};
+                    changes[key] = {
+                        oldValue,
+                        newValue: undefined
+                    };
                 } else {
                     const clonedValue = deepClone(newValue);
                     this.#buffer.set(key, clonedValue);
                     this.#writeChangeData(key, clonedValue);
                     values[key] = newValue;
-                    changes[key] = {oldValue, newValue};
+                    changes[key] = {
+                        oldValue,
+                        newValue
+                    };
                 }
             }
         }
@@ -333,7 +350,12 @@ export default class TypeStorage extends EventTarget {
         const defaultValue = this.getDefault(key);
         const ev = new Event("change");
         ev.data = {[key]: defaultValue};
-        ev.changes = {[key]: {oldValue, newValue: defaultValue}};
+        ev.changes = {
+            [key]: {
+                oldValue,
+                newValue: defaultValue
+            }
+        };
         this.dispatchEvent(ev);
     }
 
@@ -366,8 +388,14 @@ export default class TypeStorage extends EventTarget {
 
     getErrorData() {
         const res = {};
-        for (const [key, {value, error}] of this.#errorData) {
-            res[key] = {value, error};
+        for (const [key, data] of this.#errorData) {
+            const {
+                value, error
+            } = data;
+            res[key] = {
+                value,
+                error
+            };
         }
         return res;
     }

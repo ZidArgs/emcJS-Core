@@ -1,16 +1,8 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
-import {
-    debounce
-} from "../../../../../util/Debouncer.js";
-import {
-    registerFocusable
-} from "../../../../../util/helper/html/getFocusableElements.js";
-import {
-    safeSetAttribute
-} from "../../../../../util/helper/ui/NodeAttributes.js";
-import {
-    deepClone
-} from "../../../../../util/helper/DeepClone.js";
+import {debounce} from "../../../../../util/Debouncer.js";
+import {registerFocusable} from "../../../../../util/helper/html/getFocusableElements.js";
+import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
+import {deepClone} from "../../../../../util/helper/DeepClone.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
 import TPL from "./CodeInput.js.html" assert {type: "html"};
 import STYLE from "./CodeInput.js.css" assert {type: "css"};

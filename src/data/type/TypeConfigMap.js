@@ -1,6 +1,4 @@
-import {
-    immute
-} from "../Immutable.js";
+import {immute} from "../Immutable.js";
 
 const TypeConfigurations = new Map();
 
@@ -38,9 +36,7 @@ class TypeConfigMap extends EventTarget {
             throw new Error(`TypeConfigMap - config has to be a dictionary [ ${typeName} ]`);
         }
         TypeConfigurations.set(typeName, immute({
-            parameters: {
-                allowExtension: !!(typeConfig.parameters.allowExtension ?? false)
-            },
+            parameters: {allowExtension: !!(typeConfig.parameters.allowExtension ?? false)},
             definition: this.#convertConfig(typeName, typeConfig.definition)
         }));
         const ev = new Event("register");
@@ -90,9 +86,7 @@ class TypeConfigMap extends EventTarget {
         }
 
         const currentType = attrDefinition["@type"];
-        const currentResult = {
-            "@type": currentType
-        };
+        const currentResult = {"@type": currentType};
 
         if ("optional" in attrDefinition) {
             if (typeof attrDefinition["optional"] !== "boolean") {

@@ -1,7 +1,5 @@
 import CustomElementDelegating from "../element/CustomElementDelegating.js";
-import {
-    debounce
-} from "../../util/Debouncer.js";
+import {debounce} from "../../util/Debouncer.js";
 import "../i18n/I18nTooltip.js";
 import TPL from "./SearchHeader.js.html" assert {type: "html"};
 import STYLE from "./SearchHeader.js.css" assert {type: "css"};
@@ -34,7 +32,10 @@ export default class SearchHeader extends CustomElementDelegating {
 
     set value(value) {
         this.#inputEl.value = value;
-        const event = new Event("search", {bubbles: true, cancelable: true});
+        const event = new Event("search", {
+            bubbles: true,
+            cancelable: true
+        });
         event.value = value;
         this.dispatchEvent(event);
     }

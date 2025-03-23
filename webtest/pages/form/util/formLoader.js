@@ -51,17 +51,13 @@ export async function loadForm(allowsInvalid) {
     if (Array.isArray(formElements)) {
         for (const formEls of formElements) {
             formConfig.forms.push({
-                config: {
-                    allowsInvalid
-                },
+                config: {allowsInvalid},
                 elements: formEls
             });
         }
     } else {
         formConfig.forms.push({
-            config: {
-                allowsInvalid
-            },
+            config: {allowsInvalid},
             elements: formElements
         });
     }
@@ -71,9 +67,7 @@ export async function loadForm(allowsInvalid) {
             submitButton: true,
             resetButton: true,
             allowsInvalid,
-            values: {
-                test: "foobar"
-            }
+            values: {test: "foobar"}
         }
     });
     // ---
@@ -88,7 +82,9 @@ export async function loadForm(allowsInvalid) {
     console.groupEnd("init context");
 
     formContext.addEventListener("submit", (event) => {
-        const {errors, data, hiddenData, changes} = event;
+        const {
+            errors, data, hiddenData, changes
+        } = event;
         const valid = formContext.getFormValidity() ? "valid" : "invalid";
         console.group(`submit (${valid})`);
         console.log("[E] errors", errors);

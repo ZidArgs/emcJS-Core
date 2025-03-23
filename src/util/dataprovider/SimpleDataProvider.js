@@ -1,15 +1,7 @@
-import {
-    isObject
-} from "../helper/CheckType.js";
-import {
-    deepClone
-} from "../helper/DeepClone.js";
-import {
-    deleteAtIndex
-} from "../helper/collection/ArrayMutations.js";
-import {
-    extractData
-} from "../helper/collection/ExtractDataFromArray.js";
+import {isObject} from "../helper/CheckType.js";
+import {deepClone} from "../helper/DeepClone.js";
+import {deleteAtIndex} from "../helper/collection/ArrayMutations.js";
+import {extractData} from "../helper/collection/ExtractDataFromArray.js";
 import AbstractDataProvider from "./AbstractDataProvider.js";
 
 export default class SimpleDataProvider extends AbstractDataProvider {

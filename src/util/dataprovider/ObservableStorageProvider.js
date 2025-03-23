@@ -1,15 +1,9 @@
 import AppStateStorageWrapper from "../../data/state/AppStateStorageWrapper.js";
 import ObservableStorage from "../../data/storage/observable/ObservableStorage.js";
 import EventTargetManager from "../event/EventTargetManager.js";
-import {
-    isObject
-} from "../helper/CheckType.js";
-import {
-    extractData
-} from "../helper/collection/ExtractDataFromArray.js";
-import {
-    deepClone
-} from "../helper/DeepClone.js";
+import {isObject} from "../helper/CheckType.js";
+import {extractData} from "../helper/collection/ExtractDataFromArray.js";
+import {deepClone} from "../helper/DeepClone.js";
 import AbstractDataProvider from "./AbstractDataProvider.js";
 
 export default class ObservableStorageProvider extends AbstractDataProvider {

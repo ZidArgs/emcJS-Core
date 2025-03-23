@@ -2,15 +2,9 @@ import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
 import DragDropMemory from "../../../../../data/DragDropMemory.js";
 import ContextMenuManagerMixin from "../../../../mixin/ContextMenuManagerMixin.js";
-import {
-    mix
-} from "../../../../../util/Mixin.js";
-import {
-    reduceLogic
-} from "../../../../../util/logic/LogicReducer.js";
-import {
-    registerFocusable
-} from "../../../../../util/helper/html/getFocusableElements.js";
+import {mix} from "../../../../../util/Mixin.js";
+import {reduceLogic} from "../../../../../util/logic/LogicReducer.js";
+import {registerFocusable} from "../../../../../util/helper/html/getFocusableElements.js";
 import LogicEditorContextMenuElement from "./components/contexmenu/LogicEditorContextMenuElement.js";
 import LogicElementModal from "./components/modal/LogicElementModal.js";
 import LogicJSONModal from "./components/modal/LogicJSONModal.js";

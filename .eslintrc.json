@@ -2,7 +2,7 @@
     "extends": "eslint:recommended",
     "parser": "@babel/eslint-parser",
     "parserOptions": {
-        "ecmaVersion": "latest",
+        "ecmaVersion": 2021,
         "sourceType": "module",
         "ecmaFeatures": {
             "jsx": false,
@@ -22,6 +22,10 @@
         "no-unused-expressions": "error",
         "no-unused-private-class-members": "error",
         "no-var": "error",
+        "dot-location": [
+            "error",
+            "property"
+        ],
         "indent": [
             "error",
             4,
@@ -131,17 +135,31 @@
             "error",
             "beside"
         ],
+        "object-property-newline": [
+            "error",
+            {
+                "allowAllPropertiesOnSameLine": false
+            }
+        ],
         "object-curly-newline": [
             "error",
             {
                 "ObjectExpression": {
-                    "consistent": true
+                    "multiline": true,
+                    "minProperties": 2
                 },
                 "ObjectPattern": {
-                    "consistent": true
+                    "multiline": true,
+                    "minProperties": 2
                 },
-                "ImportDeclaration": "always",
-                "ExportDeclaration": "always"
+                "ImportDeclaration": {
+                    "multiline": true,
+                    "minProperties": 2
+                },
+                "ExportDeclaration": {
+                    "multiline": true,
+                    "minProperties": 2
+                }
             }
         ],
         "lines-between-class-members": [

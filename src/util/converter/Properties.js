@@ -1,6 +1,4 @@
-import {
-    unescapeUnicode
-} from "../helper/string/Unicode.js";
+import {unescapeUnicode} from "../helper/string/Unicode.js";
 
 const LNBR_SEQ = /(?:\r\n|\n|\r)/g;
 const COMMENT = /^(?:!|#).*$/;

@@ -44,7 +44,9 @@ export function repeatArray(arr, times) {
 export function getArrayMutations(a, b) {
     const sequenceData = getArrayMutationSequence(a, b);
 
-    const {sequences, maxLength} = sequenceData;
+    const {
+        sequences, maxLength
+    } = sequenceData;
 
     const changeMap = {
         changes: [],
@@ -67,8 +69,13 @@ export function getArrayMutations(a, b) {
     }
 
     for (const seq of bB) {
-        const {sequence, newStart} = seq;
-        changeMap.changes.push({sequence, position: newStart});
+        const {
+            sequence, newStart
+        } = seq;
+        changeMap.changes.push({
+            sequence,
+            position: newStart
+        });
     }
 
     return changeMap;
@@ -199,7 +206,9 @@ function mergeArrayMutationSequences(data) {
     const newElements = [];
 
     for (const seq of data.sequences) {
-        const {sequence, oldStart, newStart, movedBy} = seq;
+        const {
+            sequence, oldStart, newStart, movedBy
+        } = seq;
 
         if (oldStart < 0) {
             newElements.push(seq);
@@ -290,12 +299,16 @@ function mergeArrayMutationSequences(data) {
 
     while (newElements.length) {
         const seq = newElements.shift();
-        const {sequence, newStart} = seq;
+        const {
+            sequence, newStart
+        } = seq;
         const currentSequence = [...sequence];
         let currentOffset = newStart + 1;
         while (newElements.length) {
             const nSeq = newElements[0];
-            const {sequence: nextSequence, newStart: nextStart} = nSeq;
+            const {
+                sequence: nextSequence, newStart: nextStart
+            } = nSeq;
             if (nextStart === currentOffset++) {
                 currentSequence.push(...nextSequence);
                 newElements.shift();

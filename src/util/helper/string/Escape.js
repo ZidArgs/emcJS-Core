@@ -1,6 +1,4 @@
-import {
-    unescapeUnicode
-} from "./Unicode.js";
+import {unescapeUnicode} from "./Unicode.js";
 
 /* eslint-disable no-control-regex */
 const ESC_BACKSLASH = /\\/g;

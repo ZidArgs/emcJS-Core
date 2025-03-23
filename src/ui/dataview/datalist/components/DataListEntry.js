@@ -16,10 +16,11 @@ export default class DataListEntry extends CustomElement {
         this.addEventListener("contextmenu", (event) => {
             event.stopPropagation();
             event.preventDefault();
-            const menuEvent = new Event("menu", {bubbles: true, cancelable: true});
-            menuEvent.data = {
-                key: this.key
-            };
+            const menuEvent = new Event("menu", {
+                bubbles: true,
+                cancelable: true
+            });
+            menuEvent.data = {key: this.key};
             this.dispatchEvent(menuEvent);
         });
     }

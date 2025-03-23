@@ -1,7 +1,5 @@
 import ElementManager from "../../../../../../util/html/ElementManager.js";
-import {
-    safeSetAttribute
-} from "../../../../../../util/helper/ui/NodeAttributes.js";
+import {safeSetAttribute} from "../../../../../../util/helper/ui/NodeAttributes.js";
 
 export default class SwitchButtonManager extends ElementManager {
 

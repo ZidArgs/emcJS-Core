@@ -1,7 +1,5 @@
 import Button from "./Button.js";
-import {
-    registerFocusable
-} from "../../../util/helper/html/getFocusableElements.js";
+import {registerFocusable} from "../../../util/helper/html/getFocusableElements.js";
 import STYLE from "./SubmitButton.js.css" assert {type: "css"};
 
 export default class SubmitButton extends Button {

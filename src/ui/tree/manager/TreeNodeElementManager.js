@@ -10,7 +10,9 @@ export default class TreeNodeElementManager extends ElementManager {
     }
 
     composer(key, params) {
-        const {nodeType, startCollapsed = false, children} = params;
+        const {
+            nodeType, startCollapsed = false, children
+        } = params;
         const el = this.#targetClass.createNodeType(nodeType);
         el.ref = key;
         if (children != null) {
@@ -23,7 +25,9 @@ export default class TreeNodeElementManager extends ElementManager {
     }
 
     mutator(el, key, params) {
-        const {label = key, data = {}, sorted = false, children, ...attr} = params;
+        const {
+            label = key, data = {}, sorted = false, children, ...attr
+        } = params;
         el.label = label;
         el.sorted = sorted;
         for (const name in data) {

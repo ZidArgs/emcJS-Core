@@ -29,7 +29,10 @@ export default class AbstractTwoChildrenElement extends AbstractElement {
         this.#placeholder0El.ondrop = AbstractElement.dropOnPlaceholder;
         this.#placeholder1El.ondrop = AbstractElement.dropOnPlaceholder;
         this.#placeholder1El.onclick = this.#placeholder0El.onclick = (event) => {
-            const e = new Event("placeholderclicked", {bubbles: true, cancelable: true});
+            const e = new Event("placeholderclicked", {
+                bubbles: true,
+                cancelable: true
+            });
             e.name = event.target.parentElement.name;
             this.dispatchEvent(e);
             event.stopPropagation();

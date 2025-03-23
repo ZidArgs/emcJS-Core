@@ -16,7 +16,10 @@ export default class LogicEditorContextMenuElement extends ContextMenu {
             // {menuAction: "wrapxor", content: "Wrap Xor"},
             // {menuAction: "wrapxnor", content: "Wrap Xnor"},
             // "splitter",
-            {menuAction: "remove", content: "Remove"}
+            {
+                menuAction: "remove",
+                content: "Remove"
+            }
         ]);
     }
 

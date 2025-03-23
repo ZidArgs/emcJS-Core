@@ -1,7 +1,5 @@
 import DragDropMemory from "../../data/DragDropMemory.js";
-import {
-    appUID
-} from "../../util/helper/UniqueGenerator.js";
+import {appUID} from "../../util/helper/UniqueGenerator.js";
 import CustomElement from "../element/CustomElement.js";
 import TPL from "./DragElement.js.html" assert {type: "html"};
 import STYLE from "./DragElement.js.css" assert {type: "css"};

@@ -1,12 +1,6 @@
-import {
-    isEqual
-} from "../../../util/helper/Comparator.js";
-import {
-    deepClone
-} from "../../../util/helper/DeepClone.js";
-import {
-    jsonParseSafe
-} from "../../../util/helper/JSON.js";
+import {isEqual} from "../../../util/helper/Comparator.js";
+import {deepClone} from "../../../util/helper/DeepClone.js";
+import {jsonParseSafe} from "../../../util/helper/JSON.js";
 
 const STORAGE = new Map();
 
@@ -40,7 +34,9 @@ class LocalStorage extends EventTarget {
         }
         // event
         window.addEventListener("storage", (event) => {
-            const {key, newValue, storageArea} = event;
+            const {
+                key, newValue, storageArea
+            } = event;
             if (storageArea === localStorage) {
                 if (key == null) {
                     STORAGE.clear();

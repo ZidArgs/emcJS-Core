@@ -1,6 +1,4 @@
-import {
-    delimitInteger
-} from "./Integer.js";
+import {delimitInteger} from "./Integer.js";
 
 export function delimitFloat(value, min = Number.MIN_VALUE, max = Number.MAX_VALUE) {
     if (isNaN(value)) {

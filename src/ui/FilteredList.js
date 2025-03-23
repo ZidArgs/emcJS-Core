@@ -1,8 +1,6 @@
 import CustomElement from "./element/CustomElement.js";
 import CharacterSearch from "../util/search/CharacterSearch.js";
-import {
-    getInnerText
-} from "../util/helper/ui/ExtractText.js";
+import {getInnerText} from "../util/helper/ui/ExtractText.js";
 import "./header/SearchHeader.js";
 import TPL from "./FilteredList.js.html" assert {type: "html"};
 import STYLE from "./FilteredList.js.css" assert {type: "css"};

@@ -2,9 +2,7 @@ import Modal from "../../../../../modal/Modal.js";
 import CharacterSearch from "../../../../../../util/search/CharacterSearch.js";
 import ElementListCache from "../../../../../../util/html/ElementListCache.js";
 import EventMultiTargetManager from "../../../../../../util/event/EventMultiTargetManager.js";
-import {
-    debounce
-} from "../../../../../../util/Debouncer.js";
+import {debounce} from "../../../../../../util/Debouncer.js";
 import "../../../../button/Button.js";
 import "../../../input/search/SearchInput.js";
 import "./ImageSelectPreview.js";

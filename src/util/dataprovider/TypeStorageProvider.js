@@ -1,12 +1,6 @@
-import {
-    extractData
-} from "../helper/collection/ExtractDataFromArray.js";
-import {
-    deepClone
-} from "../helper/DeepClone.js";
-import {
-    isObject
-} from "../helper/CheckType.js";
+import {extractData} from "../helper/collection/ExtractDataFromArray.js";
+import {deepClone} from "../helper/DeepClone.js";
+import {isObject} from "../helper/CheckType.js";
 import TypeStorage from "../../data/type/TypeStorage.js";
 import EventTargetManager from "../event/EventTargetManager.js";
 import AbstractDataProvider from "./AbstractDataProvider.js";

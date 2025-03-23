@@ -1,11 +1,7 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
-import {
-    deepClone
-} from "../../../../../util/helper/DeepClone.js";
-import {
-    registerFocusable
-} from "../../../../../util/helper/html/getFocusableElements.js";
+import {deepClone} from "../../../../../util/helper/DeepClone.js";
+import {registerFocusable} from "../../../../../util/helper/html/getFocusableElements.js";
 import SimpleDataProvider from "../../../../../util/dataprovider/SimpleDataProvider.js";
 import ModalDialog from "../../../../modal/ModalDialog.js";
 import "../search/SearchInput.js";
@@ -56,7 +52,9 @@ export default class KeyValueListInput extends AbstractFormElement {
         this.#gridEl.addEventListener("edit::value", (event) => {
             event.stopPropagation();
             event.preventDefault();
-            const {value, rowKey} = event.data;
+            const {
+                value, rowKey
+            } = event.data;
             const currentValue = {...this.value};
             if (rowKey in currentValue) {
                 currentValue[rowKey] = value;
@@ -68,9 +66,7 @@ export default class KeyValueListInput extends AbstractFormElement {
         this.#searchEl.addEventListener("change", () => {
             const options = {filter: {}};
             if (this.#searchEl.value != "") {
-                options.filter = {
-                    name: this.#searchEl.value
-                };
+                options.filter = {name: this.#searchEl.value};
             }
             this.#dataManager.updateOptions(options);
         }, true);
@@ -154,13 +150,9 @@ export default class KeyValueListInput extends AbstractFormElement {
 
     #updateSort(value) {
         if (value) {
-            this.#dataManager.setOptions({
-                sort: ["name"]
-            });
+            this.#dataManager.setOptions({sort: ["name"]});
         } else {
-            this.#dataManager.setOptions({
-                sort: []
-            });
+            this.#dataManager.setOptions({sort: []});
         }
     }
 

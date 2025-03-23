@@ -1,15 +1,7 @@
-import {
-    debounce
-} from "../../../../util/Debouncer.js";
-import {
-    isEqual
-} from "../../../../util/helper/Comparator.js";
-import {
-    deepClone
-} from "../../../../util/helper/DeepClone.js";
-import {
-    getArrayMutations
-} from "../../../../util/helper/collection/ArrayMutations.js";
+import {debounce} from "../../../../util/Debouncer.js";
+import {isEqual} from "../../../../util/helper/Comparator.js";
+import {deepClone} from "../../../../util/helper/DeepClone.js";
+import {getArrayMutations} from "../../../../util/helper/collection/ArrayMutations.js";
 import DataGridHeaderCell from "../components/cell/DataGridHeaderCell.js";
 
 export default class HeaderManager {
@@ -93,7 +85,9 @@ export default class HeaderManager {
             if (typeof params !== "object" || Array.isArray(params)) {
                 throw new TypeError("data entries must be objects");
             }
-            const {name, ...columnData} = params;
+            const {
+                name, ...columnData
+            } = params;
             if (typeof name !== "string") {
                 throw new TypeError("column name must be a string");
             }
@@ -144,7 +138,9 @@ export default class HeaderManager {
 
     composer(name, columnData) {
         const headerCellEl = new DataGridHeaderCell(this.#dataGridId);
-        const {label, sortable = false} = columnData;
+        const {
+            label, sortable = false
+        } = columnData;
 
         headerCellEl.innerText = (label ?? name).trim();
         headerCellEl.title = label ?? name;
@@ -178,7 +174,10 @@ export default class HeaderManager {
                     }
                 }
             }
-            for (const {sequence, position} of changes) {
+            for (const change of changes) {
+                const {
+                    sequence, position
+                } = change;
                 const els = [];
                 for (const key of sequence) {
                     const el = this.#elements.get(key);

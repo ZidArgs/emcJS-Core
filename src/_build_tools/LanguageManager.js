@@ -29,13 +29,14 @@ function normalizePath(path) {
 }
 
 function analyzeFile(ref, file) {
-    const result = {
-        "label": ref
-    };
+    const result = {"label": ref};
     const fileContent = String(file.contents);
     const lines = fileContent.split(LNBR_SEQ);
     for (const line of lines) {
-        for (const {regEx, func} of EXTRACTORS) {
+        for (const extractor of EXTRACTORS) {
+            const {
+                regEx, func
+            } = extractor;
             const matches = regEx.exec(line);
             if (matches != null) {
                 func(result, matches);

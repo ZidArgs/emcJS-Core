@@ -1,9 +1,7 @@
 // main
 import FormElementRegistry from "/emcJS/data/registry/form/FormElementRegistry.js";
 import FormBuilder from "/emcJS/util/form/FormBuilder.js";
-import {
-    extractDefaultValuesFromConfig
-} from "/emcJS/util/helper/ui/Form.js";
+import {extractDefaultValuesFromConfig} from "/emcJS/util/helper/ui/Form.js";
 import Modal from "/emcJS/ui/modal/Modal.js";
 import ModalDialog from "/emcJS/ui/modal/ModalDialog.js";
 import "/emcJS/ui/Page.js";
@@ -22,9 +20,7 @@ import "/emcJS/ui/form/button/LinkButton.js";
 import "/emcJS/ui/form/button/ErrorButton.js";
 import "/emcJS/ui/form/element/FormElementsLoader.js";
 import I18nOption from "../../emcJS/ui/i18n/builtin/I18nOption.js";
-import {
-    debounce
-} from "../../emcJS/util/Debouncer.js";
+import {debounce} from "../../emcJS/util/Debouncer.js";
 
 const formContext = new FormContext();
 formContext.allowEnter = false;
@@ -72,7 +68,10 @@ elementTypeSelectEl.addEventListener("change", () => {
         const defaults = extractDefaultValuesFromConfig(config);
 
         FormBuilder.replaceForm(oldDetailFormEl, config);
-        formContext.loadData({...defaults, type});
+        formContext.loadData({
+            ...defaults,
+            type
+        });
     } else {
         FormBuilder.replaceForm(oldDetailFormEl);
         formContext.loadData({});
@@ -81,7 +80,10 @@ elementTypeSelectEl.addEventListener("change", () => {
 
 function buildPreview(config) {
     const oldPreviewEl = document.getElementById("preview-element");
-    const formElementEl = FormBuilder.replaceFormComponent(oldPreviewEl, {...config, id: "preview-element"});
+    const formElementEl = FormBuilder.replaceFormComponent(oldPreviewEl, {
+        ...config,
+        id: "preview-element"
+    });
 
     switch (config.type) {
         case "ActionInput": {
@@ -100,12 +102,8 @@ function buildPreview(config) {
             formElementEl.defaultValue = {
                 "type": "and",
                 "content": [
-                    {
-                        "type": "true"
-                    },
-                    {
-                        "type": "false"
-                    }
+                    {"type": "true"},
+                    {"type": "false"}
                 ]
             };
         } break;
@@ -137,7 +135,9 @@ showHTMLButtonEl.addEventListener("click", () => {
                     }
                 } else if (name === "columns") {
                     for (const column of value) {
-                        const {key = "", type = "string", caption = "", width, editable = false} = column;
+                        const {
+                            key = "", type = "string", caption = "", width, editable = false
+                        } = column;
 
                         const columnWidth = parseInt(width);
                         const widthDef = !isNaN(columnWidth) ? ` width="${columnWidth}"` : "";

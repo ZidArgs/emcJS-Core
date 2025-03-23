@@ -1,8 +1,6 @@
 // frameworks
 import EventTargetManager from "../../util/event/EventTargetManager.js";
-import {
-    createMixin
-} from "../../util/Mixin.js";
+import {createMixin} from "../../util/Mixin.js";
 import ActiveCounter from "../../util/ActiveCounter.js";
 import CtxMenuLayer from "../overlay/ctxmenu/CtxMenuLayer.js";
 
@@ -33,7 +31,10 @@ export default createMixin((superclass) => class ContextMenuManagerMixin extends
     #closeCtxMenu() {
         if (this.#counter.remove()) {
             this.classList.remove("ctx-marked");
-            this.dispatchEvent(new Event("contextmenusclosed", {bubbles: true, cancelable: true}));
+            this.dispatchEvent(new Event("contextmenusclosed", {
+                bubbles: true,
+                cancelable: true
+            }));
         }
     }
 

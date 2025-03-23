@@ -1,9 +1,7 @@
 import {
     numberedStringComparator, isEqual
 } from "../Comparator.js";
-import {
-    getInnerText
-} from "./ExtractText.js";
+import {getInnerText} from "./ExtractText.js";
 
 export function nodeTextComparator(a, b) {
     const textA = a.comparatorText ?? a.label ?? getInnerText(a);

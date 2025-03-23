@@ -1,9 +1,5 @@
-import {
-    isClass
-} from "../helper/Class.js";
-import {
-    padEndSlice
-} from "../helper/string/Transform.js";
+import {isClass} from "../helper/Class.js";
+import {padEndSlice} from "../helper/string/Transform.js";
 import Rest from "../net/Rest.js";
 
 /* LOG LEVEL */
@@ -61,7 +57,9 @@ function extractError(err) {
 }
 
 function formatMessage(data, omitStack) {
-    const {type, time, target, message} = data;
+    const {
+        type, time, target, message
+    } = data;
     const typeString = padEndSlice(type, 5);
     const targetString = typeof target === "string" && target !== "" ? target : "∅";
     if (message instanceof Error) {

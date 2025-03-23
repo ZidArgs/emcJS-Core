@@ -4,8 +4,8 @@ import STYLE from "./ActionMessage.js.css" assert {type: "css"};
 
 export default class ActionMessage extends Message {
 
-    constructor({text, time} = {}) {
-        super({text, time});
+    constructor(opts = {}) {
+        super(opts);
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.addEventListener("click", (event) => {

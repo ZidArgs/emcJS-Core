@@ -1,12 +1,6 @@
-import {
-    debounceByType
-} from "../../util/Debouncer.js";
-import {
-    isEqual
-} from "../../util/helper/Comparator.js";
-import {
-    deepClone
-} from "../../util/helper/DeepClone.js";
+import {debounceByType} from "../../util/Debouncer.js";
+import {isEqual} from "../../util/helper/Comparator.js";
+import {deepClone} from "../../util/helper/DeepClone.js";
 
 class LogicOperatorRegistry extends EventTarget {
 
@@ -24,7 +18,9 @@ class LogicOperatorRegistry extends EventTarget {
     setOperator(ref, operatorConfig) {
         if (this.#operators.has(ref)) {
             const operatorData = this.#operators.get(ref);
-            const {groups, config} = operatorData;
+            const {
+                groups, config
+            } = operatorData;
             if (!isEqual(operatorConfig, config)) {
                 operatorData.config = deepClone(operatorConfig);
                 for (const groupName of groups) {

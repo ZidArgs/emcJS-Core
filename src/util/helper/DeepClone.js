@@ -1,6 +1,4 @@
-import {
-    instanceOfOne
-} from "./Class.js";
+import {instanceOfOne} from "./Class.js";
 
 const NODE_SUPPORTED = "Node" in globalThis;
 

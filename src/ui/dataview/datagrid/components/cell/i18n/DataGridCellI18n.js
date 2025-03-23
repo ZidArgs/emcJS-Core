@@ -1,6 +1,4 @@
-import {
-    debounce
-} from "../../../../../../util/Debouncer.js";
+import {debounce} from "../../../../../../util/Debouncer.js";
 import EventTargetManager from "../../../../../../util/event/EventTargetManager.js";
 import DataGridCell from "../DataGridCell.js";
 import "../../../../../i18n/builtin/I18nInput.js";

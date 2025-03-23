@@ -1,6 +1,4 @@
-import {
-    isNull
-} from "./CheckType.js";
+import {isNull} from "./CheckType.js";
 
 const NUMBERED_STRING_REGEX = /(.*?)([0-9]*)$/;
 

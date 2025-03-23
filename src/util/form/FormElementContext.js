@@ -1,9 +1,7 @@
 import AppStateStorageWrapper from "../../data/state/AppStateStorageWrapper.js";
 import ObservableStorage from "../../data/storage/observable/ObservableStorage.js";
 import AbstractFormElement from "../../ui/form/element/AbstractFormElement.js";
-import {
-    debounce
-} from "../Debouncer.js";
+import {debounce} from "../Debouncer.js";
 import EventTargetManager from "../event/EventTargetManager.js";
 import LogicCompiler from "../logic/processor/LogicCompiler.js";
 

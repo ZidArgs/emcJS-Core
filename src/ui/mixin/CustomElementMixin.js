@@ -1,12 +1,8 @@
-import {
-    createMixin
-} from "../../util/Mixin.js";
+import {createMixin} from "../../util/Mixin.js";
 import {
     scrollIntoView, scrollIntoViewIfNeeded
 } from "../../util/helper/ui/Scroll.js";
-import {
-    getInnerText
-} from "../../util/helper/ui/ExtractText.js";
+import {getInnerText} from "../../util/helper/ui/ExtractText.js";
 import STYLE from "./CustomElementMixin.js.css" assert {type: "css"};
 
 export default createMixin((superclass) => class CustomElementMixin extends superclass {
@@ -14,7 +10,10 @@ export default createMixin((superclass) => class CustomElementMixin extends supe
     constructor(...args) {
         super(...args);
         /* --- */
-        this.attachShadow({mode: "open", delegatesFocus: this.constructor.delegatesFocus});
+        this.attachShadow({
+            mode: "open",
+            delegatesFocus: this.constructor.delegatesFocus
+        });
         STYLE.apply(this.shadowRoot);
     }
 

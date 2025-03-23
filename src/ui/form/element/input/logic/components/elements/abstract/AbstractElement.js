@@ -1,8 +1,6 @@
 import CustomElement from "../../../../../../../element/CustomElement.js";
 import DragDropMemory from "../../../../../../../../data/DragDropMemory.js";
-import {
-    appUID
-} from "../../../../../../../../util/helper/UniqueGenerator.js";
+import {appUID} from "../../../../../../../../util/helper/UniqueGenerator.js";
 import TPL from "./AbstractElement.js.html" assert {type: "html"};
 import STYLE from "./AbstractElement.js.css" assert {type: "css"};
 import STYLE_ERROR from "./AbstractElement.js.ErrorElement.css" assert {type: "css"};
@@ -38,7 +36,10 @@ export default class AbstractElement extends CustomElement {
             event.stopPropagation();
             event.preventDefault();
             if (this.editable) {
-                const ev = new Event("menu", {bubbles: true, cancelable: true});
+                const ev = new Event("menu", {
+                    bubbles: true,
+                    cancelable: true
+                });
                 ev.id = this.#id;
                 ev.left = event.clientX;
                 ev.top = event.clientY;

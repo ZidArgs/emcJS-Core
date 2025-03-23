@@ -7,9 +7,7 @@ import {
 } from "../../util/formLoader.js";
 
 TypeConfigMap.register("A", {
-    "parameters": {
-        "allowExtension": false
-    },
+    "parameters": {"allowExtension": false},
     "definition": {
         "foobar": {
             "@type": "String",
@@ -20,9 +18,7 @@ TypeConfigMap.register("A", {
 });
 
 TypeConfigMap.register("B", {
-    "parameters": {
-        "allowExtension": false
-    },
+    "parameters": {"allowExtension": false},
     "definition": {
         "barfoo": {
             "@type": "String",
@@ -33,9 +29,7 @@ TypeConfigMap.register("B", {
 });
 
 TypeConfigMap.register("C", {
-    "parameters": {
-        "allowExtension": false
-    },
+    "parameters": {"allowExtension": false},
     "definition": {
         "baba": {
             "@type": "String",
@@ -64,7 +58,10 @@ CustomActionRegistry.current.set("addEntries", () => {
     try {
         a.setAll({
             "ananas": {foobar: "ananas"},
-            "brot": {barfoo: "brot", argh: "fehler"},
+            "brot": {
+                barfoo: "brot",
+                argh: "fehler"
+            },
             "apfel": {foobar: "apfel"}
         });
     } catch (err) {
@@ -73,8 +70,14 @@ CustomActionRegistry.current.set("addEntries", () => {
     try {
         b.setAll({
             "knoblauch": {barfoo: "knoblauch"},
-            "brot": {barfoo: "brot", argh: "fehler"},
-            "tretmühle": {barfoo: 2, argh: "fehler"},
+            "brot": {
+                barfoo: "brot",
+                argh: "fehler"
+            },
+            "tretmühle": {
+                barfoo: 2,
+                argh: "fehler"
+            },
             "sahne": {barfoo: "sahne"}
         });
     } catch (err) {
@@ -83,8 +86,14 @@ CustomActionRegistry.current.set("addEntries", () => {
     try {
         c.setAll({
             "knoblauch": {baba: "knoblauch"},
-            "brot": {baba: "brot", argh: "fehler"},
-            "tretmühle": {baba: 2, argh: "fehler"},
+            "brot": {
+                baba: "brot",
+                argh: "fehler"
+            },
+            "tretmühle": {
+                baba: 2,
+                argh: "fehler"
+            },
             "sahne": {baba: "sahne"}
         });
     } catch (err) {

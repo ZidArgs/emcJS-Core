@@ -1,6 +1,4 @@
-import {
-    createMixin
-} from "../../util/Mixin.js";
+import {createMixin} from "../../util/Mixin.js";
 import EventTargetListenerMixin from "../../mixin/EventTargetListenerMixin.js";
 
 export default createMixin((superclass) => class EventTargetListenerElementMixin extends EventTargetListenerMixin(superclass) {

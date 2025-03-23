@@ -37,7 +37,9 @@ function getCSS(url) {
 
 function extractModule(module) {
     try {
-        const {default: def, ...other} = module ?? {};
+        const {
+            default: def, ...other
+        } = module ?? {};
         return [def, other];
     } catch (err) {
         throw new Error(`Error extracting module`, {cause: err});

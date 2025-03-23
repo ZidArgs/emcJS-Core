@@ -1,6 +1,4 @@
-import {
-    createMixin
-} from "../../util/Mixin.js";
+import {createMixin} from "../../util/Mixin.js";
 
 const RESIZE_OBSERVER = new ResizeObserver((entries) => {
     for (const entry of entries) {

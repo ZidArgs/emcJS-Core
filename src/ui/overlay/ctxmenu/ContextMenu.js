@@ -1,9 +1,5 @@
-import {
-    debounce
-} from "../../../util/Debouncer.js";
-import {
-    deepClone
-} from "../../../util/helper/DeepClone.js";
+import {debounce} from "../../../util/Debouncer.js";
+import {deepClone} from "../../../util/helper/DeepClone.js";
 import CustomElement from "../../element/CustomElement.js";
 import CtxMenuLayer from "./CtxMenuLayer.js";
 import "./ContextMenuItem.js";
@@ -214,7 +210,10 @@ export default class ContextMenu extends CustomElement {
             for (const itemEl of Array.from(itemEls)) {
                 const attr = itemEl.getAttribute("menu-action");
                 if (attr != null) {
-                    config.push({menuAction: attr, content: itemEl.innerHTML});
+                    config.push({
+                        menuAction: attr,
+                        content: itemEl.innerHTML
+                    });
                 } else {
                     config.push("splitter");
                 }

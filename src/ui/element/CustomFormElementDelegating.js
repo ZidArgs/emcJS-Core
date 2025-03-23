@@ -124,7 +124,10 @@ export default class CustomFormElementDelegating extends CustomElementDelegating
                 this.internals.setValidity({}, "");
                 this.validityCallback("");
             }
-            const event = new Event("validity", {bubbles: true, cancelable: true});
+            const event = new Event("validity", {
+                bubbles: true,
+                cancelable: true
+            });
             event.value = this.value;
             event.valid = message === "";
             event.message = message;

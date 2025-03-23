@@ -2,12 +2,8 @@ import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
 import SimpleDataProvider from "../../../../../util/dataprovider/SimpleDataProvider.js";
 import ModalDialog from "../../../../modal/ModalDialog.js";
-import {
-    deepClone
-} from "../../../../../util/helper/DeepClone.js";
-import {
-    registerFocusable
-} from "../../../../../util/helper/html/getFocusableElements.js";
+import {deepClone} from "../../../../../util/helper/DeepClone.js";
+import {registerFocusable} from "../../../../../util/helper/html/getFocusableElements.js";
 import "../search/SearchInput.js";
 import "../../../button/Button.js";
 import "../../../../dataview/datagrid/DataGrid.js";
@@ -57,9 +53,7 @@ export default class ListInput extends AbstractFormElement {
         this.#searchEl.addEventListener("change", () => {
             const options = {filter: {}};
             if (this.#searchEl.value != "") {
-                options.filter = {
-                    key: this.#searchEl.value
-                };
+                options.filter = {key: this.#searchEl.value};
             }
             this.#dataManager.updateOptions(options);
         }, true);
@@ -147,22 +141,16 @@ export default class ListInput extends AbstractFormElement {
 
     renderValue(value) {
         const data = value.map((row) => {
-            return {
-                key: row
-            };
+            return {key: row};
         });
         this.#dataManager.setSource(data);
     }
 
     #updateSort(value) {
         if (value) {
-            this.#dataManager.setOptions({
-                sort: ["key"]
-            });
+            this.#dataManager.setOptions({sort: ["key"]});
         } else {
-            this.#dataManager.setOptions({
-                sort: []
-            });
+            this.#dataManager.setOptions({sort: []});
         }
     }
 

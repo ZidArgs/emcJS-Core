@@ -1,18 +1,10 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
 import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
-import {
-    deepClone
-} from "../../../../../util/helper/DeepClone.js";
-import {
-    toStartUppercaseEndLowercase
-} from "../../../../../util/helper/string/ConvertCase.js";
-import {
-    registerFocusable
-} from "../../../../../util/helper/html/getFocusableElements.js";
-import {
-    safeSetAttribute
-} from "../../../../../util/helper/ui/NodeAttributes.js";
+import {deepClone} from "../../../../../util/helper/DeepClone.js";
+import {toStartUppercaseEndLowercase} from "../../../../../util/helper/string/ConvertCase.js";
+import {registerFocusable} from "../../../../../util/helper/html/getFocusableElements.js";
+import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
 import "../../../../i18n/builtin/I18nInput.js";
 import TPL from "./HotkeyInput.js.html" assert {type: "html"};
 import STYLE from "./HotkeyInput.js.css" assert {type: "css"};
@@ -69,7 +61,9 @@ export default class HotkeyInput extends AbstractFormElement {
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#eventTargetManager = new EventTargetManager(this.#inputEl);
         this.#eventTargetManager.set("keydown", (event) => {
-            const {key, ctrlKey, shiftKey, altKey, metaKey} = event;
+            const {
+                key, ctrlKey, shiftKey, altKey, metaKey
+            } = event;
             if (!BLACKLIST.includes(key)) {
                 if (key === "Escape") {
                     this.#value.ctrlKey = false;
@@ -80,7 +74,13 @@ export default class HotkeyInput extends AbstractFormElement {
                     this.renderValue(this.#stringifyValue(this.#value));
                     this.value = this.#inputEl.value;
                 } else if (CONTROL_KEYS.includes(key)) {
-                    this.renderValue(this.#stringifyValue({ctrlKey, shiftKey, altKey, metaKey, key: null}));
+                    this.renderValue(this.#stringifyValue({
+                        ctrlKey,
+                        shiftKey,
+                        altKey,
+                        metaKey,
+                        key: null
+                    }));
                     this.value = this.#inputEl.value;
                 } else {
                     this.#value.ctrlKey = ctrlKey;
@@ -100,8 +100,16 @@ export default class HotkeyInput extends AbstractFormElement {
             if (event.key !== "Tab") {
                 const value = this.#parseValue(this.#inputEl.value);
                 if (value.key == null) {
-                    const {ctrlKey, shiftKey, altKey, metaKey} = event;
-                    this.renderValue(this.#stringifyValue({ctrlKey, shiftKey, altKey, metaKey, key: null}));
+                    const {
+                        ctrlKey, shiftKey, altKey, metaKey
+                    } = event;
+                    this.renderValue(this.#stringifyValue({
+                        ctrlKey,
+                        shiftKey,
+                        altKey,
+                        metaKey,
+                        key: null
+                    }));
                     this.value = this.#inputEl.value;
                 }
                 event.preventDefault();
@@ -189,7 +197,10 @@ export default class HotkeyInput extends AbstractFormElement {
         };
     }
 
-    #stringifyValue({ctrlKey, shiftKey, altKey, metaKey, key} = {}) {
+    #stringifyValue(opts = {}) {
+        const {
+            ctrlKey, shiftKey, altKey, metaKey, key
+        } = opts;
         let res = "";
         if (ctrlKey) {
             res += "Ctrl ";

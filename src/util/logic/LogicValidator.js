@@ -6,11 +6,14 @@ class LogicValidator {
         this.#customValidators.set(type, validator);
     }
 
-    validate(logic, {label, throwErrors = false, allowEmpty = true} = {}) {
-        label = typeof label === "string" && label !== "" ? `| ${label} |` : "|";
+    validate(logic, opts = {}) {
+        const {
+            label, throwErrors = false, allowEmpty = true
+        } = opts;
+        const currentLabel = typeof label === "string" && label !== "" ? `| ${label} |` : "|";
 
         const err = [];
-        this.#validate(logic, !allowEmpty, [label], err);
+        this.#validate(logic, !allowEmpty, [currentLabel], err);
         if (throwErrors && err.length > 0) {
             const msg = err.map((s) => s.split("\n").join("\n\t")).join("\n\t");
             throw new Error(`Error validating logic:\n\t${msg}`);

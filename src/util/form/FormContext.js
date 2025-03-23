@@ -1,20 +1,14 @@
 import ObservableStorage from "../../data/storage/observable/ObservableStorage.js";
 import AbstractFormElement from "../../ui/form/element/AbstractFormElement.js";
 import FormContainer from "../../ui/form/FormContainer.js";
-import {
-    debounce
-} from "../Debouncer.js";
+import {debounce} from "../Debouncer.js";
 import EventMultiTargetManager from "../event/EventMultiTargetManager.js";
 import EventTargetManager from "../event/EventTargetManager.js";
-import {
-    instanceOfOne
-} from "../helper/Class.js";
+import {instanceOfOne} from "../helper/Class.js";
 import {
     elevateObject, getFromObjectByPath
 } from "../helper/collection/ObjectContent.js";
-import {
-    extractFormData
-} from "../helper/ui/Form.js";
+import {extractFormData} from "../helper/ui/Form.js";
 import MutationObserverManager from "../observer/MutationObserverManager.js";
 import FormInputContext from "./FormInputContext.js";
 import FormElementContext from "./FormElementContext.js";

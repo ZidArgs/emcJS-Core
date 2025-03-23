@@ -1,10 +1,6 @@
 import CustomElement from "../element/CustomElement.js";
-import {
-    deepClone
-} from "../../util/helper/DeepClone.js";
-import {
-    safeSetAttribute
-} from "../../util/helper/ui/NodeAttributes.js";
+import {deepClone} from "../../util/helper/DeepClone.js";
+import {safeSetAttribute} from "../../util/helper/ui/NodeAttributes.js";
 import TPL from "./FormRow.js.html" assert {type: "html"};
 import STYLE from "./FormRow.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./FormRow.js.json" assert {type: "json"};

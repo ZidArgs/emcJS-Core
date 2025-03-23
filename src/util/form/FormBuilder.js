@@ -1,7 +1,5 @@
 import FormElementRegistry from "../../data/registry/form/FormElementRegistry.js";
-import {
-    isNullOrFalse
-} from "../helper/CheckType.js";
+import {isNullOrFalse} from "../helper/CheckType.js";
 import "../../ui/form/FormContainer.js";
 import "../../ui/form/FormField.js";
 import "../../ui/form/FormFieldset.js";
@@ -37,15 +35,28 @@ class FormBuilder {
 
             if (forms != null) {
                 if (Array.isArray(forms)) {
-                    for (const {elements, config: formConfig, values} of forms) {
-                        formContainerEl.append(this.buildForm(elements, {...values, ...defaultValues}, formConfig, label));
+                    for (const form of forms) {
+                        const {
+                            elements, config: formConfig, values
+                        } = form;
+                        formContainerEl.append(this.buildForm(elements, {
+                            ...values,
+                            ...defaultValues
+                        }, formConfig, label));
                     }
                 } else {
-                    const {elements, config: formConfig, values} = forms;
-                    formContainerEl.append(this.buildForm(elements, {...values, ...defaultValues}, formConfig, label));
+                    const {
+                        elements, config: formConfig, values
+                    } = forms;
+                    formContainerEl.append(this.buildForm(elements, {
+                        ...values,
+                        ...defaultValues
+                    }, formConfig, label));
                 }
             } else {
-                const {elements, config: formConfig, values} = config;
+                const {
+                    elements, config: formConfig, values
+                } = config;
                 formContainerEl.append(this.buildForm(elements, values, formConfig, label));
             }
         }
@@ -115,9 +126,7 @@ class FormBuilder {
                 if (typeof resetButton === "object") {
                     buttonRowEl.append(this.#createResetButton(null, true, true, resetButton));
                 } else if (typeof resetButton === "string") {
-                    buttonRowEl.append(this.#createResetButton(null, true, true, {
-                        text: resetButton
-                    }));
+                    buttonRowEl.append(this.#createResetButton(null, true, true, {text: resetButton}));
                 } else if (resetButton === true) {
                     buttonRowEl.append(this.#createResetButton(null, true, true, {}));
                 }
@@ -126,9 +135,7 @@ class FormBuilder {
                 if (typeof submitButton === "object") {
                     buttonRowEl.append(this.#createSubmitButton(null, true, true, submitButton));
                 } else if (typeof submitButton === "string") {
-                    buttonRowEl.append(this.#createSubmitButton(null, true, true, {
-                        text: submitButton
-                    }));
+                    buttonRowEl.append(this.#createSubmitButton(null, true, true, {text: submitButton}));
                 } else if (submitButton === true) {
                     buttonRowEl.append(this.#createSubmitButton(null, true, true, {}));
                 }
@@ -194,7 +201,9 @@ class FormBuilder {
     }
 
     #createFormComponent(config = {}, defaultValues = {}, label = null) {
-        const {type, id, visible, enabled, editable, data, ...params} = config;
+        const {
+            type, id, visible, enabled, editable, data, ...params
+        } = config;
         switch (type) {
             case "SubmitButton": {
                 return this.#createSubmitButton(id, visible, enabled, params, data);
@@ -224,7 +233,9 @@ class FormBuilder {
     }
 
     #createFormElement(type, id, visible, enabled, editable, config = {}, data = {}, defaultValues = {}, label = null) {
-        const {value, optiongroup, valueoptiongroup, tokengroup, ...params} = config;
+        const {
+            value, optiongroup, valueoptiongroup, tokengroup, ...params
+        } = config;
         const el = FormElementRegistry.create(type, params, label);
         if (id != null) {
             el.id = id;

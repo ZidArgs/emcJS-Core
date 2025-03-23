@@ -1,14 +1,8 @@
 import CustomElement from "../../element/CustomElement.js";
 import TreeNodeElementManager from "../manager/TreeNodeElementManager.js";
-import {
-    scrollIntoViewIfNeeded
-} from "../../../util/helper/ui/Scroll.js";
-import {
-    nodeTextComparator
-} from "../../../util/helper/ui/NodeListSort.js";
-import {
-    debounce
-} from "../../../util/Debouncer.js";
+import {scrollIntoViewIfNeeded} from "../../../util/helper/ui/Scroll.js";
+import {nodeTextComparator} from "../../../util/helper/ui/NodeListSort.js";
+import {debounce} from "../../../util/Debouncer.js";
 import EventTargetManager from "../../../util/event/EventTargetManager.js";
 import i18n from "../../../util/I18n.js";
 import "../../i18n/I18nLabel.js";
@@ -44,7 +38,10 @@ export default class TreeNode extends CustomElement {
             event.stopPropagation();
             event.preventDefault();
             const targetIndex = Array.from(this.parentElement.children).indexOf(this);
-            const selectEvent = new Event("select", {bubbles: true, cancelable: true});
+            const selectEvent = new Event("select", {
+                bubbles: true,
+                cancelable: true
+            });
             selectEvent.data = {
                 element: this,
                 index: targetIndex,
@@ -68,7 +65,10 @@ export default class TreeNode extends CustomElement {
             event.stopPropagation();
             event.preventDefault();
             const targetIndex = Array.from(this.parentElement.children).indexOf(this);
-            const menuEvent = new Event("menu", {bubbles: true, cancelable: true});
+            const menuEvent = new Event("menu", {
+                bubbles: true,
+                cancelable: true
+            });
             menuEvent.data = {
                 element: this,
                 index: targetIndex,
@@ -88,9 +88,14 @@ export default class TreeNode extends CustomElement {
         this.#subTreeEl = this.shadowRoot.getElementById("tree");
         this.#subTreeEl.addEventListener("select", (event) => {
             event.stopPropagation();
-            const {element, index, ref, isSelected, path, refPath, left, top} = event.data;
+            const {
+                element, index, ref, isSelected, path, refPath, left, top
+            } = event.data;
             const targetIndex = Array.from(this.parentElement.children).indexOf(this);
-            const selectEvent = new Event("select", {bubbles: true, cancelable: true});
+            const selectEvent = new Event("select", {
+                bubbles: true,
+                cancelable: true
+            });
             selectEvent.data = {
                 element,
                 index,
@@ -108,9 +113,14 @@ export default class TreeNode extends CustomElement {
         });
         this.#subTreeEl.addEventListener("menu", (event) => {
             event.stopPropagation();
-            const {element, index, ref, isSelected, path, refPath, left, top} = event.data;
+            const {
+                element, index, ref, isSelected, path, refPath, left, top
+            } = event.data;
             const targetIndex = Array.from(this.parentElement.children).indexOf(this);
-            const menuEvent = new Event("menu", {bubbles: true, cancelable: true});
+            const menuEvent = new Event("menu", {
+                bubbles: true,
+                cancelable: true
+            });
             menuEvent.data = {
                 element,
                 index,
@@ -246,7 +256,10 @@ export default class TreeNode extends CustomElement {
         const data = [];
         for (const key in structure) {
             const config = structure[key];
-            data.push({...config, key});
+            data.push({
+                ...config,
+                key
+            });
         }
         this.#elementManager.manage(data);
     }

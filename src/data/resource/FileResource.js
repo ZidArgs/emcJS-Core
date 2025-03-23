@@ -1,9 +1,5 @@
-import {
-    getFromObjectByPath
-} from "../../util/helper/collection/ObjectContent.js";
-import {
-    immute
-} from "../Immutable.js";
+import {getFromObjectByPath} from "../../util/helper/collection/ObjectContent.js";
+import {immute} from "../Immutable.js";
 import AbstractResource from "./AbstractResource.js";
 
 const RESOURCES = new Map();

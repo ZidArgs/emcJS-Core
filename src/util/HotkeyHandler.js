@@ -6,7 +6,9 @@ class HotkeyHandler {
 
     constructor() {
         window.addEventListener("keydown", (event) => {
-            const {key, ctrlKey, shiftKey, altKey, metaKey} = event;
+            const {
+                key, ctrlKey, shiftKey, altKey, metaKey
+            } = event;
             if (this.callHotkey(key, ctrlKey, shiftKey, altKey, metaKey)) {
                 event.preventDefault();
                 event.stopPropagation();

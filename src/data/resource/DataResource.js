@@ -1,13 +1,7 @@
-import {
-    immute
-} from "../Immutable.js";
-import {
-    deepClone
-} from "../../util/helper/DeepClone.js";
+import {immute} from "../Immutable.js";
+import {deepClone} from "../../util/helper/DeepClone.js";
 import AbstractResource from "./AbstractResource.js";
-import {
-    getFromObjectByPath
-} from "../../util/helper/collection/ObjectContent.js";
+import {getFromObjectByPath} from "../../util/helper/collection/ObjectContent.js";
 
 export default class DataResource extends AbstractResource {
 
