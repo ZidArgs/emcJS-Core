@@ -35,11 +35,11 @@
     flex-direction: column;
     width: auto;
     height: auto;
-    min-width: min(400px, calc(100vw - 50px));
-    max-width: min(1000px, calc(100vw - 50px));
-    min-height: min(200px, calc(100vh - 50px));
-    max-height: min(800px, calc(100vh - 50px));
-    margin-top: min(100px, calc(25px + max(0px, calc(55vh - 480px))));
+    min-width: min(400px, calc(100dvw - 50px));
+    max-width: min(1000px, calc(100dvw - 50px));
+    min-height: min(200px, calc(100dvh - 50px));
+    max-height: min(800px, calc(100dvh - 50px));
+    margin-top: min(100px, calc(25px + max(0px, calc(55dvh - 480px))));
     color: var(--modal-text-color, #000000);
     background-color: var(--modal-back-color, #ffffff);
     background-image: var(--modal-back-image, none);
