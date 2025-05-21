@@ -1,6 +1,7 @@
+import NotSupportedError from "../exceptions/NotSupportedError.js";
 
 if (!("SharedWorker" in window)) {
-    throw new Error("This Browser does not support SharedWorkers");
+    throw new NotSupportedError("This Browser does not support SharedWorkers");
 }
 
 const SUPPORTS_WORKER_TYPE = (() => {

@@ -1,6 +1,7 @@
+import NotSupportedError from "../exceptions/NotSupportedError.js";
 
 if (!("Worker" in window)) {
-    throw new Error("This Browser does not support Workers");
+    throw new NotSupportedError("This Browser does not support Workers");
 }
 
 const SUPPORTS_WORKER_TYPE = (() => {
