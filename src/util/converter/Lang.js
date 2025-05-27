@@ -61,6 +61,9 @@ class Lang {
                 if (!key) {
                     throw new SyntaxError(`key can not be empty in LANG at line ${i + 1}:\n${line}`);
                 }
+                if (key === "__proto__") {
+                    throw new SyntaxError(`unallowed key "__proto__" in LANG at line ${i + 1}:\n${line}`);
+                }
                 if (key.startsWith("@")) {
                     throw new SyntaxError(`key can not start with @ in LANG at line ${i + 1}:\n${line}`);
                 }

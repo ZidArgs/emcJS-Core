@@ -7,7 +7,7 @@ class INI {
 
     parse(input) {
         const output = {"":{}};
-        let act = "";
+        let section = "";
         const lines = input.split(LNBR_SEQ);
         for (let i = 0; i < lines.length; ++i) {
             const line = lines[i];
@@ -15,19 +15,26 @@ class INI {
                 continue;
             }
             if (GROUP.test(line)) {
-                act = line.slice(1, -1);
-                if (output[act] != null) {
+                section = line.slice(1, -1);
+                if (section === "__proto__") {
+                    throw new SyntaxError(`unallowed section "__proto__" in INI at line ${i + 1}:\n${line}`);
+                }
+                if (output[section] != null) {
                     throw new SyntaxError(`duplicate section in INI at line ${i + 1}:\n${line}`);
                 }
-                output[act] = output[act] || {};
+                output[section] = output[section] || {};
                 continue;
             }
             if (VALUE.test(line)) {
                 const data = line.split("=");
-                if (typeof output[act][data[0]] === "string") {
+                const [key, value] = data;
+                if (key === "__proto__") {
+                    throw new SyntaxError(`unallowed key "__proto__" in INI at line ${i + 1}:\n${line}`);
+                }
+                if (typeof output[section][key] === "string") {
                     throw new SyntaxError(`duplicate key in INI at line ${i + 1}:\n${line}`);
                 }
-                output[act][data[0]] = data[1];
+                output[section][key] = value;
                 continue;
             }
             throw new SyntaxError(`unexpected token in INI at line ${i + 1}:\n${line}`);
