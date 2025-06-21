@@ -66,7 +66,7 @@ export default class ObservableStorageObserver extends EventTarget {
                 this.#updateValue(newValue);
             }
         });
-        this.#storageEventManager.set("observer::replace_with", (event) => {
+        this.#storageEventManager.set("storage::replace_with", (event) => {
             const {newStorage} = event;
             if (newStorage instanceof ObservableStorage) {
                 this.#storageEventManager.switchTarget(newStorage);
@@ -75,6 +75,17 @@ export default class ObservableStorageObserver extends EventTarget {
         });
         /* --- */
         ObservableStorageObserver.#setInstance(storage, key, this);
+    }
+
+    set active(value) {
+        this.#storageEventManager.active = value;
+        if (value) {
+            this.#updateValue(this.value);
+        }
+    }
+
+    get active() {
+        return this.#storageEventManager.active;
     }
 
     #updateValue = debounce((newValue) => {
@@ -99,6 +110,20 @@ export default class ObservableStorageObserver extends EventTarget {
 
     set value(value) {
         this.#storageEventManager.target.set(this.#key, value);
+    }
+
+    onChange(fn) {
+        if (!(typeof fn === "function")) {
+            throw new TypeError("Failed to execute 'onChange' on 'ObservableStorageObserver': parameter 1 is not of type 'function'.");
+        }
+        this.addEventListener("change", fn);
+    }
+
+    unChange(fn) {
+        if (!(typeof fn === "function")) {
+            throw new TypeError("Failed to execute 'unChange' on 'ObservableStorageObserver': parameter 1 is not of type 'function'.");
+        }
+        this.addEventListener("change", fn);
     }
 
 }

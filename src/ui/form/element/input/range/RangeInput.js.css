@@ -1,6 +1,10 @@
+:host {
+    min-width: 200px;
+}
+
 #container {
     display: flex;
-    min-width: 200px;
+    min-width: 100px;
     width: 100%;
 }
 
@@ -47,6 +51,7 @@
     position: relative;
     appearance: none;
     flex-grow: 1;
+    width: 0;
     height: 100%;
     padding: 0px 0.2em;
     margin: 0px;
@@ -66,6 +71,7 @@
     position: relative;
     display: flex;
     flex-grow: 1;
+    width: 0;
     height: 2em;
     padding: 0.5em 0.2em;
     margin: 0px;

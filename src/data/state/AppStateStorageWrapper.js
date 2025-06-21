@@ -43,7 +43,7 @@ export default class AppStateStorageWrapper extends EventTarget {
             ev.data = event.data;
             this.dispatchEvent(ev);
         });
-        this.#storageEventManager.set("observer::replace_with", (event) => {
+        this.#storageEventManager.set("storage::replace_with", (event) => {
             const {newStorage} = event;
             if (newStorage instanceof ObservableStorage) {
                 this.#storageEventManager.switchTarget(newStorage);

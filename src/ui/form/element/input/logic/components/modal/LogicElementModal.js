@@ -1,51 +1,14 @@
 import Modal from "../../../../../../modal/Modal.js";
-import AbstractElement from "../elements/abstract/AbstractElement.js";
+import AbstractElement from "../../../../../../logic/abstract/AbstractElement.js";
 import LogicOperatorRegistry from "../../../../../../../data/registry/LogicOperatorRegistry.js";
 import {debounce} from "../../../../../../../util/Debouncer.js";
 import BusyIndicatorManager from "../../../../../../../util/BusyIndicatorManager.js";
+import {DEFAULT_LOGIC_OPERATORS} from "../../../../../../logic/DefaultElementsLoader.js";
 import "../../../../../../FilteredList.js";
 import "../../../../../../container/CollapsePanel.js";
 import "../../../../../button/Button.js";
-import "../elements/ComparatorEqual.js";
-import "../elements/ComparatorGreaterThan.js";
-import "../elements/ComparatorGreaterThanEqual.js";
-import "../elements/ComparatorLessThan.js";
-import "../elements/ComparatorLessThanEqual.js";
-import "../elements/ComparatorNotEqual.js";
-import "../elements/LiteralFalse.js";
-// import "../elements/LiteralNumber.js";
-// import "../elements/LiteralString.js";
-import "../elements/LiteralTrue.js";
-import "../elements/MathAdd.js";
-import "../elements/MathDiv.js";
-import "../elements/MathMod.js";
-import "../elements/MathMul.js";
-import "../elements/MathPow.js";
-import "../elements/MathSub.js";
-import "../elements/OperatorAnd.js";
-import "../elements/OperatorNand.js";
-import "../elements/OperatorNor.js";
-import "../elements/OperatorNot.js";
-import "../elements/OperatorOr.js";
-import "../elements/OperatorXnor.js";
-import "../elements/OperatorXor.js";
-import "../elements/RestrictorMax.js";
-import "../elements/RestrictorMin.js";
 import TPL from "./LogicElementModal.js.html" assert {type: "html"};
 import STYLE from "./LogicElementModal.js.css" assert {type: "css"};
-
-const DEFAULT_LOGIC_OPERATORS = [
-    /* literals */
-    "false", "true",
-    /* operators */
-    "not", "and", "nand", "or", "nor", "xor", "xnor",
-    /* restrictors */
-    "min", "max",
-    /* comparators */
-    "eq", "gt", "gte", "lt", "lte", "neq",
-    /* math */
-    "add", "sub", "mul", "div", "mod", "pow"
-];
 
 export default class LogicElementModal extends Modal {
 

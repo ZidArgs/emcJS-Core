@@ -5,7 +5,7 @@
     flex-direction: column;
     flex-shrink: 0;
     flex-grow: 1;
-    width: 100%;
+    width: auto;
     min-width: 100px;
     padding: 6px;
     color: var(--form-text-color, #000000);

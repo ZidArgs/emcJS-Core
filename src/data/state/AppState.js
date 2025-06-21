@@ -78,6 +78,7 @@ export default class AppState extends EventTarget {
         for (const [, dataStorage] of this.#requestedStorages) {
             dataStorage.clear();
         }
+        this.dispatchEvent(new Event("purge"));
     }
 
     /**
@@ -284,7 +285,7 @@ export default class AppState extends EventTarget {
             dataStorage.deserialize(oldStorage.serialize());
             this.#requestedStorages.delete(storageCategory);
             // event
-            const ev = new Event("observer::replace_with");
+            const ev = new Event("storage::replace_with");
             ev.newStorage = dataStorage;
             oldStorage.dispatchEvent(ev);
         }

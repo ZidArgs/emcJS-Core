@@ -8,41 +8,13 @@ import {registerFocusable} from "../../../../../util/helper/html/getFocusableEle
 import LogicEditorContextMenuElement from "./components/contexmenu/LogicEditorContextMenuElement.js";
 import LogicElementModal from "./components/modal/LogicElementModal.js";
 import LogicJSONModal from "./components/modal/LogicJSONModal.js";
-import LogicAbstractElement from "./components/elements/abstract/AbstractElement.js";
+import LogicAbstractElement from "../../../../logic/abstract/AbstractElement.js";
 import "../../../FormRow.js";
 import "../../../button/Button.js";
-import "./components/elements/ComparatorEqual.js";
-import "./components/elements/ComparatorGreaterThan.js";
-import "./components/elements/ComparatorGreaterThanEqual.js";
-import "./components/elements/ComparatorLessThan.js";
-import "./components/elements/ComparatorLessThanEqual.js";
-import "./components/elements/ComparatorNotEqual.js";
-import "./components/elements/LiteralFalse.js";
-// import "./components/elements/LiteralNumber.js";
-import "./components/elements/LiteralState.js";
-// import "./components/elements/LiteralString.js";
-import "./components/elements/LiteralTrue.js";
-import "./components/elements/LiteralValue.js";
-import "./components/elements/MathAdd.js";
-import "./components/elements/MathDiv.js";
-import "./components/elements/MathMod.js";
-import "./components/elements/MathMul.js";
-import "./components/elements/MathPow.js";
-import "./components/elements/MathSub.js";
-import "./components/elements/OperatorAnd.js";
-import "./components/elements/OperatorNand.js";
-import "./components/elements/OperatorNor.js";
-import "./components/elements/OperatorNot.js";
-import "./components/elements/OperatorOr.js";
-import "./components/elements/OperatorXnor.js";
-import "./components/elements/OperatorXor.js";
-import "./components/elements/RestrictorMax.js";
-import "./components/elements/RestrictorMin.js";
+import "../../../../logic/DefaultElementsLoader.js";
 import TPL from "./LogicInput.js.html" assert {type: "html"};
 import STYLE from "./LogicInput.js.css" assert {type: "css"};
 
-// TODO add string input logic element
-// TODO add number input logic element
 // TODO add import/export (button opens dialog to copy/paste logic)
 // TODO add optimize button (optimize logic e.g. merge contained AND with parent AND)
 // TODO add negate function to contextmenu (add optional negation readonly property to logic elements)

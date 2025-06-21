@@ -1,0 +1,8 @@
+#ref {
+    margin: 0.2em;
+}
+
+#ref:empty::after {
+    font-style: italic;
+    content: "empty";
+}
