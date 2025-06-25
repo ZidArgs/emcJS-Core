@@ -64,12 +64,12 @@ export default class HeaderManager {
         this.#elements.clear();
         this.#columnDefinitionCache.clear();
 
+        this.#target.append(this.#lastHeaderCellEl);
         if (this.#selectEnd) {
             this.#target.append(this.#selectHeaderCellEl);
         } else {
             this.#target.prepend(this.#selectHeaderCellEl);
         }
-        this.#target.append(this.#lastHeaderCellEl);
     }
 
     manage(columnDefinition) {
@@ -202,12 +202,12 @@ export default class HeaderManager {
             this.#target.append(...els);
         }
         // add special cells
+        this.#target.append(this.#lastHeaderCellEl);
         if (this.#selectEnd) {
             this.#target.append(this.#selectHeaderCellEl);
         } else {
             this.#target.prepend(this.#selectHeaderCellEl);
         }
-        this.#target.append(this.#lastHeaderCellEl);
     });
 
 }

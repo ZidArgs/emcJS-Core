@@ -27,7 +27,7 @@ export default class AbstractDataProvider extends EventTarget {
 
     #multiSort = false;
 
-    constructor(reciever, initialOptions = {}) {
+    constructor(reciever, multiSort = false, initialOptions = {}) {
         if (new.target === AbstractDataProvider) {
             throw new Error("can not construct abstract class");
         }
@@ -36,6 +36,7 @@ export default class AbstractDataProvider extends EventTarget {
         }
         super();
         this.#reciever = reciever;
+        this.#multiSort = !!multiSort;
         this.#options = this.#extractOptions(initialOptions);
         this.refresh();
         /* --- */
@@ -58,6 +59,21 @@ export default class AbstractDataProvider extends EventTarget {
                 } else {
                     newSort.push(columnName);
                 }
+                this.updateOptions({sort: newSort});
+            }
+        });
+        this.#reciever.addEventListener("unsort", (event) => {
+            const {columnName} = event.data;
+            if (!this.#multiSort) {
+                const currentSort = this.#options.sort[0];
+                if (currentSort != null && currentSort === columnName) {
+                    this.updateOptions({sort: []});
+                } else {
+                    this.updateOptions({sort: []});
+                }
+            } else {
+                const currentSort = this.#options.sort;
+                const newSort = currentSort.filter((entry) => entry !== columnName && entry !== `!${columnName}`);
                 this.updateOptions({sort: newSort});
             }
         });

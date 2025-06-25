@@ -41,6 +41,10 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
         return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
     }
 
+    static get changeDebounceTime() {
+        return 0;
+    }
+
     #isEditMode = false;
 
     #fieldEl;

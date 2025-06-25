@@ -99,8 +99,8 @@
         },
         {
             "type": "ListSelect",
-            "label": "list-select multi nohead",
-            "name": "list-select.multi_nohead",
+            "label": "list-select multi",
+            "name": "list-select.multi",
             "optiongroup": "ListSelect",
             "placeholder": "Select entry...",
             "options": {
@@ -108,20 +108,6 @@
                 "foobar": "Foobar"
             },
             "multiple": true,
-            "header": "hide",
-            "sorted": true
-        },
-        {
-            "type": "ListSelect",
-            "label": "list-select single head",
-            "name": "list-select.single_head",
-            "optiongroup": "ListSelect",
-            "placeholder": "Select entry...",
-            "options": {
-                "nana": "Nana",
-                "foobar": "Foobar"
-            },
-            "header": "show",
             "sorted": true
         }
     ]

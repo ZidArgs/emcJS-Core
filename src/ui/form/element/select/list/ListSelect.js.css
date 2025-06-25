@@ -29,18 +29,18 @@
     opacity: 1 !important;
 }
 
-.header {
+#header {
     display: flex;
     border-bottom-style: solid;
     border-bottom-width: var(--input-border-width, 2px);
     border-bottom-color: var(--input-border-color, #222222);
 }
 
-:host(:invalid) .header {
+:host(:invalid) #header {
     border-bottom-color: var(--input-invalid-border-color, #ff4444);
 }
 
-:host(:disabled) .header {
+:host(:disabled) #header {
     border-bottom-color: var(--input-disabled-border-color, #6a6a6a) !important;
 }
 
@@ -70,4 +70,64 @@
 
 #options-container {
     display: none;
+}
+
+.multi-select {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    appearance: none;
+    flex-grow: 0;
+    width: 1.4em;
+    height: 1.4em;
+    padding: 2px;
+    margin: 10px 2px 10px 8px;
+    color: var(--datagrid-select-cell-text-color, #000000);
+    background-color: var(--datagrid-select-cell-back-color, #ffffff);
+    border-style: solid;
+    border-width: 2px;
+    border-color: var(--datagrid-select-cell-border-color, #000000);
+    border-radius: 0.3em;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+:host([multiple]:not([multiple="false"])) .multi-select {
+    display: inline-flex;
+}
+
+.multi-select:checked:not(:indeterminate) {
+    color: var(--datagrid-select-cell-checked-text-color, #ffffff);
+    background-color: var(--datagrid-select-cell-checked-back-color, #000000);
+}
+
+.multi-select::before {
+    font-size: 1.1em;
+    line-height: 1em;
+    font-family: monospace;
+    font-weight: bold;
+    content: " ";
+}
+
+.multi-select:checked::before {
+    content: "✓";
+}
+
+.multi-select:indeterminate::before {
+    content: "•";
+}
+
+:host([selectend]:not([selectend="false"])) .multi-select {
+    margin: 10px 8px 10px 2px;
+}
+
+:host([disabled]:not([disabled="false"])) .multi-select {
+    color: var(--datagrid-disabled-select-cell-text-color, #757575) !important;
+    background-color: var(--datagrid-disabled-select-cell-back-color, #999999) !important;
+    border-color: var(--datagrid-disabled-select-cell-border-color, #6a6a6a) !important;
+    cursor: default !important;
+}
+
+:host([readonly]:not([readonly="false"])) .multi-select {
+    pointer-events: none;
 }

@@ -6,6 +6,10 @@ import STYLE from "./SwitchInput.js.css" assert {type: "css"};
 
 export default class SwitchInput extends AbstractFormElement {
 
+    static get changeDebounceTime() {
+        return 0;
+    }
+
     #inputEl;
 
     constructor() {

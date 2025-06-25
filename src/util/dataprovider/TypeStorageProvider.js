@@ -13,8 +13,8 @@ export default class TypeStorageProvider extends AbstractDataProvider {
 
     #eventManager = new EventTargetManager();
 
-    constructor(reciever, source, initialOptions) {
-        super(reciever, initialOptions);
+    constructor(reciever, source, multiSort, initialOptions) {
+        super(reciever, multiSort, initialOptions);
         if (source != null && !(source instanceof TypeStorage)) {
             throw new Error("source must be a ObservableStorage");
         }

@@ -34,6 +34,10 @@ export default class AbstractFormElement extends CustomFormElement {
         return deepClone(CONFIG_FIELDS);
     }
 
+    static get changeDebounceTime() {
+        return 300;
+    }
+
     #value;
 
     #tooltipEl;
@@ -329,7 +333,7 @@ export default class AbstractFormElement extends CustomFormElement {
             bubbles: true,
             cancelable: true
         }));
-    }, 300);
+    }, this.changeDebounceTime);
 
     async revalidate() {
         if (!this.noValidate) {

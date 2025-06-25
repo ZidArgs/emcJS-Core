@@ -18,6 +18,7 @@ all; top_bottom right_left; top right bottom left
     --page-hover-back-color: #696969;
     --page-marked-text-color: #ffffff;
     --page-marked-back-color: #222222;
+    --page-marked-border-color: #0f0f0f;
     --page-content-border-color: #222222;
     --page-focus-color: #06b5ff;
 

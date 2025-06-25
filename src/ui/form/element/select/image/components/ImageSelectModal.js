@@ -75,19 +75,31 @@ export default class ImageSelectModal extends Modal {
         this.#contentEl.before(this.#viewControlEl);
         this.#viewSizeSmallEl.addEventListener("click", () => {
             this.#contentEl.style.setProperty("--icon-preview-size", "50px");
-            this.#viewControlEl.className = "size-small";
+            this.#viewSizeSmallEl.primary = true;
+            this.#viewSizeNormalEl.primary = false;
+            this.#viewSizeBigEl.primary = false;
+            this.#viewSizeGiganticEl.primary = false;
         });
         this.#viewSizeNormalEl.addEventListener("click", () => {
             this.#contentEl.style.setProperty("--icon-preview-size", "100px");
-            this.#viewControlEl.className = "size-normal";
+            this.#viewSizeSmallEl.primary = false;
+            this.#viewSizeNormalEl.primary = true;
+            this.#viewSizeBigEl.primary = false;
+            this.#viewSizeGiganticEl.primary = false;
         });
         this.#viewSizeBigEl.addEventListener("click", () => {
             this.#contentEl.style.setProperty("--icon-preview-size", "200px");
-            this.#viewControlEl.className = "size-big";
+            this.#viewSizeSmallEl.primary = false;
+            this.#viewSizeNormalEl.primary = false;
+            this.#viewSizeBigEl.primary = true;
+            this.#viewSizeGiganticEl.primary = false;
         });
         this.#viewSizeGiganticEl.addEventListener("click", () => {
             this.#contentEl.style.setProperty("--icon-preview-size", "400px");
-            this.#viewControlEl.className = "size-gigantic";
+            this.#viewSizeSmallEl.primary = false;
+            this.#viewSizeNormalEl.primary = false;
+            this.#viewSizeBigEl.primary = false;
+            this.#viewSizeGiganticEl.primary = true;
         });
 
         this.#cancelEl = els.getElementById("cancel");

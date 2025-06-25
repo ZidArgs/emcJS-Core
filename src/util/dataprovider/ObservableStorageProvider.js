@@ -14,8 +14,8 @@ export default class ObservableStorageProvider extends AbstractDataProvider {
 
     #eventManager = new EventTargetManager();
 
-    constructor(reciever, source, initialOptions) {
-        super(reciever, initialOptions);
+    constructor(reciever, source, multiSort, initialOptions) {
+        super(reciever, multiSort, initialOptions);
         if (source != null && !(source instanceof ObservableStorage) && !(source instanceof AppStateStorageWrapper)) {
             throw new Error("source must be a ObservableStorage or AppStateStorageWrapper");
         }

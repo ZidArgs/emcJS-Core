@@ -26,9 +26,17 @@ export default class ListSelect extends AbstractFormElement {
         return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
     }
 
+    static get changeDebounceTime() {
+        return 0;
+    }
+
+    #headerEl;
+
     #searchEl;
 
     #gridEl;
+
+    #headerSelectEl;
 
     #dataManager;
 
@@ -51,12 +59,32 @@ export default class ListSelect extends AbstractFormElement {
         this.#optionsContainerEl.addEventListener("slotchange", () => {
             this.#onSlotChange();
         });
+        this.#headerEl = this.shadowRoot.getElementById("header");
         /* --- */
         this.#gridEl = this.shadowRoot.getElementById("grid");
         this.#gridEl.addEventListener("selection", (event) => {
             event.stopPropagation();
             event.preventDefault();
             this.value = event.data;
+        });
+        /* --- */
+        this.#headerSelectEl = document.createElement("input");
+        this.#headerSelectEl.type = "checkbox";
+        this.#headerSelectEl.className = "multi-select";
+        this.#headerEl.prepend(this.#headerSelectEl);
+        this.#headerSelectEl.addEventListener("change", () => {
+            const value = this.#headerSelectEl.checked;
+            if (value) {
+                this.#gridEl.selectAll();
+            } else {
+                this.#gridEl.clearSelected();
+            }
+        });
+        this.#gridEl.addEventListener("selection-header", (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            this.#headerSelectEl.checked = event.checked;
+            this.#headerSelectEl.indeterminate = event.indeterminate;
         });
         /* --- */
         this.#dataManager = new SimpleDataProvider(this.#gridEl);
@@ -82,6 +110,7 @@ export default class ListSelect extends AbstractFormElement {
         super.formDisabledCallback(disabled);
         this.#searchEl.disabled = disabled;
         this.#gridEl.disabled = disabled;
+        this.#headerSelectEl.disabled = disabled;
     }
 
     focus(options) {
@@ -123,24 +152,16 @@ export default class ListSelect extends AbstractFormElement {
         return this.getBooleanAttribute("multiple");
     }
 
-    set header(value) {
-        this.setAttribute("header", value);
-    }
-
-    get header() {
-        return this.getAttribute("header");
-    }
-
     set selectEnd(value) {
-        this.setAttribute("selectend", value);
+        this.setBooleanAttribute("selectend", value);
     }
 
     get selectEnd() {
-        return this.getAttribute("selectend");
+        return this.getBooleanAttribute("selectend");
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "readonly", "sorted", "multiple", "selectend", "header"];
+        return [...super.observedAttributes, "readonly", "sorted", "multiple", "selectend"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -150,6 +171,7 @@ export default class ListSelect extends AbstractFormElement {
                 if (oldValue != newValue) {
                     const value = newValue != null && newValue != "false";
                     this.#gridEl.readonly = value;
+                    this.#headerSelectEl.readonly = value;
                 }
             } break;
             case "sorted": {
@@ -165,16 +187,10 @@ export default class ListSelect extends AbstractFormElement {
             case "selectend": {
                 if (oldValue != newValue) {
                     this.#gridEl.selectEnd = this.selectEnd;
-                }
-            } break;
-            case "header": {
-                if (oldValue != newValue) {
-                    if (newValue === "show") {
-                        this.#gridEl.nohead = false;
-                    } else if (newValue === "hide") {
-                        this.#gridEl.nohead = true;
+                    if (this.selectEnd) {
+                        this.#headerEl.append(this.#headerSelectEl);
                     } else {
-                        this.#gridEl.nohead = null;
+                        this.#headerEl.prepend(this.#headerSelectEl);
                     }
                 }
             } break;

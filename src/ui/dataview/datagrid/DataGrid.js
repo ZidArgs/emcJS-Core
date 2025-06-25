@@ -232,6 +232,13 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
             ev.data = {columnName};
             this.dispatchEvent(ev);
         });
+        this.#tableEl.addEventListener("unsort", (event) => {
+            event.stopPropagation();
+            const {columnName} = event.data;
+            const ev = new Event("unsort");
+            ev.data = {columnName};
+            this.dispatchEvent(ev);
+        });
     }
 
     connectedCallback() {
@@ -392,15 +399,46 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
         }
     }
 
+    selectAll() {
+        if (this.selectable) {
+            this.#selected.clear();
+            const selectEls = this.shadowRoot.querySelectorAll(`td.select-cell input[type="checkbox"]`);
+            if (this.multiple) {
+                for (const selectEl of selectEls) {
+                    selectEl.checked = true;
+                    const rowKey = selectEl.getAttribute("row-key");
+                    this.#selected.add(rowKey);
+                }
+            } else {
+                const selectEl = selectEls[0];
+                selectEl.checked = true;
+                const rowKey = selectEl.getAttribute("row-key");
+                this.#selected.add(rowKey);
+            }
+            this.#updateSelectHeader();
+            const ev = new Event("selection");
+            ev.data = [...this.#selected].sort();
+            this.dispatchEvent(ev);
+        }
+    }
+
     setSortIndicators(columns = []) {
+        const showSortOrder = columns.length > 1;
         for (const colDef of this.#columnDefinition) {
             const {name} = colDef;
             const headerCellEl = this.#headerManager.getCellByColumnName(name);
-            const sort = columns.find((entry) => entry === name || entry === `!${name}`);
-            if (sort != null) {
+            const sortIndex = columns.findIndex((entry) => entry === name || entry === `!${name}`);
+            if (sortIndex >= 0) {
+                const sort = columns[sortIndex];
                 headerCellEl.sortDirection = sort.startsWith("!") ? "dec" : "inc";
+                if (showSortOrder) {
+                    headerCellEl.sortOrder = sortIndex + 1;
+                } else {
+                    headerCellEl.sortOrder = null;
+                }
             } else {
                 headerCellEl.sortDirection = null;
+                headerCellEl.sortOrder = null;
             }
         }
     }
@@ -512,16 +550,24 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
         for (const selectEl of selectEls) {
             value |= selectEl.checked ? 2 : 1;
         }
+        const ev = new Event("selection-header");
         if (value === 2) {
             this.#headerSelectEl.checked = true;
             this.#headerSelectEl.indeterminate = false;
+            ev.checked = true;
+            ev.indeterminate = false;
         } else if (value === 3) {
             this.#headerSelectEl.checked = true;
             this.#headerSelectEl.indeterminate = true;
+            ev.checked = true;
+            ev.indeterminate = true;
         } else {
             this.#headerSelectEl.checked = false;
             this.#headerSelectEl.indeterminate = false;
+            ev.checked = false;
+            ev.indeterminate = false;
         }
+        this.dispatchEvent(ev);
     }
 
     #onSlotChange = debounce(() => {

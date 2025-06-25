@@ -4,10 +4,11 @@ import {
     isArray, isArrayOf, isBoolean, isDict, isFunction, isNull, isNumber, isNumberNotNaN, isObject, isString, isStringNotEmpty
 } from "../CheckType.js";
 import {getFromObjectByPath} from "./ObjectContent.js";
+import {immute} from "../../../data/Immutable.js";
 
 const SORT_PATTERN = /^(!?)(.+)$/;
 
-export const OPTION_PARAMS = {
+export const OPTION_PARAMS = immute({
     PAGE: "page",
     PAGE_SIZE: "pageSize",
     SORT: "sort",
@@ -17,9 +18,9 @@ export const OPTION_PARAMS = {
     FILTER_IGNORE_NULL_VALUES: "filterIgnoreNullValues",
     SEARCH: "search",
     SEARCH_FIELDS: "searchFields"
-};
+});
 
-export const DEFAULT_OPTIONS = {
+export const DEFAULT_OPTIONS = immute({
     page: 0,
     pageSize: 0,
     sort: [],
@@ -29,7 +30,7 @@ export const DEFAULT_OPTIONS = {
     filterIgnoreNullValues: false,
     search: "",
     searchFields: []
-};
+});
 
 /**
  * Extract data from an array using filter and sort options and cut out a page if needed
@@ -60,7 +61,7 @@ export function extractData(source = [], options = {}) {
         sortFunction = DEFAULT_OPTIONS.sortFunction,
         filter = DEFAULT_OPTIONS.filter,
         filterFunction = DEFAULT_OPTIONS.filterFunction,
-        filterIgnoreNullValues = DEFAULT_OPTIONS.ignoreNullValues,
+        filterIgnoreNullValues = DEFAULT_OPTIONS.filterIgnoreNullValues,
         search = DEFAULT_OPTIONS.search,
         searchFields = DEFAULT_OPTIONS.searchFields
     } = options;

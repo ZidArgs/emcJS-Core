@@ -100,12 +100,12 @@ export default class CellManager {
         this.#elements.clear();
         this.#columnDefinitionCache.clear();
 
+        this.#target.append(this.#lastCellEl);
         if (this.#selectEnd) {
             this.#target.append(this.#selectCellEl);
         } else {
             this.#target.prepend(this.#selectCellEl);
         }
-        this.#target.append(this.#lastCellEl);
     }
 
     manage(columnDefinition, rowData, isSelected) {
@@ -325,12 +325,12 @@ export default class CellManager {
             this.#target.append(...els);
         }
         // add special cells
+        this.#target.append(this.#lastCellEl);
         if (this.#selectEnd) {
             this.#target.append(this.#selectCellEl);
         } else {
             this.#target.prepend(this.#selectCellEl);
         }
-        this.#target.append(this.#lastCellEl);
     });
 
 }

@@ -117,4 +117,4 @@ grid2El.setData([
 ]);
 
 const gridRemoteEl = document.getElementById("grid-remote");
-new RemoteDataProvider(gridRemoteEl, "/api/data");
+new RemoteDataProvider(gridRemoteEl, "/api/data", null, true);

@@ -37,6 +37,10 @@ export default class SimpleSelect extends AbstractFormElement {
         return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
     }
 
+    static get changeDebounceTime() {
+        return 0;
+    }
+
     #isEditMode = false;
 
     #fieldEl;

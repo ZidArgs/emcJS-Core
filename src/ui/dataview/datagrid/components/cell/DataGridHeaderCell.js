@@ -6,6 +6,8 @@ export default class DataGridHeaderCell extends CustomElementDelegating {
 
     #dataGridId;
 
+    #sortIndicatorEl;
+
     constructor(dataGridId) {
         if (typeof dataGridId !== "string" || dataGridId === "") {
             throw new Error("dataGridId must be a non empty string");
@@ -15,11 +17,20 @@ export default class DataGridHeaderCell extends CustomElementDelegating {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#dataGridId = dataGridId;
+        this.#sortIndicatorEl = this.shadowRoot.getElementById("sort-indicator");
         /* --- */
         this.addEventListener("click", (event) => {
             event.stopPropagation();
             if (this.sortable) {
                 const ev = new Event("sort", {bubbles:true});
+                ev.data = {columnName: this.columnName};
+                this.dispatchEvent(ev);
+            }
+        });
+        this.#sortIndicatorEl.addEventListener("click", (event) => {
+            event.stopPropagation();
+            if (this.sortable) {
+                const ev = new Event("unsort", {bubbles:true});
                 ev.data = {columnName: this.columnName};
                 this.dispatchEvent(ev);
             }
@@ -51,11 +62,19 @@ export default class DataGridHeaderCell extends CustomElementDelegating {
     }
 
     get sortDirection() {
-        return this.setStringAttribute("sortdir");
+        return this.getStringAttribute("sortdir");
+    }
+
+    set sortOrder(val) {
+        this.setNumberAttribute("sortorder", val, 1);
+    }
+
+    get sortOrder() {
+        return this.getNumberAttribute("sortorder");
     }
 
     static get observedAttributes() {
-        return ["col-name"];
+        return ["col-name", "sortorder"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -64,9 +83,11 @@ export default class DataGridHeaderCell extends CustomElementDelegating {
                 case "col-name": {
                     const escapedColumnName = this.columnName.replace(/\./g, "\\.");
                     const styleWidth = `var(--width-${escapedColumnName}, 100%)`;
-                    this.style.maxWidth = styleWidth;
                     this.style.minWidth = styleWidth;
                     this.style.width = styleWidth;
+                } break;
+                case "sortorder": {
+                    this.#sortIndicatorEl.innerText = newValue;
                 } break;
             }
         }
