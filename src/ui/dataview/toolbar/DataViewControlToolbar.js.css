@@ -1,9 +1,9 @@
 :host {
     display: block;
-    margin: 10px;
+    margin: 8px;
 }
 
-#container {
+#content {
     position: relative;
     display: flex;
     align-items: center;
@@ -19,17 +19,43 @@
     --button-border-width: var(--pagination-border-width, 2px);
     --button-border-radius: var(--pagination-border-radius, 6px);
     --button-border-color: var(--pagination-border-color, #222222);
+    --button-disabled-border-color: var(--pagination-border-color, #222222);
+    --button-hover-border-color: var(--pagination-border-color, #222222);
     --input-focus-color: var(--pagination-focus-color, #06b5ff);
     --button-focus-color: var(--pagination-focus-color, #06b5ff);
 }
 
-#container>* {
+.control-container {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    margin: 2px;
+}
+
+.control-container > * {
     margin: 0px;
     font-size: 1em;
 }
 
-#container>*:focus {
-    z-index: 1;
+#pagination-control,
+#page-size-control,
+#total-count-control {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    margin: 2px;
+}
+
+:host([controls~="pagination"]) #pagination-control {
+    display: inline-flex;
+}
+
+:host([controls~="page-size"]) #page-size-control {
+    display: inline-flex;
+}
+
+:host([controls~="total-count"]) #total-count-control {
+    display: inline-flex;
 }
 
 #current,
@@ -50,6 +76,7 @@
 #size:focus {
     box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
     outline: none;
+    z-index: 1;
 }
 
 #current::placeholder {
@@ -70,7 +97,7 @@
 #size-text,
 #total-text,
 #total {
-    display: none;
+    display: flex;
 }
 
 #max,
@@ -101,16 +128,26 @@
     border-bottom-right-radius: var(--pagination-border-radius, 6px);
 }
 
-#decrease,
-#increase,
 #max-text {
     margin-left: calc(var(--pagination-border-width, 2px) * -1);
     margin-right: calc(var(--pagination-border-width, 2px) * -1);
 }
 
+#decrease,
+#first {
+    margin-left: 0px;
+    margin-right: calc(var(--pagination-border-width, 2px) * -1);
+}
+
+#increase,
+#last {
+    margin-left: calc(var(--pagination-border-width, 2px) * -1);
+    margin-right: 0px;
+}
+
 #size-text,
 #total-text {
-    margin-left: 10px;
+    margin-left: 0px;
     margin-right: calc(var(--pagination-border-width, 2px) * -1);
     border-top-left-radius: var(--pagination-border-radius, 6px);
     border-bottom-left-radius: var(--pagination-border-radius, 6px);
@@ -123,7 +160,7 @@
 }
 
 #size {
-    display: none;
+    display: inline-block;
     cursor: pointer;
 }
 
@@ -134,14 +171,4 @@
     background-image: var(--button-back-image, none);
     opacity: 1;
     appearance: none;
-}
-
-:host([show-size]:not([show-size="false"])) #size-text,
-:host([show-total]:not([show-total="false"])) #total-text,
-:host([show-total]:not([show-total="false"])) #total {
-    display: flex;
-}
-
-:host([show-size]:not([show-size="false"])) #size {
-    display: inline-block;
 }

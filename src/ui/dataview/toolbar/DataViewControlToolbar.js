@@ -2,10 +2,14 @@ import CustomElementDelegating from "../../element/CustomElementDelegating.js";
 import "../../i18n/I18nLabel.js";
 import "../../form/FormRow.js";
 import "../../form/button/Button.js";
-import TPL from "./PaginationToolbar.js.html" assert {type: "html"};
-import STYLE from "./PaginationToolbar.js.css" assert {type: "css"};
+import TPL from "./DataViewControlToolbar.js.html" assert {type: "html"};
+import STYLE from "./DataViewControlToolbar.js.css" assert {type: "css"};
 
-export default class PaginationToolbar extends CustomElementDelegating {
+export default class DataViewControlToolbar extends CustomElementDelegating {
+
+    static get controls() {
+        return ["pagination", "page-size", "total-count"];
+    }
 
     #firstEl;
 
@@ -121,20 +125,45 @@ export default class PaginationToolbar extends CustomElementDelegating {
         return this.getAttribute("sizes");
     }
 
-    set showSize(value) {
-        this.setBooleanAttribute("show-size", value);
+    set controls(value) {
+        this.setListAttrinute("controls", value, DataViewControlToolbar.controls);
     }
 
-    get showSize() {
-        return this.getBooleanAttribute("show-size");
+    get controls() {
+        return this.getListAttrinute("controls");
     }
 
-    set showTotal(value) {
-        this.setBooleanAttribute("show-total", value);
+    addControl(control) {
+        if (DataViewControlToolbar.controls.includes(control)) {
+            const controls = this.controls;
+            if (!controls.includes(control)) {
+                this.controls = [...controls, control];
+            }
+        }
     }
 
-    get showTotal() {
-        return this.getBooleanAttribute("show-total");
+    removeControl(control) {
+        if (DataViewControlToolbar.controls.includes(control)) {
+            const controls = this.controls;
+            if (controls.includes(control)) {
+                this.controls = controls.filter((c) => c !== control);
+            }
+        }
+    }
+
+    toggleControl(control, forceTo) {
+        if (forceTo === true) {
+            this.addControl(control);
+        } else if (forceTo === false) {
+            this.removeControl(control);
+        } else if (DataViewControlToolbar.controls.includes(control)) {
+            const controls = this.controls;
+            if (controls.includes(control)) {
+                this.controls = controls.filter((c) => c !== control);
+            } else {
+                this.controls = [...controls, control];
+            }
+        }
     }
 
     static get observedAttributes() {
@@ -251,4 +280,4 @@ export default class PaginationToolbar extends CustomElementDelegating {
 
 }
 
-customElements.define("emc-dataview-pagination", PaginationToolbar);
+customElements.define("emc-dataview-control-toolbar", DataViewControlToolbar);

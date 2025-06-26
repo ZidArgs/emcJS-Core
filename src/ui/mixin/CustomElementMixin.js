@@ -176,7 +176,7 @@ export default createMixin((superclass) => class CustomElementMixin extends supe
         }
     }
 
-    getEnumAttrinute(name) {
+    getListAttrinute(name) {
         return this.getAttribute(name).split(" ");
     }
 

@@ -6,7 +6,7 @@ import {
 import {debounce} from "../Debouncer.js";
 import {DEFAULT_OPTIONS} from "../helper/collection/ExtractDataFromArray.js";
 import EventMultiTargetManager from "../event/EventMultiTargetManager.js";
-import PaginationToolbar from "../../ui/dataview/toolbar/PaginationToolbar.js";
+import DataViewControlToolbar from "../../ui/dataview/toolbar/DataViewControlToolbar.js";
 import DataRecieverMixin from "./DataRecieverMixin.js";
 
 export default class AbstractDataProvider extends EventTarget {
@@ -21,9 +21,9 @@ export default class AbstractDataProvider extends EventTarget {
 
     #reciever;
 
-    #paginationEls = new Set();
+    #toolbarEls = new Set();
 
-    #paginationEventManager = new EventMultiTargetManager();
+    #toolbarEventManager = new EventMultiTargetManager();
 
     #multiSort = false;
 
@@ -78,11 +78,11 @@ export default class AbstractDataProvider extends EventTarget {
             }
         });
         /* --- */
-        this.#paginationEventManager.set("page", (event) => {
+        this.#toolbarEventManager.set("page", (event) => {
             const page = event.data - 1;
             this.updateOptions({page});
         });
-        this.#paginationEventManager.set("size", (event) => {
+        this.#toolbarEventManager.set("size", (event) => {
             const pageSize = event.data;
             this.updateOptions({
                 page: 0,
@@ -109,22 +109,22 @@ export default class AbstractDataProvider extends EventTarget {
         return this.#multiSort;
     }
 
-    setPagination(paginationEl) {
-        if (paginationEl != null && !(paginationEl instanceof PaginationToolbar)) {
+    setToolbar(paginationEl) {
+        if (paginationEl != null && !(paginationEl instanceof DataViewControlToolbar)) {
             throw new Error("paginationEl must be an instance of PaginationToolbar");
         }
-        this.#paginationEls.clear();
-        this.#paginationEventManager.clearTargets();
-        this.addPagination(paginationEl);
+        this.#toolbarEls.clear();
+        this.#toolbarEventManager.clearTargets();
+        this.addToolbar(paginationEl);
     }
 
-    addPagination(paginationEl) {
-        if (paginationEl != null && !(paginationEl instanceof PaginationToolbar)) {
+    addToolbar(paginationEl) {
+        if (paginationEl != null && !(paginationEl instanceof DataViewControlToolbar)) {
             throw new Error("paginationEl must be an instance of PaginationToolbar");
         }
-        this.#paginationEls.add(paginationEl);
-        this.#paginationEventManager.addTarget(paginationEl);
-        this.#updatePaginationEls();
+        this.#toolbarEls.add(paginationEl);
+        this.#toolbarEventManager.addTarget(paginationEl);
+        this.#updateToolbarEls();
     }
 
     setOptions(value) {
@@ -169,27 +169,27 @@ export default class AbstractDataProvider extends EventTarget {
             this.#reciever.setData([]);
             this.dispatchEvent(new Event("error"));
         } finally {
-            this.#updatePaginationEls();
+            this.#updateToolbarEls();
             await this.#reciever.unbusy();
         }
     });
 
-    #updatePaginationEls = debounce(() => {
-        for (const paginationEl of this.#paginationEls) {
-            if (paginationEl != null) {
+    #updateToolbarEls = debounce(() => {
+        for (const toolbarEl of this.#toolbarEls) {
+            if (toolbarEl != null) {
                 const pageSize = this.#options.pageSize;
                 const currentPage = this.#options.page;
                 const totalEntries = this.resultSize;
-                paginationEl.total = totalEntries;
+                toolbarEl.total = totalEntries;
                 if (pageSize != null && pageSize > 0) {
                     const maxPages = Math.ceil(totalEntries / pageSize);
-                    paginationEl.size = pageSize;
-                    paginationEl.max = maxPages;
-                    paginationEl.value = (currentPage ?? 0) + 1;
+                    toolbarEl.size = pageSize;
+                    toolbarEl.max = maxPages;
+                    toolbarEl.value = (currentPage ?? 0) + 1;
                 } else {
-                    paginationEl.size = null;
-                    paginationEl.max = 1;
-                    paginationEl.value = 1;
+                    toolbarEl.size = null;
+                    toolbarEl.max = 1;
+                    toolbarEl.value = 1;
                 }
             }
         }

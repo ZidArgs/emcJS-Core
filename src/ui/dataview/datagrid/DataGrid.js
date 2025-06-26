@@ -208,7 +208,7 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
             } = event.data;
             if (!this.multiple) {
                 const oldrowKey = [...this.#selected][0];
-                const selectEl = this.shadowRoot.querySelectorAll(`.select-cell input[type="checkbox"][row-key="${oldrowKey}"]`);
+                const selectEl = this.shadowRoot.querySelector(`.select-cell input[type="checkbox"][row-key="${oldrowKey}"]`);
                 if (selectEl != null) {
                     selectEl.checked = false;
                 }

@@ -41,7 +41,7 @@
             <emc-datagrid-column name="-1-" type="empty" width="10"></emc-datagrid-column>
         </emc-datagrid>
 
-        <emc-datagrid id="grid-0" style="resize: both;" selectable>
+        <emc-datagrid id="grid-0" style="resize: both;" selectable multiple>
             <emc-datagrid-column name="i18n" type="i18n" width="400"></emc-datagrid-column>
             <emc-datagrid-column name="A" label="" type="number" width="100"></emc-datagrid-column>
             <emc-datagrid-column name="B" label="Product" type="string" width="200"></emc-datagrid-column>
@@ -51,7 +51,7 @@
             <emc-datagrid-column name="-0-" type="image" editable optiongroup="ImageSelect" width="300"></emc-datagrid-column>
         </emc-datagrid>
 
-        <emc-datagrid id="grid-1" style="width: 1000px;" selectable selectend>
+        <emc-datagrid id="grid-1" style="width: 1000px;" selectable selectend multiple>
             <emc-datagrid-column name="i18n" type="i18n" editable width="400"></emc-datagrid-column>
             <emc-datagrid-column name="A" label="" type="number" width="100"></emc-datagrid-column>
             <emc-datagrid-column name="B" label="Product" type="string" width="200"></emc-datagrid-column>
@@ -71,10 +71,11 @@
             <emc-datagrid-column name="G" label="Since" type="time" editable width="200"></emc-datagrid-column>
         </emc-datagrid>
 
-        <emc-datagrid id="grid-remote" style="width: 1000px;" selectable selectend>
+        <emc-datagrid id="grid-remote" style="width: 1000px; margin-bottom: 2px;" selectable selectend>
             <emc-datagrid-column name="name" label="name" type="string" width="100" sortable></emc-datagrid-column>
             <emc-datagrid-column name="desc" label="desc" type="string" width="100" sortable></emc-datagrid-column>
         </emc-datagrid>
+        <emc-dataview-control-toolbar id="control-toolbar" sizes="1,2,4,10,15,20,25,50,100" size="15" controls="pagination page-size total-count" style="width: 1000px; margin-top: 0px;"></emc-dataview-control-toolbar>
     </emc-page>
 </body>
 

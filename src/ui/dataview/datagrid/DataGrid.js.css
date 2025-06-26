@@ -126,7 +126,7 @@ tr {
     border-bottom-color: var(--datagrid-disabled-row-seperator-color, #757575) !important;
 }
 
-#body tr > :not(:first-child):not(.lastCell) {
+#body tr > :not(:first-child):not(.lastCell):not(.select-cell) {
     padding: 0 0 0 var(--datagrid-column-seperator-width, 2px);
 }
 
@@ -251,10 +251,6 @@ tr {
 .head th.select-cell {
     min-width: 40px;
     padding: 0px;
-}
-
-#body tr > .select-cell.select-cell-start {
-    padding: 0 var(--datagrid-column-seperator-width, 2px) 0 0;
 }
 
 .head th.select-cell.select-cell-start {

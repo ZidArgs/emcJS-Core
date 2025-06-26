@@ -117,4 +117,6 @@ grid2El.setData([
 ]);
 
 const gridRemoteEl = document.getElementById("grid-remote");
-new RemoteDataProvider(gridRemoteEl, "/api/data", null, true);
+const controlToolbarEl = document.getElementById("control-toolbar");
+const dataProvider = new RemoteDataProvider(gridRemoteEl, "/api/data", null, true);
+dataProvider.setToolbar(controlToolbarEl);
