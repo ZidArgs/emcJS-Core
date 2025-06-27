@@ -62,6 +62,7 @@ export default class CellManager {
         this.#selectCellEl = document.createElement("td");
         this.#selectCheckboxEl = document.createElement("input");
         this.#selectCheckboxEl.type = "checkbox";
+        this.#selectCheckboxEl.name = "rowselect";
         this.#selectCheckboxEl.addEventListener("change", () => {
             const ev = new Event("selection", {
                 bubbles: true,

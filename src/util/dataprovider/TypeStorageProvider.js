@@ -9,6 +9,8 @@ export default class TypeStorageProvider extends AbstractDataProvider {
 
     #resultSize = 0;
 
+    #totalSize = 0;
+
     #source;
 
     #eventManager = new EventTargetManager();
@@ -33,6 +35,10 @@ export default class TypeStorageProvider extends AbstractDataProvider {
         return this.#resultSize;
     }
 
+    get totalSize() {
+        return this.#totalSize;
+    }
+
     setSource(source) {
         if (source != null && !(source instanceof TypeStorage)) {
             throw new Error("source must be a TypeStorage");
@@ -46,7 +52,7 @@ export default class TypeStorageProvider extends AbstractDataProvider {
 
     async getData(options = {}) {
         if (this.#source == null) {
-            this.#resultSize = 0;
+            this.#totalSize = 0;
             return [];
         }
 
@@ -67,7 +73,9 @@ export default class TypeStorageProvider extends AbstractDataProvider {
             };
         }), options);
 
-        this.#resultSize = result.total;
+        this.#resultSize = result.records.length;
+        this.#totalSize = result.total;
+
         return result.records;
     }
 

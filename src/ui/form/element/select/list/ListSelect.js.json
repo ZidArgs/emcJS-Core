@@ -13,12 +13,6 @@
     },
     {
         "type": "SwitchInput",
-        "name": "header",
-        "label": "Show selection header",
-        "value": false
-    },
-    {
-        "type": "SwitchInput",
         "name": "selectend",
         "label": "Move select boxes to the end",
         "value": false

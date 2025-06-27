@@ -433,7 +433,7 @@ all; top_bottom right_left; top right bottom left
 
     --datalist-entry-border-color: #000000;
     --datalist-entry-border-width: var(--page-border-width);
-    --datalist-entry-border-radius: 10px;
+    --datalist-entry-border-radius: 4px;
 
     /* === pagination === */
     --pagination-border-width: var(--page-border-width);

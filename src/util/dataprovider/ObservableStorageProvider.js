@@ -10,6 +10,8 @@ export default class ObservableStorageProvider extends AbstractDataProvider {
 
     #resultSize = 0;
 
+    #totalSize = 0;
+
     #source;
 
     #eventManager = new EventTargetManager();
@@ -34,6 +36,10 @@ export default class ObservableStorageProvider extends AbstractDataProvider {
         return this.#resultSize;
     }
 
+    get totalSize() {
+        return this.#totalSize;
+    }
+
     setSource(source) {
         if (!(source != null && source instanceof ObservableStorage) && !(source instanceof AppStateStorageWrapper)) {
             throw new Error("source must be a ObservableStorage or AppStateStorageWrapper");
@@ -47,7 +53,7 @@ export default class ObservableStorageProvider extends AbstractDataProvider {
 
     async getData(options = {}) {
         if (this.#source == null) {
-            this.#resultSize = 0;
+            this.#totalSize = 0;
             return [];
         }
 
@@ -61,7 +67,9 @@ export default class ObservableStorageProvider extends AbstractDataProvider {
             };
         }), options);
 
-        this.#resultSize = result.total;
+        this.#resultSize = result.records.length;
+        this.#totalSize = result.total;
+
         return result.records;
     }
 

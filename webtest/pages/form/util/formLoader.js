@@ -14,7 +14,7 @@ import "/emcJS/ui/form/button/SubmitButton.js";
 import "/emcJS/ui/form/button/ResetButton.js";
 import "/emcJS/ui/form/button/ActionButton.js";
 import "/emcJS/ui/form/button/LinkButton.js";
-import "/emcJS/ui/form/field/DefaultFormFieldsLoader.js";
+import "/emcJS/ui/form/element/FormElementsLoader.js";
 
 let initFlag = false;
 

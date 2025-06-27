@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -60,7 +61,7 @@
             <emc-datagrid-column name="E" label="Since" type="datetime" width="300"></emc-datagrid-column>
         </emc-datagrid>
 
-        <emc-datagrid id="grid-2" style="width: 1000px;" nohead selectable>
+        <emc-datagrid id="grid-2" style="width: 1000px;" nohead selectable allowdeselect>
             <emc-datagrid-column name="i18n" type="i18n" editable width="100"></emc-datagrid-column>
             <emc-datagrid-column name="A" label="" type="number" editable width="100"></emc-datagrid-column>
             <emc-datagrid-column name="B" label="Product" type="string" editable width="200"></emc-datagrid-column>
@@ -71,11 +72,17 @@
             <emc-datagrid-column name="G" label="Since" type="time" editable width="200"></emc-datagrid-column>
         </emc-datagrid>
 
-        <emc-datagrid id="grid-remote" style="width: 1000px; margin-bottom: 2px;" selectable selectend>
+        <emc-datagrid id="grid-remote-simple" style="width: 1000px; margin-bottom: 2px;" selectable selectend allowdeselect>
             <emc-datagrid-column name="name" label="name" type="string" width="100" sortable></emc-datagrid-column>
             <emc-datagrid-column name="desc" label="desc" type="string" width="100" sortable></emc-datagrid-column>
         </emc-datagrid>
-        <emc-dataview-control-toolbar id="control-toolbar" sizes="1,2,4,10,15,20,25,50,100" size="15" controls="pagination page-size total-count" style="width: 1000px; margin-top: 0px;"></emc-dataview-control-toolbar>
+        <emc-dataview-control-toolbar id="control-toolbar-simple" sizes="10,15,20,25,50,100" size="15" controls="pagination page-size total-count" style="width: 1000px; margin-top: 0px;"></emc-dataview-control-toolbar>
+
+        <emc-datagrid id="grid-remote-large" style="width: 1000px; height: 400px; margin-bottom: 2px;" selectable selectend stretched="value">
+            <emc-datagrid-column name="key" label="Key" type="string" width="200" sortable></emc-datagrid-column>
+            <emc-datagrid-column name="value" label="Value" type="string" width="500" sortable></emc-datagrid-column>
+        </emc-datagrid>
+        <emc-dataview-control-toolbar id="control-toolbar-large" sizes="10,15,20,25,50,100" size="15" controls="pagination page-size entries-count total-count" style="width: 1000px; margin-top: 0px;"></emc-dataview-control-toolbar>
     </emc-page>
 </body>
 

@@ -116,5 +116,17 @@ list2El.setData([
     }
 ]);
 
-const listRemoteEl = document.getElementById("list-remote");
-new RemoteDataProvider(listRemoteEl, "/api/data");
+const listRemoteSimpleEl = document.getElementById("list-remote-simple");
+const controlToolbarSimpleEl = document.getElementById("control-toolbar-simple");
+const simpleDataProvider = new RemoteDataProvider(listRemoteSimpleEl, "/api/data/simple", null, true);
+simpleDataProvider.setToolbar(controlToolbarSimpleEl);
+simpleDataProvider.setOptions({
+    sort: ["name", "!desc"],
+    pageSize: 15
+});
+
+const listRemoteLargeEl = document.getElementById("list-remote-large");
+const controlToolbarLargeEl = document.getElementById("control-toolbar-large");
+const largeDataProvider = new RemoteDataProvider(listRemoteLargeEl, "/api/data/large", null, true);
+largeDataProvider.setToolbar(controlToolbarLargeEl);
+largeDataProvider.setOptions({pageSize: 15});

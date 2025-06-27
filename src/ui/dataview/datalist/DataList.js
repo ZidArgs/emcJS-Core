@@ -33,6 +33,7 @@ export default class DataList extends ResizeObserverMixin(DataRecieverMixin(Cust
             if (typeof el.setData !== "function") {
                 throw new Error("list elements must implement a setData function");
             }
+            el.key = key;
             el.setData(values);
             return el;
         };

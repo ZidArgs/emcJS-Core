@@ -116,7 +116,17 @@ grid2El.setData([
     }
 ]);
 
-const gridRemoteEl = document.getElementById("grid-remote");
-const controlToolbarEl = document.getElementById("control-toolbar");
-const dataProvider = new RemoteDataProvider(gridRemoteEl, "/api/data", null, true);
-dataProvider.setToolbar(controlToolbarEl);
+const gridRemoteSimpleEl = document.getElementById("grid-remote-simple");
+const controlToolbarSimpleEl = document.getElementById("control-toolbar-simple");
+const simpleDataProvider = new RemoteDataProvider(gridRemoteSimpleEl, "/api/data/simple", null, true);
+simpleDataProvider.setToolbar(controlToolbarSimpleEl);
+simpleDataProvider.setOptions({
+    sort: ["name", "!desc"],
+    pageSize: 15
+});
+
+const gridRemoteLargeEl = document.getElementById("grid-remote-large");
+const controlToolbarLargeEl = document.getElementById("control-toolbar-large");
+const largeDataProvider = new RemoteDataProvider(gridRemoteLargeEl, "/api/data/large", null, true);
+largeDataProvider.setToolbar(controlToolbarLargeEl);
+largeDataProvider.setOptions({pageSize: 15});

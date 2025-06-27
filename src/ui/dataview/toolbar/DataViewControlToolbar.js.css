@@ -37,20 +37,15 @@
     font-size: 1em;
 }
 
-#pagination-control,
-#page-size-control,
-#total-count-control {
-    display: none;
-    align-items: center;
-    justify-content: center;
-    margin: 2px;
-}
-
 :host([controls~="pagination"]) #pagination-control {
     display: inline-flex;
 }
 
 :host([controls~="page-size"]) #page-size-control {
+    display: inline-flex;
+}
+
+:host([controls~="entries-count"]) #entries-count-control {
     display: inline-flex;
 }
 
@@ -95,16 +90,20 @@
 }
 
 #size-text,
+#entries-text,
+#entries,
 #total-text,
 #total {
     display: flex;
 }
 
-#max,
-#total,
 #max-text,
+#max,
 #size-text,
-#total-text {
+#entries-text,
+#entries,
+#total-text,
+#total {
     justify-content: center;
     align-items: center;
     width: min-content;
@@ -123,6 +122,7 @@
 }
 
 #size,
+#entries,
 #total {
     border-top-right-radius: var(--pagination-border-radius, 6px);
     border-bottom-right-radius: var(--pagination-border-radius, 6px);
@@ -146,6 +146,7 @@
 }
 
 #size-text,
+#entries-text,
 #total-text {
     margin-left: 0px;
     margin-right: calc(var(--pagination-border-width, 2px) * -1);

@@ -15,6 +15,8 @@ export default class RowManager extends EventTarget {
 
     #elements = new Map();
 
+    #elementCache = new Map();
+
     #order = [];
 
     #rowDataCache = new Map();
@@ -56,11 +58,12 @@ export default class RowManager extends EventTarget {
         this.#target.innerHTML = "";
         this.#order = [];
         this.#elements.clear();
+        this.#elementCache.clear();
         this.#rowDataCache.clear();
         this.#cellManagers.clear();
     }
 
-    manage(rowDataList, columnDefinition, selectedRows) {
+    manage(rowDataList, columnDefinition, selectedRows, noCache = false) {
         if (!Array.isArray(rowDataList)) {
             throw new TypeError("data must be an array");
         }
@@ -83,14 +86,11 @@ export default class RowManager extends EventTarget {
             newOrder.push(key);
 
             if (!this.#elements.has(key)) {
-                const rowEl = this.composer(key, columnDefinition, rowData, isSelected);
-                if (rowEl != null) {
-                    rowEl.setAttribute("row-key", key);
+                const rowEl = this.#getOrCreateElement(key);
+                this.#elements.set(key, rowEl);
+                if (columnDataChanged || this.#checkRowDataChange(key, rowData)) {
                     this.mutator(rowEl, key, columnDefinition, rowData, isSelected);
-                    this.#elements.set(key, rowEl);
                 }
-                this.#cachedColumnDefinition = deepClone(columnDefinition);
-                this.#rowDataCache.set(key, deepClone(rowData));
             } else {
                 const rowEl = this.#elements.get(key);
                 if (columnDataChanged || this.#checkRowDataChange(key, rowData)) {
@@ -104,14 +104,27 @@ export default class RowManager extends EventTarget {
             const rowEl = this.#elements.get(key);
             rowEl.remove();
             this.#elements.delete(key);
-            this.#cellCache.removeRow(key);
-            this.#rowDataCache.delete(key);
+            if (noCache) {
+                this.#elementCache.delete(key);
+                this.#rowDataCache.delete(key);
+                this.#cellManagers.delete(key);
+            }
         }
 
         if (!isEqual(newOrder, this.#order)) {
             this.#order = newOrder;
             this.#render();
         }
+    }
+
+    #getOrCreateElement(key) {
+        if (this.#elementCache.has(key)) {
+            return this.#elementCache.get(key);
+        }
+        const rowEl = this.composer(key);
+        rowEl.setAttribute("row-key", key);
+        this.#elementCache.set(key, rowEl);
+        return rowEl;
     }
 
     #checkColumnDefinitionChange(columnDefinition) {
@@ -134,13 +147,12 @@ export default class RowManager extends EventTarget {
         return false;
     }
 
-    composer(key, columnData, rowData, isSelected) {
+    composer(key) {
         const rowEl = document.createElement("tr");
 
         const cellManager = new CellManager(rowEl, this.#cellCache, this.#dataGridId);
         cellManager.selectEnd = this.#selectEnd;
         this.#cellManagers.set(key, cellManager);
-        cellManager.manage(columnData, rowData, isSelected);
 
         return rowEl;
     }

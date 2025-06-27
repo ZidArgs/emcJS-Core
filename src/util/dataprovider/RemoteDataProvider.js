@@ -6,6 +6,8 @@ export default class RemoteDataProvider extends AbstractDataProvider {
 
     #resultSize = 0;
 
+    #totalSize = 0;
+
     #source;
 
     #method = HTTPMethods.POST.toString();
@@ -25,6 +27,10 @@ export default class RemoteDataProvider extends AbstractDataProvider {
 
     get resultSize() {
         return this.#resultSize;
+    }
+
+    get totalSize() {
+        return this.#totalSize;
     }
 
     setSource(source = "") {
@@ -66,7 +72,8 @@ export default class RemoteDataProvider extends AbstractDataProvider {
             throw new Error(`error providing data [${this.#source.href}] - ${result.error}`);
         }
 
-        this.#resultSize = result.length;
+        this.#resultSize = result.records.length;
+        this.#totalSize = result.length;
 
         return result.records;
     }

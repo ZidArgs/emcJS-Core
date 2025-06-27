@@ -1,37 +1,47 @@
+import fs from "fs";
+import path from "path";
 import ServiceModule from "jswebservice/ServiceModule.js";
 import {extractData} from "../../src/util/helper/collection/ExtractDataFromArray.js";
-
-const SAMPLE_DATA = [
-    {
-        key: "0000001",
-        name: "A",
-        desc: "foobar"
-    },
-    {
-        key: "0000002",
-        name: "B",
-        desc: "barfoo"
-    },
-    {
-        key: "0000003",
-        name: "A",
-        desc: "barfoo"
-    },
-    {
-        key: "0000004",
-        name: "B",
-        desc: "foobar"
-    }
-];
+import {
+    isArrayOf, isDict
+} from "../../src/util/helper/CheckType.js";
 
 export default class DataProviderService extends ServiceModule {
+
+    #baseData = [];
 
     constructor(server, options) {
         super(server);
         if (options == null) {
             options = {};
         }
+        this.#loadData(options.dataSource);
         server.onrequest = (method, params, query, body) => this.#onrequest(method, params, query, body);
+    }
+
+    async #loadData(filePath) {
+        if (typeof filePath !== "string") {
+            return;
+        }
+        const resolvedFilePath = path.join("./", filePath);
+        if (fs.existsSync(resolvedFilePath)) {
+            const stat = fs.statSync(resolvedFilePath);
+            if (stat.isFile(resolvedFilePath)) {
+                const input = fs.readFileSync(resolvedFilePath).toString();
+                try {
+                    const data = JSON.parse(input);
+                    if (isArrayOf(data, (e) => isDict(e))) {
+                        this.#baseData = data;
+                    } else {
+                        console.log(`[${this.instanceName}] Requested data is not an Array of records: "${filePath}"`);
+                    }
+                    return;
+                } catch (err) {
+                    console.log(`[${this.instanceName}] Requested data parse error: "${filePath}"`, err);
+                }
+            }
+        }
+        console.log(`[${this.instanceName}] Requested data not found: "${filePath}"`);
     }
 
     async #onrequest(method, params, query, body) {
@@ -79,7 +89,7 @@ export default class DataProviderService extends ServiceModule {
 
         const {
             records, total
-        } = extractData([...SAMPLE_DATA], options);
+        } = extractData([...this.#baseData], options);
 
         return {
             success: true,

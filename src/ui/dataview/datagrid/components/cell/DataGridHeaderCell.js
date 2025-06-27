@@ -84,6 +84,7 @@ export default class DataGridHeaderCell extends CustomElementDelegating {
                     const escapedColumnName = this.columnName.replace(/\./g, "\\.");
                     const styleWidth = `var(--width-${escapedColumnName}, 100%)`;
                     this.style.minWidth = styleWidth;
+                    this.style.maxWidth = styleWidth;
                     this.style.width = styleWidth;
                 } break;
                 case "sortorder": {

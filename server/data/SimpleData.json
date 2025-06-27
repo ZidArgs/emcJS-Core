@@ -1,0 +1,22 @@
+[
+    {
+        "key": "0000001",
+        "name": "A",
+        "desc": "foobar"
+    },
+    {
+        "key": "0000002",
+        "name": "B",
+        "desc": "barfoo"
+    },
+    {
+        "key": "0000003",
+        "name": "A",
+        "desc": "barfoo"
+    },
+    {
+        "key": "0000004",
+        "name": "B",
+        "desc": "foobar"
+    }
+]

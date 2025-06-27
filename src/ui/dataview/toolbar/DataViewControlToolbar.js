@@ -1,14 +1,23 @@
 import CustomElementDelegating from "../../element/CustomElementDelegating.js";
+import {debounce} from "../../../util/Debouncer.js";
 import "../../i18n/I18nLabel.js";
-import "../../form/FormRow.js";
 import "../../form/button/Button.js";
 import TPL from "./DataViewControlToolbar.js.html" assert {type: "html"};
 import STYLE from "./DataViewControlToolbar.js.css" assert {type: "css"};
 
+// TODO add sort manager (modal with two lists, one contains available columns, the other the sort order)
+
+/* TODO
+- create component for each control
+- add abstract control as base class
+- controls should each be added individually
+- DataViewControlToolbar as optional container (?)
+*/
+
 export default class DataViewControlToolbar extends CustomElementDelegating {
 
     static get controls() {
-        return ["pagination", "page-size", "total-count"];
+        return ["pagination", "page-size", "entries-count", "total-count"];
     }
 
     #firstEl;
@@ -25,6 +34,8 @@ export default class DataViewControlToolbar extends CustomElementDelegating {
 
     #sizeEl;
 
+    #entriesEl;
+
     #totalEl;
 
     #infiniteSizeOpt = document.createElement("option");
@@ -37,6 +48,7 @@ export default class DataViewControlToolbar extends CustomElementDelegating {
         this.#firstEl = this.shadowRoot.getElementById("first");
         this.#decreaseEl = this.shadowRoot.getElementById("decrease");
         this.#currentEl = this.shadowRoot.getElementById("current");
+        this.#entriesEl = this.shadowRoot.getElementById("entries");
         this.#maxEl = this.shadowRoot.getElementById("max");
         this.#increaseEl = this.shadowRoot.getElementById("increase");
         this.#lastEl = this.shadowRoot.getElementById("last");
@@ -109,6 +121,14 @@ export default class DataViewControlToolbar extends CustomElementDelegating {
         return this.getIntAttribute("size");
     }
 
+    set entries(value) {
+        this.setIntAttribute("entries", value, 1);
+    }
+
+    get entries() {
+        return this.getIntAttribute("entries");
+    }
+
     set total(value) {
         this.setIntAttribute("total", value, 0);
     }
@@ -167,7 +187,7 @@ export default class DataViewControlToolbar extends CustomElementDelegating {
     }
 
     static get observedAttributes() {
-        return ["value", "max", "size", "total", "sizes"];
+        return ["value", "max", "size", "entries", "total", "sizes"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -185,6 +205,8 @@ export default class DataViewControlToolbar extends CustomElementDelegating {
                     this.#decreaseEl.disabled = currentValue === 1;
                     this.#increaseEl.disabled = currentValue === maxValue;
                     this.#lastEl.disabled = currentValue === maxValue;
+                    /* --- */
+                    this.#updateEntries();
                 } else {
                     this.#currentEl.value = oldValue;
                 }
@@ -224,6 +246,12 @@ export default class DataViewControlToolbar extends CustomElementDelegating {
                         ev.data = 0;
                         this.dispatchEvent(ev);
                     }
+                    this.#updateEntries();
+                }
+            } break;
+            case "entries": {
+                if (oldValue != newValue) {
+                    this.#updateEntries();
                 }
             } break;
             case "total": {
@@ -243,6 +271,23 @@ export default class DataViewControlToolbar extends CustomElementDelegating {
             } break;
         }
     }
+
+    #updateEntries = debounce(() => {
+        const shownEntries = this.entries ?? 1;
+        if (shownEntries != null && shownEntries > 0) {
+            const pageSize = this.size;
+            if (pageSize != null && pageSize > 0) {
+                const currentValue = this.value ?? 1;
+                const currentStart = (currentValue - 1) * pageSize;
+                const currentEnd = currentStart + shownEntries;
+                this.#entriesEl.innerText = `${currentStart + 1} - ${currentEnd} (${shownEntries})`;
+            } else {
+                this.#entriesEl.innerText = shownEntries;
+            }
+        } else {
+            this.#entriesEl.innerText = "0";
+        }
+    });
 
     #fillSizes() {
         const sizes = this.sizes.split(",");

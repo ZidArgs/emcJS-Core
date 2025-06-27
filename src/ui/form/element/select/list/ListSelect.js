@@ -70,6 +70,7 @@ export default class ListSelect extends AbstractFormElement {
         /* --- */
         this.#headerSelectEl = document.createElement("input");
         this.#headerSelectEl.type = "checkbox";
+        this.#headerSelectEl.name = "multiselect";
         this.#headerSelectEl.className = "multi-select";
         this.#headerEl.prepend(this.#headerSelectEl);
         this.#headerSelectEl.addEventListener("change", () => {

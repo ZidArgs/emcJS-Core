@@ -140,6 +140,7 @@ export default class DataGridCell extends CustomElementDelegating {
                 case "col-name": {
                     const styleWidth = `var(--width-${this.columnName}, 100%)`;
                     this.style.minWidth = styleWidth;
+                    this.style.maxWidth = styleWidth;
                     this.style.width = styleWidth;
                 } break;
             }

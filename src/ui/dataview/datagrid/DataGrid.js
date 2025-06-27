@@ -83,6 +83,7 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
         /* --- */
         this.#headerSelectEl = document.createElement("input");
         this.#headerSelectEl.type = "checkbox";
+        this.#headerSelectEl.name = "multiselect";
         this.#headerSelectEl.addEventListener("change", () => {
             const value = this.#headerSelectEl.checked;
             const selectEls = this.shadowRoot.querySelectorAll(`td.select-cell input[type="checkbox"]`);
@@ -207,13 +208,23 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
                 value, rowKey
             } = event.data;
             if (!this.multiple) {
-                const oldrowKey = [...this.#selected][0];
-                const selectEl = this.shadowRoot.querySelector(`.select-cell input[type="checkbox"][row-key="${oldrowKey}"]`);
-                if (selectEl != null) {
-                    selectEl.checked = false;
+                if (value) {
+                    const oldrowKey = [...this.#selected][0];
+                    const selectEl = this.shadowRoot.querySelector(`.select-cell input[type="checkbox"][row-key="${oldrowKey}"]`);
+                    if (selectEl != null) {
+                        selectEl.checked = false;
+                    }
+                    this.#selected.clear();
+                    this.#selected.add(rowKey);
+                } else if (this.allowDeselect) {
+                    this.#selected.clear();
+                } else {
+                    const oldrowKey = [...this.#selected][0];
+                    const selectEl = this.shadowRoot.querySelector(`.select-cell input[type="checkbox"][row-key="${oldrowKey}"]`);
+                    if (selectEl != null) {
+                        selectEl.checked = true;
+                    }
                 }
-                this.#selected.clear();
-                this.#selected.add(rowKey);
             } else if (value) {
                 this.#selected.add(rowKey);
             } else {
@@ -274,6 +285,14 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
         return this.getBooleanAttribute("multiple");
     }
 
+    set allowDeselect(value) {
+        this.setBooleanAttribute("allowdeselect", value);
+    }
+
+    get allowDeselect() {
+        return this.getBooleanAttribute("allowdeselect");
+    }
+
     set selectEnd(value) {
         this.setBooleanAttribute("selectend", value);
     }
@@ -304,6 +323,18 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
 
     get readonly() {
         return this.getBooleanAttribute("readonly");
+    }
+
+    /**
+     * Deactivate caching for row data and their html elements.
+     * Setting this impacts render performance.
+     */
+    set noCache(val) {
+        this.setBooleanAttribute("nocache", val);
+    }
+
+    get noCache() {
+        return this.getBooleanAttribute("nocache");
     }
 
     static get observedAttributes() {
@@ -454,7 +485,7 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
                 this.#rowManager.purge();
             } else {
                 this.#data = deepClone(rows);
-                this.#rowManager.manage(this.#data, this.#columnDefinition, this.#selected);
+                this.#rowManager.manage(this.#data, this.#columnDefinition, this.#selected, this.noCache);
             }
             this.#notifyRowUpdate();
             /* --- */

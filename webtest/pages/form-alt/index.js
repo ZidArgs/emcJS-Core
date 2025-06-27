@@ -12,8 +12,7 @@ import "/emcJS/ui/form/button/ResetButton.js";
 import "/emcJS/ui/form/button/ActionButton.js";
 import "/emcJS/ui/form/button/LinkButton.js";
 import "/emcJS/ui/form/button/ErrorButton.js";
-import "/emcJS/ui/form/input/FormInputLoader.js";
-import "/emcJS/ui/form/select/FormSelectLoader.js";
+import "/emcJS/ui/form/element/FormElementsLoader.js";
 
 const formContext = new FormContext();
 formContext.allowEnter = true;

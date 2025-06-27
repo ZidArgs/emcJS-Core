@@ -95,6 +95,10 @@ export default class AbstractDataProvider extends EventTarget {
         return 0;
     }
 
+    get totalSize() {
+        return 0;
+    }
+
     set multiSort(value) {
         this.#multiSort = value;
         if (!value) {
@@ -179,7 +183,9 @@ export default class AbstractDataProvider extends EventTarget {
             if (toolbarEl != null) {
                 const pageSize = this.#options.pageSize;
                 const currentPage = this.#options.page;
-                const totalEntries = this.resultSize;
+                const currentEntries = this.resultSize;
+                const totalEntries = this.totalSize;
+                toolbarEl.entries = currentEntries;
                 toolbarEl.total = totalEntries;
                 if (pageSize != null && pageSize > 0) {
                     const maxPages = Math.ceil(totalEntries / pageSize);

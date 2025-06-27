@@ -8,6 +8,8 @@ export default class SimpleDataProvider extends AbstractDataProvider {
 
     #resultSize = 0;
 
+    #totalSize = 0;
+
     #source = [];
 
     constructor(reciever, source, multiSort, initialOptions) {
@@ -22,6 +24,10 @@ export default class SimpleDataProvider extends AbstractDataProvider {
 
     get resultSize() {
         return this.#resultSize;
+    }
+
+    get totalSize() {
+        return this.#totalSize;
     }
 
     setSource(source = []) {
@@ -54,7 +60,7 @@ export default class SimpleDataProvider extends AbstractDataProvider {
 
     async getData(options = {}) {
         if (this.#source == null) {
-            this.#resultSize = 0;
+            this.#totalSize = 0;
             return [];
         }
 
@@ -65,7 +71,9 @@ export default class SimpleDataProvider extends AbstractDataProvider {
             return deepClone(record);
         }), options);
 
-        this.#resultSize = result.total;
+        this.#resultSize = result.records.length;
+        this.#totalSize = result.total;
+
         return result.records;
     }
 
