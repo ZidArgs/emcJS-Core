@@ -44,6 +44,8 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
 
     #tableEl;
 
+    #headEl;
+
     #headerEl;
 
     #bodyEl;
@@ -102,6 +104,7 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
         });
         /* --- */
         this.#tableEl = this.shadowRoot.getElementById("table");
+        this.#headEl = this.shadowRoot.getElementById("head");
         this.#headerEl = this.shadowRoot.getElementById("header");
         this.#bodyEl = this.shadowRoot.getElementById("body");
         this.#nocolumnsContainerEl = this.shadowRoot.getElementById("nocolumns-container");
@@ -250,6 +253,15 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
             ev.data = {columnName};
             this.dispatchEvent(ev);
         });
+        /* --- */
+        this.#headerManager.addEventListener("afterrender", debounce(() => {
+            console.log(`${this.#internalId} afterrender head`);
+            this.#processFixedCells(this.#headEl);
+        }));
+        this.#rowManager.addEventListener("afterrender", debounce(() => {
+            console.log(`${this.#internalId} afterrender body`);
+            this.#processFixedCells(this.#bodyEl);
+        }));
     }
 
     connectedCallback() {
@@ -513,6 +525,7 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
         return this.#cellCache.getCell(rowKey, colName);
     }
 
+    // TODO sort columns by fixed="start" < fixed=any < fixed="end"
     async #applyColumnDefinition() {
         await BusyIndicatorManager.busy();
         const columnNodeList = this.#columnContainerEl.assignedElements({flatten: true}).filter((el) => el instanceof Column);
@@ -642,6 +655,32 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
 
     reset() {
         return this.#busyIndicator.reset();
+    }
+
+    #processFixedCells(containerEl) {
+        const rowEls = containerEl.querySelectorAll(":scope tr");
+        for (const rowEl of rowEls) {
+            // left cells
+            {
+                const fixedLeftCells = [...rowEl.querySelectorAll(":scope .fixed-cell-start")];
+                let leftOffset = 0;
+                for (const cellEl of fixedLeftCells) {
+                    cellEl.style.left = `${leftOffset}px`;
+                    const cellElRect = cellEl.getBoundingClientRect();
+                    leftOffset += cellElRect.width;
+                }
+            }
+            // right cells
+            {
+                const fixedRightCells = [...rowEl.querySelectorAll(":scope .fixed-cell-end")].reverse();
+                let rightOffset = 0;
+                for (const cellEl of fixedRightCells) {
+                    cellEl.style.right = `${rightOffset}px`;
+                    const cellElRect = cellEl.getBoundingClientRect();
+                    rightOffset += cellElRect.width;
+                }
+            }
+        }
     }
 
 }

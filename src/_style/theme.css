@@ -347,11 +347,11 @@ all; top_bottom right_left; top right bottom left
     --tree-marked-back-image: none;
 
     /* === datagrid === */
-    --datagrid-text-color: var(--page-text-color);
-    --datagrid-back-color: var(--page-back-color);
+    --datagrid-text-color: #000000;
+    --datagrid-back-color: #ffffff;
     --datagrid-back-image: none;
-    --datagrid-border-color: var(--page-border-color);
-    --datagrid-border-width: var(--page-border-width);
+    --datagrid-border-color: #000000;
+    --datagrid-border-width: 2px;
     --datagrid-border-radius: 6px;
 
     --datagrid-disabled-text-color: #757575;
@@ -367,24 +367,39 @@ all; top_bottom right_left; top right bottom left
     --datagrid-empty-border-radius: 6px;
 
     --datagrid-column-seperator-width: 2px;
+    --datagrid-column-seperator-color: #ffffff;
+    --datagrid-fixed-column-seperator-width: 4px;
+    --datagrid-fixed-column-seperator-color: #afafaf;
 
-    --datagrid-header-text-color: var(--datagrid-text-color);
-    --datagrid-header-back-color: var(--datagrid-border-color);
+    --datagrid-row-seperator-width: 1px;
+    --datagrid-row-seperator-color: #696969;
+
+    --datagrid-header-text-color: #ffffff;
+    --datagrid-header-back-color: #333333;
     --datagrid-header-back-image: none;
-    --datagrid-header-seperator-color: var(--datagrid-back-color);
+    --datagrid-header-seperator-color: #ffffff;
+    --datagrid-fixed-header-seperator-color: var(--datagrid-fixed-column-seperator-color);
+
+    --datagrid-footer-text-color: #ffffff;
+    --datagrid-footer-back-color: #666666;
+    --datagrid-footer-back-image: none;
+    --datagrid-footer-seperator-color: #ffffff;
+    --datagrid-fixed-footer-seperator-color: var(--datagrid-fixed-column-seperator-color);
 
     --datagrid-disabled-header-text-color: #999999;
     --datagrid-disabled-header-back-color: #757575;
     --datagrid-disabled-header-back-image: none;
     --datagrid-disabled-header-seperator-color: #999999;
 
-    --datagrid-row-seperator-width: 1px;
-    --datagrid-row-seperator-color: var(--datagrid-border-color);
+    --datagrid-disabled-footer-text-color: #999999;
+    --datagrid-disabled-footer-back-color: #757575;
+    --datagrid-disabled-footer-back-image: none;
+    --datagrid-disabled-footer-seperator-color: #999999;
 
     --datagrid-disabled-row-seperator-color: #757575;
 
-    --datagrid-row-hover-text-color: var(--page-hover-text-color);
-    --datagrid-row-hover-back-color: var(--page-hover-back-color);
+    --datagrid-row-hover-text-color: #000000;
+    --datagrid-row-hover-back-color: #cecece;
     --datagrid-row-hover-back-image: none;
 
     --datagrid-select-cell-text-color: var(--datagrid-text-color);
@@ -402,12 +417,23 @@ all; top_bottom right_left; top right bottom left
     --datagrid-header-select-cell-back-color: var(--datagrid-header-back-color);
     --datagrid-header-select-cell-border-color: var(--datagrid-header-select-cell-text-color);
 
-    --datagrid-header-select-cell-checked-text-color: var(--datagrid-select-cell-checked-text-color);
-    --datagrid-header-select-cell-checked-back-color: var(--datagrid-select-cell-checked-back-color);
+    --datagrid-header-select-cell-checked-text-color: var(--datagrid-header-select-cell-back-color);
+    --datagrid-header-select-cell-checked-back-color: var(--datagrid-header-select-cell-text-color);
 
-    --datagrid-header-disabled-select-cell-text-color: var(--datagrid-disabled-select-cell-text-color);
-    --datagrid-header-disabled-select-cell-back-color: var(--datagrid-disabled-select-cell-back-color);
-    --datagrid-header-disabled-select-cell-border-color: var(--datagrid-disabled-select-cell-border-color);
+    --datagrid-disabled-header-select-cell-text-color: var(--datagrid-disabled-select-cell-text-color);
+    --datagrid-disabled-header-select-cell-back-color: var(--datagrid-disabled-select-cell-back-color);
+    --datagrid-disabled-header-select-cell-border-color: var(--datagrid-disabled-select-cell-border-color);
+
+    --datagrid-footer-select-cell-text-color: var(--datagrid-footer-text-color);
+    --datagrid-footer-select-cell-back-color: var(--datagrid-footer-back-color);
+    --datagrid-footer-select-cell-border-color: var(--datagrid-footer-select-cell-text-color);
+
+    --datagrid-footer-select-cell-checked-text-color: var(--datagrid-footer-select-cell-back-color);
+    --datagrid-footer-select-cell-checked-back-color: var(--datagrid-footer-select-cell-text-color);
+
+    --datagrid-disabled-footer-select-cell-text-color: var(--datagrid-disabled-select-cell-text-color);
+    --datagrid-disabled-footer-select-cell-back-color: var(--datagrid-disabled-select-cell-back-color);
+    --datagrid-disabled-footer-select-cell-border-color: var(--datagrid-disabled-select-cell-border-color);
 
     /* === datalist === */
     --datalist-back-color: var(--page-back-color);

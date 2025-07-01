@@ -152,6 +152,12 @@ export default class RowManager extends EventTarget {
 
         const cellManager = new CellManager(rowEl, this.#cellCache, this.#dataGridId);
         cellManager.selectEnd = this.#selectEnd;
+        cellManager.addEventListener("beforerender", () => {
+            this.dispatchEvent(new Event("beforerender"));
+        });
+        cellManager.addEventListener("afterrender", () => {
+            this.dispatchEvent(new Event("afterrender"));
+        });
         this.#cellManagers.set(key, cellManager);
 
         return rowEl;

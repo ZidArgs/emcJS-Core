@@ -74,6 +74,14 @@ export default class Column extends CustomElement {
         return this.getAttribute("valign");
     }
 
+    set fixed(value) {
+        this.setAttribute("fixed", value);
+    }
+
+    get fixed() {
+        return this.getAttribute("fixed");
+    }
+
     set textcolor(value) {
         this.setAttribute("textcolor", value);
     }

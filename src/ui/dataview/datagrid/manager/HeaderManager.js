@@ -4,7 +4,7 @@ import {deepClone} from "../../../../util/helper/DeepClone.js";
 import {getArrayMutations} from "../../../../util/helper/collection/ArrayMutations.js";
 import DataGridHeaderCell from "../components/cell/DataGridHeaderCell.js";
 
-export default class HeaderManager {
+export default class HeaderManager extends EventTarget {
 
     #dataGridId;
 
@@ -29,23 +29,28 @@ export default class HeaderManager {
         if (!(headerSelectEl instanceof HTMLInputElement)) {
             throw new TypeError("headerSelectEl must be of type HTMLInputElement");
         }
+        super();
         this.#dataGridId = dataGridId;
         this.#target = target;
 
         this.#selectHeaderCellEl = document.createElement("th");
-        this.#selectHeaderCellEl.className = "select-cell select-cell-start";
+        this.#selectHeaderCellEl.classList.add("cell");
+        this.#selectHeaderCellEl.classList.add("select-cell");
+        this.#selectHeaderCellEl.classList.add("fixed-cell");
+        this.#selectHeaderCellEl.classList.add("fixed-cell-start");
         this.#selectHeaderCellEl.append(headerSelectEl);
 
         this.#lastHeaderCellEl = document.createElement("th");
-        this.#lastHeaderCellEl.classList.add("lastCell");
+        this.#lastHeaderCellEl.classList.add("cell");
+        this.#lastHeaderCellEl.classList.add("last-cell");
     }
 
     set selectEnd(value) {
         value = !!value;
         if (this.#selectEnd !== value) {
             this.#selectEnd = value;
-            this.#selectHeaderCellEl.classList.toggle("select-cell-start", !value);
-            this.#selectHeaderCellEl.classList.toggle("select-cell-end", value);
+            this.#selectHeaderCellEl.classList.toggle("fixed-cell-start", !value);
+            this.#selectHeaderCellEl.classList.toggle("fixed-cell-end", value);
             this.#render();
         }
     }
@@ -97,6 +102,7 @@ export default class HeaderManager {
             if (!this.#elements.has(name)) {
                 const headerCellEl = this.composer(name, columnData);
                 if (headerCellEl != null) {
+                    headerCellEl.classList.add("cell");
                     headerCellEl.setAttribute("col-name", name);
                     this.mutator(headerCellEl, name, columnData);
                     this.#elements.set(name, headerCellEl);
@@ -150,13 +156,24 @@ export default class HeaderManager {
     }
 
     mutator(headerCellEl, name, columnData) {
-        const {label} = columnData;
+        const {
+            label, fixed
+        } = columnData;
 
         headerCellEl.innerText = label ?? name;
         headerCellEl.title = label ?? name;
+
+        if (fixed === "start") {
+            headerCellEl.classList.add("fixed-cell");
+            headerCellEl.classList.add("fixed-cell-start");
+        } else if (fixed === "end") {
+            headerCellEl.classList.add("fixed-cell");
+            headerCellEl.classList.add("fixed-cell-end");
+        }
     }
 
     #render = debounce(() => {
+        this.dispatchEvent(new Event("beforerender"));
         // remove special cells
         this.#lastHeaderCellEl.remove();
         this.#selectHeaderCellEl.remove();
@@ -208,6 +225,7 @@ export default class HeaderManager {
         } else {
             this.#target.prepend(this.#selectHeaderCellEl);
         }
+        this.dispatchEvent(new Event("afterrender"));
     });
 
 }

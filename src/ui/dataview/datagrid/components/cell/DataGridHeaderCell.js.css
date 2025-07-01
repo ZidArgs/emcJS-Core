@@ -1,6 +1,7 @@
 :host {
     display: table-cell;
     padding: 0px 25px;
+    color: var(--datagrid-header-text-color, #ffffff);
     text-align: center;
     vertical-align: middle;
     user-select: none;
@@ -53,8 +54,8 @@
     position: relative;
     display: block;
     border: solid 0.3em transparent;
-    border-bottom-color: var(--input-text-color, #000000);
-    border-right-color: var(--input-text-color, #000000);
+    border-bottom-color: var(--datagrid-header-text-color, #ffffff);
+    border-right-color: var(--datagrid-header-text-color, #ffffff);
 }
 
 :host([sortdir="inc"]) #sort-indicator:before {
@@ -80,7 +81,7 @@
     bottom: 0px;
     right: 0px;
     width: 24px;
-    color: var(--input-text-color, #000000);
+    color: var(--datagrid-header-text-color, #ffffff);
     line-height: 1em;
     content: "✖";
 }

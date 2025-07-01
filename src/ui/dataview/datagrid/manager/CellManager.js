@@ -20,7 +20,7 @@ const BLACKLISTED_ATTRIBUTES = [
     "backcolor"
 ];
 
-export default class CellManager {
+export default class CellManager extends EventTarget {
 
     #dataGridId;
 
@@ -55,11 +55,16 @@ export default class CellManager {
         if (!(cellCache instanceof CellCache)) {
             throw new TypeError("cellCache must be of type CellCache");
         }
+        super();
         this.#dataGridId = dataGridId;
         this.#cellCache = cellCache;
         this.#target = target;
 
         this.#selectCellEl = document.createElement("td");
+        this.#selectCellEl.classList.add("cell");
+        this.#selectCellEl.classList.add("select-cell");
+        this.#selectCellEl.classList.add("fixed-cell");
+        this.#selectCellEl.classList.add("fixed-cell-start");
         this.#selectCheckboxEl = document.createElement("input");
         this.#selectCheckboxEl.type = "checkbox";
         this.#selectCheckboxEl.name = "rowselect";
@@ -74,19 +79,19 @@ export default class CellManager {
             };
             this.#selectCheckboxEl.dispatchEvent(ev);
         });
-        this.#selectCellEl.className = "select-cell select-cell-start";
         this.#selectCellEl.append(this.#selectCheckboxEl);
 
         this.#lastCellEl = document.createElement("td");
-        this.#lastCellEl.classList.add("lastCell");
+        this.#lastCellEl.classList.add("cell");
+        this.#lastCellEl.classList.add("last-cell");
     }
 
     set selectEnd(value) {
         value = !!value;
         if (this.#selectEnd !== value) {
             this.#selectEnd = value;
-            this.#selectCellEl.classList.toggle("select-cell-start", !value);
-            this.#selectCellEl.classList.toggle("select-cell-end", value);
+            this.#selectCellEl.classList.toggle("fixed-cell-start", !value);
+            this.#selectCellEl.classList.toggle("fixed-cell-end", value);
             this.#render();
         }
     }
@@ -142,6 +147,7 @@ export default class CellManager {
             if (!this.#elements.has(name)) {
                 const cellEl = this.composer(name, this.#rowKey, type, columnData, value, rowData);
                 if (cellEl != null) {
+                    cellEl.classList.add("cell");
                     cellEl.setAttribute("col-name", name);
                     cellEl.setAttribute("row-key", this.#rowKey);
                     this.mutator(cellEl, columnData, value, rowData);
@@ -273,6 +279,14 @@ export default class CellManager {
             cellEl.style.backgroundColor = "";
         }
 
+        if (options.fixed === "start") {
+            cellEl.classList.add("fixed-cell");
+            cellEl.classList.add("fixed-cell-start");
+        } else if (options.fixed === "end") {
+            cellEl.classList.add("fixed-cell");
+            cellEl.classList.add("fixed-cell-end");
+        }
+
         cellEl.rowData = rowData;
 
         if (value != null) {
@@ -281,6 +295,7 @@ export default class CellManager {
     }
 
     #render = debounce(() => {
+        this.dispatchEvent(new Event("beforerender"));
         // remove special cells
         this.#lastCellEl.remove();
         this.#selectCellEl.remove();
@@ -332,6 +347,8 @@ export default class CellManager {
         } else {
             this.#target.prepend(this.#selectCellEl);
         }
+        // notify
+        this.dispatchEvent(new Event("afterrender"));
     });
 
 }
