@@ -118,15 +118,19 @@ grid2El.setData([
 
 const gridRemoteSimpleEl = document.getElementById("grid-remote-simple");
 const controlToolbarSimpleEl = document.getElementById("control-toolbar-simple");
-const simpleDataProvider = new RemoteDataProvider(gridRemoteSimpleEl, "/api/data/simple", null, true);
-simpleDataProvider.setToolbar(controlToolbarSimpleEl);
-simpleDataProvider.setOptions({
-    sort: ["name", "!desc"],
-    pageSize: 15
+new RemoteDataProvider(gridRemoteSimpleEl, "/api/data/simple", {
+    multiSort: true,
+    config: {
+        sort: ["name", "!desc"],
+        pageSize: 15
+    },
+    toolbar: controlToolbarSimpleEl
 });
 
 const gridRemoteLargeEl = document.getElementById("grid-remote-large");
 const controlToolbarLargeEl = document.getElementById("control-toolbar-large");
-const largeDataProvider = new RemoteDataProvider(gridRemoteLargeEl, "/api/data/large", null, true);
-largeDataProvider.setToolbar(controlToolbarLargeEl);
-largeDataProvider.setOptions({pageSize: 15});
+new RemoteDataProvider(gridRemoteLargeEl, "/api/data/large", {
+    multiSort: true,
+    config: {pageSize: 15},
+    toolbar: controlToolbarLargeEl
+});

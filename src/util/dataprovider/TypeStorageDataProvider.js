@@ -5,7 +5,7 @@ import TypeStorage from "../../data/type/TypeStorage.js";
 import EventTargetManager from "../event/EventTargetManager.js";
 import AbstractDataProvider from "./AbstractDataProvider.js";
 
-export default class TypeStorageProvider extends AbstractDataProvider {
+export default class TypeStorageDataProvider extends AbstractDataProvider {
 
     #resultSize = 0;
 
@@ -15,8 +15,8 @@ export default class TypeStorageProvider extends AbstractDataProvider {
 
     #eventManager = new EventTargetManager();
 
-    constructor(reciever, source, multiSort, initialOptions) {
-        super(reciever, multiSort, initialOptions);
+    constructor(reciever, source, options) {
+        super(reciever, options);
         if (source != null && !(source instanceof TypeStorage)) {
             throw new Error("source must be a ObservableStorage");
         }

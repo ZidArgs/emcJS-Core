@@ -101,7 +101,7 @@ export default class GridInput extends AbstractFormElement {
             if (this.#searchEl.value != "") {
                 options.filter = {name: this.#searchEl.value};
             }
-            this.#dataManager.updateOptions(options);
+            this.#dataManager.updateConfig(options);
         }, true);
         /* --- */
         this.#labelEl = this.shadowRoot.getElementById("label");
@@ -195,9 +195,9 @@ export default class GridInput extends AbstractFormElement {
 
     #updateSort(value) {
         if (value && value !== "manual") {
-            this.#dataManager.setOptions({sort: ["key"]});
+            this.#dataManager.setConfig({sort: ["key"]});
         } else {
-            this.#dataManager.setOptions({sort: []});
+            this.#dataManager.setConfig({sort: []});
         }
 
         this.#sortColumn.hidden = value !== "manual";

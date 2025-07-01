@@ -96,7 +96,7 @@ export default class ListSelect extends AbstractFormElement {
             if (this.#searchEl.value != "") {
                 options.filter = {name: this.#searchEl.value};
             }
-            this.#dataManager.updateOptions(options);
+            this.#dataManager.updateConfig(options);
         }, true);
         /* --- */
         this.#i18nEventManager.set("language", () => {
@@ -205,10 +205,10 @@ export default class ListSelect extends AbstractFormElement {
     #updateSort(value) {
         if (value) {
             this.#i18nEventManager.active = true;
-            this.#dataManager.setOptions({sortFunction: (record0, record1) => i18n.compareNumberedValuesTranslated(record0.name, record1.name)});
+            this.#dataManager.setConfig({sortFunction: (record0, record1) => i18n.compareNumberedValuesTranslated(record0.name, record1.name)});
         } else {
             this.#i18nEventManager.active = false;
-            this.#dataManager.setOptions({sortFunction: false});
+            this.#dataManager.setConfig({sortFunction: false});
         }
     }
 

@@ -117,10 +117,14 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
         this.#onSlotChange();
         /* --- */
         this.#headerManager = new HeaderManager(this.#headerEl, this.#headerSelectEl, this.#internalId);
+        this.#headerManager.addEventListener("afterrender", debounce(() => {
+            this.#processFixedCells(this.#headEl);
+        }));
         this.#rowManager = new RowManager(this.#bodyEl, this.#cellCache, this.#internalId);
-        this.#rowManager.addEventListener("afterrender", () => {
+        this.#rowManager.addEventListener("afterrender", debounce(() => {
             this.#emptyContainerEl.classList.toggle("hidden", this.#bodyEl.childNodes.length > 0);
-        });
+            this.#processFixedCells(this.#bodyEl);
+        }));
         /* --- */
         this.#tableEl.addEventListener("move-row-up", (event) => {
             event.stopPropagation();
@@ -253,15 +257,6 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
             ev.data = {columnName};
             this.dispatchEvent(ev);
         });
-        /* --- */
-        this.#headerManager.addEventListener("afterrender", debounce(() => {
-            console.log(`${this.#internalId} afterrender head`);
-            this.#processFixedCells(this.#headEl);
-        }));
-        this.#rowManager.addEventListener("afterrender", debounce(() => {
-            console.log(`${this.#internalId} afterrender body`);
-            this.#processFixedCells(this.#bodyEl);
-        }));
     }
 
     connectedCallback() {

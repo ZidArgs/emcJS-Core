@@ -4,18 +4,18 @@ import {
     isArray, isBoolean, isDict, isFunction, isNumberNotNaN, isString, isStringNotEmpty
 } from "../helper/CheckType.js";
 import {debounce} from "../Debouncer.js";
-import {DEFAULT_OPTIONS} from "../helper/collection/ExtractDataFromArray.js";
+import {DEFAULT_EXTRACT_CONFIG} from "../helper/collection/ExtractDataFromArray.js";
 import EventMultiTargetManager from "../event/EventMultiTargetManager.js";
 import DataViewControlToolbar from "../../ui/dataview/toolbar/DataViewControlToolbar.js";
 import DataRecieverMixin from "./DataRecieverMixin.js";
 
 export default class AbstractDataProvider extends EventTarget {
 
-    static get defaultOptions() {
-        return deepClone(DEFAULT_OPTIONS);
+    static get defaultConfig() {
+        return deepClone(DEFAULT_EXTRACT_CONFIG);
     }
 
-    #options = DEFAULT_OPTIONS;
+    #config = DEFAULT_EXTRACT_CONFIG;
 
     #data;
 
@@ -27,7 +27,7 @@ export default class AbstractDataProvider extends EventTarget {
 
     #multiSort = false;
 
-    constructor(reciever, multiSort = false, initialOptions = {}) {
+    constructor(reciever, options = {}) {
         if (new.target === AbstractDataProvider) {
             throw new Error("can not construct abstract class");
         }
@@ -35,22 +35,28 @@ export default class AbstractDataProvider extends EventTarget {
             throw new Error("target must extend DataRecieverMixin");
         }
         super();
+        const {
+            config = {}, multiSort = false, toolbar
+        } = options;
         this.#reciever = reciever;
         this.#multiSort = !!multiSort;
-        this.#options = this.#extractOptions(initialOptions);
+        this.#config = this.#extractConfig(config);
+        if (toolbar != null) {
+            this.setToolbar(toolbar);
+        }
         this.refresh();
         /* --- */
         this.#reciever.addEventListener("sort", (event) => {
             const {columnName} = event.data;
             if (!this.#multiSort) {
-                const currentSort = this.#options.sort[0];
+                const currentSort = this.#config.sort[0];
                 if (currentSort != null && currentSort === columnName) {
-                    this.updateOptions({sort: [`!${columnName}`]});
+                    this.updateConfig({sort: [`!${columnName}`]});
                 } else {
-                    this.updateOptions({sort: [columnName]});
+                    this.updateConfig({sort: [columnName]});
                 }
             } else {
-                const currentSort = this.#options.sort;
+                const currentSort = this.#config.sort;
                 const index = currentSort.findIndex((entry) => entry === columnName || entry === `!${columnName}`);
                 const newSort = [...currentSort];
                 if (index >= 0) {
@@ -59,32 +65,32 @@ export default class AbstractDataProvider extends EventTarget {
                 } else {
                     newSort.push(columnName);
                 }
-                this.updateOptions({sort: newSort});
+                this.updateConfig({sort: newSort});
             }
         });
         this.#reciever.addEventListener("unsort", (event) => {
             const {columnName} = event.data;
             if (!this.#multiSort) {
-                const currentSort = this.#options.sort[0];
+                const currentSort = this.#config.sort[0];
                 if (currentSort != null && currentSort === columnName) {
-                    this.updateOptions({sort: []});
+                    this.updateConfig({sort: []});
                 } else {
-                    this.updateOptions({sort: []});
+                    this.updateConfig({sort: []});
                 }
             } else {
-                const currentSort = this.#options.sort;
+                const currentSort = this.#config.sort;
                 const newSort = currentSort.filter((entry) => entry !== columnName && entry !== `!${columnName}`);
-                this.updateOptions({sort: newSort});
+                this.updateConfig({sort: newSort});
             }
         });
         /* --- */
         this.#toolbarEventManager.set("page", (event) => {
             const page = event.data - 1;
-            this.updateOptions({page});
+            this.updateConfig({page});
         });
         this.#toolbarEventManager.set("size", (event) => {
             const pageSize = event.data;
-            this.updateOptions({
+            this.updateConfig({
                 page: 0,
                 pageSize
             });
@@ -102,9 +108,9 @@ export default class AbstractDataProvider extends EventTarget {
     set multiSort(value) {
         this.#multiSort = value;
         if (!value) {
-            const currentSort = this.#options.sort[0];
+            const currentSort = this.#config.sort[0];
             if (currentSort != null) {
-                this.updateOptions({sort: [currentSort]});
+                this.updateConfig({sort: [currentSort]});
             }
         }
     }
@@ -113,51 +119,51 @@ export default class AbstractDataProvider extends EventTarget {
         return this.#multiSort;
     }
 
-    setToolbar(paginationEl) {
-        if (paginationEl != null && !(paginationEl instanceof DataViewControlToolbar)) {
+    setToolbar(toolbarEl) {
+        if (toolbarEl != null && !(toolbarEl instanceof DataViewControlToolbar)) {
             throw new Error("paginationEl must be an instance of PaginationToolbar");
         }
         this.#toolbarEls.clear();
         this.#toolbarEventManager.clearTargets();
-        this.addToolbar(paginationEl);
+        this.addToolbar(toolbarEl);
     }
 
-    addToolbar(paginationEl) {
-        if (paginationEl != null && !(paginationEl instanceof DataViewControlToolbar)) {
+    addToolbar(toolbarEl) {
+        if (toolbarEl != null && !(toolbarEl instanceof DataViewControlToolbar)) {
             throw new Error("paginationEl must be an instance of PaginationToolbar");
         }
-        this.#toolbarEls.add(paginationEl);
-        this.#toolbarEventManager.addTarget(paginationEl);
+        this.#toolbarEls.add(toolbarEl);
+        this.#toolbarEventManager.addTarget(toolbarEl);
         this.#updateToolbarEls();
     }
 
-    setOptions(value) {
-        const newOptions = this.#extractOptions(value);
+    setConfig(value) {
+        const newConfig = this.#extractConfig(value);
 
-        if (!isEqual(this.#options, newOptions)) {
-            this.#options = newOptions;
+        if (!isEqual(this.#config, newConfig)) {
+            this.#config = newConfig;
             this.refresh();
         }
     }
 
-    updateOptions(value) {
-        const newOptions = this.#extractOptions(value, this.#options);
+    updateConfig(value) {
+        const newConfig = this.#extractConfig(value, this.#config);
 
-        if (!isEqual(this.#options, newOptions)) {
-            this.#options = newOptions;
+        if (!isEqual(this.#config, newConfig)) {
+            this.#config = newConfig;
             this.refresh();
         }
     }
 
-    getOptions() {
-        return deepClone(this.#options);
+    getConfig() {
+        return deepClone(this.#config);
     }
 
     refresh = debounce(async () => {
         await this.#reciever.busy();
-        this.#reciever.setSortIndicators(deepClone(this.#options.sort ?? []));
+        this.#reciever.setSortIndicators(deepClone(this.#config.sort ?? []));
         try {
-            const data = await this.getData(this.#options);
+            const data = await this.getData(this.#config);
             if (Array.isArray(data)) {
                 if (!isEqual(this.#data, data)) {
                     this.#data = data;
@@ -181,8 +187,8 @@ export default class AbstractDataProvider extends EventTarget {
     #updateToolbarEls = debounce(() => {
         for (const toolbarEl of this.#toolbarEls) {
             if (toolbarEl != null) {
-                const pageSize = this.#options.pageSize;
-                const currentPage = this.#options.page;
+                const pageSize = this.#config.pageSize;
+                const currentPage = this.#config.page;
                 const currentEntries = this.resultSize;
                 const totalEntries = this.totalSize;
                 toolbarEl.entries = currentEntries;
@@ -205,7 +211,7 @@ export default class AbstractDataProvider extends EventTarget {
         return [];
     }
 
-    #extractOptions(newOptions, oldOptions = DEFAULT_OPTIONS) {
+    #extractConfig(newConfig, oldConfig = DEFAULT_EXTRACT_CONFIG) {
         const {
             page,
             pageSize,
@@ -216,9 +222,9 @@ export default class AbstractDataProvider extends EventTarget {
             filterIgnoreNullValues,
             search,
             searchFields
-        } = newOptions;
+        } = newConfig;
 
-        const result = deepClone(oldOptions);
+        const result = deepClone(oldConfig);
 
         if (isNumberNotNaN(page)) {
             result.page = page;

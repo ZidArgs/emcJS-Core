@@ -8,7 +8,7 @@ import {immute} from "../../../data/Immutable.js";
 
 const SORT_PATTERN = /^(!?)(.+)$/;
 
-export const OPTION_PARAMS = immute({
+export const EXTRACT_CONFIG_PARAMS = immute({
     PAGE: "page",
     PAGE_SIZE: "pageSize",
     SORT: "sort",
@@ -20,7 +20,7 @@ export const OPTION_PARAMS = immute({
     SEARCH_FIELDS: "searchFields"
 });
 
-export const DEFAULT_OPTIONS = immute({
+export const DEFAULT_EXTRACT_CONFIG = immute({
     page: 0,
     pageSize: 0,
     sort: [],
@@ -55,15 +55,15 @@ export function extractData(source = [], options = {}) {
     }
 
     const {
-        page = DEFAULT_OPTIONS.page,
-        pageSize = DEFAULT_OPTIONS.pageSize,
-        sort = DEFAULT_OPTIONS.sort,
-        sortFunction = DEFAULT_OPTIONS.sortFunction,
-        filter = DEFAULT_OPTIONS.filter,
-        filterFunction = DEFAULT_OPTIONS.filterFunction,
-        filterIgnoreNullValues = DEFAULT_OPTIONS.filterIgnoreNullValues,
-        search = DEFAULT_OPTIONS.search,
-        searchFields = DEFAULT_OPTIONS.searchFields
+        page = DEFAULT_EXTRACT_CONFIG.page,
+        pageSize = DEFAULT_EXTRACT_CONFIG.pageSize,
+        sort = DEFAULT_EXTRACT_CONFIG.sort,
+        sortFunction = DEFAULT_EXTRACT_CONFIG.sortFunction,
+        filter = DEFAULT_EXTRACT_CONFIG.filter,
+        filterFunction = DEFAULT_EXTRACT_CONFIG.filterFunction,
+        filterIgnoreNullValues = DEFAULT_EXTRACT_CONFIG.filterIgnoreNullValues,
+        search = DEFAULT_EXTRACT_CONFIG.search,
+        searchFields = DEFAULT_EXTRACT_CONFIG.searchFields
     } = options;
 
     if (!isNumberNotNaN(page)) {
@@ -91,7 +91,7 @@ export function extractData(source = [], options = {}) {
         throw new Error("\"search\" must be a string");
     }
     if (!isArrayOf(searchFields, isStringNotEmpty) && !isNull(searchFields)) {
-        throw new Error("\"searchFields\" must be an array of non empty strings");
+        throw new Error("\"searchFields\" must be an array of non empty strings or null");
     }
 
     const convertedFilter = Object.entries(filter).map(([key, value]) => {
@@ -126,7 +126,7 @@ export function extractData(source = [], options = {}) {
             if (searchFields.length) {
                 for (const key of searchFields) {
                     const value = getFromObjectByPath(record, key.split("."));
-                    if (filterIgnoreNullValues && isNull(value)) {
+                    if (isNull(value)) {
                         continue;
                     }
                     if (convertedSearch.test(value)) {
@@ -136,7 +136,7 @@ export function extractData(source = [], options = {}) {
             } else {
                 for (const key in record) {
                     const value = getFromObjectByPath(record, key.split("."));
-                    if (filterIgnoreNullValues && isNull(value)) {
+                    if (isNull(value)) {
                         continue;
                     }
                     if (convertedSearch.test(value)) {

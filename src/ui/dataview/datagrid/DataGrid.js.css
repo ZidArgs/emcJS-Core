@@ -12,8 +12,20 @@
     border-width: var(--datagrid-border-width, 2px);
     border-color: var(--datagrid-border-color, #000000);
     border-radius: var(--datagrid-border-radius, 6px);
-    overflow: auto;
     line-height: normal;
+    overflow: hidden;
+
+    --scrollbar-track-border-radius: 0px;
+    --scrollbar-thumb-border-radius: 0px;
+}
+
+.scroll-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
     scroll-padding-top: 3em;
     scroll-padding-bottom: 0.5em;
 }

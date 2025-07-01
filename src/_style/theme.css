@@ -468,12 +468,12 @@ all; top_bottom right_left; top right bottom left
     --pagination-focus-color: var(--input-focus-color);
 
     /* === scrollbar === */
-    --scrollbar-size: 10px;
+    --scrollbar-size: 8px;
 
     --scrollbar-track-color: var(--page-back-color);
     --scrollbar-track-border-width: 0px;
     --scrollbar-track-border-color: var(--page-border-color);
-    --scrollbar-track-border-radius: 6px;
+    --scrollbar-track-border-radius: 0px;
 
     --scrollbar-corner-color: #00000000;
     --scrollbar-corner-border-width: 0px;
@@ -485,7 +485,7 @@ all; top_bottom right_left; top right bottom left
     --scrollbar-thumb-color: var(--page-border-color);
     --scrollbar-thumb-border-color: #00000000;
     --scrollbar-thumb-border-width: 2px;
-    --scrollbar-thumb-border-radius: 6px;
+    --scrollbar-thumb-border-radius: 0px;
 
     --scrollbar-thumb-hover-color: var(--page-hover-back-color);
     --scrollbar-thumb-hover-border-color: var(--scrollbar-thumb-border-color);

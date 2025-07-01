@@ -12,11 +12,12 @@ export default class RemoteDataProvider extends AbstractDataProvider {
 
     #method = HTTPMethods.POST.toString();
 
-    constructor(reciever, source, method, multiSort, initialOptions) {
-        super(reciever, multiSort, initialOptions);
+    constructor(reciever, source, options) {
+        super(reciever, options);
         if (!isHttpUrl(source)) {
             throw new Error("source must be a valid HTTP URL");
         }
+        const {method} = options;
         if (method instanceof HTTPMethods) {
             this.#method = method.toString();
         } else if (typeof method === "string" && HTTPMethods.includes(method)) {
@@ -78,11 +79,11 @@ export default class RemoteDataProvider extends AbstractDataProvider {
         return result.records;
     }
 
-    setOptions(value) {
+    setConfig(value) {
         const {
             sort, page, pageSize, filter
         } = value;
-        super.setOptions({
+        super.setConfig({
             sort,
             page,
             pageSize,
@@ -90,11 +91,11 @@ export default class RemoteDataProvider extends AbstractDataProvider {
         });
     }
 
-    updateOptions(value) {
+    updateConfig(value) {
         const {
             sort, page, pageSize, filter
         } = value;
-        super.updateOptions({
+        super.updateConfig({
             sort,
             page,
             pageSize,

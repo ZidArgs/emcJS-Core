@@ -118,15 +118,19 @@ list2El.setData([
 
 const listRemoteSimpleEl = document.getElementById("list-remote-simple");
 const controlToolbarSimpleEl = document.getElementById("control-toolbar-simple");
-const simpleDataProvider = new RemoteDataProvider(listRemoteSimpleEl, "/api/data/simple", null, true);
-simpleDataProvider.setToolbar(controlToolbarSimpleEl);
-simpleDataProvider.setOptions({
-    sort: ["name", "!desc"],
-    pageSize: 15
+new RemoteDataProvider(listRemoteSimpleEl, "/api/data/simple", {
+    multiSort: true,
+    config: {
+        sort: ["name", "!desc"],
+        pageSize: 15
+    },
+    toolbar: controlToolbarSimpleEl
 });
 
 const listRemoteLargeEl = document.getElementById("list-remote-large");
 const controlToolbarLargeEl = document.getElementById("control-toolbar-large");
-const largeDataProvider = new RemoteDataProvider(listRemoteLargeEl, "/api/data/large", null, true);
-largeDataProvider.setToolbar(controlToolbarLargeEl);
-largeDataProvider.setOptions({pageSize: 15});
+new RemoteDataProvider(listRemoteLargeEl, "/api/data/large", {
+    multiSort: true,
+    config: {pageSize: 15},
+    toolbar: controlToolbarLargeEl
+});

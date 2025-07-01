@@ -55,7 +55,7 @@ export default class ListInput extends AbstractFormElement {
             if (this.#searchEl.value != "") {
                 options.filter = {key: this.#searchEl.value};
             }
-            this.#dataManager.updateOptions(options);
+            this.#dataManager.updateConfig(options);
         }, true);
         /* --- */
         this.#labelEl = this.shadowRoot.getElementById("label");
@@ -148,9 +148,9 @@ export default class ListInput extends AbstractFormElement {
 
     #updateSort(value) {
         if (value) {
-            this.#dataManager.setOptions({sort: ["key"]});
+            this.#dataManager.setConfig({sort: ["key"]});
         } else {
-            this.#dataManager.setOptions({sort: []});
+            this.#dataManager.setConfig({sort: []});
         }
     }
 

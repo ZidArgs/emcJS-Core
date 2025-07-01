@@ -68,7 +68,7 @@ export default class KeyValueListInput extends AbstractFormElement {
             if (this.#searchEl.value != "") {
                 options.filter = {name: this.#searchEl.value};
             }
-            this.#dataManager.updateOptions(options);
+            this.#dataManager.updateConfig(options);
         }, true);
         /* --- */
         this.#labelEl = this.shadowRoot.getElementById("label");
@@ -150,9 +150,9 @@ export default class KeyValueListInput extends AbstractFormElement {
 
     #updateSort(value) {
         if (value) {
-            this.#dataManager.setOptions({sort: ["name"]});
+            this.#dataManager.setConfig({sort: ["name"]});
         } else {
-            this.#dataManager.setOptions({sort: []});
+            this.#dataManager.setConfig({sort: []});
         }
     }
 
