@@ -22,5 +22,33 @@
         "name": "newlineonshift",
         "label": "Hold shift to send on Enter (if off hold shift for newline)",
         "value": false
+    },
+    {
+        "type": "SwitchInput",
+        "name": "spellcheck",
+        "label": "Check spelling",
+        "value": false
+    },
+    {
+        "type": "SimpleSelect",
+        "name": "autocorrect",
+        "label": "Activate autocorrect",
+        "options": {
+            "off": "Disable automatic correction",
+            "on": "Enable automatic correction of spelling and punctuation errors"
+        },
+        "value": "off"
+    },
+    {
+        "type": "SimpleSelect",
+        "name": "autocapitalize",
+        "label": "Activate autocapitalize",
+        "options": {
+            "off": "Do not automatically capitalize any text",
+            "on": "Automatically capitalize the first character of each sentence",
+            "words": "Automatically capitalize the first character of each word",
+            "characters": "Automatically capitalize every character"
+        },
+        "value": "off"
     }
 ]

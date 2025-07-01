@@ -100,14 +100,6 @@ export default class TextInput extends AbstractFormElement {
         return this.getBooleanAttribute("newlineonshift");
     }
 
-    set spellcheck(value) {
-        this.setBooleanAttribute("spellcheck", value);
-    }
-
-    get spellcheck() {
-        return this.getBooleanAttribute("spellcheck");
-    }
-
     set stretch(value) {
         this.setBooleanAttribute("stretch", value);
     }
@@ -116,8 +108,40 @@ export default class TextInput extends AbstractFormElement {
         return this.getBooleanAttribute("stretch");
     }
 
+    set spellcheck(value) {
+        this.setBooleanAttribute("spellcheck", value);
+    }
+
+    get spellcheck() {
+        return this.getBooleanAttribute("spellcheck");
+    }
+
+    set autocapitalize(value) {
+        this.setAttribute("autocapitalize", value);
+    }
+
+    get autocapitalize() {
+        return this.getAttribute("autocapitalize");
+    }
+
+    set autocomplete(value) {
+        this.setAttribute("autocomplete", value);
+    }
+
+    get autocomplete() {
+        return this.getAttribute("autocomplete");
+    }
+
+    set autocorrect(value) {
+        this.setAttribute("autocorrect", value);
+    }
+
+    get autocorrect() {
+        return this.getAttribute("autocorrect");
+    }
+
     static get observedAttributes() {
-        return [...super.observedAttributes, "placeholder", "readonly", "minlength", "maxlength", "spellcheck"];
+        return [...super.observedAttributes, "placeholder", "readonly", "minlength", "maxlength", "spellcheck", "autocapitalize", "autocomplete", "autocorrect"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -155,6 +179,21 @@ export default class TextInput extends AbstractFormElement {
             case "spellcheck": {
                 if (oldValue != newValue) {
                     this.#inputEl.spellcheck = this.spellcheck;
+                }
+            } break;
+            case "autocapitalize": {
+                if (oldValue != newValue) {
+                    this.#inputEl.autocapitalize = this.autocapitalize;
+                }
+            } break;
+            case "autocomplete": {
+                if (oldValue != newValue) {
+                    this.#inputEl.autocomplete = this.autocomplete;
+                }
+            } break;
+            case "autocorrect": {
+                if (oldValue != newValue) {
+                    this.#inputEl.autocorrect = this.autocorrect;
                 }
             } break;
         }
