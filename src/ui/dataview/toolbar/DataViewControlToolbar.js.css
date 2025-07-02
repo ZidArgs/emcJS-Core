@@ -74,6 +74,10 @@
     z-index: 1;
 }
 
+#current {
+    appearance: textfield;
+}
+
 #current::placeholder {
     color: var(--input-placeholder-text-color, #757575);
 }
