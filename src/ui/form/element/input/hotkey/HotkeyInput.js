@@ -3,7 +3,7 @@ import FormElementRegistry from "../../../../../data/registry/form/FormElementRe
 import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
 import {deepClone} from "../../../../../util/helper/DeepClone.js";
 import {toStartUppercaseEndLowercase} from "../../../../../util/helper/string/ConvertCase.js";
-import {registerFocusable} from "../../../../../util/helper/html/getFocusableElements.js";
+import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
 import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
 import "../../../../i18n/builtin/I18nInput.js";
 import TPL from "./HotkeyInput.js.html" assert {type: "html"};

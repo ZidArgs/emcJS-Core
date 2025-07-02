@@ -13,6 +13,8 @@ export default class RowManager extends EventTarget {
 
     #target;
 
+    #stickyObserver;
+
     #elements = new Map();
 
     #elementCache = new Map();
@@ -27,7 +29,7 @@ export default class RowManager extends EventTarget {
 
     #selectEnd = false;
 
-    constructor(target, cellCache, dataGridId) {
+    constructor(target, stickyObserver, cellCache, dataGridId) {
         if (!(target instanceof HTMLTableSectionElement)) {
             throw new TypeError("target must be of type HTMLTableSectionElement");
         }
@@ -38,6 +40,7 @@ export default class RowManager extends EventTarget {
         this.#dataGridId = dataGridId;
         this.#cellCache = cellCache;
         this.#target = target;
+        this.#stickyObserver = stickyObserver;
     }
 
     set selectEnd(value) {
@@ -150,7 +153,7 @@ export default class RowManager extends EventTarget {
     composer(key) {
         const rowEl = document.createElement("tr");
 
-        const cellManager = new CellManager(rowEl, this.#cellCache, this.#dataGridId);
+        const cellManager = new CellManager(rowEl, this.#stickyObserver, this.#cellCache, this.#dataGridId);
         cellManager.selectEnd = this.#selectEnd;
         cellManager.addEventListener("beforerender", () => {
             this.dispatchEvent(new Event("beforerender"));

@@ -3,10 +3,10 @@ import FormElementRegistry from "../../../../../data/registry/form/FormElementRe
 import SimpleDataProvider from "../../../../../util/dataprovider/SimpleDataProvider.js";
 import {deepClone} from "../../../../../util/helper/DeepClone.js";
 import {debounce} from "../../../../../util/Debouncer.js";
-import {registerFocusable} from "../../../../../util/helper/html/getFocusableElements.js";
+import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
 import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
 import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
-import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
+import MutationObserverManager from "../../../../../util/observer/manager/MutationObserverManager.js";
 import ElementListCache from "../../../../../util/html/ElementListCache.js";
 import BusyIndicatorManager from "../../../../../util/BusyIndicatorManager.js";
 import i18n from "../../../../../util/I18n.js";

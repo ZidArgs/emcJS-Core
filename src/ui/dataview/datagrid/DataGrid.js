@@ -6,7 +6,7 @@ import {debounce} from "../../../util/Debouncer.js";
 import {getAllAttributes} from "../../../util/helper/ui/NodeAttributes.js";
 import {filterInPlace} from "../../../util/helper/collection/ArrayMutations.js";
 import BusyIndicatorManager from "../../../util/BusyIndicatorManager.js";
-import MutationObserverManager from "../../../util/observer/MutationObserverManager.js";
+import MutationObserverManager from "../../../util/observer/manager/MutationObserverManager.js";
 import DataRecieverMixin from "../../../util/dataprovider/DataRecieverMixin.js";
 import HeaderManager from "./manager/HeaderManager.js";
 import RowManager from "./manager/RowManager.js";
@@ -19,6 +19,7 @@ import "../../i18n/I18nLabel.js";
 import "./components/CellTypeLoader.js";
 import TPL from "./DataGrid.js.html" assert {type: "html"};
 import STYLE from "./DataGrid.js.css" assert {type: "css"};
+import StickyObserver from "../../../util/observer/StickyObserver.js";
 
 const MUTATION_CONFIG = {attributes: true};
 
@@ -41,6 +42,8 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
     #internalId = appUID("data-grid");
 
     #cellCache = new CellCache();
+
+    #scrollContainerEl;
 
     #tableEl;
 
@@ -103,6 +106,7 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
             this.dispatchEvent(ev);
         });
         /* --- */
+        this.#scrollContainerEl = this.shadowRoot.getElementById("scroll-container");
         this.#tableEl = this.shadowRoot.getElementById("table");
         this.#headEl = this.shadowRoot.getElementById("head");
         this.#headerEl = this.shadowRoot.getElementById("header");
@@ -116,14 +120,22 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
         });
         this.#onSlotChange();
         /* --- */
-        this.#headerManager = new HeaderManager(this.#headerEl, this.#headerSelectEl, this.#internalId);
+        const stickyObserver = new StickyObserver((entries) => {
+            for (const entry of entries) {
+                const observedEl = entry.target;
+                observedEl.classList.toggle("stuck", entry.isStuck);
+            }
+        }, {root: this.#scrollContainerEl});
+        this.#headerManager = new HeaderManager(this.#headerEl, stickyObserver, this.#headerSelectEl, this.#internalId);
         this.#headerManager.addEventListener("afterrender", debounce(() => {
             this.#processFixedCells(this.#headEl);
         }));
-        this.#rowManager = new RowManager(this.#bodyEl, this.#cellCache, this.#internalId);
+        this.#rowManager = new RowManager(this.#bodyEl, stickyObserver, this.#cellCache, this.#internalId);
         this.#rowManager.addEventListener("afterrender", debounce(() => {
             this.#emptyContainerEl.classList.toggle("hidden", this.#bodyEl.childNodes.length > 0);
+            this.#updateSelectionAfterRender();
             this.#processFixedCells(this.#bodyEl);
+            this.resizeCallback();
         }));
         /* --- */
         this.#tableEl.addEventListener("move-row-up", (event) => {
@@ -615,7 +627,7 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
 
     resizeCallback() {
         if (this.#stretched != null) {
-            const gridWidth = this.clientWidth;
+            const gridWidth = this.#scrollContainerEl.clientWidth;
             const name = this.#stretched.name;
             let diff = 0;
             for (const def of this.#columnDefinition) {
@@ -650,6 +662,14 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
 
     reset() {
         return this.#busyIndicator.reset();
+    }
+
+    #updateSelectionAfterRender() {
+        const selectEls = this.shadowRoot.querySelectorAll(`.select-cell input[type="checkbox"]`);
+        for (const selectEl of selectEls) {
+            const rowKey = selectEl.getAttribute("row-key");
+            selectEl.checked = this.#selected.has(rowKey);
+        }
     }
 
     #processFixedCells(containerEl) {

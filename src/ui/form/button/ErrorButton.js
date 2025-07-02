@@ -1,5 +1,5 @@
 import Button from "./Button.js";
-import {registerFocusable} from "../../../util/helper/html/getFocusableElements.js";
+import {registerFocusable} from "../../../util/helper/html/ElementFocusHelper.js";
 import {deepClone} from "../../../util/helper/DeepClone.js";
 import {debounce} from "../../../util/Debouncer.js";
 import TPL from "./ErrorButton.js.html" assert {type: "html"};

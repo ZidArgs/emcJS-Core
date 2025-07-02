@@ -10,9 +10,9 @@ import {
     sortChildren
 } from "../../../../../util/helper/ui/NodeListSort.js";
 import {debounce} from "../../../../../util/Debouncer.js";
-import {registerFocusable} from "../../../../../util/helper/html/getFocusableElements.js";
+import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
 import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
-import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
+import MutationObserverManager from "../../../../../util/observer/manager/MutationObserverManager.js";
 import I18nOption from "../../../../i18n/builtin/I18nOption.js";
 import SwitchButtonManager from "./manager/SwitchButtonManager.js";
 import "../../../../i18n/builtin/I18nInput.js";

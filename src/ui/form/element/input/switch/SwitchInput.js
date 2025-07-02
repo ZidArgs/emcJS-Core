@@ -1,6 +1,6 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
-import {registerFocusable} from "../../../../../util/helper/html/getFocusableElements.js";
+import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
 import TPL from "./SwitchInput.js.html" assert {type: "html"};
 import STYLE from "./SwitchInput.js.css" assert {type: "css"};
 

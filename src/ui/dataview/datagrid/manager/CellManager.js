@@ -3,6 +3,7 @@ import {isEqual} from "../../../../util/helper/Comparator.js";
 import {deepClone} from "../../../../util/helper/DeepClone.js";
 import {getArrayMutations} from "../../../../util/helper/collection/ArrayMutations.js";
 import {getFromObjectByPath} from "../../../../util/helper/collection/ObjectContent.js";
+import StickyObserverGroupManager from "../../../../util/observer/manager/StickyObserverGroupManager.js";
 import DataGridCell from "../components/cell/DataGridCell.js";
 import CellCache from "../data/CellCache.js";
 
@@ -28,6 +29,8 @@ export default class CellManager extends EventTarget {
 
     #target;
 
+    #stickyObserverManager;
+
     #rowKey;
 
     #elements = new Map();
@@ -48,7 +51,7 @@ export default class CellManager extends EventTarget {
 
     #lastCellEl;
 
-    constructor(target, cellCache, dataGridId) {
+    constructor(target, stickyObserver, cellCache, dataGridId) {
         if (!(target instanceof HTMLTableRowElement)) {
             throw new TypeError("target must be of type HTMLTableRowElement");
         }
@@ -84,6 +87,9 @@ export default class CellManager extends EventTarget {
         this.#lastCellEl = document.createElement("td");
         this.#lastCellEl.classList.add("cell");
         this.#lastCellEl.classList.add("last-cell");
+
+        this.#stickyObserverManager = new StickyObserverGroupManager(stickyObserver);
+        this.#stickyObserverManager.observe(this.#selectCellEl);
     }
 
     set selectEnd(value) {
@@ -304,7 +310,23 @@ export default class CellManager extends EventTarget {
         if (children.length > 0) {
             const currentOrder = [...children].map((el) => el.getAttribute("col-name") ?? "");
             const keys = [...this.#order];
-            const {changes} = getArrayMutations(currentOrder, keys);
+            const {
+                changes, added, deleted
+            } = getArrayMutations(currentOrder, keys);
+            // ---
+            for (const key of added) {
+                const el = this.#elements.get(key);
+                if (el != null) {
+                    this.#stickyObserverManager.observe(el);
+                }
+            }
+            for (const key of deleted) {
+                const el = this.#elements.get(key);
+                if (el != null) {
+                    this.#stickyObserverManager.unobserve(el);
+                }
+            }
+            // ---
             for (const {sequence} of changes) {
                 for (const key of sequence) {
                     const el = this.#elements.get(key);
@@ -336,6 +358,7 @@ export default class CellManager extends EventTarget {
                 const el = this.#elements.get(key);
                 if (el != null) {
                     els.push(el);
+                    this.#stickyObserverManager.observe(el);
                 }
             }
             this.#target.append(...els);

@@ -5,9 +5,9 @@ import EventTargetManager from "../../../../../util/event/EventTargetManager.js"
 import {deepClone} from "../../../../../util/helper/DeepClone.js";
 import {debounce} from "../../../../../util/Debouncer.js";
 import {nodeTextComparator} from "../../../../../util/helper/ui/NodeListSort.js";
-import {registerFocusable} from "../../../../../util/helper/html/getFocusableElements.js";
+import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
 import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
-import MutationObserverManager from "../../../../../util/observer/MutationObserverManager.js";
+import MutationObserverManager from "../../../../../util/observer/manager/MutationObserverManager.js";
 import ImageSelectModal from "./components/ImageSelectModal.js";
 import I18nOption from "../../../../i18n/builtin/I18nOption.js";
 import i18n from "../../../../../util/I18n.js";

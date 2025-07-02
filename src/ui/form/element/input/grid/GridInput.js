@@ -1,7 +1,7 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
 import {deepClone} from "../../../../../util/helper/DeepClone.js";
-import {registerFocusable} from "../../../../../util/helper/html/getFocusableElements.js";
+import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
 import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
 import {
     deleteAtIndexImmuted,

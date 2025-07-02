@@ -1,5 +1,5 @@
 import Button from "./Button.js";
-import {registerFocusable} from "../../../util/helper/html/getFocusableElements.js";
+import {registerFocusable} from "../../../util/helper/html/ElementFocusHelper.js";
 import STYLE from "./ResetButton.js.css" assert {type: "css"};
 
 export default class ResetButton extends Button {

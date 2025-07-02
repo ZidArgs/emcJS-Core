@@ -3,7 +3,7 @@ import FormElementRegistry from "../../../../../data/registry/form/FormElementRe
 import SimpleDataProvider from "../../../../../util/dataprovider/SimpleDataProvider.js";
 import ModalDialog from "../../../../modal/ModalDialog.js";
 import {deepClone} from "../../../../../util/helper/DeepClone.js";
-import {registerFocusable} from "../../../../../util/helper/html/getFocusableElements.js";
+import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
 import "../search/SearchInput.js";
 import "../../../button/Button.js";
 import "../../../../dataview/datagrid/DataGrid.js";

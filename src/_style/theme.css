@@ -399,47 +399,62 @@ all; top_bottom right_left; top right bottom left
     --datagrid-disabled-row-seperator-color: #757575;
 
     --datagrid-row-hover-text-color: #000000;
-    --datagrid-row-hover-back-color: #cecece;
+    --datagrid-row-hover-back-color: #d6f7fd;
     --datagrid-row-hover-back-image: none;
 
-    --datagrid-select-cell-text-color: var(--datagrid-text-color);
-    --datagrid-select-cell-back-color: var(--datagrid-back-color);
-    --datagrid-select-cell-border-color: var(--datagrid-select-cell-text-color);
+    --datagrid-select-cell-text-color: #000000;
+    --datagrid-select-cell-back-color: #ffffff;
+    --datagrid-select-cell-border-color: #000000;
 
-    --datagrid-select-cell-checked-text-color: var(--datagrid-select-cell-back-color);
-    --datagrid-select-cell-checked-back-color: var(--datagrid-select-cell-text-color);
+    --datagrid-select-cell-checked-text-color: #ffffff;
+    --datagrid-select-cell-checked-back-color: #505050;
+    --datagrid-select-cell-checked-border-color: var(--datagrid-select-cell-border-color);
+
+    --datagrid-select-cell-indeterminate-text-color: var(--datagrid-select-cell-text-color);
+    --datagrid-select-cell-indeterminate-back-color: var(--datagrid-select-cell-back-color);
+    --datagrid-select-cell-indeterminate-border-color: var(--datagrid-select-cell-border-color);
 
     --datagrid-disabled-select-cell-text-color: #757575;
     --datagrid-disabled-select-cell-back-color: #999999;
     --datagrid-disabled-select-cell-border-color: #6a6a6a;
 
-    --datagrid-header-select-cell-text-color: var(--datagrid-header-text-color);
-    --datagrid-header-select-cell-back-color: var(--datagrid-header-back-color);
-    --datagrid-header-select-cell-border-color: var(--datagrid-header-select-cell-text-color);
+    --datagrid-header-select-cell-text-color: var(--datagrid-select-cell-text-color);
+    --datagrid-header-select-cell-back-color: var(--datagrid-select-cell-back-color);
+    --datagrid-header-select-cell-border-color: var(--datagrid-select-cell-border-color);
 
-    --datagrid-header-select-cell-checked-text-color: var(--datagrid-header-select-cell-back-color);
-    --datagrid-header-select-cell-checked-back-color: var(--datagrid-header-select-cell-text-color);
+    --datagrid-header-select-cell-checked-text-color: var(--datagrid-select-cell-checked-text-color);
+    --datagrid-header-select-cell-checked-back-color: var(--datagrid-select-cell-checked-back-color);
+    --datagrid-header-select-cell-checked-border-color: var(--datagrid-select-cell-checked-border-color);
+
+    --datagrid-header-select-cell-indeterminate-text-color: var(--datagrid-select-cell-indeterminate-text-color);
+    --datagrid-header-select-cell-indeterminate-back-color: var(--datagrid-select-cell-indeterminate-back-color);
+    --datagrid-header-select-cell-indeterminate-border-color: var(--datagrid-select-cell-indeterminate-border-color);
 
     --datagrid-disabled-header-select-cell-text-color: var(--datagrid-disabled-select-cell-text-color);
     --datagrid-disabled-header-select-cell-back-color: var(--datagrid-disabled-select-cell-back-color);
     --datagrid-disabled-header-select-cell-border-color: var(--datagrid-disabled-select-cell-border-color);
 
-    --datagrid-footer-select-cell-text-color: var(--datagrid-footer-text-color);
-    --datagrid-footer-select-cell-back-color: var(--datagrid-footer-back-color);
-    --datagrid-footer-select-cell-border-color: var(--datagrid-footer-select-cell-text-color);
+    --datagrid-footer-select-cell-text-color: var(--datagrid-select-cell-text-color);
+    --datagrid-footer-select-cell-back-color: var(--datagrid-select-cell-back-color);
+    --datagrid-footer-select-cell-border-color: var(--datagrid-select-cell-border-color);
 
-    --datagrid-footer-select-cell-checked-text-color: var(--datagrid-footer-select-cell-back-color);
-    --datagrid-footer-select-cell-checked-back-color: var(--datagrid-footer-select-cell-text-color);
+    --datagrid-footer-select-cell-checked-text-color: var(--datagrid-select-cell-checked-text-color);
+    --datagrid-footer-select-cell-checked-back-color: var(--datagrid-select-cell-checked-back-color);
+    --datagrid-footer-select-cell-checked-border-color: var(--datagrid-select-cell-checked-border-color);
+
+    --datagrid-footer-select-cell-indeterminate-text-color: var(--datagrid-select-cell-indeterminate-text-color);
+    --datagrid-footer-select-cell-indeterminate-back-color: var(--datagrid-select-cell-indeterminate-back-color);
+    --datagrid-footer-select-cell-indeterminate-border-color: var(--datagrid-select-cell-indeterminate-border-color);
 
     --datagrid-disabled-footer-select-cell-text-color: var(--datagrid-disabled-select-cell-text-color);
     --datagrid-disabled-footer-select-cell-back-color: var(--datagrid-disabled-select-cell-back-color);
     --datagrid-disabled-footer-select-cell-border-color: var(--datagrid-disabled-select-cell-border-color);
 
     /* === datalist === */
-    --datalist-back-color: var(--page-back-color);
+    --datalist-back-color: #ffffff;
     --datalist-back-image: none;
-    --datalist-border-color: var(--page-border-color);
-    --datalist-border-width: var(--page-border-width);
+    --datalist-border-color: #000000;
+    --datalist-border-width: 2px;
     --datalist-border-radius: 6px;
 
     --datalist-empty-text-color: #666666;
@@ -449,22 +464,22 @@ all; top_bottom right_left; top right bottom left
     --datalist-empty-border-width: 2px;
     --datalist-empty-border-radius: 6px;
 
-    --datalist-entry-text-color: var(--page-text-color);
-    --datalist-entry-back-color: var(--page-back-color);
+    --datalist-entry-text-color: #000000;
+    --datalist-entry-back-color: #ffffff;
     --datalist-entry-back-image: none;
 
-    --datalist-entry-hover-text-color: var(--page-hover-text-color);
-    --datalist-entry-hover-back-color: var(--page-hover-back-color);
+    --datalist-entry-hover-text-color: #000000;
+    --datalist-entry-hover-back-color: #d6f7fd;
     --datalist-entry-hover-back-image: none;
 
     --datalist-entry-border-color: #000000;
-    --datalist-entry-border-width: var(--page-border-width);
+    --datalist-entry-border-width: 2px;
     --datalist-entry-border-radius: 4px;
 
     /* === pagination === */
-    --pagination-border-width: var(--page-border-width);
-    --pagination-border-color: var(--page-border-color);
-    --pagination-border-radius: var(--page-border-radius);
+    --pagination-border-color: #000000;
+    --pagination-border-width: 2px;
+    --pagination-border-radius: 6px;
     --pagination-focus-color: var(--input-focus-color);
 
     /* === scrollbar === */

@@ -2,6 +2,7 @@ import {debounce} from "../../../../util/Debouncer.js";
 import {isEqual} from "../../../../util/helper/Comparator.js";
 import {deepClone} from "../../../../util/helper/DeepClone.js";
 import {getArrayMutations} from "../../../../util/helper/collection/ArrayMutations.js";
+import StickyObserverGroupManager from "../../../../util/observer/manager/StickyObserverGroupManager.js";
 import DataGridHeaderCell from "../components/cell/DataGridHeaderCell.js";
 
 export default class HeaderManager extends EventTarget {
@@ -9,6 +10,8 @@ export default class HeaderManager extends EventTarget {
     #dataGridId;
 
     #target;
+
+    #stickyObserverManager;
 
     #elements = new Map();
 
@@ -22,7 +25,7 @@ export default class HeaderManager extends EventTarget {
 
     #lastHeaderCellEl;
 
-    constructor(target, headerSelectEl, dataGridId) {
+    constructor(target, stickyObserver, headerSelectEl, dataGridId) {
         if (!(target instanceof HTMLTableRowElement)) {
             throw new TypeError("target must be of type HTMLTableRowElement");
         }
@@ -43,6 +46,9 @@ export default class HeaderManager extends EventTarget {
         this.#lastHeaderCellEl = document.createElement("th");
         this.#lastHeaderCellEl.classList.add("cell");
         this.#lastHeaderCellEl.classList.add("last-cell");
+
+        this.#stickyObserverManager = new StickyObserverGroupManager(stickyObserver);
+        this.#stickyObserverManager.observe(this.#selectHeaderCellEl);
     }
 
     set selectEnd(value) {
@@ -182,7 +188,23 @@ export default class HeaderManager extends EventTarget {
         if (children.length > 0) {
             const currentOrder = [...children].map((el) => el.getAttribute("col-name") ?? "");
             const keys = [...this.#order];
-            const {changes} = getArrayMutations(currentOrder, keys);
+            const {
+                changes, added, deleted
+            } = getArrayMutations(currentOrder, keys);
+            // ---
+            for (const key of added) {
+                const el = this.#elements.get(key);
+                if (el != null) {
+                    this.#stickyObserverManager.observe(el);
+                }
+            }
+            for (const key of deleted) {
+                const el = this.#elements.get(key);
+                if (el != null) {
+                    this.#stickyObserverManager.unobserve(el);
+                }
+            }
+            // ---
             for (const {sequence} of changes) {
                 for (const key of sequence) {
                     const el = this.#elements.get(key);
@@ -214,6 +236,7 @@ export default class HeaderManager extends EventTarget {
                 const el = this.#elements.get(key);
                 if (el != null) {
                     els.push(el);
+                    this.#stickyObserverManager.observe(el);
                 }
             }
             this.#target.append(...els);

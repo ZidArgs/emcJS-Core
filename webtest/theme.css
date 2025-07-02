@@ -7,9 +7,14 @@
     --form-hover-back-color: #4c705c;
     --form-invalid-text-color: #a70000;
     --form-invalid-back-color: #ffeeee;
-    --form-border-color: #000000; /* all; top_bottom right_left; top right bottom left*/
+    --form-border-color: #000000;
 
     /* === fieldset === */
     --fieldset-back-color: #e1f3e9;
+
+    /* === datagrid === */
+    --datagrid-select-cell-checked-text-color: #ffffff;
+    --datagrid-select-cell-checked-back-color: #505050;
+    --datagrid-select-cell-checked-border-color: #000000;
 
 }

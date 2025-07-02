@@ -19,10 +19,11 @@
     --scrollbar-thumb-border-radius: 0px;
 }
 
-.scroll-container {
+#scroll-container {
     position: relative;
     display: flex;
     flex-direction: column;
+    flex: 1;
     height: 100%;
     width: 100%;
     overflow: auto;
@@ -113,6 +114,44 @@
             width: 100%;
         }
     }
+
+    #head,
+    #body,
+    #foot {
+
+        .cell:not(:first-child):not(.last-cell) {
+            border-left-style: solid;
+            border-left-width: var(--datagrid-column-seperator-width, 2px);
+        }
+
+        .cell.fixed-cell:nth-last-child(1 of .fixed-cell-start.stuck) {
+            border-right-style: solid;
+            border-right-width: var(--datagrid-fixed-column-seperator-width, 4px);
+
+            & + .cell {
+                border-left: none;
+            }
+        }
+
+        .cell.fixed-cell:nth-child(1 of .fixed-cell-end.stuck) {
+            border-left-style: solid;
+            border-left-width: var(--datagrid-fixed-column-seperator-width, 4px);
+        }
+
+        .cell.select-cell.fixed-cell.fixed-cell-start:not(:nth-last-child(1 of .fixed-cell-start.stuck)) {
+            padding-right: calc(var(--datagrid-fixed-column-seperator-width, 4px) - var(--datagrid-column-seperator-width, 2px));
+        }
+
+        .cell.select-cell.fixed-cell.fixed-cell-end:not(:nth-child(1 of .fixed-cell-end.stuck)) {
+            padding-left: calc(var(--datagrid-fixed-column-seperator-width, 4px) - var(--datagrid-column-seperator-width, 2px));
+        }
+
+        &.last-cell,
+        &:first-child,
+        .cell.fixed-cell:nth-child(1 of .fixed-cell-start.stuck) {
+            border-left: none;
+        }
+    }
 }
 
 #table tr {
@@ -123,27 +162,6 @@
 #foot {
     position: sticky;
     z-index: 4;
-
-    .cell {
-        border-left-style: solid;
-        border-left-width: var(--datagrid-column-seperator-width, 2px);
-
-        &.last-cell,
-        &:first-child,
-        &:nth-last-child(1 of .fixed-cell-start) + .cell {
-            border-left-style: none;
-            border-left-width: 0px;
-        }
-
-        &.fixed-cell:nth-last-child(1 of .fixed-cell-start) {
-            border-right-style: solid;
-            border-right-width: var(--datagrid-fixed-column-seperator-width, 4px);
-        }
-
-        &.fixed-cell:nth-child(1 of .fixed-cell-end) {
-            border-left-width: var(--datagrid-fixed-column-seperator-width, 4px);
-        }
-    }
 }
 
 #head {
@@ -157,17 +175,16 @@
         overflow: hidden;
         text-overflow: ellipsis;
 
-        &.fixed-cell {
+        &.fixed-cell:nth-last-child(1 of .fixed-cell-start.stuck) {
             border-right-color: var(--datagrid-fixed-header-seperator-color, #afafaf);
+        }
+
+        &.fixed-cell:nth-child(1 of .fixed-cell-end.stuck) {
             border-left-color: var(--datagrid-fixed-header-seperator-color, #afafaf);
         }
 
         &.last-cell:not(:first-child) {
             box-shadow: inset var(--datagrid-header-seperator-color, #ffffff) var(--datagrid-column-seperator-width, 2px) 0px 0px;
-        }
-
-        &.fixed-cell-start + .last-cell {
-            box-shadow: none;
         }
     }
 }
@@ -183,17 +200,16 @@
         overflow: hidden;
         text-overflow: ellipsis;
 
-        &.fixed-cell {
-            border-right-color: var(--datagrid-fixed-footer-seperator-color, #cccccc);
-            border-left-color: var(--datagrid-fixed-footer-seperator-color, #cccccc);
+        &.fixed-cell:nth-last-child(1 of .fixed-cell-start.stuck) {
+            border-right-color: var(--datagrid-fixed-footer-seperator-color, #afafaf);
+        }
+
+        &.fixed-cell:nth-child(1 of .fixed-cell-end.stuck) {
+            border-left-color: var(--datagrid-fixed-footer-seperator-color, #afafaf);
         }
 
         &.last-cell:not(:first-child) {
-            box-shadow: inset var(--datagrid-header-seperator-color, #ffffff) var(--datagrid-column-seperator-width, 2px) 0px 0px;
-        }
-
-        &.fixed-cell-start + .last-cell {
-            box-shadow: none;
+            box-shadow: inset var(--datagrid-footer-seperator-color, #ffffff) var(--datagrid-column-seperator-width, 2px) 0px 0px;
         }
     }
 }
@@ -204,48 +220,44 @@
         color: var(--datagrid-text-color, #000000);
         background-color: var(--datagrid-back-color, #ffffff);
         background-image: var(--datagrid-back-image, none);
+        border-left-color: var(--datagrid-column-seperator-color, #ffffff);
         overflow: hidden;
 
-        &:not(:first-child) {
+        &.fixed-cell:nth-last-child(1 of .fixed-cell-start.stuck) {
+            border-right-color: var(--datagrid-fixed-column-seperator-color, #afafaf);
+        }
+
+        &.fixed-cell:nth-child(1 of .fixed-cell-end.stuck) {
+            border-left-color: var(--datagrid-fixed-column-seperator-color, #afafaf);
+        }
+
+        &.last-cell:not(:first-child) {
             box-shadow: inset var(--datagrid-column-seperator-color, #ffffff) var(--datagrid-column-seperator-width, 2px) 0px 0px;
-
-            &:not(.last-cell) {
-                padding: 0 0 0 var(--datagrid-column-seperator-width, 2px);
-            }
-        }
-
-        &.fixed-cell-start + .cell:not(.fixed-cell-start) {
-            box-shadow: none;
-            padding: 0;
-        }
-
-        &.fixed-cell:nth-last-child(1 of .fixed-cell-start) {
-            padding: 0 var(--datagrid-fixed-column-seperator-width, 4px) 0 0;
-            box-shadow: inset var(--datagrid-fixed-column-seperator-color, #afafaf) calc(-1 * var(--datagrid-fixed-column-seperator-width, 4px)) 0px 0px;
-        }
-
-        &.fixed-cell:nth-child(1 of .fixed-cell-end) {
-            padding: 0 0 0 var(--datagrid-fixed-column-seperator-width, 4px);
-            box-shadow: inset var(--datagrid-fixed-column-seperator-color, #afafaf) var(--datagrid-fixed-column-seperator-width, 4px) 0px 0px;
         }
     }
 
-    tr:not(:last-child) .cell {
-        border-bottom-style: solid;
-        border-bottom-width: var(--datagrid-row-seperator-width, 1px);
-        border-bottom-color: var(--datagrid-row-seperator-color, #696969);
+    tr:not(:first-child) .cell {
+        box-shadow: var(--datagrid-row-seperator-color, #696969) 0px calc(-1 * var(--datagrid-row-seperator-width, 1px)) 0px;
+
+        &.last-cell:not(:first-child) {
+            box-shadow: var(--datagrid-row-seperator-color, #696969) 0px calc(-1 * var(--datagrid-row-seperator-width, 1px)) 0px,
+                inset var(--datagrid-column-seperator-color, #ffffff) var(--datagrid-column-seperator-width, 2px) 0px 0px;
+        }
     }
 
     tr:hover .cell {
         color: var(--datagrid-row-hover-text-color, #000000);
-        background-color: var(--datagrid-row-hover-back-color, #cecece);
+        background-color: var(--datagrid-row-hover-back-color, #d6f7fd);
         background-image: var(--datagrid-row-hover-back-image, none);
     }
 }
 
 .fixed-cell {
     position: sticky;
-    z-index: 2;
+
+    &.stuck {
+        z-index: 2;
+    }
 
     &.fixed-cell-start {
         left: 0px;
@@ -258,7 +270,7 @@
 
 #empty-container,
 #nocolumns-container {
-    position: sticky;
+    position: absolute;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -297,7 +309,6 @@
     white-space: nowrap;
 }
 
-#options-container,
 #empty-container.hidden,
 #nocolumns-container.hidden {
     display: none;
@@ -336,12 +347,24 @@
             outline: none;
         }
 
-        &:checked:not(:indeterminate) {
+        &:checked {
             color: var(--datagrid-select-cell-checked-text-color, #ffffff);
-            background-color: var(--datagrid-select-cell-checked-back-color, #000000);
+            background-color: var(--datagrid-select-cell-checked-back-color, #505050);
+            border-color: var(--datagrid-select-cell-checked-border-color, #000000);
+        }
+
+        &:indeterminate {
+            color: var(--datagrid-select-cell-indeterminate-text-color, #000000);
+            background-color: var(--datagrid-select-cell-indeterminate-back-color, #ffffff);
+            border-color: var(--datagrid-select-cell-indeterminate-border-color, #000000);
         }
 
         &::before {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
             font-size: 1.1em;
             line-height: 1em;
             font-family: monospace;
@@ -350,35 +373,54 @@
         }
 
         &:checked::before {
-            font-size: 1.3em;
+            font-size: 1em;
             content: "✓";
         }
 
         &:indeterminate::before {
+            color: var(--datagrid-select-cell-indeterminate-back-color, #ffffff);
+            background-color: var(--datagrid-select-cell-indeterminate-text-color, #000000);
+            border-radius: 50%;
             content: "•";
         }
     }
 }
 
 #head .select-cell input[type="checkbox"] {
-    color: var(--datagrid-header-select-cell-text-color, #ffffff);
-    background-color: var(--datagrid-header-select-cell-back-color, #333333);
-    border-color: var(--datagrid-header-select-cell-border-color, #ffffff);
+    display: none;
+    color: var(--datagrid-header-select-cell-text-color, #000000);
+    background-color: var(--datagrid-header-select-cell-back-color, #ffffff);
+    border-color: var(--datagrid-header-select-cell-border-color, #000000);
 
-    &:checked:not(:indeterminate) {
-        color: var(--datagrid-header-select-cell-checked-text-color, #333333);
+    &:checked {
+        color: var(--datagrid-header-select-cell-checked-text-color, #000000);
         background-color: var(--datagrid-header-select-cell-checked-back-color, #ffffff);
+        border-color: var(--datagrid-header-select-cell-checked-border-color, #ffffff);
+    }
+
+    &:indeterminate {
+        color: var(--datagrid-header-select-cell-indeterminate-text-color, #000000);
+        background-color: var(--datagrid-header-select-cell-indeterminate-back-color, #ffffff);
+        border-color: var(--datagrid-header-select-cell-indeterminate-border-color, #000000);
     }
 }
 
 #foot .select-cell input[type="checkbox"] {
-    color: var(--datagrid-footer-select-cell-text-color, #ffffff);
-    background-color: var(--datagrid-footer-select-cell-back-color, #333333);
+    display: none;
+    color: var(--datagrid-footer-select-cell-text-color, #000000);
+    background-color: var(--datagrid-footer-select-cell-back-color, #ffffff);
     border-color: var(--datagrid-footer-select-cell-border-color, #ffffff);
 
-    &:checked:not(:indeterminate) {
-        color: var(--datagrid-footer-select-cell-checked-text-color, #333333);
+    &:checked {
+        color: var(--datagrid-footer-select-cell-checked-text-color, #000000);
         background-color: var(--datagrid-footer-select-cell-checked-back-color, #ffffff);
+        border-color: var(--datagrid-footer-select-cell-checked-border-color, #ffffff);
+    }
+
+    &:indeterminate {
+        color: var(--datagrid-footer-select-cell-indeterminate-text-color, #000000);
+        background-color: var(--datagrid-footer-select-cell-indeterminate-back-color, #ffffff);
+        border-color: var(--datagrid-footer-select-cell-indeterminate-border-color, #000000);
     }
 }
 
@@ -388,27 +430,9 @@
     display: table-cell;
 }
 
-:host(:not([multiple=])) #head .select-cell input[type="checkbox"],
-:host([multiple="false"]) #head .select-cell input[type="checkbox"],
-:host(:not([multiple=])) #foot .select-cell input[type="checkbox"],
-:host([multiple="false"]) #foot .select-cell input[type="checkbox"] {
-    display: none;
-}
-
-@-moz-document url-prefix() {
-
-    #head .cell {
-        padding: 0px;
-
-        &.select-cell {
-            min-width: 38px;
-        }
-
-        &:not(:first-child):not(.last-cell) {
-            border-left: none;
-            box-shadow: inset var(--datagrid-header-seperator-color, #ffffff) var(--datagrid-column-seperator-width, 2px) 0px 0px;
-        }
-    }
+:host([multiple]:not([multiple="false"])) #head .select-cell input[type="checkbox"],
+:host([multiple]:not([multiple="false"])) #foot .select-cell input[type="checkbox"] {
+    display: flex;
 }
 
 @keyframes popInLater {

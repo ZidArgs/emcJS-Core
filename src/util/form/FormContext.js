@@ -9,7 +9,7 @@ import {
     elevateObject, getFromObjectByPath
 } from "../helper/collection/ObjectContent.js";
 import {extractFormData} from "../helper/ui/Form.js";
-import MutationObserverManager from "../observer/MutationObserverManager.js";
+import MutationObserverManager from "../observer/manager/MutationObserverManager.js";
 import FormInputContext from "./FormInputContext.js";
 import FormElementContext from "./FormElementContext.js";
 

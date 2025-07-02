@@ -50,8 +50,15 @@ export function getArrayMutations(a, b) {
 
     const changeMap = {
         changes: [],
+        added: [],
         deleted: []
     };
+
+    for (const eB of b) {
+        if (a.indexOf(eB) < 0) {
+            changeMap.added.push(eB);
+        }
+    }
 
     for (const eA of a) {
         if (b.indexOf(eA) < 0) {
