@@ -106,6 +106,11 @@
     min-width: 100%;
     border-spacing: 0px;
 
+    tr {
+        position: relative;
+        z-index: 0;
+    }
+
     .cell {
         min-width: 50px;
 
@@ -149,10 +154,6 @@
             border-left: none;
         }
     }
-}
-
-#table tr {
-    position: relative;
 }
 
 #head,
@@ -233,13 +234,10 @@
         }
     }
 
-    tr:not(:first-child) .cell {
-        box-shadow: var(--datagrid-row-seperator-color, #696969) 0px calc(-1 * var(--datagrid-row-seperator-width, 1px)) 0px;
-
-        &.last-cell:not(:first-child) {
-            box-shadow: var(--datagrid-row-seperator-color, #696969) 0px calc(-1 * var(--datagrid-row-seperator-width, 1px)) 0px,
-                inset var(--datagrid-column-seperator-color, #ffffff) var(--datagrid-column-seperator-width, 2px) 0px 0px;
-        }
+    tr:hover .cell {
+        color: var(--datagrid-row-hover-text-color, #000000);
+        background-color: var(--datagrid-row-hover-back-color, #d6f7fd);
+        background-image: var(--datagrid-row-hover-back-image, none);
     }
 
     tr:not(:last-child) .cell {
@@ -248,10 +246,10 @@
         border-bottom-color: var(--datagrid-row-seperator-color, #696969);
     }
 
-    tr:hover .cell {
-        color: var(--datagrid-row-hover-text-color, #000000);
-        background-color: var(--datagrid-row-hover-back-color, #d6f7fd);
-        background-image: var(--datagrid-row-hover-back-image, none);
+    tr:not(:first-child) {
+        outline-style: solid;
+        outline-width: var(--datagrid-row-seperator-width, 1px);
+        outline-color: var(--datagrid-row-seperator-color, #696969);
     }
 }
 

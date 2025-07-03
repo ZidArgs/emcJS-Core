@@ -8,6 +8,9 @@
     "datalist": {
         "label": "DataList"
     },
+    "dragdrop": {
+        "label": "Drag'n'Drop"
+    },
     "tooltip": {
         "label": "Tooltip"
     },

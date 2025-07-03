@@ -1,4 +1,4 @@
-import LogicStatement from "../processor/components/LogicStatement.js";
+import LogicStatement from "./LogicStatement.js";
 
 const TRANSPILERS = {
     /* literals */
