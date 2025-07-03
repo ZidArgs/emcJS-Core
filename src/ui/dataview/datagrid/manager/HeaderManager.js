@@ -19,6 +19,8 @@ export default class HeaderManager extends EventTarget {
 
     #columnDefinitionCache = new Map();
 
+    #sortHeaderCellEl;
+
     #selectHeaderCellEl;
 
     #selectEnd = false;
@@ -36,6 +38,12 @@ export default class HeaderManager extends EventTarget {
         this.#dataGridId = dataGridId;
         this.#target = target;
 
+        this.#sortHeaderCellEl = document.createElement("th");
+        this.#sortHeaderCellEl.classList.add("cell");
+        this.#sortHeaderCellEl.classList.add("sort-cell");
+        this.#sortHeaderCellEl.classList.add("fixed-cell");
+        this.#sortHeaderCellEl.classList.add("fixed-cell-start");
+
         this.#selectHeaderCellEl = document.createElement("th");
         this.#selectHeaderCellEl.classList.add("cell");
         this.#selectHeaderCellEl.classList.add("select-cell");
@@ -48,6 +56,7 @@ export default class HeaderManager extends EventTarget {
         this.#lastHeaderCellEl.classList.add("last-cell");
 
         this.#stickyObserverManager = new StickyObserverGroupManager(stickyObserver);
+        this.#stickyObserverManager.observe(this.#sortHeaderCellEl);
         this.#stickyObserverManager.observe(this.#selectHeaderCellEl);
     }
 
@@ -248,6 +257,7 @@ export default class HeaderManager extends EventTarget {
         } else {
             this.#target.prepend(this.#selectHeaderCellEl);
         }
+        this.#target.prepend(this.#sortHeaderCellEl);
         this.dispatchEvent(new Event("afterrender"));
     });
 

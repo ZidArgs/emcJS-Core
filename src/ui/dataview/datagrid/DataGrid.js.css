@@ -115,13 +115,23 @@
         min-width: 50px;
 
         &.select-cell {
+            width: 40px;
             min-width: 40px;
+            max-width: 40px;
+        }
+
+        &.sort-cell {
+            width: 40px;
+            min-width: 40px;
+            max-width: 40px;
+            border-right-style: solid;
+            border-right-width: var(--datagrid-column-seperator-width, 2px);
         }
 
         &.last-cell {
             padding: 0px;
-            min-width: 0px;
             width: 100%;
+            min-width: 0px;
         }
     }
 
@@ -150,7 +160,7 @@
 
         &.last-cell,
         &:first-child,
-        .cell.fixed-cell:nth-child(1 of .fixed-cell-start.stuck) {
+        .cell.fixed-cell:nth-child(2 of .fixed-cell-start.stuck) {
             border-left: none;
         }
     }
@@ -170,6 +180,7 @@
         background-color: var(--datagrid-header-back-color, #333333);
         background-image: var(--datagrid-header-back-image, none);
         border-left-color: var(--datagrid-header-seperator-color, #ffffff);
+        border-right-color: var(--datagrid-header-seperator-color, #ffffff);
         overflow: hidden;
         text-overflow: ellipsis;
 
@@ -195,6 +206,7 @@
         background-color: var(--datagrid-footer-back-color, #666666);
         background-image: var(--datagrid-footer-back-image, none);
         border-left-color: var(--datagrid-footer-seperator-color, #ffffff);
+        border-right-color: var(--datagrid-footer-seperator-color, #ffffff);
         overflow: hidden;
         text-overflow: ellipsis;
 
@@ -219,6 +231,7 @@
         background-color: var(--datagrid-back-color, #ffffff);
         background-image: var(--datagrid-back-image, none);
         border-left-color: var(--datagrid-column-seperator-color, #ffffff);
+        border-right-color: var(--datagrid-column-seperator-color, #ffffff);
         overflow: hidden;
 
         &.fixed-cell:nth-last-child(1 of .fixed-cell-start.stuck) {
@@ -317,6 +330,32 @@
 
 #nocolumns-container:not(.hidden) + #empty-container {
     display: none;
+}
+
+.sort-cell {
+    display: none;
+    width: 40px;
+    min-width: 40px;
+    max-width: 40px;
+
+    div {
+        position: relative;
+        display: block;
+        width: 16px;
+        height: 11px;
+        margin: auto;
+        margin-left: 10px;
+        background: linear-gradient(var(--datagrid-text-color, #000000) 0%,
+                var(--datagrid-text-color, #000000) 20%,
+                #00000000 20%,
+                #00000000 40%,
+                var(--datagrid-text-color, #000000) 40%,
+                var(--datagrid-text-color, #000000) 60%,
+                #00000000 60%,
+                #00000000 80%,
+                var(--datagrid-text-color, #000000) 80%,
+                var(--datagrid-text-color, #000000) 100%);
+    }
 }
 
 .select-cell {
@@ -431,6 +470,12 @@
         background-color: var(--datagrid-footer-select-cell-indeterminate-back-color, #ffffff);
         border-color: var(--datagrid-footer-select-cell-indeterminate-border-color, #000000);
     }
+}
+
+:host([sortable]:not([sortable="false"])) #head .sort-cell,
+:host([sortable]:not([sortable="false"])) #body .sort-cell,
+:host([sortable]:not([sortable="false"])) #foot .sort-cell {
+    display: table-cell;
 }
 
 :host([selectable]:not([selectable="false"])) #head .select-cell,

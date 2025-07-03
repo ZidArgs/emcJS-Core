@@ -82,10 +82,16 @@ export default class DataGridHeaderCell extends CustomElementDelegating {
             switch (name) {
                 case "col-name": {
                     const escapedColumnName = this.columnName.replace(/\./g, "\\.");
-                    const styleWidth = `var(--width-${escapedColumnName}, 100%)`;
-                    this.style.minWidth = styleWidth;
-                    this.style.maxWidth = styleWidth;
-                    this.style.width = styleWidth;
+                    if (escapedColumnName) {
+                        const styleWidth = `var(--width-${this.columnName}, 100%)`;
+                        this.style.minWidth = `var(--min-width-${this.columnName}, 100%)`;
+                        this.style.maxWidth = styleWidth;
+                        this.style.width = styleWidth;
+                    } else {
+                        this.style.minWidth = "";
+                        this.style.maxWidth = "";
+                        this.style.width = "";
+                    }
                 } break;
                 case "sortorder": {
                     this.#sortIndicatorEl.innerText = newValue;

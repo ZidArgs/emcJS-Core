@@ -2,6 +2,14 @@ import {isEqual} from "../helper/Comparator.js";
 import {getBoundingContentRect} from "../helper/html/ElementSizeHelper.js";
 import StyleChangeObserver from "./StyleChangeObserver.js";
 
+const OBSERVED_STYLES = [
+    "position",
+    "top",
+    "bottom",
+    "left",
+    "right"
+];
+
 export default class StickyObserver {
 
     #rootEl;
@@ -33,13 +41,7 @@ export default class StickyObserver {
             if (entries.length > 0) {
                 this.#callback(entries);
             }
-        }, [
-            "position",
-            "top",
-            "bottom",
-            "left",
-            "right"
-        ]);
+        }, OBSERVED_STYLES);
     }
 
     #refresh() {
@@ -68,6 +70,7 @@ export default class StickyObserver {
 
     disconnect() {
         this.#observedEls.clear();
+        this.#styleChangeObserver.disconnect();
     }
 
     takeRecords() {

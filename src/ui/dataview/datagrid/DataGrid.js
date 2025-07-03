@@ -10,7 +10,6 @@ import MutationObserverManager from "../../../util/observer/manager/MutationObse
 import DataRecieverMixin from "../../../util/dataprovider/DataRecieverMixin.js";
 import HeaderManager from "./manager/HeaderManager.js";
 import RowManager from "./manager/RowManager.js";
-import ResizeObserverMixin from "../../mixin/ResizeObserverMixin.js";
 import Column from "./Column.js";
 import DataGridCell from "./components/cell/DataGridCell.js";
 import CellCache from "./data/CellCache.js";
@@ -37,7 +36,7 @@ function getStyleLengthValue(type, value) {
 }
 
 // TODO add "no match" label
-export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(CustomElement)) {
+export default class DataGrid extends DataRecieverMixin(CustomElement) {
 
     #internalId = appUID("data-grid");
 
@@ -135,7 +134,6 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
             this.#emptyContainerEl.classList.toggle("hidden", this.#bodyEl.childNodes.length > 0);
             this.#updateSelectionAfterRender();
             this.#processFixedCells(this.#bodyEl);
-            this.resizeCallback();
         }));
         /* --- */
         this.#tableEl.addEventListener("move-row-up", (event) => {
@@ -288,6 +286,14 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
         return this.getBooleanAttribute("nohead");
     }
 
+    set sortable(value) {
+        this.setBooleanAttribute("sortable", value);
+    }
+
+    get sortable() {
+        return this.getBooleanAttribute("sortable");
+    }
+
     set selectable(value) {
         this.setBooleanAttribute("selectable", value);
     }
@@ -379,16 +385,7 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
                     }
                 } break;
                 case "stretched": {
-                    if (this.#stretched != null) {
-                        const name = this.#stretched.name;
-                        const widthValue = this.#stretched.width;
-                        if (widthValue != null) {
-                            const styleWidth = getStyleLengthValue(this.#stretched.type, widthValue);
-                            this.style.setProperty(`--width-${name}`, `${styleWidth}px`);
-                        }
-                    }
-                    this.#stretched = this.#columnDefinition.find((definition) => definition.name === newValue);
-                    this.resizeCallback();
+                    this.#setStreched(newValue);
                 } break;
                 case "disabled": {
                     for (const [,, cell] of this.#cellCache.getAllCells()) {
@@ -576,15 +573,13 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
             this.#rowManager.manage(this.#data, newColumnDefinition);
             /* --- */
             for (const definition of newColumnDefinition) {
-                if (definition.name === this.stretched) {
-                    this.#stretched = definition;
-                } else {
+                this.style.setProperty(`--min-width-${definition.name}`, `${definition.width}px`);
+                if (definition.name !== this.stretched) {
                     const widthValue = definition.width;
                     const styleWidth = getStyleLengthValue(definition.type, widthValue);
                     this.style.setProperty(`--width-${definition.name}`, `${styleWidth}px`);
                 }
             }
-            this.resizeCallback();
             /* --- */
             const ev = new Event("rows-updated");
             this.dispatchEvent(ev);
@@ -625,33 +620,6 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
         this.#applyColumnDefinition();
     });
 
-    resizeCallback() {
-        if (this.#stretched != null) {
-            const gridWidth = this.#scrollContainerEl.clientWidth;
-            const name = this.#stretched.name;
-            let diff = 0;
-            for (const def of this.#columnDefinition) {
-                if (def !== this.#stretched) {
-                    if (def.width != null) {
-                        diff += getStyleLengthValue(def.type, def.width);
-                    } else {
-                        diff += getStyleLengthValue(def.type);
-                    }
-                }
-            }
-            if (this.selectable) {
-                diff += 40;
-            }
-            let resultWidth = gridWidth - diff;
-            const widthValue = this.#stretched.width;
-            if (widthValue != null) {
-                resultWidth = Math.max(resultWidth, parseFloat(widthValue) || 0);
-            }
-            const styleWidth = getStyleLengthValue(this.#stretched.type, resultWidth);
-            this.style.setProperty(`--width-${name}`, `${styleWidth}px`);
-        }
-    }
-
     busy() {
         return this.#busyIndicator.busy();
     }
@@ -662,6 +630,21 @@ export default class DataGrid extends ResizeObserverMixin(DataRecieverMixin(Cust
 
     reset() {
         return this.#busyIndicator.reset();
+    }
+
+    #setStreched(strechedName) {
+        if (this.#stretched != null) {
+            const name = this.#stretched.name;
+            const widthValue = this.#stretched.width;
+            if (widthValue != null) {
+                const styleWidth = getStyleLengthValue(this.#stretched.type, widthValue);
+                this.style.setProperty(`--width-${name}`, `${styleWidth}px`);
+            }
+        }
+        this.#stretched = this.#columnDefinition.find((definition) => definition.name === strechedName);
+        if (this.#stretched != null) {
+            this.style.setProperty(`--width-${strechedName}`, "100%");
+        }
     }
 
     #updateSelectionAfterRender() {

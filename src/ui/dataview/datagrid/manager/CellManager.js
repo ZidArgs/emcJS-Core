@@ -43,6 +43,8 @@ export default class CellManager extends EventTarget {
 
     #valueCache = new Map();
 
+    #sortCellEl;
+
     #selectCellEl;
 
     #selectEnd = false;
@@ -62,6 +64,13 @@ export default class CellManager extends EventTarget {
         this.#dataGridId = dataGridId;
         this.#cellCache = cellCache;
         this.#target = target;
+
+        this.#sortCellEl = document.createElement("th");
+        this.#sortCellEl.classList.add("cell");
+        this.#sortCellEl.classList.add("sort-cell");
+        this.#sortCellEl.classList.add("fixed-cell");
+        this.#sortCellEl.classList.add("fixed-cell-start");
+        this.#sortCellEl.append(document.createElement("div"));
 
         this.#selectCellEl = document.createElement("td");
         this.#selectCellEl.classList.add("cell");
@@ -89,6 +98,7 @@ export default class CellManager extends EventTarget {
         this.#lastCellEl.classList.add("last-cell");
 
         this.#stickyObserverManager = new StickyObserverGroupManager(stickyObserver);
+        this.#stickyObserverManager.observe(this.#sortCellEl);
         this.#stickyObserverManager.observe(this.#selectCellEl);
     }
 
@@ -370,6 +380,7 @@ export default class CellManager extends EventTarget {
         } else {
             this.#target.prepend(this.#selectCellEl);
         }
+        this.#target.prepend(this.#sortCellEl);
         // notify
         this.dispatchEvent(new Event("afterrender"));
     });

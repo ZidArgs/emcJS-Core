@@ -5,8 +5,8 @@ export function getBoundingContentRect(element) {
     const bottomBorder = parseFloat(elementStyle.getPropertyValue("border-bottom-width")) || 0;
     const leftBorder = parseFloat(elementStyle.getPropertyValue("border-left-width")) || 0;
     const rightBorder = parseFloat(elementStyle.getPropertyValue("border-right-width")) || 0;
-    const scrollBarHeight = Math.max(0, element.offsetHeight - element.clientHeight - topBorder - bottomBorder);
-    const scrollBarWidth = Math.max(0, element.offsetWidth - element.clientWidth - leftBorder - rightBorder);
+    const scrollBarHeight = Math.max(0, elementRect.height - element.clientHeight - topBorder - bottomBorder);
+    const scrollBarWidth = Math.max(0, elementRect.width - element.clientWidth - leftBorder - rightBorder);
 
     const contentRect = {};
     contentRect.top = elementRect.top + topBorder;
