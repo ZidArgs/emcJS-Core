@@ -217,6 +217,11 @@ all; top_bottom right_left; top right bottom left
     --select-option-selected-marked-back-color: #26e0ff;
     --select-option-selected-marked-back-image: none;
 
+    --select-option-placeholder-text-color: var(--input-placeholder-text-color);
+    --select-option-placeholder-marked-text-color: var(--select-option-placeholder-text-color);
+    --select-option-placeholder-selected-text-color: var(--select-option-placeholder-text-color);
+    --select-option-placeholder-selected-marked-text-color: var(--select-option-placeholder-text-color);
+
     /* === button === */
     --button-text-color: #000000;
     --button-back-color: #cdcdcd;
@@ -354,11 +359,6 @@ all; top_bottom right_left; top right bottom left
     --datagrid-border-width: 2px;
     --datagrid-border-radius: 6px;
 
-    --datagrid-disabled-text-color: #757575;
-    --datagrid-disabled-back-color: #999999;
-    --datagrid-disabled-back-image: none;
-    --datagrid-disabled-border-color: #757575;
-
     --datagrid-empty-text-color: #666666;
     --datagrid-empty-back-color: #dadada;
     --datagrid-empty-back-image: none;
@@ -370,6 +370,12 @@ all; top_bottom right_left; top right bottom left
     --datagrid-column-seperator-color: #ffffff;
     --datagrid-fixed-column-seperator-width: 4px;
     --datagrid-fixed-column-seperator-color: #afafaf;
+
+    --datagrid-disabled-text-color: #757575;
+    --datagrid-disabled-back-color: #999999;
+    --datagrid-disabled-back-image: none;
+    --datagrid-disabled-border-color: #757575;
+    --datagrid-disabled-column-seperator-color: #696969;
 
     --datagrid-row-seperator-width: 1px;
     --datagrid-row-seperator-color: #696969;
@@ -387,14 +393,14 @@ all; top_bottom right_left; top right bottom left
     --datagrid-fixed-footer-seperator-color: var(--datagrid-fixed-column-seperator-color);
 
     --datagrid-disabled-header-text-color: #999999;
-    --datagrid-disabled-header-back-color: #757575;
+    --datagrid-disabled-header-back-color: #4d4d4d;
     --datagrid-disabled-header-back-image: none;
-    --datagrid-disabled-header-seperator-color: #999999;
+    --datagrid-disabled-header-seperator-color: var(--datagrid-disabled-column-seperator-color);
 
     --datagrid-disabled-footer-text-color: #999999;
     --datagrid-disabled-footer-back-color: #757575;
     --datagrid-disabled-footer-back-image: none;
-    --datagrid-disabled-footer-seperator-color: #999999;
+    --datagrid-disabled-footer-seperator-color: var(--datagrid-disabled-column-seperator-color);
 
     --datagrid-disabled-row-seperator-color: #757575;
 
@@ -402,12 +408,12 @@ all; top_bottom right_left; top right bottom left
     --datagrid-row-hover-back-color: #d6f7fd;
     --datagrid-row-hover-back-image: none;
 
-    --datagrid-select-cell-text-color: #000000;
+    --datagrid-select-cell-text-color: #505050;
     --datagrid-select-cell-back-color: #ffffff;
     --datagrid-select-cell-border-color: #000000;
 
-    --datagrid-select-cell-checked-text-color: #ffffff;
-    --datagrid-select-cell-checked-back-color: #505050;
+    --datagrid-select-cell-checked-text-color: var(--datagrid-select-cell-back-color);
+    --datagrid-select-cell-checked-back-color: var(--datagrid-select-cell-text-color);
     --datagrid-select-cell-checked-border-color: var(--datagrid-select-cell-border-color);
 
     --datagrid-select-cell-indeterminate-text-color: var(--datagrid-select-cell-text-color);
@@ -580,21 +586,21 @@ form {
     border-color: var(--scrollbar-thumb-active-border-color);
 }
 
-.scroll-disabled::-webkit-scrollbar-track {
+:host([disabled]:not([disabled="false"])) ::-webkit-scrollbar-track {
     background-color: var(--scrollbar-disabled-track-color);
     border-color: var(--scrollbar-disabled-track-border-color);
 }
 
-.scroll-disabled::-webkit-scrollbar-corner {
+:host([disabled]:not([disabled="false"])) ::-webkit-scrollbar-corner {
     background-color: var(--scrollbar-disabled-corner-color);
     border-color: var(--scrollbar-disabled-corner-border-color);
 }
 
-.scroll-disabled::-webkit-resizer {
+:host([disabled]:not([disabled="false"])) ::-webkit-resizer {
     background: radial-gradient(var(--scrollbar-disabled-resizer-color) calc(var(--scrollbar-size) / 2 - 2px), transparent calc(var(--scrollbar-size) / 2 - 1px));
 }
 
-.scroll-disabled::-webkit-scrollbar-thumb {
+:host([disabled]:not([disabled="false"])) ::-webkit-scrollbar-thumb {
     background-color: var(--scrollbar-disabled-thumb-color);
     border-color: var(--scrollbar-disabled-thumb-border-color);
 }

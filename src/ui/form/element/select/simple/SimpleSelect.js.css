@@ -1,5 +1,6 @@
 #input {
     position: relative;
+    display: flex;
     flex-grow: 1;
     height: 2em;
     padding: 0px calc(2em + 7px) 0px 7px;
@@ -12,6 +13,7 @@
     border-radius: var(--input-border-radius, 6px);
     font-size: 1em;
     cursor: pointer;
+    user-select: none;
 }
 
 #input:focus {
@@ -31,8 +33,16 @@
     box-shadow: 0 0 2px 3px var(--input-invalid-focus-color, #ff2500);
 }
 
-#input::placeholder {
+#input #placeholder-label {
     color: var(--input-placeholder-text-color, #757575);
+}
+
+#input #value-label:empty {
+    display: none;
+}
+
+#input #value-label:not(:empty) + #placeholder-label {
+    display: none;
 }
 
 #input:disabled {
@@ -131,6 +141,10 @@ emc-select-entry {
     cursor: pointer;
 }
 
+emc-select-entry[value=""] {
+    color: var(--select-option-placeholder-text-color, #757575);
+}
+
 emc-select-entry:not(:last-child) {
     border-bottom: solid 1px var(--select-option-divider-color, #949494);
 }
@@ -140,6 +154,11 @@ emc-select-entry.marked {
     color: var(--select-option-marked-text-color, #000000);
     background-color: var(--select-option-marked-back-color, #b1f4ff);
     background-image: var(--select-option-marked-back-image, none);
+}
+
+emc-select-entry[value=""]:hover,
+emc-select-entry[value=""].marked {
+    color: var(--select-option-placeholder-marked-text-color, #757575);
 }
 
 /* --- */

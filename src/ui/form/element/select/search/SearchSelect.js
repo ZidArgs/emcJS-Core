@@ -424,7 +424,7 @@ export default class SearchSelect extends AbstractFormElement {
     }
 
     #switchSelected(modeUp = false) {
-        const marked = this.#optionsContainerEl.querySelector(`[value="${this.value}"]`);
+        const marked = this.#optionsContainerEl.querySelector(`[value="${this.value ?? ""}"]`);
         const el = this.#switchOption(marked, modeUp);
         if (el != null) {
             this.value = el.value;
@@ -466,7 +466,7 @@ export default class SearchSelect extends AbstractFormElement {
                 }
             }
         } else {
-            nextEl = this.#optionsContainerEl.querySelector(`[value="${this.value}"]`);
+            nextEl = this.#optionsContainerEl.querySelector(`[value="${this.value ?? ""}"]`);
             if (nextEl == null || nextEl.style.display === "none") {
                 nextEl = this.#getFirstOption();
             }
@@ -560,7 +560,7 @@ export default class SearchSelect extends AbstractFormElement {
         if (selectedEl != null) {
             selectedEl.selected = false;
         }
-        const matchingEl = containerEl.querySelector(`[value="${this.value}"]`);
+        const matchingEl = containerEl.querySelector(`[value="${this.value ?? ""}"]`);
         if (matchingEl != null) {
             matchingEl.selected = true;
         }

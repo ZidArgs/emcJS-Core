@@ -54,8 +54,6 @@ export default class LogicInput extends BaseClass {
 
     #placeholderEl;
 
-    #logicContainerEl;
-
     #logicElementModal = new LogicElementModal();
 
     #logicJSONModal = new LogicJSONModal();
@@ -77,7 +75,6 @@ export default class LogicInput extends BaseClass {
         });
         /* --- */
         mutationObserver.observe(this, MUTATION_CONFIG);
-        this.#logicContainerEl = this.shadowRoot.getElementById("logic-container");
         this.#optimizeButtonEl = this.shadowRoot.getElementById("optimize");
         this.#jsonButtonEl = this.shadowRoot.getElementById("json");
         this.#placeholderEl = this.shadowRoot.getElementById("droptarget");
@@ -163,7 +160,6 @@ export default class LogicInput extends BaseClass {
         this.#optimizeButtonEl.disabled = disabled;
         this.#jsonButtonEl.disabled = disabled;
         this.#placeholderEl.disabled = disabled;
-        this.#logicContainerEl.classList.toggle("scroll-disabled", disabled);
         const el = this.children[0];
         if (el) {
             return el.disabled = disabled;

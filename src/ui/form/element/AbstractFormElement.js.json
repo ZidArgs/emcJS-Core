@@ -38,19 +38,19 @@
     {
         "type": "BoolOrLogicInput",
         "name": "visible",
-        "label": "Visible",
+        "label": "Visible (will not influence preview)",
         "value": true
     },
     {
         "type": "BoolOrLogicInput",
         "name": "editable",
-        "label": "Editable",
+        "label": "Editable (will not influence preview)",
         "value": true
     },
     {
         "type": "BoolOrLogicInput",
         "name": "enabled",
-        "label": "Enabled",
+        "label": "Enabled (will not influence preview)",
         "value": true
     },
     {
@@ -63,6 +63,12 @@
         "type": "SwitchInput",
         "name": "nohover",
         "label": "Remove hover background effect",
+        "value": false
+    },
+    {
+        "type": "SwitchInput",
+        "name": "nopad",
+        "label": "Remove padding",
         "value": false
     },
     {

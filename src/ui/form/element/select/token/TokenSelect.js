@@ -548,7 +548,7 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
                 }
             }
         } else {
-            nextEl = this.#optionsContainerEl.querySelector(`[value="${this.value}"]`);
+            nextEl = this.#optionsContainerEl.querySelector(`[value="${this.value ?? ""}"]`);
             if (nextEl == null || nextEl.style.display === "none") {
                 nextEl = this.#getFirstOption();
             }

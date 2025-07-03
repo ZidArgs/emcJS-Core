@@ -181,7 +181,7 @@ export default class ChoiceSelect extends ChildlistMutationObserverMixin(CustomE
                 el.classList.add("active");
             }
         } else {
-            const el = this.querySelector(`[value="${this.value}"]`);
+            const el = this.querySelector(`[value="${this.value ?? ""}"]`);
             if (el) {
                 el.classList.add("active");
             }

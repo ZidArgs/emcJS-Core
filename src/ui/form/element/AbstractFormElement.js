@@ -158,10 +158,7 @@ export default class AbstractFormElement extends CustomFormElement {
     }
 
     set value(value) {
-        if (!isEqual(this.value, value)) {
-            this.#value = value;
-            this.#onUpdateValue();
-        }
+        this.#onUpdateValue(value);
     }
 
     get value() {
@@ -255,6 +252,14 @@ export default class AbstractFormElement extends CustomFormElement {
         return this.getBooleanAttribute("nohover");
     }
 
+    set noPad(value) {
+        this.setBooleanAttribute("nopad", value);
+    }
+
+    get noPad() {
+        return this.getBooleanAttribute("nopad");
+    }
+
     set noValidate(value) {
         this.setBooleanAttribute("novalidate", value);
     }
@@ -312,28 +317,31 @@ export default class AbstractFormElement extends CustomFormElement {
         }
     }
 
-    #onUpdateValue = debounce(() => {
-        const newValue = this.value;
-        this.renderValue(newValue);
-        this.onDisplayValueChange(newValue);
-        this.refreshFormValue();
-        this.revalidate();
-        this.#setResetActive(!this.isDefault);
-        if (!this.#errorList.size) {
-            const event = new Event("value", {
+    #onUpdateValue = debounce((value) => {
+        if (!isEqual(this.value, value)) {
+            this.#value = value;
+            const newValue = this.value;
+            this.renderValue(newValue);
+            this.onDisplayValueChange(newValue);
+            this.refreshFormValue();
+            this.revalidate();
+            this.#setResetActive(!this.isDefault);
+            if (!this.#errorList.size) {
+                const event = new Event("value", {
+                    bubbles: true,
+                    cancelable: true
+                });
+                event.value = newValue;
+                event.name = this.name;
+                event.fieldId = this.id;
+                this.dispatchEvent(event);
+            }
+            this.dispatchEvent(new Event("change", {
                 bubbles: true,
                 cancelable: true
-            });
-            event.value = newValue;
-            event.name = this.name;
-            event.fieldId = this.id;
-            this.dispatchEvent(event);
+            }));
         }
-        this.dispatchEvent(new Event("change", {
-            bubbles: true,
-            cancelable: true
-        }));
-    }, this.changeDebounceTime);
+    }, this.constructor.changeDebounceTime);
 
     async revalidate() {
         if (!this.noValidate) {

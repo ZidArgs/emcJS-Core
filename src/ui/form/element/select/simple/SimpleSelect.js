@@ -47,6 +47,10 @@ export default class SimpleSelect extends AbstractFormElement {
 
     #inputEl;
 
+    #valueLabelEl;
+
+    #placeholderLabelEl;
+
     #nativeSelectEl;
 
     #nativeEmptyEl;
@@ -96,6 +100,8 @@ export default class SimpleSelect extends AbstractFormElement {
         });
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
+        this.#valueLabelEl = this.shadowRoot.getElementById("value-label");
+        this.#placeholderLabelEl = this.shadowRoot.getElementById("placeholder-label");
         this.#nativeSelectEl = this.shadowRoot.getElementById("native-select");
         this.#nativeEmptyEl = this.shadowRoot.getElementById("native-empty");
         this.#emptyEl = this.shadowRoot.getElementById("empty");
@@ -115,8 +121,12 @@ export default class SimpleSelect extends AbstractFormElement {
         });
         /* --- */
         this.#inputEl.addEventListener("click", (event) => {
-            if (!this.readonly && !this.#isEditMode) {
-                this.#startEditMode();
+            if (!this.readonly) {
+                if (!this.#isEditMode) {
+                    this.#startEditMode();
+                } else {
+                    this.#stopEditMode();
+                }
                 event.preventDefault();
                 event.stopPropagation();
             }
@@ -260,7 +270,7 @@ export default class SimpleSelect extends AbstractFormElement {
         switch (name) {
             case "placeholder": {
                 if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, "i18n-placeholder", newValue);
+                    this.#placeholderLabelEl.i18nValue = newValue;
                 }
             } break;
             case "readonly": {
@@ -290,18 +300,18 @@ export default class SimpleSelect extends AbstractFormElement {
             const selectedEl = this.#optionsContainerEl.querySelector(`[value="${value}"]`);
             if (selectedEl != null) {
                 if (selectedEl.label != null) {
-                    this.#inputEl.i18nValue = selectedEl.label;
+                    this.#valueLabelEl.i18nValue = selectedEl.label;
                 } else {
-                    this.#inputEl.i18nValue = "";
-                    this.#inputEl.innerText = selectedEl.innerText;
+                    this.#valueLabelEl.i18nValue = "";
+                    this.#valueLabelEl.innerText = selectedEl.innerText;
                 }
             } else {
-                this.#inputEl.i18nValue = value;
+                this.#valueLabelEl.i18nValue = value;
             }
         } else {
             this.#nativeSelectEl.value = "";
-            this.#inputEl.i18nValue = "";
-            this.#inputEl.innerHTML = "";
+            this.#valueLabelEl.i18nValue = "";
+            this.#valueLabelEl.innerHTML = "";
         }
     }
 
@@ -369,7 +379,7 @@ export default class SimpleSelect extends AbstractFormElement {
     }
 
     #switchSelected(modeUp = false) {
-        const marked = this.#optionsContainerEl.querySelector(`[value="${this.value}"]`);
+        const marked = this.#optionsContainerEl.querySelector(`[value="${this.value ?? ""}"]`);
         const el = this.#switchOption(marked, modeUp);
         if (el != null) {
             this.value = el.value;
@@ -411,7 +421,7 @@ export default class SimpleSelect extends AbstractFormElement {
                 }
             }
         } else {
-            nextEl = this.#optionsContainerEl.querySelector(`[value="${this.value}"]`);
+            nextEl = this.#optionsContainerEl.querySelector(`[value="${this.value ?? ""}"]`);
             if (nextEl == null || nextEl.style.display === "none") {
                 nextEl = this.#getFirstOption();
             }
@@ -459,7 +469,7 @@ export default class SimpleSelect extends AbstractFormElement {
         for (const el of optionNodeList) {
             data.push({
                 key: el.value || el.innerText,
-                label: el.i18nValue || el.label || el.innerText
+                label: el.i18nValue || el.label || el.innerText || (el.value === "" ? this.placeholder : "")
             });
             /* --- */
             if (oldNodes.has(el)) {
@@ -505,7 +515,7 @@ export default class SimpleSelect extends AbstractFormElement {
         if (selectedEl != null) {
             selectedEl.selected = false;
         }
-        const matchingEl = containerEl.querySelector(`[value="${this.value}"]`);
+        const matchingEl = containerEl.querySelector(`[value="${this.value ?? ""}"]`);
         if (matchingEl != null) {
             matchingEl.selected = true;
         }

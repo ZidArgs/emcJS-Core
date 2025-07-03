@@ -42,16 +42,16 @@
 :host([disabled]:not([disabled="false"])) {
     pointer-events: none;
 
-    #head .cell,
-    #foot .cell {
-        color: var(--datagrid-disabled-header-text-color, #999999) !important;
-        background-color: var(--datagrid-disabled-header-back-color, #757575) !important;
-        background-image: var(--datagrid-disabled-header-back-image, none) !important;
-    }
+    color: var(--datagrid-disabled-text-color, #999999) !important;
+    background-color: var(--datagrid-disabled-back-color, #757575) !important;
+    background-image: var(--datagrid-disabled-back-image, none) !important;
 
     #head .cell {
-        border-left-color: var(--datagrid-disabled-header-seperator-color, #999999) !important;
-        border-right-color: var(--datagrid-disabled-header-seperator-color, #999999) !important;
+        color: var(--datagrid-disabled-header-text-color, #999999) !important;
+        background-color: var(--datagrid-disabled-header-back-color, #4d4d4d) !important;
+        background-image: var(--datagrid-disabled-header-back-image, none) !important;
+        border-left-color: var(--datagrid-disabled-header-seperator-color, #696969) !important;
+        border-right-color: var(--datagrid-disabled-header-seperator-color, #696969) !important;
 
         &.select-cell input[type="checkbox"] {
             color: var(--datagrid-disabled-header-select-cell-text-color, #757575) !important;
@@ -62,8 +62,11 @@
     }
 
     #foot .cell {
-        border-left-color: var(--datagrid-disabled-footer-seperator-color, #999999) !important;
-        border-right-color: var(--datagrid-disabled-footer-seperator-color, #999999) !important;
+        color: var(--datagrid-disabled-footer-text-color, #999999) !important;
+        background-color: var(--datagrid-disabled-footer-back-color, #757575) !important;
+        background-image: var(--datagrid-disabled-footer-back-image, none) !important;
+        border-left-color: var(--datagrid-disabled-footer-seperator-color, #696969) !important;
+        border-right-color: var(--datagrid-disabled-footer-seperator-color, #696969) !important;
 
         &.select-cell input[type="checkbox"] {
             color: var(--datagrid-disabled-footer-select-cell-text-color, #757575) !important;
@@ -77,6 +80,8 @@
         color: var(--button-disabled-text-color, #757575) !important;
         background-color: var(--button-disabled-back-color, #999999) !important;
         background-image: var(--button-disabled-back-image, none) !important;
+        border-left-color: var(--datagrid-disabled-column-seperator-color, #696969) !important;
+        border-right-color: var(--datagrid-disabled-column-seperator-color, #696969) !important;
         border-bottom-color: var(--datagrid-disabled-row-seperator-color, #757575) !important;
 
         &.select-cell input[type="checkbox"] {
@@ -136,14 +141,6 @@
         .cell.fixed-cell:nth-child(1 of .fixed-cell-end.stuck) {
             border-left-style: solid;
             border-left-width: var(--datagrid-fixed-column-seperator-width, 4px);
-        }
-
-        .cell.select-cell.fixed-cell.fixed-cell-start:not(:nth-last-child(1 of .fixed-cell-start.stuck)) {
-            padding-right: calc(var(--datagrid-fixed-column-seperator-width, 4px) - var(--datagrid-column-seperator-width, 2px));
-        }
-
-        .cell.select-cell.fixed-cell.fixed-cell-end:not(:nth-child(1 of .fixed-cell-end.stuck)) {
-            padding-left: calc(var(--datagrid-fixed-column-seperator-width, 4px) - var(--datagrid-column-seperator-width, 2px));
         }
 
         &.last-cell,
@@ -245,6 +242,12 @@
         }
     }
 
+    tr:not(:last-child) .cell {
+        border-bottom-style: solid;
+        border-bottom-width: var(--datagrid-row-seperator-width, 1px);
+        border-bottom-color: var(--datagrid-row-seperator-color, #696969);
+    }
+
     tr:hover .cell {
         color: var(--datagrid-row-hover-text-color, #000000);
         background-color: var(--datagrid-row-hover-back-color, #d6f7fd);
@@ -329,15 +332,15 @@
         justify-content: center;
         align-items: center;
         appearance: none;
-        width: 1.4em;
-        height: 1.4em;
+        width: 22px;
+        height: 22px;
         padding: 2px;
         margin: auto;
-        color: var(--datagrid-select-cell-text-color, #000000);
+        color: var(--datagrid-select-cell-text-color, #505050);
         background-color: var(--datagrid-select-cell-back-color, #ffffff);
-        border-color: var(--datagrid-select-cell-border-color, #000000);
         border-style: solid;
         border-width: 2px;
+        border-color: var(--datagrid-select-cell-border-color, #000000);
         border-radius: 0.3em;
         font-size: 16px;
         cursor: pointer;
@@ -354,7 +357,7 @@
         }
 
         &:indeterminate {
-            color: var(--datagrid-select-cell-indeterminate-text-color, #000000);
+            color: var(--datagrid-select-cell-indeterminate-text-color, #505050);
             background-color: var(--datagrid-select-cell-indeterminate-back-color, #ffffff);
             border-color: var(--datagrid-select-cell-indeterminate-border-color, #000000);
         }
@@ -384,6 +387,14 @@
             content: "•";
         }
     }
+}
+
+.select-cell.fixed-cell.fixed-cell-start input[type="checkbox"] {
+    margin-left: 7px;
+}
+
+.select-cell.fixed-cell.fixed-cell-end input[type="checkbox"] {
+    margin-right: 7px;
 }
 
 #head .select-cell input[type="checkbox"] {

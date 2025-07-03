@@ -7,6 +7,10 @@
     box-sizing: border-box;
 }
 
+:host([disabled]:not([disabled="false"])) {
+    pointer-events: none;
+}
+
 /* scrollbar */
 ::-webkit-scrollbar {
     width: var(--scrollbar-size, 8px);
@@ -61,21 +65,21 @@
 }
 
 /* disabled scrollbar */
-.scroll-disabled::-webkit-scrollbar-track {
+:host([disabled]:not([disabled="false"])) ::-webkit-scrollbar-track {
     background-color: var(--scrollbar-disabled-track-color, #6a6a6a);
     border-color: var(--scrollbar-disabled-track-border-color, #00000000);
 }
 
-.scroll-disabled::-webkit-scrollbar-corner {
+:host([disabled]:not([disabled="false"])) ::-webkit-scrollbar-corner {
     background-color: var(--scrollbar-disabled-corner-color, #00000000);
     border-color: var(--scrollbar-disabled-corner-border-color, #00000000);
 }
 
-.scroll-disabled::-webkit-resizer {
+:host([disabled]:not([disabled="false"])) ::-webkit-resizer {
     background: radial-gradient(var(--scrollbar-disabled-resizer-color, #757575) calc(var(--scrollbar-size, 8px) / 2 - 2px), transparent calc(var(--scrollbar-size, 8px) / 2 - 1px));
 }
 
-.scroll-disabled::-webkit-scrollbar-thumb {
+:host([disabled]:not([disabled="false"])) ::-webkit-scrollbar-thumb {
     background-color: var(--scrollbar-disabled-thumb-color, #757575);
     border-color: var(--scrollbar-disabled-thumb-border-color, #999999);
 }

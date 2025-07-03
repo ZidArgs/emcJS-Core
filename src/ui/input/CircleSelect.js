@@ -94,7 +94,7 @@ export default class CircleSelect extends CustomElement {
         if (!this.readonly) {
             const all = this.querySelectorAll("[value]");
             if (all.length) {
-                const opt = this.querySelector(`[value="${this.value}"]`);
+                const opt = this.querySelector(`[value="${this.value ?? ""}"]`);
                 if (opt) {
                     let next = getNextElement(all, opt);
                     let da = next.getAttribute("disabled");
@@ -114,7 +114,7 @@ export default class CircleSelect extends CustomElement {
         if (!this.readonly) {
             const all = this.querySelectorAll("[value]");
             if (all.length) {
-                const opt = this.querySelector(`[value="${this.value}"]`);
+                const opt = this.querySelector(`[value="${this.value ?? ""}"]`);
                 if (opt) {
                     let next = getPrevElement(all, opt);
                     let da = next.getAttribute("disabled");

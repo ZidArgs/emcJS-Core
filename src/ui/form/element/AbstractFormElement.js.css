@@ -19,6 +19,10 @@
     background-image: var(--form-hover-back-image, none);
 }
 
+:host([nopad]:not([nopad="false"])) {
+    padding: 0px;
+}
+
 #field-container {
     position: relative;
     display: flex;
