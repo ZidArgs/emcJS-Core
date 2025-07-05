@@ -4,8 +4,7 @@ import {deepClone} from "../../../../../util/helper/DeepClone.js";
 import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
 import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
 import {
-    deleteAtIndexImmuted,
-    moveInArrayImmuted
+    deleteAtIndexImmuted, sortDictListByArrayImmuted
 } from "../../../../../util/helper/collection/ArrayMutations.js";
 import SimpleDataProvider from "../../../../../util/dataprovider/SimpleDataProvider.js";
 import ModalDialog from "../../../../modal/ModalDialog.js";
@@ -29,8 +28,6 @@ export default class GridInput extends AbstractFormElement {
 
     #gridEl;
 
-    #sortColumn;
-
     #addEl;
 
     #dataManager;
@@ -41,7 +38,6 @@ export default class GridInput extends AbstractFormElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#gridEl = this.shadowRoot.getElementById("grid");
-        this.#sortColumn = this.shadowRoot.getElementById("sort-column");
         this.#addEl = this.shadowRoot.getElementById("add");
         this.#dataManager = new SimpleDataProvider(this.#gridEl);
         /* --- */
@@ -74,25 +70,12 @@ export default class GridInput extends AbstractFormElement {
             }
         });
         /* --- */
-        this.#gridEl.addEventListener("move-row-up", (event) => {
+        this.#gridEl.addEventListener("sort-change", (event) => {
             event.stopPropagation();
             event.preventDefault();
-            const {rowKey} = event.data;
+            const {newOrder} = event;
             const currentValue = this.value ?? [];
-            const index = this.#getElementIndex(rowKey);
-            if (index > 0) {
-                this.value = moveInArrayImmuted(currentValue, index, index - 1);
-            }
-        });
-        this.#gridEl.addEventListener("move-row-down", (event) => {
-            event.stopPropagation();
-            event.preventDefault();
-            const {rowKey} = event.data;
-            const currentValue = this.value ?? [];
-            const index = this.#getElementIndex(rowKey);
-            if (index + 1 < currentValue.length) {
-                this.value = moveInArrayImmuted(currentValue, index, index + 1);
-            }
+            this.value = sortDictListByArrayImmuted(currentValue, newOrder, "key");
         });
         /* --- */
         this.#searchEl = this.shadowRoot.getElementById("search");
@@ -177,7 +160,7 @@ export default class GridInput extends AbstractFormElement {
             } break;
             case "sorted": {
                 if (oldValue != newValue) {
-                    this.#updateSort(this.sorted);
+                    this.#updateSortable(this.sorted);
                 }
             } break;
         }
@@ -193,14 +176,25 @@ export default class GridInput extends AbstractFormElement {
         this.#dataManager.setSource(data);
     }
 
-    #updateSort(value) {
-        if (value && value !== "manual") {
+    #updateSortable(value) {
+        const columnNodeList = this.#gridEl.querySelectorAll("emc-datagrid-column");
+        if (value === true) {
             this.#dataManager.setConfig({sort: ["key"]});
+            this.#gridEl.sortable = false;
+            for (const columnEl of columnNodeList) {
+                columnEl.sortable = true;
+            }
         } else {
             this.#dataManager.setConfig({sort: []});
+            for (const columnEl of columnNodeList) {
+                columnEl.sortable = false;
+            }
+            if (value === "manual") {
+                this.#gridEl.sortable = true;
+            } else {
+                this.#gridEl.sortable = false;
+            }
         }
-
-        this.#sortColumn.hidden = value !== "manual";
     }
 
     async #addElement() {

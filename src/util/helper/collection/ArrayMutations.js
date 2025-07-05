@@ -36,6 +36,22 @@ export function filterInPlace(array, cond) {
     }
 }
 
+export function sortDictListByArray(dictList, sortArray, sortKey) {
+    return dictList.sort((dict0, dict1) => {
+        const index0 = sortArray.findIndex((el) => el === dict0[sortKey]);
+        const index1 = sortArray.findIndex((el) => el === dict1[sortKey]);
+        return index0 - index1;
+    });
+}
+
+export function sortDictListByArrayImmuted(dictList, sortArray, sortKey) {
+    return [...dictList].sort((dict0, dict1) => {
+        const index0 = sortArray.findIndex((el) => el === dict0[sortKey]);
+        const index1 = sortArray.findIndex((el) => el === dict1[sortKey]);
+        return index0 - index1;
+    });
+}
+
 export function repeatArray(arr, times) {
     return Array(times).fill(arr).flat();
 }

@@ -18,13 +18,6 @@
         "sorted": "manual",
         "columns": [
             {
-                "key": "key",
-                "type": "string",
-                "caption": "Column Name",
-                "width": 200,
-                "editable": false
-            },
-            {
                 "key": "type",
                 "type": "string",
                 "caption": "Type",

@@ -106,7 +106,7 @@ export default class StickyObserver {
         // get top stuck
         const styleTop = parseFloat(observedStyle.top);
         if (!isNaN(styleTop)) {
-            if (observedRect.top <= contentRect.top + styleTop) {
+            if (Math.floor(observedRect.top) <= Math.ceil(contentRect.top) + styleTop) {
                 entry.isStuck = true;
                 entry.stuckPositions.top = true;
             }
@@ -114,7 +114,7 @@ export default class StickyObserver {
         // get bottom stuck
         const styleBottom = parseFloat(observedStyle.bottom);
         if (!isNaN(styleBottom)) {
-            if (observedRect.bottom >= contentRect.bottom - styleBottom) {
+            if (Math.ceil(observedRect.bottom) >= Math.floor(contentRect.bottom) - styleBottom) {
                 entry.isStuck = true;
                 entry.stuckPositions.bottom = true;
             }
@@ -122,7 +122,7 @@ export default class StickyObserver {
         // get left stuck
         const styleLeft = parseFloat(observedStyle.left);
         if (!isNaN(styleLeft)) {
-            if (observedRect.left <= contentRect.left + styleLeft) {
+            if (Math.floor(observedRect.left) <= Math.ceil(contentRect.left) + styleLeft) {
                 entry.isStuck = true;
                 entry.stuckPositions.left = true;
             }
@@ -130,7 +130,7 @@ export default class StickyObserver {
         // get right stuck
         const styleRight = parseFloat(observedStyle.right);
         if (!isNaN(styleRight)) {
-            if (observedRect.right >= contentRect.right - styleRight) {
+            if (Math.ceil(observedRect.right) >= Math.floor(contentRect.right) - styleRight) {
                 entry.isStuck = true;
                 entry.stuckPositions.right = true;
             }

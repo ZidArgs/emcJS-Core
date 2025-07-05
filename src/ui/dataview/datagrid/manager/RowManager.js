@@ -1,4 +1,5 @@
 import {debounce} from "../../../../util/Debouncer.js";
+import {isArrayOf} from "../../../../util/helper/CheckType.js";
 import {isEqual} from "../../../../util/helper/Comparator.js";
 import {deepClone} from "../../../../util/helper/DeepClone.js";
 import {getArrayMutations} from "../../../../util/helper/collection/ArrayMutations.js";
@@ -23,7 +24,7 @@ export default class RowManager extends EventTarget {
 
     #elementCache = new Map();
 
-    #order = [];
+    #sortOrder = [];
 
     #rowDataCache = new Map();
 
@@ -37,6 +38,8 @@ export default class RowManager extends EventTarget {
 
     #selectEnd = false;
 
+    #draggingRowEl;
+
     constructor(target, stickyObserver, cellCache, dataGridId) {
         if (!(target instanceof HTMLTableSectionElement)) {
             throw new TypeError("target must be of type HTMLTableSectionElement");
@@ -49,6 +52,35 @@ export default class RowManager extends EventTarget {
         this.#cellCache = cellCache;
         this.#target = target;
         this.#stickyObserver = stickyObserver;
+    }
+
+    get isDragging() {
+        return this.#draggingRowEl != null;
+    }
+
+    set sortOrder(value) {
+        if (!isArrayOf(value, (el) => typeof el === "string")) {
+            return;
+        }
+        const newOrder = value.filter((key) => this.#elements.has(key));
+        for (const [key] of this.#elements) {
+            if (!newOrder.includes(key)) {
+                newOrder.push(key);
+            }
+        }
+        const oldOrder = this.#sortOrder;
+        if (!isEqual(newOrder, oldOrder)) {
+            this.#sortOrder = newOrder;
+            this.#render();
+            const event = new Event("sort-change");
+            event.newOrder = newOrder;
+            event.oldOrder = oldOrder;
+            this.dispatchEvent(event);
+        }
+    }
+
+    get sortOrder() {
+        return [...this.#sortOrder];
     }
 
     set sortable(value) {
@@ -95,7 +127,7 @@ export default class RowManager extends EventTarget {
 
     purge() {
         this.#target.innerHTML = "";
-        this.#order = [];
+        this.#sortOrder = [];
         this.#elements.clear();
         this.#elementCache.clear();
         this.#rowDataCache.clear();
@@ -150,10 +182,7 @@ export default class RowManager extends EventTarget {
             }
         }
 
-        if (!isEqual(newOrder, this.#order)) {
-            this.#order = newOrder;
-            this.#render();
-        }
+        this.sortOrder = newOrder;
     }
 
     #getOrCreateElement(key) {
@@ -189,12 +218,18 @@ export default class RowManager extends EventTarget {
     composer(key) {
         const rowEl = document.createElement("tr");
         rowEl.addEventListener("dragstart", (event) => {
+            this.#draggingRowEl = rowEl;
             rowEl.classList.add("dragging");
             event.dataTransfer.dropEffect = "move";
             event.dataTransfer.setDragImage(DRAG_PREVIEW, 0, 0);
         });
         rowEl.addEventListener("dragend", () => {
+            this.#draggingRowEl = null;
             rowEl.classList.remove("dragging");
+            this.#updateSortOrder();
+        });
+        rowEl.addEventListener("dragover", (e) => {
+            this.#dragOverItem(e.currentTarget, e.clientY);
         });
 
         const cellManager = new CellManager(rowEl, this.#stickyObserver, this.#cellCache, this.#dataGridId);
@@ -222,7 +257,7 @@ export default class RowManager extends EventTarget {
         const children = this.#target.children;
         if (children.length > 0) {
             const currentOrder = [...children].map((el) => el.getAttribute("row-key") ?? "");
-            const keys = [...this.#order];
+            const keys = [...this.#sortOrder];
             const {changes} = getArrayMutations(currentOrder, keys);
             for (const {sequence} of changes) {
                 for (const key of sequence) {
@@ -251,7 +286,7 @@ export default class RowManager extends EventTarget {
             }
         } else {
             const els = [];
-            for (const key of this.#order) {
+            for (const key of this.#sortOrder) {
                 const el = this.#elements.get(key);
                 if (el != null) {
                     els.push(el);
@@ -261,5 +296,30 @@ export default class RowManager extends EventTarget {
         }
         this.dispatchEvent(new Event("afterrender"));
     });
+
+    #dragOverItem(draggingOverItem, cursorY) {
+        if (this.#draggingRowEl && draggingOverItem && draggingOverItem !== this.#draggingRowEl) {
+            const draggedBox = this.#draggingRowEl.getBoundingClientRect();
+            if (cursorY > draggedBox.bottom) {
+                const nextSibling = draggingOverItem.nextSibling;
+                if (nextSibling) {
+                    this.#target.insertBefore(this.#draggingRowEl, nextSibling);
+                } else {
+                    this.#target.appendChild(this.#draggingRowEl);
+                }
+            } else if (cursorY < draggedBox.top) {
+                this.#target.insertBefore(this.#draggingRowEl, draggingOverItem);
+            }
+        }
+    }
+
+    #updateSortOrder() {
+        const items = [...this.#target.querySelectorAll("tr")];
+        const sortOrder = [];
+        for (const item of items) {
+            sortOrder.push(item.getAttribute("row-key"));
+        }
+        this.sortOrder = sortOrder;
+    }
 
 }

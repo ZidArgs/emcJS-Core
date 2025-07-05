@@ -18,6 +18,14 @@ export default class Column extends CustomElement {
         return this.getAttribute("label");
     }
 
+    set hideLabel(value) {
+        this.setBooleanAttribute("hidelabel", value);
+    }
+
+    get hideLabel() {
+        return this.getBooleanAttribute("hidelabel");
+    }
+
     set type(value) {
         this.setAttribute("type", value);
     }

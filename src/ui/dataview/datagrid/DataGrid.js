@@ -139,21 +139,14 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
             this.#updateSelectionAfterRender();
             this.#applyCellFixes(this.#bodyEl);
         }));
-        /* --- */
-        this.#tableEl.addEventListener("move-row-up", (event) => {
+        this.#rowManager.addEventListener("sort-change", (event) => {
             event.stopPropagation();
-            event.preventDefault();
-            const {rowKey} = event.data;
-            const ev = new Event("move-row-up");
-            ev.data = {rowKey};
-            this.dispatchEvent(ev);
-        });
-        this.#tableEl.addEventListener("move-row-down", (event) => {
-            event.stopPropagation();
-            event.preventDefault();
-            const {rowKey} = event.data;
-            const ev = new Event("move-row-down");
-            ev.data = {rowKey};
+            const {
+                newOrder, oldOrder
+            } = event;
+            const ev = new Event("sort-change");
+            ev.newOrder = newOrder;
+            ev.oldValue = oldOrder;
             this.dispatchEvent(ev);
         });
         /* --- */
@@ -270,6 +263,19 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
             const ev = new Event("unsort");
             ev.data = {columnName};
             this.dispatchEvent(ev);
+        });
+        /* --- */
+        this.addEventListener("dragover", (e) => {
+            if (this.#rowManager.isDragging) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        });
+        this.addEventListener("dragenter", (e) => {
+            if (this.#rowManager.isDragging) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
         });
     }
 

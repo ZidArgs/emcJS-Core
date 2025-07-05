@@ -404,7 +404,12 @@ export default class CellManager extends EventTarget {
             this.#target.append(...els);
         }
         // add last cell
-        this.#target.append(this.#lastCellEl);
+        const lastBeforeSticky = this.#target.querySelector(".cell:nth-last-child(1 of .cell:not(.fixed-cell-end))");
+        if (lastBeforeSticky) {
+            lastBeforeSticky.after(this.#lastCellEl);
+        } else {
+            this.#target.append(this.#lastCellEl);
+        }
         // add select cell
         if (this.#selectable) {
             if (this.#selectEnd) {

@@ -1,11 +1,10 @@
 <div class="header">
     <emc-input-search id="search" nohover></emc-input-search>
 </div>
-<emc-datagrid id="grid">
-    <emc-datagrid-column name="delete" label="" type="button" width="50" text="" icon="✖" tooltip="Delete" action="delete"></emc-datagrid-column>
-    <emc-datagrid-column id="sort-column" name="sort" label="" type="button-sorter" hidden></emc-datagrid-column>
-    <emc-datagrid-column name="key" label="Key" type="string" width="200"></emc-datagrid-column>
+<emc-datagrid id="grid" sortable>
+    <emc-datagrid-column name="key" label="Key" type="string" width="200" fixed="start"></emc-datagrid-column>
     <slot></slot>
+    <emc-datagrid-column name="delete" label="" type="button" width="50" text="" icon="✖" tooltip="Delete" action="delete" fixed="end"></emc-datagrid-column>
 </emc-datagrid>
 <emc-form-row class="footer" align="end">
     <emc-button id="add" text="Add entry" icon="+"></emc-button>

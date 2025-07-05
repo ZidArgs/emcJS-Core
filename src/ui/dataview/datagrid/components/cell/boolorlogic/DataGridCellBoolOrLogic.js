@@ -5,6 +5,8 @@ import "../../../../../form/element/input/action/ActionInput.js";
 import TPL from "./DataGridCellBoolOrLogic.js.html" assert {type: "html"};
 import STYLE from "./DataGridCellBoolOrLogic.js.css" assert {type: "css"};
 
+const BOOL_OR_LOGIC_MODALS = new Map();
+
 export default class DataGridCellBoolOrLogic extends DataGridCell {
 
     #valueEl;
@@ -13,7 +15,7 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
 
     #inputEventManager;
 
-    #boolOrLogicModal = new BoolOrLogicModal();
+    #boolOrLogicModal;
 
     constructor(dataGridId) {
         super(dataGridId);
@@ -29,14 +31,16 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
         });
         this.#inputEl.setValueRenderer((value) => this.#getRenderValue(value));
         this.#inputEl.addEventListener("action", () => {
-            this.#boolOrLogicModal.value = this.value;
-            this.#boolOrLogicModal.onsubmit = (event) => {
-                this.value = this.#boolOrLogicModal.value;
-                this.#onInput();
-                event.stopPropagation();
-                event.preventDefault();
-            };
-            this.#boolOrLogicModal.show();
+            if (this.#boolOrLogicModal != null) {
+                this.#boolOrLogicModal.value = this.value;
+                this.#boolOrLogicModal.onsubmit = (event) => {
+                    this.value = this.#boolOrLogicModal.value;
+                    this.#onInput();
+                    event.stopPropagation();
+                    event.preventDefault();
+                };
+                this.#boolOrLogicModal.show();
+            }
         });
     }
 
@@ -53,22 +57,6 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
         this.dispatchEvent(ev);
     }
 
-    addOperatorGroup(...groupList) {
-        this.#boolOrLogicModal.addOperatorGroup(...groupList);
-    }
-
-    removeOperatorGroup(...groupList) {
-        this.#boolOrLogicModal.removeOperatorGroup(...groupList);
-    }
-
-    set name(value) {
-        this.#boolOrLogicModal.name = value;
-    }
-
-    get name() {
-        return this.#boolOrLogicModal.name;
-    }
-
     set value(val) {
         this.setJSONAttribute("value", val);
     }
@@ -78,7 +66,7 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "editable", "disabled", "readonly", "row-name"];
+        return [...super.observedAttributes, "editable", "disabled", "readonly", "row-key"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -102,11 +90,18 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
                         this.#inputEl.removeAttribute("readonly");
                     }
                 } break;
-                case "row-name": {
-                    this.#inputEl.setModalRefName(newValue);
+                case "row-key": {
+                    // this.#inputEl.setModalRefName(newValue);
                 } break;
                 case "col-name": {
-                    this.#inputEl.name = `${this.dataGridId}-${newValue}`;
+                    if (newValue) {
+                        const inputId = `${this.dataGridId}-${this.columnName}`;
+                        this.#inputEl.name = inputId;
+                        this.#boolOrLogicModal = this.#getModal(inputId);
+                    } else {
+                        this.#inputEl.name = "";
+                        this.#boolOrLogicModal = null;
+                    }
                 } break;
             }
         }
@@ -126,6 +121,18 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
             return "False";
         } else {
             return "Logic";
+        }
+    }
+
+    #getModal(modalId) {
+        if (modalId) {
+            if (BOOL_OR_LOGIC_MODALS.has(modalId)) {
+                return BOOL_OR_LOGIC_MODALS.get(modalId);
+            }
+            const modal = new BoolOrLogicModal();
+            BOOL_OR_LOGIC_MODALS.set(modalId, modal);
+            modal.name = modalId;
+            return modal;
         }
     }
 

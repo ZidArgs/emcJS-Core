@@ -109,11 +109,6 @@
     tr {
         position: relative;
         z-index: 0;
-
-        &.dragging {
-            box-shadow: 0 3px 9px 2px #00000069;
-            z-index: 1;
-        }
     }
 
     .cell {
@@ -183,6 +178,10 @@
 
             & + .cell {
                 border-left: none;
+
+                &.last-cell {
+                    box-shadow: none;
+                }
             }
         }
 
@@ -224,11 +223,6 @@
         &.last-cell:not(:first-child) {
             box-shadow: inset var(--datagrid-header-seperator-color, #ffffff) var(--datagrid-column-seperator-width, 2px) 0px 0px;
         }
-
-        #content {
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
     }
 }
 
@@ -262,6 +256,8 @@
 }
 
 #body {
+    position: relative;
+
     .cell {
         padding: 0;
         color: var(--datagrid-text-color, #000000);
@@ -291,7 +287,34 @@
         }
     }
 
-    tr:hover .cell {
+    tr {
+        outline-style: solid;
+        outline-width: var(--datagrid-row-seperator-width, 1px);
+        outline-color: var(--datagrid-row-seperator-color, #696969);
+
+        &.dragging {
+            box-shadow: 0 3px 9px 2px #00000069;
+            z-index: 1;
+
+            & ~ tr {
+                top: var(--datagrid-row-seperator-width, 1px);
+            }
+
+            .cell {
+                color: var(--datagrid-row-hover-text-color, #000000);
+                background-color: var(--datagrid-row-hover-back-color, #d6f7fd);
+                background-image: var(--datagrid-row-hover-back-image, none);
+            }
+        }
+
+        &:not(:last-child):not(.dragging) .cell {
+            border-bottom-style: solid;
+            border-bottom-width: var(--datagrid-row-seperator-width, 1px);
+            border-bottom-color: var(--datagrid-row-seperator-color, #696969);
+        }
+    }
+
+    &:not(:has(tr.dragging)) tr:hover .cell {
         color: var(--datagrid-row-hover-text-color, #000000);
         background-color: var(--datagrid-row-hover-back-color, #d6f7fd);
         background-image: var(--datagrid-row-hover-back-image, none);
@@ -299,25 +322,6 @@
         &.sort-cell div {
             background-image: radial-gradient(10px 10px at 50% 50%, var(--datagrid-row-hover-sort-grabber-indicator-color, #bbbbbb) 0%, var(--datagrid-row-hover-sort-grabber-indicator-color, #bbbbbb) 17%, #00000000 30%);
         }
-    }
-
-    tr:not(:last-child) .cell {
-        border-bottom-style: solid;
-        border-bottom-width: var(--datagrid-row-seperator-width, 1px);
-        border-bottom-color: var(--datagrid-row-seperator-color, #696969);
-    }
-
-    tr:not(:last-child).dragging .cell {
-        border-bottom-style: solid;
-        border-bottom-width: 1px;
-        border-bottom-color: #00000000;
-    }
-
-    tr:not(:first-child),
-    tr.dragging {
-        outline-style: solid;
-        outline-width: var(--datagrid-row-seperator-width, 1px);
-        outline-color: var(--datagrid-row-seperator-color, #696969);
     }
 }
 

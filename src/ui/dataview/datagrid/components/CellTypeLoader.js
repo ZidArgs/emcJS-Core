@@ -1,7 +1,6 @@
 import "./cell/boolean/DataGridCellBoolean.js";
 import "./cell/boolorlogic/DataGridCellBoolOrLogic.js";
 import "./cell/button/DataGridCellButton.js";
-import "./cell/buttonsorter/DataGridCellButtonSorter.js";
 import "./cell/date/DataGridCellDate.js";
 import "./cell/datetime/DataGridCellDateTime.js";
 import "./cell/i18n/DataGridCellI18n.js";

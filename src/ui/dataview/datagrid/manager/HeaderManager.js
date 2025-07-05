@@ -200,11 +200,12 @@ export default class HeaderManager extends EventTarget {
 
     mutator(headerCellEl, name, columnData) {
         const {
-            label, fixed
+            label, hidelabel, fixed
         } = columnData;
 
         headerCellEl.innerText = label ?? name;
         headerCellEl.title = label ?? name;
+        headerCellEl.hidelabel = hidelabel;
 
         if (fixed === "start") {
             headerCellEl.classList.add("fixed-cell");
@@ -280,7 +281,12 @@ export default class HeaderManager extends EventTarget {
             this.#target.append(...els);
         }
         // add last cell
-        this.#target.append(this.#lastHeaderCellEl);
+        const lastBeforeSticky = this.#target.querySelector(".cell:nth-last-child(1 of .cell:not(.fixed-cell-end))");
+        if (lastBeforeSticky) {
+            lastBeforeSticky.after(this.#lastHeaderCellEl);
+        } else {
+            this.#target.append(this.#lastHeaderCellEl);
+        }
         // add select cell
         if (this.#selectable) {
             if (this.#selectEnd) {

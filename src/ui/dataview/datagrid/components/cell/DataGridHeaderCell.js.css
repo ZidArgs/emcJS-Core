@@ -7,21 +7,37 @@
     user-select: none;
 }
 
-#content {
+.container {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 2.5em;
-    white-space: pre;
-    font-weight: bold;
-    line-height: normal;
+    margin: 0px 4px;
     overflow: hidden;
 }
 
+#content {
+    position: relative;
+    display: inline-block;
+    font-weight: bold;
+    line-height: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+:host([hidelabel]:not([hidelabel="false"])) .container {
+    display: none;
+}
+
 :host([sortable]:not([sortable="false"])) {
-    text-decoration: underline;
     cursor: pointer;
+}
+
+:host([sortable]:not([sortable="false"])) .container {
+    margin: 0px 24px;
+    text-decoration: underline;
 }
 
 #sort-indicator {

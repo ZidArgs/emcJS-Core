@@ -49,12 +49,16 @@ function deepCloneItem(item, refs = new WeakMap()) {
 }
 
 function deepCloneObject(item, refs) {
-    if (NODE_SUPPORTED && item instanceof Node) {
-        const result = item.cloneNode(true);
+    if (typeof item.clone === "function") {
+        const result = item.clone();
         refs.set(item, result);
         return result;
-    } else if (typeof item.clone === "function") {
-        const result = item.clone();
+    } else if (typeof item.serialize === "function") {
+        const result = item.serialize();
+        refs.set(item, result);
+        return result;
+    } else if (NODE_SUPPORTED && item instanceof Node) {
+        const result = item.cloneNode(true);
         refs.set(item, result);
         return result;
     } else if (item instanceof Map) {
@@ -85,10 +89,6 @@ function deepCloneObject(item, refs) {
             const el = item[i];
             result.push(deepCloneItem(el, refs));
         }
-        return result;
-    } else if (typeof item.serialize === "function") {
-        const result = item.serialize();
-        refs.set(item, result);
         return result;
     }
     const result = {};
