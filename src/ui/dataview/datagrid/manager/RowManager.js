@@ -301,14 +301,9 @@ export default class RowManager extends EventTarget {
         if (this.#draggingRowEl && draggingOverItem && draggingOverItem !== this.#draggingRowEl) {
             const draggedBox = this.#draggingRowEl.getBoundingClientRect();
             if (cursorY > draggedBox.bottom) {
-                const nextSibling = draggingOverItem.nextSibling;
-                if (nextSibling) {
-                    this.#target.insertBefore(this.#draggingRowEl, nextSibling);
-                } else {
-                    this.#target.appendChild(this.#draggingRowEl);
-                }
+                draggingOverItem.after(this.#draggingRowEl);
             } else if (cursorY < draggedBox.top) {
-                this.#target.insertBefore(this.#draggingRowEl, draggingOverItem);
+                draggingOverItem.before(this.#draggingRowEl);
             }
         }
     }

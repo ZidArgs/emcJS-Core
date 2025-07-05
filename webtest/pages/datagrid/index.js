@@ -136,7 +136,7 @@ new RemoteDataProvider(gridRemoteLargeEl, "/api/data/large", {
 });
 gridRemoteLargeEl.addEventListener("sort-change", (event) => {
     const {
-        value, oldValue
+        newOrder, oldOrder
     } = event;
-    console.log("sort change", value, oldValue);
+    console.log("sort change", newOrder, oldOrder);
 });

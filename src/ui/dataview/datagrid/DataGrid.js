@@ -146,7 +146,7 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
             } = event;
             const ev = new Event("sort-change");
             ev.newOrder = newOrder;
-            ev.oldValue = oldOrder;
+            ev.oldOrder = oldOrder;
             this.dispatchEvent(ev);
         });
         /* --- */
