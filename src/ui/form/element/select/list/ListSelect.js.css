@@ -73,6 +73,7 @@
 }
 
 .multi-select {
+    position: relative;
     display: none;
     justify-content: center;
     align-items: center;
@@ -102,34 +103,43 @@
     border-color: var(--datagrid-select-cell-checked-border-color, #000000);
 }
 
-&:indeterminate {
+.multi-select:indeterminate {
     color: var(--datagrid-select-cell-indeterminate-text-color, #505050);
     background-color: var(--datagrid-select-cell-indeterminate-back-color, #ffffff);
     border-color: var(--datagrid-select-cell-indeterminate-border-color, #000000);
 }
 
 .multi-select::before {
+    position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    height: 100%;
-    font-size: 1.1em;
-    line-height: 1em;
-    font-family: monospace;
-    font-weight: bold;
-    content: " ";
 }
 
 .multi-select:checked::before {
+    line-height: 1.2em;
+    font-weight: bold;
     content: "✓";
 }
 
 .multi-select:indeterminate::before {
-    color: var(--datagrid-select-cell-indeterminate-back-color, #ffffff);
+    width: 70%;
+    height: 70%;
     background-color: var(--datagrid-select-cell-indeterminate-text-color, #000000);
     border-radius: 50%;
-    content: "•";
+    content: "";
+}
+
+.multi-select:indeterminate::after {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40%;
+    height: 40%;
+    background-color: var(--datagrid-select-cell-indeterminate-back-color, #ffffff);
+    border-radius: 50%;
+    content: "";
 }
 
 :host([selectend]:not([selectend="false"])) .multi-select {

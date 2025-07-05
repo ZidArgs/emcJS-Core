@@ -1,8 +1,8 @@
-import "../../polyfills/adoptedStyleSheet.polyfill.js";
+import "../../../polyfills/adoptedStyleSheet.polyfill.js";
 
 const INDEX = new Map();
 
-export default class GlobalStyle {
+export default class CSSTemplate {
 
     #stylesheets;
 
@@ -31,7 +31,7 @@ export default class GlobalStyle {
     }
 
     static register(ref, style) {
-        if (style instanceof GlobalStyle) {
+        if (style instanceof CSSTemplate) {
             INDEX.set(ref, style);
         }
     }

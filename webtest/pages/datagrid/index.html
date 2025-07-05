@@ -56,7 +56,7 @@
             <emc-datagrid-column name="i18n" type="i18n" editable width="400"></emc-datagrid-column>
             <emc-datagrid-column name="A" label="" type="number" width="100" fixed="start"></emc-datagrid-column>
             <emc-datagrid-column name="B" label="Product" type="string" width="200" fixed="start"></emc-datagrid-column>
-            <emc-datagrid-column name="C" label="Price" type="currency" decimals="2" postfix=" €" width="100" negative-color="red"></emc-datagrid-column>
+            <emc-datagrid-column name="C" label="Price" type="currency" decimals="2" postfix=" €" width="100" fixed="end" negative-color="red"></emc-datagrid-column>
             <emc-datagrid-column name="E" label="Since" type="datetime" width="300" fixed="end"></emc-datagrid-column>
             <emc-datagrid-column name="D" type="boolorlogic" editable width="300"></emc-datagrid-column>
         </emc-datagrid>
@@ -68,8 +68,8 @@
             <emc-datagrid-column name="C" label="Price" type="currency" decimals="2" postfix=" €" width="100" negative-color="red"></emc-datagrid-column>
             <emc-datagrid-column name="D" type="boolean" editable width="70"></emc-datagrid-column>
             <emc-datagrid-column name="E" label="Since" type="datetime" editable width="300"></emc-datagrid-column>
-            <emc-datagrid-column name="F" label="Since" type="date" editable width="200"></emc-datagrid-column>
-            <emc-datagrid-column name="G" label="Since" type="time" editable width="200"></emc-datagrid-column>
+            <emc-datagrid-column name="F" label="Since" type="date" editable width="200" fixed="end"></emc-datagrid-column>
+            <emc-datagrid-column name="G" label="Since" type="time" editable width="200" fixed="end"></emc-datagrid-column>
         </emc-datagrid>
 
         <emc-datagrid id="grid-remote-simple" style="width: 1000px; margin-bottom: 2px;" selectable selectend allowdeselect>

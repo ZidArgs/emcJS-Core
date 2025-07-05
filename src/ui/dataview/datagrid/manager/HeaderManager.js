@@ -23,6 +23,10 @@ export default class HeaderManager extends EventTarget {
 
     #selectHeaderCellEl;
 
+    #sortable = false;
+
+    #selectable = false;
+
     #selectEnd = false;
 
     #lastHeaderCellEl;
@@ -60,13 +64,37 @@ export default class HeaderManager extends EventTarget {
         this.#stickyObserverManager.observe(this.#selectHeaderCellEl);
     }
 
+    set sortable(value) {
+        value = !!value;
+        if (this.#sortable !== value) {
+            this.#sortable = value;
+            this.#renderSpecialCells();
+        }
+    }
+
+    get sortable() {
+        return this.#sortable;
+    }
+
+    set selectable(value) {
+        value = !!value;
+        if (this.#selectable !== value) {
+            this.#selectable = value;
+            this.#renderSpecialCells();
+        }
+    }
+
+    get selectable() {
+        return this.#selectable;
+    }
+
     set selectEnd(value) {
         value = !!value;
         if (this.#selectEnd !== value) {
             this.#selectEnd = value;
             this.#selectHeaderCellEl.classList.toggle("fixed-cell-start", !value);
             this.#selectHeaderCellEl.classList.toggle("fixed-cell-end", value);
-            this.#render();
+            this.#renderSpecialCells();
         }
     }
 
@@ -192,6 +220,7 @@ export default class HeaderManager extends EventTarget {
         // remove special cells
         this.#lastHeaderCellEl.remove();
         this.#selectHeaderCellEl.remove();
+        this.#sortHeaderCellEl.remove();
         /* --- */
         const children = this.#target.children;
         if (children.length > 0) {
@@ -250,14 +279,41 @@ export default class HeaderManager extends EventTarget {
             }
             this.#target.append(...els);
         }
-        // add special cells
+        // add last cell
         this.#target.append(this.#lastHeaderCellEl);
-        if (this.#selectEnd) {
-            this.#target.append(this.#selectHeaderCellEl);
-        } else {
-            this.#target.prepend(this.#selectHeaderCellEl);
+        // add select cell
+        if (this.#selectable) {
+            if (this.#selectEnd) {
+                this.#target.append(this.#selectHeaderCellEl);
+            } else {
+                this.#target.prepend(this.#selectHeaderCellEl);
+            }
         }
-        this.#target.prepend(this.#sortHeaderCellEl);
+        // add sort cell
+        if (this.#sortable) {
+            this.#target.prepend(this.#sortHeaderCellEl);
+        }
+        this.dispatchEvent(new Event("afterrender"));
+    });
+
+    #renderSpecialCells = debounce(() => {
+        this.dispatchEvent(new Event("beforerender"));
+        // add select cell
+        if (this.#selectable) {
+            if (this.#selectEnd) {
+                this.#target.append(this.#selectHeaderCellEl);
+            } else {
+                this.#target.prepend(this.#selectHeaderCellEl);
+            }
+        } else {
+            this.#selectHeaderCellEl.remove();
+        }
+        // add sort cell
+        if (this.#sortable) {
+            this.#target.prepend(this.#sortHeaderCellEl);
+        } else {
+            this.#sortHeaderCellEl.remove();
+        }
         this.dispatchEvent(new Event("afterrender"));
     });
 

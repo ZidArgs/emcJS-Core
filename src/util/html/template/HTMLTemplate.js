@@ -15,7 +15,7 @@ function createTemplate(src) {
     return buf;
 }
 
-export default class Template {
+export default class HTMLTemplate {
 
     #template;
 
@@ -38,7 +38,7 @@ export default class Template {
     }
 
     static generate(template, child) {
-        if (template instanceof Template) {
+        if (template instanceof HTMLTemplate) {
             return template.generate(child);
         }
         if (!(template instanceof HTMLTemplateElement)) {

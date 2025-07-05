@@ -47,6 +47,10 @@ export default class CellManager extends EventTarget {
 
     #selectCellEl;
 
+    #sortable = false;
+
+    #selectable = false;
+
     #selectEnd = false;
 
     #selectCheckboxEl;
@@ -65,11 +69,12 @@ export default class CellManager extends EventTarget {
         this.#cellCache = cellCache;
         this.#target = target;
 
-        this.#sortCellEl = document.createElement("th");
+        this.#sortCellEl = document.createElement("td");
         this.#sortCellEl.classList.add("cell");
         this.#sortCellEl.classList.add("sort-cell");
         this.#sortCellEl.classList.add("fixed-cell");
         this.#sortCellEl.classList.add("fixed-cell-start");
+        this.#sortCellEl.setAttribute("draggable", true);
         this.#sortCellEl.append(document.createElement("div"));
 
         this.#selectCellEl = document.createElement("td");
@@ -102,13 +107,37 @@ export default class CellManager extends EventTarget {
         this.#stickyObserverManager.observe(this.#selectCellEl);
     }
 
+    set sortable(value) {
+        value = !!value;
+        if (this.#sortable !== value) {
+            this.#sortable = value;
+            this.#renderSpecialCells();
+        }
+    }
+
+    get sortable() {
+        return this.#sortable;
+    }
+
+    set selectable(value) {
+        value = !!value;
+        if (this.#selectable !== value) {
+            this.#selectable = value;
+            this.#renderSpecialCells();
+        }
+    }
+
+    get selectable() {
+        return this.#selectable;
+    }
+
     set selectEnd(value) {
         value = !!value;
         if (this.#selectEnd !== value) {
             this.#selectEnd = value;
             this.#selectCellEl.classList.toggle("fixed-cell-start", !value);
             this.#selectCellEl.classList.toggle("fixed-cell-end", value);
-            this.#render();
+            this.#renderSpecialCells();
         }
     }
 
@@ -315,6 +344,7 @@ export default class CellManager extends EventTarget {
         // remove special cells
         this.#lastCellEl.remove();
         this.#selectCellEl.remove();
+        this.#sortCellEl.remove();
         /* --- */
         const children = this.#target.children;
         if (children.length > 0) {
@@ -373,15 +403,42 @@ export default class CellManager extends EventTarget {
             }
             this.#target.append(...els);
         }
-        // add special cells
+        // add last cell
         this.#target.append(this.#lastCellEl);
-        if (this.#selectEnd) {
-            this.#target.append(this.#selectCellEl);
-        } else {
-            this.#target.prepend(this.#selectCellEl);
+        // add select cell
+        if (this.#selectable) {
+            if (this.#selectEnd) {
+                this.#target.append(this.#selectCellEl);
+            } else {
+                this.#target.prepend(this.#selectCellEl);
+            }
         }
-        this.#target.prepend(this.#sortCellEl);
+        // add sort cell
+        if (this.#sortable) {
+            this.#target.prepend(this.#sortCellEl);
+        }
         // notify
+        this.dispatchEvent(new Event("afterrender"));
+    });
+
+    #renderSpecialCells = debounce(() => {
+        this.dispatchEvent(new Event("beforerender"));
+        // add select cell
+        if (this.#selectable) {
+            if (this.#selectEnd) {
+                this.#target.append(this.#selectCellEl);
+            } else {
+                this.#target.prepend(this.#selectCellEl);
+            }
+        } else {
+            this.#selectCellEl.remove();
+        }
+        // add sort cell
+        if (this.#sortable) {
+            this.#target.prepend(this.#sortCellEl);
+        } else {
+            this.#sortCellEl.remove();
+        }
         this.dispatchEvent(new Event("afterrender"));
     });
 

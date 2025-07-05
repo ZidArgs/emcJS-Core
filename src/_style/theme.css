@@ -456,6 +456,9 @@ all; top_bottom right_left; top right bottom left
     --datagrid-disabled-footer-select-cell-back-color: var(--datagrid-disabled-select-cell-back-color);
     --datagrid-disabled-footer-select-cell-border-color: var(--datagrid-disabled-select-cell-border-color);
 
+    --datagrid-sort-grabber-indicator-color: #bbbbbb;
+    --datagrid-row-hover-sort-grabber-indicator-color: var(--datagrid-sort-grabber-indicator-color);
+
     /* === datalist === */
     --datalist-back-color: #ffffff;
     --datalist-back-image: none;

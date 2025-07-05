@@ -5,6 +5,10 @@ import {getArrayMutations} from "../../../../util/helper/collection/ArrayMutatio
 import CellCache from "../data/CellCache.js";
 import CellManager from "./CellManager.js";
 
+const DRAG_PREVIEW = document.createElement("div");
+DRAG_PREVIEW.style.display = "none";
+document.body.append(DRAG_PREVIEW);
+
 export default class RowManager extends EventTarget {
 
     #dataGridId;
@@ -27,6 +31,10 @@ export default class RowManager extends EventTarget {
 
     #cellManagers = new Map();
 
+    #sortable = false;
+
+    #selectable = false;
+
     #selectEnd = false;
 
     constructor(target, stickyObserver, cellCache, dataGridId) {
@@ -41,6 +49,34 @@ export default class RowManager extends EventTarget {
         this.#cellCache = cellCache;
         this.#target = target;
         this.#stickyObserver = stickyObserver;
+    }
+
+    set sortable(value) {
+        value = !!value;
+        if (this.#sortable !== value) {
+            this.#sortable = value;
+            for (const [, manager] of this.#cellManagers) {
+                manager.sortable = value;
+            }
+        }
+    }
+
+    get sortable() {
+        return this.#sortable;
+    }
+
+    set selectable(value) {
+        value = !!value;
+        if (this.#selectable !== value) {
+            this.#selectable = value;
+            for (const [, manager] of this.#cellManagers) {
+                manager.selectable = value;
+            }
+        }
+    }
+
+    get selectable() {
+        return this.#selectable;
     }
 
     set selectEnd(value) {
@@ -152,8 +188,18 @@ export default class RowManager extends EventTarget {
 
     composer(key) {
         const rowEl = document.createElement("tr");
+        rowEl.addEventListener("dragstart", (event) => {
+            rowEl.classList.add("dragging");
+            event.dataTransfer.dropEffect = "move";
+            event.dataTransfer.setDragImage(DRAG_PREVIEW, 0, 0);
+        });
+        rowEl.addEventListener("dragend", () => {
+            rowEl.classList.remove("dragging");
+        });
 
         const cellManager = new CellManager(rowEl, this.#stickyObserver, this.#cellCache, this.#dataGridId);
+        cellManager.sortable = this.#sortable;
+        cellManager.selectable = this.#selectable;
         cellManager.selectEnd = this.#selectEnd;
         cellManager.addEventListener("beforerender", () => {
             this.dispatchEvent(new Event("beforerender"));

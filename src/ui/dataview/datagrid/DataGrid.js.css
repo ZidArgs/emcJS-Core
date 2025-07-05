@@ -109,29 +109,51 @@
     tr {
         position: relative;
         z-index: 0;
+
+        &.dragging {
+            box-shadow: 0 3px 9px 2px #00000069;
+            z-index: 1;
+        }
     }
 
     .cell {
+        position: relative;
+        box-sizing: content-box;
         min-width: 50px;
+        padding: 0;
 
         &.select-cell {
-            width: 40px;
-            min-width: 40px;
-            max-width: 40px;
+            width: 36px;
+            min-width: 36px;
+            max-width: 36px;
         }
 
         &.sort-cell {
-            width: 40px;
-            min-width: 40px;
-            max-width: 40px;
-            border-right-style: solid;
-            border-right-width: var(--datagrid-column-seperator-width, 2px);
+            width: 30px;
+            min-width: 30px;
+            max-width: 30px;
         }
 
         &.last-cell {
             padding: 0px;
             width: 100%;
             min-width: 0px;
+        }
+
+        &.fixed-cell {
+            position: sticky;
+
+            &.stuck {
+                z-index: 2;
+            }
+
+            &.fixed-cell-start {
+                left: 0px;
+            }
+
+            &.fixed-cell-end {
+                right: 0px;
+            }
         }
     }
 
@@ -142,6 +164,17 @@
         .cell:not(:first-child):not(.last-cell) {
             border-left-style: solid;
             border-left-width: var(--datagrid-column-seperator-width, 2px);
+        }
+
+        .cell.fixed-cell-end:not(:nth-last-child(1 of .fixed-cell-end)):after {
+            position: absolute;
+            display: block;
+            top: 0px;
+            right: -2px;
+            width: 4px;
+            height: 100%;
+            background-color: inherit;
+            content: " ";
         }
 
         .cell.fixed-cell:nth-last-child(1 of .fixed-cell-start.stuck) {
@@ -158,9 +191,7 @@
             border-left-width: var(--datagrid-fixed-column-seperator-width, 4px);
         }
 
-        &.last-cell,
-        &:first-child,
-        .cell.fixed-cell:nth-child(2 of .fixed-cell-start.stuck) {
+        &.last-cell {
             border-left: none;
         }
     }
@@ -181,8 +212,6 @@
         background-image: var(--datagrid-header-back-image, none);
         border-left-color: var(--datagrid-header-seperator-color, #ffffff);
         border-right-color: var(--datagrid-header-seperator-color, #ffffff);
-        overflow: hidden;
-        text-overflow: ellipsis;
 
         &.fixed-cell:nth-last-child(1 of .fixed-cell-start.stuck) {
             border-right-color: var(--datagrid-fixed-header-seperator-color, #afafaf);
@@ -194,6 +223,11 @@
 
         &.last-cell:not(:first-child) {
             box-shadow: inset var(--datagrid-header-seperator-color, #ffffff) var(--datagrid-column-seperator-width, 2px) 0px 0px;
+        }
+
+        #content {
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     }
 }
@@ -207,8 +241,6 @@
         background-image: var(--datagrid-footer-back-image, none);
         border-left-color: var(--datagrid-footer-seperator-color, #ffffff);
         border-right-color: var(--datagrid-footer-seperator-color, #ffffff);
-        overflow: hidden;
-        text-overflow: ellipsis;
 
         &.fixed-cell:nth-last-child(1 of .fixed-cell-start.stuck) {
             border-right-color: var(--datagrid-fixed-footer-seperator-color, #afafaf);
@@ -221,6 +253,11 @@
         &.last-cell:not(:first-child) {
             box-shadow: inset var(--datagrid-footer-seperator-color, #ffffff) var(--datagrid-column-seperator-width, 2px) 0px 0px;
         }
+
+        #content {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     }
 }
 
@@ -232,7 +269,14 @@
         background-image: var(--datagrid-back-image, none);
         border-left-color: var(--datagrid-column-seperator-color, #ffffff);
         border-right-color: var(--datagrid-column-seperator-color, #ffffff);
-        overflow: hidden;
+
+        &.sort-cell {
+            cursor: grab;
+
+            div {
+                background-image: radial-gradient(10px 10px at 50% 50%, var(--datagrid-sort-grabber-indicator-color, #bbbbbb) 0%, var(--datagrid-sort-grabber-indicator-color, #bbbbbb) 17%, #00000000 30%);
+            }
+        }
 
         &.fixed-cell:nth-last-child(1 of .fixed-cell-start.stuck) {
             border-right-color: var(--datagrid-fixed-column-seperator-color, #afafaf);
@@ -251,6 +295,10 @@
         color: var(--datagrid-row-hover-text-color, #000000);
         background-color: var(--datagrid-row-hover-back-color, #d6f7fd);
         background-image: var(--datagrid-row-hover-back-image, none);
+
+        &.sort-cell div {
+            background-image: radial-gradient(10px 10px at 50% 50%, var(--datagrid-row-hover-sort-grabber-indicator-color, #bbbbbb) 0%, var(--datagrid-row-hover-sort-grabber-indicator-color, #bbbbbb) 17%, #00000000 30%);
+        }
     }
 
     tr:not(:last-child) .cell {
@@ -259,26 +307,17 @@
         border-bottom-color: var(--datagrid-row-seperator-color, #696969);
     }
 
-    tr:not(:first-child) {
+    tr:not(:last-child).dragging .cell {
+        border-bottom-style: solid;
+        border-bottom-width: 1px;
+        border-bottom-color: #00000000;
+    }
+
+    tr:not(:first-child),
+    tr.dragging {
         outline-style: solid;
         outline-width: var(--datagrid-row-seperator-width, 1px);
         outline-color: var(--datagrid-row-seperator-color, #696969);
-    }
-}
-
-.fixed-cell {
-    position: sticky;
-
-    &.stuck {
-        z-index: 2;
-    }
-
-    &.fixed-cell-start {
-        left: 0px;
-    }
-
-    &.fixed-cell-end {
-        right: 0px;
     }
 }
 
@@ -337,24 +376,18 @@
     width: 40px;
     min-width: 40px;
     max-width: 40px;
+    --dot-size: 0.5em;
 
     div {
         position: relative;
-        display: block;
-        width: 16px;
-        height: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: calc(2 * var(--dot-size));
+        height: calc(3 * var(--dot-size));
         margin: auto;
-        margin-left: 10px;
-        background: linear-gradient(var(--datagrid-text-color, #000000) 0%,
-                var(--datagrid-text-color, #000000) 20%,
-                #00000000 20%,
-                #00000000 40%,
-                var(--datagrid-text-color, #000000) 40%,
-                var(--datagrid-text-color, #000000) 60%,
-                #00000000 60%,
-                #00000000 80%,
-                var(--datagrid-text-color, #000000) 80%,
-                var(--datagrid-text-color, #000000) 100%);
+        background-size: var(--dot-size) var(--dot-size);
+        background-position: 0px 0px;
     }
 }
 
@@ -364,6 +397,7 @@
     text-align: center;
 
     input[type="checkbox"] {
+        position: relative;
         display: flex;
         box-sizing: border-box;
         justify-content: center;
@@ -400,38 +434,38 @@
         }
 
         &::before {
+            position: absolute;
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 100%;
-            height: 100%;
-            font-size: 1.1em;
-            line-height: 1em;
-            font-family: monospace;
-            font-weight: bold;
-            content: " ";
         }
 
         &:checked::before {
-            font-size: 1em;
+            line-height: 1.2em;
+            font-weight: bold;
             content: "✓";
         }
 
         &:indeterminate::before {
-            color: var(--datagrid-select-cell-indeterminate-back-color, #ffffff);
+            width: 70%;
+            height: 70%;
             background-color: var(--datagrid-select-cell-indeterminate-text-color, #000000);
             border-radius: 50%;
-            content: "•";
+            content: "";
+        }
+
+        &:indeterminate::after {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40%;
+            height: 40%;
+            background-color: var(--datagrid-select-cell-indeterminate-back-color, #ffffff);
+            border-radius: 50%;
+            content: "";
         }
     }
-}
-
-.select-cell.fixed-cell.fixed-cell-start input[type="checkbox"] {
-    margin-left: 7px;
-}
-
-.select-cell.fixed-cell.fixed-cell-end input[type="checkbox"] {
-    margin-right: 7px;
 }
 
 #head .select-cell input[type="checkbox"] {

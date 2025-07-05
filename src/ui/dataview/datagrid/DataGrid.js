@@ -76,6 +76,10 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
         this.#onSlotChange();
     });
 
+    #leftFixes = [];
+
+    #rightFixes = [];
+
     #busyIndicator = new BusyIndicator();
 
     constructor() {
@@ -127,13 +131,13 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
         }, {root: this.#scrollContainerEl});
         this.#headerManager = new HeaderManager(this.#headerEl, stickyObserver, this.#headerSelectEl, this.#internalId);
         this.#headerManager.addEventListener("afterrender", debounce(() => {
-            this.#processFixedCells(this.#headEl);
+            this.#calculateCellFixes(this.#headEl);
         }));
         this.#rowManager = new RowManager(this.#bodyEl, stickyObserver, this.#cellCache, this.#internalId);
         this.#rowManager.addEventListener("afterrender", debounce(() => {
             this.#emptyContainerEl.classList.toggle("hidden", this.#bodyEl.childNodes.length > 0);
             this.#updateSelectionAfterRender();
-            this.#processFixedCells(this.#bodyEl);
+            this.#applyCellFixes(this.#bodyEl);
         }));
         /* --- */
         this.#tableEl.addEventListener("move-row-up", (event) => {
@@ -363,13 +367,21 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
     }
 
     static get observedAttributes() {
-        return ["selectable", "selectend", "multiple", "stretched", "readonly"];
+        return ["sortable", "selectable", "selectend", "multiple", "stretched", "readonly"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         if (oldValue != newValue) {
             switch (name) {
+                case "sortable": {
+                    const sortable = this.sortable;
+                    this.#headerManager.sortable = sortable;
+                    this.#rowManager.sortable = sortable;
+                } break;
                 case "selectable": {
+                    const selectable = this.selectable;
+                    this.#headerManager.selectable = selectable;
+                    this.#rowManager.selectable = selectable;
                     if (!this.selectable) {
                         this.clearSelected();
                     }
@@ -573,11 +585,14 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
             this.#rowManager.manage(this.#data, newColumnDefinition);
             /* --- */
             for (const definition of newColumnDefinition) {
-                this.style.setProperty(`--min-width-${definition.name}`, `${definition.width}px`);
-                if (definition.name !== this.stretched) {
-                    const widthValue = definition.width;
-                    const styleWidth = getStyleLengthValue(definition.type, widthValue);
-                    this.style.setProperty(`--width-${definition.name}`, `${styleWidth}px`);
+                const {
+                    name, type, width
+                } = definition;
+                this.style.setProperty(`--min-width-${name}`, `${width}px`);
+                if (name !== this.stretched) {
+                    const widthValue = width;
+                    const styleWidth = getStyleLengthValue(type, widthValue);
+                    this.style.setProperty(`--width-${name}`, `${styleWidth}px`);
                 }
             }
             /* --- */
@@ -655,27 +670,61 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
         }
     }
 
-    #processFixedCells(containerEl) {
+    #calculateCellFixes(containerEl) {
+        const rowEl = containerEl.querySelector(":scope tr");
+        containerEl.style.display = "table-header-group";
+        this.#leftFixes = [];
+        this.#rightFixes = [];
+        // left cells
+        {
+            const fixedLeftCells = [...rowEl.querySelectorAll(":scope .fixed-cell.fixed-cell-start")];
+            let leftOffset = 0;
+            for (const cellEl of fixedLeftCells) {
+                const stuck = cellEl.classList.contains("stuck");
+                cellEl.classList.remove("stuck");
+                this.#leftFixes.push(leftOffset);
+                const cellWidth = cellEl.offsetWidth;
+                leftOffset += cellWidth;
+                cellEl.classList.toggle("stuck", stuck);
+            }
+        }
+        // right cells
+        {
+            const fixedRightCells = [...rowEl.querySelectorAll(":scope .fixed-cell.fixed-cell-end")].reverse();
+            let rightOffset = 0;
+            for (const cellEl of fixedRightCells) {
+                const stuck = cellEl.classList.contains("stuck");
+                cellEl.classList.remove("stuck");
+                this.#rightFixes.push(rightOffset);
+                const cellWidth = cellEl.offsetWidth;
+                rightOffset += cellWidth;
+                cellEl.classList.toggle("stuck", stuck);
+            }
+        }
+        // apply cell fixes
+        containerEl.style.display = "";
+        this.#applyCellFixes(containerEl);
+    }
+
+    #applyCellFixes(containerEl) {
         const rowEls = containerEl.querySelectorAll(":scope tr");
         for (const rowEl of rowEls) {
             // left cells
             {
-                const fixedLeftCells = [...rowEl.querySelectorAll(":scope .fixed-cell-start")];
-                let leftOffset = 0;
+                const fixedLeftCells = [...rowEl.querySelectorAll(":scope .fixed-cell.fixed-cell-start")];
+                let index = 0;
                 for (const cellEl of fixedLeftCells) {
+                    const leftOffset = this.#leftFixes[index++];
                     cellEl.style.left = `${leftOffset}px`;
-                    const cellElRect = cellEl.getBoundingClientRect();
-                    leftOffset += cellElRect.width;
                 }
             }
             // right cells
             {
-                const fixedRightCells = [...rowEl.querySelectorAll(":scope .fixed-cell-end")].reverse();
-                let rightOffset = 0;
+                const fixedRightCells = [...rowEl.querySelectorAll(":scope .fixed-cell.fixed-cell-end")].reverse();
+                let index = 0;
                 for (const cellEl of fixedRightCells) {
+                    const rightOffset = this.#rightFixes[index++];
                     cellEl.style.right = `${rightOffset}px`;
-                    const cellElRect = cellEl.getBoundingClientRect();
-                    rightOffset += cellElRect.width;
                 }
             }
         }

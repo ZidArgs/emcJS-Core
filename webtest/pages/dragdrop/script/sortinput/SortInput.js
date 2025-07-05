@@ -1,17 +1,17 @@
-import Template from "../util/Template.js";
-import GlobalStyle from "../util/GlobalStyle.js";
-import {isEqual} from "../util/Comparator.js";
-import {isArrayOf} from "../util/CheckType.js";
+import HTMLTemplate from "/emcJS/util/html/template/HTMLTemplate.js";
+import CSSTemplate from "/emcJS/util/html/template/CSSTemplate.js";
+import {isArrayOf} from "/emcJS/util/helper/CheckType.js";
+import {isEqual} from "/emcJS/util/helper/Comparator.js";
 
 // TODO animate: https://stackoverflow.com/a/75983399
 // also move all elements between dragged and target
 
-const TPL = new Template(`
+const TPL = new HTMLTemplate(`
 <li id="sortable-list"></li>
 <div id="drag-preview"></div>
 `);
 
-const STYLE = new GlobalStyle(`
+const STYLE = new CSSTemplate(`
     :host {
         position: relative;
         box-sizing: border-box;

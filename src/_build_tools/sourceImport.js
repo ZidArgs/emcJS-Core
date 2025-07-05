@@ -2,8 +2,8 @@ import fs from "fs";
 import path from "path";
 import {Transform} from "stream";
 
-const HTMLTemplatePath = "util/html/Template.js";
-const HTMLGlobalStylePath = "util/html/GlobalStyle.js";
+const HTMLTemplatePath = "util/html/template/HTMLTemplate.js";
+const CSSTemplatePath = "util/html/template/CSSTemplate.js";
 
 const LNBR_SEQ = /(?:\r\n|\n|\r)/g;
 const IMPORT_SCRIPT = /^\s*import(?:\s+([a-zA-Z0-9_$]+)\s+from)?\s+"([^"]+)"\s*;?$/;
@@ -105,7 +105,7 @@ function augmentFile(emcJSPrefix, sourcePath, fileContent) {
         // CSS
         if (importedCSS.length) {
             // import GlobalStyle module
-            const modulePath = normalizePath(`${emcJSPrefix}/${HTMLGlobalStylePath}`);
+            const modulePath = normalizePath(`${emcJSPrefix}/${CSSTemplatePath}`);
             result += `import GlobalStyle from "${modulePath}";\n\n`;
             // include files
             for (const importEntry of importedCSS) {
