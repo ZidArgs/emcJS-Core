@@ -1,5 +1,5 @@
 import CustomElement from "./element/CustomElement.js";
-import ActiveCounter from "../util/ActiveCounter.js";
+import ActiveCounter from "../util/counter/ActiveCounter.js";
 import TPL from "./BusyIndicator.js.html" assert {type: "html"};
 import STYLE from "./BusyIndicator.js.css" assert {type: "css"};
 

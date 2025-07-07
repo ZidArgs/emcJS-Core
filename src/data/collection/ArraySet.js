@@ -64,7 +64,11 @@ export default class ArraySet {
         return this;
     }
 
-    insertAt(pos = 0, ...values) {
+    insertAt(pos, ...values) {
+        pos = parseInt(pos);
+        if (isNaN(pos)) {
+            throw new TypeError("pos must be a number");
+        }
         for (const value of values) {
             const index = this.#values.indexOf(value);
             if (index >= 0) {
@@ -125,8 +129,12 @@ export default class ArraySet {
         }));
     }
 
-    at(index) {
-        return this.#values.at(index);
+    at(pos) {
+        pos = parseInt(pos);
+        if (isNaN(pos)) {
+            throw new TypeError("pos must be a number");
+        }
+        return this.#values.at(pos);
     }
 
     first() {
@@ -137,8 +145,18 @@ export default class ArraySet {
         return this.#values.at(-1);
     }
 
+    push(...values) {
+        this.add(...values);
+        return this.size;
+    }
+
     pop() {
         return this.#values.pop();
+    }
+
+    unshift(...values) {
+        this.insertAt(0, ...values);
+        return this.size;
     }
 
     shift() {

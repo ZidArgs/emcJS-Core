@@ -66,12 +66,20 @@ export default class ArrayList {
         return this;
     }
 
-    insertAt(pos = 0, ...values) {
+    insertAt(pos, ...values) {
+        pos = parseInt(pos);
+        if (isNaN(pos)) {
+            throw new TypeError("pos must be a number");
+        }
         this.#values.splice(pos, 0, ...values);
         return this;
     }
 
-    set(pos = 0, ...values) {
+    set(pos, ...values) {
+        pos = parseInt(pos);
+        if (isNaN(pos)) {
+            throw new TypeError("pos must be a number");
+        }
         this.#values.splice(pos, values.length, ...values);
         return this;
     }
@@ -86,12 +94,20 @@ export default class ArrayList {
         return this;
     }
 
-    removeAt(pos = 0) {
+    removeAt(pos) {
+        pos = parseInt(pos);
+        if (isNaN(pos)) {
+            throw new TypeError("pos must be a number");
+        }
         this.#values.splice(pos, 1);
         return this;
     }
 
-    removeRange(pos = 0, length = 1) {
+    removeRange(pos, length = 1) {
+        pos = parseInt(pos);
+        if (isNaN(pos)) {
+            throw new TypeError("pos must be a number");
+        }
         this.#values.splice(pos, length);
         return this;
     }

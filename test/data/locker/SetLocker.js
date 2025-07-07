@@ -13,7 +13,7 @@ describe("SetLocker", function() {
         it("should throw error", function() {
             assert.throws(() => {
                 setLocker.add(1);
-            }, "TypeError: setLocker.set is not a function");
+            }, "TypeError: setLocker.add is not a function");
         });
     });
 
