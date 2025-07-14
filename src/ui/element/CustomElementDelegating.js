@@ -1,6 +1,7 @@
-import CustomElementMixin from "../mixin/CustomElementMixin.js";
+import CustomElement from "./CustomElement.js";
 
-export default class CustomElementDelegating extends CustomElementMixin(HTMLElement) {
+// TODO is this really needed just to add a single abstract parameter
+export default class CustomElementDelegating extends CustomElement {
 
     constructor() {
         if (new.target === CustomElementDelegating) {

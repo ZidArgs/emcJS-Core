@@ -78,6 +78,15 @@ export default class BoolOrLogicModal extends Modal {
         return this.#inputEl.value;
     }
 
+    set nullable(value) {
+        this.#inputEl.nullable = value;
+        this.#inputEl.required = !value;
+    }
+
+    get nullable() {
+        return this.#inputEl.nullable;
+    }
+
     addOperatorGroup(...groupList) {
         this.#inputEl.addOperatorGroup(...groupList);
     }

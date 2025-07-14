@@ -147,7 +147,7 @@ export default class SwitchSelect extends AbstractFormElement {
         if (oldSelectedEl != null) {
             oldSelectedEl.classList.remove("selected");
         }
-        if (value != null && value !== "") {
+        if (value != null) {
             const selectedEl = this.#optionsContainerEl.querySelector(`[value="${value}"]`);
             if (selectedEl != null) {
                 selectedEl.classList.add("selected");
@@ -162,7 +162,6 @@ export default class SwitchSelect extends AbstractFormElement {
             }
         } else {
             this.#inputEl.i18nValue = "";
-            this.#inputEl.innerHTML = "";
         }
     }
 

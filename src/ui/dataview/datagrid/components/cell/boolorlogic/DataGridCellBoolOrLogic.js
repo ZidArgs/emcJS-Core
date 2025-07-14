@@ -65,8 +65,16 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
         return this.getJSONAttribute("value");
     }
 
+    set nullable(value) {
+        this.setBooleanAttribute("nullable", value);
+    }
+
+    get nullable() {
+        return this.getBooleanAttribute("nullable");
+    }
+
     static get observedAttributes() {
-        return [...super.observedAttributes, "editable", "disabled", "readonly", "row-key"];
+        return [...super.observedAttributes, "editable", "disabled", "readonly", "nullable", "row-key"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -90,6 +98,11 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
                         this.#inputEl.removeAttribute("readonly");
                     }
                 } break;
+                case "nullable": {
+                    if (this.#boolOrLogicModal != null) {
+                        this.#boolOrLogicModal.nullable = this.nullable;
+                    }
+                } break;
                 case "row-key": {
                     // this.#inputEl.setModalRefName(newValue);
                 } break;
@@ -98,6 +111,7 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
                         const inputId = `${this.dataGridId}-${this.columnName}`;
                         this.#inputEl.name = inputId;
                         this.#boolOrLogicModal = this.#getModal(inputId);
+                        this.#boolOrLogicModal.nullable = this.nullable;
                     } else {
                         this.#inputEl.name = "";
                         this.#boolOrLogicModal = null;
@@ -115,13 +129,14 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
     }
 
     #getRenderValue(value) {
-        if (value === true) {
-            return "True";
+        if (typeof value === "object" && value != null) {
+            return "Logic";
         } else if (value === false) {
             return "False";
-        } else {
-            return "Logic";
+        } else if (value === true) {
+            return "True";
         }
+        return "Null";
     }
 
     #getModal(modalId) {

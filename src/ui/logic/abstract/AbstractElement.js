@@ -331,7 +331,7 @@ export default class AbstractElement extends CustomElement {
     }
 
     static buildLogic(logic) {
-        if (typeof logic == "object" && !!logic) {
+        if (typeof logic === "object" && !!logic) {
             if (Array.isArray(logic)) {
                 return new ErrorElement();
             } else {

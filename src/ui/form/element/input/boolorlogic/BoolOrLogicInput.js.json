@@ -1,0 +1,8 @@
+[
+    {
+        "type": "SwitchInput",
+        "name": "nullable",
+        "label": "Show null value option",
+        "value": false
+    }
+]

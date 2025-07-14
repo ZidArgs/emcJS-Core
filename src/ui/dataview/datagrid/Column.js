@@ -66,6 +66,14 @@ export default class Column extends CustomElement {
         return this.getBooleanAttribute("sortable");
     }
 
+    set nullable(value) {
+        this.setBooleanAttribute("nullable", value);
+    }
+
+    get nullable() {
+        return this.getBooleanAttribute("nullable");
+    }
+
     set halign(value) {
         this.setAttribute("halign", value);
     }

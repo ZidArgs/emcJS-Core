@@ -48,6 +48,10 @@ const BaseClass = mix(
 // TODO use modal handler
 export default class LogicInput extends BaseClass {
 
+    static get changeDebounceTime() {
+        return 0;
+    }
+
     #optimizeButtonEl;
 
     #jsonButtonEl;
@@ -260,9 +264,11 @@ export default class LogicInput extends BaseClass {
 
     #buildLogic(data) {
         this.innerHTML = "";
-        const logicEl = LogicAbstractElement.buildLogic(data);
-        logicEl.readonly = this.readonly;
-        super.append(logicEl);
+        if ("type" in data) {
+            const logicEl = LogicAbstractElement.buildLogic(data);
+            logicEl.readonly = this.readonly;
+            super.append(logicEl);
+        }
     }
 
 }
