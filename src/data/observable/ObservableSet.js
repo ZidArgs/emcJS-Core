@@ -1,24 +1,63 @@
-import {debounce} from "../../util/Debouncer.js";
+import {debounceCacheData} from "../../util/Debouncer.js";
 
 export default class ObservableSet extends EventTarget {
 
     #data = new Set();
 
-    #notifyChange = debounce(() => {
-        this.dispatchEvent(new Event("change"));
+    #notifyChange = debounceCacheData((data) => {
+        const changes = {
+            added: new Set(),
+            removed: new Set()
+        };
+        for (const entry of data) {
+            const {
+                type, value
+            } = entry;
+            if (type === "add") {
+                if (changes.removed.has(value)) {
+                    changes.removed.delete(value);
+                } else {
+                    changes.added.add(value);
+                }
+            } else if (type === "delete") {
+                if (changes.added.has(value)) {
+                    changes.added.delete(value);
+                } else {
+                    changes.removed.add(value);
+                }
+            } else if (type === "clear") {
+                changes.added.clear(value);
+                for (const key of value) {
+                    changes.removed.add(key);
+                }
+            }
+        }
+        // ---
+        const ev = new Event("change");
+        ev.data = {
+            added: [...changes.added],
+            removed: [...changes.removed]
+        };
+        this.dispatchEvent(ev);
     });
 
     add(value) {
         if (!this.#data.has(value)) {
             this.#data.add(value);
-            this.#notifyChange();
+            this.#notifyChange({
+                type: "add",
+                value
+            });
         }
         return this;
     }
 
     delete(value) {
         if (this.#data.delete(value)) {
-            this.#notifyChange();
+            this.#notifyChange({
+                type: "delete",
+                value
+            });
             return true;
         }
         return false;
@@ -26,8 +65,12 @@ export default class ObservableSet extends EventTarget {
 
     clear() {
         if (this.#data.size) {
+            const value = [...this.#data];
             this.#data.clear();
-            this.#notifyChange();
+            this.#notifyChange({
+                type: "clear",
+                value
+            });
         }
     }
 

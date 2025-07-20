@@ -1,8 +1,8 @@
-import AppStateStorageWrapper from "../../data/state/AppStateStorageWrapper.js";
-import ObservableStorage from "../../data/storage/observable/ObservableStorage.js";
-import {debounce} from "../Debouncer.js";
-import EventTargetManager from "../event/EventTargetManager.js";
-import {isEqual} from "../helper/Comparator.js";
+import AppStateStorageWrapper from "../../../../data/state/AppStateStorageWrapper.js";
+import ObservableStorage from "../../../../data/storage/observable/ObservableStorage.js";
+import {debounce} from "../../../Debouncer.js";
+import EventTargetManager from "../../../event/EventTargetManager.js";
+import {isEqual} from "../../../helper/Comparator.js";
 
 export default class ObservableStorageObserver extends EventTarget {
 
@@ -34,7 +34,7 @@ export default class ObservableStorageObserver extends EventTarget {
         if (!(storage instanceof ObservableStorage) && !(storage instanceof AppStateStorageWrapper)) {
             throw new TypeError("wrong type on parameter 1, expected ObservableStorage or AppStateStorageWrapper");
         }
-        if (key != null && typeof key != "string") {
+        if (key != null && typeof key !== "string") {
             throw new TypeError("wrong type on parameter 2, expected string");
         }
         /* --- */

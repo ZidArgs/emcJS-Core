@@ -1,7 +1,7 @@
-import AppState from "../../data/state/AppState.js";
-import {debounce} from "../Debouncer.js";
-import EventTargetManager from "../event/EventTargetManager.js";
-import {isEqual} from "../helper/Comparator.js";
+import AppState from "../../../../data/state/AppState.js";
+import {debounce} from "../../../Debouncer.js";
+import EventTargetManager from "../../../event/EventTargetManager.js";
+import {isEqual} from "../../../helper/Comparator.js";
 
 export default class AppStateMetaObserver extends EventTarget {
 
@@ -33,7 +33,7 @@ export default class AppStateMetaObserver extends EventTarget {
         if (!(state instanceof AppState)) {
             throw new TypeError("wrong type on parameter 1, expected AppState");
         }
-        if (key != null && typeof key != "string") {
+        if (key != null && typeof key !== "string") {
             throw new TypeError("wrong type on parameter 2, expected string");
         }
         /* --- */

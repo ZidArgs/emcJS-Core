@@ -1,7 +1,7 @@
-import {debounceCacheData} from "../util/Debouncer.js";
-import EventTargetManager from "../util/event/EventTargetManager.js";
-import {mergeObjectsInto} from "../util/helper/collection/MergeObjects.js";
-import {isEqual} from "../util/helper/Comparator.js";
+import {debounceCacheData} from "../../util/Debouncer.js";
+import EventTargetManager from "../../util/event/EventTargetManager.js";
+import {mergeObjectsInto} from "../../util/helper/collection/MergeObjects.js";
+import {isEqual} from "../../util/helper/Comparator.js";
 
 const BYPASS_PROPERTIES = [
     // Object
