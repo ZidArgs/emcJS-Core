@@ -38,17 +38,35 @@ export function filterInPlace(array, cond) {
 
 export function sortDictListByArray(dictList, sortArray, sortKey) {
     return dictList.sort((dict0, dict1) => {
-        const index0 = sortArray.findIndex((el) => el === dict0[sortKey]);
-        const index1 = sortArray.findIndex((el) => el === dict1[sortKey]);
-        return index0 - index1;
+        if (typeof sortKey === "string") {
+            const index0 = sortArray.findIndex((el) => el === dict0[sortKey]);
+            const index1 = sortArray.findIndex((el) => el === dict1[sortKey]);
+            return index0 - index1;
+        } else if (typeof sortKey === "function") {
+            const sortKey0 = sortKey(dict0);
+            const sortKey1 = sortKey(dict1);
+            const index0 = sortArray.findIndex((el) => el === sortKey0);
+            const index1 = sortArray.findIndex((el) => el === sortKey1);
+            return index0 - index1;
+        }
+        return 0;
     });
 }
 
 export function sortDictListByArrayImmuted(dictList, sortArray, sortKey) {
     return [...dictList].sort((dict0, dict1) => {
-        const index0 = sortArray.findIndex((el) => el === dict0[sortKey]);
-        const index1 = sortArray.findIndex((el) => el === dict1[sortKey]);
-        return index0 - index1;
+        if (typeof sortKey === "string") {
+            const index0 = sortArray.findIndex((el) => el === dict0[sortKey]);
+            const index1 = sortArray.findIndex((el) => el === dict1[sortKey]);
+            return index0 - index1;
+        } else if (typeof sortKey === "function") {
+            const sortKey0 = sortKey(dict0);
+            const sortKey1 = sortKey(dict1);
+            const index0 = sortArray.findIndex((el) => el === sortKey0);
+            const index1 = sortArray.findIndex((el) => el === sortKey1);
+            return index0 - index1;
+        }
+        return 0;
     });
 }
 

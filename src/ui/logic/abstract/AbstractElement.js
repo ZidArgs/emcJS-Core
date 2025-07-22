@@ -32,6 +32,11 @@ export default class AbstractElement extends CustomElement {
         this.#headerEl.innerText = caption;
         this.#id = appUID("logic-element");
         /* --- */
+        this.addEventListener("click", (event) => {
+            if (this.editable) {
+                event.stopPropagation();
+            }
+        });
         this.addEventListener("contextmenu", (event) => {
             event.stopPropagation();
             event.preventDefault();

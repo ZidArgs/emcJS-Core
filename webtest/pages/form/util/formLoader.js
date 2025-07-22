@@ -3,6 +3,8 @@ import i18n from "/emcJS/util/I18n.js";
 import FileLoader from "/emcJS/util/file/FileLoader.js";
 import OptionGroupRegistry from "/emcJS/data/registry/form/OptionGroupRegistry.js";
 import TokenRegistry from "/emcJS/data/registry/form/TokenRegistry.js";
+import LogicOperatorRegistry from "/emcJS/data/registry/LogicOperatorRegistry.js";
+import {deepClone} from "/emcJS/util/helper/DeepClone.js";
 import "/emcJS/ui/Page.js";
 // form
 import FormBuilder from "/emcJS/util/form/FormBuilder.js";
@@ -23,12 +25,35 @@ export async function init() {
         return;
     }
     i18n.language = "en";
-    const [optionGroups, tokenGroups] = await Promise.all([
+    const [optionGroups, tokenGroups, logicOperators] = await Promise.all([
         FileLoader.json("/pages/form/_config/OptionGroups.json"),
-        FileLoader.json("/pages/form/_config/TokenGroups.json")
+        FileLoader.json("/pages/form/_config/TokenGroups.json"),
+        FileLoader.json("/pages/form/_config/LogicOperators.json")
     ]);
     OptionGroupRegistry.load(optionGroups);
     TokenRegistry.load(tokenGroups);
+
+    for (const name in logicOperators) {
+        const entry = logicOperators[name];
+        switch (entry.type) {
+            case "choice": {
+                LogicOperatorRegistry.setAndLinkOperator(`state[${name}]`, {
+                    type: "state",
+                    options: deepClone(entry.values),
+                    value: entry.default ?? entry.values[0]
+                }, "states");
+            } break;
+            case "list": {
+                for (const value of entry.values) {
+                    LogicOperatorRegistry.setAndLinkOperator(`value[${value}]`, {type: "value"}, "values");
+                }
+            }
+            default: {
+                LogicOperatorRegistry.setAndLinkOperator(`value[${name}]`, {type: "value"}, "values");
+            } break;
+        }
+    }
+
     initFlag = true;
 }
 

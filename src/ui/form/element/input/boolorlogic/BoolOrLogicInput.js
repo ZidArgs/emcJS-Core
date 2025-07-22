@@ -29,7 +29,7 @@ export default class BoolOrLogicInput extends AbstractFormElement {
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#logicEl = this.shadowRoot.getElementById("logic");
-        this.#inputEl.addEventListener("change", () => {
+        this.#inputEl.addEventListener("input", () => {
             const value = this.#inputEl.value;
             if (value === "logic") {
                 this.#logicEl.classList.add("active");

@@ -2,6 +2,7 @@ import CustomFormElement from "../../element/CustomFormElement.js";
 import {deepClone} from "../../../util/helper/DeepClone.js";
 import {debounce} from "../../../util/Debouncer.js";
 import {isEqual} from "../../../util/helper/Comparator.js";
+import {delimitInteger} from "../../../util/helper/number/Integer.js";
 import "../button/Button.js";
 import TPL from "./AbstractFormElement.js.html" assert {type: "html"};
 import STYLE from "./AbstractFormElement.js.css" assert {type: "css"};
@@ -30,12 +31,18 @@ function isValueSet(value) {
 
 export default class AbstractFormElement extends CustomFormElement {
 
+    static #changeDebounceTime = 300;
+
     static get formConfigurationFields() {
         return deepClone(CONFIG_FIELDS);
     }
 
     static get changeDebounceTime() {
-        return 300;
+        return this.#changeDebounceTime;
+    }
+
+    static set changeDebounceTime(value) {
+        this.#changeDebounceTime = delimitInteger(value, 0, 1000);
     }
 
     #value;
@@ -90,6 +97,14 @@ export default class AbstractFormElement extends CustomFormElement {
         });
         this.addEventListener("invalid", (event) => {
             event.preventDefault();
+        });
+        /* --- */
+        const fieldContainerEl = this.shadowRoot.getElementById("field-container");
+        fieldContainerEl.addEventListener("input", (event) => {
+            event.stopPropagation();
+        });
+        fieldContainerEl.addEventListener("change", (event) => {
+            event.stopPropagation();
         });
     }
 
@@ -317,7 +332,7 @@ export default class AbstractFormElement extends CustomFormElement {
         }
     }
 
-    #onUpdateValue = debounce((value) => {
+    #onUpdateValue(value) {
         if (!isEqual(this.value, value)) {
             this.#value = value;
             const newValue = this.value;
@@ -326,22 +341,30 @@ export default class AbstractFormElement extends CustomFormElement {
             this.refreshFormValue();
             this.revalidate();
             this.#setResetActive(!this.isDefault);
-            if (!this.#errorList.size) {
-                const event = new Event("value", {
-                    bubbles: true,
-                    cancelable: true
-                });
-                event.value = newValue;
-                event.name = this.name;
-                event.fieldId = this.id;
-                this.dispatchEvent(event);
-            }
-            this.dispatchEvent(new Event("change", {
+            this.dispatchEvent(new Event("input", {
                 bubbles: true,
                 cancelable: true
             }));
+            this.#notifyChange();
         }
-    }, this.constructor.changeDebounceTime);
+    }
+
+    #notifyChange = debounce((newValue) => {
+        if (!this.#errorList.size) {
+            const event = new Event("value", {
+                bubbles: true,
+                cancelable: true
+            });
+            event.value = newValue;
+            event.name = this.name;
+            event.fieldId = this.id;
+            this.dispatchEvent(event);
+        }
+        this.dispatchEvent(new Event("change", {
+            bubbles: true,
+            cancelable: true
+        }));
+    }, AbstractFormElement.changeDebounceTime);
 
     async revalidate() {
         if (!this.noValidate) {

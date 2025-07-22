@@ -13,10 +13,12 @@ export function debounce(func, wait = 0) {
         clearTimeout(timeout);
         timeout = setTimeout(() => {
             func(...args);
+            timeout = null;
         }, wait);
     };
     fn.cancel = () => {
         clearTimeout(timeout);
+        timeout = null;
     };
     return fn;
 }
@@ -38,11 +40,13 @@ export function debounceCacheData(func, wait = 0) {
         clearTimeout(timeout);
         timeout = setTimeout(() => {
             func(cache);
+            timeout = null;
             cache = [];
         }, wait);
     };
     fn.cancel = () => {
         clearTimeout(timeout);
+        timeout = null;
         cache = [];
     };
     return fn;
@@ -63,10 +67,12 @@ export function debounceByType(func, wait = 0) {
         clearTimeout(timeout.get(type));
         timeout.set(type, setTimeout(() => {
             func(type, ...args);
+            timeout.set(type, null);
         }, wait));
     };
     fn.cancel = (type) => {
         clearTimeout(timeout.get(type));
+        timeout.set(type, null);
     };
     return fn;
 }

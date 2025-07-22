@@ -1,0 +1,66 @@
+{
+    "shuffle_spawns": {
+        "category": "entrance_randomizer",
+        "type": "list",
+        "default": [],
+        "values": [
+            "shuffle_spawn_child",
+            "shuffle_spawn_adult"
+        ]
+    },
+    "shuffle_dungeons": {
+        "category": "entrance_randomizer",
+        "type": "choice",
+        "default": "shuffle_dungeons_off",
+        "values": [
+            "shuffle_dungeons_off",
+            "shuffle_dungeons_simple",
+            "shuffle_dungeons_all"
+        ]
+    },
+    "shuffle_bosses": {
+        "category": "entrance_randomizer",
+        "type": "choice",
+        "default": "shuffle_bosses_off",
+        "values": [
+            "shuffle_bosses_off",
+            "shuffle_bosses_age",
+            "shuffle_bosses_all"
+        ]
+    },
+    "entrance_shuffle_interior": {
+        "category": "entrance_randomizer",
+        "type": "choice",
+        "default": "entrance_shuffle_off",
+        "values": [
+            "entrance_shuffle_off",
+            "entrance_shuffle_simple",
+            "entrance_shuffle_all"
+        ]
+    },
+    "shuffle_grottos": {
+        "category": "entrance_randomizer",
+        "type": "check",
+        "default": false
+    },
+    "shuffle_overworld": {
+        "category": "entrance_randomizer",
+        "type": "check",
+        "default": false
+    },
+    "shuffle_gerudo_valley_river_exit": {
+        "category": "entrance_randomizer",
+        "type": "check",
+        "default": false
+    },
+    "shuffle_owls": {
+        "category": "entrance_randomizer",
+        "type": "check",
+        "default": false
+    },
+    "shuffle_warps": {
+        "category": "entrance_randomizer",
+        "type": "check",
+        "default": false
+    }
+}

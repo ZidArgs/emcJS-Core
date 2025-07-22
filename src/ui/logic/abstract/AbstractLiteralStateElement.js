@@ -22,6 +22,10 @@ export default class AbstractLiteralStateElement extends AbstractElement {
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#inputEl.addEventListener("change", () => {
             this.value = this.#inputEl.value;
+            this.dispatchEvent(new Event("valuechange", {
+                bubbles: true,
+                cancelable: true
+            }));
         });
     }
 

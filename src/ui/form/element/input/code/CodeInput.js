@@ -61,23 +61,6 @@ export default class CodeInput extends AbstractFormElement {
             this.value = value;
         });
         this.#inputEl.addEventListener("keydown", (event) => {
-            if (event.key === "Tab") {
-                const value = this.#inputEl.value;
-                const before_tab = value.slice(0, this.#inputEl.selectionStart);
-                const after_tab = value.slice(this.#inputEl.selectionEnd, value.length);
-                const cursor_pos = this.#inputEl.selectionEnd + 1;
-
-                const newValue = before_tab + "\t" + after_tab;
-                this.#inputEl.value = newValue;
-                this.#inputEl.selectionStart = cursor_pos;
-                this.#inputEl.selectionEnd = cursor_pos;
-
-                this.#updateText(newValue);
-                this.value = newValue;
-
-                event.preventDefault();
-                return false;
-            }
             if (event.key === "Enter") {
                 if (!event.shiftKey === this.newlineOnShift) {
                     if (this.form != null) {

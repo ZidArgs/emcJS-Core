@@ -177,27 +177,8 @@ export default class RelationSelect extends AbstractFormElement {
             event.stopPropagation();
         });
         this.#inputEl.addEventListener("input", () => {
-            const all = this.#optionNodeList.getNodeList();
-            const regEx = new CharacterSearch(this.#inputEl.value);
-            const elCount = all.length;
-            if (elCount > 0) {
-                let hiddenCount = 0;
-                for (const el of all) {
-                    const testText = el.comparatorText ?? el.innerText;
-                    if (regEx.test(testText.trim())) {
-                        el.style.display = "";
-                    } else {
-                        el.style.display = "none";
-                        hiddenCount++;
-                    }
-                    if (elCount <= hiddenCount) {
-                        this.#nomatchEl.style.display = "flex";
-                    } else {
-                        this.#nomatchEl.style.display = "";
-                    }
-                }
-            }
-        }, true);
+            this.#applySearch();
+        });
         this.#scrollContainerEl.addEventListener("wheel", (event) => {
             event.stopPropagation();
         }, {passive: true});
@@ -345,6 +326,29 @@ export default class RelationSelect extends AbstractFormElement {
             this.#placeholderEl.classList.remove("hidden");
         }
     }
+
+    #applySearch = debounce(() => {
+        const all = this.#optionNodeList.getNodeList();
+        const regEx = new CharacterSearch(this.#inputEl.value);
+        const elCount = all.length;
+        if (elCount > 0) {
+            let hiddenCount = 0;
+            for (const el of all) {
+                const testText = el.comparatorText ?? el.innerText;
+                if (regEx.test(testText.trim())) {
+                    el.style.display = "";
+                } else {
+                    el.style.display = "none";
+                    hiddenCount++;
+                }
+                if (elCount <= hiddenCount) {
+                    this.#nomatchEl.style.display = "flex";
+                } else {
+                    this.#nomatchEl.style.display = "";
+                }
+            }
+        }
+    });
 
     #choose(value) {
         if (!this.getBooleanAttribute("readonly")) {
@@ -499,7 +503,7 @@ export default class RelationSelect extends AbstractFormElement {
         const sortedNodeList = sortNodeList(optionNodeList);
         if (!isEqual(optionNodeList, sortedNodeList)) {
             for (const el of sortedNodeList) {
-                this.append(el);
+                this.#optionsContainerEl.append(el);
             }
         }
         this.#optionNodeList.setNodeList(sortedNodeList);

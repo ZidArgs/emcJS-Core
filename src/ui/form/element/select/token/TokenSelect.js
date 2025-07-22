@@ -199,7 +199,10 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
             event.stopPropagation();
         });
         this.#inputEl.addEventListener("input", () => {
-            this.#onSearch();
+            if (!this.#isEditMode) {
+                this.#startEditMode(true);
+            }
+            this.#applySearch();
         }, true);
         this.#scrollContainerEl.addEventListener("wheel", (event) => {
             event.stopPropagation();
@@ -467,7 +470,7 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
             }
             this.value = Array.from(valueBuffer);
         }
-        this.#onSearch();
+        this.#applySearch();
         this.focus();
     }
 
@@ -694,10 +697,7 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
         }
     }
 
-    #onSearch() {
-        if (!this.#isEditMode) {
-            this.#startEditMode(true);
-        }
+    #applySearch = debounce(() => {
         const all = this.#optionsContainerEl.children;
         const regEx = new CharacterSearch(this.#inputEl.value);
         const elCount = all.length;
@@ -718,7 +718,7 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
                 this.#nomatchEl.style.display = "";
             }
         }
-    }
+    }, AbstractFormElement.changeDebounceTime);
 
     static fromConfig(config) {
         const selectEl = new TokenSelect();
