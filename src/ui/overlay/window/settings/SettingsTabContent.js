@@ -10,9 +10,10 @@ import "../../../input/Option.js";
 import TPL from "./SettingsTabContent.js.html" assert {type: "html"};
 import STYLE from "./SettingsTabContent.js.css" assert {type: "css"};
 
-function generateField(label, desc, inputEl, storage, visible, resetEl) {
+function generateField(inputId, label, desc, inputEl, storage, visible, resetEl) {
     const optionEl = document.createElement("div");
     optionEl.className = "settings-option";
+    optionEl.id = `${inputId}_wrapper`;
 
     { // container
         const containerEl = document.createElement("div");
@@ -129,9 +130,20 @@ export default class SettingsTabContent extends CustomElement {
         this.#containerEl = this.shadowRoot.getElementById("container");
     }
 
+    #insertField(inputId, label, desc, inputEl, storage, visible, resetEl) {
+        const newFieldEl = generateField(inputId, label, desc, inputEl, storage, visible, resetEl);
+        const oldFieldEl = this.shadowRoot.getElementById(`${inputId}_wrapper`);
+        if (oldFieldEl) {
+            oldFieldEl.replaceWith(newFieldEl);
+        } else {
+            this.#containerEl.append(newFieldEl);
+        }
+    }
+
     addStringInput(storage, ref, label, desc, visible, resettable) {
         const inputEl = document.createElement("input");
-        inputEl.id = `${this.id}_${ref}`;
+        const inputId = `${this.id}_${ref}`;
+        inputEl.id = inputId;
         inputEl.className = "settings-input";
         inputEl.setAttribute("type", "text");
         inputEl.value = storage.get(ref);
@@ -153,13 +165,13 @@ export default class SettingsTabContent extends CustomElement {
         });
         // add element
         const resetEl = resettable && createResetButton(storage, ref);
-        const labelEl = generateField(label, desc, inputEl, storage, visible, resetEl);
-        this.#containerEl.append(labelEl);
+        this.#insertField(inputId, label, desc, inputEl, storage, visible, resetEl);
     }
 
     addNumberInput(storage, ref, label, desc, visible, resettable, min, max) {
         const inputEl = document.createElement("input");
-        inputEl.id = `${this.id}_${ref}`;
+        const inputId = `${this.id}_${ref}`;
+        inputEl.id = inputId;
         inputEl.className = "settings-input";
         inputEl.setAttribute("type", "number");
         inputEl.value = storage.get(ref);
@@ -187,13 +199,13 @@ export default class SettingsTabContent extends CustomElement {
         });
         // add element
         const resetEl = resettable && createResetButton(storage, ref);
-        const labelEl = generateField(label, desc, inputEl, storage, visible, resetEl);
-        this.#containerEl.append(labelEl);
+        this.#insertField(inputId, label, desc, inputEl, storage, visible, resetEl);
     }
 
     addRangeInput(storage, ref, label, desc, visible, resettable, min, max) {
         const inputEl = document.createElement("input");
-        inputEl.id = `${this.id}_${ref}`;
+        const inputId = `${this.id}_${ref}`;
+        inputEl.id = inputId;
         inputEl.className = "settings-input";
         inputEl.setAttribute("type", "range");
         inputEl.value = storage.get(ref);
@@ -221,13 +233,13 @@ export default class SettingsTabContent extends CustomElement {
         });
         // add element
         const resetEl = resettable && createResetButton(storage, ref);
-        const labelEl = generateField(label, desc, inputEl, storage, visible, resetEl);
-        this.#containerEl.append(labelEl);
+        this.#insertField(inputId, label, desc, inputEl, storage, visible, resetEl);
     }
 
     addCheckInput(storage, ref, label, desc, visible, resettable) {
         const inputEl = document.createElement("input");
-        inputEl.id = `${this.id}_${ref}`;
+        const inputId = `${this.id}_${ref}`;
+        inputEl.id = inputId;
         inputEl.className = "settings-input";
         inputEl.setAttribute("type", "checkbox");
         inputEl.checked = !!storage.get(ref);
@@ -249,13 +261,13 @@ export default class SettingsTabContent extends CustomElement {
         });
         // add element
         const resetEl = resettable && createResetButton(storage, ref);
-        const labelEl = generateField(label, desc, inputEl, storage, visible, resetEl);
-        this.#containerEl.append(labelEl);
+        this.#insertField(inputId, label, desc, inputEl, storage, visible, resetEl);
     }
 
     addColorInput(storage, ref, label, desc, visible, resettable) {
         const inputEl = document.createElement("input");
-        inputEl.id = `${this.id}_${ref}`;
+        const inputId = `${this.id}_${ref}`;
+        inputEl.id = inputId;
         inputEl.className = "settings-input";
         inputEl.setAttribute("type", "color");
         inputEl.value = storage.get(ref);
@@ -277,13 +289,13 @@ export default class SettingsTabContent extends CustomElement {
         });
         // add element
         const resetEl = resettable && createResetButton(storage, ref);
-        const labelEl = generateField(label, desc, inputEl, storage, visible, resetEl);
-        this.#containerEl.append(labelEl);
+        this.#insertField(inputId, label, desc, inputEl, storage, visible, resetEl);
     }
 
     addKeyInput(storage, ref, label, desc, visible, resettable) {
         const inputEl = document.createElement("emc-keyinput");
-        inputEl.id = `${this.id}_${ref}`;
+        const inputId = `${this.id}_${ref}`;
+        inputEl.id = inputId;
         inputEl.className = "settings-input";
         inputEl.setAttribute("type", "input");
         inputEl.value = storage.get(ref);
@@ -305,14 +317,14 @@ export default class SettingsTabContent extends CustomElement {
         });
         // add element
         const resetEl = resettable && createResetButton(storage, ref);
-        const labelEl = generateField(label, desc, inputEl, storage, visible, resetEl);
-        this.#containerEl.append(labelEl);
+        this.#insertField(inputId, label, desc, inputEl, storage, visible, resetEl);
     }
 
     addChoiceInput(storage, ref, label, desc, visible, resettable, values = {}) {
         const convertedValues = convertValueList(values);
         const inputEl = document.createElement("emc-searchselect");
-        inputEl.id = `${this.id}_${ref}`;
+        const inputId = `${this.id}_${ref}`;
+        inputEl.id = inputId;
         inputEl.className = "settings-input";
         inputEl.setAttribute("type", "input");
         for (const value in convertedValues) {
@@ -337,14 +349,14 @@ export default class SettingsTabContent extends CustomElement {
         });
         // add element
         const resetEl = resettable && createResetButton(storage, ref);
-        const labelEl = generateField(label, desc, inputEl, storage, visible, resetEl);
-        this.#containerEl.append(labelEl);
+        this.#insertField(inputId, label, desc, inputEl, storage, visible, resetEl);
     }
 
     addListSelectInput(storage, ref, label, desc, visible, resettable, multiple = true, values = {}) {
         const convertedValues = convertValueList(values);
         const inputEl = document.createElement("emc-listselect");
-        inputEl.id = `${this.id}_${ref}`;
+        const inputId = `${this.id}_${ref}`;
+        inputEl.id = inputId;
         inputEl.className = "settings-input";
         inputEl.setAttribute("type", "list");
         inputEl.multiple = multiple;
@@ -402,13 +414,13 @@ export default class SettingsTabContent extends CustomElement {
         const resetEl = resettable && createResetButton(() => {
             storage.resetAll(Object.keys(convertedValues));
         });
-        const labelEl = generateField(label, desc, inputEl, storage, visible, resetEl);
-        this.#containerEl.append(labelEl);
+        this.#insertField(inputId, label, desc, inputEl, storage, visible, resetEl);
     }
 
     addButton(storage, ref, label, desc, visible, text = "", callback = null) {
         const inputEl = document.createElement("button");
-        inputEl.id = `${this.id}_${ref}`;
+        const inputId = `${this.id}_${ref}`;
+        inputEl.id = inputId;
         inputEl.className = "settings-button";
         inputEl.setAttribute("type", "button");
         inputEl.dataset.ref = ref;
@@ -420,13 +432,13 @@ export default class SettingsTabContent extends CustomElement {
         if (typeof callback == "function") {
             inputEl.addEventListener("click", callback);
         }
-        const labelEl = generateField(label, desc, inputEl, storage, visible);
         // add element
-        this.#containerEl.append(labelEl);
+        this.#insertField(inputId, label, desc, inputEl, storage, visible);
     }
 
     addCustomInput(inputEl, storage, ref, label, desc, visible, resettable) {
-        inputEl.id = `${this.id}_${ref}`;
+        const inputId = `${this.id}_${ref}`;
+        inputEl.id = inputId;
         inputEl.className = "settings-input";
         inputEl.setAttribute("type", "custom");
         inputEl.value = storage.get(ref);
@@ -448,8 +460,7 @@ export default class SettingsTabContent extends CustomElement {
         });
         // add element
         const resetEl = resettable && createResetButton(storage, ref);
-        const labelEl = generateField(label, desc, inputEl, storage, visible, resetEl);
-        this.#containerEl.append(labelEl);
+        this.#insertField(inputId, label, desc, inputEl, storage, visible, resetEl);
     }
 
     addElements(content) {
