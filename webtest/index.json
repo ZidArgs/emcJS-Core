@@ -2,6 +2,9 @@
     "test": {
         "label": "Test"
     },
+    "listselect-performance": {
+        "label": "ListSelect Performance"
+    },
     "datagrid": {
         "label": "DataGrid"
     },

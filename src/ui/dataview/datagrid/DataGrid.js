@@ -14,11 +14,11 @@ import Column from "./Column.js";
 import DataGridCell from "./components/cell/DataGridCell.js";
 import CellCache from "./data/CellCache.js";
 import BusyIndicator from "../../BusyIndicator.js";
+import StickyObserver from "../../../util/observer/StickyObserver.js";
 import "../../i18n/I18nLabel.js";
 import "./components/CellTypeLoader.js";
 import TPL from "./DataGrid.js.html" assert {type: "html"};
 import STYLE from "./DataGrid.js.css" assert {type: "css"};
-import StickyObserver from "../../../util/observer/StickyObserver.js";
 
 const MUTATION_CONFIG = {attributes: true};
 
@@ -36,6 +36,20 @@ function getStyleLengthValue(type, value) {
 }
 
 // TODO add "no match" label
+/*
+TODO add DataGrid context to handle selection
+- store active keys
+- handle select/deselect on active keys
+- row checkboxes get value from context
+- select(key)
+- unselect(key)
+- selectAll()
+- unselectAll()
+- setSelected(keyList)
+- isSelected(key)
+- hasSelected()
+- hasUnselected()
+*/
 export default class DataGrid extends DataRecieverMixin(CustomElement) {
 
     #internalId = appUID("data-grid");
@@ -92,7 +106,8 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
         this.#headerSelectEl = document.createElement("input");
         this.#headerSelectEl.type = "checkbox";
         this.#headerSelectEl.name = "multiselect";
-        this.#headerSelectEl.addEventListener("change", () => {
+        this.#headerSelectEl.addEventListener("change", (event) => {
+            event.stopPropagation();
             const value = this.#headerSelectEl.checked;
             const selectEls = this.shadowRoot.querySelectorAll(`td.select-cell input[type="checkbox"]`);
             for (const selectEl of selectEls) {
@@ -107,7 +122,7 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
             const ev = new Event("selection");
             ev.data = [...this.#selected].sort();
             this.dispatchEvent(ev);
-        });
+        }, {passive: true});
         /* --- */
         this.#scrollContainerEl = this.shadowRoot.getElementById("scroll-container");
         this.#tableEl = this.shadowRoot.getElementById("table");
@@ -547,7 +562,6 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
         return this.#cellCache.getCell(rowKey, colName);
     }
 
-    // TODO sort columns by fixed="start" < fixed=any < fixed="end"
     async #applyColumnDefinition() {
         await BusyIndicatorManager.busy();
         const columnNodeList = this.#columnContainerEl.assignedElements({flatten: true}).filter((el) => el instanceof Column);

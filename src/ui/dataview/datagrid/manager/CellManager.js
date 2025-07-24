@@ -21,6 +21,7 @@ const BLACKLISTED_ATTRIBUTES = [
     "backcolor"
 ];
 
+// TODO use intersection observer to only render checkboxes that are actually visible
 export default class CellManager extends EventTarget {
 
     #dataGridId;
@@ -85,7 +86,8 @@ export default class CellManager extends EventTarget {
         this.#selectCheckboxEl = document.createElement("input");
         this.#selectCheckboxEl.type = "checkbox";
         this.#selectCheckboxEl.name = "rowselect";
-        this.#selectCheckboxEl.addEventListener("change", () => {
+        this.#selectCheckboxEl.addEventListener("change", (event) => {
+            event.stopPropagation();
             const ev = new Event("selection", {
                 bubbles: true,
                 cancelable: true
@@ -95,7 +97,7 @@ export default class CellManager extends EventTarget {
                 rowKey: this.#rowKey
             };
             this.#selectCheckboxEl.dispatchEvent(ev);
-        });
+        }, {passive: true});
         this.#selectCellEl.append(this.#selectCheckboxEl);
 
         this.#lastCellEl = document.createElement("td");
