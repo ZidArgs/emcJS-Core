@@ -1,4 +1,4 @@
-class PortHandler extends EventTarget {
+class MessagePortHandler extends EventTarget {
 
     #ports = new Set();
 
@@ -20,7 +20,12 @@ class PortHandler extends EventTarget {
             }
         });
         self.addEventListener("disconnect", (event) => {
-            this.#ports.remove(event.ports[0]);
+            for (const port of event.ports) {
+                this.#ports.remove(port);
+            }
+            if (!this.#ports.size()) {
+                self.close();
+            }
         });
         self.addEventListener("message", (event) => {
             const ev = new Event("message");
@@ -46,7 +51,7 @@ class PortHandler extends EventTarget {
     sendAllButOne(msg, port) {
         if (port instanceof MessagePort) {
             for (const p of this.#ports) {
-                if (p == port) {
+                if (p === port) {
                     continue;
                 }
                 p.postMessage(msg);
@@ -57,4 +62,4 @@ class PortHandler extends EventTarget {
 
 }
 
-export default new PortHandler();
+export default new MessagePortHandler();

@@ -1,30 +1,28 @@
-// frameworks
-import Import from "../../util/import/Import.js";
 import Path from "../../util/file/Path.js";
+import SharedWorkerRegistry from "../../worker/SharedWorkerRegistry.js";
 
-const path = new Path(import.meta.url);
+const MODULE_PATH = new Path(import.meta.url);
 
-async function getWorker() {
-    if ("SharedWorker" in window) {
-        const [SharedWorkerRegistry] = await Import.module("../../worker/SharedWorkerRegistry.js");
-        if (SharedWorkerRegistry.supports("module")) {
-            const workerPath = path.getAbsolute("./ThreadDataSync.w.js");
+function getWorker() {
+    if (SharedWorkerRegistry.isSupported()) {
+        if (SharedWorkerRegistry.supportsType("module")) {
+            const workerPath = MODULE_PATH.getAbsolute("./worker/ThreadDataSync.w.js");
             return SharedWorkerRegistry.register("ThreadDataSync", workerPath, "module");
         }
-        const workerPath = path.getAbsolute("./ThreadDataSync.leg_w.js");
+        const workerPath = MODULE_PATH.getAbsolute("./worker/ThreadDataSync.leg_w.js");
         return SharedWorkerRegistry.register("ThreadDataSync", workerPath);
     }
 }
 
-const SHARED_WORKER = await getWorker();
-
 class ThreadDataSync extends EventTarget {
+
+    #worker = getWorker();
 
     constructor() {
         super();
         /* --- */
-        if (SHARED_WORKER != null) {
-            SHARED_WORKER.addEventListener("message", (event) => {
+        if (this.#worker != null) {
+            this.#worker.addEventListener("message", (event) => {
                 const ev = new Event("message");
                 ev.data = event.data;
                 this.dispatchEvent(ev);
@@ -33,8 +31,8 @@ class ThreadDataSync extends EventTarget {
     }
 
     postMessage(msg = {}) {
-        if (SHARED_WORKER != null) {
-            SHARED_WORKER.postMessage(msg);
+        if (this.#worker != null) {
+            this.#worker.postMessage(msg);
         }
     }
 

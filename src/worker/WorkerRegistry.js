@@ -1,10 +1,10 @@
-import NotSupportedError from "../exceptions/NotSupportedError.js";
-
-if (!("Worker" in window)) {
-    throw new NotSupportedError("This Browser does not support Workers");
-}
+const IS_SUPPORTED = "Worker" in window;
 
 const SUPPORTS_WORKER_TYPE = (() => {
+    if (!("Worker" in window)) {
+        console.warn("Worker is not supported");
+        return false;
+    }
     let supports = false;
     const tester = {
         get type() {
@@ -14,12 +14,12 @@ const SUPPORTS_WORKER_TYPE = (() => {
     };
     try {
         const worker = new Worker("blob://", tester);
-        worker.terminate();
+        worker.close();
     } catch {
         // ignore
     }
     if (!supports) {
-        console.warn("module type in Worker not supported");
+        console.warn("type \"module\" in Worker is not supported");
     }
     return supports;
 })();
@@ -28,36 +28,39 @@ const ALLOWED_TYPES = ["classic"];
 if (SUPPORTS_WORKER_TYPE) {
     ALLOWED_TYPES.push("module");
 }
+
 const WORKER = new Map();
 
 class WorkerRegistry {
 
-    supportsType() {
-        return SUPPORTS_WORKER_TYPE;
+    isSupported() {
+        return IS_SUPPORTED;
+    }
+
+    supportsType(type) {
+        return ALLOWED_TYPES.includes(type);
     }
 
     register(name, path, type = ALLOWED_TYPES[0]) {
-        if (!ALLOWED_TYPES.includes(type)) {
-            throw new Error(`Worker type "${type}" not supported, must be one of ["${ALLOWED_TYPES.join("\", \"")}"]`);
+        if (!this.isSupported()) {
+            throw new Error(`can't register Worker: not supported`);
+        }
+        if (!this.supportsType(type)) {
+            throw new Error(`can't register Worker: type "${type}" not supported`);
         }
         if (WORKER.has(name)) {
-            throw new Error(`Worker with name "${name}" already registered`);
-        } else {
-            const worker = new Worker(path, {
-                name,
-                type
-            });
-            WORKER.set(name, worker);
-            return worker;
+            throw new Error(`can't register Worker: name "${name}" already registered`);
         }
+        const worker = new Worker(path, {
+            name,
+            type
+        });
+        WORKER.set(name, worker);
+        return worker;
     }
 
     get(name) {
-        if (!WORKER.has(name)) {
-            throw new Error(`No Worker with name "${name}" registered`);
-        } else {
-            return WORKER.get(name);
-        }
+        return WORKER.get(name);
     }
 
     has(name) {
@@ -68,7 +71,7 @@ class WorkerRegistry {
         if (WORKER.has(name)) {
             const worker = WORKER.get(name);
             WORKER.delete(name);
-            worker.terminate();
+            worker.close();
         }
     }
 

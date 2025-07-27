@@ -1,33 +1,31 @@
-const StorageCache = (function() {
-    const STATE = new Map();
-
+{
     class StorageCache {
+
+        #state = new Map();
 
         serialize() {
             const res = {};
-            for (const [key, value] of STATE) {
+            for (const [key, value] of this.#state) {
                 res[key] = value;
             }
             return res;
         }
 
         deserialize(data) {
-            STATE.clear();
+            this.#state.clear();
             for (const key in data) {
-                STATE.set(key, data[key]);
+                this.#state.set(key, data[key]);
             }
         }
 
         /* STORAGES */
         set(data) {
             for (const key in data) {
-                STATE.set(key, data[key]);
+                this.#state.set(key, data[key]);
             }
         }
 
     }
 
-    return StorageCache;
-})();
-
-self.StorageCache = StorageCache;
+    self.StorageCache = StorageCache;
+}

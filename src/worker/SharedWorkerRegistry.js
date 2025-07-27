@@ -1,10 +1,10 @@
-import NotSupportedError from "../exceptions/NotSupportedError.js";
-
-if (!("SharedWorker" in window)) {
-    throw new NotSupportedError("This Browser does not support SharedWorkers");
-}
+const IS_SUPPORTED = "SharedWorker" in window;
 
 const SUPPORTS_WORKER_TYPE = (() => {
+    if (!IS_SUPPORTED) {
+        console.warn("SharedWorker is not supported");
+        return false;
+    }
     let supports = false;
     const tester = {
         get type() {
@@ -19,7 +19,7 @@ const SUPPORTS_WORKER_TYPE = (() => {
         // ignore
     }
     if (!supports) {
-        console.warn("module type in SharedWorker not supported");
+        console.warn("type \"module\" in SharedWorker is not supported");
     }
     return supports;
 })();
@@ -28,37 +28,40 @@ const ALLOWED_TYPES = ["classic"];
 if (SUPPORTS_WORKER_TYPE) {
     ALLOWED_TYPES.push("module");
 }
+
 const WORKER = new Map();
 
 class SharedWorkerRegistry {
 
-    supports(type) {
+    isSupported() {
+        return IS_SUPPORTED;
+    }
+
+    supportsType(type) {
         return ALLOWED_TYPES.includes(type);
     }
 
     register(name, path, type = ALLOWED_TYPES[0]) {
-        if (!this.supports(type)) {
-            throw new Error(`Worker type "${type}" not supported, must be one of ["${ALLOWED_TYPES.join("\", \"")}"]`);
+        if (!this.isSupported()) {
+            throw new Error(`can't register SharedWorker: not supported`);
+        }
+        if (!this.supportsType(type)) {
+            throw new Error(`can't register SharedWorker: type "${type}" not supported`);
         }
         if (WORKER.has(name)) {
-            throw new Error(`Worker with name "${name}" already registered`);
-        } else {
-            const worker = (new SharedWorker(path, {
-                name,
-                type
-            })).port;
-            WORKER.set(name, worker);
-            worker.start();
-            return worker;
+            throw new Error(`can't register SharedWorker: name "${name}" already registered`);
         }
+        const worker = (new SharedWorker(path, {
+            name,
+            type
+        })).port;
+        WORKER.set(name, worker);
+        worker.start();
+        return worker;
     }
 
     get(name) {
-        if (!WORKER.has(name)) {
-            throw new Error(`No Worker with name "${name}" registered`);
-        } else {
-            return WORKER.get(name);
-        }
+        return WORKER.get(name);
     }
 
     has(name) {

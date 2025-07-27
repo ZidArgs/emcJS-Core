@@ -1,13 +1,13 @@
-const PortHandler = (function() {
-    const PORTS = new Set;
+{
+    class MessagePortHandler extends EventTarget {
 
-    class PortHandler extends EventTarget {
+        #ports = new Set();
 
         constructor() {
             super();
             self.addEventListener("connect", (event) => {
                 for (const port of event.ports) {
-                    PORTS.add(port);
+                    this.#ports.add(port);
                     port.addEventListener("message", (event) => {
                         const ev = new Event("message");
                         ev.port = port;
@@ -21,7 +21,12 @@ const PortHandler = (function() {
                 }
             });
             self.addEventListener("disconnect", (event) => {
-                PORTS.remove(event.ports[0]);
+                for (const port of event.ports) {
+                    this.#ports.remove(port);
+                }
+                if (!this.#ports.size()) {
+                    self.close();
+                }
             });
             self.addEventListener("message", (event) => {
                 const ev = new Event("message");
@@ -38,7 +43,7 @@ const PortHandler = (function() {
         }
 
         sendAll(msg) {
-            for (const p of PORTS) {
+            for (const p of this.#ports) {
                 p.postMessage(msg);
             }
             self.postMessage?.(msg);
@@ -46,8 +51,8 @@ const PortHandler = (function() {
 
         sendAllButOne(msg, port) {
             if (port instanceof MessagePort) {
-                for (const p of PORTS) {
-                    if (p == port) {
+                for (const p of this.#ports) {
+                    if (p === port) {
                         continue;
                     }
                     p.postMessage(msg);
@@ -58,7 +63,5 @@ const PortHandler = (function() {
 
     }
 
-    return new PortHandler();
-})();
-
-self.PortHandler = PortHandler;
+    self.PortHandler = new MessagePortHandler();
+}

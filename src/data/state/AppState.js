@@ -265,18 +265,24 @@ export default class AppState extends EventTarget {
      *
      * @param {string} category the category to register the storage to (matches [A-Za-z][A-Za-z0-9_]*)
      * @param {ObservableStorage} dataStorage the Storage implementation to register
-     * @param {string} eventName the event name to listen to for detecting cchanges (defaults to `change`)
+     * @param {string} eventName the event name to listen to for detecting changes (defaults to `change`)
      */
     registerStorage(category, dataStorage, eventName = "change") {
         const storageCategory = category.toString();
         if (!CATEGORY_NAME_REGEX.test(storageCategory)) {
-            throw new Error(`failed to retrieve storage "${storageCategory}" - category does not match pattern [A-Za-z][A-Za-z0-9_]*`);
+            throw new Error(`failed to register storage "${storageCategory}" - category does not match pattern [A-Za-z][A-Za-z0-9_]*`);
         }
         if (!(dataStorage instanceof ObservableStorage)) {
-            throw new TypeError("unknown storage implementation, expected DataStorage");
+            throw new TypeError("unknown storage implementation, expected ObservableStorage");
         }
         if (this.#registeredStorages.has(storageCategory)) {
-            throw new Error(`storage with name "${storageCategory}" already registerred`);
+            throw new Error(`storage with name "${storageCategory}" already registered`);
+        }
+        if (eventName != null && (typeof eventName !== "string" || eventName === "")) {
+            throw new Error("eventName has to be a string or null");
+        }
+        if (eventName == null) {
+            eventName = "change";
         }
         const handler = this.#getChangeHandler(storageCategory);
         if (this.#requestedStorages.has(storageCategory)) {
@@ -299,6 +305,20 @@ export default class AppState extends EventTarget {
             dataStorage
         };
         this.dispatchEvent(ev);
+    }
+
+    /**
+     * Checks if a {@link ObservableStorage} has been registered.
+     *
+     * @param {string} category the category for which to check the registration (matches [A-Za-z][A-Za-z0-9_]* or empty string)
+     * @returns {boolean} `true` if the storage was registered, `false` otherwise
+     */
+    isStorageRegistered(category) {
+        const storageCategory = category.toString();
+        if (!CATEGORY_NAME_REGEX.test(storageCategory) && storageCategory !== "") {
+            throw new Error(`failed to check storage "${storageCategory}" - category does not match pattern [A-Za-z][A-Za-z0-9_]* or empty string`);
+        }
+        return this.#registeredStorages.has(storageCategory);
     }
 
     /**
