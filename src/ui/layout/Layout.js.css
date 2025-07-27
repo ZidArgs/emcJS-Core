@@ -3,6 +3,9 @@
     flex-direction: column;
     justify-content: stretch;
     align-items: stretch;
+    flex-shrink: 0;
+    width: min-content;
+    height: min-content;
     min-width: 100%;
     min-height: 100%;
 }
@@ -30,11 +33,10 @@
     overflow: hidden;
 }
 
-:host > ::slotted(*) {
-    flex-grow: 0;
+::slotted(*) {
     flex-shrink: 0;
-    width: auto;
-    height: auto;
+    width: min-content;
+    height: min-content;
     min-width: 100%;
     min-height: 100%;
 }
