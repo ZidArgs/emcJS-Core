@@ -52,7 +52,7 @@
     min-height: 2rem;
     pointer-events: none;
     user-select: none;
-    animation: popInLater .1s ease-in 1s forwards;
+    animation: popInLater 0ms ease-in 100ms forwards;
     animation-fill-mode: forwards;
     opacity: 0;
 }

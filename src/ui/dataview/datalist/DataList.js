@@ -41,7 +41,8 @@ export default class DataList extends ResizeObserverMixin(DataRecieverMixin(Cust
             el.setData(values);
         };
         this.#elementManager.addEventListener("afterrender", () => {
-            this.#emptyContainerEl.classList.toggle("hidden", this.childNodes.length > 0);
+            const isEmpty = this.children.length === 0;
+            this.#emptyContainerEl.classList.toggle("hidden", !isEmpty);
             if (this.autoscroll) {
                 const scrollHeight = this.#scrollContainerEl.scrollHeight;
                 this.#scrollContainerEl.scroll({top: scrollHeight});

@@ -15,6 +15,24 @@ import STYLE from "./ListSelect.js.css" assert {type: "css"};
  */
 export default class ListSelect extends CustomElementDelegating {
 
+    #valueElementsList;
+
+    #valueList = new Map();
+
+    #visibleValueList = new Set();
+
+    #selectedValueList = new Set();
+
+    #selectedVisibleValueList = new Set();
+
+    #currentSearch;
+
+    #containerEl;
+
+    #scrollContainerEl;
+
+    #headerEl;
+
     #slotEventManager;
 
     #i18nEventManager = new EventTargetManager(i18n);
@@ -24,14 +42,37 @@ export default class ListSelect extends CustomElementDelegating {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const containerEl = this.shadowRoot.getElementById("container");
-        this.#slotEventManager = new EventTargetManager(containerEl);
+        this.#containerEl = this.shadowRoot.getElementById("container");
+        this.#slotEventManager = new EventTargetManager(this.#containerEl);
         this.#slotEventManager.set("slotchange", () => {
-            const all = this.querySelectorAll(`[value]`);
+            this.#valueList.clear();
+            this.#visibleValueList.clear();
+            this.#selectedValueList.clear();
+
+            this.#valueElementsList = this.querySelectorAll(`[value]`);
+            const all = this.#valueElementsList;
             for (const el of all) {
                 if (el) {
+                    const value = el.getAttribute("value");
+                    if (this.#valueList.has(value)) {
+                        el.style.display = "none";
+                        continue;
+                    }
+                    const innerText = el.innerText;
+                    this.#valueList.set(value, {
+                        el,
+                        innerText
+                    });
+                    if (this.#currentSearch?.test(innerText) ?? true) {
+                        this.#visibleValueList.add(value);
+                    } else {
+                        el.style.display = "none";
+                    }
+                    if (el.classList.contains("active")) {
+                        this.#selectedValueList.add(value);
+                    }
                     el.onclick = () => {
-                        this.#choose(el.getAttribute("value"));
+                        this.#choose(value);
                     };
                 }
             }
@@ -41,78 +82,74 @@ export default class ListSelect extends CustomElementDelegating {
             }
         });
         /* header */
-        const headerEl = this.shadowRoot.getElementById("header");
-        headerEl.addEventListener("check", (event) => {
+        this.#headerEl = this.shadowRoot.getElementById("header");
+        this.#headerEl.addEventListener("check", (event) => {
             if (this.multiple) {
-                const all = this.querySelectorAll(`[value]`);
-                const value = [];
                 if (event.value) {
-                    for (const el of all) {
-                        if (!!el && el.style.display == "" || el.classList.contains("active")) {
-                            value.push(el.value);
-                        }
+                    for (const value of this.#visibleValueList) {
+                        this.#selectedValueList.add(value);
                     }
                 } else {
-                    for (const el of all) {
-                        if (!!el && el.style.display == "none" && el.classList.contains("active")) {
-                            value.push(el.value);
-                        }
+                    for (const value of this.#visibleValueList) {
+                        this.#selectedValueList.delete(value);
                     }
                 }
-                this.value = value;
+                this.value = [...this.#selectedValueList];
             }
         });
-        headerEl.addEventListener("search", (event) => {
-            const all = this.querySelectorAll(`[value]`);
+        this.#headerEl.addEventListener("search", debounce((event) => {
+            const all = this.#valueElementsList;
             let checked = false;
             let unchecked = false;
             if (event.value) {
-                const regEx = new SearchAnd(event.value);
-                if (this.style.height == "" || this.style.width == "") {
-                    const rect = this.getBoundingClientRect();
-                    this.style.width = `${rect.width}px`;
-                    this.style.height = `${rect.height}px`;
-                }
-                for (const el of all) {
-                    if (regEx.test(el.innerText)) {
-                        el.style.display = "";
+                this.#currentSearch = new SearchAnd(event.value);
+                for (const [value, entry] of this.#valueList) {
+                    const {
+                        el, innerText
+                    } = entry;
+                    if (this.#currentSearch.test(innerText)) {
+                        this.#visibleValueList.add(value);
                         if (el.classList.contains("active")) {
                             checked = true;
+                            this.#selectedVisibleValueList.add(value);
                         } else {
                             unchecked = true;
                         }
+                        el.style.display = "";
                     } else {
+                        this.#visibleValueList.delete(value);
+                        this.#selectedVisibleValueList.delete(value);
                         el.style.display = "none";
-                        el.classList.remove("marked");
                     }
                 }
             } else {
                 for (const el of all) {
+                    const value = el.getAttribute("value");
+                    this.#visibleValueList.add(value);
                     el.style.display = "";
                     if (el.classList.contains("active")) {
                         checked = true;
+                        this.#selectedVisibleValueList.add(value);
                     } else {
                         unchecked = true;
                     }
                 }
-                this.style.width = "";
-                this.style.height = "";
             }
             if (this.multiple) {
                 if (checked) {
                     if (unchecked) {
-                        headerEl.checked = "mixed";
+                        this.#headerEl.checked = "mixed";
                     } else {
-                        headerEl.checked = true;
+                        this.#headerEl.checked = true;
                     }
                 } else {
-                    headerEl.checked = false;
+                    this.#headerEl.checked = false;
                 }
             }
-        });
+        }, 300));
         /* --- */
-        const scrollContainerEl = this.shadowRoot.getElementById("scroll-container");
-        const selectionHelper = new ListSelectionHelper(this, scrollContainerEl);
+        this.#scrollContainerEl = this.shadowRoot.getElementById("scroll-container");
+        const selectionHelper = new ListSelectionHelper(this, this.#scrollContainerEl);
         selectionHelper.addEventListener("choose", (event) => {
             this.#choose(event.value);
         });
@@ -127,14 +164,14 @@ export default class ListSelect extends CustomElementDelegating {
     }
 
     focus() {
-        const headerEl = this.shadowRoot.getElementById("header");
-        if (headerEl != null) {
-            headerEl.focus();
+        if (this.#headerEl != null) {
+            this.#headerEl.focus();
         }
     }
 
     connectedCallback() {
-        const all = this.querySelectorAll(`[value]`);
+        this.#valueElementsList = this.querySelectorAll(`[value]`);
+        const all = this.#valueElementsList;
         if (!this.value) {
             if (this.multiple) {
                 this.value = [];
@@ -154,7 +191,7 @@ export default class ListSelect extends CustomElementDelegating {
 
     serialize() {
         const res = {};
-        const all = this.querySelectorAll(`[value]`);
+        const all = this.#valueElementsList;
         for (const el of all) {
             res[el.value] = el.classList.contains("active");
         }
@@ -247,8 +284,7 @@ export default class ListSelect extends CustomElementDelegating {
                             this.value = [];
                         }
                     }
-                    const header = this.shadowRoot.getElementById("header");
-                    header.multiple = newValue;
+                    this.#headerEl.multiple = newValue;
                 }
             } break;
             case "sort": {
@@ -260,13 +296,11 @@ export default class ListSelect extends CustomElementDelegating {
     }
 
     resetSearch() {
-        const header = this.shadowRoot.getElementById("header");
-        header.search = "";
+        this.#headerEl.search = "";
     }
 
-    #calculateItems() {
-        const header = this.shadowRoot.getElementById("header");
-        const all = this.querySelectorAll(`[value]`);
+    #calculateItems = debounce(() => {
+        const all = this.#valueElementsList;
         if (this.multiple) {
             const vals = new Set(this.value);
             let checked = false;
@@ -288,12 +322,12 @@ export default class ListSelect extends CustomElementDelegating {
             }
             if (checked) {
                 if (unchecked) {
-                    header.checked = "mixed";
+                    this.#headerEl.checked = "mixed";
                 } else {
-                    header.checked = true;
+                    this.#headerEl.checked = true;
                 }
             } else {
-                header.checked = false;
+                this.#headerEl.checked = false;
             }
         } else {
             for (const el of all) {
@@ -306,7 +340,7 @@ export default class ListSelect extends CustomElementDelegating {
                 }
             }
         }
-    }
+    });
 
     #choose(value) {
         if (!this.readonly) {
@@ -326,7 +360,7 @@ export default class ListSelect extends CustomElementDelegating {
     }
 
     hasValue(value) {
-        return this.querySelector(`[value="${value}"]`) != null;
+        return this.#valueList.has(value);
     }
 
     #sort = debounce(() => {

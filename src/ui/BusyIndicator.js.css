@@ -8,14 +8,15 @@
     right: 0;
     bottom: 0;
     cursor: wait;
-    pointer-events: all;
+    pointer-events: none;
     z-index: 9999999999;
-    background: rgba(0,0,0,0.3);
+    background: rgba(0, 0, 0, 0.3);
     transform: translateZ(0);
-    animation: popInLater .1s ease-in 1s forwards;
+    animation: popInLater 0ms ease-in 100ms forwards;
     animation-fill-mode: forwards;
     opacity: 0;
 }
+
 #default-animation {
     width: 5vmin;
     height: 5vmin;
@@ -23,12 +24,20 @@
     background: conic-gradient(rgba(255, 255, 255, 0) 220deg, rgba(255, 255, 255, 1) 360deg);
     animation: rotate 1s linear infinite;
 }
+
 @keyframes rotate {
-    0% { transform: rotate(0deg) }
-    100% { transform: rotate(360deg) }
+    0% {
+        transform: rotate(0deg)
+    }
+
+    100% {
+        transform: rotate(360deg)
+    }
 }
+
 @keyframes popInLater {
     to {
         opacity: 1;
+        pointer-events: all;
     }
 }

@@ -109,10 +109,8 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
         this.#headerSelectEl.addEventListener("change", (event) => {
             event.stopPropagation();
             const value = this.#headerSelectEl.checked;
-            const selectEls = this.shadowRoot.querySelectorAll(`td.select-cell input[type="checkbox"]`);
-            for (const selectEl of selectEls) {
-                selectEl.checked = value;
-                const rowKey = selectEl.getAttribute("row-key");
+            const changedKeys = this.#rowManager.setAllVisibleRowsSelected(value);
+            for (const rowKey of changedKeys) {
                 if (value) {
                     this.#selected.add(rowKey);
                 } else {
@@ -150,7 +148,8 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
         }));
         this.#rowManager = new RowManager(this.#bodyEl, stickyObserver, this.#cellCache, this.#internalId);
         this.#rowManager.addEventListener("afterrender", debounce(() => {
-            this.#emptyContainerEl.classList.toggle("hidden", this.#bodyEl.childNodes.length > 0);
+            const isEmpty = this.#bodyEl.children.length === 0;
+            this.#emptyContainerEl.classList.toggle("hidden", !isEmpty);
             this.#updateSelectionAfterRender();
             this.#applyCellFixes(this.#bodyEl);
         }));
@@ -239,20 +238,14 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
             if (!this.multiple) {
                 if (value) {
                     const oldrowKey = [...this.#selected][0];
-                    const selectEl = this.shadowRoot.querySelector(`.select-cell input[type="checkbox"][row-key="${oldrowKey}"]`);
-                    if (selectEl != null) {
-                        selectEl.checked = false;
-                    }
+                    this.#rowManager.setRowSelected(oldrowKey, false);
                     this.#selected.clear();
                     this.#selected.add(rowKey);
                 } else if (this.allowDeselect) {
                     this.#selected.clear();
                 } else {
                     const oldrowKey = [...this.#selected][0];
-                    const selectEl = this.shadowRoot.querySelector(`.select-cell input[type="checkbox"][row-key="${oldrowKey}"]`);
-                    if (selectEl != null) {
-                        selectEl.checked = true;
-                    }
+                    this.#rowManager.setRowSelected(oldrowKey, true);
                 }
             } else if (value) {
                 this.#selected.add(rowKey);
@@ -447,13 +440,11 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
             if (this.multiple) {
                 for (const entry of selected) {
                     this.#selected.add(entry);
+                    this.#rowManager.setRowSelected(entry, true);
                 }
             } else if (selected.length > 0) {
                 this.#selected.add(selected[0]);
-            }
-            const selectEls = this.shadowRoot.querySelectorAll(`.select-cell input[type="checkbox"]`);
-            for (const selectEl of selectEls) {
-                selectEl.checked = this.#selected.has(selectEl.getAttribute("row-key"));
+                this.#rowManager.setRowSelected(selected[0], true);
             }
             this.#updateSelectHeader();
             const ev = new Event("selection");
@@ -467,11 +458,10 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
     }
 
     clearSelected() {
-        this.#selected.clear();
-        const selectEls = this.shadowRoot.querySelectorAll(`.select-cell input[type="checkbox"]`);
-        for (const selectEl of selectEls) {
-            selectEl.checked = false;
+        for (const key of this.#selected) {
+            this.#rowManager.setRowSelected(key, false);
         }
+        this.#selected.clear();
         if (this.selectable) {
             const ev = new Event("selection");
             ev.data = [];
@@ -481,18 +471,15 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
 
     selectAll() {
         if (this.selectable) {
-            this.#selected.clear();
-            const selectEls = this.shadowRoot.querySelectorAll(`td.select-cell input[type="checkbox"]`);
             if (this.multiple) {
-                for (const selectEl of selectEls) {
-                    selectEl.checked = true;
-                    const rowKey = selectEl.getAttribute("row-key");
+                const changedKeys = this.#rowManager.setAllVisibleRowsSelected(true);
+                for (const rowKey of changedKeys) {
                     this.#selected.add(rowKey);
                 }
             } else {
-                const selectEl = selectEls[0];
-                selectEl.checked = true;
+                const selectEl = this.shadowRoot.querySelector(`td.select-cell input[type="checkbox"]`);
                 const rowKey = selectEl.getAttribute("row-key");
+                this.#rowManager.setRowSelected(true);
                 this.#selected.add(rowKey);
             }
             this.#updateSelectHeader();
@@ -626,27 +613,26 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
     }
 
     #updateSelectHeader() {
-        let value = 0;
-        const selectEls = this.shadowRoot.querySelectorAll(`td.select-cell input[type="checkbox"]`);
-        for (const selectEl of selectEls) {
-            value |= selectEl.checked ? 2 : 1;
-        }
+        const {
+            visibleCount, selectedCount
+        } = this.#rowManager.getSelectionStatus();
+
         const ev = new Event("selection-header");
-        if (value === 2) {
-            this.#headerSelectEl.checked = true;
-            this.#headerSelectEl.indeterminate = false;
-            ev.checked = true;
-            ev.indeterminate = false;
-        } else if (value === 3) {
-            this.#headerSelectEl.checked = true;
-            this.#headerSelectEl.indeterminate = true;
-            ev.checked = true;
-            ev.indeterminate = true;
-        } else {
+        if (selectedCount === 0) { // none selected
             this.#headerSelectEl.checked = false;
             this.#headerSelectEl.indeterminate = false;
             ev.checked = false;
             ev.indeterminate = false;
+        } else if (selectedCount === visibleCount) { // all selected
+            this.#headerSelectEl.checked = true;
+            this.#headerSelectEl.indeterminate = false;
+            ev.checked = true;
+            ev.indeterminate = false;
+        } else { // some selected
+            this.#headerSelectEl.checked = true;
+            this.#headerSelectEl.indeterminate = true;
+            ev.checked = true;
+            ev.indeterminate = true;
         }
         this.dispatchEvent(ev);
     }
@@ -683,11 +669,7 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
     }
 
     #updateSelectionAfterRender() {
-        const selectEls = this.shadowRoot.querySelectorAll(`.select-cell input[type="checkbox"]`);
-        for (const selectEl of selectEls) {
-            const rowKey = selectEl.getAttribute("row-key");
-            selectEl.checked = this.#selected.has(rowKey);
-        }
+        this.#rowManager.setAllVisibleRowsSelected((key) => this.#selected.has(key));
     }
 
     #calculateCellFixes(containerEl) {

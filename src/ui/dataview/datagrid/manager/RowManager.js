@@ -54,6 +54,42 @@ export default class RowManager extends EventTarget {
         this.#stickyObserver = stickyObserver;
     }
 
+    getSelectionStatus() {
+        const result = {
+            visibleCount: 0,
+            selectedCount: 0,
+            selectedList: []
+        };
+        for (const [key] of this.#elements) {
+            result.visibleCount++;
+            const manager = this.#cellManagers.get(key);
+            if (manager != null && manager.selected) {
+                result.selectedCount++;
+                result.selectedList.push(key);
+            }
+        }
+        return result;
+    }
+
+    setAllVisibleRowsSelected(value = true) {
+        const result = [];
+        for (const [key] of this.#elements) {
+            const manager = this.#cellManagers.get(key);
+            if (manager != null) {
+                manager.selected = typeof value === "function" ? value(key) : value;
+                result.push(key);
+            }
+        }
+        return result;
+    }
+
+    setRowSelected(key, value = true) {
+        const manager = this.#cellManagers.get(key);
+        if (manager != null) {
+            manager.selected = value;
+        }
+    }
+
     get isDragging() {
         return this.#draggingRowEl != null;
     }

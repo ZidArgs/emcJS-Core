@@ -109,6 +109,14 @@ export default class CellManager extends EventTarget {
         this.#stickyObserverManager.observe(this.#selectCellEl);
     }
 
+    set selected(value) {
+        this.#selectCheckboxEl.checked = !!value;
+    }
+
+    get selected() {
+        return this.#selectCheckboxEl.checked;
+    }
+
     set sortable(value) {
         value = !!value;
         if (this.#sortable !== value) {

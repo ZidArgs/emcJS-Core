@@ -1,6 +1,7 @@
 import CustomElement from "../../../element/CustomElement.js";
 import LogicHandler from "../../../../util/logic/processor/LogicHandler.js";
 import I18nLabel from "../../../i18n/I18nLabel.js";
+import {debounce} from "../../../../util/Debouncer.js";
 import "../../../i18n/I18nTextbox.js";
 import "../../../input/InputWrapper.js";
 import "../../../input/KeyInput.js";
@@ -362,6 +363,9 @@ export default class SettingsTabContent extends CustomElement {
         inputEl.multiple = multiple;
         inputEl.dataset.ref = ref;
         const valueCache = new Set();
+        const updateInputValue = debounce(() => {
+            inputEl.value = Array.from(valueCache);
+        });
         for (const value in convertedValues) {
             inputEl.append(generateEmcOption(value, convertedValues[value]));
             if (storage.get(value)) {
@@ -376,7 +380,7 @@ export default class SettingsTabContent extends CustomElement {
                     } else {
                         valueCache.delete(value);
                     }
-                    inputEl.value = Array.from(valueCache);
+                    updateInputValue();
                 }
             });
         }
