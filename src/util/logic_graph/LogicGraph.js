@@ -406,6 +406,9 @@ export default class LogicGraph {
     }
 
     get(ref) {
+        if (this.#forcedReachables.has(ref)) {
+            return true;
+        }
         return this.#memoryOut.get(ref) ?? false;
     }
 
@@ -414,11 +417,14 @@ export default class LogicGraph {
         for (const [k, v] of this.#memoryOut) {
             obj[k] = v;
         }
+        for (const k of this.#forcedReachables) {
+            obj[k] = true;
+        }
         return obj;
     }
 
     has(ref) {
-        return this.#memoryOut.has(ref);
+        return this.#forcedReachables.has(ref) || this.#memoryOut.has(ref);
     }
 
     reset() {
