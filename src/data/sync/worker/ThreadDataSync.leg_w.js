@@ -1,5 +1,4 @@
-self.importScripts(`/emcJS/worker/util/legacy/MessagePortHandler.js`);
-
+importScripts(new URL("../../../worker/util/legacy/MessagePortHandler.js", location));
 const MessagePortHandler = self.MessagePortHandler;
 
 MessagePortHandler.addEventListener("message", (event) => {

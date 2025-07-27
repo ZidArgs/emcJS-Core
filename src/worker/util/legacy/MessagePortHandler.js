@@ -1,4 +1,4 @@
-{
+if (!self.MessagePortHandler) {
     class MessagePortHandler extends EventTarget {
 
         #ports = new Set();
@@ -63,5 +63,5 @@
 
     }
 
-    self.PortHandler = new MessagePortHandler();
+    self.MessagePortHandler = new MessagePortHandler();
 }

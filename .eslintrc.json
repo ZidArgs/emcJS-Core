@@ -16,7 +16,8 @@
     },
     "globals": {
         "WeakRef": false,
-        "Iterator": false
+        "Iterator": false,
+        "importScripts": false
     },
     "rules": {
         "no-unused-expressions": "error",

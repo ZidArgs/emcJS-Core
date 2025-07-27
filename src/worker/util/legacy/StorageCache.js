@@ -1,4 +1,4 @@
-{
+if (!self.StorageCache) {
     class StorageCache {
 
         #state = new Map();
