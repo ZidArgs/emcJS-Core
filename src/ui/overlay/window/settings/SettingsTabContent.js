@@ -1,7 +1,6 @@
 import CustomElement from "../../../element/CustomElement.js";
 import LogicHandler from "../../../../util/logic/processor/LogicHandler.js";
 import I18nLabel from "../../../i18n/I18nLabel.js";
-import {debounce} from "../../../../util/Debouncer.js";
 import "../../../i18n/I18nTextbox.js";
 import "../../../input/InputWrapper.js";
 import "../../../input/KeyInput.js";
@@ -363,16 +362,16 @@ export default class SettingsTabContent extends CustomElement {
         inputEl.multiple = multiple;
         inputEl.dataset.ref = ref;
         const valueCache = new Set();
-        const updateInputValue = debounce(() => {
-            inputEl.value = Array.from(valueCache);
-        });
         for (const value in convertedValues) {
             inputEl.append(generateEmcOption(value, convertedValues[value]));
             if (storage.get(value)) {
                 valueCache.add(value);
             }
-            // events
-            storage.addEventListener("change", (event) => {
+        }
+        inputEl.value = Array.from(valueCache);
+        // events
+        storage.addEventListener("change", (event) => {
+            for (const value in convertedValues) {
                 const evValue = event.data[value];
                 if (evValue != null) {
                     if (evValue) {
@@ -380,12 +379,10 @@ export default class SettingsTabContent extends CustomElement {
                     } else {
                         valueCache.delete(value);
                     }
-                    updateInputValue();
                 }
-            });
-        }
-        inputEl.value = Array.from(valueCache);
-        // events
+            }
+            inputEl.value = Array.from(valueCache);
+        });
         storage.addEventListener("clear", (event) => {
             valueCache.clear();
             for (const value in convertedValues) {

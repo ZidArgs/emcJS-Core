@@ -9,14 +9,16 @@
     color: var(--navigation-text-color, #000000);
     flex-grow: 0;
     flex-shrink: 0;
-    z-index: 900500;
+    z-index: var(--z-index-navbar, 900500);
 }
+
 #container {
     display: block;
     margin: 0;
     width: 100%;
     z-index: 100;
 }
+
 #cover {
     position: fixed;
     display: none;
@@ -25,10 +27,12 @@
     right: 0;
     bottom: 0;
 }
+
 #container.cover #cover,
 #container.open #cover {
     display: block;
 }
+
 #hamburger-button {
     position: relative;
     display: none;
@@ -37,9 +41,11 @@
     margin: 0;
     transition: transform 0.2s ease-in-out;
 }
+
 #container.open ~ #hamburger-button {
     transform: translateX(calc(100dvw - (3em + 10px)));
 }
+
 ul {
     position: relative;
     -webkit-padding-start: 0;
@@ -50,6 +56,7 @@ ul {
     -moz-margin-after: 0;
     list-style: none;
 }
+
 ul li {
     position: relative;
     min-width: 150px;
@@ -57,29 +64,35 @@ ul li {
     background-color: var(--navigation-back-color, #ffffff);
     background-image: var(--navigation-back-image, none);
 }
+
 ul > li {
     display: inline-block;
 }
+
 ul > li > ul {
     left: 0;
     width: 100px;
     z-index: 100;
     box-shadow: var(--navigation-shadow-color, #000000) 2px 4px 6px -2px;
 }
+
 ul#content {
     display: inline-flex;
     margin: 0;
 }
+
 ul li > emc-navbar-button {
     height: 2em;
     width: 100%;
 }
+
 @media (max-width: 500px) {
     :host {
         display: block;
         min-height: 3em;
         width: 100dvw;
     }
+
     #container {
         position: absolute;
         width: 100dvw;
@@ -88,16 +101,20 @@ ul li > emc-navbar-button {
         padding-right: calc(3em + 10px);
         transition: left 0.2s ease-in-out;
     }
+
     #container.open {
         left: 0;
     }
+
     #hamburger-button {
         display: inline-block;
         z-index: 99;
     }
+
     ul li {
         width: 100%;
     }
+
     ul#content {
         flex-direction: column;
         width: 100%;
@@ -105,28 +122,34 @@ ul li > emc-navbar-button {
         overflow-y: auto;
         box-shadow: var(--navigation-marker-color, #000000) 2px 4px 8px 2px;
     }
+
     ul#content > li > ul {
         display: none;
         width: 100%;
         padding: 0 0 0 20px;
     }
+
     ul#content > li.open > ul {
         display: table;
         box-shadow: none;
     }
+
     ul#content > li > ul:not(:last-child) {
         padding-bottom: 4px;
     }
+
     ul li > emc-navbar-button {
         height: 3em;
         --justify-content: flex-start;
     }
 }
+
 @media (min-width: 501px) {
     ul#content {
         flex-wrap: wrap;
         width: 100%;
     }
+
     ul#content > li > ul {
         position: absolute;
         display: table;
@@ -135,9 +158,11 @@ ul li > emc-navbar-button {
         transform-origin: center top;
         transform: scaleY(0);
     }
+
     ul#content > li.open > ul {
         transform: scaleY(1);
     }
+
     ul#content > li > ul > li {
         display: inline-block;
         width: 100%;

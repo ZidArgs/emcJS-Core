@@ -1,6 +1,7 @@
 :host {
     display: contents;
 }
+
 #tooltip {
     position: fixed;
     display: block;
@@ -13,8 +14,9 @@
     cursor: default;
     overflow: hidden;
     pointer-events: none;
-    z-index: 900900;
+    z-index: var(--z-index-tooltop, 900800);
 }
+
 ::slotted([slot="tooltip"]) {
     pointer-events: all;
 }

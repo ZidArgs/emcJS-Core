@@ -23,7 +23,7 @@
     min-height: 100%;
     border-style: none;
     border-radius: 0px;
-    z-index: 1000000000;
+    z-index: var(--z-index-input-expanded, 100000000);
 }
 
 #field:not(.expanded):focus-within {

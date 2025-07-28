@@ -12,18 +12,21 @@
     border-width: var(--input-border-width, 2px);
     border-color: var(--input-border-color, #222222);
     border-radius: var(--input-border-radius, 6px);
-    z-index: 1000;
+    z-index: var(--z-index-element-popups, 1000);
     box-shadow: #000000 4px 4px 8px -4px;
     text-align: left;
 }
+
 #error-container {
     display: block;
     width: 100%;
     padding: 2px;
 }
+
 #error-container:not(:empty) + #empty {
     display: none;
 }
+
 .error-label {
     display: block;
     flex-shrink: 0;
@@ -38,11 +41,13 @@
     cursor: pointer;
     user-select: none;
 }
+
 .error-label ul {
     margin: 0px;
     padding-inline-start: 8px;
     list-style-type: "•";
 }
+
 .error-label ul li {
     padding-left: 4px;
 }
