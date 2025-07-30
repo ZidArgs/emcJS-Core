@@ -2,7 +2,7 @@
 import {deepClone} from "../../../util/helper/DeepClone.js";
 import ObservableStorage from "./ObservableStorage.js";
 
-export default class ObservableDefaultingStorage extends ObservableStorage {
+export default class ObservableMultiDefaultValueStorage extends ObservableStorage {
 
     #defaults = new Map();
 

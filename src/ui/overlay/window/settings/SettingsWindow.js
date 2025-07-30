@@ -1,4 +1,4 @@
-import ObservableDefaultingStorage from "../../../../data/storage/observable/ObservableDefaultingStorage.js";
+import ObservableMultiDefaultValueStorage from "../../../../data/storage/observable/ObservableMultiDefaultValueStorage.js";
 import Window from "../Window.js";
 import "../../../layout/panel/TabPanel.js";
 import "../../../input/ListSelect.js";
@@ -38,7 +38,7 @@ export default class SettingsWindow extends Window {
 
     #cancelEl;
 
-    #storage = new ObservableDefaultingStorage();
+    #storage = new ObservableMultiDefaultValueStorage();
 
     constructor(title = "Settings", options = {}) {
         super(title, options.close);

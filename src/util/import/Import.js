@@ -36,21 +36,20 @@ function getCSS(url) {
 }
 
 function extractModule(module) {
-    try {
-        const {
-            default: def, ...other
-        } = module ?? {};
-        return [def, other];
-    } catch (err) {
-        throw new Error(`Error extracting module`, {cause: err});
-    }
+    const {
+        default: def, ...other
+    } = module ?? {};
+    return [def, other];
 }
 
 async function importModule(url) {
     return import(url)
+        .catch((err) => {
+            throw new Error(`error loading module "${url}"`, {cause: err});
+        })
         .then(extractModule)
         .catch((err) => {
-            throw new Error(`Error loading module "${url}"`, {cause: err});
+            throw new Error(`error extracting module "${url}"`, {cause: err});
         });
 }
 
