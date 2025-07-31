@@ -1,7 +1,4 @@
 const HANDLER = {
-    get(target, property) {
-        return target[property];
-    },
     set() {
         return false;
     },
@@ -9,6 +6,9 @@ const HANDLER = {
         return false;
     },
     defineProperty() {
+        return false;
+    },
+    isExtensible() {
         return false;
     },
     preventExtensions() {
@@ -23,21 +23,21 @@ const TYPE_TAG = Symbol("Immutable");
 
 /**
  * Create an immutable Object utilizing Proxy
- * @param {Object} data an object to immute, primitives can not be immuted
+ * @param {Object} target an object to immute, primitives can not be immuted
  * @returns {Proxy} the Proxy immuting the data
  */
-export function immute(data) {
-    if (data != null && typeof data == "object" && !data[TYPE_TAG]) {
-        if (Array.isArray(data)) {
-            const res = data.map(immute);
+export function immute(target) {
+    if (target != null && typeof target == "object" && !target[TYPE_TAG]) {
+        if (Array.isArray(target)) {
+            const res = target.map(immute);
             const proxy = new Proxy(res, HANDLER);
             Object.defineProperty(res, TYPE_TAG, {value: true});
             return proxy;
         }
-        if (data.constructor == Object) {
+        if (target.constructor == Object) {
             const res = {};
-            for (const key in data) {
-                const value = data[key];
+            for (const key in target) {
+                const value = target[key];
                 res[key] = immute(value);
             }
             const proxy = new Proxy(res, HANDLER);
@@ -45,5 +45,5 @@ export function immute(data) {
             return proxy;
         }
     }
-    return data;
+    return target;
 }
