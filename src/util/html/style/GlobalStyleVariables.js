@@ -1,71 +1,45 @@
 import {debounce} from "../../Debouncer.js";
 import "../../../polyfills/adoptedStyleSheet.polyfill.js";
 
-function createStyleSheet() {
-    const sheet = new CSSStyleSheet();
-    sheet.replaceSync(":root {}");
-    return sheet;
-}
+// -----------------
+class GlobalStyleVariables {
 
-const STATIC_STYLESHEET = createStyleSheet();
-const STATIC_DEFAULT_VARIABLES = new Map();
-const STATIC_VARIABLES = new Map();
+    #stylesheet = new CSSStyleSheet();
 
-// extract default variables
+    #defaultVariables = new Map();
 
-function extractAllRules(sheet) {
-    if (sheet.href === null || sheet.href.startsWith(window.location.origin)) {
-        try {
-            const rules = sheet.cssRules;
-            for (const rule of Array.from(rules)) {
-                if (rule instanceof CSSImportRule) {
-                    extractAllRules(rule.styleSheet);
-                } else if (rule instanceof CSSStyleRule) {
-                    if (rule.selectorText === ":root") {
-                        const style = rule.style;
-                        for (const name of Array.from(style)) {
-                            if (name.startsWith("--")) {
-                                STATIC_DEFAULT_VARIABLES.set(name.slice(2), style.getPropertyValue(name).trim());
+    #variables = new Map();
+
+    constructor() {
+        for (const sheet of Array.from(document.styleSheets)) {
+            this.#extractAllRules(sheet);
+        }
+        this.#stylesheet.replaceSync(":root {}");
+        document.adoptedStyleSheets = [...document.adoptedStyleSheets, this.#stylesheet];
+    }
+
+    #extractAllRules(sheet) {
+        if (sheet.href === null || sheet.href.startsWith(window.location.origin)) {
+            try {
+                const rules = sheet.cssRules;
+                for (const rule of Array.from(rules)) {
+                    if (rule instanceof CSSImportRule) {
+                        this.#extractAllRules(rule.styleSheet);
+                    } else if (rule instanceof CSSStyleRule) {
+                        if (rule.selectorText === ":root") {
+                            const style = rule.style;
+                            for (const name of Array.from(style)) {
+                                if (name.startsWith("--")) {
+                                    this.#defaultVariables.set(name.slice(2), style.getPropertyValue(name).trim());
+                                }
                             }
                         }
                     }
                 }
+            } catch (err) {
+                console.warn(`extracting global variables failed for style "${sheet.href}" - ${err}`);
             }
-        } catch (err) {
-            console.warn(`extracting global variables failed for style "${sheet.href}" - ${err}`);
         }
-    }
-}
-
-for (const sheet of Array.from(document.styleSheets)) {
-    extractAllRules(sheet);
-}
-
-// add dynamic variable handler
-
-function updateStyle(sheet, variables) {
-    const vars = [];
-    for (const [key, value] of variables) {
-        if (value != null) {
-            vars.push(`--${key}: ${value}`);
-        }
-    }
-    const rule = `:root{${vars.join(";")}}`;
-    sheet.replace(rule);
-}
-
-// -----------------
-export default class StyleVariables {
-
-    #stylesheet = createStyleSheet();
-
-    #variables = new Map();
-
-    constructor(target) {
-        if (!(target instanceof Document || target instanceof ShadowRoot)) {
-            throw new TypeError("target must be a Document or ShadowRoot");
-        }
-        target.adoptedStyleSheets = [...target.adoptedStyleSheets, this.#stylesheet];
     }
 
     set(name, value) {
@@ -84,7 +58,11 @@ export default class StyleVariables {
     }
 
     get(name) {
-        return this.#variables.get(name);
+        return this.#variables.get(name) ?? this.getDefault(name);
+    }
+
+    getDefault(name) {
+        return this.#defaultVariables.get(name);
     }
 
     reset() {
@@ -93,39 +71,16 @@ export default class StyleVariables {
     }
 
     #update = debounce(() => {
-        updateStyle(this.#stylesheet, this.#variables);
-    });
-
-    static set(name, value) {
-        const current = this.get(name);
-        if (current != value) {
-            STATIC_VARIABLES.set(name, value);
-            this.#updateStatic();
+        const vars = [];
+        for (const [key, value] of this.#variables) {
+            if (value != null) {
+                vars.push(`--${key}: ${value}`);
+            }
         }
-    }
-
-    static setAll(values = {}) {
-        for (const name in values) {
-            const value = values[name];
-            this.set(name, value);
-        }
-    }
-
-    static get(name) {
-        return STATIC_VARIABLES.get(name) ?? this.getDefault(name);
-    }
-
-    static getDefault(name) {
-        return STATIC_DEFAULT_VARIABLES.get(name);
-    }
-
-    static reset() {
-        STATIC_VARIABLES.clear();
-        this.#updateStatic();
-    }
-
-    static #updateStatic = debounce(() => {
-        updateStyle(STATIC_STYLESHEET, STATIC_VARIABLES);
+        const rule = `:root{${vars.join(";")}}`;
+        this.#stylesheet.replace(rule);
     });
 
 }
+
+export default new GlobalStyleVariables();
