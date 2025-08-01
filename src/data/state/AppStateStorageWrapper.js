@@ -58,8 +58,7 @@ export default class AppStateStorageWrapper extends EventTarget {
     }
 
     clone() {
-        const instance = this.#storageEventManager.target.clone();
-        return new this.constructor(instance);
+        return this;
     }
 
     getDefault() {
