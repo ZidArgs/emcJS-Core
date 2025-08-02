@@ -1,3 +1,6 @@
+import {
+    describe, it
+} from "node:test";
 import assert from "assert";
 import ArraySet from "../../../../src/data/collection/ArraySet.js";
 import {getArrayMutations} from "../../../../src/util/helper/collection/ArrayMutations.js";
@@ -10,10 +13,10 @@ const TARGET_3 = [1, 2, 3, 4, 5, 6, 10, 19, 11, 12, 13, 14, 20, 15, 16, 17, 9, 1
 const TARGET_4 = [1, 2, 3, 4, 5, 6, 10, 11, 12, 13, 14, 9, 20, 15, 16, 17, 18, 19];
 const TARGET_5 = [2, 3, 4, 6, 10, 1, 5, 11, 12, 13, 14, 15, 16, 17, 9, 18, 19, 20];
 
-describe("ArrayMutations", function() {
+describe("ArrayMutations", () => {
     const source = new ArraySet(SOURCE);
 
-    describe("move, delete and add values to/at various positions", function() {
+    describe("move, delete and add values to/at various positions", () => {
         const mutations = getArrayMutations(SOURCE, TARGET_0);
         const mutated = new ArraySet(source);
 
@@ -29,13 +32,13 @@ describe("ArrayMutations", function() {
 
         const res = Array.from(mutated);
 
-        it("could be restored from mutations [0]", function() {
+        it("could be restored from mutations [0]", () => {
             // console.log("mutation 0", mutations.changes);
-            assert.deepEqual(res, TARGET_0);
+            assert.deepStrictEqual(res, TARGET_0);
         });
     });
 
-    describe("switch first and last", function() {
+    describe("switch first and last", () => {
         const mutations = getArrayMutations(SOURCE, TARGET_1);
         const mutated = new ArraySet(source);
 
@@ -51,13 +54,13 @@ describe("ArrayMutations", function() {
 
         const res = Array.from(mutated);
 
-        it("could be restored from mutations [1]", function() {
+        it("could be restored from mutations [1]", () => {
             // console.log("mutation 1", mutations.changes);
-            assert.deepEqual(res, TARGET_1);
+            assert.deepStrictEqual(res, TARGET_1);
         });
     });
 
-    describe("move sequence to sequence", function() {
+    describe("move sequence to sequence", () => {
         const mutations = getArrayMutations(SOURCE, TARGET_2);
         const mutated = new ArraySet(source);
 
@@ -73,13 +76,13 @@ describe("ArrayMutations", function() {
 
         const res = Array.from(mutated);
 
-        it("could be restored from mutations [2]", function() {
+        it("could be restored from mutations [2]", () => {
             // console.log("mutation 2", mutations.changes);
-            assert.deepEqual(res, TARGET_2);
+            assert.deepStrictEqual(res, TARGET_2);
         });
     });
 
-    describe("move sequence into split positions", function() {
+    describe("move sequence into split positions", () => {
         const mutations = getArrayMutations(SOURCE, TARGET_3);
         const mutated = new ArraySet(source);
 
@@ -95,13 +98,13 @@ describe("ArrayMutations", function() {
 
         const res = Array.from(mutated);
 
-        it("could be restored from mutations [3]", function() {
+        it("could be restored from mutations [3]", () => {
             // console.log("mutation 3", mutations.changes);
-            assert.deepEqual(res, TARGET_3);
+            assert.deepStrictEqual(res, TARGET_3);
         });
     });
 
-    describe("move split values into sequence left", function() {
+    describe("move split values into sequence left", () => {
         const mutations = getArrayMutations(SOURCE, TARGET_4);
         const mutated = new ArraySet(source);
 
@@ -117,13 +120,13 @@ describe("ArrayMutations", function() {
 
         const res = Array.from(mutated);
 
-        it("could be restored from mutations [4]", function() {
+        it("could be restored from mutations [4]", () => {
             // console.log("mutation 4", mutations.changes);
-            assert.deepEqual(res, TARGET_4);
+            assert.deepStrictEqual(res, TARGET_4);
         });
     });
 
-    describe("move split values into sequence right", function() {
+    describe("move split values into sequence right", () => {
         const mutations = getArrayMutations(SOURCE, TARGET_5);
         const mutated = new ArraySet(source);
 
@@ -139,9 +142,9 @@ describe("ArrayMutations", function() {
 
         const res = Array.from(mutated);
 
-        it("could be restored from mutations [5]", function() {
+        it("could be restored from mutations [5]", () => {
             // console.log("mutation 5", mutations.changes);
-            assert.deepEqual(res, TARGET_5);
+            assert.deepStrictEqual(res, TARGET_5);
         });
     });
 });

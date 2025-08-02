@@ -1,5 +1,9 @@
 import OrderedMap from "../../data/collection/OrderedMap.js";
-import TokenStorage from "./TokenStorage.js";
+import TokenStorage, {
+    TOKEN_LITERAL_MATCHER,
+    TOKEN_MATCHER,
+    toTokenLiteral
+} from "./TokenStorage.js";
 
 // structure
 // const GTE = /(.*?)(?:\()([^,()]+),\s*([^,()]+)(?:\))(.*)/;
@@ -10,13 +14,7 @@ import TokenStorage from "./TokenStorage.js";
 // const NOT = /(.*?)(?:not ([^,()\s]+|'[^']+'))(.*)/;
 // const COMPARATOR = /(.*?)([^\s]+)\s*((?:!|>|<|=)?=|<|>)\s*([^\s]+|'[^']+')(.*?)/;
 // const VALUE = /[^\s]+|'[^']+'/;
-const TOKEN_COMBINE_MATCHER = /\{\{([0-9]+)\}\}/g;
-
-export const TOKEN_LITERAL_MATCHER = /^\{\{[0-9]+\}\}$/;
-
-export function toTokenLiteral(idx) {
-    return `{{${idx}}}`;
-}
+const TOKEN_COMBINE_MATCHER = new RegExp(TOKEN_MATCHER, "g");
 
 export default class Tokenizer {
 
@@ -62,7 +60,7 @@ export default class Tokenizer {
                     const prefix = match.shift();
                     const postfix = match.pop();
 
-                    const processedTerm = callback(match, fullMatch); // XXX: tokenStorage, fullMatch, match ?
+                    const processedTerm = callback(tokenStorage, match, fullMatch);
                     if (!prefix && !postfix) {
                         return processedTerm;
                     }

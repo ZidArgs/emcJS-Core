@@ -2,6 +2,9 @@
     "test": {
         "label": "Test"
     },
+    "token-test": {
+        "label": "Token-Test"
+    },
     "listselect-performance": {
         "label": "ListSelect Performance"
     },

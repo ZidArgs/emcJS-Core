@@ -1,5 +1,4 @@
 import {isClass} from "../helper/Class.js";
-import {padEndSlice} from "../helper/string/Transform.js";
 import Rest from "../net/Rest.js";
 
 /* LOG LEVEL */
@@ -22,7 +21,7 @@ const TIME_FND = /(....)-(..)-(..)T(..:..:..\....)Z/;
 const TIME_REP = "$1-$2-$3 $4";
 
 let reportWindowErrorEvents = false;
-const writeTargets = new Set;
+const writeTargets = new Set();
 const writeLevel = new Set(["ERROR", "WARN", "INFO", "LOG"]);
 let reportTarget = null;
 const reportLevel = new Set(["ERROR", "WARN"]);
@@ -60,7 +59,7 @@ function formatMessage(data, omitStack) {
     const {
         type, time, target, message
     } = data;
-    const typeString = padEndSlice(type, 5);
+    const typeString = type.padEnd(5);
     const targetString = typeof target === "string" && target !== "" ? target : "∅";
     if (message instanceof Error) {
         const msg = formatError(message, omitStack);
@@ -119,23 +118,23 @@ export default class Logger {
     }
 
     error(message) {
-        Logger.error(message, this.#clazzName, this.#omitStack);
+        Logger.error(message, this.#clazzName, {omitStack: this.#omitStack});
     }
 
     warn(message) {
-        Logger.warn(message, this.#clazzName, this.#omitStack);
+        Logger.warn(message, this.#clazzName, {omitStack: this.#omitStack});
     }
 
     info(message) {
-        Logger.info(message, this.#clazzName, this.#omitStack);
+        Logger.info(message, this.#clazzName, {omitStack: this.#omitStack});
     }
 
     log(message) {
-        Logger.log(message, this.#clazzName, this.#omitStack);
+        Logger.log(message, this.#clazzName, {omitStack: this.#omitStack});
     }
 
     message(type, message) {
-        Logger.message(type, message, this.#clazzName, this.#omitStack);
+        Logger.message(type, message, this.#clazzName, {omitStack: this.#omitStack});
     }
 
     static #write(data, omitStack) {
@@ -169,47 +168,62 @@ export default class Logger {
         }
     }
 
-    static error(message, target = null, omitStack = undefined) {
+    static error(message, target = null, params = {}) {
+        const {
+            omitStack = undefined, time = new Date()
+        } = params;
         this.#write({
             target: target,
             type: LOG_LEVEL.ERROR,
-            time: (new Date).toJSON().replace(TIME_FND, TIME_REP),
+            time: time.toJSON().replace(TIME_FND, TIME_REP),
             message: message
         }, omitStack);
     }
 
-    static warn(message, target = null, omitStack = undefined) {
+    static warn(message, target = null, params = {}) {
+        const {
+            omitStack = undefined, time = new Date()
+        } = params;
         this.#write({
             target: target,
             type: LOG_LEVEL.WARN,
-            time: (new Date).toJSON().replace(TIME_FND, TIME_REP),
+            time: time.toJSON().replace(TIME_FND, TIME_REP),
             message: message
         }, omitStack);
     }
 
-    static info(message, target = null, omitStack = undefined) {
+    static info(message, target = null, params = {}) {
+        const {
+            omitStack = undefined, time = new Date()
+        } = params;
         this.#write({
             target: target,
             type: LOG_LEVEL.INFO,
-            time: (new Date).toJSON().replace(TIME_FND, TIME_REP),
+            time: time.toJSON().replace(TIME_FND, TIME_REP),
             message: message
         }, omitStack);
     }
 
-    static log(message, target = null, omitStack = undefined) {
+    static log(message, target = null, params = {}) {
+        const {
+            omitStack = undefined, time = new Date()
+        } = params;
         this.#write({
             target: target,
             type: LOG_LEVEL.LOG,
-            time: (new Date).toJSON().replace(TIME_FND, TIME_REP),
+            time: time.toJSON().replace(TIME_FND, TIME_REP),
             message: message
         }, omitStack);
     }
 
-    static message(type, message, target = null, omitStack = undefined) {
+    static message(type, message, target = null, params = {}) {
+        const {
+            omitStack = undefined, time = new Date()
+        } = params;
         this.#write({
             target: target,
             type: type,
-            time: (new Date).toJSON().replace(TIME_FND, TIME_REP),
+            time: time.toJSON().replace(TIME_FND, TIME_REP),
             message: message
         }, omitStack);
     }
@@ -266,23 +280,25 @@ export default class Logger {
 
 Logger.addOutput(console);
 
-window.Logger = Logger;
+globalThis.Logger = Logger;
 
-window.addEventListener("error", function(msg, url, line, col, error) {
-    if (msg instanceof ErrorEvent) {
-        if (reportWindowErrorEvents) {
+if ("addEventListener" in globalThis) {
+    globalThis.addEventListener("error", function(msg, url, line, col, error) {
+        if (msg instanceof ErrorEvent) {
+            if (reportWindowErrorEvents) {
+                Logger.error(
+                    msg.error ? msg.error : msg.message,
+                    `${msg.filename ? msg.filename : "anonymous"} ${msg.lineno}:${msg.colno}`
+                );
+            }
+        } else {
+            col = col ? `:${col}` : "";
+            error = error ? `\n${error}` : "";
             Logger.error(
-                msg.error ? msg.error : msg.message,
-                `${msg.filename ? msg.filename : "anonymous"} ${msg.lineno}:${msg.colno}`
+                `${msg}${error}`,
+                `${url} ${line}${col}`
             );
         }
-    } else {
-        col = col ? `:${col}` : "";
-        error = error ? `\n${error}` : "";
-        Logger.error(
-            `${msg}${error}`,
-            `${url} ${line}${col}`
-        );
-    }
-    return true;
-});
+        return true;
+    });
+}
