@@ -9,19 +9,6 @@
 
 ### 1 - test
 
-- test custom build-in elements
-    - https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry/define#customized_built-in_element
-
-    ```js
-        class MyInput extends HTMLInputElement {
-            // do stuff
-        }
-        customElements.define("my-input", MyInput, {extends: "input"});
-
-        const inputEl = document.createElement("input");
-        inputEl.setAttribute("is", "my-input");
-    ```
-
 - Toast, PopOver, etc.
     - create one interface for all
     - create on top responsive overlay for all notifications
@@ -35,11 +22,6 @@
     - create multiple layer, set target element for interface
         - body is not ideal for everything
 
-- Types (self casting types)
-    - integer
-    - float
-    - date
-    - ...
 
 ### 2 - refine
 
