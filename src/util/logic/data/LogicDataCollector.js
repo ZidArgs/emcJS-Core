@@ -64,7 +64,7 @@ export default class LogicDataCollector extends EventTarget {
 
     #changeData = debounceCacheData((newData) => {
         const changes = {};
-        for (const data of newData) {
+        for (const [data] of newData) {
             for (const [key, value] of Object.entries(data)) {
                 const oldValue = this.#storage.get(key);
                 if (oldValue != value) {

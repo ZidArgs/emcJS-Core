@@ -12,8 +12,11 @@ export function debounce(func, wait = 0) {
     const fn = function(...args) {
         clearTimeout(timeout);
         timeout = setTimeout(() => {
-            func(...args);
-            timeout = null;
+            try {
+                func(...args);
+            } finally {
+                timeout = null;
+            }
         }, wait);
     };
     fn.cancel = () => {
@@ -36,12 +39,16 @@ export function debounceCacheData(func, wait = 0) {
     let timeout;
     let cache = [];
     const fn = function(...data) {
-        cache.push(...data);
+        cache.push(data);
         clearTimeout(timeout);
         timeout = setTimeout(() => {
-            func(cache);
-            timeout = null;
-            cache = [];
+            try {
+                const params = cache;
+                cache = [];
+                func(params);
+            } finally {
+                timeout = null;
+            }
         }, wait);
     };
     fn.cancel = () => {
@@ -66,8 +73,11 @@ export function debounceByType(func, wait = 0) {
     const fn = function(type, ...args) {
         clearTimeout(timeout.get(type));
         timeout.set(type, setTimeout(() => {
-            func(type, ...args);
-            timeout.set(type, null);
+            try {
+                func(type, ...args);
+            } finally {
+                timeout.set(type, null);
+            }
         }, wait));
     };
     fn.cancel = (type) => {

@@ -9,7 +9,7 @@ export default class ObservableSet extends EventTarget {
             added: new Set(),
             removed: new Set()
         };
-        for (const entry of data) {
+        for (const [entry] of data) {
             const {
                 type, value
             } = entry;

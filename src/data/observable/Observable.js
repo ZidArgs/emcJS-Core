@@ -106,7 +106,7 @@ export default class Observable extends EventTarget {
 
     #notifyChange = debounceCacheData((data) => {
         const changes = {};
-        for (const entry of data) {
+        for (const [entry] of data) {
             const {
                 key, value, change
             } = entry;

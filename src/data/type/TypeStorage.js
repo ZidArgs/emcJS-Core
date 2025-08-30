@@ -306,7 +306,7 @@ export default class TypeStorage extends EventTarget {
     }
 
     static #callListeners = debounceCacheData((typeNames) => {
-        for (const listener of REGISTER_LISTENER) {
+        for (const [listener] of REGISTER_LISTENER) {
             listener(typeNames);
         }
     });
