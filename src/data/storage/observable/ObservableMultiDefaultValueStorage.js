@@ -108,6 +108,17 @@ export default class ObservableMultiDefaultValueStorage extends ObservableStorag
         super.deserialize(res);
     }
 
+    deserializeAsChange(data = {}) {
+        const res = {};
+        for (const [key] of this.#defaults) {
+            const newValue = data[key];
+            if (newValue != null) {
+                res[key] = newValue;
+            }
+        }
+        super.deserializeAsChange(res);
+    }
+
     overwrite(data = {}) {
         const res = {};
         for (const [key] of this.#defaults) {

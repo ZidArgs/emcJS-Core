@@ -32,11 +32,12 @@ export default class ObservableIDBProxyStorage extends ObservableStorage {
         try {
             const data = await storage.getAll();
             this.deserialize(data);
-            const ev = new Event("error");
+            const ev = new Event("init");
             this.dispatchEvent(ev);
         } catch (err) {
             console.error(err);
             const ev = new Event("error");
+            ev.data = err;
             this.dispatchEvent(ev);
         }
         this.addEventListener("change", async (event) => {
@@ -54,17 +55,22 @@ export default class ObservableIDBProxyStorage extends ObservableStorage {
     }
 
     awaitLoaded() {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             if (this.#storage != null) {
                 resolve(this);
             } else {
-                const handler = () => {
+                const successHandler = () => {
                     resolve(this);
-                    this.removeEventListener("load", handler);
-                    this.removeEventListener("error", handler);
+                    this.removeEventListener("init", successHandler);
+                    this.removeEventListener("error", errorHandler);
                 };
-                this.addEventListener("load", handler);
-                this.addEventListener("error", handler);
+                const errorHandler = (event) => {
+                    reject(event.data);
+                    this.removeEventListener("init", successHandler);
+                    this.removeEventListener("error", errorHandler);
+                };
+                this.addEventListener("init", successHandler);
+                this.addEventListener("error", errorHandler);
             }
         });
     }

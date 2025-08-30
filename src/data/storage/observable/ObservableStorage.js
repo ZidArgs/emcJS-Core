@@ -61,8 +61,8 @@ export default class ObservableStorage extends EventTarget {
                 };
             }
         }
-        // change event
         if (Object.keys(values).length) {
+            // change event
             const ev = new Event("change");
             ev.data = values;
             ev.changes = changes;
@@ -139,8 +139,8 @@ export default class ObservableStorage extends EventTarget {
             }
         }
         this.#buffer.clear();
-        // change event
         if (Object.keys(values).length) {
+            // change event
             const ev = new Event("change");
             ev.data = values;
             ev.changes = changes;
@@ -200,7 +200,7 @@ export default class ObservableStorage extends EventTarget {
                 }
             }
         }
-        for (const key in unused) {
+        for (const key of unused) {
             const oldValue = this.get(key);
             if (oldValue != null) {
                 this.#buffer.delete(key);
@@ -212,8 +212,8 @@ export default class ObservableStorage extends EventTarget {
                 };
             }
         }
-        // change event
         if (Object.keys(values).length) {
+            // change event
             const ev = new Event("change");
             ev.data = values;
             ev.changes = changes;
@@ -249,8 +249,8 @@ export default class ObservableStorage extends EventTarget {
                 }
             }
         }
-        // change event
         if (Object.keys(values).length) {
+            // change event
             const ev = new Event("change");
             ev.data = values;
             ev.changes = changes;
