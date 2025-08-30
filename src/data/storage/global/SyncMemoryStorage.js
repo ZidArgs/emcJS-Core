@@ -1,53 +1,26 @@
 import {debounceCacheData} from "../../../util/Debouncer.js";
 import {isEqual} from "../../../util/helper/Comparator.js";
 import {deepClone} from "../../../util/helper/DeepClone.js";
-import {jsonParseSafe} from "../../../util/helper/JSON.js";
 
-class SessionStorage extends EventTarget {
+class SyncMemoryStorage extends EventTarget {
 
     #storage = new Map();
 
-    #read(key) {
-        const res = sessionStorage.getItem(key);
-        return jsonParseSafe(res);
-    }
-
-    #write(key, value) {
-        try {
-            if (value == null) {
-                sessionStorage.removeItem(key);
-            } else {
-                sessionStorage.setItem(key, JSON.stringify(value));
-            }
-        } catch {
-            return;
-        }
-    }
+    #syncChannel = new BroadcastChannel("SyncMemoryStorage::sync_channel");
 
     constructor() {
         super();
-        const keys = Object.keys(sessionStorage);
-        for (const key of keys) {
-            const value = this.#read(key);
-            if (value != null) {
-                this.#storage.set(key, value);
-            }
-        }
         // event
-        window.addEventListener("storage", (event) => {
-            const {
-                key, newValue, storageArea
-            } = event;
-            if (storageArea === sessionStorage) {
-                if (key == null) {
-                    this.#storage.clear();
-                    // clear event
-                    const ev = new Event("clear");
-                    ev.data = this.getAll();
-                    this.dispatchEvent(ev);
-                } else {
-                    this.#applySync(key, jsonParseSafe(newValue));
-                }
+        this.#syncChannel.addEventListener("message", (event) => {
+            const {data} = event;
+            if (data == null) {
+                this.#storage.clear();
+                // clear event
+                const ev = new Event("clear");
+                ev.data = this.getAll();
+                this.dispatchEvent(ev);
+            } else {
+                this.#applySync(data);
             }
         });
     }
@@ -55,22 +28,19 @@ class SessionStorage extends EventTarget {
     #applySync = debounceCacheData((data) => {
         const values = {};
         const changes = {};
-        for (const [key, newValue] of data) {
-            const oldValue = this.get(key);
-            if (!isEqual(oldValue, newValue)) {
-                if (newValue == null) {
-                    this.#storage.delete(key);
-                    this.#write(key);
-                } else {
+        for (const [entry] of data) {
+            for (const key in entry) {
+                const newValue = entry[key];
+                const oldValue = this.get(key);
+                if (!isEqual(oldValue, newValue)) {
                     const clonedValue = deepClone(newValue);
                     this.#storage.set(key, clonedValue);
-                    this.#write(key, newValue);
+                    values[key] = newValue;
+                    changes[key] = {
+                        oldValue,
+                        newValue
+                    };
                 }
-                values[key] = newValue;
-                changes[key] = {
-                    oldValue,
-                    newValue
-                };
             }
         }
         if (Object.keys(values).length) {
@@ -87,7 +57,8 @@ class SessionStorage extends EventTarget {
         if (!isEqual(oldValue, value)) {
             const clonedValue = deepClone(value);
             this.#storage.set(key, clonedValue);
-            this.#write(key, value);
+            // sync
+            this.#syncChannel.postMessage({[key]: value});
             // change event
             const ev = new Event("change");
             ev.data = {[key]: value};
@@ -102,7 +73,8 @@ class SessionStorage extends EventTarget {
     }
 
     get(key, value) {
-        return this.#storage.get(key) ?? value;
+        const res = this.#storage.get(key);
+        return res ?? value;
     }
 
     has(key) {
@@ -110,10 +82,11 @@ class SessionStorage extends EventTarget {
     }
 
     delete(key) {
-        const oldValue = this.#storage.get(key);
+        const oldValue = this.get(key);
         if (oldValue != null) {
             this.#storage.delete(key);
-            this.#write(key);
+            // sync
+            this.#syncChannel.postMessage({[key]: null});
             // change event
             const ev = new Event("change");
             ev.data = {[key]: null};
@@ -128,8 +101,9 @@ class SessionStorage extends EventTarget {
     }
 
     clear() {
-        sessionStorage.clear();
         this.#storage.clear();
+        // sync
+        this.#syncChannel.postMessage();
         // clear event
         const ev = new Event("clear");
         ev.data = this.getAll();
@@ -153,7 +127,6 @@ class SessionStorage extends EventTarget {
             if (!isEqual(oldValue, newValue)) {
                 const clonedValue = deepClone(newValue);
                 this.#storage.set(key, clonedValue);
-                this.#write(key, newValue);
                 values[key] = newValue;
                 changes[key] = {
                     oldValue,
@@ -162,6 +135,8 @@ class SessionStorage extends EventTarget {
             }
         }
         if (Object.keys(values).length) {
+            // sync
+            this.#syncChannel.postMessage(values);
             // change event
             const ev = new Event("change");
             ev.data = values;
@@ -194,7 +169,6 @@ class SessionStorage extends EventTarget {
             if (!isEqual(oldValue, newValue)) {
                 if (newValue == null) {
                     this.#storage.delete(key);
-                    this.#write(key);
                     values[key] = null;
                     changes[key] = {
                         oldValue,
@@ -203,7 +177,6 @@ class SessionStorage extends EventTarget {
                 } else {
                     const clonedValue = deepClone(newValue);
                     this.#storage.set(key, clonedValue);
-                    this.#write(key, newValue);
                     values[key] = newValue;
                     changes[key] = {
                         oldValue,
@@ -216,7 +189,6 @@ class SessionStorage extends EventTarget {
             const oldValue = this.get(key);
             if (oldValue != null) {
                 this.#storage.delete(key);
-                this.#write(key);
                 values[key] = null;
                 changes[key] = {
                     oldValue,
@@ -225,6 +197,8 @@ class SessionStorage extends EventTarget {
             }
         }
         if (Object.keys(values).length) {
+            // sync
+            this.#syncChannel.postMessage(values);
             // change event
             const ev = new Event("change");
             ev.data = values;
@@ -235,4 +209,4 @@ class SessionStorage extends EventTarget {
 
 }
 
-export default new SessionStorage;
+export default new SyncMemoryStorage;

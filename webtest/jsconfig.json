@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "allowSyntheticDefaultImports": false,
+        "checkJs": false,
+        "baseUrl": ".",
+        "paths": {
+            "/emcJS/*": [
+                "../src/*",
+                "./emcjs/*"
+            ]
+        }
+    }
+}
