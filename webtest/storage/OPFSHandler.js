@@ -1,6 +1,6 @@
 // Origin Private File System
 
-import jsonParse from "../../src/patches/JSONParser.js";
+import jsonParse from "/emcJS/patches/JSONParser.js";
 
 const rootDirHandle = await navigator.storage.getDirectory();
 

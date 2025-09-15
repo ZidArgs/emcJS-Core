@@ -57,7 +57,7 @@ class FileLoader {
 
     async text(file, contentType = "text/plain") {
         const response = await getFile(file, contentType);
-        return await response.getText();
+        return await response.text();
     }
 
     async xml(file) {
