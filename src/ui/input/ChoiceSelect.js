@@ -4,6 +4,7 @@ import ChildlistMutationObserverMixin from "../mixin/ChildlistMutationObserverMi
 import "./Option.js";
 import TPL from "./ChoiceSelect.js.html" assert {type: "html"};
 import STYLE from "./ChoiceSelect.js.css" assert {type: "css"};
+import jsonParse from "../../patches/JSONParser.js";
 
 /**
  * @deprecated
@@ -109,7 +110,7 @@ export default class ChoiceSelect extends ChildlistMutationObserverMixin(CustomE
         let val = this.getAttribute("value");
         if (this.multiple) {
             if (val != null) {
-                val = JSON.parse(val);
+                val = jsonParse(val);
             } else {
                 val = [];
             }
@@ -153,7 +154,7 @@ export default class ChoiceSelect extends ChildlistMutationObserverMixin(CustomE
             case "multiple":
                 if (oldValue != newValue) {
                     if (newValue != "true") {
-                        const arr = JSON.parse(this.getAttribute("value"));
+                        const arr = jsonParse(this.getAttribute("value"));
                         if (arr.length > 1) {
                             this.value = arr[0];
                         }

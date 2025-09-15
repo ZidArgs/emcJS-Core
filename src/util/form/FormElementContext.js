@@ -1,5 +1,6 @@
 import AppStateStorageWrapper from "../../data/state/AppStateStorageWrapper.js";
 import ObservableStorage from "../../data/storage/observable/ObservableStorage.js";
+import jsonParse from "../../patches/JSONParser.js";
 import AbstractFormElement from "../../ui/form/element/AbstractFormElement.js";
 import {debounce} from "../Debouncer.js";
 import EventTargetManager from "../event/EventTargetManager.js";
@@ -23,7 +24,7 @@ function applyDefaultValue(storage, target) {
     } else if (target.hasAttribute("value")) {
         const value = target.getAttribute("value");
         try {
-            storage.setRootValue(JSON.parse(value));
+            storage.setRootValue(jsonParse(value));
         } catch {
             storage.setRootValue(value);
         }
@@ -42,9 +43,9 @@ const mutationObserver = new MutationObserver((mutationsList) => {
                     target.value = context.storage.get(elName);
                 }
             } else if (mutation.attributeName === "visible") {
-                context.setVisibleLogic(JSON.parse(target.getAttribute("visible")));
+                context.setVisibleLogic(jsonParse(target.getAttribute("visible")));
             } else if (mutation.attributeName === "enabled") {
-                context.setEnabledLogic(JSON.parse(target.getAttribute("enabled")));
+                context.setEnabledLogic(jsonParse(target.getAttribute("enabled")));
             }
         }
     }
@@ -139,13 +140,13 @@ export default class FormElementContext {
         });
         /* --- */
         const visibleLogicAttribute = this.#element.getAttribute("visible");
-        this.setVisibleLogic(JSON.parse(visibleLogicAttribute));
+        this.setVisibleLogic(jsonParse(visibleLogicAttribute));
         /* --- */
         const enabledLogicAttribute = this.#element.getAttribute("enabled");
-        this.setEnabledLogic(JSON.parse(enabledLogicAttribute));
+        this.setEnabledLogic(jsonParse(enabledLogicAttribute));
         /* --- */
         const editableLogicAttribute = this.#element.getAttribute("editable");
-        this.setEditableLogic(JSON.parse(editableLogicAttribute));
+        this.setEditableLogic(jsonParse(editableLogicAttribute));
     }
 
     set storage(value) {

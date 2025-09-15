@@ -1,3 +1,5 @@
+import jsonParse from "../../patches/JSONParser.js";
+
 const LNBR_SEQ = /(?:\r\n|\n|\r)/g;
 const STRING = /("(?:[^"\\]|\\.)*")/;
 const ALL_BUT_NL = /[^\r\n]/g;
@@ -92,7 +94,7 @@ class JSONC {
     parse(input) {
         const buffer = removeComments(input);
         try {
-            return JSON.parse(buffer);
+            return jsonParse(buffer);
         } catch (e) {
             console.log(buffer);
             let pos = parseInt(e.message.slice(e.message.lastIndexOf(" ") + 1));

@@ -36,8 +36,8 @@ class Properties {
             const lineRes = processLine(line);
             if (lineRes != null) {
                 const [key, value] = lineRes;
-                if (key === "__proto__") {
-                    throw new SyntaxError(`unallowed key "__proto__" in PROPERTIES at line ${i + 1}:\n${line}`);
+                if (key === "__proto__" || key === "constructor" || key === "prototype") {
+                    continue;
                 }
                 if (typeof output[key] === "string") {
                     throw new SyntaxError(`duplicate key in PROPERTIES at line ${i + 1}:\n${line}`);

@@ -1,3 +1,5 @@
+import jsonParse from "../../patches/JSONParser.js";
+
 export function jsonReplacer(key, value) {
     if (value instanceof RegExp) {
         return "__REGEXP::" + value.toString();
@@ -20,7 +22,7 @@ export function jsonParseSafe(value) {
         return null;
     }
     try {
-        return JSON.parse(value);
+        return jsonParse(value);
     } catch {
         return null;
     }

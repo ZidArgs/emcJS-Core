@@ -1,8 +1,10 @@
 import JSONC from "../converter/JSONC.js";
 import XML from "../converter/XML.js";
 import INI from "../converter/INI.js";
+import CSV from "../converter/CSV.js";
 import Lang from "../converter/Lang.js";
 import Properties from "../converter/Properties.js";
+import jsonParse from "../../patches/JSONParser.js";
 
 async function getFile(file, contentType) {
     const r = await fetch(new Request(file, {
@@ -21,42 +23,46 @@ async function getFile(file, contentType) {
     return r;
 }
 
-function getText(input) {
-    return input.text();
-}
-
-function getJSON(input) {
-    return input.json();
-}
-
 class FileLoader {
 
-    ini(file) {
-        return this.text(file).then(INI.parse);
+    async ini(file) {
+        const content = await this.text(file);
+        return INI.parse(content);
     }
 
-    json(file) {
-        return getFile(file, "application/json").then(getJSON);
+    async csv(file) {
+        const content = await this.text(file);
+        return CSV.parse(content);
     }
 
-    jsonc(file) {
-        return this.text(file).then(JSONC.parse);
+    async json(file) {
+        const content = await this.text(file, "application/json");
+        return jsonParse(content);
     }
 
-    lang(file) {
-        return this.text(file).then(Lang.parse);
+    async jsonc(file) {
+        const content = await this.text(file);
+        return JSONC.parse(content);
     }
 
-    properties(file) {
-        return this.text(file).then(Properties.parse);
+    async lang(file) {
+        const content = await this.text(file);
+        return Lang.parse(content);
     }
 
-    text(file) {
-        return getFile(file, "text/plain").then(getText);
+    async properties(file) {
+        const content = await this.text(file);
+        return Properties.parse(content);
     }
 
-    xml(file) {
-        return this.text(file).then(XML.parse);
+    async text(file, contentType = "text/plain") {
+        const response = await getFile(file, contentType);
+        return await response.getText();
+    }
+
+    async xml(file) {
+        const content = await this.text(file);
+        return XML.parse(content);
     }
 
 }

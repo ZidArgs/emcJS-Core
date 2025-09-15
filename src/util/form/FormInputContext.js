@@ -1,5 +1,6 @@
 import AppStateStorageWrapper from "../../data/state/AppStateStorageWrapper.js";
 import ObservableStorage from "../../data/storage/observable/ObservableStorage.js";
+import jsonParse from "../../patches/JSONParser.js";
 import {debounce} from "../Debouncer.js";
 import EventTargetManager from "../event/EventTargetManager.js";
 import LogicCompiler from "../logic/processor/LogicCompiler.js";
@@ -16,9 +17,9 @@ const mutationObserver = new MutationObserver((mutationsList) => {
             const target = mutation.target;
             const context = CONTEXTS.get(target);
             if (mutation.attributeName === "visible") {
-                context.setVisibleLogic(JSON.parse(target.getAttribute("visible")));
+                context.setVisibleLogic(jsonParse(target.getAttribute("visible")));
             } else if (mutation.attributeName === "enabled") {
-                context.setEnabledLogic(JSON.parse(target.getAttribute("enabled")));
+                context.setEnabledLogic(jsonParse(target.getAttribute("enabled")));
             }
         }
     }
@@ -126,7 +127,7 @@ export default class FormInputContext {
         });
         /* --- */
         const visibleValue = this.#element.getAttribute("visible");
-        this.setVisibleLogic(JSON.parse(visibleValue));
+        this.setVisibleLogic(jsonParse(visibleValue));
         /* --- */
         const message = this.#element.validationMessage;
         if (this.#validationMessage != message) {

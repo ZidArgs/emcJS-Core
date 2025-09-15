@@ -10,6 +10,7 @@ import "../../../../dataview/datagrid/DataGrid.js";
 import TPL from "./ListInput.js.html" assert {type: "html"};
 import STYLE from "./ListInput.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./ListInput.js.json" assert {type: "json"};
+import jsonParse from "../../../../../patches/JSONParser.js";
 
 export default class ListInput extends AbstractFormElement {
 
@@ -93,7 +94,7 @@ export default class ListInput extends AbstractFormElement {
 
     set value(value) {
         if (typeof value === "string") {
-            value = JSON.parse(value);
+            value = jsonParse(value);
         }
         if (value != null && typeof value === "object") {
             if (Array.isArray(value)) {

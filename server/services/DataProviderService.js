@@ -5,6 +5,7 @@ import {extractData} from "../../src/util/helper/collection/ExtractDataFromArray
 import {
     isArrayOf, isDict
 } from "../../src/util/helper/CheckType.js";
+import jsonParse from "../../src/patches/JSONParser.js";
 
 export default class DataProviderService extends ServiceModule {
 
@@ -29,7 +30,7 @@ export default class DataProviderService extends ServiceModule {
             if (stat.isFile(resolvedFilePath)) {
                 const input = fs.readFileSync(resolvedFilePath).toString();
                 try {
-                    const data = JSON.parse(input);
+                    const data = jsonParse(input);
                     if (isArrayOf(data, (e) => isDict(e))) {
                         this.#baseData = data;
                     } else {

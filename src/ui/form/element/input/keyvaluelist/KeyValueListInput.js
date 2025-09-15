@@ -10,6 +10,7 @@ import "../../../../dataview/datagrid/DataGrid.js";
 import TPL from "./KeyValueListInput.js.html" assert {type: "html"};
 import STYLE from "./KeyValueListInput.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./KeyValueListInput.js.json" assert {type: "json"};
+import jsonParse from "../../../../../patches/JSONParser.js";
 
 export default class KeyValueListInput extends AbstractFormElement {
 
@@ -99,7 +100,7 @@ export default class KeyValueListInput extends AbstractFormElement {
 
     set value(value) {
         if (typeof value === "string") {
-            value = JSON.parse(value);
+            value = jsonParse(value);
         }
         super.value = value;
     }

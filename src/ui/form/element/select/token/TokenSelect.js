@@ -21,6 +21,7 @@ import "../../../../i18n/I18nLabel.js";
 import TPL from "./TokenSelect.js.html" assert {type: "html"};
 import STYLE from "./TokenSelect.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./TokenSelect.js.json" assert {type: "json"};
+import jsonParse from "../../../../../patches/JSONParser.js";
 
 const ESCAPE_KEYS = [
     "Tab",
@@ -301,7 +302,7 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
             value = [];
         }
         if (typeof value === "string") {
-            value = JSON.parse(value);
+            value = jsonParse(value);
         }
         if (!Array.isArray(value)) {
             throw new TypeError("value must be an array or null");

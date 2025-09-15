@@ -1,3 +1,4 @@
+import jsonParse from "../../../patches/JSONParser.js";
 import {dashedToCamelCase} from "../string/ConvertCase.js";
 
 export function safeSetAttribute(node, name, value) {
@@ -48,7 +49,7 @@ export function setJSONAttribute(node, name, value) {
 
 export function getJSONAttribute(node, name) {
     try {
-        return JSON.parse(node.getAttribute(name));
+        return jsonParse(node.getAttribute(name));
     } catch {
         return null;
     }

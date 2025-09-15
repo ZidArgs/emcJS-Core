@@ -15,6 +15,7 @@ import "../../../button/Button.js";
 import TPL from "./GridInput.js.html" assert {type: "html"};
 import STYLE from "./GridInput.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./GridInput.js.json" assert {type: "json"};
+import jsonParse from "../../../../../patches/JSONParser.js";
 
 export default class GridInput extends AbstractFormElement {
 
@@ -115,7 +116,7 @@ export default class GridInput extends AbstractFormElement {
 
     set value(value) {
         if (typeof value === "string") {
-            value = JSON.parse(value);
+            value = jsonParse(value);
         }
         super.value = value;
     }

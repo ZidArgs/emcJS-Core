@@ -14,6 +14,7 @@ import I18nOption from "../../../../i18n/builtin/I18nOption.js";
 import TPL from "./ListSelect.js.html" assert {type: "html"};
 import STYLE from "./ListSelect.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./ListSelect.js.json" assert {type: "json"};
+import jsonParse from "../../../../../patches/JSONParser.js";
 
 const MUTATION_CONFIG = {
     attributes: true,
@@ -128,7 +129,7 @@ export default class ListSelect extends AbstractFormElement {
 
     set value(value) {
         if (typeof value === "string") {
-            value = JSON.parse(value);
+            value = jsonParse(value);
         }
         super.value = value;
     }

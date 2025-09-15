@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import {Transform} from "stream";
+import jsonParse from "../patches/JSONParser.js";
 
 const HTMLTemplatePath = "util/html/template/HTMLTemplate.js";
 const CSSTemplatePath = "util/html/template/CSSTemplate.js";
@@ -159,7 +160,7 @@ function augmentFile(emcJSPrefix, sourcePath, fileContent) {
                             const name = parsedPath.name;
                             const fileContent = fs.readFileSync(resolvedFilePath).toString();
                             try {
-                                JSON.parse(fileContent);
+                                jsonParse(fileContent);
                                 typeDefs.push(`    ${name}: ${fileContent.replace(/\\/g, "\\\\").split("\n").map((l) => `    ${l}`).join("\n").slice(4)}`);
                             } catch {
                                 // ignore

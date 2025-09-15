@@ -93,9 +93,12 @@ function deepCloneObject(item, refs) {
     }
     const result = {};
     refs.set(item, result);
-    for (const i in item) {
-        const el = item[i];
-        result[i] = deepCloneItem(el, refs);
+    for (const key in item) {
+        if (key === "__proto__" || key === "constructor" || key === "prototype") {
+            continue;
+        }
+        const el = item[key];
+        result[key] = deepCloneItem(el, refs);
     }
     return result;
 }

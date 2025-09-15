@@ -1,5 +1,6 @@
 import AppStateStorageWrapper from "../../data/state/AppStateStorageWrapper.js";
 import ObservableStorage from "../../data/storage/observable/ObservableStorage.js";
+import jsonParse from "../../patches/JSONParser.js";
 import {debounce} from "../Debouncer.js";
 import EventTargetManager from "../event/EventTargetManager.js";
 import LogicCompiler from "../logic/processor/LogicCompiler.js";
@@ -71,13 +72,13 @@ export default class AbstractFormContentContext extends EventTarget {
         });
         /* --- */
         const visibleLogicAttribute = this.#element.getAttribute("visible");
-        this.setVisibleLogic(JSON.parse(visibleLogicAttribute));
+        this.setVisibleLogic(jsonParse(visibleLogicAttribute));
         /* --- */
         const enabledLogicAttribute = this.#element.getAttribute("enabled");
-        this.setEnabledLogic(JSON.parse(enabledLogicAttribute));
+        this.setEnabledLogic(jsonParse(enabledLogicAttribute));
         /* --- */
         const editableLogicAttribute = this.#element.getAttribute("editable");
-        this.setEditableLogic(JSON.parse(editableLogicAttribute));
+        this.setEditableLogic(jsonParse(editableLogicAttribute));
     }
 
     set storage(value) {
@@ -118,7 +119,7 @@ export default class AbstractFormContentContext extends EventTarget {
         } else if (this.#element.hasAttribute(this.#valueAttributeName)) {
             const value = this.#element.getAttribute(this.#valueAttributeName);
             try {
-                this.#storage.setRootValue(JSON.parse(value));
+                this.#storage.setRootValue(jsonParse(value));
             } catch {
                 this.#storage.setRootValue(value);
             }

@@ -7,6 +7,7 @@ import "../../../code/CodeInput.js";
 import "../../../../../button/Button.js";
 import TPL from "./LogicJSONModal.js.html" assert {type: "html"};
 import STYLE from "./LogicJSONModal.js.css" assert {type: "css"};
+import jsonParse from "../../../../../../../patches/JSONParser.js";
 
 // TODO use ModalDialog instead
 export default class LogicJSONModal extends Modal {
@@ -73,7 +74,7 @@ export default class LogicJSONModal extends Modal {
 
     #validateInput = debounce(() => {
         try {
-            JSON.parse(this.#jsonEl.value);
+            jsonParse(this.#jsonEl.value);
             this.#jsonEl.setCustomValidity("");
             this.#submitEl.disabled = false;
         } catch {
@@ -87,7 +88,7 @@ export default class LogicJSONModal extends Modal {
     }
 
     get value() {
-        return JSON.parse(this.#jsonEl.value);
+        return jsonParse(this.#jsonEl.value);
     }
 
 }

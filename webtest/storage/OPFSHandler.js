@@ -1,5 +1,7 @@
 // Origin Private File System
 
+import jsonParse from "../../src/patches/JSONParser.js";
+
 const rootDirHandle = await navigator.storage.getDirectory();
 
 async function createNamespace(name) {
@@ -27,7 +29,7 @@ export async function readData(namespace, filename) {
         const fileHandle = await namespaceHandle.getFileHandle(filename + ".json");
         const file = await fileHandle.getFile();
         const data = await file.text();
-        return JSON.parse(data);
+        return jsonParse(data);
     } catch {
         // ignore
     }

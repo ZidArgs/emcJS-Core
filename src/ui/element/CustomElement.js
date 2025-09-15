@@ -1,3 +1,4 @@
+import jsonParse from "../../patches/JSONParser.js";
 import {getInnerText} from "../../util/helper/ui/ExtractText.js";
 import {
     scrollIntoView, scrollIntoViewIfNeeded
@@ -161,7 +162,7 @@ export default class CustomElement extends HTMLElement {
 
     getJSONAttribute(name) {
         try {
-            return JSON.parse(this.getAttribute(name));
+            return jsonParse(this.getAttribute(name));
         } catch {
             return null;
         }

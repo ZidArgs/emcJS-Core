@@ -1,3 +1,5 @@
+import jsonParse from "../../patches/JSONParser.js";
+
 const COLOR_PATTERN = /#[0-9a-f]{6}/i;
 
 export function isNull(value) {
@@ -85,7 +87,7 @@ export function isColorString(value) {
 
 export function isJSON(input) {
     try {
-        JSON.parse(input);
+        jsonParse(input);
     } catch {
         return false;
     }

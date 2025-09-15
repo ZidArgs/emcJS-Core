@@ -28,8 +28,8 @@ class INI {
             if (VALUE.test(line)) {
                 const data = line.split("=");
                 const [key, value] = data;
-                if (key === "__proto__") {
-                    throw new SyntaxError(`unallowed key "__proto__" in INI at line ${i + 1}:\n${line}`);
+                if (key === "__proto__" || key === "constructor" || key === "prototype") {
+                    continue;
                 }
                 if (typeof output[section][key] === "string") {
                     throw new SyntaxError(`duplicate key in INI at line ${i + 1}:\n${line}`);

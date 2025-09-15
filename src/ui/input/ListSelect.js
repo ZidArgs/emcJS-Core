@@ -9,6 +9,7 @@ import "../header/SelectionHeader.js";
 import "./Option.js";
 import TPL from "./ListSelect.js.html" assert {type: "html"};
 import STYLE from "./ListSelect.js.css" assert {type: "css"};
+import jsonParse from "../../patches/JSONParser.js";
 
 /**
  * @deprecated
@@ -228,7 +229,7 @@ export default class ListSelect extends CustomElementDelegating {
         let val = this.getAttribute("value");
         if (this.multiple) {
             if (val != null) {
-                val = JSON.parse(val);
+                val = jsonParse(val);
             } else {
                 val = [];
             }
@@ -272,7 +273,7 @@ export default class ListSelect extends CustomElementDelegating {
             case "multiple": {
                 if (oldValue != newValue) {
                     if (newValue != "true") {
-                        const arr = JSON.parse(this.getAttribute("value"));
+                        const arr = jsonParse(this.getAttribute("value"));
                         if (arr.length > 1) {
                             this.value = arr[0];
                         }

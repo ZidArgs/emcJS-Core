@@ -12,6 +12,7 @@ import "./Option.js";
 import "../symbols/ChevronDownSymbol.js";
 import TPL from "./TokenSelect.js.html" assert {type: "html"};
 import STYLE from "./TokenSelect.js.css" assert {type: "css"};
+import jsonParse from "../../patches/JSONParser.js";
 
 class TokenElementManager extends ElementManager {
 
@@ -289,7 +290,7 @@ export default class TokenSelect extends CustomElementDelegating {
     get value() {
         let val = this.getAttribute("value");
         if (val != null) {
-            val = JSON.parse(val);
+            val = jsonParse(val);
         } else {
             val = [];
         }
