@@ -1,4 +1,5 @@
 import {isEqual} from "../helper/Comparator.js";
+import {waitForConnect} from "../helper/html/ElementConnectedHelper.js";
 import {getComputedStyleProperties} from "../helper/html/ElementStyleHelper.js";
 
 const OBSERVED_MUTATIONS = {
@@ -40,8 +41,9 @@ export default class StyleChangeObserver {
         }
     }
 
-    observe(element) {
+    async observe(element) {
         if (!this.#observedEls.has(element)) {
+            await waitForConnect(element);
             const observedStyle = getComputedStyleProperties(element, this.#observedProperties);
             this.#observedEls.set(element, observedStyle);
             this.#mutationObserver.observe(element, OBSERVED_MUTATIONS);

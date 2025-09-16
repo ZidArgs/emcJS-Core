@@ -51,9 +51,9 @@ export default class StickyObserver {
         }
     }
 
-    observe(element) {
+    async observe(element) {
         if (!this.#observedEls.has(element)) {
-            this.#styleChangeObserver.observe(element);
+            await this.#styleChangeObserver.observe(element);
             const contentRect = getBoundingContentRect(this.#rootEl);
             const entry = this.#handleObservedElement(element, contentRect);
             this.#observedEls.set(element, entry);
