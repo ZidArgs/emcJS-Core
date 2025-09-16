@@ -22,11 +22,3 @@ export async function streamToBlob(stream, type) {
 
     return new Blob(data, {type});
 }
-
-export function readString(dataView, offset, length) {
-    const str = [];
-    for (let i = 0; i < length; i++) {
-        str.push(String.fromCharCode(dataView.getUint8(offset + i)));
-    }
-    return str.join("");
-}
