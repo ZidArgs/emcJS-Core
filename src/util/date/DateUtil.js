@@ -17,27 +17,41 @@ export default class DateUtil {
         }
     }
 
+    /**
+     * @deprecated
+     */
     convert(formatter) {
+        return this.format(formatter);
+    }
+
+    format(formatter) {
         if (typeof formatter == "string") {
-            return DateUtil.#convert(this.#date, formatter);
+            return DateUtil.#format(this.#date, formatter);
         } else if (typeof formatter == "undefined") {
-            return DateUtil.#convert(this.#date);
+            return DateUtil.#format(this.#date);
         } else {
             throw new TypeError("format string expected");
         }
     }
 
+    /**
+     * @deprecated
+     */
     convertLocal(formatter) {
+        return this.formatLocal(formatter);
+    }
+
+    formatLocal(formatter) {
         if (typeof formatter == "string") {
-            return DateUtil.#convertLocal(this.#date, formatter);
+            return DateUtil.#formatLocal(this.#date, formatter);
         } else if (typeof formatter == "undefined") {
-            return DateUtil.#convertLocal(this.#date);
+            return DateUtil.#formatLocal(this.#date);
         } else {
             throw new TypeError("format string expected");
         }
     }
 
-    static #convert(date, formatter) {
+    static #format(date, formatter) {
         return formatter.replace(FORMATTER_REGEX, function(m) {
             switch (m) {
                 case "Y": return date.getUTCFullYear();
@@ -51,7 +65,7 @@ export default class DateUtil {
         });
     }
 
-    static #convertLocal(date, formatter) {
+    static #formatLocal(date, formatter) {
         return formatter.replace(FORMATTER_REGEX, function(m) {
             switch (m) {
                 case "Y": return date.getFullYear();
@@ -65,7 +79,14 @@ export default class DateUtil {
         });
     }
 
-    static convert(date, formatter) {
+    /**
+     * @deprecated
+     */
+    static convert(formatter) {
+        return this.format(formatter);
+    }
+
+    static format(date, formatter) {
         if (date instanceof Date) {
             if (isNaN(date)) {
                 throw new TypeError("date is invalid");
@@ -73,12 +94,19 @@ export default class DateUtil {
             if (formatter != null && typeof formatter != "string") {
                 throw new TypeError("formatter is invalid");
             }
-            return this.#convert(date, formatter ?? "D.M.Y h:m:s");
+            return this.#format(date, formatter ?? "D.M.Y h:m:s");
         }
         throw new TypeError("date is invalid");
     }
 
-    static convertLocal(date, formatter) {
+    /**
+     * @deprecated
+     */
+    static convertLocal(formatter) {
+        return this.formatLocal(formatter);
+    }
+
+    static formatLocal(date, formatter) {
         if (date instanceof Date) {
             if (isNaN(date)) {
                 throw new TypeError("date is invalid");
@@ -86,7 +114,7 @@ export default class DateUtil {
             if (formatter != null && typeof formatter != "string") {
                 throw new TypeError("formatter is invalid");
             }
-            return this.#convertLocal(date, formatter);
+            return this.#formatLocal(date, formatter);
         }
         throw new TypeError("date is invalid");
     }
