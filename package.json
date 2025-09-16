@@ -14,12 +14,13 @@
     "jswebservice": "git+https://bitbucket.org/zidargs/jswebservice.git/#2.1.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.10",
-    "@babel/eslint-parser": "^7.16.5",
-    "@babel/plugin-syntax-import-assertions": "^7.17.12",
+    "@babel/core": "^7.28.4",
+    "@babel/eslint-parser": "^7.28.4",
+    "@babel/plugin-syntax-import-assertions": "^7.27.1",
     "@babel/plugin-syntax-top-level-await": "^7.14.5",
+    "@stylistic/eslint-plugin": "^5.3.1",
     "del": "^5.1.0",
-    "eslint": "^8.33.0",
+    "eslint": "^9.35.0",
     "glob-all": "^3.1.0",
     "gulp": "^4.0.2",
     "gulp-newer": "^1.4.0",
