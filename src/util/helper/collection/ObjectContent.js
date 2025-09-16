@@ -45,9 +45,31 @@ export function getFromObjectByPath(obj, path) {
     }
     path = Array.from(path);
     while (obj != null && path.length) {
-        obj = obj[path.shift()];
+        const pathPart = path.shift();
+        obj = obj[pathPart];
     }
     return obj;
+}
+
+export function setToObjectAtPath(obj, path, value) {
+    if (typeof obj !== "object") {
+        throw new TypeError("first parameter must be an object");
+    }
+    if (!Array.isArray(path)) {
+        throw new TypeError("second parameter must be an array");
+    }
+    path = Array.from(path);
+    while (path.length) {
+        const pathPart = path.shift();
+        if (!(pathPart in obj)) {
+            if (pathPart === "__proto__" || pathPart === "constructor" || pathPart === "prototype") {
+                return false;
+            }
+            obj[pathPart] = path.length ? {} : value;
+        }
+        obj = obj[pathPart];
+    }
+    return obj === value;
 }
 
 export function flattenObject(obj, splitter = ".", res = {}) {
