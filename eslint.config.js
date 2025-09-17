@@ -18,7 +18,7 @@ const compat = new FlatCompat({
 });
 
 export default defineConfig([
-    globalIgnores(["**/node_modules", "**/.idea", "**/.vscode", "webtest/emcJS", "**/lib"]),
+    globalIgnores(["**/node_modules", "**/.idea", "**/.vscode", "webtest/emcJS", "**/lib", "gulpfile.js"]),
     {
         extends: compat.extends("eslint:recommended"),
 

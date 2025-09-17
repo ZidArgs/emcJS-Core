@@ -302,41 +302,43 @@ export default class ListSelect extends CustomElementDelegating {
 
     #calculateItems = debounce(() => {
         const all = this.#valueElementsList;
-        if (this.multiple) {
-            const vals = new Set(this.value);
-            let checked = false;
-            let unchecked = false;
-            for (const el of all) {
-                if (el) {
-                    if (vals.has(el.value)) {
-                        el.classList.add("active");
-                        if (el.style.display == "") {
-                            checked = true;
-                        }
-                    } else {
-                        el.classList.remove("active");
-                        if (el.style.display == "") {
-                            unchecked = true;
+        if (all != null) {
+            if (this.multiple) {
+                const vals = new Set(this.value);
+                let checked = false;
+                let unchecked = false;
+                for (const el of all) {
+                    if (el) {
+                        if (vals.has(el.value)) {
+                            el.classList.add("active");
+                            if (el.style.display == "") {
+                                checked = true;
+                            }
+                        } else {
+                            el.classList.remove("active");
+                            if (el.style.display == "") {
+                                unchecked = true;
+                            }
                         }
                     }
                 }
-            }
-            if (checked) {
-                if (unchecked) {
-                    this.#headerEl.checked = "mixed";
+                if (checked) {
+                    if (unchecked) {
+                        this.#headerEl.checked = "mixed";
+                    } else {
+                        this.#headerEl.checked = true;
+                    }
                 } else {
-                    this.#headerEl.checked = true;
+                    this.#headerEl.checked = false;
                 }
             } else {
-                this.#headerEl.checked = false;
-            }
-        } else {
-            for (const el of all) {
-                if (el) {
-                    if (this.value == el.value) {
-                        el.classList.add("active");
-                    } else {
-                        el.classList.remove("active");
+                for (const el of all) {
+                    if (el) {
+                        if (this.value == el.value) {
+                            el.classList.add("active");
+                        } else {
+                            el.classList.remove("active");
+                        }
                     }
                 }
             }
