@@ -50,7 +50,7 @@ export async function createArchive(files = []) {
 }
 
 async function createLocalFileEntry(file, fileHeaderOffset) {
-    const rawData = await file.arrayBuffer();
+    const fileContents = await file.text();
     const rawStream = file.stream();
     const compressionStream = new CompressionStream("deflate-raw");
     const compressedStream = rawStream.pipeThrough(compressionStream);
@@ -64,9 +64,9 @@ async function createLocalFileEntry(file, fileHeaderOffset) {
         compressionMethod: 0x08,
         lastModifiedTime: timeToDOS(lastModified),
         lastModifiedDate: dateToDOS(lastModified),
-        crc: crc32(rawData),
+        crc: crc32(fileContents),
         compressedSize: compressedData.byteLength,
-        uncompressedSize: rawData.byteLength,
+        uncompressedSize: fileContents.length,
         fileNameLength: file.name.length,
         extraLength: 0,
         fileName: file.name,
