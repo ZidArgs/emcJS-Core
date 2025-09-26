@@ -135,3 +135,7 @@ export function isDictOf(input, callback) {
         return callback(value);
     });
 }
+
+export function isValidDate(date) {
+    return date instanceof Date && !isNaN(date);
+}

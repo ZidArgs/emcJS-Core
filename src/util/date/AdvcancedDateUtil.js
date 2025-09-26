@@ -39,7 +39,7 @@ const FORMAT_FN = {
     // Week
     W: () => {
         throw new Error("week of the year (W) is not supported yet");
-    }, // eg: 24 for the 42nd week
+    }, // eg: 41 for the 42nd week
     // Month
     F: (date) => MONTH_NAMES_FULL[date.getMonth()],
     m: (date) => `0${date.getMonth() + 1}`.slice(-2),
@@ -98,6 +98,9 @@ const FORMAT_FN = {
 const REG_EXP = /[dDjlNSwzWfmMntLYyaAgGhHisveIOP]/g;
 
 // TODO documentation
+/**
+ * subject to change
+ */
 export default class AdvcancedDateUtil {
 
     format(date, format) {
