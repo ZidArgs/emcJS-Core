@@ -1,9 +1,6 @@
 {
-    "test": {
-        "label": "Test"
-    },
-    "token-test": {
-        "label": "Token-Test"
+    "prestyle-test": {
+        "label": "Prestyle Test"
     },
     "listselect-performance": {
         "label": "ListSelect Performance"

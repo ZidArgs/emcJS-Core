@@ -31,7 +31,7 @@ document.getElementById("back").addEventListener("click", () => {
 viewEl.addEventListener("load", () => {
     // load default theme
     const defaultThemeLink = document.createElement("link");
-    defaultThemeLink.href = "/emcJS/_style/theme.css";
+    defaultThemeLink.href = "/emcJS/_style/index.css";
     defaultThemeLink.rel = "stylesheet";
     defaultThemeLink.type = "text/css";
     viewEl.contentDocument.head.appendChild(defaultThemeLink);

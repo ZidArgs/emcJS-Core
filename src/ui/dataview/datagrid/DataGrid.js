@@ -5,7 +5,6 @@ import {appUID} from "../../../util/helper/UniqueGenerator.js";
 import {debounce} from "../../../util/Debouncer.js";
 import {getAllAttributes} from "../../../util/helper/ui/NodeAttributes.js";
 import {filterInPlace} from "../../../util/helper/collection/ArrayMutations.js";
-import BusyIndicatorManager from "../../../util/BusyIndicatorManager.js";
 import MutationObserverManager from "../../../util/observer/manager/MutationObserverManager.js";
 import DataRecieverMixin from "../../../util/dataprovider/DataRecieverMixin.js";
 import HeaderManager from "./manager/HeaderManager.js";
@@ -148,8 +147,7 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
         }));
         this.#rowManager = new RowManager(this.#bodyEl, stickyObserver, this.#cellCache, this.#internalId);
         this.#rowManager.addEventListener("afterrender", debounce(() => {
-            const isEmpty = this.#bodyEl.children.length === 0;
-            this.#emptyContainerEl.classList.toggle("hidden", !isEmpty);
+            this.#refreshEmptyStatus();
             this.#updateSelectionAfterRender();
             this.#applyCellFixes(this.#bodyEl);
         }));
@@ -511,7 +509,7 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
     }
 
     async setData(rows = []) {
-        await BusyIndicatorManager.busy();
+        await this.#busyIndicator.busy();
         if (rows != null && !Array.isArray(rows)) {
             throw new TypeError("Data must be an array or null");
         }
@@ -523,14 +521,14 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
                 this.#data = deepClone(rows);
                 this.#rowManager.manage(this.#data, this.#columnDefinition, this.#selected, this.noCache);
             }
-            this.#notifyRowUpdate();
+            this.#onRowUpdate();
             /* --- */
         }
         this.#updateSelectHeader();
-        await BusyIndicatorManager.unbusy();
+        await this.#busyIndicator.unbusy();
     }
 
-    #notifyRowUpdate = debounce(() => {
+    #onRowUpdate = debounce(() => {
         if (this.readonly || this.disabled) {
             for (const [,, cell] of this.#cellCache.getAllCells()) {
                 cell.readonly = this.readonly;
@@ -550,7 +548,7 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
     }
 
     async #applyColumnDefinition() {
-        await BusyIndicatorManager.busy();
+        await this.#busyIndicator.busy();
         const columnNodeList = this.#columnContainerEl.assignedElements({flatten: true}).filter((el) => el instanceof Column);
         const newColumnDefinition = [];
         /* --- */
@@ -607,9 +605,13 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
             this.dispatchEvent(ev);
         }
         /* --- */
-        this.#nocolumnsContainerEl.classList.toggle("hidden", newColumnDefinition.length > 0);
+        const hasColumnDefinition = newColumnDefinition.length > 0;
+        this.#nocolumnsContainerEl.classList.toggle("hidden", hasColumnDefinition);
+        if (hasColumnDefinition) {
+            this.#refreshEmptyStatus();
+        }
         /* --- */
-        await BusyIndicatorManager.unbusy();
+        await this.#busyIndicator.unbusy();
     }
 
     #updateSelectHeader() {
@@ -731,6 +733,15 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
             }
         }
     }
+
+    #refreshEmptyStatus = debounce(() => {
+        if (this.#busyIndicator.isBusy()) {
+            this.#refreshEmptyStatus();
+        } else {
+            const isEmpty = this.#bodyEl.children.length === 0;
+            this.#emptyContainerEl.classList.toggle("hidden", !isEmpty);
+        }
+    }, 1000);
 
 }
 

@@ -7,6 +7,7 @@ import "../../i18n/I18nLabel.js";
 import "./components/DataListEntry.js";
 import TPL from "./DataList.js.html" assert {type: "html"};
 import STYLE from "./DataList.js.css" assert {type: "css"};
+import {debounce} from "../../../util/Debouncer.js";
 
 // TODO add "no match" label
 export default class DataList extends ResizeObserverMixin(DataRecieverMixin(CustomElement)) {
@@ -41,8 +42,7 @@ export default class DataList extends ResizeObserverMixin(DataRecieverMixin(Cust
             el.setData(values);
         };
         this.#elementManager.addEventListener("afterrender", () => {
-            const isEmpty = this.children.length === 0;
-            this.#emptyContainerEl.classList.toggle("hidden", !isEmpty);
+            this.#refreshEmptyStatus();
             if (this.autoscroll) {
                 const scrollHeight = this.#scrollContainerEl.scrollHeight;
                 this.#scrollContainerEl.scroll({top: scrollHeight});
@@ -52,6 +52,8 @@ export default class DataList extends ResizeObserverMixin(DataRecieverMixin(Cust
             const ev = new Event("scrollend", event);
             this.dispatchEvent(ev);
         });
+        /* --- */
+        this.#refreshEmptyStatus();
     }
 
     resizeCallback() {
@@ -122,6 +124,15 @@ export default class DataList extends ResizeObserverMixin(DataRecieverMixin(Cust
 
         return currentScrollPosition / scrollHeight;
     }
+
+    #refreshEmptyStatus = debounce(() => {
+        if (this.#busyIndicator.isBusy()) {
+            this.#refreshEmptyStatus();
+        } else {
+            const isEmpty = this.children.length === 0;
+            this.#emptyContainerEl.classList.toggle("hidden", !isEmpty);
+        }
+    }, 1000);
 
 }
 

@@ -19,6 +19,10 @@ export default class BusyIndicatorManager {
         INSTANCES.set(name, this);
     }
 
+    isBusy() {
+        return this.#busyEl.isBusy();
+    }
+
     async busy() {
         await this.#busyEl.busy();
     }

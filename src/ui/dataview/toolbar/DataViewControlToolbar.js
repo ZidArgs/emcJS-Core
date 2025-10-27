@@ -273,7 +273,7 @@ export default class DataViewControlToolbar extends CustomElementDelegating {
     }
 
     #updateEntries = debounce(() => {
-        const shownEntries = this.entries ?? 1;
+        const shownEntries = this.entries;
         if (shownEntries != null && shownEntries > 0) {
             const pageSize = this.size;
             if (pageSize != null && pageSize > 0) {

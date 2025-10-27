@@ -22,6 +22,10 @@ export default class BusyIndicator extends CustomElement {
         STYLE.apply(this.shadowRoot);
     }
 
+    isBusy() {
+        return this.#isActive;
+    }
+
     busy() {
         return new Promise((resolve) => {
             if (this.#activeCounter.add() && !this.#isActive) {
