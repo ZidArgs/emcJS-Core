@@ -195,9 +195,6 @@ all; top_bottom right_left; top right bottom left
     --input-button-invalid-hover-back-image: none;
     --input-button-invalid-hover-border-color: var(--input-button-invalid-border-color);
 
-    /* === image/icon === */
-    --image-checker-back-color: #2c2c2c;
-
     /* === select === */
     --select-option-text-color: var(--page-text-color);
     --select-option-back-color: var(--page-back-color);
@@ -331,12 +328,15 @@ all; top_bottom right_left; top right bottom left
     --range-button-disabled-back-color: var(--input-button-disabled-back-color);
     --range-button-disabled-border-color: var(--input-button-disabled-border-color);
 
-    /* progress */
+    /* === progress === */
     --progress-back-color: var(--input-back-color);
     --progress-fill-color: var(--page-marked-back-color);
     --progress-border-width: var(--input-border-width);
     --progress-border-color: var(--input-border-color);
     --progress-border-radius: var(--input-border-radius);
+
+    /* === image/icon === */
+    --image-checker-back-color: #2c2c2c;
 
     /* === tree === */
     --tree-text-color: var(--page-text-color);
@@ -485,11 +485,11 @@ all; top_bottom right_left; top right bottom left
     --datalist-entry-border-width: 2px;
     --datalist-entry-border-radius: 4px;
 
-    /* === pagination === */
-    --pagination-border-color: #000000;
-    --pagination-border-width: 2px;
-    --pagination-border-radius: 6px;
-    --pagination-focus-color: var(--input-focus-color);
+    /* === dataview control toolbar === */
+    --dataview-control-toolbar-border-color: #000000;
+    --dataview-control-toolbar-border-width: 2px;
+    --dataview-control-toolbar-border-radius: 6px;
+    --dataview-control-toolbar-focus-color: var(--input-focus-color);
 
     /* === scrollbar === */
     --scrollbar-size: 8px;
