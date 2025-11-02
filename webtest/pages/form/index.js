@@ -5,6 +5,7 @@ import CustomActionRegistry from "/emcJS/data/registry/CustomActionRegistry.js";
 import LogicOperatorRegistry from "/emcJS/data/registry/LogicOperatorRegistry.js";
 import OptionGroupRegistry from "/emcJS/data/registry/form/OptionGroupRegistry.js";
 import TokenRegistry from "/emcJS/data/registry/form/TokenRegistry.js";
+import ModalFormDialog from "/emcJS/ui/modal/ModalFormDialog.js";
 import "/emcJS/ui/Page.js";
 // form
 import FormBuilder from "/emcJS/util/form/FormBuilder.js";
@@ -31,7 +32,6 @@ import FormContext from "/emcJS/util/form/FormContext.js";
     "SimpleSelect"          | new
     "ImageSelect"           | new
     "TokenSelect"           | new
-    "OptionAmountListInput" | new
     "KeyValueListInput"     | new
     "ListInput"             | new
     "RelationSelect"        | new
@@ -58,7 +58,6 @@ const [defaultValues, optionGroups, tokenGroups, buttonConfig, extraConfig, ...f
     FileLoader.json("./form-config/extra.json"),
     FileLoader.json("./form-config/input/ListInput.json"),
     FileLoader.json("./form-config/input/KeyValueListInput.json"),
-    FileLoader.json("./form-config/input/OptionAmountListInput.json"),
     FileLoader.json("./form-config/select/TokenSelect.json"),
     FileLoader.json("./form-config/select/ImageIconSelect.json"),
     FileLoader.json("./form-config/input/BoolOrLogicInput.json"),
@@ -210,6 +209,14 @@ CustomActionRegistry.current.set("cheese", () => {
         },
         "switch": {"required": true}
     }, true);
+    // ---
+    const formDialogEl = new ModalFormDialog({
+        caption: "Cheese",
+        text: "Choose your kind of cheese"
+    });
+    formDialogEl.setFontIcon("🧀", {size: "28px"});
+    formDialogEl.loadFormConfig(buttonConfig);
+    formDialogEl.show();
 });
 
 const logicTestEl = document.getElementById("logicTest");
