@@ -103,7 +103,7 @@ export default class FormContainer extends CustomElement {
                 this.#topFormResizeObserver.observe(node);
                 this.#applyScrollPaddingTop(node);
             }
-            if (this.hasHeader) {
+            if (this.hasFooter) {
                 this.#bottomFormResizeObserver.disconnect();
                 const node = this.#formNodeList.at(-1);
                 this.#bottomFormResizeObserver.observe(node);
