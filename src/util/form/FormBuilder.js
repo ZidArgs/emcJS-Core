@@ -4,6 +4,7 @@ import "../../ui/form/FormContainer.js";
 import "../../ui/form/FormField.js";
 import "../../ui/form/FormFieldset.js";
 import "../../ui/form/FormRow.js";
+import "../../ui/form/FormSection.js";
 import "../../ui/form/button/SubmitButton.js";
 import "../../ui/form/button/ResetButton.js";
 import "../../ui/form/button/ActionButton.js";
@@ -225,6 +226,9 @@ class FormBuilder {
             }
             case "Row": {
                 return this.#createRow(id, visible, enabled, params, data, defaultValues);
+            }
+            case "Section": {
+                return this.#createSection(id, visible, enabled, params, data, defaultValues);
             }
             default: {
                 return this.#createFormElement(type, id, visible, enabled, editable, params, data, defaultValues, label);
@@ -524,6 +528,27 @@ class FormBuilder {
         }
         if (params.align != null) {
             el.align = params.align;
+        }
+        this.#fillFormComponents(el, params.children, defaultValues, label);
+        return el;
+    }
+
+    #createSection(id, visible, enabled, params = {}, data = {}, defaultValues = {}, label = null) {
+        const el = document.createElement("emc-form-section");
+        if (id != null) {
+            el.id = id;
+        }
+        for (const key in data) {
+            el.dataset[key] = data[key];
+        }
+        if (visible != null) {
+            el.setAttribute("visible", JSON.stringify(visible));
+        }
+        if (enabled != null) {
+            el.setAttribute("enabled", JSON.stringify(enabled));
+        }
+        if (params.label != null) {
+            el.label = params.label;
         }
         this.#fillFormComponents(el, params.children, defaultValues, label);
         return el;

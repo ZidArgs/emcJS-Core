@@ -84,5 +84,8 @@
                 "label": "RelationSelect"
             }
         }
+    },
+    "form-section": {
+        "label": "Form Section"
     }
 }
