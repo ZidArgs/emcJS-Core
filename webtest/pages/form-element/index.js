@@ -12,6 +12,7 @@ import "/emcJS/ui/form/FormContainer.js";
 import "/emcJS/ui/form/FormFieldset.js";
 import "/emcJS/ui/form/FormField.js";
 import "/emcJS/ui/form/FormRow.js";
+import "/emcJS/ui/form/FormSection.js";
 import "/emcJS/ui/form/button/Button.js";
 import "/emcJS/ui/form/button/SubmitButton.js";
 import "/emcJS/ui/form/button/ResetButton.js";

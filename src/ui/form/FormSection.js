@@ -13,6 +13,8 @@ export default class FormSection extends CustomElement {
 
     #labelEl = document.createElement("emc-i18n-label");
 
+    #parentSectionEls = [];
+
     static get formConfigurationFields() {
         return deepClone(CONFIG_FIELDS);
     }
@@ -30,16 +32,21 @@ export default class FormSection extends CustomElement {
     }
 
     connectedCallback() {
-        const parentSectionEls = findAllParentsBySelector(this, "emc-form-section");
-        const level = parentSectionEls.length + 1;
+        this.#parentSectionEls = findAllParentsBySelector(this, "emc-form-section");
+        const level = delimitInteger(this.#parentSectionEls.length + 1, 1, 6);
 
-        const sectionHeadingEl = document.createElement(`h${delimitInteger(level, 1, 6)}`);
+        const sectionHeadingEl = document.createElement(`h${level}`);
         sectionHeadingEl.appendChild(this.#labelEl);
         this.#headerEl.appendChild(sectionHeadingEl);
+        this.#headerEl.className = `level-${level}`;
     }
 
     disconnectedCallback() {
         this.#headerEl.innerHTML = "";
+    }
+
+    get parentSectionElementList() {
+        return [...this.#parentSectionEls];
     }
 
     set label(value) {

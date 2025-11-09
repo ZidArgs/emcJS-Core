@@ -9,6 +9,9 @@
     --form-invalid-back-color: #ffeeee;
     --form-border-color: #000000;
 
+    /* === form section === */
+    --form-section-header-back-color: #d1d1bf;
+
     /* === fieldset === */
     --fieldset-back-color: #e1f3e9;
 

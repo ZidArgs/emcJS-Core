@@ -1,1 +1,80 @@
-:host {}
+:host {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: stretch;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+}
+
+#header {
+    position: sticky;
+    padding: 0;
+    color: var(--form-section-header-text-color, #000000);
+    background-color: var(--form-section-header-back-color, #000000);
+
+    &.level-1 {
+        top: calc(0px + var(--form-header-height, 0px));
+        z-index: 6;
+    }
+
+    &.level-2 {
+        top: calc(2em + 20px + var(--form-header-height, 0px));
+        z-index: 5;
+    }
+
+    &.level-3 {
+        top: calc(3.9em + 40px + var(--form-header-height, 0px));
+        z-index: 4;
+    }
+
+    &.level-4 {
+        top: calc(5.7em + 60px + var(--form-header-height, 0px));
+        z-index: 3;
+    }
+
+    &.level-5 {
+        top: calc(7.3em + 80px + var(--form-header-height, 0px));
+        z-index: 2;
+    }
+
+    &.level-6 {
+        top: calc(8.8em + 100px + var(--form-header-height, 0px));
+        z-index: 1;
+    }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 10px;
+    font-weight: bold;
+}
+
+h1 {
+    font-size: 2em;
+}
+
+h2 {
+    font-size: 1.9em;
+}
+
+h3 {
+    font-size: 1.6em;
+}
+
+h4 {
+    font-size: 1.5em;
+}
+
+h5 {
+    font-size: 1.4em;
+}
+
+h6 {
+    font-size: 1.3em;
+}

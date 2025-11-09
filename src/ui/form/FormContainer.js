@@ -114,6 +114,7 @@ export default class FormContainer extends CustomElement {
 
     #applyScrollPaddingTop(node) {
         this.#containerEl.style.scrollPaddingTop = `${node.clientHeight}px`;
+        this.#contentEl.style.setProperty("--form-header-height", `${node.clientHeight}px`);
     }
 
     #applyScrollPaddingBottom(node) {

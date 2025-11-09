@@ -1,12 +1,14 @@
 // main
 import ModalDialog from "/emcJS/ui/modal/ModalDialog.js";
 import "/emcJS/ui/Page.js";
+import "/emcJS/ui/tree/Tree.js";
 // form
 import FormContext from "/emcJS/util/form/FormContext.js";
 import "/emcJS/ui/form/FormContainer.js";
 import "/emcJS/ui/form/FormFieldset.js";
 import "/emcJS/ui/form/FormField.js";
 import "/emcJS/ui/form/FormRow.js";
+import "/emcJS/ui/form/FormSection.js";
 import "/emcJS/ui/form/button/SubmitButton.js";
 import "/emcJS/ui/form/button/ResetButton.js";
 import "/emcJS/ui/form/button/ActionButton.js";
@@ -19,6 +21,9 @@ formContext.allowEnter = true;
 formContext.hideErrors = true;
 const formContainerEl = document.getElementById("form");
 formContext.registerFormContainer(formContainerEl);
+
+const formSectionNavigationEl = document.getElementById("form-section-navigation");
+formContext.setFormSectionNavigationElement(formSectionNavigationEl);
 
 const errorButtonEl = document.getElementById("error-button");
 

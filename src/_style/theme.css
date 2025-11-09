@@ -113,6 +113,10 @@ all; top_bottom right_left; top right bottom left
     --form-invalid-back-color: #ffeeee;
     --form-invalid-back-image: none;
 
+    /* === form section === */
+    --form-section-header-text-color: var(--form-text-color);
+    --form-section-header-back-color: var(--form-back-color);
+
     /* === fieldset === */
     --fieldset-back-color: var(--page-back-color);
     --fieldset-back-image: none;
