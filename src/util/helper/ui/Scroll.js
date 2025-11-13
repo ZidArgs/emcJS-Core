@@ -12,13 +12,13 @@ export function getScrollParent(node) {
     return getScrollParent(node.assignedSlot ?? node.parentNode ?? node.getRootNode()?.host);
 }
 
-export function scrollIntoViewIfNeeded(node, options) {
+export function scrollIntoViewIfNeeded(node, options = {}) {
     const {
         partialY = false,
         partialX = false,
         behavior = "auto",
-        block,
-        inline,
+        block = "start",
+        inline = "start",
         offsetTop = 0,
         offsetBottom = 0,
         offsetLeft = 0,
@@ -73,11 +73,11 @@ export function scrollIntoViewIfNeeded(node, options) {
     }
 }
 
-export function scrollIntoView(node, options) {
+export function scrollIntoView(node, options = {}) {
     const {
         behavior = "auto",
-        block,
-        inline,
+        block = "start",
+        inline = "start",
         offsetTop = 0,
         offsetBottom = 0,
         offsetLeft = 0,

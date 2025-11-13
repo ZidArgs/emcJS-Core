@@ -15,6 +15,8 @@ export default class TreeNode extends CustomElement {
 
     #nodeEl;
 
+    #connectedNode;
+
     #subTreeEl;
 
     #labelEl;
@@ -26,6 +28,8 @@ export default class TreeNode extends CustomElement {
     #elementManager;
 
     #i18nEventManager = new EventTargetManager(i18n);
+
+    #registeredSortFunction;
 
     constructor() {
         super();
@@ -46,6 +50,7 @@ export default class TreeNode extends CustomElement {
                 element: this,
                 index: targetIndex,
                 ref: this.ref,
+                connectedNode: this.connectedNode,
                 isSelected: this.classList.contains("marked"),
                 path: [targetIndex],
                 refPath: [this.ref],
@@ -73,6 +78,7 @@ export default class TreeNode extends CustomElement {
                 element: this,
                 index: targetIndex,
                 ref: this.ref,
+                connectedNode: this.connectedNode,
                 isSelected: this.classList.contains("marked"),
                 path: [targetIndex],
                 refPath: [this.ref],
@@ -89,7 +95,7 @@ export default class TreeNode extends CustomElement {
         this.#subTreeEl.addEventListener("select", (event) => {
             event.stopPropagation();
             const {
-                element, index, ref, isSelected, path, refPath, left, top
+                element, index, ref, connectedNode, isSelected, path, refPath, left, top
             } = event.data;
             const targetIndex = Array.from(this.parentElement.children).indexOf(this);
             const selectEvent = new Event("select", {
@@ -100,6 +106,7 @@ export default class TreeNode extends CustomElement {
                 element,
                 index,
                 ref,
+                connectedNode,
                 isSelected,
                 path: [targetIndex, ...path ?? []],
                 refPath: [this.ref, ...refPath ?? []],
@@ -114,7 +121,7 @@ export default class TreeNode extends CustomElement {
         this.#subTreeEl.addEventListener("menu", (event) => {
             event.stopPropagation();
             const {
-                element, index, ref, isSelected, path, refPath, left, top
+                element, index, ref, connectedNode, isSelected, path, refPath, left, top
             } = event.data;
             const targetIndex = Array.from(this.parentElement.children).indexOf(this);
             const menuEvent = new Event("menu", {
@@ -125,6 +132,7 @@ export default class TreeNode extends CustomElement {
                 element,
                 index,
                 ref,
+                connectedNode,
                 isSelected,
                 path: [targetIndex, ...path ?? []],
                 refPath: [this.ref, ...refPath ?? []],
@@ -144,7 +152,7 @@ export default class TreeNode extends CustomElement {
         /* --- */
         this.#elementManager = new TreeNodeElementManager(this, TreeNode);
         if (this.sorted) {
-            this.#elementManager.registerSortFunction(this.#sortByNameFunction);
+            this.#elementManager.registerSortFunction(this.#registeredSortFunction ?? TreeNode.#sortByNameFunction);
         }
         /* --- */
         this.#i18nEventManager.active = this.sorted;
@@ -160,8 +168,20 @@ export default class TreeNode extends CustomElement {
         const sorted = this.sorted;
         this.#i18nEventManager.active = sorted;
         if (sorted) {
-            this.#elementManager.registerSortFunction(this.#sortByNameFunction);
+            this.#elementManager.registerSortFunction(this.#registeredSortFunction ?? TreeNode.#sortByNameFunction);
         }
+    }
+
+    set connectedNode(value) {
+        if (value instanceof Node) {
+            this.#connectedNode = value;
+        } else {
+            this.#connectedNode = null;
+        }
+    }
+
+    get connectedNode() {
+        return this.#connectedNode;
     }
 
     get isCollapsible() {
@@ -221,7 +241,7 @@ export default class TreeNode extends CustomElement {
                         const sorted = this.sorted;
                         this.#i18nEventManager.active = sorted;
                         if (sorted) {
-                            this.#elementManager.registerSortFunction(this.#sortByNameFunction);
+                            this.#elementManager.registerSortFunction(this.#registeredSortFunction ?? TreeNode.#sortByNameFunction);
                         } else {
                             this.#elementManager.registerSortFunction();
                         }
@@ -294,7 +314,21 @@ export default class TreeNode extends CustomElement {
         this.#elementManager.sort();
     }, 1000);
 
-    #sortByNameFunction(entry0, entry1) {
+    registerSortFunction(fn) {
+        if (typeof fn === "function") {
+            this.#registeredSortFunction = fn;
+            if (this.sorted) {
+                this.#elementManager.registerSortFunction(fn);
+            }
+        } else {
+            this.#registeredSortFunction = null;
+            if (this.sorted) {
+                this.#elementManager.registerSortFunction(TreeNode.#sortByNameFunction);
+            }
+        }
+    }
+
+    static #sortByNameFunction(entry0, entry1) {
         const {element: el0} = entry0;
         const {element: el1} = entry1;
         return nodeTextComparator(el0, el1);

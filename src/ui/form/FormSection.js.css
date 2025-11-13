@@ -8,6 +8,35 @@
     box-sizing: border-box;
 }
 
+#scroll-to {
+    position: absolute;
+    opacity: 0;
+
+    &.level-1 {
+        top: calc(-1 * (0px + var(--form-header-height, 0px)));
+    }
+
+    &.level-2 {
+        top: calc(-1 * (2em + 20px + var(--form-header-height, 0px)));
+    }
+
+    &.level-3 {
+        top: calc(-1 * (3.9em + 40px + var(--form-header-height, 0px)));
+    }
+
+    &.level-4 {
+        top: calc(-1 * (5.7em + 60px + var(--form-header-height, 0px)));
+    }
+
+    &.level-5 {
+        top: calc(-1 * (7.3em + 80px + var(--form-header-height, 0px)));
+    }
+
+    &.level-6 {
+        top: calc(-1 * (8.8em + 100px + var(--form-header-height, 0px)));
+    }
+}
+
 #header {
     position: sticky;
     padding: 0;

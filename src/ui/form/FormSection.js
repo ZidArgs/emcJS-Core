@@ -6,8 +6,13 @@ import "../i18n/I18nLabel.js";
 import TPL from "./FormSection.js.html" assert {type: "html"};
 import STYLE from "./FormSection.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./FormSection.js.json" assert {type: "json"};
+import {
+    scrollIntoView, scrollIntoViewIfNeeded
+} from "../../util/helper/ui/Scroll.js";
 
 export default class FormSection extends CustomElement {
+
+    #scrollToEl;
 
     #headerEl;
 
@@ -28,6 +33,7 @@ export default class FormSection extends CustomElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
+        this.#scrollToEl = this.shadowRoot.getElementById("scroll-to");
         this.#headerEl = this.shadowRoot.getElementById("header");
     }
 
@@ -39,6 +45,7 @@ export default class FormSection extends CustomElement {
         sectionHeadingEl.appendChild(this.#labelEl);
         this.#headerEl.appendChild(sectionHeadingEl);
         this.#headerEl.className = `level-${level}`;
+        this.#scrollToEl.className = `level-${level}`;
     }
 
     disconnectedCallback() {
@@ -69,6 +76,14 @@ export default class FormSection extends CustomElement {
                 } break;
             }
         }
+    }
+
+    scrollIntoViewIfNeeded(options) {
+        scrollIntoViewIfNeeded(this.#scrollToEl, options);
+    }
+
+    scrollIntoView(options) {
+        scrollIntoView(this.#scrollToEl, options);
     }
 
 }

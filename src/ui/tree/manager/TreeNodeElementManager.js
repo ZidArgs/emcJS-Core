@@ -26,10 +26,13 @@ export default class TreeNodeElementManager extends ElementManager {
 
     mutator(el, key, params) {
         const {
-            label = key, data = {}, sorted = false, children, ...attr
+            label = key, data = {}, sorted = false, sortFunction, onClick, children, ...attr
         } = params;
         el.label = label;
         el.sorted = sorted;
+        if (typeof sortFunction === "function") {
+            el.registerSortFunction(sortFunction);
+        }
         for (const name in data) {
             el.dataset[name] = data[name];
         }
@@ -39,10 +42,15 @@ export default class TreeNodeElementManager extends ElementManager {
         } else {
             el.forceCollapsible = false;
         }
+        if (typeof onClick === "function") {
+            el.addEventListener("contentclick", onClick);
+        }
         for (const name in attr) {
             const value = attr[name];
             if (value != null) {
-                if (typeof value === "object") {
+                if (value instanceof Node) {
+                    el[name] = value;
+                } else if (typeof value === "object") {
                     el.setAttribute(name, JSON.stringify(value));
                 } else if (typeof value === "boolean") {
                     if (value) {
