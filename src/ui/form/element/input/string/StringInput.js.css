@@ -1,3 +1,8 @@
+#field {
+    display: flex;
+    flex-direction: column;
+}
+
 #input {
     flex-grow: 1;
     height: 2em;
@@ -42,17 +47,27 @@
     opacity: 1 !important;
 }
 
+:host([showtextlength]:not([showtextlength="false"])) #input {
+    height: calc(2.7em + 4px + 2 * var(--input-border-width, 2px));
+    padding-bottom: calc(0.7em + 4px + 2 * var(--input-border-width, 2px));
+}
+
 /* --- */
 .footer {
+    position: absolute;
     display: none;
     justify-content: flex-end;
+    bottom: var(--input-border-width, 2px);
+    width: 100%;
     padding: 2px 20px;
+    color: var(--input-text-color, #000000);
     border-top-style: solid;
     border-top-width: var(--input-border-width, 2px);
     border-top-color: var(--input-border-color, #222222);
+    z-index: 1;
 }
 
-:host([maxlength]:not([maxlength=""])) .footer {
+:host([showtextlength]:not([showtextlength="false"])) .footer {
     display: flex;
 }
 

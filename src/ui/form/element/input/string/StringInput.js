@@ -29,7 +29,7 @@ export default class StringInput extends AbstractFormElement {
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#inputEl.addEventListener("input", () => {
             this.value = this.#inputEl.value;
-            this.#printLengthToMax();
+            this.#printTextLength();
         });
     }
 
@@ -69,6 +69,14 @@ export default class StringInput extends AbstractFormElement {
 
     get maxLength() {
         return this.getIntAttribute("maxlength");
+    }
+
+    set showTextLength(value) {
+        this.setBooleanAttribute("showtextlength", value);
+    }
+
+    get showTextLength() {
+        return this.getBooleanAttribute("showtextlength");
     }
 
     set spellcheck(value) {
@@ -120,23 +128,16 @@ export default class StringInput extends AbstractFormElement {
                     safeSetAttribute(this.#inputEl, "i18n-placeholder", newValue);
                 }
             } break;
-            case "minlength": {
-                if (oldValue != newValue) {
-                    if (this.minLength > -1) {
-                        this.revalidate();
-                    } else {
-                        this.minLength = null;
-                    }
-                }
-            } break;
+            case "minlength":
             case "maxlength": {
                 if (oldValue != newValue) {
-                    if (this.maxLength > -1) {
-                        this.revalidate();
-                        this.#printLengthToMax();
-                    } else {
-                        this.maxLength = null;
-                    }
+                    this.revalidate();
+                    this.#printTextLength();
+                }
+            } break;
+            case "showtextlength": {
+                if (oldValue != newValue) {
+                    this.#printTextLength();
                 }
             } break;
             case "spellcheck": {
@@ -179,14 +180,26 @@ export default class StringInput extends AbstractFormElement {
 
     renderValue(value) {
         this.#inputEl.value = value ?? "";
-        this.#printLengthToMax();
+        this.#printTextLength();
     }
 
-    #printLengthToMax() {
-        if (this.maxLength != null) {
+    #printTextLength() {
+        if (this.showTextLength) {
             const value = this.#inputEl.value ?? "";
             const length = value.length;
-            this.#lengthInfoEl.innerText = `${length} / ${this.maxLength}`;
+            if (this.maxLength != null) {
+                if (this.minLength != null) {
+                    this.#lengthInfoEl.innerText = `${length} / ${this.minLength} − ${this.maxLength}`;
+                } else {
+                    this.#lengthInfoEl.innerText = `${length} / ${this.maxLength}`;
+                }
+            } else if (this.minLength != null) {
+                this.#lengthInfoEl.innerText = `${length} (>${this.minLength})`;
+            } else {
+                this.#lengthInfoEl.innerText = length;
+            }
+        } else {
+            this.#lengthInfoEl.innerText = "";
         }
     }
 

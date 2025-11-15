@@ -19,6 +19,12 @@
     },
     {
         "type": "SwitchInput",
+        "name": "showtextlength",
+        "label": "Show Text Length Indicator",
+        "value": false
+    },
+    {
+        "type": "SwitchInput",
         "name": "spellcheck",
         "label": "Check spelling",
         "value": false

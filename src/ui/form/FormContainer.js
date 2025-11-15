@@ -13,9 +13,7 @@ const MUTATION_CONFIG = {
     subtree: true
 };
 
-/* TODO replace sticky observer
-with a method to determine how much of the section body is still visible
-*/
+// TODO make formSectionNavigationElement collapse away on small screens
 export default class FormContainer extends CustomElement {
 
     #containerEl;
