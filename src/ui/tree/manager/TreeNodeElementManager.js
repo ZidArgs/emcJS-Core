@@ -26,12 +26,15 @@ export default class TreeNodeElementManager extends ElementManager {
 
     mutator(el, key, params) {
         const {
-            label = key, data = {}, sorted = false, sortFunction, onClick, children, ...attr
+            label = key, data = {}, sorted = false, sortFunction, selectOnClick = true, onClick, children, ...attr
         } = params;
         el.label = label;
         el.sorted = sorted;
         if (typeof sortFunction === "function") {
             el.registerSortFunction(sortFunction);
+        }
+        if (selectOnClick) {
+            el.selectOnClick = true;
         }
         for (const name in data) {
             el.dataset[name] = data[name];

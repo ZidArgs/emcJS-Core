@@ -14,15 +14,43 @@ export default class StickyObserver {
 
     #rootEl;
 
+    #marginTop = 0;
+
+    #marginBottom = 0;
+
+    #marginLeft = 0;
+
+    #marginRight = 0;
+
     #callback;
 
     #observedEls = new Map();
 
     #styleChangeObserver;
 
-    constructor(callback, {root = document.rootElement} = {}) {
+    constructor(callback, options = {}) {
+        const {
+            root = document.rootElement,
+            marginTop = 0,
+            marginBottom = 0,
+            marginLeft = 0,
+            marginRight = 0
+        } = options;
         this.#callback = callback;
         this.#rootEl = root;
+        if (!isNaN(marginTop)) {
+            this.#marginTop = parseInt(marginTop);
+        }
+        if (!isNaN(marginBottom)) {
+            this.#marginBottom = parseInt(marginBottom);
+        }
+        if (!isNaN(marginLeft)) {
+            this.#marginLeft = parseInt(marginLeft);
+        }
+        if (!isNaN(marginRight)) {
+            this.#marginRight = parseInt(marginRight);
+        }
+        /* -- */
         root.addEventListener("scroll", () => {
             this.#refresh();
         });
@@ -42,6 +70,46 @@ export default class StickyObserver {
                 this.#callback(entries);
             }
         }, OBSERVED_STYLES);
+    }
+
+    set marginTop(value) {
+        if (!isNaN(value)) {
+            this.#marginTop = parseInt(value);
+        }
+    }
+
+    get marginTop() {
+        return this.#marginTop;
+    }
+
+    set marginBottom(value) {
+        if (!isNaN(value)) {
+            this.#marginBottom = parseInt(value);
+        }
+    }
+
+    get marginBottom() {
+        return this.#marginBottom;
+    }
+
+    set marginLeft(value) {
+        if (!isNaN(value)) {
+            this.#marginLeft = parseInt(value);
+        }
+    }
+
+    get marginLeft() {
+        return this.#marginLeft;
+    }
+
+    set marginRight(value) {
+        if (!isNaN(value)) {
+            this.#marginRight = parseInt(value);
+        }
+    }
+
+    get marginRight() {
+        return this.#marginRight;
     }
 
     #refresh() {
@@ -86,6 +154,14 @@ export default class StickyObserver {
         return entries;
     }
 
+    getRecords() {
+        const entries = [];
+        for (const [, entry] of this.#observedEls) {
+            entries.push(entry);
+        }
+        return entries;
+    }
+
     #handleObservedElement(observedEl, contentRect) {
         const observedStyle = this.#styleChangeObserver.getStyle(observedEl);
         const entry = {
@@ -106,7 +182,7 @@ export default class StickyObserver {
         // get top stuck
         const styleTop = parseFloat(observedStyle.top);
         if (!isNaN(styleTop)) {
-            if (Math.floor(observedRect.top) <= Math.ceil(contentRect.top) + styleTop) {
+            if (Math.floor(observedRect.top) <= Math.ceil(contentRect.top) + styleTop + this.#marginTop) {
                 entry.isStuck = true;
                 entry.stuckPositions.top = true;
             }
@@ -114,7 +190,7 @@ export default class StickyObserver {
         // get bottom stuck
         const styleBottom = parseFloat(observedStyle.bottom);
         if (!isNaN(styleBottom)) {
-            if (Math.ceil(observedRect.bottom) >= Math.floor(contentRect.bottom) - styleBottom) {
+            if (Math.ceil(observedRect.bottom) >= Math.floor(contentRect.bottom) - styleBottom - this.#marginBottom) {
                 entry.isStuck = true;
                 entry.stuckPositions.bottom = true;
             }
@@ -122,7 +198,7 @@ export default class StickyObserver {
         // get left stuck
         const styleLeft = parseFloat(observedStyle.left);
         if (!isNaN(styleLeft)) {
-            if (Math.floor(observedRect.left) <= Math.ceil(contentRect.left) + styleLeft) {
+            if (Math.floor(observedRect.left) <= Math.ceil(contentRect.left) + styleLeft + this.#marginLeft) {
                 entry.isStuck = true;
                 entry.stuckPositions.left = true;
             }
@@ -130,7 +206,7 @@ export default class StickyObserver {
         // get right stuck
         const styleRight = parseFloat(observedStyle.right);
         if (!isNaN(styleRight)) {
-            if (Math.ceil(observedRect.right) >= Math.floor(contentRect.right) - styleRight) {
+            if (Math.ceil(observedRect.right) >= Math.floor(contentRect.right) - styleRight - this.#marginRight) {
                 entry.isStuck = true;
                 entry.stuckPositions.right = true;
             }

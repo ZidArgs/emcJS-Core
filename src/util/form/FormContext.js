@@ -12,9 +12,6 @@ import {extractFormData} from "../helper/ui/Form.js";
 import MutationObserverManager from "../observer/manager/MutationObserverManager.js";
 import FormInputContext from "./FormInputContext.js";
 import FormElementContext from "./FormElementContext.js";
-import FormSection from "../../ui/form/FormSection.js";
-import Tree from "../../ui/tree/Tree.js";
-import SectionTreeManager from "./manager/SectionTreeManager.js";
 
 const FORM_ELEMENTS = [
     HTMLInputElement,
@@ -42,17 +39,11 @@ export default class FormContext extends EventTarget {
 
     #validators = new Set();
 
-    #formSectionElList = new Set();
-
-    #formSectionNavigationEl;
-
     #formElList = new Set();
 
     #formEventManager = new EventMultiTargetManager();
 
     #storageEventTargetManager = new EventTargetManager();
-
-    #sectionTreeManager = new SectionTreeManager();
 
     #formFieldContextList = new Set();
 
@@ -238,13 +229,6 @@ export default class FormContext extends EventTarget {
 
     get allowEnter() {
         return this.#allowEnter;
-    }
-
-    setFormSectionNavigationElement(node) {
-        if (node != null && !(node instanceof Tree)) {
-            throw new Error("form section navigation element must be an instance of Tree or null");
-        }
-        this.#formSectionNavigationEl = node;
     }
 
     registerFormContainer(formContainerEl) {
@@ -433,11 +417,7 @@ export default class FormContext extends EventTarget {
     }
 
     #registerNode(node) {
-        if (node instanceof FormSection) {
-            this.#sectionTreeManager.addSection(node);
-            this.#updateSectionTree();
-            this.#formSectionElList.add(node);
-        } else if (node instanceof AbstractFormElement) {
+        if (node instanceof AbstractFormElement) {
             const context = FormElementContext.getContext(node);
             context.storage = this.#dataStorage;
             context.ghostInvisible = this.#ghostInvisible;
@@ -455,9 +435,7 @@ export default class FormContext extends EventTarget {
     }
 
     #unregisterNode(node) {
-        if (node instanceof FormSection) {
-            this.#formSectionElList.delete(node);
-        } else if (node instanceof AbstractFormElement) {
+        if (node instanceof AbstractFormElement) {
             const context = FormElementContext.getContext(node);
             context.storage = null;
             context.ghostInvisible = false;
@@ -505,11 +483,5 @@ export default class FormContext extends EventTarget {
         }
         return res;
     }
-
-    #updateSectionTree = debounce(() => {
-        if (this.#formSectionNavigationEl != null) {
-            this.#formSectionNavigationEl.loadConfig(this.#sectionTreeManager.treeConfig);
-        }
-    });
 
 }

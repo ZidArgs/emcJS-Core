@@ -1,4 +1,5 @@
 import {deepClone} from "../../helper/DeepClone.js";
+import {nodeOccurenceComparator} from "../../helper/ui/NodeListSort.js";
 
 function deepCloneTreeConfig(value) {
     const result = {};
@@ -18,6 +19,10 @@ function deepCloneTreeConfig(value) {
     return result;
 }
 
+function escapeSectionId(label) {
+    return label.toLowerCase().replace(/\s/g, "_");
+}
+
 export default class SectionTreeManager {
 
     #managedSectionEls = new Map();
@@ -26,10 +31,11 @@ export default class SectionTreeManager {
 
     addSection(section) {
         if (!this.#managedSectionEls.has(section)) {
-            const id = section.label.toLowerCase().replace(/\s/g, "-");
+            const id = escapeSectionId(section.label);
             const config = {
                 label: section.label,
                 sorted: false,
+                selectOnClick: false,
                 sortFunction: SectionTreeManager.#sortByOccurence,
                 startCollapsed: true,
                 connectedNode: section,
@@ -43,10 +49,26 @@ export default class SectionTreeManager {
                 }
                 const parentConfig = this.#managedSectionEls.get(parents[0]);
                 parentConfig.children = parentConfig.children ?? {};
+                config.path = [...parentConfig.path, id];
                 parentConfig.children[id] = config;
             } else {
                 this.#treeConfig[id] = config;
+                config.path = [id];
             }
+        }
+    }
+
+    removeSection(section) {
+        if (this.#managedSectionEls.has(section)) {
+            const id = escapeSectionId(section.label);
+            this.#managedSectionEls.delete(section);
+            const children = section.querySelectorAll("emc-form-section");
+            for (const child of children) {
+                if (this.#managedSectionEls.has(child)) {
+                    this.removeSection(child);
+                }
+            }
+            delete this.#treeConfig[id];
         }
     }
 
@@ -54,25 +76,29 @@ export default class SectionTreeManager {
         return deepCloneTreeConfig(this.#treeConfig);
     }
 
+    getPath(section) {
+        if (this.#managedSectionEls.has(section)) {
+            const config = this.#managedSectionEls.get(section);
+            return [...config.path];
+        }
+    }
+
     static #sortByOccurence(entry0, entry1) {
         const {connectedNode: el0} = entry0;
         const {connectedNode: el1} = entry1;
 
         if (el0.parentElement !== el1.parentElement) {
-            const comparedPosition = el0.compareDocumentPosition(el1);
-            if (comparedPosition & Node.DOCUMENT_POSITION_FOLLOWING) {
-                return 1;
-            } else {
-                return -1;
-            }
+            return nodeOccurenceComparator(el0, el1);
         }
     }
 
     static #onTreeNodeClick(event) {
-        event.preventDefault();
         const targetNode = event.target;
         const connectedNode = targetNode.connectedNode;
         connectedNode.scrollIntoView();
+        if (!targetNode.collapsed) {
+            event.preventDefault();
+        }
     }
 
 }

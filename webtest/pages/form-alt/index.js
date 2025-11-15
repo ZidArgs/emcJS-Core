@@ -23,7 +23,7 @@ const formContainerEl = document.getElementById("form");
 formContext.registerFormContainer(formContainerEl);
 
 const formSectionNavigationEl = document.getElementById("form-section-navigation");
-formContext.setFormSectionNavigationElement(formSectionNavigationEl);
+formContainerEl.setFormSectionNavigationElement(formSectionNavigationEl);
 
 const errorButtonEl = document.getElementById("error-button");
 

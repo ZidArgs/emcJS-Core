@@ -49,3 +49,12 @@ export function sortNodeList(nodeList) {
     }
     return [...nodeList].sort(nodeTextComparator);
 }
+
+export function nodeOccurenceComparator(a, b) {
+    const comparedPosition = a.compareDocumentPosition(b);
+    if (comparedPosition & Node.DOCUMENT_POSITION_FOLLOWING) {
+        return -1;
+    } else {
+        return 1;
+    }
+}

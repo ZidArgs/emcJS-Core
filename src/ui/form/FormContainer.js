@@ -1,8 +1,21 @@
 import CustomElement from "../element/CustomElement.js";
+import {debounce} from "../../util/Debouncer.js";
+import {nodeOccurenceComparator} from "../../util/helper/ui/NodeListSort.js";
+import MutationObserverManager from "../../util/observer/manager/MutationObserverManager.js";
+import SectionTreeManager from "../../util/form/manager/SectionTreeManager.js";
+import Tree from "../tree/Tree.js";
+import FormSection from "./FormSection.js";
 import TPL from "./FormContainer.js.html" assert {type: "html"};
 import STYLE from "./FormContainer.js.css" assert {type: "css"};
-import {debounce} from "../../util/Debouncer.js";
 
+const MUTATION_CONFIG = {
+    childList: true,
+    subtree: true
+};
+
+/* TODO replace sticky observer
+with a method to determine how much of the section body is still visible
+*/
 export default class FormContainer extends CustomElement {
 
     #containerEl;
@@ -15,12 +28,38 @@ export default class FormContainer extends CustomElement {
 
     #bottomFormResizeObserver;
 
+    #formSectionNavigationEl;
+
+    #sectionNodeList = new Set();
+
+    #sectionTreeManager = new SectionTreeManager();
+
+    #activeSectionEl;
+
+    #mutationObserver = new MutationObserverManager(MUTATION_CONFIG, (mutationsList) => {
+        for (const mutation of mutationsList) {
+            if (mutation.type === "childList") {
+                for (const node of mutation.addedNodes) {
+                    if (node instanceof FormSection) {
+                        this.#addSection(node);
+                    }
+                }
+                for (const node of mutation.removedNodes) {
+                    if (node instanceof FormSection) {
+                        this.#removeSection(node);
+                    }
+                }
+            }
+        }
+    });
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#containerEl = this.shadowRoot.getElementById("container");
+        this.#contentEl = this.shadowRoot.getElementById("content");
         /* --- */
         this.#topFormResizeObserver = new ResizeObserver((entries) => {
             this.#applyScrollPaddingTop(entries[0].target);
@@ -29,11 +68,47 @@ export default class FormContainer extends CustomElement {
             this.#applyScrollPaddingBottom(entries[0].target);
         });
         /* --- */
-        this.#contentEl = this.shadowRoot.getElementById("content");
         this.#contentEl.addEventListener("slotchange", () => {
             this.#onSlotChange();
         });
         this.#onSlotChange();
+        /* --- */
+        this.#mutationObserver.observe(this);
+        this.#containerEl.addEventListener("scroll", () => {
+            const sectionEls = [...this.#sectionNodeList].sort(nodeOccurenceComparator);
+            let activeSection = sectionEls.shift();
+            while (sectionEls.length && activeSection.isBodySquishedAway()) {
+                activeSection = sectionEls.shift();
+            }
+            if (this.#activeSectionEl != activeSection) {
+                this.#activeSectionEl = activeSection;
+                if (this.#formSectionNavigationEl != null) {
+                    if (activeSection != null) {
+                        const sectionPath = this.#sectionTreeManager.getPath(activeSection);
+                        this.#formSectionNavigationEl.selectItemByRefPath(sectionPath, true);
+                    } else {
+                        this.#formSectionNavigationEl.selectItemByPath(0, true);
+                    }
+                }
+                const event = new Event("sectionchange");
+                event.sectionEl = activeSection;
+                this.dispatchEvent(event);
+            }
+        });
+    }
+
+    connectedCallback() {
+        const sectionEls = this.querySelectorAll("emc-form-section");
+        for (const node of sectionEls) {
+            this.#addSection(node);
+        }
+    }
+
+    disconnectedCallback() {
+        const sectionEls = this.querySelectorAll("emc-form-section");
+        for (const node of sectionEls) {
+            this.#removeSection(node);
+        }
     }
 
     resetScroll() {
@@ -112,14 +187,43 @@ export default class FormContainer extends CustomElement {
         }
     });
 
+    #addSection(sectionEl) {
+        this.#sectionNodeList.add(sectionEl);
+        this.#sectionTreeManager.addSection(sectionEl);
+        this.#updateSectionTree();
+    }
+
+    #removeSection(sectionEl) {
+        this.#sectionNodeList.delete(sectionEl);
+        this.#sectionTreeManager.removeSection(sectionEl);
+        this.#updateSectionTree();
+    }
+
     #applyScrollPaddingTop(node) {
-        this.#containerEl.style.scrollPaddingTop = `${node.clientHeight}px`;
-        this.#contentEl.style.setProperty("--form-header-height", `${node.clientHeight}px`);
+        const nodeRect = node.getBoundingClientRect();
+        this.#containerEl.style.scrollPaddingTop = `${nodeRect.height}px`;
+        this.#contentEl.style.setProperty("--form-header-height", `${nodeRect.height}px`);
     }
 
     #applyScrollPaddingBottom(node) {
-        this.#containerEl.style.scrollPaddingBottom = `${node.clientHeight}px`;
+        const nodeRect = node.getBoundingClientRect();
+        this.#containerEl.style.scrollPaddingBottom = `${nodeRect.height}px`;
+        this.#contentEl.style.setProperty("--form-footer-height", `${nodeRect.height}px`);
     }
+
+    setFormSectionNavigationElement(node) {
+        if (node != null && !(node instanceof Tree)) {
+            throw new Error("form section navigation element must be an instance of Tree or null");
+        }
+        this.#formSectionNavigationEl = node;
+        this.#updateSectionTree();
+    }
+
+    #updateSectionTree = debounce(() => {
+        if (this.#formSectionNavigationEl != null) {
+            this.#formSectionNavigationEl.loadConfig(this.#sectionTreeManager.treeConfig);
+        }
+    });
 
 }
 

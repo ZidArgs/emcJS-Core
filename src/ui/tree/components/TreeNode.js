@@ -8,6 +8,7 @@ import i18n from "../../../util/I18n.js";
 import "../../i18n/I18nLabel.js";
 import TPL from "./TreeNode.js.html" assert {type: "html"};
 import STYLE from "./TreeNode.js.css" assert {type: "css"};
+import {findParentBySelector} from "../../../util/helper/ui/FindParentBySelector.js";
 
 const NODE_TYPES = new Map();
 
@@ -41,23 +42,10 @@ export default class TreeNode extends CustomElement {
         this.#contentEl.addEventListener("click", (event) => {
             event.stopPropagation();
             event.preventDefault();
-            const targetIndex = Array.from(this.parentElement.children).indexOf(this);
-            const selectEvent = new Event("select", {
-                bubbles: true,
-                cancelable: true
-            });
-            selectEvent.data = {
-                element: this,
-                index: targetIndex,
-                ref: this.ref,
-                connectedNode: this.connectedNode,
-                isSelected: this.classList.contains("marked"),
-                path: [targetIndex],
-                refPath: [this.ref],
-                left: event.clientX,
-                top: event.clientY
-            };
-            this.dispatchEvent(selectEvent);
+
+            if (this.selectOnClick) {
+                this.#dispachSelectEvent(event);
+            }
 
             const contentClickEvent = new MouseEvent("contentclick", event);
             this.dispatchEvent(contentClickEvent);
@@ -184,11 +172,11 @@ export default class TreeNode extends CustomElement {
         return this.#connectedNode;
     }
 
-    get isCollapsible() {
+    get collapsible() {
         return this.forceCollapsible || this.children.length;
     }
 
-    get isCollapsed() {
+    get collapsed() {
         return this.#nodeEl.classList.contains("collapsed");
     }
 
@@ -224,6 +212,14 @@ export default class TreeNode extends CustomElement {
         return this.getBooleanAttribute("sorted");
     }
 
+    set selectOnClick(value) {
+        this.setBooleanAttribute("selectonclick", value);
+    }
+
+    get selectOnClick() {
+        return this.getBooleanAttribute("selectonclick");
+    }
+
     static get observedAttributes() {
         return ["label", "sorted"];
     }
@@ -252,6 +248,7 @@ export default class TreeNode extends CustomElement {
     }
 
     select() {
+        this.toggleCollapsed(false);
         scrollIntoViewIfNeeded(this.#contentEl, {
             behavior: "smooth",
             block: "nearest"
@@ -259,9 +256,24 @@ export default class TreeNode extends CustomElement {
         this.#contentEl.click();
     }
 
+    selectSilent() {
+        this.toggleCollapsed(false);
+        scrollIntoViewIfNeeded(this.#contentEl, {
+            behavior: "smooth",
+            block: "nearest"
+        });
+        this.#dispachSelectEvent();
+    }
+
     toggleCollapsed(force) {
-        if (this.isCollapsible) {
+        if (this.collapsible) {
             this.#nodeEl.classList.toggle("collapsed", force);
+        }
+        if (!this.collapsed) {
+            const parentNode = findParentBySelector(this, "emc-tree-node");
+            if (parentNode) {
+                parentNode.toggleCollapsed(false);
+            }
         }
     }
 
@@ -326,6 +338,26 @@ export default class TreeNode extends CustomElement {
                 this.#elementManager.registerSortFunction(TreeNode.#sortByNameFunction);
             }
         }
+    }
+
+    #dispachSelectEvent(event) {
+        const targetIndex = Array.from(this.parentElement.children).indexOf(this);
+        const selectEvent = new Event("select", {
+            bubbles: true,
+            cancelable: true
+        });
+        selectEvent.data = {
+            element: this,
+            index: targetIndex,
+            ref: this.ref,
+            connectedNode: this.connectedNode,
+            isSelected: this.classList.contains("marked"),
+            path: [targetIndex],
+            refPath: [this.ref],
+            left: event?.clientX ?? 0,
+            top: event?.clientY ?? 0
+        };
+        this.dispatchEvent(selectEvent);
     }
 
     static #sortByNameFunction(entry0, entry1) {

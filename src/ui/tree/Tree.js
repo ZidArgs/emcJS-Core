@@ -102,14 +102,14 @@ export default class Tree extends CustomElement {
                 event.stopPropagation();
             } else if (key === "ArrowLeft") {
                 const currentEl = this.querySelector(".keyboard-marked") ?? this.querySelector(".marked");
-                if (currentEl != null && currentEl.isCollapsible) {
+                if (currentEl != null && currentEl.collapsible) {
                     currentEl.toggleCollapsed(true);
                 }
                 event.preventDefault();
                 event.stopPropagation();
             } else if (key === "ArrowRight") {
                 const currentEl = this.querySelector(".keyboard-marked") ?? this.querySelector(".marked");
-                if (currentEl != null && currentEl.isCollapsible) {
+                if (currentEl != null && currentEl.collapsible) {
                     currentEl.toggleCollapsed(false);
                 }
                 event.preventDefault();
@@ -224,10 +224,14 @@ export default class Tree extends CustomElement {
         return deepClone(this.#currentSelectionRefPath);
     }
 
-    selectItemByPath(path) {
+    selectItemByPath(path, silent = false) {
         const element = this.#getElementByPath(path);
         if (element != null) {
-            element.select();
+            if (!silent) {
+                element.select();
+            } else {
+                element.selectSilent();
+            }
         } else {
             this.#currentSelectionPath = [];
             this.#currentSelectionRefPath = [];
@@ -256,10 +260,14 @@ export default class Tree extends CustomElement {
         }
     }
 
-    selectItemByRefPath(path) {
+    selectItemByRefPath(path, silent = false) {
         const element = this.#getElementByRefPath(path);
         if (element != null) {
-            element.select();
+            if (!silent) {
+                element.select();
+            } else {
+                element.selectSilent();
+            }
         } else {
             this.#currentSelectionPath = [];
             this.#currentSelectionRefPath = [];
@@ -432,9 +440,9 @@ export default class Tree extends CustomElement {
         }
         const prevEl = node.previousElementSibling;
         if (prevEl != null) {
-            if (node.children.length && !prevEl.isCollapsed) {
+            if (node.children.length && !prevEl.collapsed) {
                 let current = prevEl;
-                while (current.lastElementChild != null && !current.isCollapsed) {
+                while (current.lastElementChild != null && !current.collapsed) {
                     current = current.lastElementChild;
                 }
                 return current;
@@ -452,7 +460,7 @@ export default class Tree extends CustomElement {
         if (node === this || !this.contains(node)) {
             return null;
         }
-        if (node.children.length && !node.isCollapsed) {
+        if (node.children.length && !node.collapsed) {
             return node.firstElementChild;
         }
         let current = node;

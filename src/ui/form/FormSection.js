@@ -9,12 +9,15 @@ import CONFIG_FIELDS from "./FormSection.js.json" assert {type: "json"};
 import {
     scrollIntoView, scrollIntoViewIfNeeded
 } from "../../util/helper/ui/Scroll.js";
+import {getBoundingContentRect} from "../../util/helper/html/ElementSizeHelper.js";
 
 export default class FormSection extends CustomElement {
 
     #scrollToEl;
 
     #headerEl;
+
+    #bodyEl;
 
     #labelEl = document.createElement("emc-i18n-label");
 
@@ -35,6 +38,7 @@ export default class FormSection extends CustomElement {
         /* --- */
         this.#scrollToEl = this.shadowRoot.getElementById("scroll-to");
         this.#headerEl = this.shadowRoot.getElementById("header");
+        this.#bodyEl = this.shadowRoot.getElementById("body");
     }
 
     connectedCallback() {
@@ -84,6 +88,17 @@ export default class FormSection extends CustomElement {
 
     scrollIntoView(options) {
         scrollIntoView(this.#scrollToEl, options);
+    }
+
+    isBodySquishedAway() {
+        const headerRect = getBoundingContentRect(this.#headerEl);
+        const bodyRect = getBoundingContentRect(this.#bodyEl);
+        const childSectionEl = this.querySelector("emc-form-section");
+        if (childSectionEl != null) {
+            const childSectionElRect = getBoundingContentRect(childSectionEl);
+            return bodyRect.bottom - childSectionElRect.height - 20 < headerRect.bottom;
+        }
+        return bodyRect.bottom - 20 < headerRect.bottom;
     }
 
 }
