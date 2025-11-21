@@ -45,13 +45,6 @@
     border-radius: 0;
 }
 
-::slotted(form:not(:first-child)) {
-    /* margin-top: calc(-1 * var(--form-border-width, 2px));
-    border-top-style: solid;
-    border-top-width: var(--form-border-width, 2px);
-    border-top-color: var(--form-border-color, #222222); */
-}
-
 ::slotted(form:last-child) {
     flex-grow: 1;
 }

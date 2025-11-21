@@ -1,6 +1,6 @@
 import path from "path";
 import gulp from "gulp";
-import newer from "gulp-newer";
+import changed, {compareContents} from "gulp-changed";
 import sourceImport from "./src/_build_tools/sourceImport.js";
 import ImportAnalyzer from "./src/_build_tools/ImportAnalyzer.js";
 
@@ -23,10 +23,10 @@ function copyJS(dest = OUT_PATH, target = OUT_PATH) {
     ];
     let res = gulp.src(FILES);
     res = res.pipe(ImportAnalyzer.register(IN_PATH, dest, target));
-    if (!REBUILD) {
-        res = res.pipe(newer(dest));
-    }
     res = res.pipe(sourceImport());
+    if (!REBUILD) {
+        res = res.pipe(changed(dest, {hasChanged: compareContents}));
+    }
     res = res.pipe(gulp.dest(dest));
     return res;
 }
@@ -37,7 +37,7 @@ function copyCSS(dest = OUT_PATH) {
     ];
     let res = gulp.src(FILES);
     if (!REBUILD) {
-        res = res.pipe(newer(`${dest}/_style`));
+        res = res.pipe(changed(`${dest}/_style`));
     }
     res = res.pipe(gulp.dest(`${dest}/_style`));
     return res;

@@ -23,7 +23,7 @@
     "eslint": "^9.35.0",
     "glob-all": "^3.1.0",
     "gulp": "^4.0.2",
-    "gulp-newer": "^1.4.0",
+    "gulp-changed": "^5.0.4",
     "through": "^2.3.8"
   },
   "exports": {
@@ -34,7 +34,7 @@
     "lintfix": "yarn eslint --fix .",
     "build": "gulp build",
     "test": "node --test",
-    "webtest": "gulp buildDoc -rebuild && node server.js",
-    "buildDoc": "gulp buildDoc -rebuild"
+    "webtest": "gulp buildDoc && node server.js",
+    "buildDoc": "gulp buildDoc"
   }
 }
