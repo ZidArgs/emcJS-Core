@@ -169,7 +169,10 @@ export default class AbstractFormElement extends CustomFormElement {
     }
 
     get isDefault() {
-        return isEqual(this.rawValue, this.defaultValue);
+        if (this.value == null) {
+            return true;
+        }
+        return isEqual(this.value, this.defaultValue);
     }
 
     set value(value) {

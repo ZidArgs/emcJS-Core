@@ -69,13 +69,13 @@ elementTypeSelectEl.addEventListener("change", () => {
         const defaults = extractDefaultValuesFromConfig(config);
 
         FormBuilder.replaceForm(oldDetailFormEl, config);
-        formContext.loadData({
+        formContext.setData({
             ...defaults,
             type
         });
     } else {
         FormBuilder.replaceForm(oldDetailFormEl);
-        formContext.loadData({});
+        formContext.setData({});
     }
 });
 

@@ -39,12 +39,12 @@ export default class FormContainer extends CustomElement {
             if (mutation.type === "childList") {
                 for (const node of mutation.addedNodes) {
                     if (node instanceof FormSection) {
-                        this.#addSection(node);
+                        this.#addSectionRecursive(node);
                     }
                 }
                 for (const node of mutation.removedNodes) {
                     if (node instanceof FormSection) {
-                        this.#removeSection(node);
+                        this.#removeSectionRecursive(node);
                     }
                 }
             }
@@ -72,7 +72,7 @@ export default class FormContainer extends CustomElement {
         this.#onSlotChange();
         /* --- */
         this.#mutationObserver.observe(this);
-        this.#containerEl.addEventListener("scroll", () => {
+        this.#contentEl.addEventListener("scroll", () => {
             const sectionEls = [...this.#sectionNodeList].sort(nodeOccurenceComparator);
             let activeSection = sectionEls.shift();
             while (sectionEls.length && activeSection.isBodySquishedAway()) {
@@ -191,9 +191,27 @@ export default class FormContainer extends CustomElement {
         this.#updateSectionTree();
     }
 
+    #addSectionRecursive(sectionEl) {
+        const sectionEls = sectionEl.querySelectorAll("emc-form-section");
+        this.#addSection(sectionEl);
+        for (const node of sectionEls) {
+            this.#addSection(node);
+        }
+        this.#updateSectionTree();
+    }
+
     #removeSection(sectionEl) {
         this.#sectionNodeList.delete(sectionEl);
         this.#sectionTreeManager.removeSection(sectionEl);
+        this.#updateSectionTree();
+    }
+
+    #removeSectionRecursive(sectionEl) {
+        const sectionEls = sectionEl.querySelectorAll("emc-form-section");
+        for (const node of sectionEls) {
+            this.#removeSection(node);
+        }
+        this.#removeSection(sectionEl);
         this.#updateSectionTree();
     }
 

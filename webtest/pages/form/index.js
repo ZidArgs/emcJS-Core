@@ -191,7 +191,7 @@ CustomActionRegistry.current.set("soup", () => {
 
 CustomActionRegistry.current.set("cheese", () => {
     alert("more cheese");
-    formContext.loadData({
+    formContext.setData({
         "search-select": {"required": "foobar"},
         "text": {"required": "nice"},
         "number": {"required": 69},

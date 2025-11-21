@@ -13,10 +13,6 @@ body {
 form {
     color: var(--form-text-color);
     background-color: var(--form-back-color);
-    border-style: solid;
-    border-width: var(--form-border-width);
-    border-color: var(--form-border-color);
-    border-radius: var(--form-border-radius);
 }
 
 ::-webkit-scrollbar {

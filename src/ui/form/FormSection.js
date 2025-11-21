@@ -13,6 +13,14 @@ import {getBoundingContentRect} from "../../util/helper/html/ElementSizeHelper.j
 
 export default class FormSection extends CustomElement {
 
+    static get formConfigurationFields() {
+        return deepClone(CONFIG_FIELDS);
+    }
+
+    static get formConfigurationCanHaveChildren() {
+        return true;
+    }
+
     #scrollToEl;
 
     #headerEl;
@@ -22,14 +30,6 @@ export default class FormSection extends CustomElement {
     #labelEl = document.createElement("emc-i18n-label");
 
     #parentSectionEls = [];
-
-    static get formConfigurationFields() {
-        return deepClone(CONFIG_FIELDS);
-    }
-
-    static get formConfigurationCanHaveChildren() {
-        return true;
-    }
 
     constructor() {
         super();
@@ -92,12 +92,13 @@ export default class FormSection extends CustomElement {
 
     isBodySquishedAway() {
         const headerRect = getBoundingContentRect(this.#headerEl);
-        const bodyRect = getBoundingContentRect(this.#bodyEl);
         const childSectionEl = this.querySelector("emc-form-section");
+
         if (childSectionEl != null) {
             const childSectionElRect = getBoundingContentRect(childSectionEl);
-            return bodyRect.bottom - childSectionElRect.height - 20 < headerRect.bottom;
+            return childSectionElRect.top - 20 < headerRect.bottom;
         }
+        const bodyRect = getBoundingContentRect(this.#bodyEl);
         return bodyRect.bottom - 20 < headerRect.bottom;
     }
 

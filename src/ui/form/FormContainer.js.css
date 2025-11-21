@@ -6,15 +6,20 @@
 
 #container {
     flex: 1;
-    overflow: auto;
+    overflow: hidden;
+    border-style: solid;
+    border-width: var(--form-border-width, 2px);
+    border-color: var(--form-border-color, #222222);
+    border-radius: var(--form-border-radius, 6px);
 }
 
 #content {
     position: relative;
     display: flex;
     flex-direction: column;
-    min-height: 100%;
-    width: min-content;
+    overflow: auto;
+    height: 100%;
+    width: 100%;
     min-width: max(100%, 500px);
     max-width: min(100%, 500px);
 }
@@ -34,31 +39,30 @@
     color: var(--form-text-color, #000000);
     background-color: var(--form-back-color, #cccccc);
     background-image: var(--form-back-image, none);
-    border-style: solid;
-    border-width: var(--form-border-width, 2px);
-    border-color: var(--form-border-color, #222222);
-    border-radius: 0px !important;
-}
-
-::slotted(form:first-child) {
-    border-top-left-radius: var(--form-border-radius, 6px) !important;
-    border-top-right-radius: var(--form-border-radius, 6px) !important;
+    border-style: none;
+    border-width: 0;
+    border-color: transparent;
+    border-radius: 0;
 }
 
 ::slotted(form:not(:first-child)) {
-    margin-top: calc(-1 * var(--form-border-width, 2px));
+    /* margin-top: calc(-1 * var(--form-border-width, 2px));
+    border-top-style: solid;
+    border-top-width: var(--form-border-width, 2px);
+    border-top-color: var(--form-border-color, #222222); */
 }
 
 ::slotted(form:last-child) {
     flex-grow: 1;
-    border-bottom-left-radius: var(--form-border-radius, 6px) !important;
-    border-bottom-right-radius: var(--form-border-radius, 6px) !important;
 }
 
 :host([hasheader]:not([hasheader="false"])) ::slotted(form:first-child) {
     position: sticky;
     flex-grow: 0;
     top: 0px;
+    border-bottom-style: solid;
+    border-bottom-width: var(--form-border-width, 2px);
+    border-bottom-color: var(--form-border-color, #222222);
     box-shadow: var(--page-back-color, #ffffff) 0px calc(-1 * var(--form-border-radius, 6px)) 0px 0px;
     z-index: 100 !important;
 }
@@ -67,6 +71,9 @@
     position: sticky;
     flex-grow: 0;
     bottom: 0px;
+    border-top-style: solid;
+    border-top-width: var(--form-border-width, 2px);
+    border-top-color: var(--form-border-color, #222222);
     box-shadow: var(--page-back-color, #ffffff) 0px var(--form-border-radius, 6px) 0px 0px;
     z-index: 100 !important;
 }

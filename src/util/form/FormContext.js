@@ -139,7 +139,7 @@ export default class FormContext extends EventTarget {
         ev.data = this.getData();
         ev.formData = this.getFormFieldsData();
         ev.hiddenData = this.getFormHiddenData();
-        ev.changes = this.#dataStorage.getChanges();
+        ev.changes = this.getChanges();
         ev.errors = this.getErrors();
         this.dispatchEvent(ev);
     }
@@ -213,6 +213,7 @@ export default class FormContext extends EventTarget {
 
     reset() {
         this.#dataStorage.purgeChanges();
+        this.dispatchEvent(new Event("reset"));
     }
 
     set ghostInvisible(value) {
@@ -285,7 +286,7 @@ export default class FormContext extends EventTarget {
         this.#formElList.delete(formEl);
     }
 
-    loadData(data, merge = false) {
+    setData(data, merge = false) {
         setTimeout(() => {
             const res = {};
             for (const context of this.#formFieldContextList) {
@@ -297,11 +298,11 @@ export default class FormContext extends EventTarget {
                     }
                 }
             }
-            this.loadDataFlat(res, merge);
+            this.setDataFlat(res, merge);
         }, 0);
     }
 
-    loadDataFlat(data, merge = false) {
+    setDataFlat(data, merge = false) {
         this.#formEventManager.active = false;
         if (merge) {
             this.#dataStorage.setAll(data);

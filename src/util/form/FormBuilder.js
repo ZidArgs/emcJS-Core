@@ -9,6 +9,7 @@ import "../../ui/form/button/SubmitButton.js";
 import "../../ui/form/button/ResetButton.js";
 import "../../ui/form/button/ActionButton.js";
 import "../../ui/form/button/LinkButton.js";
+import "../../ui/form/button/ErrorButton.js";
 import "../../ui/form/element/FormElementsLoader.js";
 import OptionGroupRegistryChoiceManager from "./manager/OptionGroupRegistryChoiceManager.js";
 import OptionGroupRegistryValuesManager from "./manager/OptionGroupRegistryValuesManager.js";

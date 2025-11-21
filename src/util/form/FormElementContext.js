@@ -22,12 +22,8 @@ function applyDefaultValue(storage, target) {
             target.setAttribute("value", defaultValue);
         }
     } else if (target.hasAttribute("value")) {
-        const value = target.getAttribute("value");
-        try {
-            storage.setRootValue(jsonParse(value));
-        } catch {
-            storage.setRootValue(value);
-        }
+        const value = target.defaultValue;
+        storage.setRootValue(elName, value);
     }
 }
 

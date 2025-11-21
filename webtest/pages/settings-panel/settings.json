@@ -1,0 +1,260 @@
+{
+    "settings.language": {
+        "type": "SimpleSelect",
+        "value": "en_us",
+        "optiongroup": "I18n.languages"
+    },
+    "settings.font": {
+        "type": "SimpleSelect",
+        "value": "font_default",
+        "options": [
+            "font_default",
+            "font_charlemagne",
+            "font_ravenna",
+            "font_returnofganon",
+            "font_zeldadx",
+            "font_triforce",
+            "font_sheikah"
+        ]
+    },
+    "settings.layout": {
+        "type": "SimpleSelect",
+        "value": "map-compact",
+        "options": [
+            "items",
+            "items-list",
+            "map-right",
+            "items-dt",
+            "items-list-dt",
+            "map-right-dt",
+            "map-right-dtr",
+            "map-center",
+            "map-compact",
+            "compact",
+            "flat",
+            "essential-map",
+            "essential-map-key",
+            "standard-essential-map"
+        ]
+    },
+    "settings.detached_window_background": {
+        "type": "ColorInput",
+        "value": "#000000",
+        "resettable": true
+    },
+    "settings.use_custom_logic": {
+        "type": "SwitchInput",
+        "value": false
+    },
+    "savestate.autosave_time": {
+        "type": "NumberInput",
+        "min": 0,
+        "max": 120,
+        "value": 10,
+        "resettable": true
+    },
+    "savestate.autosave_amount": {
+        "type": "NumberInput",
+        "min": 1,
+        "max": 10,
+        "value": 4,
+        "resettable": true
+    },
+    "savestate.show_state_init_window": {
+        "type": "SwitchInput",
+        "value": true
+    },
+    "a11y.color_blind_badge_icons": {
+        "type": "SwitchInput",
+        "value": true
+    },
+    "a11y.locations.location_status_opened_color": {
+        "type": "ColorInput",
+        "value": "#777777",
+        "resettable": true
+    },
+    "a11y.locations.location_status_available_color": {
+        "type": "ColorInput",
+        "value": "#00ff00",
+        "resettable": true
+    },
+    "a11y.locations.location_status_unavailable_color": {
+        "type": "ColorInput",
+        "value": "#ff0000",
+        "resettable": true
+    },
+    "a11y.locations.location_status_possible_color": {
+        "type": "ColorInput",
+        "value": "#ffff00",
+        "resettable": true
+    },
+    "a11y.ap.ap_color_player_current": {
+        "type": "ColorInput",
+        "value": "#ee00ee",
+        "resettable": true
+    },
+    "a11y.ap.ap_color_player_other": {
+        "type": "ColorInput",
+        "value": "#fafad2",
+        "resettable": true
+    },
+    "a11y.ap.ap_color_item_progressive": {
+        "type": "ColorInput",
+        "value": "#af99ef",
+        "resettable": true
+    },
+    "a11y.ap.ap_color_item_useful": {
+        "type": "ColorInput",
+        "value": "#6d8be8",
+        "resettable": true
+    },
+    "a11y.ap.ap_color_item_normal": {
+        "type": "ColorInput",
+        "value": "#00eeee",
+        "resettable": true
+    },
+    "a11y.ap.ap_color_item_trap": {
+        "type": "ColorInput",
+        "value": "#fa8072",
+        "resettable": true
+    },
+    "a11y.ap.ap_color_location": {
+        "type": "ColorInput",
+        "value": "#00ff7f",
+        "resettable": true
+    },
+    "a11y.ap.ap_color_entrance": {
+        "type": "ColorInput",
+        "value": "#6495ed",
+        "resettable": true
+    },
+    "a11y.ap.ap_color_hint_unspecified": {
+        "type": "ColorInput",
+        "value": "#ffffff",
+        "resettable": true
+    },
+    "a11y.ap.ap_color_hint_no_priority": {
+        "type": "ColorInput",
+        "value": "#00eeee",
+        "resettable": true
+    },
+    "a11y.ap.ap_color_hint_priority": {
+        "type": "ColorInput",
+        "value": "#af99ef",
+        "resettable": true
+    },
+    "a11y.ap.ap_color_hint_avoid": {
+        "type": "ColorInput",
+        "value": "#fa8072",
+        "resettable": true
+    },
+    "a11y.ap.ap_color_hint_found": {
+        "type": "ColorInput",
+        "value": "#00ff7f",
+        "resettable": true
+    },
+    "world.sort_worldlist_by_access": {
+        "type": "SwitchInput",
+        "value": false
+    },
+    "world.sort_locationlist_by_access": {
+        "type": "SwitchInput",
+        "value": false
+    },
+    "world.show_detailed_maps": {
+        "type": "SwitchInput",
+        "value": false
+    },
+    "world.show_map_connections": {
+        "type": "SwitchInput",
+        "value": true
+    },
+    "world.always_show_shop_slots": {
+        "type": "SwitchInput",
+        "value": true
+    },
+    "world.show_filter_badges": {
+        "type": "SwitchInput",
+        "value": true
+    },
+    "world.show_access_values": {
+        "type": "SwitchInput",
+        "value": false
+    },
+    "world.sublist_collapsible": {
+        "type": "SimpleSelect",
+        "value": "start_expanded",
+        "options": [
+            "off",
+            "start_expanded",
+            "start_collapsed"
+        ]
+    },
+    "world.unknown_arealist_need_all": {
+        "type": "SwitchInput",
+        "value": false
+    },
+    "hotkeys.hk_state_new": {
+        "type": "HotkeyInput",
+        "value": "",
+        "resettable": true
+    },
+    "hotkeys.hk_state_load": {
+        "type": "HotkeyInput",
+        "value": "ctrl+o",
+        "resettable": true
+    },
+    "hotkeys.hk_state_save": {
+        "type": "HotkeyInput",
+        "value": "ctrl+s",
+        "resettable": true
+    },
+    "hotkeys.hk_state_saveas": {
+        "type": "HotkeyInput",
+        "value": "ctrl+shift+s",
+        "resettable": true
+    },
+    "hotkeys.hk_state_manage": {
+        "type": "HotkeyInput",
+        "value": "ctrl+m",
+        "resettable": true
+    },
+    "hotkeys.hk_fullscreen": {
+        "type": "HotkeyInput",
+        "value": "alt+enter",
+        "resettable": true
+    },
+    "hotkeys.hk_detached_window": {
+        "type": "HotkeyInput",
+        "value": "ctrl+shift+d",
+        "resettable": true
+    },
+    "hotkeys.hk_import_spoiler": {
+        "type": "HotkeyInput",
+        "value": "ctrl+i",
+        "resettable": true
+    },
+    "hotkeys.hk_options": {
+        "type": "HotkeyInput",
+        "value": "",
+        "resettable": true
+    },
+    "hotkeys.hk_settings": {
+        "type": "HotkeyInput",
+        "value": "",
+        "resettable": true
+    },
+    "debug.debug_logic": {
+        "type": "SimpleSelect",
+        "value": "off",
+        "options": [
+            "off",
+            "on",
+            "extended"
+        ]
+    },
+    "debug.debug_spoiler": {
+        "type": "SwitchInput",
+        "value": false
+    }
+}

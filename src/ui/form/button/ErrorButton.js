@@ -2,6 +2,7 @@ import Button from "./Button.js";
 import {registerFocusable} from "../../../util/helper/html/ElementFocusHelper.js";
 import {deepClone} from "../../../util/helper/DeepClone.js";
 import {debounce} from "../../../util/Debouncer.js";
+import "../../i18n/I18nLabel.js";
 import TPL from "./ErrorButton.js.html" assert {type: "html"};
 import STYLE from "./ErrorButton.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./ErrorButton.js.json" assert {type: "json"};
@@ -46,6 +47,11 @@ export default class ErrorButton extends Button {
                 this.#closePopup();
             }
         }, {passive: true});
+        this.addEventListener("mousedown", (event) => {
+            if (this.#isPopupVisible) {
+                event.stopImmediatePropagation();
+            }
+        }, {passive: true});
         /* --- */
         super.setCount("0", "success");
     }
@@ -70,7 +76,7 @@ export default class ErrorButton extends Button {
         return this.getAttribute("action");
     }
 
-    setErrors(errors) {
+    setErrors(errors = []) {
         this.#errorList.clear();
         this.#errorContainerEl.innerHTML = "";
         for (const errorEntry of errors) {

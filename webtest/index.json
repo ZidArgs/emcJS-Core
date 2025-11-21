@@ -2,6 +2,9 @@
     "prestyle-test": {
         "label": "Prestyle Test"
     },
+    "settings-panel": {
+        "label": "Settings Panel"
+    },
     "listselect-performance": {
         "label": "ListSelect Performance"
     },

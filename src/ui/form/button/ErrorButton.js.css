@@ -51,3 +51,7 @@
 .error-label ul li {
     padding-left: 4px;
 }
+
+#empty {
+    padding: 20px;
+}

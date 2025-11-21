@@ -76,6 +76,14 @@ export default class NumberInput extends AbstractFormElement {
         this.#inputEl.focus(options);
     }
 
+    set defaultValue(value) {
+        this.setNumberAttribute("value", value);
+    }
+
+    get defaultValue() {
+        return this.getNumberAttribute("value");
+    }
+
     set value(value) {
         value = parseFloat(value);
         if (isNaN(value)) {
