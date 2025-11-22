@@ -167,13 +167,13 @@
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    min-width: 1.4em;
-    height: 1.4em;
-    padding: 0 6px;
-    border-radius: 0.7em;
+    padding: 0.2em 0.3em;
+    border-radius: 1em;
     color: var(--button-count-text-color, #ffffff);
     background-color: var(--button-count-back-color, #222222);
-    line-height: 1.2em;
+    font-family: monospace;
+    font-size: 1.4em;
+    line-height: 0.8em;
     content: attr(count-value);
 }
 
