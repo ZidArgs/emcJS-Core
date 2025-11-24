@@ -12,7 +12,11 @@ import {findParentBySelector} from "../../../util/helper/ui/FindParentBySelector
 
 const NODE_TYPES = new Map();
 
+const CONNECTED_NODE_MAP = new WeakMap();
+
 export default class TreeNode extends CustomElement {
+
+    #weakRef;
 
     #nodeEl;
 
@@ -36,6 +40,7 @@ export default class TreeNode extends CustomElement {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
+        this.#weakRef = new WeakRef(this);
         /* --- */
         this.#labelEl = this.shadowRoot.getElementById("label");
         this.#contentEl = this.shadowRoot.getElementById("content");
@@ -162,14 +167,17 @@ export default class TreeNode extends CustomElement {
 
     set connectedNode(value) {
         if (value instanceof Node) {
-            this.#connectedNode = value;
+            this.#removeConnectedNode(this.connectedNode);
+            this.#connectedNode = new WeakRef(value);
+            this.#addConnectedNode(value);
         } else {
+            this.#removeConnectedNode(this.connectedNode);
             this.#connectedNode = null;
         }
     }
 
     get connectedNode() {
-        return this.#connectedNode;
+        return this.#connectedNode?.deref();
     }
 
     get collapsible() {
@@ -364,6 +372,24 @@ export default class TreeNode extends CustomElement {
         const {element: el0} = entry0;
         const {element: el1} = entry1;
         return nodeTextComparator(el0, el1);
+    }
+
+    #addConnectedNode(value) {
+        if (!CONNECTED_NODE_MAP.has(value)) {
+            CONNECTED_NODE_MAP.set(value, new Set());
+        }
+        CONNECTED_NODE_MAP.get(value).add(this.#weakRef);
+    }
+
+    #removeConnectedNode(value) {
+        if (CONNECTED_NODE_MAP.has(value)) {
+            CONNECTED_NODE_MAP.get(value).delete(this.#weakRef);
+        }
+    }
+
+    static getByConnectedNode(node) {
+        const treeNodes = CONNECTED_NODE_MAP.get(node);
+        return [...treeNodes].map((el) => el.deref()).filter((el) => el != null);
     }
 
 }

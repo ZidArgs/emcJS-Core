@@ -4,6 +4,7 @@
     height: 40px;
     padding: 0px;
 }
+
 /*
 TODO add navigation button variables
 */
@@ -18,40 +19,49 @@ button {
     margin: 0;
     border: none;
     border-radius: 0;
-    background-color: var(--navigation-back-color, #ffffff);
-    background-image: var(--navigation-back-image, none);
+    background-color: var(--hamburger-button-back-color, #ffffff);
+    background-image: var(--hamburger-button-back-image, none);
     cursor: pointer;
     outline: none;
     appearance: none;
 }
+
 button:hover {
-    box-shadow: inset 0px 0px 2px 1px;
+    box-shadow: inset 0px 0px 2px 1px var(--hamburger-button-focus-color, #000000);
 }
+
 button:active {
-    box-shadow: inset 0px 0px 4px 3px;
+    box-shadow: inset 0px 0px 4px 3px var(--hamburger-button-focus-color, #000000);
 }
+
 div {
     position: relative;
     width: 30px;
     height: 4px;
-    background-color: var(--navigation-text-color, #000000);
+    background-color: var(--hamburger-button-text-color, #000000);
     transition: transform 0.4s ease-in-out;
 }
+
 #bar1 {
     transform: translateY(-4px);
 }
+
 #bar2 {
     transform-origin: left;
 }
+
 #bar3 {
     transform: translateY(4px);
 }
+
 :host([open]:not([open="false"])) #bar1 {
     transform: translateY(4px) rotate(45deg);
 }
+
 :host([open]:not([open="false"])) #bar2 {
     transform: scaleX(0);
 }
+
 :host([open]:not([open="false"])) #bar3 {
     transform: translateY(-4px) rotate(-45deg);
 }

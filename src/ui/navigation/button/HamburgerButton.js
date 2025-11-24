@@ -15,20 +15,20 @@ export default class HamburgerButton extends CustomElement {
         this.#tooltipEl = this.shadowRoot.getElementById("tooltip");
     }
 
-    get open() {
-        return this.getAttribute("open");
-    }
-
     set open(val) {
-        this.setAttribute("open", val);
+        this.setBooleanAttribute("open", val);
     }
 
-    get tooltip() {
-        return this.getAttribute("tooltip");
+    get open() {
+        return this.getBooleanAttribute("open");
     }
 
     set tooltip(val) {
         this.setAttribute("tooltip", val);
+    }
+
+    get tooltip() {
+        return this.getAttribute("tooltip");
     }
 
     static get observedAttributes() {

@@ -1,10 +1,10 @@
 import CustomElement from "../../element/CustomElement.js";
 import "../../i18n/I18nLabel.js";
 import "../../i18n/I18nTooltip.js";
-import TPL from "./Button.js.html" assert {type: "html"};
-import STYLE from "./Button.js.css" assert {type: "css"};
+import TPL from "./NavbarButton.js.html" assert {type: "html"};
+import STYLE from "./NavbarButton.js.css" assert {type: "css"};
 
-export default class Button extends CustomElement {
+export default class NavbarButton extends CustomElement {
 
     #tooltipEl;
 
@@ -66,4 +66,4 @@ export default class Button extends CustomElement {
 
 }
 
-customElements.define("emc-navbar-button", Button);
+customElements.define("emc-navbar-button", NavbarButton);

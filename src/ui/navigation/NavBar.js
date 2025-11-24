@@ -3,8 +3,8 @@ import {
     isFunction,
     isHttpUrl
 } from "../../util/helper/CheckType.js";
-import "./components/Button.js";
-import "./components/HamburgerButton.js";
+import "./button/NavbarButton.js";
+import "./button/HamburgerButton.js";
 import TPL from "./NavBar.js.html" assert {type: "html"};
 import STYLE from "./NavBar.js.css" assert {type: "css"};
 

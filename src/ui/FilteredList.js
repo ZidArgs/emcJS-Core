@@ -22,7 +22,7 @@ export default class FilteredList extends CustomElement {
         });
         /* header */
         this.#headerEl.addEventListener("search", (event) => {
-            const all = this.querySelectorAll(":host > :not(emc-collapsepanel), emc-collapsepanel > :not(emc-collapsepanel)");
+            const all = this.querySelectorAll(":scope > :not(emc-collapsepanel), emc-collapsepanel > :not(emc-collapsepanel)");
             const panels = this.querySelectorAll("emc-collapsepanel");
             if (event.value) {
                 const regEx = new CharacterSearch(event.value);
@@ -35,7 +35,7 @@ export default class FilteredList extends CustomElement {
                     }
                 }
                 for (const el of panels) {
-                    const children = el.querySelectorAll(":host :not(emc-collapsepanel)");
+                    const children = el.querySelectorAll(":scope :not(emc-collapsepanel)");
                     if (Array.from(children).some((ch) => ch.style.display == "")) {
                         el.style.display = "";
                         continue;

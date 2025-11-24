@@ -29,6 +29,15 @@ all; top_bottom right_left; top right bottom left
     --navigation-shadow-color: #000000;
     --navigation-marker-color: #000000;
 
+    /* === hamburger button === */
+    --hamburger-button-border-width: 0px;
+    --hamburger-button-border-color: transparent;
+    --hamburger-button-border-radius: 0px;
+    --hamburger-button-text-color: var(--navigation-text-color);
+    --hamburger-button-back-color: var(--navigation-back-color);
+    --hamburger-button-back-image: var(--navigation-back-image);
+    --hamburger-button-focus-color: var(--navigation-text-color);
+
     /* === modal === */
     --modal-text-color: var(--page-text-color);
     --modal-back-color: var(--page-back-color);
