@@ -39,9 +39,7 @@ export default class ColorInput extends AbstractFormElement {
             this.value = this.#buttonEl.value;
         });
         this.#buttonEl.addEventListener("click", () => {
-            if (this.#inputEl.value === "") {
-                this.value = this.#buttonEl.value;
-            }
+            this.value = this.#buttonEl.value;
         });
     }
 
@@ -97,7 +95,7 @@ export default class ColorInput extends AbstractFormElement {
         if (REGEX_HEX.test(value)) {
             this.#buttonEl.value = value;
         } else {
-            this.#buttonEl.value = "#000000";
+            this.#buttonEl.value = "";
         }
     }
 
