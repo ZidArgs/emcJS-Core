@@ -167,6 +167,15 @@ all; top_bottom right_left; top right bottom left
     --input-disabled-emphasize-color: #3f3f3f;
     --input-disabled-insignify-color: #757575;
 
+    /* === input key === */
+    --input-key-text-color: #000000;
+    --input-key-back-color: #e5e5e5;
+    --input-key-back-image: none;
+    --input-key-border-width: 1px;
+    --input-key-border-color: #222222;
+    --input-key-border-radius: 4px;
+    --input-key-shadow-color: #9d9d9d;
+
     /* === input-button === */
     --input-button-text-color: var(--input-text-color);
     --input-button-back-color: var(--input-back-color);

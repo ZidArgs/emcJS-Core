@@ -192,57 +192,68 @@
     },
     "world.unknown_arealist_need_all": {
         "type": "SwitchInput",
-        "value": false
+        "value": false,
+        "placeholder": "press keys..."
     },
     "hotkeys.hk_state_new": {
         "type": "HotkeyInput",
         "value": "",
-        "resettable": true
+        "resettable": true,
+        "placeholder": "press keys..."
     },
     "hotkeys.hk_state_load": {
         "type": "HotkeyInput",
-        "value": "ctrl+o",
-        "resettable": true
+        "value": "ctrl o",
+        "resettable": true,
+        "placeholder": "press keys..."
     },
     "hotkeys.hk_state_save": {
         "type": "HotkeyInput",
-        "value": "ctrl+s",
-        "resettable": true
+        "value": "ctrl s",
+        "resettable": true,
+        "placeholder": "press keys..."
     },
     "hotkeys.hk_state_saveas": {
         "type": "HotkeyInput",
-        "value": "ctrl+shift+s",
-        "resettable": true
+        "value": "ctrl shift s",
+        "resettable": true,
+        "placeholder": "press keys..."
     },
     "hotkeys.hk_state_manage": {
         "type": "HotkeyInput",
-        "value": "ctrl+m",
-        "resettable": true
+        "value": "ctrl m",
+        "resettable": true,
+        "placeholder": "press keys..."
     },
     "hotkeys.hk_fullscreen": {
         "type": "HotkeyInput",
-        "value": "alt+enter",
-        "resettable": true
+        "value": "alt enter",
+        "resettable": true,
+        "placeholder": "press keys..."
     },
     "hotkeys.hk_detached_window": {
         "type": "HotkeyInput",
-        "value": "ctrl+shift+d",
-        "resettable": true
+        "value": "ctrl shift d",
+        "resettable": true,
+        "placeholder": "press keys..."
     },
     "hotkeys.hk_import_spoiler": {
         "type": "HotkeyInput",
-        "value": "ctrl+i",
-        "resettable": true
+        "value": "ctrl i",
+        "resettable": true,
+        "placeholder": "press keys..."
     },
     "hotkeys.hk_options": {
         "type": "HotkeyInput",
         "value": "",
-        "resettable": true
+        "resettable": true,
+        "placeholder": "press keys..."
     },
     "hotkeys.hk_settings": {
         "type": "HotkeyInput",
         "value": "",
-        "resettable": true
+        "resettable": true,
+        "placeholder": "press keys..."
     },
     "debug.debug_logic": {
         "type": "SimpleSelect",

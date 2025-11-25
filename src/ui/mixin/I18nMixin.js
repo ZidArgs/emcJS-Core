@@ -14,7 +14,6 @@ export default createMixin((superclass) => class I18nMixin extends superclass {
     constructor(...args) {
         super(...args);
         /* --- */
-        this.#i18nEventManager = new EventTargetManager(i18n);
         this.#i18nEventManager.set("language", () => {
             for (const attr of this.constructor.i18nObservedAttributes) {
                 const key = this.getAttribute(attr);
