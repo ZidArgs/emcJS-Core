@@ -2,7 +2,7 @@ import CustomElement from "../element/CustomElement.js";
 import FormContext from "../../util/form/FormContext.js";
 import FormBuilder from "../../util/form/FormBuilder.js";
 import CharacterSearch from "../../util/search/CharacterSearch.js";
-import {getInputElementInnerText} from "../../util/helper/ui/ExtractText.js";
+import SelectEntry from "../form/element/components/SelectEntry.js";
 import TreeNode from "../tree/components/TreeNode.js";
 import "../tree/Tree.js";
 import "../navigation/button/HamburgerButton.js";
@@ -72,7 +72,7 @@ export default class SettingsPanel extends CustomElement {
             if (searchValue) {
                 const regEx = new CharacterSearch(searchValue);
                 for (const el of all) {
-                    const value = el.dataset.filtervalue ?? getInputElementInnerText(el);
+                    const value = el.dataset.filtervalue ?? this.getOuterText(el, [SelectEntry]);
                     if (regEx.test(value)) {
                         el.classList.remove("hidden");
                     } else {
@@ -111,8 +111,7 @@ export default class SettingsPanel extends CustomElement {
     }
 
     loadConfig(config, defaultValues) {
-        const formConfig = this.#translateSettings(config);
-        FormBuilder.replaceForm(this.#settingsFormEl, formConfig, defaultValues);
+        FormBuilder.replaceForm(this.#settingsFormEl, config, defaultValues);
     }
 
     setValues(values) {
@@ -159,49 +158,6 @@ export default class SettingsPanel extends CustomElement {
                 });
             }
         });
-    }
-
-    #translateSettings(config) {
-        const sectionMap = new Map();
-        const translatedConfig = [];
-
-        for (const [key, value] of Object.entries(config)) {
-            const path = key.split(".");
-            /* const inputName =  */path.pop();
-            const sectionName = path.join(".");
-            const sectionConfig = this.#getOrCreateSection(translatedConfig, sectionMap, sectionName);
-            sectionConfig.children.push({
-                label: key,
-                name: key,
-                ...value
-            });
-        }
-
-        return translatedConfig;
-    }
-
-    #getOrCreateSection(translatedConfig, sectionMap, sectionName) {
-        if (sectionMap.has(sectionName)) {
-            return sectionMap.get(sectionName);
-        }
-        const newSection = {
-            type: "Section",
-            label: sectionName,
-            children: []
-        };
-        const path = sectionName.split(".");
-        if (path.length > 1) {
-            /* const currentName =  */path.pop();
-            const parentName = path.join(".");
-            const parentSection = this.#getOrCreateSection(translatedConfig, sectionMap, parentName);
-
-            parentSection.children.push(newSection);
-            sectionMap.set(sectionName, newSection);
-            return newSection;
-        }
-        sectionMap.set(sectionName, newSection);
-        translatedConfig.push(newSection);
-        return newSection;
     }
 
 }

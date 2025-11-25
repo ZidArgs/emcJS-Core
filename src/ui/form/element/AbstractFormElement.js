@@ -335,6 +335,10 @@ export default class AbstractFormElement extends CustomFormElement {
         }
     }
 
+    getOuterText(node, excludedNodeClasses = []) {
+        return super.getText(node, [HTMLOptionElement, ...excludedNodeClasses]);
+    }
+
     #onUpdateValue(value) {
         if (!isEqual(this.value, value)) {
             this.#value = value;

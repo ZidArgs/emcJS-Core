@@ -346,9 +346,10 @@ export default class SimpleSelect extends AbstractFormElement {
                 this.#scrollContainerEl.style.top = `${thisRect.bottom}px`;
             }
             const all = this.#optionsContainerEl.querySelectorAll(`[value]`);
+            const value = this.value;
             for (const el of all) {
                 el.style.display = "";
-                if (el.value === this.value) {
+                if (el.value === value) {
                     el.selected = true;
                 } else {
                     el.selected = false;

@@ -381,9 +381,9 @@ export default class RelationSelect extends AbstractFormElement {
             } else {
                 this.#scrollContainerEl.style.top = `${thisRect.bottom}px`;
             }
+            const value = this.value;
             for (const el of this.#optionNodeList) {
                 el.style.display = "";
-                const value = this.value;
                 if ((el.value?.type ?? "") === (value?.type ?? "") && (el.value?.name ?? "") === (value?.name ?? "")) {
                     el.selected = true;
                 } else {

@@ -1,6 +1,7 @@
 import FileLoader from "/emcJS/util/file/FileLoader.js";
 import "/emcJS/ui/Page.js";
 import "/emcJS/ui/settings/SettingsPanel.js";
+import {translateSettings} from "./SettingsTranslator.js";
 
 const settingsPanelEl = document.getElementById("settings-panel");
 
@@ -23,8 +24,7 @@ export async function init() {
         FileLoader.json("/pages/settings-panel/settings.json")
     ]);
 
-    settingsPanelEl.loadConfig(settings);
+    settingsPanelEl.loadConfig(translateSettings(settings));
 }
 
 init();
-

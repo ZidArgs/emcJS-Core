@@ -49,8 +49,8 @@ export default class CustomElement extends HTMLElement {
         }
     }
 
-    getText() {
-        return getInnerText(this);
+    getText(excludedNodeClasses = []) {
+        return getInnerText(this, excludedNodeClasses);
     }
 
     setBooleanAttribute(name, value) {

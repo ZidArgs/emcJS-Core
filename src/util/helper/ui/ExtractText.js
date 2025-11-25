@@ -1,4 +1,3 @@
-import SelectEntry from "../../../ui/form/element/components/SelectEntry.js";
 import {instanceOfOne} from "../Class.js";
 
 export function getInnerText(node, excludedNodeClasses = []) {
@@ -11,10 +10,6 @@ export function getInnerText(node, excludedNodeClasses = []) {
         res += recursiveExtractText(ch, excludedNodeClasses);
     }
     return res;
-}
-
-export function getInputElementInnerText(node, excludedNodeClasses = []) {
-    return getInnerText(node, [HTMLOptionElement, SelectEntry, ...excludedNodeClasses]);
 }
 
 function recursiveExtractText(node, excludedNodeClasses = []) {
