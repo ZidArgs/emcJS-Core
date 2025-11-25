@@ -34,6 +34,7 @@
     "lintfix": "yarn eslint --fix .",
     "build": "gulp build",
     "test": "node --test",
+    "find-cycles": "node tools/find-cycles.js",
     "webtest": "gulp buildDoc && node server.js",
     "buildDoc": "gulp buildDoc"
   }
