@@ -49,6 +49,8 @@ export default class AbstractFormElement extends CustomFormElement {
 
     #tooltipEl;
 
+    #labelEl;
+
     #labelTextEl;
 
     #resetEl;
@@ -72,6 +74,7 @@ export default class AbstractFormElement extends CustomFormElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#tooltipEl = this.shadowRoot.getElementById("tooltip");
+        this.#labelEl = this.shadowRoot.getElementById("label");
         this.#labelTextEl = this.shadowRoot.getElementById("label-text");
         this.#resetEl = this.shadowRoot.getElementById("reset");
         this.#descriptionEl = this.shadowRoot.getElementById("description");
@@ -105,6 +108,10 @@ export default class AbstractFormElement extends CustomFormElement {
         });
         fieldContainerEl.addEventListener("change", (event) => {
             event.stopPropagation();
+        });
+        /* --- */
+        this.#labelEl.addEventListener("click", () => {
+            this.focus();
         });
     }
 
