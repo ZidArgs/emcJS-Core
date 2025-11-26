@@ -253,7 +253,8 @@
         "type": "HotkeyInput",
         "value": "",
         "resettable": true,
-        "placeholder": "press keys..."
+        "placeholder": "press keys...",
+        "id": "hotkey-test"
     },
     "debug.debug_logic": {
         "type": "SimpleSelect",

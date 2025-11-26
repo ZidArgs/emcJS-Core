@@ -25,6 +25,14 @@ export async function init() {
     ]);
 
     settingsPanelEl.loadConfig(translateSettings(settings));
+
+    const hotkeyEl = settingsPanelEl.shadowRoot.getElementById("hotkey-test");
+    hotkeyEl.addEventListener("input", () => {
+        console.log("input", hotkeyEl.value);
+    });
+    hotkeyEl.addEventListener("change", () => {
+        console.log("change", hotkeyEl.value);
+    });
 }
 
 init();

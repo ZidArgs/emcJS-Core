@@ -33,7 +33,8 @@ const CONTROL_KEYS = [
 ];
 const VALUE_PARSE = /(ctrl\s+)?(shift\s+)?(alt\s+)?(meta\s+)?(.+)?/i;
 
-// FIXME when shift+tabbing out of element, the shift stays (no blur?)
+// TODO enter edit mode by pressing [enter|space], exit edit mode by pressing [esc]
+// TODO for edit mode open modal like (without window header or footer) to catch input
 export default class HotkeyInput extends AbstractFormElement {
 
     static get formConfigurationFields() {
@@ -146,7 +147,17 @@ export default class HotkeyInput extends AbstractFormElement {
             }
         });
         this.#inputEl.addEventListener("blur", () => {
-            this.renderValue(this.#value);
+            if (this.#value?.key == null) {
+                this.#value = {
+                    ctrlKey: false,
+                    shiftKey: false,
+                    altKey: false,
+                    metaKey: false,
+                    key: null
+                };
+                this.renderValue(this.#value);
+                this.value = this.#stringifyValue(this.#value);
+            }
         });
         this.#buttonEl = this.shadowRoot.getElementById("button");
         this.#buttonEl.addEventListener("click", () => {
@@ -295,6 +306,19 @@ export default class HotkeyInput extends AbstractFormElement {
             this.#customKeyEl.i18nValue = keyText;
             this.#inputEl.append(this.#customKeyEl);
         }
+    }
+
+    checkValid() {
+        const value = this.#value;
+        if (value != null) {
+            const {
+                ctrlKey, shiftKey, altKey, metaKey, key
+            } = value;
+            if ((ctrlKey || shiftKey || altKey || metaKey) && key == null) {
+                return "The input is missing a destinctive key";
+            }
+        }
+        return super.checkValid();
     }
 
 }
