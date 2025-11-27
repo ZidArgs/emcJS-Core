@@ -1,8 +1,10 @@
 import CustomElement from "../../../../../element/CustomElement.js";
 import EventTargetManager from "../../../../../../util/event/EventTargetManager.js";
 import {toStartUppercaseEndLowercase} from "../../../../../../util/helper/string/ConvertCase.js";
+import "../../../../../keyboard/KeyCap.js";
 import TPL from "./KeyBindEditPanel.js.html" assert {type: "html"};
 import STYLE from "./KeyBindEditPanel.js.css" assert {type: "css"};
+import {resolveKey} from "../../../../../../util/keyboard/KeyConverter.js";
 
 const BLACKLIST = [
     "Tab",
@@ -27,13 +29,13 @@ const CONTROL_KEYS = [
 
 let activePanel = null;
 
-// TODO add missing information and styling
-// TODO supress tab
 export default class KeyBindEditPanel extends CustomElement {
 
     #focusTopEl;
 
     #focusBottomEl;
+
+    #titleEl;
 
     #modalEl;
 
@@ -64,30 +66,26 @@ export default class KeyBindEditPanel extends CustomElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.#ctrlKeyEl = document.createElement("emc-i18n-label");
-        this.#ctrlKeyEl.className = "key";
-        this.#ctrlKeyEl.i18nValue = "Ctrl";
-        this.#shiftKeyEl = document.createElement("emc-i18n-label");
-        this.#shiftKeyEl.className = "key";
-        this.#shiftKeyEl.i18nValue = "Shift";
-        this.#altKeyEl = document.createElement("emc-i18n-label");
-        this.#altKeyEl.className = "key";
-        this.#altKeyEl.i18nValue = "Alt";
-        this.#metaKeyEl = document.createElement("emc-i18n-label");
-        this.#metaKeyEl.className = "key";
-        this.#metaKeyEl.i18nValue = "Meta";
-        this.#customKeyEl = document.createElement("emc-i18n-label");
-        this.#customKeyEl.className = "key";
-        this.#customKeyEl.i18nValue = "";
+        this.#ctrlKeyEl = document.createElement("emc-keycap");
+        this.#ctrlKeyEl.innerText = "Ctrl";
+        this.#shiftKeyEl = document.createElement("emc-keycap");
+        this.#shiftKeyEl.innerText = "Shift";
+        this.#altKeyEl = document.createElement("emc-keycap");
+        this.#altKeyEl.innerText = "Alt";
+        this.#metaKeyEl = document.createElement("emc-keycap");
+        this.#metaKeyEl.innerText = "Meta";
+        this.#customKeyEl = document.createElement("emc-keycap");
+        this.#customKeyEl.innerText = "";
         /* --- */
         this.#modalEl = this.shadowRoot.getElementById("modal");
+        this.#titleEl = this.shadowRoot.getElementById("title");
         this.#keyDisplayEl = this.shadowRoot.getElementById("key-display");
         this.#inputEventTargetManager = new EventTargetManager(this.#modalEl);
         this.#inputEventTargetManager.set("keydown", (event) => {
             const {
-                key, ctrlKey, shiftKey, altKey, metaKey
+                key, code, ctrlKey, shiftKey, altKey, metaKey
             } = event;
-            if (!BLACKLIST.includes(key)) {
+            if (key != null && !BLACKLIST.includes(key)) {
                 if (key === "Escape") {
                     this.close();
                 } else if (CONTROL_KEYS.includes(key)) {
@@ -103,7 +101,7 @@ export default class KeyBindEditPanel extends CustomElement {
                     this.#value.shiftKey = shiftKey;
                     this.#value.altKey = altKey;
                     this.#value.metaKey = metaKey;
-                    this.#value.key = key;
+                    this.#value.key = resolveKey(code);
                     this.#internalSubmit();
                 }
                 event.preventDefault();
@@ -129,6 +127,9 @@ export default class KeyBindEditPanel extends CustomElement {
             return false;
         });
         /* --- */
+        this.addEventListener("click", () => {
+            this.initialFocus();
+        });
         this.#focusTopEl = this.shadowRoot.getElementById("focus_catcher_top");
         this.#focusTopEl.addEventListener("focus", () => {
             this.initialFocus();
@@ -205,8 +206,31 @@ export default class KeyBindEditPanel extends CustomElement {
         }
         if (key != null) {
             const keyText = key === " " ? "Space" : toStartUppercaseEndLowercase(key);
-            this.#customKeyEl.i18nValue = keyText;
+            this.#customKeyEl.innerText = keyText;
             this.#keyDisplayEl.append(this.#customKeyEl);
+        }
+    }
+
+    set caption(value) {
+        this.setAttribute("caption", value);
+    }
+
+    get caption() {
+        return this.getAttribute("caption");
+    }
+
+    static get observedAttributes() {
+        return [...super.observedAttributes, "caption"];
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback(name, oldValue, newValue);
+        switch (name) {
+            case "caption": {
+                if (oldValue != newValue) {
+                    this.#titleEl.i18nValue = newValue;
+                }
+            } break;
         }
     }
 

@@ -121,21 +121,3 @@
     line-height: 1em;
     content: "✖";
 }
-
-#input > .key {
-    min-width: 20px;
-    padding: 2px 6px;
-    margin: 1px 3px 3px 2px;
-    color: var(--input-key-text-color, #000000);
-    background-color: var(--input-key-back-color, #e5e5e5);
-    background-image: var(--input-key-back-image, none);
-    border-style: solid;
-    border-width: var(--input-key-border-width, 1px);
-    border-color: var(--input-key-border-color, #222222);
-    border-radius: var(--input-key-border-radius, 4px);
-    box-shadow: var(--input-key-shadow-color, #9d9d9d) -1px 2px 0px 0px;
-    font-family: monospace;
-    font-size: 12px;
-    font-weight: bold;
-    letter-spacing: 1px;
-}

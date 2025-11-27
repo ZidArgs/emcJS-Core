@@ -6,11 +6,11 @@ import {toStartUppercaseEndLowercase} from "../../../../../util/helper/string/Co
 import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
 import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
 import {I18nValueObserver} from "../../../../../util/observer/i18n/I18nValueObserver.js";
+import KeyBindEditPanel from "./components/KeyBindEditPanel.js";
 import "../../../../i18n/builtin/I18nInput.js";
 import TPL from "./KeyBindInput.js.html" assert {type: "html"};
 import STYLE from "./KeyBindInput.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./KeyBindInput.js.json" assert {type: "json"};
-import KeyBindEditPanel from "./components/KeyBindEditPanel.js";
 
 const VALUE_PARSE = /(ctrl\s+)?(shift\s+)?(alt\s+)?(meta\s+)?(.+)?/i;
 
@@ -53,21 +53,16 @@ export default class KeyBindInput extends AbstractFormElement {
         this.shadowRoot.getElementById("field").append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.#ctrlKeyEl = document.createElement("emc-i18n-label");
-        this.#ctrlKeyEl.className = "key";
-        this.#ctrlKeyEl.i18nValue = "Ctrl";
-        this.#shiftKeyEl = document.createElement("emc-i18n-label");
-        this.#shiftKeyEl.className = "key";
-        this.#shiftKeyEl.i18nValue = "Shift";
-        this.#altKeyEl = document.createElement("emc-i18n-label");
-        this.#altKeyEl.className = "key";
-        this.#altKeyEl.i18nValue = "Alt";
-        this.#metaKeyEl = document.createElement("emc-i18n-label");
-        this.#metaKeyEl.className = "key";
-        this.#metaKeyEl.i18nValue = "Meta";
-        this.#customKeyEl = document.createElement("emc-i18n-label");
-        this.#customKeyEl.className = "key";
-        this.#customKeyEl.i18nValue = "";
+        this.#ctrlKeyEl = document.createElement("emc-keycap");
+        this.#ctrlKeyEl.innerText = "Ctrl";
+        this.#shiftKeyEl = document.createElement("emc-keycap");
+        this.#shiftKeyEl.innerText = "Shift";
+        this.#altKeyEl = document.createElement("emc-keycap");
+        this.#altKeyEl.innerText = "Alt";
+        this.#metaKeyEl = document.createElement("emc-keycap");
+        this.#metaKeyEl.innerText = "Meta";
+        this.#customKeyEl = document.createElement("emc-keycap");
+        this.#customKeyEl.innerText = "";
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#inputElementEventTargetManager = new EventTargetManager(this.#inputEl);
@@ -190,6 +185,11 @@ export default class KeyBindInput extends AbstractFormElement {
                     this.#handleReadOnlyDisabled();
                 }
             } break;
+            case "label": {
+                if (oldValue != newValue) {
+                    this.#keyBindEditPanel.caption = newValue;
+                }
+            } break;
         }
     }
 
@@ -265,7 +265,7 @@ export default class KeyBindInput extends AbstractFormElement {
         }
         if (key != null) {
             const keyText = key === " " ? "Space" : toStartUppercaseEndLowercase(key);
-            this.#customKeyEl.i18nValue = keyText;
+            this.#customKeyEl.innerText = keyText;
             this.#inputEl.append(this.#customKeyEl);
         }
     }

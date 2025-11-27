@@ -547,9 +547,14 @@ all; top_bottom right_left; top right bottom left
     --scrollbar-disabled-thumb-color: var(--input-disabled-emphasize-color);
     --scrollbar-disabled-thumb-border-color: var(--input-disabled-insignify-color);
 
+    /* === keycap === */
+    --keycap-back-color: #d6d6d6;
+    --keycap-text-color: #333333;
+
     /* === z-index (max = 2147483647) === */
     --z-index-busy-indicator: 1000000000;
     --z-index-input-expanded: 100000000;
+    --z-index-keybindeditpanel: 900900;
     --z-index-tooltop: 900800;
     --z-index-contextmenu: 900700;
     --z-index-modal: 900600;
