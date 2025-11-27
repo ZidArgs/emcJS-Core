@@ -75,12 +75,19 @@ export default class ModalFormDialog extends Modal {
             this.#submitEl.addEventListener("click", () => this.submit());
             this.#footerEl.append(this.#submitEl);
         }
+
+        this.#formContext.addEventListener("submit", (event) => {
+            const {
+                data, formData, hiddenData, changes, errors
+            } = event;
+            this.#internalSubmit(data, formData, hiddenData, changes, errors);
+        });
     }
 
     async show() {
         return new Promise((resolve) => {
-            this.#onsubmit = function() {
-                resolve(true);
+            this.#onsubmit = function(data) {
+                resolve(data ?? true);
             };
             this.#oncancel = function() {
                 resolve(false);
@@ -92,15 +99,31 @@ export default class ModalFormDialog extends Modal {
         });
     }
 
-    submit() {
+    #internalSubmit(data, formData, hiddenData, changes, errors) {
         this.remove();
         if (this.#onsubmit) {
-            this.#onsubmit();
+            this.#onsubmit({
+                data,
+                formData,
+                hiddenData,
+                changes,
+                errors
+            });
             this.#onsubmit = null;
             this.#oncancel = null;
             this.#onclose = null;
         }
-        this.dispatchEvent(new Event("submit"));
+        const ev = new Event("submit");
+        ev.data = data;
+        ev.formData = formData;
+        ev.hiddenData = hiddenData;
+        ev.changes = changes;
+        ev.errors = errors;
+        this.dispatchEvent(ev);
+    }
+
+    submit() {
+        this.#formContext.submit();
     }
 
     cancel() {

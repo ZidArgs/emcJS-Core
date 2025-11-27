@@ -26,12 +26,12 @@ export async function init() {
 
     settingsPanelEl.loadConfig(translateSettings(settings));
 
-    const hotkeyEl = settingsPanelEl.shadowRoot.getElementById("hotkey-test");
-    hotkeyEl.addEventListener("input", () => {
-        console.log("input", hotkeyEl.value);
+    const keybindEl = settingsPanelEl.shadowRoot.getElementById("keybind-test");
+    keybindEl.addEventListener("input", () => {
+        console.log("input", keybindEl.value);
     });
-    hotkeyEl.addEventListener("change", () => {
-        console.log("change", hotkeyEl.value);
+    keybindEl.addEventListener("change", () => {
+        console.log("change", keybindEl.value);
     });
 }
 

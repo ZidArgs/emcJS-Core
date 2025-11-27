@@ -193,68 +193,68 @@
     "world.unknown_arealist_need_all": {
         "type": "SwitchInput",
         "value": false,
-        "placeholder": "press keys..."
+        "placeholder": "Enter key binding..."
     },
-    "hotkeys.hk_state_new": {
-        "type": "HotkeyInput",
+    "keybinds.hk_state_new": {
+        "type": "KeyBindInput",
         "value": "",
         "resettable": true,
-        "placeholder": "press keys..."
+        "placeholder": "Enter key binding..."
     },
-    "hotkeys.hk_state_load": {
-        "type": "HotkeyInput",
+    "keybinds.hk_state_load": {
+        "type": "KeyBindInput",
         "value": "ctrl o",
         "resettable": true,
-        "placeholder": "press keys..."
+        "placeholder": "Enter key binding..."
     },
-    "hotkeys.hk_state_save": {
-        "type": "HotkeyInput",
+    "keybinds.hk_state_save": {
+        "type": "KeyBindInput",
         "value": "ctrl s",
         "resettable": true,
-        "placeholder": "press keys..."
+        "placeholder": "Enter key binding..."
     },
-    "hotkeys.hk_state_saveas": {
-        "type": "HotkeyInput",
+    "keybinds.hk_state_saveas": {
+        "type": "KeyBindInput",
         "value": "ctrl shift s",
         "resettable": true,
-        "placeholder": "press keys..."
+        "placeholder": "Enter key binding..."
     },
-    "hotkeys.hk_state_manage": {
-        "type": "HotkeyInput",
+    "keybinds.hk_state_manage": {
+        "type": "KeyBindInput",
         "value": "ctrl m",
         "resettable": true,
-        "placeholder": "press keys..."
+        "placeholder": "Enter key binding..."
     },
-    "hotkeys.hk_fullscreen": {
-        "type": "HotkeyInput",
+    "keybinds.hk_fullscreen": {
+        "type": "KeyBindInput",
         "value": "alt enter",
         "resettable": true,
-        "placeholder": "press keys..."
+        "placeholder": "Enter key binding..."
     },
-    "hotkeys.hk_detached_window": {
-        "type": "HotkeyInput",
+    "keybinds.hk_detached_window": {
+        "type": "KeyBindInput",
         "value": "ctrl shift d",
         "resettable": true,
-        "placeholder": "press keys..."
+        "placeholder": "Enter key binding..."
     },
-    "hotkeys.hk_import_spoiler": {
-        "type": "HotkeyInput",
+    "keybinds.hk_import_spoiler": {
+        "type": "KeyBindInput",
         "value": "ctrl i",
         "resettable": true,
-        "placeholder": "press keys..."
+        "placeholder": "Enter key binding..."
     },
-    "hotkeys.hk_options": {
-        "type": "HotkeyInput",
+    "keybinds.hk_options": {
+        "type": "KeyBindInput",
         "value": "",
         "resettable": true,
-        "placeholder": "press keys..."
+        "placeholder": "Enter key binding..."
     },
-    "hotkeys.hk_settings": {
-        "type": "HotkeyInput",
+    "keybinds.hk_settings": {
+        "type": "KeyBindInput",
         "value": "",
         "resettable": true,
-        "placeholder": "press keys...",
-        "id": "hotkey-test"
+        "placeholder": "Enter key binding...",
+        "id": "keybind-test"
     },
     "debug.debug_logic": {
         "type": "SimpleSelect",

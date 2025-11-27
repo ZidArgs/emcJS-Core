@@ -4,7 +4,7 @@ import "./input/boolorlogic/BoolOrLogicInput.js";
 import "./input/code/CodeInput.js";
 import "./input/color/ColorInput.js";
 import "./input/grid/GridInput.js";
-import "./input/hotkey/HotkeyInput.js";
+import "./input/keybind/KeyBindInput.js";
 import "./input/keyvaluelist/KeyValueListInput.js";
 import "./input/list/ListInput.js";
 import "./input/logic/LogicInput.js";

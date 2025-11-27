@@ -1,0 +1,102 @@
+:host {
+    position: fixed !important;
+    box-sizing: border-box !important;
+    align-items: center !important;
+    justify-content: center !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    cursor: default !important;
+    overflow: hidden !important;
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    z-index: var(--z-index-modal, 900600);
+    pointer-events: all !important;
+}
+
+:host(.inactive) {
+    background-color: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    z-index: calc(var(--z-index-modal, 900600) - 1);
+}
+
+:host {
+    display: flex;
+}
+
+#modal {
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    height: auto;
+    min-width: min(400px, calc(100dvw - 50px));
+    max-width: min(1000px, calc(100dvw - 50px));
+    min-height: min(200px, calc(100dvh - 50px));
+    max-height: min(800px, calc(100dvh - 50px));
+    margin-top: min(100px, calc(25px + max(0px, calc(55dvh - 480px))));
+    color: var(--modal-text-color, #000000);
+    background-color: var(--modal-back-color, #ffffff);
+    background-image: var(--modal-back-image, none);
+    border-style: solid;
+    border-width: var(--modal-border-width, 2px);
+    border-color: var(--modal-border-color, #cccccc);
+    border-radius: 4px;
+    font-size: 1rem;
+    resize: both;
+    pointer-events: all;
+    box-shadow: #000000c4 11px 11px 20px 0px;
+}
+
+:host(.inactive) #modal {
+    pointer-events: none;
+    filter: blur(2px);
+}
+
+#content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: auto;
+    scroll-padding-top: 20px;
+    scroll-padding-bottom: 20px;
+}
+
+#key-display {
+    display: flex;
+    align-items: center;
+    height: 2em;
+    width: 100%;
+    padding: 0px 5px;
+    color: var(--input-text-color, #000000);
+    background-color: var(--input-back-color, #ffffff);
+    background-image: var(--input-back-image, none);
+    border-style: solid;
+    border-width: var(--input-border-width, 2px);
+    border-color: var(--input-border-color, #222222);
+    border-radius: var(--input-border-radius, 6px);
+    font-size: 1em;
+    cursor: pointer;
+}
+
+#key-display > .key {
+    min-width: 20px;
+    padding: 2px 6px;
+    margin: 1px 3px 3px 2px;
+    color: var(--input-key-text-color, #000000);
+    background-color: var(--input-key-back-color, #e5e5e5);
+    background-image: var(--input-key-back-image, none);
+    border-style: solid;
+    border-width: var(--input-key-border-width, 1px);
+    border-color: var(--input-key-border-color, #222222);
+    border-radius: var(--input-key-border-radius, 4px);
+    box-shadow: var(--input-key-shadow-color, #9d9d9d) -1px 2px 0px 0px;
+    font-family: monospace;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}

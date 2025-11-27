@@ -25,7 +25,7 @@ import FormContext from "/emcJS/util/form/FormContext.js";
     "RangeInput"            | "range"
     "ColorInput"            | "color"
     "PasswordInput"         | "password"
-    "HotkeyInput"           | "hotkey"
+    "KeyBindInput"           | "hotkey"
     "TextInput"             | new
     "BoolOrLogicInput"      | new
     "SearchSelect"          | "choice"
@@ -70,7 +70,7 @@ const [defaultValues, optionGroups, tokenGroups, buttonConfig, extraConfig, ...f
     FileLoader.json("./form-config/input/RangeInput.json"),
     FileLoader.json("./form-config/input/PasswordInput.json"),
     FileLoader.json("./form-config/input/ColorInput.json"),
-    FileLoader.json("./form-config/input/HotkeyInput.json"),
+    FileLoader.json("./form-config/input/KeyBindInput.json"),
     FileLoader.json("./form-config/input/SwitchInput.json")
 ]);
 
@@ -143,17 +143,22 @@ formContext.addValidator((data) => {
         if (value == null) {
             const errorFields = formContext.findFieldsByName(name);
             for (const errorField of errorFields) {
-                errorField.addError("This is a global custom error shown if the field is not set");
+                errorField.setCustomValidity("This is a global custom error shown if the field is not set");
             }
         } else if (value === "" || (typeof value === "number" && isNaN(value))) {
             const errorFields = formContext.findFieldsByName(name);
             for (const errorField of errorFields) {
-                errorField.addError("This is a global custom error shown if the field is empty");
+                errorField.setCustomValidity("This is a global custom error shown if the field is empty");
             }
         } else if (value === "0" || value === 0) {
             const errorFields = formContext.findFieldsByName(name);
             for (const errorField of errorFields) {
-                errorField.addError("This is a global custom error shown if the value is 0");
+                errorField.setCustomValidity("This is a global custom error shown if the value is 0");
+            }
+        } else {
+            const errorFields = formContext.findFieldsByName(name);
+            for (const errorField of errorFields) {
+                errorField.setCustomValidity();
             }
         }
     }
@@ -201,7 +206,7 @@ CustomActionRegistry.current.set("cheese", () => {
             "resettable": "#00ff00",
             "required": "#0000ff"
         },
-        "hotkey": {
+        "keybind": {
             "default": "ctrl w",
             "resettable": "ctrl a",
             "required": "ctrl s",

@@ -1,0 +1,40 @@
+{
+    "type": "Fieldset",
+    "label": "keybind",
+    "children": [
+        {
+            "type": "KeyBindInput",
+            "label": "keybind default",
+            "name": "keybind.default",
+            "placeholder": "Enter key binding..."
+        },
+        {
+            "type": "KeyBindInput",
+            "label": "keybind resettable",
+            "name": "keybind.resettable",
+            "placeholder": "Enter key binding...",
+            "resettable": true
+        },
+        {
+            "type": "KeyBindInput",
+            "label": "keybind required",
+            "name": "keybind.required",
+            "placeholder": "Enter key binding...",
+            "required": true
+        },
+        {
+            "type": "KeyBindInput",
+            "label": "keybind readonly",
+            "name": "keybind.readonly",
+            "placeholder": "Enter key binding...",
+            "readonly": true
+        },
+        {
+            "type": "KeyBindInput",
+            "label": "keybind disabled",
+            "name": "keybind.disabled",
+            "placeholder": "Enter key binding...",
+            "disabled": true
+        }
+    ]
+}

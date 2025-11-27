@@ -1,8 +1,8 @@
 {
     "color.default": "#ff0000",
     "color.readonly": "#00ffff",
-    "hotkey.default": "ctrl h",
-    "hotkey.readonly": "ctrl h",
+    "keybind.default": "ctrl h",
+    "keybind.readonly": "ctrl h",
     "boolorlogic.default": false,
     "boolorlogic.resettable": {
         "type": "nand",

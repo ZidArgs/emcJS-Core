@@ -41,8 +41,8 @@
             "input/color": {
                 "label": "ColorInput"
             },
-            "input/hotkey": {
-                "label": "HotkeyInput"
+            "input/keybind": {
+                "label": "KeyBindInput"
             },
             "input/number": {
                 "label": "NumberInput"

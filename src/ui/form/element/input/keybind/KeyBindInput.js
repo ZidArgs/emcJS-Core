@@ -5,37 +5,16 @@ import {deepClone} from "../../../../../util/helper/DeepClone.js";
 import {toStartUppercaseEndLowercase} from "../../../../../util/helper/string/ConvertCase.js";
 import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
 import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
-import "../../../../i18n/builtin/I18nInput.js";
-import TPL from "./HotkeyInput.js.html" assert {type: "html"};
-import STYLE from "./HotkeyInput.js.css" assert {type: "css"};
-import CONFIG_FIELDS from "./HotkeyInput.js.json" assert {type: "json"};
 import {I18nValueObserver} from "../../../../../util/observer/i18n/I18nValueObserver.js";
+import "../../../../i18n/builtin/I18nInput.js";
+import TPL from "./KeyBindInput.js.html" assert {type: "html"};
+import STYLE from "./KeyBindInput.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./KeyBindInput.js.json" assert {type: "json"};
+import KeyBindEditPanel from "./components/KeyBindEditPanel.js";
 
-const BLACKLIST = [
-    "Tab",
-    "AltGraph",
-    "CapsLock",
-    "NumLock",
-    "Fn",
-    "FnLock",
-    "Hyper",
-    "ScrollLock",
-    "Super",
-    "Symbol",
-    "SymbolLock"
-];
-
-const CONTROL_KEYS = [
-    "Control",
-    "Shift",
-    "Alt",
-    "Meta"
-];
 const VALUE_PARSE = /(ctrl\s+)?(shift\s+)?(alt\s+)?(meta\s+)?(.+)?/i;
 
-// TODO enter edit mode by pressing [enter|space], exit edit mode by pressing [esc]
-// TODO for edit mode open modal like (without window header or footer) to catch input
-export default class HotkeyInput extends AbstractFormElement {
+export default class KeyBindInput extends AbstractFormElement {
 
     static get formConfigurationFields() {
         return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
@@ -67,6 +46,8 @@ export default class HotkeyInput extends AbstractFormElement {
 
     #customKeyEl;
 
+    #keyBindEditPanel = new KeyBindEditPanel();
+
     constructor() {
         super();
         this.shadowRoot.getElementById("field").append(TPL.generate());
@@ -90,63 +71,32 @@ export default class HotkeyInput extends AbstractFormElement {
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#inputElementEventTargetManager = new EventTargetManager(this.#inputEl);
+        this.#inputElementEventTargetManager.set("click", () => {
+            this.#keyBindEditPanel.show();
+        });
         this.#inputElementEventTargetManager.set("keydown", (event) => {
             const {
-                key, ctrlKey, shiftKey, altKey, metaKey
+                key, shiftKey
             } = event;
-            if (!BLACKLIST.includes(key)) {
-                if (key === "Escape") {
-                    this.#value.ctrlKey = false;
-                    this.#value.shiftKey = false;
-                    this.#value.altKey = false;
-                    this.#value.metaKey = false;
-                    this.#value.key = null;
-                    this.renderValue(this.#value);
-                    this.value = this.#stringifyValue(this.#value);
-                } else if (CONTROL_KEYS.includes(key)) {
-                    this.renderValue({
-                        ctrlKey,
-                        shiftKey,
-                        altKey,
-                        metaKey,
-                        key: null
-                    });
-                    this.value = this.#stringifyValue(this.#value);
-                } else {
-                    this.#value.ctrlKey = ctrlKey;
-                    this.#value.shiftKey = shiftKey;
-                    this.#value.altKey = altKey;
-                    this.#value.metaKey = metaKey;
-                    this.#value.key = key;
-                    this.renderValue(this.#value);
-                    this.value = this.#stringifyValue(this.#value);
-                }
+            if ((key === "Enter" && !shiftKey) || key === " ") {
+                this.#keyBindEditPanel.show();
+                event.preventDefault();
+                event.stopPropagation();
+                return false;
+            } else if (key === "Escape") {
+                this.#value.ctrlKey = false;
+                this.#value.shiftKey = false;
+                this.#value.altKey = false;
+                this.#value.metaKey = false;
+                this.#value.key = null;
+                this.renderValue(this.#value);
+                this.value = this.#stringifyValue(this.#value);
                 event.preventDefault();
                 event.stopPropagation();
                 return false;
             }
         });
-        this.#inputElementEventTargetManager.set("keyup", (event) => {
-            if (event.key !== "Tab") {
-                if (this.#value.key == null) {
-                    const {
-                        ctrlKey, shiftKey, altKey, metaKey
-                    } = event;
-                    this.renderValue({
-                        ctrlKey,
-                        shiftKey,
-                        altKey,
-                        metaKey,
-                        key: null
-                    });
-                    this.value = this.#stringifyValue(this.#value);
-                }
-                event.preventDefault();
-                event.stopPropagation();
-                return false;
-            }
-        });
-        this.#inputEl.addEventListener("blur", () => {
+        this.#inputElementEventTargetManager.set("blur", () => {
             if (this.#value?.key == null) {
                 this.#value = {
                     ctrlKey: false,
@@ -163,6 +113,19 @@ export default class HotkeyInput extends AbstractFormElement {
         this.#buttonEl.addEventListener("click", () => {
             this.value = "";
         });
+        this.#keyBindEditPanel.addEventListener("submit", (event) => {
+            const {
+                ctrlKey, shiftKey, altKey, metaKey, key
+            } = event.value;
+            this.#value.ctrlKey = ctrlKey;
+            this.#value.shiftKey = shiftKey;
+            this.#value.altKey = altKey;
+            this.#value.metaKey = metaKey;
+            this.#value.key = key;
+            this.renderValue(this.#value);
+            this.value = this.#stringifyValue(this.#value);
+            this.#inputEl.focus();
+        });
         /* --- */
         this.#languageEventTargetManager.set("change", (event) => {
             safeSetAttribute(this.#inputEl, "placeholder", event.value);
@@ -171,7 +134,6 @@ export default class HotkeyInput extends AbstractFormElement {
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
-        this.#inputEl.disabled = disabled;
         this.#buttonEl.disabled = disabled;
         this.#handleReadOnlyDisabled();
     }
@@ -302,7 +264,7 @@ export default class HotkeyInput extends AbstractFormElement {
             this.#inputEl.append(this.#metaKeyEl);
         }
         if (key != null) {
-            const keyText = key === " " ? "space" : toStartUppercaseEndLowercase(key);
+            const keyText = key === " " ? "Space" : toStartUppercaseEndLowercase(key);
             this.#customKeyEl.i18nValue = keyText;
             this.#inputEl.append(this.#customKeyEl);
         }
@@ -323,6 +285,6 @@ export default class HotkeyInput extends AbstractFormElement {
 
 }
 
-FormElementRegistry.register("HotkeyInput", HotkeyInput);
-customElements.define("emc-input-hotkey", HotkeyInput);
-registerFocusable("emc-input-hotkey");
+FormElementRegistry.register("KeyBindInput", KeyBindInput);
+customElements.define("emc-input-keybind", KeyBindInput);
+registerFocusable("emc-input-keybind");

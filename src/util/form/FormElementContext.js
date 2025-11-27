@@ -16,7 +16,7 @@ function applyDefaultValue(storage, target) {
     const elName = target.name;
     const defaultValue = storage.getRootValue(elName);
     if (defaultValue != null) {
-        if (typeof value === "object") {
+        if (typeof defaultValue === "object") {
             target.setAttribute("value", JSON.stringify(defaultValue));
         } else {
             target.setAttribute("value", defaultValue);

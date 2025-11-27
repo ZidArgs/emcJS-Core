@@ -15,6 +15,10 @@ const visibleModals = new UniqueEntriesStack();
 
 export default class Modal extends CustomElement {
 
+    #focusTopEl;
+
+    #focusBottomEl;
+
     #modalEl;
 
     #titleIconEl;
@@ -26,10 +30,6 @@ export default class Modal extends CustomElement {
     #textEl;
 
     #footerEl;
-
-    #focusTopEl;
-
-    #focusBottomEl;
 
     #assocName = "";
 
