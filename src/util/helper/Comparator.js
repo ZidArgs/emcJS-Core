@@ -1,4 +1,5 @@
 import {isNull} from "./CheckType.js";
+import {isClass} from "./Class.js";
 
 const NUMBERED_STRING_REGEX = /(.*?)([0-9]*)$/;
 
@@ -15,61 +16,6 @@ export function compareVersions(a = "", b = "", s = ".") {
         f = parseInt(d.shift());
     }
     return !!f;
-}
-
-export function isEqual(a, b) {
-    if (isNull(a) && isNull(b)) {
-        return true;
-    }
-    if (Object.is(a, b)) {
-        return true;
-    }
-    if (isNull(a) || isNull(b)) {
-        return false;
-    }
-    if (typeof a.equals === "function") {
-        return a.equals(b);
-    }
-    if (typeof b.equals === "function") {
-        return b.equals(a);
-    }
-    if (typeof a != "object" || !(a instanceof b.constructor || b instanceof a.constructor)) {
-        return false;
-    }
-    if (a instanceof Date && b instanceof Date) {
-        return a.getTime() == b.getTime();
-    }
-    if (a instanceof HTMLElement) {
-        if (b instanceof HTMLElement) {
-            if (a.tagName !== b.tagName) {
-                return false;
-            }
-            if (a.attributes.length !== b.attributes.length) {
-                return false;
-            }
-            for (const attr of a.attributes) {
-                if (attr.value !== b.getAttribute(attr.name)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
-    }
-    if (Array.isArray(a)) {
-        if (!Array.isArray(b) || a.length != b.length) {
-            return false;
-        }
-        return a.every((i, j) => isEqual(i, b[j]));
-    }
-    if (Array.isArray(b)) {
-        return false;
-    }
-    const c = Object.keys(a);
-    if (c.length != Object.keys(b).length) {
-        return false;
-    }
-    return c.every((i) => isEqual(a[i], b[i]));
 }
 
 export function numberedStringComparator(a, b) {
@@ -89,10 +35,12 @@ export function numberedStringComparator(a, b) {
 
 export default class Comparator {
 
+    #comparedDicts = new Map();
+
     #comparators = new Map();
 
     registerComparator(clazz, comparator) {
-        if (typeof clazz !== "function" || clazz.prototype == null) {
+        if (typeof clazz !== "function" && !isClass(clazz)) {
             throw new TypeError("clazz must be a class or compositor.");
         }
         if (typeof comparator !== "function") {
@@ -101,7 +49,17 @@ export default class Comparator {
         this.#comparators.set(clazz, comparator);
     }
 
+    unregisterComparator(clazz) {
+        this.#comparators.delete(clazz);
+    }
+
     isEqual(a, b) {
+        const result = this.#compare(a, b);
+        this.#comparedDicts.clear();
+        return result;
+    }
+
+    #compare(a, b) {
         if (isNull(a) && isNull(b)) {
             return true;
         }
@@ -177,11 +135,38 @@ export default class Comparator {
         }
 
         // check dicts
-        const c = Object.keys(a);
-        if (c.length != Object.keys(b).length) {
+        return this.#compareDicts(a, b);
+    }
+
+    #compareDicts(a, b) {
+        const dictsA = this.#getOrcreateDictCache(a);
+        if (dictsA.has(b)) {
+            return true;
+        }
+        const aKeys = Object.keys(a);
+        const bKeys = Object.keys(b);
+        if (aKeys.length != bKeys.length) {
             return false;
         }
-        return c.every((i) => this.isEqual(a[i], b[i]));
+        dictsA.add(b);
+        return aKeys.every((i) => this.#compare(a[i], b[i]));
+    }
+
+    #getOrcreateDictCache(a) {
+        if (this.#comparedDicts.has(a)) {
+            return this.#comparedDicts.get(a);
+        }
+        const cache = new Set();
+        this.#comparedDicts.set(a, cache);
+        return cache;
     }
 
 }
+
+const defaultComparator = new Comparator();
+
+export const registerComparator = defaultComparator.registerComparator.bind(defaultComparator);
+
+export const unregisterComparator = defaultComparator.unregisterComparator.bind(defaultComparator);
+
+export const isEqual = defaultComparator.isEqual.bind(defaultComparator);
