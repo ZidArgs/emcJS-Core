@@ -1,10 +1,10 @@
 import CustomElement from "../../../../../element/CustomElement.js";
 import EventTargetManager from "../../../../../../util/event/EventTargetManager.js";
 import {toStartUppercaseEndLowercase} from "../../../../../../util/helper/string/ConvertCase.js";
+import {resolveKey} from "../../../../../../util/keyboard/KeyConverter.js";
 import "../../../../../keyboard/KeyCap.js";
 import TPL from "./KeyBindEditPanel.js.html" assert {type: "html"};
 import STYLE from "./KeyBindEditPanel.js.css" assert {type: "css"};
-import {resolveKey} from "../../../../../../util/keyboard/KeyConverter.js";
 
 const BLACKLIST = [
     "Tab",

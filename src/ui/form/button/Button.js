@@ -7,6 +7,8 @@ import TPL from "./Button.js.html" assert {type: "html"};
 import STYLE from "./Button.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./Button.js.json" assert {type: "json"};
 
+const BORDER_POSITIONS = ["all", "left", "right", "top", "bottom"];
+
 export default class Button extends CustomFormElementDelegating {
 
     static get formConfigurationFields() {
@@ -102,7 +104,7 @@ export default class Button extends CustomFormElementDelegating {
     }
 
     set borderFlat(value) {
-        this.setListAttribute("border-flat", value, ["all", "left", "right", "top", "bottom"]);
+        this.setListAttribute("border-flat", value, BORDER_POSITIONS);
     }
 
     get borderFlat() {
@@ -110,7 +112,7 @@ export default class Button extends CustomFormElementDelegating {
     }
 
     set borderOpen(value) {
-        this.setListAttribute("border-open", value, ["all", "left", "right", "top", "bottom"]);
+        this.setListAttribute("border-open", value, BORDER_POSITIONS);
     }
 
     get borderOpen() {

@@ -222,13 +222,14 @@ export default class RowManager extends EventTarget {
     }
 
     #getOrCreateElement(key) {
-        if (this.#elementCache.has(key)) {
-            return this.#elementCache.get(key);
+        const rowEl = this.#elementCache.get(key);
+        if (rowEl != null) {
+            return rowEl;
         }
-        const rowEl = this.composer(key);
-        rowEl.setAttribute("row-key", key);
-        this.#elementCache.set(key, rowEl);
-        return rowEl;
+        const newRowEl = this.composer(key);
+        newRowEl.setAttribute("row-key", key);
+        this.#elementCache.set(key, newRowEl);
+        return newRowEl;
     }
 
     #checkColumnDefinitionChange(columnDefinition) {

@@ -136,7 +136,7 @@ export default class FormContext extends EventTarget {
         }
         /* --- */
         const ev = new Event("submit");
-        ev.data = this.getData();
+        ev.data = this.getDataFlat();
         ev.formData = this.getFormFieldsData();
         ev.hiddenData = this.getFormHiddenData();
         ev.changes = this.getChanges();
@@ -287,19 +287,17 @@ export default class FormContext extends EventTarget {
     }
 
     setData(data, merge = false) {
-        setTimeout(() => {
-            const res = {};
-            for (const context of this.#formFieldContextList) {
-                const name = context.node.name;
-                if (name != null) {
-                    const value = getFromObjectByPath(data, name.split("."));
-                    if (value != null) {
-                        res[name] = value;
-                    }
+        const res = {};
+        for (const context of this.#formFieldContextList) {
+            const name = context.node.name;
+            if (name != null) {
+                const value = getFromObjectByPath(data, name.split("."));
+                if (value != null) {
+                    res[name] = value;
                 }
             }
-            this.setDataFlat(res, merge);
-        }, 0);
+        }
+        this.setDataFlat(res, merge);
     }
 
     setDataFlat(data, merge = false) {

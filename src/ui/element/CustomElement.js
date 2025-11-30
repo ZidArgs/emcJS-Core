@@ -168,9 +168,9 @@ export default class CustomElement extends HTMLElement {
         }
     }
 
-    setListAttrinute(name, value, allowedValues) {
+    setListAttribute(name, value, allowedValues) {
         if (Array.isArray(value)) {
-            const acceptedValues = value.filter((val) => allowedValues.includes(val));
+            const acceptedValues = value.filter((val, idx) => allowedValues.includes(val) && value.indexOf(val) === idx);
             this.setAttribute(name, acceptedValues.join(" "));
         } else if (allowedValues.includes(value)) {
             this.setAttribute(name, value);
@@ -179,7 +179,7 @@ export default class CustomElement extends HTMLElement {
         }
     }
 
-    getListAttrinute(name) {
+    getListAttribute(name) {
         return this.getAttribute(name).split(" ");
     }
 

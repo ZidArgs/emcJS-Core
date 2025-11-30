@@ -1,4 +1,15 @@
+import {resolveKey} from "./keyboard/KeyConverter.js";
+
+function encodeConfig(config = {}) {
+    const {
+        key, ctrlKey, shiftKey, altKey, metaKey
+    } = config;
+    return `[${key || ""},${+ctrlKey},${+shiftKey},${+altKey},${+metaKey}]`;
+}
+
 class HotkeyHandler {
+
+    #quickAccessCache = new Map();
 
     #config = new Map();
 
@@ -7,9 +18,16 @@ class HotkeyHandler {
     constructor() {
         window.addEventListener("keydown", (event) => {
             const {
-                key, ctrlKey, shiftKey, altKey, metaKey
+                code, ctrlKey, shiftKey, altKey, metaKey
             } = event;
-            if (this.callHotkey(key, ctrlKey, shiftKey, altKey, metaKey)) {
+            const sequence = {
+                ctrlKey: !!ctrlKey,
+                shiftKey: !!shiftKey,
+                altKey: !!altKey,
+                metaKey: !!metaKey,
+                key: resolveKey(code || "")
+            };
+            if (this.callHotkey(sequence)) {
                 event.preventDefault();
                 event.stopPropagation();
                 return false;
@@ -38,14 +56,17 @@ class HotkeyHandler {
 
     setConfig(name, config) {
         if (this.#action.has(name)) {
+            this.#deleteQuickAccess(name);
             if (typeof config == "object" && !Array.isArray(config)) {
-                this.#config.set(name, {
+                const newConfig = {
                     ctrlKey: !!config.ctrlKey,
                     shiftKey: !!config.shiftKey,
                     altKey: !!config.altKey,
                     metaKey: !!config.metaKey,
                     key: (config.key || "").toString()
-                });
+                };
+                this.#config.set(name, newConfig);
+                this.#addQuickAccess(newConfig, name);
             } else {
                 this.#config.remove(name);
             }
@@ -53,27 +74,15 @@ class HotkeyHandler {
     }
 
     getConfig(name) {
-        return Object.assign({}, this.#config.get(name));
+        return {...this.#config.get(name)};
     }
 
-    callHotkey(key, ctrlKey = false, shiftKey = false, altKey = false, metaKey = false) {
+    callHotkey(value = {}) {
         let called = false;
-        for (const [name, value] of this.#config) {
-            const {
-                key: hKey,
-                ctrlKey: hCtrlKey,
-                shiftKey: hShiftKey,
-                altKey: hAltKey,
-                metaKey: hMetaKey
-            } = value;
-
-            if (
-                key.toLowerCase() === hKey?.toLowerCase() &&
-                ctrlKey === hCtrlKey &&
-                shiftKey === hShiftKey &&
-                altKey === hAltKey &&
-                metaKey === hMetaKey
-            ) {
+        const encodedConfig = encodeConfig(value);
+        const quickAccess = this.#quickAccessCache.get(encodedConfig);
+        if (quickAccess != null) {
+            for (const name of quickAccess) {
                 this.#action.get(name)();
                 called = true;
             }
@@ -84,6 +93,39 @@ class HotkeyHandler {
     clear() {
         this.#action.clear();
         this.#config.clear();
+    }
+
+    #deleteQuickAccess(name) {
+        const config = this.#config.get(name);
+        if (config != null) {
+            const encodedConfig = encodeConfig(config);
+            const quickAccess = this.#quickAccessCache.get(encodedConfig);
+            if (quickAccess != null) {
+                if (quickAccess.size === 1) {
+                    this.#quickAccessCache.delete(encodedConfig);
+                } else {
+                    quickAccess.remove(name);
+                }
+            }
+        }
+    }
+
+    #addQuickAccess(config, name) {
+        if (config != null) {
+            const quickAccess = this.#getOrCreateQuickAccess(config);
+            quickAccess.add(name);
+        }
+    }
+
+    #getOrCreateQuickAccess(config) {
+        const encodedConfig = encodeConfig(config);
+        const quickAccess = this.#quickAccessCache.get(encodedConfig);
+        if (quickAccess != null) {
+            return quickAccess;
+        }
+        const newQuickAccess = new Set();
+        this.#quickAccessCache.set(encodedConfig, newQuickAccess);
+        return newQuickAccess;
     }
 
 }

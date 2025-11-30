@@ -11,15 +11,25 @@ import STYLE from "./SettingsPanel.js.css" assert {type: "css"};
 
 export default class SettingsPanel extends CustomElement {
 
+    #focusTopEl;
+
+    #focusBottomEl;
+
+    #titleTextEl;
+
     #hamburgerEl;
 
     #searchEl;
+
+    #formSectionNavigationEl;
 
     #settingsFormEl;
 
     #formContext = new FormContext();
 
     #errorButtonEl;
+
+    #submitEl;
 
     #cancelEl;
 
@@ -31,35 +41,38 @@ export default class SettingsPanel extends CustomElement {
         this.#formContext.allowEnter = true;
         this.#formContext.hideErrors = true;
         /* --- */
+        this.#titleTextEl = this.shadowRoot.getElementById("title-text");
         this.#hamburgerEl = this.shadowRoot.getElementById("hamburger-button");
-        const formSectionNavigationEl = this.shadowRoot.getElementById("form-section-navigation");
+        this.#formSectionNavigationEl = this.shadowRoot.getElementById("form-section-navigation");
         const formContainerEl = this.shadowRoot.getElementById("form-container");
         this.#settingsFormEl = this.shadowRoot.getElementById("settings-form");
         this.#errorButtonEl = this.shadowRoot.getElementById("error-button");
         this.#formContext.registerFormContainer(formContainerEl);
-        formContainerEl.setFormSectionNavigationElement(formSectionNavigationEl);
+        formContainerEl.setFormSectionNavigationElement(this.#formSectionNavigationEl);
         /* --- */
         const footerFormEl = this.shadowRoot.getElementById("footer-form");
         this.#formContext.registerForm(footerFormEl);
         this.#initErrorButton();
         /* --- */
+        this.#submitEl = this.shadowRoot.getElementById("submit");
         this.#cancelEl = this.shadowRoot.getElementById("cancel");
         this.#cancelEl.addEventListener("click", () => this.cancel());
         /* --- */
         this.#hamburgerEl.addEventListener("click", () => {
-            if (formSectionNavigationEl.classList.contains("open")) {
-                formSectionNavigationEl.classList.remove("open");
-                formSectionNavigationEl.classList.remove("cover");
+            if (this.#formSectionNavigationEl.classList.contains("open")) {
+                this.#formSectionNavigationEl.classList.remove("open");
+                this.#formSectionNavigationEl.classList.remove("cover");
                 this.#hamburgerEl.open = false;
             } else {
-                formSectionNavigationEl.classList.add("open");
+                this.#formSectionNavigationEl.classList.add("open");
                 this.#hamburgerEl.open = true;
+                this.#formSectionNavigationEl.focus();
             }
         });
-        formSectionNavigationEl.addEventListener("select", () => {
-            if (formSectionNavigationEl.classList.contains("open")) {
-                formSectionNavigationEl.classList.remove("open");
-                formSectionNavigationEl.classList.remove("cover");
+        this.#formSectionNavigationEl.addEventListener("select", () => {
+            if (this.#formSectionNavigationEl.classList.contains("open")) {
+                this.#formSectionNavigationEl.classList.remove("open");
+                this.#formSectionNavigationEl.classList.remove("cover");
                 this.#hamburgerEl.open = false;
             }
         });
@@ -108,6 +121,56 @@ export default class SettingsPanel extends CustomElement {
                 }
             }
         }, true);
+        /* --- */
+        this.#focusTopEl = this.shadowRoot.getElementById("focus_catcher_top");
+        this.#focusTopEl.addEventListener("focus", () => {
+            this.focusLast();
+        });
+        this.#focusBottomEl = this.shadowRoot.getElementById("focus_catcher_bottom");
+        this.#focusBottomEl.addEventListener("focus", () => {
+            this.focusFirst();
+        });
+    }
+
+    set caption(value) {
+        this.setStringAttribute("caption", value);
+    }
+
+    get caption() {
+        return this.getStringAttribute("caption");
+    }
+
+    set type(value) {
+        this.setStringAttribute("type", value);
+    }
+
+    get type() {
+        return this.getStringAttribute("type");
+    }
+
+    static get observedAttributes() {
+        return ["caption", "type"];
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        switch (name) {
+            case "caption": {
+                if (oldValue != newValue) {
+                    this.#titleTextEl.i18nValue = newValue;
+                }
+            } break;
+            case "type": {
+                if (oldValue != newValue) {
+                    if (newValue === "modal") {
+                        this.#focusTopEl.setAttribute("tabindex", "0");
+                        this.#focusBottomEl.setAttribute("tabindex", "0");
+                    } else {
+                        this.#focusTopEl.removeAttribute("tabindex");
+                        this.#focusBottomEl.removeAttribute("tabindex");
+                    }
+                }
+            } break;
+        }
     }
 
     loadConfig(config, defaultValues) {
@@ -118,19 +181,45 @@ export default class SettingsPanel extends CustomElement {
         this.#formContext.setData(values);
     }
 
+    setValuesFlat(values) {
+        this.#formContext.setDataFlat(values);
+    }
+
     getValues() {
         this.#formContext.getData();
     }
 
+    getValuesFlat() {
+        this.#formContext.getDataFlat();
+    }
+
+    show() {
+        if (this.type === "modal") {
+            document.body.append(this);
+            this.initialFocus();
+        }
+    }
+
+    remove() {
+        if (this.type === "modal") {
+            super.remove();
+        }
+    }
+
     submit() {
+        this.remove();
         const event = new Event("submit");
-        event.data = this.#formContext.getData();
+        event.data = this.#formContext.getDataFlat();
+        event.formData = this.#formContext.getFormFieldsData();
+        event.hiddenData = this.#formContext.getFormHiddenData();
         event.changes = this.#formContext.getChanges();
+        event.errors = this.#formContext.getErrors();
         this.dispatchEvent(event);
     }
 
     cancel() {
         this.#formContext.reset();
+        this.remove();
         this.dispatchEvent(new Event("cancel"));
     }
 
@@ -158,6 +247,28 @@ export default class SettingsPanel extends CustomElement {
                 });
             }
         });
+    }
+
+    initialFocus() {
+        const inputEl = this.#settingsFormEl.querySelector("[name]");
+        if (inputEl != null) {
+            inputEl.focus();
+        } else {
+            this.#searchEl.focus();
+        }
+    }
+
+    focusFirst() {
+        const panelWidth = this.clientWidth;
+        if (panelWidth < 800) {
+            this.#hamburgerEl.focus();
+        } else {
+            this.#searchEl.focus();
+        }
+    }
+
+    focusLast() {
+        this.#submitEl.focus();
     }
 
 }

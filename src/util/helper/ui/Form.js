@@ -18,9 +18,9 @@ export function extractDefaultValuesFromConfig(formConfig, result) {
             } = formConfig;
             if (name) {
                 result[name] = value;
-                if (children != null) {
-                    extractDefaultValuesFromConfig(children, result);
-                }
+            }
+            if (children != null) {
+                extractDefaultValuesFromConfig(children, result);
             }
         }
     }

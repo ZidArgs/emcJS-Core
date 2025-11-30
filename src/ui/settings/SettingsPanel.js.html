@@ -1,6 +1,10 @@
+<div id="focus_catcher_top"></div>
 <div class="panel">
+    <div class="title">
+        <emc-i18n-label id="title-text"></emc-i18n-label>
+    </div>
     <div class="header">
-        <emc-navbar-hamburger id="hamburger-button"></emc-navbar-hamburger>
+        <emc-navbar-hamburger id="hamburger-button" tabindex="0"></emc-navbar-hamburger>
         <emc-input-search id="search" nohover novalidate hideerrors></emc-input-search>
     </div>
     <div class="form-wrapper">
@@ -13,7 +17,8 @@
         <emc-form-row align="end">
             <emc-button-error id="error-button" visible="true" enabled="true" distance="right"></emc-button-error>
             <emc-button id="cancel" visible="true" enabled="true" text="Cancel" icon="✕"></emc-button>
-            <emc-button-submit id="submit-button" visible="true" enabled="true"></emc-button-submit>
+            <emc-button-submit id="submit" visible="true" enabled="true"></emc-button-submit>
         </emc-form-row>
     </form>
 </div>
+<div id="focus_catcher_bottom"></div>

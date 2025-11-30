@@ -11,6 +11,9 @@ function normalizeKey(code) {
     if (code.startsWith("key")) {
         return code.slice(3);
     }
+    if (code.startsWith("digit")) {
+        return code.slice(5);
+    }
     if (code.startsWith("numpad")) {
         return `num ${code.slice(6)}`;
     }

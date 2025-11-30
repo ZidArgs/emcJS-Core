@@ -6,13 +6,12 @@ import {toStartUppercaseEndLowercase} from "../../../../../util/helper/string/Co
 import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
 import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
 import {I18nValueObserver} from "../../../../../util/observer/i18n/I18nValueObserver.js";
+import KeySequence from "../../../../../util/keyboard/KeySequence.js";
 import KeyBindEditPanel from "./components/KeyBindEditPanel.js";
 import "../../../../i18n/builtin/I18nInput.js";
 import TPL from "./KeyBindInput.js.html" assert {type: "html"};
 import STYLE from "./KeyBindInput.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./KeyBindInput.js.json" assert {type: "json"};
-
-const VALUE_PARSE = /(ctrl\s+)?(shift\s+)?(alt\s+)?(meta\s+)?(.+)?/i;
 
 export default class KeyBindInput extends AbstractFormElement {
 
@@ -85,7 +84,7 @@ export default class KeyBindInput extends AbstractFormElement {
                 this.#value.metaKey = false;
                 this.#value.key = null;
                 this.renderValue(this.#value);
-                this.value = this.#stringifyValue(this.#value);
+                this.value = KeySequence.stringify(this.#value);
                 event.preventDefault();
                 event.stopPropagation();
                 return false;
@@ -101,7 +100,7 @@ export default class KeyBindInput extends AbstractFormElement {
                     key: null
                 };
                 this.renderValue(this.#value);
-                this.value = this.#stringifyValue(this.#value);
+                this.value = KeySequence.stringify(this.#value);
             }
         });
         this.#buttonEl = this.shadowRoot.getElementById("button");
@@ -118,7 +117,7 @@ export default class KeyBindInput extends AbstractFormElement {
             this.#value.metaKey = metaKey;
             this.#value.key = key;
             this.renderValue(this.#value);
-            this.value = this.#stringifyValue(this.#value);
+            this.value = KeySequence.stringify(this.#value);
             this.#inputEl.focus();
         });
         /* --- */
@@ -143,7 +142,7 @@ export default class KeyBindInput extends AbstractFormElement {
         this.#value.altKey = value.altKey;
         this.#value.metaKey = value.metaKey;
         this.#value.key = value.key;
-        this.value = this.#stringifyValue(this.#value);
+        this.value = KeySequence.stringify(this.#value);
     }
 
     get rawValue() {
@@ -193,40 +192,6 @@ export default class KeyBindInput extends AbstractFormElement {
         }
     }
 
-    #parseValue(string) {
-        const res = VALUE_PARSE.exec(string ?? "");
-        return {
-            ctrlKey: res[1] != null,
-            shiftKey: res[2] != null,
-            altKey: res[3] != null,
-            metaKey: res[4] != null,
-            key: res[5]?.toLowerCase() === "space" ? " " : res[5] ?? null
-        };
-    }
-
-    #stringifyValue(opts = {}) {
-        const {
-            ctrlKey, shiftKey, altKey, metaKey, key
-        } = opts;
-        let res = "";
-        if (ctrlKey) {
-            res += "ctrl ";
-        }
-        if (shiftKey) {
-            res += "shift ";
-        }
-        if (altKey) {
-            res += "alt ";
-        }
-        if (metaKey) {
-            res += "meta ";
-        }
-        if (key != null) {
-            res += key === " " ? "space" : key.toLowerCase();
-        }
-        return res;
-    }
-
     #handleReadOnlyDisabled() {
         const readonly = this.getAttribute("readonly");
         const disabled = this.#inputEl.disabled;
@@ -243,7 +208,7 @@ export default class KeyBindInput extends AbstractFormElement {
             key: null
         };
         if (typeof value === "string") {
-            value = this.#parseValue(value);
+            value = KeySequence.parse(value);
         }
         this.#value = value;
 

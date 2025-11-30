@@ -146,11 +146,11 @@ export default class DataViewControlToolbar extends CustomElementDelegating {
     }
 
     set controls(value) {
-        this.setListAttrinute("controls", value, DataViewControlToolbar.controls);
+        this.setListAttribute("controls", value, DataViewControlToolbar.controls);
     }
 
     get controls() {
-        return this.getListAttrinute("controls");
+        return this.getListAttribute("controls");
     }
 
     addControl(control) {
