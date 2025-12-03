@@ -16,14 +16,6 @@ export default class EventTargetManager {
         this.#active = !!active;
     }
 
-    /**
-     * @deprecated
-     */
-    setActive(value) {
-        console.warn("Used instance.setActive(value); will not be supported anymore in the future. Use instance.active = value; instead;");
-        this.active = value;
-    }
-
     set active(value) {
         value = !!value;
         if (this.#active != value) {

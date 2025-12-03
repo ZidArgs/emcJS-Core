@@ -17,13 +17,6 @@ export default class DateUtil {
         }
     }
 
-    /**
-     * @deprecated
-     */
-    convert(formatter) {
-        return this.format(formatter);
-    }
-
     format(formatter) {
         if (typeof formatter == "string") {
             return DateUtil.#format(this.#date, formatter);
@@ -32,13 +25,6 @@ export default class DateUtil {
         } else {
             throw new TypeError("format string expected");
         }
-    }
-
-    /**
-     * @deprecated
-     */
-    convertLocal(formatter) {
-        return this.formatLocal(formatter);
     }
 
     formatLocal(formatter) {
@@ -60,7 +46,7 @@ export default class DateUtil {
                 case "h": return `0${date.getUTCHours()}`.slice(-2);
                 case "m": return `0${date.getUTCMinutes()}`.slice(-2);
                 case "s": return `0${date.getUTCSeconds()}`.slice(-2);
-                case "z": return `00${date.getUTCMilliseconds()}`.slice(-2);
+                case "z": return `00${date.getUTCMilliseconds()}`.slice(-3);
             }
         });
     }
@@ -74,16 +60,9 @@ export default class DateUtil {
                 case "h": return `0${date.getHours()}`.slice(-2);
                 case "m": return `0${date.getMinutes()}`.slice(-2);
                 case "s": return `0${date.getSeconds()}`.slice(-2);
-                case "z": return `00${date.getMilliseconds()}`.slice(-2);
+                case "z": return `00${date.getMilliseconds()}`.slice(-3);
             }
         });
-    }
-
-    /**
-     * @deprecated
-     */
-    static convert(formatter) {
-        return this.format(formatter);
     }
 
     static format(date, formatter) {
@@ -97,13 +76,6 @@ export default class DateUtil {
             return this.#format(date, formatter ?? "D.M.Y h:m:s");
         }
         throw new TypeError("date is invalid");
-    }
-
-    /**
-     * @deprecated
-     */
-    static convertLocal(formatter) {
-        return this.formatLocal(formatter);
     }
 
     static formatLocal(date, formatter) {

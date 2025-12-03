@@ -1,5 +1,4 @@
 import {isEqual} from "../helper/Comparator.js";
-import {waitForConnect} from "../helper/html/ElementConnectedHelper.js";
 import {getComputedStyleProperties} from "../helper/html/ElementStyleHelper.js";
 
 const OBSERVED_MUTATIONS = {
@@ -12,6 +11,8 @@ export default class StyleChangeObserver {
     #callback;
 
     #mutationObserver;
+
+    #blacklistedClasses = new Set();
 
     #observedProperties;
 
@@ -29,10 +30,17 @@ export default class StyleChangeObserver {
         const entries = [];
         for (const mutation of mutationList) {
             const element = mutation.target;
-            const oldStyle = this.#observedEls.get(element);
+            const elementData = this.#observedEls.get(element);
+            if (mutation.type === "attributes" && mutation.attributeName === "class") {
+                const currentClasses = new Set(element.classList);
+                const classDiff = currentClasses.symmetricDifference(elementData.classList);
+                if (classDiff.isSubsetOf(this.#blacklistedClasses)) {
+                    continue;
+                }
+            }
             const newStyle = getComputedStyleProperties(element, this.#observedProperties);
-            if (!isEqual(oldStyle, newStyle)) {
-                this.#observedEls.set(element, newStyle);
+            if (!isEqual(elementData.oldStyle, newStyle)) {
+                elementData.style = newStyle;
                 entries.push(element);
             }
         }
@@ -43,9 +51,11 @@ export default class StyleChangeObserver {
 
     async observe(element) {
         if (!this.#observedEls.has(element)) {
-            await waitForConnect(element);
             const observedStyle = getComputedStyleProperties(element, this.#observedProperties);
-            this.#observedEls.set(element, observedStyle);
+            this.#observedEls.set(element, {
+                classList: new Set(element.classList),
+                style: observedStyle
+            });
             this.#mutationObserver.observe(element, OBSERVED_MUTATIONS);
         }
     }
@@ -67,9 +77,17 @@ export default class StyleChangeObserver {
 
     getStyle(element) {
         if (this.#observedEls.has(element)) {
-            return {...this.#observedEls.get(element)};
+            return {...this.#observedEls.get(element).style};
         }
         return null;
+    }
+
+    blacklistClass(name) {
+        this.#blacklistedClasses.add(name);
+    }
+
+    unblacklistClass(name) {
+        this.#blacklistedClasses.delete(name);
     }
 
 }

@@ -21,9 +21,6 @@ describe("ArrayMutations", () => {
         const mutated = new ArraySet(source);
 
         mutated.delete(...mutations.deleted);
-        for (const {sequence} of mutations.changes) {
-            mutated.delete(...sequence);
-        }
         for (const {
             position, sequence
         } of mutations.changes) {
@@ -43,9 +40,6 @@ describe("ArrayMutations", () => {
         const mutated = new ArraySet(source);
 
         mutated.delete(...mutations.deleted);
-        for (const {sequence} of mutations.changes) {
-            mutated.delete(...sequence);
-        }
         for (const {
             position, sequence
         } of mutations.changes) {
@@ -65,9 +59,6 @@ describe("ArrayMutations", () => {
         const mutated = new ArraySet(source);
 
         mutated.delete(...mutations.deleted);
-        for (const {sequence} of mutations.changes) {
-            mutated.delete(...sequence);
-        }
         for (const {
             position, sequence
         } of mutations.changes) {
@@ -87,9 +78,6 @@ describe("ArrayMutations", () => {
         const mutated = new ArraySet(source);
 
         mutated.delete(...mutations.deleted);
-        for (const {sequence} of mutations.changes) {
-            mutated.delete(...sequence);
-        }
         for (const {
             position, sequence
         } of mutations.changes) {
@@ -109,9 +97,6 @@ describe("ArrayMutations", () => {
         const mutated = new ArraySet(source);
 
         mutated.delete(...mutations.deleted);
-        for (const {sequence} of mutations.changes) {
-            mutated.delete(...sequence);
-        }
         for (const {
             position, sequence
         } of mutations.changes) {
@@ -131,9 +116,6 @@ describe("ArrayMutations", () => {
         const mutated = new ArraySet(source);
 
         mutated.delete(...mutations.deleted);
-        for (const {sequence} of mutations.changes) {
-            mutated.delete(...sequence);
-        }
         for (const {
             position, sequence
         } of mutations.changes) {

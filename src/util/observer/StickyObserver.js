@@ -22,13 +22,15 @@ export default class StickyObserver {
 
     #marginRight = 0;
 
-    #callback;
+    #onStuckCallback;
 
     #observedEls = new Map();
 
     #styleChangeObserver;
 
-    constructor(callback, options = {}) {
+    #stuckClassName = "stuck";
+
+    constructor(options = {}) {
         const {
             root = document.rootElement,
             marginTop = 0,
@@ -36,7 +38,6 @@ export default class StickyObserver {
             marginLeft = 0,
             marginRight = 0
         } = options;
-        this.#callback = callback;
         this.#rootEl = root;
         if (!isNaN(marginTop)) {
             this.#marginTop = parseInt(marginTop);
@@ -67,9 +68,22 @@ export default class StickyObserver {
                 }
             }
             if (entries.length > 0) {
-                this.#callback(entries);
+                this.#applySticky(entries);
             }
         }, OBSERVED_STYLES);
+        this.#styleChangeObserver.blacklistClass(this.#stuckClassName);
+    }
+
+    set stuckClassName(value) {
+        if (this.#stuckClassName !== value) {
+            this.#styleChangeObserver.unblacklistClass(this.#stuckClassName);
+            this.#styleChangeObserver.blacklistClass(value);
+            this.#stuckClassName = value;
+        }
+    }
+
+    get stuckClassName() {
+        return this.#stuckClassName;
     }
 
     set marginTop(value) {
@@ -112,10 +126,18 @@ export default class StickyObserver {
         return this.#marginRight;
     }
 
+    onStuckChange(callback) {
+        if (typeof callback === "function") {
+            this.#onStuckCallback = callback;
+        } else {
+            this.#onStuckCallback = null;
+        }
+    }
+
     #refresh() {
         const entries = this.takeRecords();
         if (entries.length > 0) {
-            this.#callback(entries);
+            this.#applySticky(entries);
         }
     }
 
@@ -125,7 +147,9 @@ export default class StickyObserver {
             const contentRect = getBoundingContentRect(this.#rootEl);
             const entry = this.#handleObservedElement(element, contentRect);
             this.#observedEls.set(element, entry);
-            this.#callback([entry]);
+            this.#applySticky([entry]);
+        } else {
+            console.warn("element is already observed");
         }
     }
 
@@ -213,6 +237,15 @@ export default class StickyObserver {
         }
 
         return entry;
+    }
+
+    #applySticky(entries) {
+        if (typeof this.#stuckClassName === "string" && this.#stuckClassName !== "") {
+            for (const entry of entries) {
+                entry.target.classList.toggle(this.#stuckClassName, entry.isStuck);
+            }
+        }
+        this.#onStuckCallback?.(entries);
     }
 
 }

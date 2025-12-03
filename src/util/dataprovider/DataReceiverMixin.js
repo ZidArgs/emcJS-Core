@@ -1,6 +1,6 @@
 import {createMixin} from "../Mixin.js";
 
-export default createMixin((superclass) => class DataRecieverMixin extends superclass {
+export default createMixin((superclass) => class DataReceiverMixin extends superclass {
 
     // eslint-disable-next-line no-unused-vars
     setSortIndicators(columns = []) {}

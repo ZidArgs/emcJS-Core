@@ -1,0 +1,4 @@
+/**
+ * @deprecated
+ */
+console.warn("Used \"{theOldOne}\" will not be supported anymore in the future. Use \"{theNewOne}\" instead");

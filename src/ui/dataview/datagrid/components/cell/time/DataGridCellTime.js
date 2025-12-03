@@ -62,7 +62,7 @@ export default class DataGridCellTime extends DataGridCell {
             if (!(value instanceof Date)) {
                 value = new Date(value);
             }
-            const convertedValue = DateUtil.convertLocal(value, "h:m:s");
+            const convertedValue = DateUtil.formatLocal(value, "h:m:s");
             this.classList.remove("empty");
             this.#valueEl.innerText = convertedValue;
             this.#valueEl.title = convertedValue;

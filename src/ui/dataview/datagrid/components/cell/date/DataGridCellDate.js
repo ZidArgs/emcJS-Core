@@ -62,8 +62,8 @@ export default class DataGridCellDate extends DataGridCell {
             if (!(value instanceof Date)) {
                 value = new Date(value);
             }
-            const viewValue = DateUtil.convertLocal(value, "D.M.Ys");
-            const editValue = DateUtil.convertLocal(value, "Y-M-D");
+            const viewValue = DateUtil.formatLocal(value, "D.M.Ys");
+            const editValue = DateUtil.formatLocal(value, "Y-M-D");
             this.classList.remove("empty");
             this.#valueEl.innerText = viewValue;
             this.#valueEl.title = viewValue;

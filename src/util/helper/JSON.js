@@ -17,12 +17,12 @@ export function jsonReviver(key, value) {
     }
 }
 
-export function jsonParseSafe(value) {
+export function jsonParseSafe(value, reviver) {
     if (typeof value !== "string" || value === "") {
         return null;
     }
     try {
-        return jsonParse(value);
+        return jsonParse(value, reviver);
     } catch {
         return null;
     }

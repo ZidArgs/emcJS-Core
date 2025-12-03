@@ -243,14 +243,6 @@ class I18n extends EventTarget {
         return "";
     }
 
-    /**
-     * @deprecated
-     */
-    translate(key) {
-        console.warn("Used instance.translate(key); will not be supported anymore in the future. Use instance.get(key, ...substitutions); instead;");
-        return this.get(key);
-    }
-
     get(key, ...substitutions) {
         if (key == null || (typeof key === "string" && key.startsWith("@"))) {
             return "";

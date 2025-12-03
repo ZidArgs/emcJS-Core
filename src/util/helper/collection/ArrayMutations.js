@@ -168,7 +168,8 @@ export function getArrayMutationSequence(a, b) {
         newStart += seqLength;
     }
 
-    return mergeArrayMutationSequences(res);
+    return res;
+    // return mergeArrayMutationSequences(res);
 }
 
 function extractMutationArraySequences(a, b, s) {
@@ -192,7 +193,8 @@ function extractMutationArraySequences(a, b, s) {
     return res;
 }
 
-function mergeArrayMutationSequences(data) {
+// FIXME
+function mergeArrayMutationSequences(data) { // eslint-disable-line no-unused-vars
     const res = {
         sequences: [],
         maxLength: 0,

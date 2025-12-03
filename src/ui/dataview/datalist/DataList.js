@@ -1,6 +1,6 @@
 import CustomElement from "../../element/CustomElement.js";
 import ResizeObserverMixin from "../../mixin/ResizeObserverMixin.js";
-import DataRecieverMixin from "../../../util/dataprovider/DataRecieverMixin.js";
+import DataReceiverMixin from "../../../util/dataprovider/DataReceiverMixin.js";
 import ElementManager from "../../../util/html/ElementManager.js";
 import BusyIndicator from "../../BusyIndicator.js";
 import "../../i18n/I18nLabel.js";
@@ -10,7 +10,7 @@ import STYLE from "./DataList.js.css" assert {type: "css"};
 import {debounce} from "../../../util/Debouncer.js";
 
 // TODO add "no match" label
-export default class DataList extends ResizeObserverMixin(DataRecieverMixin(CustomElement)) {
+export default class DataList extends ResizeObserverMixin(DataReceiverMixin(CustomElement)) {
 
     #scrollContainerEl;
 

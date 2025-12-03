@@ -34,15 +34,15 @@ export default class DataProviderService extends ServiceModule {
                     if (isArrayOf(data, (e) => isDict(e))) {
                         this.#baseData = data;
                     } else {
-                        console.log(`[${this.instanceName}] Requested data is not an Array of records: "${filePath}"`);
+                        this.logger.log(`Requested data is not an Array of records: "${filePath}"`);
                     }
                     return;
                 } catch (err) {
-                    console.log(`[${this.instanceName}] Requested data parse error: "${filePath}"`, err);
+                    this.logger.log(`Requested data parse error: "${filePath}"`, err);
                 }
             }
         }
-        console.log(`[${this.instanceName}] Requested data not found: "${filePath}"`);
+        this.logger.log(`Requested data not found: "${filePath}"`);
     }
 
     async #onrequest(method, params, query, body) {
@@ -76,6 +76,7 @@ export default class DataProviderService extends ServiceModule {
                 };
             }
         } else {
+            this.logger.log(`method "${method}" not allowed`);
             return {status: 405};
         }
     }

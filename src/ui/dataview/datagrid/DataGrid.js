@@ -6,7 +6,7 @@ import {debounce} from "../../../util/Debouncer.js";
 import {getAllAttributes} from "../../../util/helper/ui/NodeAttributes.js";
 import {filterInPlace} from "../../../util/helper/collection/ArrayMutations.js";
 import MutationObserverManager from "../../../util/observer/manager/MutationObserverManager.js";
-import DataRecieverMixin from "../../../util/dataprovider/DataRecieverMixin.js";
+import DataReceiverMixin from "../../../util/dataprovider/DataReceiverMixin.js";
 import HeaderManager from "./manager/HeaderManager.js";
 import RowManager from "./manager/RowManager.js";
 import Column from "./Column.js";
@@ -49,7 +49,7 @@ TODO add DataGrid context to handle selection
 - hasSelected()
 - hasUnselected()
 */
-export default class DataGrid extends DataRecieverMixin(CustomElement) {
+export default class DataGrid extends DataReceiverMixin(CustomElement) {
 
     #internalId = appUID("data-grid");
 
@@ -88,6 +88,8 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
     #mutationObserver = new MutationObserverManager(MUTATION_CONFIG, () => {
         this.#onSlotChange();
     });
+
+    #stickyObserver;
 
     #leftFixes = [];
 
@@ -135,20 +137,24 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
         });
         this.#onSlotChange();
         /* --- */
-        const stickyObserver = new StickyObserver((entries) => {
-            for (const entry of entries) {
-                const observedEl = entry.target;
-                observedEl.classList.toggle("stuck", entry.isStuck);
-            }
-        }, {root: this.#scrollContainerEl});
-        this.#headerManager = new HeaderManager(this.#headerEl, stickyObserver, this.#headerSelectEl, this.#internalId);
-        this.#headerManager.addEventListener("afterrender", debounce(() => {
+        this.#stickyObserver = new StickyObserver({root: this.#scrollContainerEl});
+        this.#headerManager = new HeaderManager(this.#headerEl, this.#stickyObserver, this.#headerSelectEl, this.#internalId);
+        this.#headerManager.addEventListener("afterrender", debounce(async () => {
             this.#calculateCellFixes(this.#headEl);
         }));
-        this.#rowManager = new RowManager(this.#bodyEl, stickyObserver, this.#cellCache, this.#internalId);
+        this.#stickyObserver.onStuckChange((entries) => {
+            for (const entry of entries) {
+                const {
+                    target, isStuck
+                } = entry;
+                this.#setStuckForColumn(target, isStuck);
+            }
+        });
+        this.#rowManager = new RowManager(this.#bodyEl, this.#cellCache, this.#internalId);
         this.#rowManager.addEventListener("afterrender", debounce(() => {
             this.#refreshEmptyStatus();
             this.#updateSelectionAfterRender();
+            this.#refreshStuckAfterRender();
             this.#applyCellFixes(this.#bodyEl);
         }));
         this.#rowManager.addEventListener("sort-change", (event) => {
@@ -679,32 +685,42 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
         containerEl.style.display = "table-header-group";
         this.#leftFixes = [];
         this.#rightFixes = [];
+
+        // de-stuck
+        const stuckCells = [...this.#tableEl.querySelectorAll(":scope .fixed-cell.stuck")];
+        for (const cellEl of stuckCells) {
+            cellEl.classList.remove("stuck");
+        }
+
         // left cells
         {
             const fixedLeftCells = [...rowEl.querySelectorAll(":scope .fixed-cell.fixed-cell-start")];
+            // calculate offsets
             let leftOffset = 0;
             for (const cellEl of fixedLeftCells) {
-                const stuck = cellEl.classList.contains("stuck");
-                cellEl.classList.remove("stuck");
                 this.#leftFixes.push(leftOffset);
                 const cellWidth = cellEl.offsetWidth;
                 leftOffset += cellWidth;
-                cellEl.classList.toggle("stuck", stuck);
             }
         }
+
         // right cells
         {
             const fixedRightCells = [...rowEl.querySelectorAll(":scope .fixed-cell.fixed-cell-end")].reverse();
+            // calculate offsets
             let rightOffset = 0;
             for (const cellEl of fixedRightCells) {
-                const stuck = cellEl.classList.contains("stuck");
-                cellEl.classList.remove("stuck");
                 this.#rightFixes.push(rightOffset);
                 const cellWidth = cellEl.offsetWidth;
                 rightOffset += cellWidth;
-                cellEl.classList.toggle("stuck", stuck);
             }
         }
+
+        // re-stuck
+        for (const cellEl of stuckCells) {
+            cellEl.classList.add("stuck");
+        }
+
         // apply cell fixes
         containerEl.style.display = "";
         this.#applyCellFixes(containerEl);
@@ -730,6 +746,33 @@ export default class DataGrid extends DataRecieverMixin(CustomElement) {
                     const rightOffset = this.#rightFixes[index++];
                     cellEl.style.right = `${rightOffset}px`;
                 }
+            }
+        }
+    }
+
+    #refreshStuckAfterRender() {
+        const stuckEls = this.#headerEl.querySelectorAll(".stuck");
+        for (const stuckEl of stuckEls) {
+            this.#setStuckForColumn(stuckEl, true);
+        }
+    }
+
+    #setStuckForColumn(headerEl, isStuck) {
+        if (headerEl.classList.contains("sort-cell")) {
+            const els = this.#bodyEl.querySelectorAll(".sort-cell");
+            for (const el of els) {
+                el.classList.toggle(this.#stickyObserver.stuckClassName, isStuck);
+            }
+        } else if (headerEl.classList.contains("select-cell")) {
+            const els = this.#bodyEl.querySelectorAll(".select-cell");
+            for (const el of els) {
+                el.classList.toggle(this.#stickyObserver.stuckClassName, isStuck);
+            }
+        } else {
+            const name = headerEl.columnName;
+            const els = this.#bodyEl.querySelectorAll(`[col-name="${name}"]`);
+            for (const el of els) {
+                el.classList.toggle(this.#stickyObserver.stuckClassName, isStuck);
             }
         }
     }

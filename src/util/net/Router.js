@@ -42,15 +42,15 @@ but
 url: /foo/bar/lorem/ipsum/2
 will not resolve and fallback to next best match
 
-async function callReciever(recievers, path, method, query, body) {
+async function callreceiver(receivers, path, method, query, body) {
     path = path.replace(/(^\/|\/$)/g, "");
     let parts = path.split("/").map(p => decodeURI(p));
     let params = [];
     while (!!parts.length) {
         let uri = `/${parts.join("/")}`;
-        if (recievers.has(uri)) {
-            let reciever = recievers.get(uri);
-            return await reciever(method, params, query, body);
+        if (receivers.has(uri)) {
+            let receiver = receivers.get(uri);
+            return await receiver(method, params, query, body);
         }
         params.unshift(parts.pop());
     }

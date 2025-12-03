@@ -16,7 +16,7 @@ export function mix(superclass) {
 
 export function createMixin(mixin) {
     const typeTag = Symbol("isa");
-    const _mixin = (target) => {
+    const _mixin = (target = Object) => {
         const ext = mixin(target);
         Object.defineProperty(ext.prototype, typeTag, {value: true});
         return ext;

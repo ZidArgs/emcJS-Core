@@ -33,8 +33,8 @@
 :host([nohead]:not([nohead="false"])) {
     scroll-padding-top: 0.5em;
 
-    #head {
-        display: none;
+    #head #header > .cell {
+        font-size: 0px;
     }
 }
 
@@ -173,7 +173,17 @@
 
         .cell.fixed-cell:nth-last-child(1 of .fixed-cell-start.stuck) {
             border-right-style: solid;
-            border-right-width: var(--datagrid-fixed-column-seperator-width, 4px);
+            border-right-width: var(--datagrid-fixed-column-seperator-width, 2px);
+
+            &:after {
+                position: absolute;
+                content: "";
+                height: 100%;
+                width: var(--datagrid-fixed-column-shadow-width, 4px);
+                top: 0px;
+                right: calc(-1 * (var(--datagrid-fixed-column-shadow-width, 4px) + var(--datagrid-fixed-column-seperator-width, 2px)));
+                background-image: linear-gradient(to right, var(--datagrid-fixed-column-shadow-start-color, #00000030), #00000000);
+            }
 
             & + .cell {
                 border-left: none;
@@ -186,7 +196,17 @@
 
         .cell.fixed-cell:nth-child(1 of .fixed-cell-end.stuck) {
             border-left-style: solid;
-            border-left-width: var(--datagrid-fixed-column-seperator-width, 4px);
+            border-left-width: var(--datagrid-fixed-column-seperator-width, 2px);
+
+            &:before {
+                position: absolute;
+                content: "";
+                height: 100%;
+                width: var(--datagrid-fixed-column-shadow-width, 4px);
+                top: 0px;
+                left: calc(-1 * (var(--datagrid-fixed-column-shadow-width, 4px) + var(--datagrid-fixed-column-seperator-width, 2px)));
+                background-image: linear-gradient(to left, var(--datagrid-fixed-column-shadow-start-color, #00000030), #00000000);
+            }
         }
 
         &.last-cell {

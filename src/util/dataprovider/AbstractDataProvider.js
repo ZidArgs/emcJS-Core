@@ -7,7 +7,7 @@ import {debounce} from "../Debouncer.js";
 import {DEFAULT_EXTRACT_CONFIG} from "../helper/collection/ExtractDataFromArray.js";
 import EventMultiTargetManager from "../event/EventMultiTargetManager.js";
 import DataViewControlToolbar from "../../ui/dataview/toolbar/DataViewControlToolbar.js";
-import DataRecieverMixin from "./DataRecieverMixin.js";
+import DataReceiverMixin from "./DataReceiverMixin.js";
 
 export default class AbstractDataProvider extends EventTarget {
 
@@ -19,7 +19,7 @@ export default class AbstractDataProvider extends EventTarget {
 
     #data;
 
-    #reciever;
+    #receiver;
 
     #toolbarEls = new Set();
 
@@ -27,18 +27,18 @@ export default class AbstractDataProvider extends EventTarget {
 
     #multiSort = false;
 
-    constructor(reciever, options = {}) {
+    constructor(receiver, options = {}) {
         if (new.target === AbstractDataProvider) {
             throw new Error("can not construct abstract class");
         }
-        if (!(reciever instanceof DataRecieverMixin)) {
-            throw new Error("target must extend DataRecieverMixin");
+        if (!(receiver instanceof DataReceiverMixin)) {
+            throw new Error("target must extend DataReceiverMixin");
         }
         super();
         const {
             config = {}, multiSort = false, toolbar
         } = options;
-        this.#reciever = reciever;
+        this.#receiver = receiver;
         this.#multiSort = !!multiSort;
         this.#config = this.#extractConfig(config);
         if (toolbar != null) {
@@ -46,7 +46,7 @@ export default class AbstractDataProvider extends EventTarget {
         }
         this.refresh();
         /* --- */
-        this.#reciever.addEventListener("sort", (event) => {
+        this.#receiver.addEventListener("sort", (event) => {
             const {columnName} = event.data;
             if (!this.#multiSort) {
                 const currentSort = this.#config.sort[0];
@@ -68,7 +68,7 @@ export default class AbstractDataProvider extends EventTarget {
                 this.updateConfig({sort: newSort});
             }
         });
-        this.#reciever.addEventListener("unsort", (event) => {
+        this.#receiver.addEventListener("unsort", (event) => {
             const {columnName} = event.data;
             if (!this.#multiSort) {
                 const currentSort = this.#config.sort[0];
@@ -160,27 +160,27 @@ export default class AbstractDataProvider extends EventTarget {
     }
 
     refresh = debounce(async () => {
-        await this.#reciever.busy();
-        this.#reciever.setSortIndicators(deepClone(this.#config.sort ?? []));
+        await this.#receiver.busy();
+        this.#receiver.setSortIndicators(deepClone(this.#config.sort ?? []));
         try {
             const data = await this.getData(this.#config);
             if (Array.isArray(data)) {
                 if (!isEqual(this.#data, data)) {
                     this.#data = data;
-                    this.#reciever.setData(data);
+                    this.#receiver.setData(data);
                 }
             } else {
                 this.#data = [];
-                this.#reciever.setData([]);
+                this.#receiver.setData([]);
             }
             this.dispatchEvent(new Event("updated"));
         } catch (err) {
             console.error("error providing data:\n", err);
-            this.#reciever.setData([]);
+            this.#receiver.setData([]);
             this.dispatchEvent(new Event("error"));
         } finally {
             this.#updateToolbarEls();
-            await this.#reciever.unbusy();
+            await this.#receiver.unbusy();
         }
     });
 

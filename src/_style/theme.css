@@ -390,8 +390,10 @@ all; top_bottom right_left; top right bottom left
 
     --datagrid-column-seperator-width: 2px;
     --datagrid-column-seperator-color: #ffffff;
-    --datagrid-fixed-column-seperator-width: 4px;
+    --datagrid-fixed-column-seperator-width: 2px;
     --datagrid-fixed-column-seperator-color: #afafaf;
+    --datagrid-fixed-column-shadow-width: 4px;
+    --datagrid-fixed-column-shadow-start-color: #00000030;
 
     --datagrid-disabled-text-color: #757575;
     --datagrid-disabled-back-color: #999999;

@@ -1,3 +1,4 @@
+import ArraySet from "../../../../data/collection/ArraySet.js";
 import {debounce} from "../../../../util/Debouncer.js";
 import {isArrayOf} from "../../../../util/helper/CheckType.js";
 import {isEqual} from "../../../../util/helper/Comparator.js";
@@ -17,8 +18,6 @@ export default class RowManager extends EventTarget {
     #cellCache;
 
     #target;
-
-    #stickyObserver;
 
     #elements = new Map();
 
@@ -40,7 +39,7 @@ export default class RowManager extends EventTarget {
 
     #draggingRowEl;
 
-    constructor(target, stickyObserver, cellCache, dataGridId) {
+    constructor(target, cellCache, dataGridId) {
         if (!(target instanceof HTMLTableSectionElement)) {
             throw new TypeError("target must be of type HTMLTableSectionElement");
         }
@@ -51,7 +50,6 @@ export default class RowManager extends EventTarget {
         this.#dataGridId = dataGridId;
         this.#cellCache = cellCache;
         this.#target = target;
-        this.#stickyObserver = stickyObserver;
     }
 
     getSelectionStatus() {
@@ -269,7 +267,7 @@ export default class RowManager extends EventTarget {
             this.#dragOverItem(e.currentTarget, e.clientY);
         });
 
-        const cellManager = new CellManager(rowEl, this.#stickyObserver, this.#cellCache, this.#dataGridId);
+        const cellManager = new CellManager(rowEl, this.#cellCache, this.#dataGridId);
         cellManager.sortable = this.#sortable;
         cellManager.selectable = this.#selectable;
         cellManager.selectEnd = this.#selectEnd;
@@ -294,9 +292,14 @@ export default class RowManager extends EventTarget {
         const children = this.#target.children;
         if (children.length > 0) {
             const currentOrder = [...children].map((el) => el.getAttribute("row-key") ?? "");
+            const mutated = new ArraySet(currentOrder);
             const keys = [...this.#sortOrder];
-            const {changes} = getArrayMutations(currentOrder, keys);
-            for (const {sequence} of changes) {
+            const {
+                changes, deleted
+            } = getArrayMutations(currentOrder, keys);
+            // delete
+            mutated.delete(...deleted);
+            for (const {sequence} of deleted) {
                 for (const key of sequence) {
                     const el = this.#elements.get(key);
                     if (el != null) {
@@ -304,23 +307,21 @@ export default class RowManager extends EventTarget {
                     }
                 }
             }
-            for (const change of changes) {
-                const {
-                    sequence, position
-                } = change;
-                const els = [];
-                for (const key of sequence) {
-                    const el = this.#elements.get(key);
-                    if (el != null) {
-                        els.push(el);
-                    }
-                }
-                if (position === 0) {
-                    this.#target.prepend(...els);
-                } else {
-                    this.#target.children[position - 1].after(...els);
+            // mutate
+            for (const {
+                position, sequence
+            } of changes) {
+                mutated.insertAt(position, ...sequence);
+            }
+
+            const els = [];
+            for (const key of mutated) {
+                const el = this.#elements.get(key);
+                if (el != null) {
+                    els.push(el);
                 }
             }
+            this.#target.append(...els);
         } else {
             const els = [];
             for (const key of this.#sortOrder) {

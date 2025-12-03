@@ -1,9 +1,9 @@
+import ArraySet from "../../../../data/collection/ArraySet.js";
 import {debounce} from "../../../../util/Debouncer.js";
 import {isEqual} from "../../../../util/helper/Comparator.js";
 import {deepClone} from "../../../../util/helper/DeepClone.js";
 import {getArrayMutations} from "../../../../util/helper/collection/ArrayMutations.js";
 import {getFromObjectByPath} from "../../../../util/helper/collection/ObjectContent.js";
-import StickyObserverGroupManager from "../../../../util/observer/manager/StickyObserverGroupManager.js";
 import DataGridCell from "../components/cell/DataGridCell.js";
 import CellCache from "../data/CellCache.js";
 
@@ -29,8 +29,6 @@ export default class CellManager extends EventTarget {
     #cellCache;
 
     #target;
-
-    #stickyObserverManager;
 
     #rowKey;
 
@@ -58,7 +56,7 @@ export default class CellManager extends EventTarget {
 
     #lastCellEl;
 
-    constructor(target, stickyObserver, cellCache, dataGridId) {
+    constructor(target, cellCache, dataGridId) {
         if (!(target instanceof HTMLTableRowElement)) {
             throw new TypeError("target must be of type HTMLTableRowElement");
         }
@@ -103,10 +101,6 @@ export default class CellManager extends EventTarget {
         this.#lastCellEl = document.createElement("td");
         this.#lastCellEl.classList.add("cell");
         this.#lastCellEl.classList.add("last-cell");
-
-        this.#stickyObserverManager = new StickyObserverGroupManager(stickyObserver);
-        this.#stickyObserverManager.observe(this.#sortCellEl);
-        this.#stickyObserverManager.observe(this.#selectCellEl);
     }
 
     set selected(value) {
@@ -359,25 +353,14 @@ export default class CellManager extends EventTarget {
         const children = this.#target.children;
         if (children.length > 0) {
             const currentOrder = [...children].map((el) => el.getAttribute("col-name") ?? "");
+            const mutated = new ArraySet(currentOrder);
             const keys = [...this.#order];
             const {
-                changes, added, deleted
+                changes, deleted
             } = getArrayMutations(currentOrder, keys);
-            // ---
-            for (const key of added) {
-                const el = this.#elements.get(key);
-                if (el != null) {
-                    this.#stickyObserverManager.observe(el);
-                }
-            }
-            for (const key of deleted) {
-                const el = this.#elements.get(key);
-                if (el != null) {
-                    this.#stickyObserverManager.unobserve(el);
-                }
-            }
-            // ---
-            for (const {sequence} of changes) {
+            // delete
+            mutated.delete(...deleted);
+            for (const {sequence} of deleted) {
                 for (const key of sequence) {
                     const el = this.#elements.get(key);
                     if (el != null) {
@@ -385,30 +368,27 @@ export default class CellManager extends EventTarget {
                     }
                 }
             }
-            for (const change of changes) {
-                const {
-                    sequence, position
-                } = change;
-                const els = [];
-                for (const key of sequence) {
-                    const el = this.#elements.get(key);
-                    if (el != null) {
-                        els.push(el);
-                    }
-                }
-                if (position === 0) {
-                    this.#target.prepend(...els);
-                } else {
-                    this.#target.children[position - 1].after(...els);
+            // mutate
+            for (const {
+                position, sequence
+            } of changes) {
+                mutated.insertAt(position, ...sequence);
+            }
+
+            const els = [];
+            for (const key of mutated) {
+                const el = this.#elements.get(key);
+                if (el != null) {
+                    els.push(el);
                 }
             }
+            this.#target.append(...els);
         } else {
             const els = [];
             for (const key of this.#order) {
                 const el = this.#elements.get(key);
                 if (el != null) {
                     els.push(el);
-                    this.#stickyObserverManager.observe(el);
                 }
             }
             this.#target.append(...els);
