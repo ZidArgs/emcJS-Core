@@ -29,6 +29,10 @@ export default class Enum {
         return this.asArray().includes(value.toString());
     }
 
+    static includesCaseInsensitive(value) {
+        return this.asArray().map((e) => e.toLowerCase()).includes(value.toString().toLowerCase());
+    }
+
     static asArray() {
         return Object.keys(this).filter((v) => this[v] instanceof this);
     }
