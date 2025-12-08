@@ -9,6 +9,8 @@ import "../navigation/button/HamburgerButton.js";
 import TPL from "./SettingsPanel.js.html" assert {type: "html"};
 import STYLE from "./SettingsPanel.js.css" assert {type: "css"};
 
+// TODO make footer optional
+// TODO dispach an error/validity event if errors change
 export default class SettingsPanel extends CustomElement {
 
     #focusTopEl;
@@ -50,13 +52,9 @@ export default class SettingsPanel extends CustomElement {
         this.#formContext.registerFormContainer(formContainerEl);
         formContainerEl.setFormSectionNavigationElement(this.#formSectionNavigationEl);
         /* --- */
-        const footerFormEl = this.shadowRoot.getElementById("footer-form");
-        this.#formContext.registerForm(footerFormEl);
-        this.#initErrorButton();
-        /* --- */
         this.#submitEl = this.shadowRoot.getElementById("submit");
         this.#cancelEl = this.shadowRoot.getElementById("cancel");
-        this.#cancelEl.addEventListener("click", () => this.cancel());
+        this.#initFormHandlers();
         /* --- */
         this.#hamburgerEl.addEventListener("click", () => {
             if (this.#formSectionNavigationEl.classList.contains("open")) {
@@ -207,33 +205,32 @@ export default class SettingsPanel extends CustomElement {
     }
 
     submit() {
-        this.remove();
-        const event = new Event("submit");
-        event.data = this.#formContext.getDataFlat();
-        event.formData = this.#formContext.getFormFieldsData();
-        event.hiddenData = this.#formContext.getFormHiddenData();
-        event.changes = this.#formContext.getChanges();
-        event.errors = this.#formContext.getErrors();
-        this.dispatchEvent(event);
+        this.#formContext.submit();
     }
 
     cancel() {
         this.#formContext.reset();
-        this.remove();
-        this.dispatchEvent(new Event("cancel"));
     }
 
-    #initErrorButton() {
-        this.#formContext.addEventListener("submit", () => {
-            this.#errorButtonEl.setErrors();
+    #initFormHandlers() {
+        this.#submitEl.addEventListener("click", () => {
             this.submit();
         });
-
+        this.#cancelEl.addEventListener("click", () => {
+            this.cancel();
+        });
+        this.#formContext.addEventListener("submit", () => {
+            this.#errorButtonEl.setErrors();
+            this.#onsubmit();
+        });
+        this.#formContext.addEventListener("reset", () => {
+            this.#errorButtonEl.setErrors();
+            this.#onreset();
+        });
         this.#formContext.addEventListener("error", (event) => {
             const {errors} = event;
             this.#errorButtonEl.setErrors(errors);
         });
-
         this.#formContext.addEventListener("validity", (event) => {
             const {valid} = event;
             if (valid) {
@@ -247,6 +244,22 @@ export default class SettingsPanel extends CustomElement {
                 });
             }
         });
+    }
+
+    #onsubmit() {
+        this.remove();
+        const event = new Event("submit");
+        event.data = this.#formContext.getDataFlat();
+        event.formData = this.#formContext.getFormFieldsData();
+        event.hiddenData = this.#formContext.getFormHiddenData();
+        event.changes = this.#formContext.getChanges();
+        event.errors = this.#formContext.getErrors();
+        this.dispatchEvent(event);
+    }
+
+    #onreset() {
+        this.remove();
+        this.dispatchEvent(new Event("cancel"));
     }
 
     initialFocus() {

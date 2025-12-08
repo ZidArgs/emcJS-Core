@@ -5,16 +5,7 @@ import "/emcJS/ui/tree/Tree.js";
 // form
 import FormContext from "/emcJS/util/form/FormContext.js";
 import "/emcJS/ui/form/FormContainer.js";
-import "/emcJS/ui/form/FormFieldset.js";
-import "/emcJS/ui/form/FormField.js";
-import "/emcJS/ui/form/FormRow.js";
-import "/emcJS/ui/form/FormSection.js";
-import "/emcJS/ui/form/button/SubmitButton.js";
-import "/emcJS/ui/form/button/ResetButton.js";
-import "/emcJS/ui/form/button/ActionButton.js";
-import "/emcJS/ui/form/button/LinkButton.js";
-import "/emcJS/ui/form/button/ErrorButton.js";
-import "/emcJS/ui/form/element/FormElementsLoader.js";
+import "/emcJS/ui/form/FormComponentsLoader.js";
 
 const formContext = new FormContext();
 formContext.allowEnter = true;

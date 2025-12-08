@@ -84,9 +84,14 @@
     margin-left: 5px;
 }
 
+#button #link-icon path {
+    stroke: var(--button-text-color, #000000);
+    fill: var(--button-text-color, #000000);
+}
+
 #button:hover #link-icon path {
-    stroke: var(--button-back-color, #ffffff);
-    fill: var(--button-back-color, #ffffff);
+    stroke: var(--button-hover-text-color, #ffffff);
+    fill: var(--button-hover-text-color, #ffffff);
 }
 
 #button[disabled]:not([disabled="false"]) #link-icon path {

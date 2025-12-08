@@ -9,14 +9,7 @@ import "/emcJS/ui/Page.js";
 // form
 import FormBuilder from "/emcJS/util/form/FormBuilder.js";
 import FormContext from "/emcJS/util/form/FormContext.js";
-import "/emcJS/ui/form/FormContainer.js";
-import "/emcJS/ui/form/FormFieldset.js";
-import "/emcJS/ui/form/FormRow.js";
-import "/emcJS/ui/form/button/SubmitButton.js";
-import "/emcJS/ui/form/button/ResetButton.js";
-import "/emcJS/ui/form/button/ActionButton.js";
-import "/emcJS/ui/form/button/LinkButton.js";
-import "/emcJS/ui/form/element/FormElementsLoader.js";
+import "/emcJS/ui/form/FormComponentsLoader.js";
 
 let initFlag = false;
 

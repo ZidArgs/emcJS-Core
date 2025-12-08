@@ -13,6 +13,8 @@ export default class ErrorButton extends Button {
         return deepClone(CONFIG_FIELDS);
     }
 
+    #buttonEl;
+
     #isPopupVisible = false;
 
     #scrollContainerEl;
@@ -26,6 +28,7 @@ export default class ErrorButton extends Button {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
+        this.#buttonEl = this.shadowRoot.getElementById("button");
         this.#scrollContainerEl = this.shadowRoot.getElementById("scroll-container");
         this.#errorContainerEl = this.shadowRoot.getElementById("error-container");
         this.#scrollContainerEl.addEventListener("wheel", (event) => {
@@ -53,7 +56,7 @@ export default class ErrorButton extends Button {
             }
         }, {passive: true});
         /* --- */
-        super.setCount("0", "success");
+        this.setCount();
     }
 
     clickHandler(event) {
@@ -165,12 +168,21 @@ export default class ErrorButton extends Button {
 
     #updateErrorCount = debounce(() => {
         const errorCount = this.#errorList.size;
-        if (errorCount > 0) {
-            super.setCount(errorCount, "error");
-        } else {
-            super.setCount("0", "success");
-        }
+        this.setCount(errorCount);
     });
+
+    setCount(value) {
+        value = parseInt(value);
+        if (!isNaN(value) && value > 0) {
+            super.setCount(value, "error");
+            this.#buttonEl.classList.add("error");
+            this.#buttonEl.classList.remove("success");
+        } else {
+            super.setCount(0, "success");
+            this.#buttonEl.classList.add("success");
+            this.#buttonEl.classList.remove("error");
+        }
+    }
 
 }
 

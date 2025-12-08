@@ -1,19 +1,13 @@
 import FormElementRegistry from "../../data/registry/form/FormElementRegistry.js";
 import {isNullOrFalse} from "../helper/CheckType.js";
-import "../../ui/form/FormContainer.js";
-import "../../ui/form/FormField.js";
-import "../../ui/form/FormFieldset.js";
-import "../../ui/form/FormRow.js";
-import "../../ui/form/FormSection.js";
-import "../../ui/form/button/SubmitButton.js";
-import "../../ui/form/button/ResetButton.js";
-import "../../ui/form/button/ActionButton.js";
-import "../../ui/form/button/LinkButton.js";
-import "../../ui/form/button/ErrorButton.js";
-import "../../ui/form/element/FormElementsLoader.js";
 import OptionGroupRegistryChoiceManager from "./manager/OptionGroupRegistryChoiceManager.js";
 import OptionGroupRegistryValuesManager from "./manager/OptionGroupRegistryValuesManager.js";
 import TokenRegistryManager from "./manager/TokenRegistryManager.js";
+import {safeSetAttribute} from "../helper/ui/NodeAttributes.js";
+import {createErrorElement} from "../helper/ui/ElementError.js";
+import {
+    FORM_BUTTON_MAPPING, FORM_STRUCTURE_MAPPING
+} from "../../ui/form/FormComponentsLoader.js";
 
 class FormBuilder {
 
@@ -126,20 +120,20 @@ class FormBuilder {
             buttonRowEl.align = "end";
             if (!isNullOrFalse(resetButton)) {
                 if (typeof resetButton === "object") {
-                    buttonRowEl.append(this.#createResetButton(null, true, true, resetButton));
+                    buttonRowEl.append(this.#createFormButton("ResetButton", null, true, true, resetButton));
                 } else if (typeof resetButton === "string") {
-                    buttonRowEl.append(this.#createResetButton(null, true, true, {text: resetButton}));
+                    buttonRowEl.append(this.#createFormButton("ResetButton", null, true, true, {text: resetButton}));
                 } else if (resetButton === true) {
-                    buttonRowEl.append(this.#createResetButton(null, true, true, {}));
+                    buttonRowEl.append(this.#createFormButton("ResetButton", null, true, true, {}));
                 }
             }
             if (!isNullOrFalse(submitButton)) {
                 if (typeof submitButton === "object") {
-                    buttonRowEl.append(this.#createSubmitButton(null, true, true, submitButton));
+                    buttonRowEl.append(this.#createFormButton("SubmitButton", null, true, true, submitButton));
                 } else if (typeof submitButton === "string") {
-                    buttonRowEl.append(this.#createSubmitButton(null, true, true, {text: submitButton}));
+                    buttonRowEl.append(this.#createFormButton("SubmitButton", null, true, true, {text: submitButton}));
                 } else if (submitButton === true) {
-                    buttonRowEl.append(this.#createSubmitButton(null, true, true, {}));
+                    buttonRowEl.append(this.#createFormButton("SubmitButton", null, true, true, {}));
                 }
             }
             formEl.append(buttonRowEl);
@@ -206,34 +200,60 @@ class FormBuilder {
         const {
             type, id, visible, enabled, editable, data, ...params
         } = config;
-        switch (type) {
-            case "SubmitButton": {
-                return this.#createSubmitButton(id, visible, enabled, params, data);
+        if (FORM_STRUCTURE_MAPPING.has(type)) {
+            return this.#createFromStructure(type, id, visible, enabled, params, data, defaultValues, label);
+        }
+        if (FORM_BUTTON_MAPPING.has(type)) {
+            return this.#createFormButton(type, id, visible, enabled, params, data);
+        }
+        return this.#createFormElement(type, id, visible, enabled, editable, params, data, defaultValues, label);
+    }
+
+    #createFromStructure(type, id, visible, enabled, params = {}, data = {}, defaultValues = {}, label = null) {
+        const Clazz = FORM_STRUCTURE_MAPPING.get(type);
+        if (Clazz != null) {
+            const {
+                children, ...restParams
+            } = params;
+            const el = this.#createElementFromClass(Clazz, restParams);
+            if (id != null) {
+                el.id = id;
             }
-            case "ResetButton": {
-                return this.#createResetButton(id, visible, enabled, params, data);
+            for (const key in data) {
+                el.dataset[key] = data[key];
             }
-            case "Button": {
-                return this.#createButton(id, visible, enabled, params, data);
+            if (visible != null) {
+                el.setAttribute("visible", JSON.stringify(visible));
             }
-            case "ActionButton": {
-                return this.#createActionButton(id, visible, enabled, params, data);
+            if (enabled != null) {
+                el.setAttribute("enabled", JSON.stringify(enabled));
             }
-            case "LinkButton": {
-                return this.#createLinkButton(id, visible, enabled, params, data);
+            this.#fillFormComponents(el, children, defaultValues, label);
+            return el;
+        } else {
+            return createErrorElement(type);
+        }
+    }
+
+    #createFormButton(type, id, visible, enabled, params = {}, data = {}) {
+        const Clazz = FORM_BUTTON_MAPPING.get(type);
+        if (Clazz != null) {
+            const el = this.#createElementFromClass(Clazz, params);
+            if (id != null) {
+                el.id = id;
             }
-            case "Fieldset": {
-                return this.#createFieldset(id, visible, enabled, params, data, defaultValues);
+            for (const key in data) {
+                el.dataset[key] = data[key];
             }
-            case "Row": {
-                return this.#createRow(id, visible, enabled, params, data, defaultValues);
+            if (visible != null) {
+                el.setAttribute("visible", JSON.stringify(visible));
             }
-            case "Section": {
-                return this.#createSection(id, visible, enabled, params, data, defaultValues);
+            if (enabled != null) {
+                el.setAttribute("enabled", JSON.stringify(enabled));
             }
-            default: {
-                return this.#createFormElement(type, id, visible, enabled, editable, params, data, defaultValues, label);
-            }
+            return el;
+        } else {
+            return createErrorElement(type);
         }
     }
 
@@ -290,269 +310,18 @@ class FormBuilder {
         return el;
     }
 
-    #createSubmitButton(id, visible, enabled, params = {}, data = {}) {
-        const el = document.createElement("emc-button-submit");
-        if (id != null) {
-            el.id = id;
+    #createElementFromClass(Clazz, params) {
+        if (Clazz != null) {
+            if ("fromConfig" in Clazz) {
+                return Clazz.fromConfig(params);
+            }
+            const el = new Clazz();
+            for (const name in params) {
+                const value = params[name];
+                safeSetAttribute(el, name, value);
+            }
+            return el;
         }
-        for (const key in data) {
-            el.dataset[key] = data[key];
-        }
-        if (visible != null) {
-            el.setAttribute("visible", JSON.stringify(visible));
-        }
-        if (enabled != null) {
-            el.setAttribute("enabled", JSON.stringify(enabled));
-        }
-        if (params.name != null) {
-            el.name = params.name;
-        }
-        if (params.text != null) {
-            el.text = params.text;
-        }
-        if (params.icon != null) {
-            el.icon = params.icon;
-        }
-        if (params.tooltip != null) {
-            el.tooltip = params.tooltip;
-        }
-        if (params.primary != null) {
-            el.primary = params.primary;
-        }
-        if (params.secondary != null) {
-            el.secondary = params.secondary;
-        }
-        if (params.disabled != null) {
-            el.disabled = params.disabled;
-        }
-        return el;
-    }
-
-    #createResetButton(id, visible, enabled, params = {}, data = {}) {
-        const el = document.createElement("emc-button-reset");
-        if (id != null) {
-            el.id = id;
-        }
-        for (const key in data) {
-            el.dataset[key] = data[key];
-        }
-        if (visible != null) {
-            el.setAttribute("visible", JSON.stringify(visible));
-        }
-        if (enabled != null) {
-            el.setAttribute("enabled", JSON.stringify(enabled));
-        }
-        if (params.name != null) {
-            el.name = params.name;
-        }
-        if (params.text != null) {
-            el.text = params.text;
-        }
-        if (params.icon != null) {
-            el.icon = params.icon;
-        }
-        if (params.tooltip != null) {
-            el.tooltip = params.tooltip;
-        }
-        if (params.primary != null) {
-            el.primary = params.primary;
-        }
-        if (params.secondary != null) {
-            el.secondary = params.secondary;
-        }
-        if (params.disabled != null) {
-            el.disabled = params.disabled;
-        }
-        return el;
-    }
-
-    #createButton(id, visible, enabled, params = {}, data = {}) {
-        const el = document.createElement("emc-button");
-        if (id != null) {
-            el.id = id;
-        }
-        for (const key in data) {
-            el.dataset[key] = data[key];
-        }
-        if (visible != null) {
-            el.setAttribute("visible", JSON.stringify(visible));
-        }
-        if (enabled != null) {
-            el.setAttribute("enabled", JSON.stringify(enabled));
-        }
-        if (params.name != null) {
-            el.name = params.name;
-        }
-        if (params.text != null) {
-            el.text = params.text;
-        }
-        if (params.icon != null) {
-            el.icon = params.icon;
-        }
-        if (params.tooltip != null) {
-            el.tooltip = params.tooltip;
-        }
-        if (params.primary != null) {
-            el.primary = params.primary;
-        }
-        if (params.secondary != null) {
-            el.secondary = params.secondary;
-        }
-        if (params.disabled != null) {
-            el.disabled = params.disabled;
-        }
-        return el;
-    }
-
-    #createActionButton(id, visible, enabled, params = {}, data = {}) {
-        const el = document.createElement("emc-button-action");
-        if (id != null) {
-            el.id = id;
-        }
-        for (const key in data) {
-            el.dataset[key] = data[key];
-        }
-        if (visible != null) {
-            el.setAttribute("visible", JSON.stringify(visible));
-        }
-        if (enabled != null) {
-            el.setAttribute("enabled", JSON.stringify(enabled));
-        }
-        if (params.name != null) {
-            el.name = params.name;
-        }
-        if (params.text != null) {
-            el.text = params.text;
-        }
-        if (params.icon != null) {
-            el.icon = params.icon;
-        }
-        if (params.tooltip != null) {
-            el.tooltip = params.tooltip;
-        }
-        if (params.action != null) {
-            el.action = params.action;
-        }
-        if (params.primary != null) {
-            el.primary = params.primary;
-        }
-        if (params.secondary != null) {
-            el.secondary = params.secondary;
-        }
-        if (params.disabled != null) {
-            el.disabled = params.disabled;
-        }
-        return el;
-    }
-
-    #createLinkButton(id, visible, enabled, params = {}, data = {}) {
-        const el = document.createElement("emc-button-link");
-        if (id != null) {
-            el.id = id;
-        }
-        for (const key in data) {
-            el.dataset[key] = data[key];
-        }
-        if (visible != null) {
-            el.setAttribute("visible", JSON.stringify(visible));
-        }
-        if (enabled != null) {
-            el.setAttribute("enabled", JSON.stringify(enabled));
-        }
-        if (params.name != null) {
-            el.name = params.name;
-        }
-        if (params.text != null) {
-            el.text = params.text;
-        }
-        if (params.icon != null) {
-            el.icon = params.icon;
-        }
-        if (params.tooltip != null) {
-            el.tooltip = params.tooltip;
-        }
-        if (params.href != null) {
-            el.href = params.href;
-        }
-        if (params.primary != null) {
-            el.primary = params.primary;
-        }
-        if (params.secondary != null) {
-            el.secondary = params.secondary;
-        }
-        if (params.disabled != null) {
-            el.disabled = params.disabled;
-        }
-        return el;
-    }
-
-    #createFieldset(id, visible, enabled, params = {}, data = {}, defaultValues = {}, label = null) {
-        const el = document.createElement("emc-form-fieldset");
-        if (id != null) {
-            el.id = id;
-        }
-        for (const key in data) {
-            el.dataset[key] = data[key];
-        }
-        if (visible != null) {
-            el.setAttribute("visible", JSON.stringify(visible));
-        }
-        if (enabled != null) {
-            el.setAttribute("enabled", JSON.stringify(enabled));
-        }
-        if (params.label != null) {
-            el.label = params.label;
-        }
-        if (params.desc != null) {
-            el.desc = params.desc;
-        }
-        if (params.tooltip != null) {
-            el.tooltip = params.tooltip;
-        }
-        this.#fillFormComponents(el, params.children, defaultValues, label);
-        return el;
-    }
-
-    #createRow(id, visible, enabled, params = {}, data = {}, defaultValues = {}, label = null) {
-        const el = document.createElement("emc-form-row");
-        if (id != null) {
-            el.id = id;
-        }
-        for (const key in data) {
-            el.dataset[key] = data[key];
-        }
-        if (visible != null) {
-            el.setAttribute("visible", JSON.stringify(visible));
-        }
-        if (enabled != null) {
-            el.setAttribute("enabled", JSON.stringify(enabled));
-        }
-        if (params.align != null) {
-            el.align = params.align;
-        }
-        this.#fillFormComponents(el, params.children, defaultValues, label);
-        return el;
-    }
-
-    #createSection(id, visible, enabled, params = {}, data = {}, defaultValues = {}, label = null) {
-        const el = document.createElement("emc-form-section");
-        if (id != null) {
-            el.id = id;
-        }
-        for (const key in data) {
-            el.dataset[key] = data[key];
-        }
-        if (visible != null) {
-            el.setAttribute("visible", JSON.stringify(visible));
-        }
-        if (enabled != null) {
-            el.setAttribute("enabled", JSON.stringify(enabled));
-        }
-        if (params.label != null) {
-            el.label = params.label;
-        }
-        this.#fillFormComponents(el, params.children, defaultValues, label);
-        return el;
     }
 
 }

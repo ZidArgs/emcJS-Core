@@ -1,7 +1,7 @@
 import FileLoader from "/emcJS/util/file/FileLoader.js";
 import I18nOption from "/emcJS/ui/i18n/builtin/I18nOption.js";
 import "/emcJS/ui/Page.js";
-import "/emcJS/ui/form/element/FormElementsLoader.js";
+import "/emcJS/ui/form/FormComponentsLoader.js";
 import "/emcJS/ui/input/ListSelect.js";
 import "/emcJS/ui/input/Option.js";
 

@@ -61,20 +61,6 @@
     border-color: var(--button-active-border-color, #222222);
 }
 
-:host([primary]:not([primary="false"])) #button {
-    color: var(--button-primary-text-color, #000000);
-    background-color: var(--button-primary-back-color, #00dbd0);
-    background-image: var(--button-primary-back-image, none);
-    border-color: var(--button-primary-border-color, #007b75);
-}
-
-:host([secondary]:not([secondary="false"])) #button {
-    color: var(--button-secondary-text-color, #000000);
-    background-color: var(--button-secondary-back-color, #00dbd0);
-    background-image: var(--button-secondary-back-image, none);
-    border-color: var(--button-secondary-border-color, #007b75);
-}
-
 :host(:hover) #button {
     color: var(--button-hover-text-color, #ffffff);
     background-color: var(--button-hover-back-color, #353935);
@@ -87,20 +73,6 @@
     background-color: var(--button-active-hover-back-color, #222222);
     background-image: var(--button-active-hover-back-image, none);
     border-color: var(--button-active-hover-border-color, #222222);
-}
-
-:host([primary]:not([primary="false"]):hover) #button {
-    color: var(--button-primary-hover-text-color, #ffffff);
-    background-color: var(--button-primary-hover-back-color, #353935);
-    background-image: var(--button-primary-hover-back-image, none);
-    border-color: var(--button-primary-hover-border-color, #222222);
-}
-
-:host([secondary]:not([secondary="false"]):hover) #button {
-    color: var(--button-secondary-hover-text-color, #ffffff);
-    background-color: var(--button-secondary-hover-back-color, #353935);
-    background-image: var(--button-secondary-hover-back-image, none);
-    border-color: var(--button-secondary-hover-border-color, #222222);
 }
 
 :host([text-transform="lowercase"]) #button {
@@ -167,7 +139,8 @@
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    padding: 0.2em 0.3em;
+    height: 1em;
+    width: 1.5em;
     border-radius: 1em;
     color: var(--button-count-text-color, #ffffff);
     background-color: var(--button-count-back-color, #222222);
@@ -177,19 +150,53 @@
     content: attr(count-value);
 }
 
+/* TODO apply variant color by setting css variables */
+:host([primary]:not([primary="false"])) #button {
+    color: var(--button-primary-text-color, #000000);
+    background-color: var(--button-primary-back-color, #00dbd0);
+    background-image: var(--button-primary-back-image, none);
+    border-color: var(--button-primary-border-color, #007b75);
+}
+
+:host([secondary]:not([secondary="false"])) #button {
+    color: var(--button-secondary-text-color, #000000);
+    background-color: var(--button-secondary-back-color, #00dbd0);
+    background-image: var(--button-secondary-back-image, none);
+    border-color: var(--button-secondary-border-color, #007b75);
+}
+
+:host([primary]:not([primary="false"]):hover) #button {
+    color: var(--button-primary-hover-text-color, #ffffff);
+    background-color: var(--button-primary-hover-back-color, #353935);
+    background-image: var(--button-primary-hover-back-image, none);
+    border-color: var(--button-primary-hover-border-color, #222222);
+}
+
+:host([secondary]:not([secondary="false"]):hover) #button {
+    color: var(--button-secondary-hover-text-color, #ffffff);
+    background-color: var(--button-secondary-hover-back-color, #353935);
+    background-image: var(--button-secondary-hover-back-image, none);
+    border-color: var(--button-secondary-hover-border-color, #222222);
+}
+
+/* TODO apply counter color by setting css variables */
 #button[count-value][count-type="alert"]::after {
+    color: var(--button-count-alert-text-color, #ffffff);
     background-color: var(--button-count-alert-back-color, #e98e2d);
 }
 
 #button[count-value][count-type="info"]::after {
+    color: var(--button-count-info-text-color, #ffffff);
     background-color: var(--button-count-info-back-color, #0000ff);
 }
 
 #button[count-value][count-type="success"]::after {
+    color: var(--button-count-success-text-color, #ffffff);
     background-color: var(--button-count-success-back-color, #009952);
 }
 
 #button[count-value][count-type="error"]::after {
+    color: var(--button-count-error-text-color, #ffffff);
     background-color: var(--button-count-error-back-color, #c50000);
 }
 
@@ -199,18 +206,22 @@
 }
 
 :host(:hover) #button[count-value][count-type="alert"]::after {
+    color: var(--button-hover-count-alert-text-color, #000000);
     background-color: var(--button-hover-count-alert-back-color, #ffd7ac);
 }
 
 :host(:hover) #button[count-value][count-type="info"]::after {
+    color: var(--button-hover-count-info-text-color, #000000);
     background-color: var(--button-hover-count-info-back-color, #b9b9ff);
 }
 
 :host(:hover) #button[count-value][count-type="success"]::after {
+    color: var(--button-hover-count-success-text-color, #000000);
     background-color: var(--button-hover-count-success-back-color, #aefffb);
 }
 
 :host(:hover) #button[count-value][count-type="error"]::after {
+    color: var(--button-hover-count-error-text-color, #000000);
     background-color: var(--button-hover-count-error-back-color, #ffb7b7);
 }
 

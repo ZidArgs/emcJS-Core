@@ -30,31 +30,29 @@ export default class SectionTreeManager {
     #treeConfig = {};
 
     addSection(section) {
-        if (!this.#managedSectionEls.has(section)) {
-            const id = escapeSectionId(section.label);
-            const config = {
-                label: section.label,
-                sorted: false,
-                selectOnClick: false,
-                sortFunction: SectionTreeManager.#sortByOccurence,
-                startCollapsed: true,
-                connectedNode: section,
-                onClick: SectionTreeManager.#onTreeNodeClick
-            };
-            this.#managedSectionEls.set(section, config);
-            const parents = section.parentSectionElementList;
-            if (parents.length > 0) {
-                if (!this.#managedSectionEls.has(parents[0])) {
-                    this.addSection(parents[0]);
-                }
-                const parentConfig = this.#managedSectionEls.get(parents[0]);
-                parentConfig.children = parentConfig.children ?? {};
-                config.path = [...parentConfig.path, id];
-                parentConfig.children[id] = config;
-            } else {
-                this.#treeConfig[id] = config;
-                config.path = [id];
+        const id = escapeSectionId(section.label);
+        const config = {
+            label: section.label,
+            sorted: false,
+            selectOnClick: false,
+            sortFunction: SectionTreeManager.#sortByOccurence,
+            startCollapsed: true,
+            connectedNode: section,
+            onClick: SectionTreeManager.#onTreeNodeClick
+        };
+        this.#managedSectionEls.set(section, config);
+        const parents = section.parentSectionElementList;
+        if (parents.length > 0) {
+            if (!this.#managedSectionEls.has(parents[0])) {
+                this.addSection(parents[0]);
             }
+            const parentConfig = this.#managedSectionEls.get(parents[0]);
+            parentConfig.children = parentConfig.children ?? {};
+            config.path = [...parentConfig.path, id];
+            parentConfig.children[id] = config;
+        } else {
+            this.#treeConfig[id] = config;
+            config.path = [id];
         }
     }
 

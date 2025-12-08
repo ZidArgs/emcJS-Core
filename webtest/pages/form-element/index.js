@@ -2,26 +2,16 @@
 import FormElementRegistry from "/emcJS/data/registry/form/FormElementRegistry.js";
 import FormBuilder from "/emcJS/util/form/FormBuilder.js";
 import {extractDefaultValuesFromConfig} from "/emcJS/util/helper/ui/Form.js";
+import {debounce} from "/emcJS/util/Debouncer.js";
 import Modal from "/emcJS/ui/modal/Modal.js";
 import ModalDialog from "/emcJS/ui/modal/ModalDialog.js";
+import I18nOption from "/emcJS/ui/i18n/builtin/I18nOption.js";
 import "/emcJS/ui/Page.js";
 import "/emcJS/ui/container/CaptionPanel.js";
 // form
 import FormContext from "/emcJS/util/form/FormContext.js";
 import "/emcJS/ui/form/FormContainer.js";
-import "/emcJS/ui/form/FormFieldset.js";
-import "/emcJS/ui/form/FormField.js";
-import "/emcJS/ui/form/FormRow.js";
-import "/emcJS/ui/form/FormSection.js";
-import "/emcJS/ui/form/button/Button.js";
-import "/emcJS/ui/form/button/SubmitButton.js";
-import "/emcJS/ui/form/button/ResetButton.js";
-import "/emcJS/ui/form/button/ActionButton.js";
-import "/emcJS/ui/form/button/LinkButton.js";
-import "/emcJS/ui/form/button/ErrorButton.js";
-import "/emcJS/ui/form/element/FormElementsLoader.js";
-import I18nOption from "../../emcJS/ui/i18n/builtin/I18nOption.js";
-import {debounce} from "../../emcJS/util/Debouncer.js";
+import "/emcJS/ui/form/FormComponentsLoader.js";
 
 const formContext = new FormContext();
 formContext.allowEnter = false;

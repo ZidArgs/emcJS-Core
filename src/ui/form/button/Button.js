@@ -9,6 +9,10 @@ import CONFIG_FIELDS from "./Button.js.json" assert {type: "json"};
 
 const BORDER_POSITIONS = ["all", "left", "right", "top", "bottom"];
 
+// TODO primary/secondary has to be one attribute (variant) not two
+// TODO add danger, warn, success, info [light, dark] to "variant"
+// TODO add "outline" variants
+// TODO change focus color to match variants?
 export default class Button extends CustomFormElementDelegating {
 
     static get formConfigurationFields() {
@@ -17,9 +21,9 @@ export default class Button extends CustomFormElementDelegating {
 
     #tooltipEl;
 
-    #textEl;
-
     #buttonEl;
+
+    #textEl;
 
     constructor() {
         super();
@@ -27,8 +31,8 @@ export default class Button extends CustomFormElementDelegating {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#tooltipEl = this.shadowRoot.getElementById("tooltip");
-        this.#textEl = this.shadowRoot.getElementById("text");
         this.#buttonEl = this.shadowRoot.getElementById("button");
+        this.#textEl = this.shadowRoot.getElementById("text");
         this.#buttonEl.addEventListener("click", (event) => this.clickHandler(event));
     }
 

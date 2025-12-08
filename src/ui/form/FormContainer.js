@@ -13,7 +13,7 @@ const MUTATION_CONFIG = {
     subtree: true
 };
 
-// TODO make formSectionNavigationElement collapse away on small screens
+// TODO section tree should be handled outside? (better performance if not used)
 export default class FormContainer extends CustomElement {
 
     #containerEl;
@@ -71,7 +71,6 @@ export default class FormContainer extends CustomElement {
         });
         this.#onSlotChange();
         /* --- */
-        this.#mutationObserver.observe(this);
         this.#contentEl.addEventListener("scroll", () => {
             const sectionEls = [...this.#sectionNodeList].sort(nodeOccurenceComparator);
             let activeSection = sectionEls.shift();
@@ -96,13 +95,17 @@ export default class FormContainer extends CustomElement {
     }
 
     connectedCallback() {
-        const sectionEls = this.querySelectorAll("emc-form-section");
-        for (const node of sectionEls) {
-            this.#addSection(node);
-        }
+        this.#mutationObserver.observe(this);
+        setTimeout(() => {
+            const sectionEls = this.querySelectorAll("emc-form-section");
+            for (const node of sectionEls) {
+                this.#addSection(node);
+            }
+        }, 0);
     }
 
     disconnectedCallback() {
+        this.#mutationObserver.unobserve(this);
         const sectionEls = this.querySelectorAll("emc-form-section");
         for (const node of sectionEls) {
             this.#removeSection(node);
