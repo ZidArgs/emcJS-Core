@@ -1,19 +1,16 @@
 import CustomElement from "../element/CustomElement.js";
 import {debounce} from "../../util/Debouncer.js";
-import {nodeOccurenceComparator} from "../../util/helper/ui/NodeListSort.js";
-import MutationObserverManager from "../../util/observer/manager/MutationObserverManager.js";
-import SectionTreeManager from "../../util/form/manager/SectionTreeManager.js";
-import Tree from "../tree/Tree.js";
-import FormSection from "./FormSection.js";
 import TPL from "./FormContainer.js.html" assert {type: "html"};
 import STYLE from "./FormContainer.js.css" assert {type: "css"};
+import MutationObserverManager from "../../util/observer/manager/MutationObserverManager.js";
+import {nodeOccurenceComparator} from "../../util/helper/ui/NodeListSort.js";
+import FormSection from "./FormSection.js";
 
 const MUTATION_CONFIG = {
     childList: true,
     subtree: true
 };
 
-// TODO section tree should be handled outside? (better performance if not used)
 export default class FormContainer extends CustomElement {
 
     #containerEl;
@@ -26,11 +23,9 @@ export default class FormContainer extends CustomElement {
 
     #bottomFormResizeObserver;
 
-    #formSectionNavigationEl;
+    #sectionNodeSet = new Set();
 
-    #sectionNodeList = new Set();
-
-    #sectionTreeManager = new SectionTreeManager();
+    #sectionNodeList = [];
 
     #activeSectionEl;
 
@@ -72,23 +67,14 @@ export default class FormContainer extends CustomElement {
         this.#onSlotChange();
         /* --- */
         this.#contentEl.addEventListener("scroll", () => {
-            const sectionEls = [...this.#sectionNodeList].sort(nodeOccurenceComparator);
+            const sectionEls = [...this.#sectionNodeList];
             let activeSection = sectionEls.shift();
             while (sectionEls.length && activeSection.isBodySquishedAway()) {
                 activeSection = sectionEls.shift();
             }
             if (this.#activeSectionEl != activeSection) {
-                this.#activeSectionEl = activeSection;
-                if (this.#formSectionNavigationEl != null) {
-                    if (activeSection != null) {
-                        const sectionPath = this.#sectionTreeManager.getPath(activeSection);
-                        this.#formSectionNavigationEl.selectItemByRefPath(sectionPath, true);
-                    } else {
-                        this.#formSectionNavigationEl.selectItemByPath(0, true);
-                    }
-                }
-                const event = new Event("sectionchange");
-                event.sectionEl = activeSection;
+                const event = new Event("section_change");
+                event.section = activeSection;
                 this.dispatchEvent(event);
             }
         });
@@ -115,6 +101,10 @@ export default class FormContainer extends CustomElement {
     resetScroll() {
         this.#containerEl.scrollTop = 0;
         this.#containerEl.scrollLeft = 0;
+    }
+
+    get sectionNodeList() {
+        return [...this.#sectionNodeList];
     }
 
     set hasHeader(value) {
@@ -189,9 +179,8 @@ export default class FormContainer extends CustomElement {
     });
 
     #addSection(sectionEl) {
-        this.#sectionNodeList.add(sectionEl);
-        this.#sectionTreeManager.addSection(sectionEl);
-        this.#updateSectionTree();
+        this.#sectionNodeSet.add(sectionEl);
+        this.#onSectionListChanged();
     }
 
     #addSectionRecursive(sectionEl) {
@@ -200,13 +189,11 @@ export default class FormContainer extends CustomElement {
         for (const node of sectionEls) {
             this.#addSection(node);
         }
-        this.#updateSectionTree();
     }
 
     #removeSection(sectionEl) {
-        this.#sectionNodeList.delete(sectionEl);
-        this.#sectionTreeManager.removeSection(sectionEl);
-        this.#updateSectionTree();
+        this.#sectionNodeSet.delete(sectionEl);
+        this.#onSectionListChanged();
     }
 
     #removeSectionRecursive(sectionEl) {
@@ -215,7 +202,6 @@ export default class FormContainer extends CustomElement {
             this.#removeSection(node);
         }
         this.#removeSection(sectionEl);
-        this.#updateSectionTree();
     }
 
     #applyScrollPaddingTop(node) {
@@ -230,18 +216,11 @@ export default class FormContainer extends CustomElement {
         this.#contentEl.style.setProperty("--form-footer-height", `${nodeRect.height}px`);
     }
 
-    setFormSectionNavigationElement(node) {
-        if (node != null && !(node instanceof Tree)) {
-            throw new Error("form section navigation element must be an instance of Tree or null");
-        }
-        this.#formSectionNavigationEl = node;
-        this.#updateSectionTree();
-    }
-
-    #updateSectionTree = debounce(() => {
-        if (this.#formSectionNavigationEl != null) {
-            this.#formSectionNavigationEl.loadConfig(this.#sectionTreeManager.treeConfig);
-        }
+    #onSectionListChanged = debounce(() => {
+        this.#sectionNodeList = [...this.#sectionNodeSet].sort(nodeOccurenceComparator);
+        const event = new Event("sectionlist_change");
+        event.sectionList = [...this.#sectionNodeList];
+        this.dispatchEvent(event);
     });
 
 }

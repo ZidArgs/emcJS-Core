@@ -1,3 +1,7 @@
+import FormContainer from "../../../ui/form/FormContainer.js";
+import Tree from "../../../ui/tree/Tree.js";
+import {debounce} from "../../Debouncer.js";
+import EventTargetManager from "../../event/EventTargetManager.js";
 import {deepClone} from "../../helper/DeepClone.js";
 import {nodeOccurenceComparator} from "../../helper/ui/NodeListSort.js";
 
@@ -27,9 +31,54 @@ export default class SectionTreeManager {
 
     #managedSectionEls = new Map();
 
+    #formSectionNavigationEl;
+
     #treeConfig = {};
 
-    addSection(section) {
+    #formContainerEventObserver = new EventTargetManager();
+
+    constructor() {
+        this.#formContainerEventObserver.set("section_change", (event) => {
+            const {section} = event;
+            if (section != null) {
+                const sectionPath = this.getPath(section);
+                this.#formSectionNavigationEl.selectItemByRefPath(sectionPath, true);
+            } else {
+                this.#formSectionNavigationEl.selectItemByPath(0, true);
+            }
+        });
+        this.#formContainerEventObserver.set("sectionlist_change", (event) => {
+            const {sectionList = []} = event;
+            this.#managedSectionEls.clear();
+            this.#treeConfig = {};
+            for (const section of sectionList) {
+                this.#addSection(section);
+            }
+            this.#updateSectionTree();
+        });
+    }
+
+    observe(formContainer) {
+        if (!(formContainer instanceof FormContainer)) {
+            throw new TypeError("formContainer must be a FormContainer");
+        }
+        this.#formContainerEventObserver.switchTarget(formContainer);
+        this.#managedSectionEls.clear();
+        this.#treeConfig = {};
+        for (const section of formContainer.sectionNodeList) {
+            this.#addSection(section);
+        }
+        this.#updateSectionTree();
+    }
+
+    unobserve() {
+        this.#formContainerEventObserver.switchTarget();
+        this.#managedSectionEls.clear();
+        this.#treeConfig = {};
+        this.#updateSectionTree();
+    }
+
+    #addSection(section) {
         const id = escapeSectionId(section.label);
         const config = {
             label: section.label,
@@ -44,7 +93,7 @@ export default class SectionTreeManager {
         const parents = section.parentSectionElementList;
         if (parents.length > 0) {
             if (!this.#managedSectionEls.has(parents[0])) {
-                this.addSection(parents[0]);
+                this.#addSection(parents[0]);
             }
             const parentConfig = this.#managedSectionEls.get(parents[0]);
             parentConfig.children = parentConfig.children ?? {};
@@ -53,20 +102,6 @@ export default class SectionTreeManager {
         } else {
             this.#treeConfig[id] = config;
             config.path = [id];
-        }
-    }
-
-    removeSection(section) {
-        if (this.#managedSectionEls.has(section)) {
-            const id = escapeSectionId(section.label);
-            this.#managedSectionEls.delete(section);
-            const children = section.querySelectorAll("emc-form-section");
-            for (const child of children) {
-                if (this.#managedSectionEls.has(child)) {
-                    this.removeSection(child);
-                }
-            }
-            delete this.#treeConfig[id];
         }
     }
 
@@ -98,5 +133,19 @@ export default class SectionTreeManager {
             event.preventDefault();
         }
     }
+
+    setFormSectionNavigationElement(node) {
+        if (node != null && !(node instanceof Tree)) {
+            throw new Error("form section navigation element must be an instance of Tree or null");
+        }
+        this.#formSectionNavigationEl = node;
+        this.#updateSectionTree();
+    }
+
+    #updateSectionTree = debounce(() => {
+        if (this.#formSectionNavigationEl != null) {
+            this.#formSectionNavigationEl.loadConfig(this.treeConfig);
+        }
+    });
 
 }

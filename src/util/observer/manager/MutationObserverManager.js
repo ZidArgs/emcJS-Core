@@ -57,7 +57,7 @@ export default class MutationObserverManager {
 
     clear() {
         this.#observedNodes.clear();
-        this.#observerIndex.clear();
+        this.#observerIndex = new WeakMap();
         this.#mutationObserver.disconnect();
     }
 

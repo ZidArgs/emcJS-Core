@@ -197,6 +197,7 @@ emc-select-entry[value=""].marked {
     border-color: var(--input-border-color, #222222);
     border-radius: var(--input-border-radius, 6px);
     font-size: 1em;
+    appearance: none;
 }
 
 #native-select:focus {

@@ -13,7 +13,8 @@
 }
 
 #target {
-    display: inline;
+    display: inherit;
     overflow: inherit;
     text-overflow: inherit;
+    white-space: inherit;
 }

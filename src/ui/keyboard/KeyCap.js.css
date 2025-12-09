@@ -24,8 +24,14 @@ default sizes:
     margin: 0.125em;
     /* 4px */
     border-radius: 0.25em;
-    /* 2px 8px 6px 6px */
-    padding: 0.125em 0.5em 0.375em 0.375em;
+    /* 2px */
+    padding-top: 0.125em;
+    /* 6px */
+    padding-left: 0.375em;
+    /* 6px */
+    padding-bottom: 0.375em;
+    /* 8px */
+    padding-right: 0.5em;
     background-color: var(--keycap-back-color, #d6d6d6);
     background-image: linear-gradient(350deg, #0000005c, #00000021, #00000000, #ffffff42);
     box-shadow:
@@ -52,10 +58,10 @@ default sizes:
         top: 0.0625em;
         /* 2px */
         left: 0.125em;
-        /* 5px */
-        bottom: 0.3125em;
         /* 4px */
-        right: 0.25em;
+        bottom: 0.25em;
+        /* 3px */
+        right: 0.1875em;
         background-color: var(--keycap-back-color, #d6d6d6);
         background-image: linear-gradient(170deg, #0000003b, #00000008, #00000000, #ffffff2b);
         /* 3px */

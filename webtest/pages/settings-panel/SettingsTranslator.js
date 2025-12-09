@@ -4,7 +4,7 @@ export function translateSettings(config) {
 
     for (const [key, value] of Object.entries(config)) {
         const path = key.split(".");
-        /* const inputName =  */path.pop();
+        const inputName = path.pop();
         const sectionName = path.join(".");
         const sectionConfig = getOrCreateSection(translatedConfig, sectionMap, sectionName);
         const {
@@ -12,14 +12,14 @@ export function translateSettings(config) {
         } = value;
         if (options == null) {
             sectionConfig.children.push({
-                label: key,
-                name: key,
+                label: inputName,
+                name: inputName,
                 ...attr
             });
         } else {
             sectionConfig.children.push({
-                label: key,
-                name: key,
+                label: inputName,
+                name: inputName,
                 options: translateInputOptions(options),
                 ...attr
             });

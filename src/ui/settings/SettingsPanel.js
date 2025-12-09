@@ -4,13 +4,12 @@ import FormBuilder from "../../util/form/FormBuilder.js";
 import CharacterSearch from "../../util/search/CharacterSearch.js";
 import SelectEntry from "../form/element/components/SelectEntry.js";
 import TreeNode from "../tree/components/TreeNode.js";
+import SectionTreeManager from "../../util/form/manager/SectionTreeManager.js";
 import "../tree/Tree.js";
 import "../navigation/button/HamburgerButton.js";
 import TPL from "./SettingsPanel.js.html" assert {type: "html"};
 import STYLE from "./SettingsPanel.js.css" assert {type: "css"};
 
-// TODO make footer optional
-// TODO dispach an error/validity event if errors change
 export default class SettingsPanel extends CustomElement {
 
     #focusTopEl;
@@ -23,17 +22,13 @@ export default class SettingsPanel extends CustomElement {
 
     #searchEl;
 
+    #sectionTreeManager = new SectionTreeManager();
+
     #formSectionNavigationEl;
 
     #settingsFormEl;
 
     #formContext = new FormContext();
-
-    #errorButtonEl;
-
-    #submitEl;
-
-    #cancelEl;
 
     constructor() {
         super();
@@ -41,19 +36,16 @@ export default class SettingsPanel extends CustomElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#formContext.allowEnter = true;
-        this.#formContext.hideErrors = true;
+        this.#formContext.hideErrors = false;
         /* --- */
         this.#titleTextEl = this.shadowRoot.getElementById("title-text");
         this.#hamburgerEl = this.shadowRoot.getElementById("hamburger-button");
         this.#formSectionNavigationEl = this.shadowRoot.getElementById("form-section-navigation");
         const formContainerEl = this.shadowRoot.getElementById("form-container");
         this.#settingsFormEl = this.shadowRoot.getElementById("settings-form");
-        this.#errorButtonEl = this.shadowRoot.getElementById("error-button");
         this.#formContext.registerFormContainer(formContainerEl);
-        formContainerEl.setFormSectionNavigationElement(this.#formSectionNavigationEl);
-        /* --- */
-        this.#submitEl = this.shadowRoot.getElementById("submit");
-        this.#cancelEl = this.shadowRoot.getElementById("cancel");
+        this.#sectionTreeManager.setFormSectionNavigationElement(this.#formSectionNavigationEl);
+        this.#sectionTreeManager.observe(formContainerEl);
         this.#initFormHandlers();
         /* --- */
         this.#hamburgerEl.addEventListener("click", () => {
@@ -119,15 +111,6 @@ export default class SettingsPanel extends CustomElement {
                 }
             }
         }, true);
-        /* --- */
-        this.#focusTopEl = this.shadowRoot.getElementById("focus_catcher_top");
-        this.#focusTopEl.addEventListener("focus", () => {
-            this.focusLast();
-        });
-        this.#focusBottomEl = this.shadowRoot.getElementById("focus_catcher_bottom");
-        this.#focusBottomEl.addEventListener("focus", () => {
-            this.focusFirst();
-        });
     }
 
     set caption(value) {
@@ -184,24 +167,23 @@ export default class SettingsPanel extends CustomElement {
     }
 
     getValues() {
-        this.#formContext.getData();
+        return this.#formContext.getData();
     }
 
     getValuesFlat() {
-        this.#formContext.getDataFlat();
+        return this.#formContext.getDataFlat();
     }
 
-    show() {
-        if (this.type === "modal") {
-            document.body.append(this);
-            this.initialFocus();
-        }
+    getErrors() {
+        return this.#formContext.getErrors();
     }
 
-    remove() {
-        if (this.type === "modal") {
-            super.remove();
-        }
+    getFormHiddenData() {
+        return this.#formContext.getFormHiddenData();
+    }
+
+    getChanges() {
+        return this.#formContext.getChanges();
     }
 
     submit() {
@@ -213,53 +195,34 @@ export default class SettingsPanel extends CustomElement {
     }
 
     #initFormHandlers() {
-        this.#submitEl.addEventListener("click", () => {
-            this.submit();
-        });
-        this.#cancelEl.addEventListener("click", () => {
-            this.cancel();
-        });
         this.#formContext.addEventListener("submit", () => {
-            this.#errorButtonEl.setErrors();
-            this.#onsubmit();
+            const event = new Event("submit");
+            event.data = this.getDataFlat();
+            event.formData = this.getFormFieldsData();
+            event.hiddenData = this.getFormHiddenData();
+            event.changes = this.getChanges();
+            event.errors = this.getErrors();
+            this.dispatchEvent(event);
         });
         this.#formContext.addEventListener("reset", () => {
-            this.#errorButtonEl.setErrors();
-            this.#onreset();
+            this.dispatchEvent(new Event("cancel"));
         });
         this.#formContext.addEventListener("error", (event) => {
             const {errors} = event;
-            this.#errorButtonEl.setErrors(errors);
+            const ev = new Event("error");
+            ev.errors = errors;
+            this.dispatchEvent(event);
         });
         this.#formContext.addEventListener("validity", (event) => {
-            const {valid} = event;
-            if (valid) {
-                this.#errorButtonEl.removeError(event.element);
-            } else {
-                this.#errorButtonEl.addError({
-                    name: event.name,
-                    label: event.element.label,
-                    element: event.element,
-                    errors: [event.message]
-                });
-            }
+            const ev = new Event("error");
+            ev.value = event.value;
+            ev.valid = event.valid;
+            ev.message = event.message;
+            ev.name = event.name;
+            ev.fieldId = event.fieldId;
+            ev.element = event.element;
+            this.dispatchEvent(ev);
         });
-    }
-
-    #onsubmit() {
-        this.remove();
-        const event = new Event("submit");
-        event.data = this.#formContext.getDataFlat();
-        event.formData = this.#formContext.getFormFieldsData();
-        event.hiddenData = this.#formContext.getFormHiddenData();
-        event.changes = this.#formContext.getChanges();
-        event.errors = this.#formContext.getErrors();
-        this.dispatchEvent(event);
-    }
-
-    #onreset() {
-        this.remove();
-        this.dispatchEvent(new Event("cancel"));
     }
 
     initialFocus() {
@@ -281,7 +244,12 @@ export default class SettingsPanel extends CustomElement {
     }
 
     focusLast() {
-        this.#submitEl.focus();
+        const inputEls = this.#settingsFormEl.querySelectorAll("[name]");
+        if (inputEls.length > 0) {
+            inputEls.at(-1).focus();
+        } else {
+            this.#formSectionNavigationEl.focus();
+        }
     }
 
 }

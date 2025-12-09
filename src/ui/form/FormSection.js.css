@@ -80,7 +80,8 @@ h3,
 h4,
 h5,
 h6 {
-    margin: 10px;
+    margin: 0px;
+    padding: 10px;
     font-weight: bold;
 }
 
@@ -106,4 +107,9 @@ h5 {
 
 h6 {
     font-size: 1.3em;
+}
+
+#body {
+    display: flex;
+    flex-direction: column;
 }

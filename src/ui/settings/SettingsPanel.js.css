@@ -1,21 +1,4 @@
-:host([type="modal"]) {
-    position: fixed !important;
-    box-sizing: border-box !important;
-    align-items: flex-start !important;
-    justify-content: center !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    cursor: default !important;
-    overflow: hidden !important;
-    z-index: var(--z-index-modal, 900600);
-    pointer-events: all !important;
-}
-
-.panel {
+:host {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -29,11 +12,6 @@
     container-type: inline-size;
     container-name: panel;
     overflow: hidden;
-}
-
-:host([type="modal"]) .panel {
-    border: none;
-    border-radius: 0px;
 }
 
 .form-wrapper {
@@ -60,7 +38,6 @@
     position: relative;
     display: flex;
     align-items: center;
-    margin-bottom: 4px;
 }
 
 #hamburger-button {
@@ -116,24 +93,4 @@
         left: 0;
     }
 
-}
-
-.title {
-    position: relative;
-    display: none;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 4px;
-    color: var(--modal-header-text-color, #000000);
-    background-color: var(--modal-header-back-color, #e4e4e4);
-    background-image: var(--modal-header-back-image, none);
-}
-
-:host([caption]:not([caption=""])) .title {
-    display: flex;
-}
-
-#title-text {
-    padding: 0px 10px;
-    font-size: 1.5em;
 }

@@ -1,6 +1,6 @@
 import FileLoader from "/emcJS/util/file/FileLoader.js";
 import "/emcJS/ui/Page.js";
-import SettingsPanel from "/emcJS/ui/settings/SettingsPanel.js";
+import SettingsOverlay from "/emcJS/ui/settings/SettingsOverlay.js";
 import {translateSettings} from "./SettingsTranslator.js";
 import ObservableStorage from "/emcJS/data/storage/observable/ObservableStorage.js";
 import HotkeyHandler from "../../emcJS/util/HotkeyHandler.js";
@@ -10,23 +10,23 @@ import KeySequence from "/emcJS/util/keyboard/KeySequence.js";
 const settingsStorage = new ObservableStorage();
 
 const openSettingsButtonEl = document.getElementById("open-settings");
-const settingsPanelEl = new SettingsPanel();
-settingsPanelEl.caption = "Settings";
-settingsPanelEl.type = "modal";
+const settingsOverlayEl = new SettingsOverlay();
+settingsOverlayEl.caption = "Settings";
+settingsOverlayEl.type = "modal";
 
 openSettingsButtonEl.addEventListener("click", () => {
     const values = settingsStorage.getAll();
-    settingsPanelEl.setValuesFlat(values);
-    settingsPanelEl.show();
+    settingsOverlayEl.setValuesFlat(values);
+    settingsOverlayEl.show();
 });
 
 HotkeyHandler.setAction("open_settings", () => {
     const values = settingsStorage.getAll();
-    settingsPanelEl.setValuesFlat(values);
-    settingsPanelEl.show();
+    settingsOverlayEl.setValuesFlat(values);
+    settingsOverlayEl.show();
 });
 
-settingsPanelEl.addEventListener("submit", (event) => {
+settingsOverlayEl.addEventListener("submit", (event) => {
     const {
         errors, data, formData, hiddenData, changes
     } = event;
@@ -45,7 +45,7 @@ settingsPanelEl.addEventListener("submit", (event) => {
     }
 });
 
-settingsPanelEl.addEventListener("cancel", () => {
+settingsOverlayEl.addEventListener("cancel", () => {
     console.log("cancel");
 });
 
@@ -55,18 +55,10 @@ export async function init() {
     ]);
 
     const settingsConfig = translateSettings(settings);
-    settingsPanelEl.loadConfig(settingsConfig);
+    settingsOverlayEl.loadConfig(settingsConfig);
 
     const defaults = extractDefaultValuesFromConfig(settingsConfig);
     settingsStorage.deserialize(defaults);
-
-    const keybindEl = settingsPanelEl.shadowRoot.getElementById("keybind-test");
-    keybindEl.addEventListener("input", () => {
-        console.log("input", keybindEl.value);
-    });
-    keybindEl.addEventListener("change", () => {
-        console.log("change", keybindEl.value);
-    });
 }
 
 init();
