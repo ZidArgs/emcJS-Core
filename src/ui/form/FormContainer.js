@@ -67,7 +67,7 @@ export default class FormContainer extends CustomElement {
         this.#onSlotChange();
         /* --- */
         this.#contentEl.addEventListener("scroll", () => {
-            this.#refreshSecctionState();
+            this.#refreshSectionState();
         });
     }
 
@@ -216,10 +216,10 @@ export default class FormContainer extends CustomElement {
         const event = new Event("sectionlist_change");
         event.sectionList = [...this.#sectionNodeList];
         this.dispatchEvent(event);
-        this.#refreshSecctionState();
+        this.#refreshSectionState();
     });
 
-    #refreshSecctionState() {
+    #refreshSectionState() {
         const sectionEls = [...this.#sectionNodeList];
         for (const sectionEl of sectionEls) {
             sectionEl.refreshState();
@@ -232,7 +232,9 @@ export default class FormContainer extends CustomElement {
             if (this.#activeSectionEl != null) {
                 this.#activeSectionEl.classList.remove("active");
             }
-            activeSection.classList.add("active");
+            if (activeSection != null) {
+                activeSection.classList.add("active");
+            }
             this.#activeSectionEl = activeSection;
             const event = new Event("section_change");
             event.section = activeSection;
