@@ -8,6 +8,7 @@ import TPL from "./Button.js.html" assert {type: "html"};
 import STYLE from "./Button.js.css" assert {type: "css"};
 import VARIANT_STYLE from "./style/ButtonVariant.css" assert {type: "css"};
 import CONFIG_FIELDS from "./Button.js.json" assert {type: "json"};
+import EventTargetManager from "../../../util/event/EventTargetManager.js";
 
 export const BUTTON_VARIANTS = ButtonVariants;
 
@@ -26,6 +27,8 @@ export default class Button extends CustomFormElementDelegating {
 
     #textEl;
 
+    #buttonEventHandler = new EventTargetManager(null, false);
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
@@ -35,7 +38,20 @@ export default class Button extends CustomFormElementDelegating {
         this.#tooltipEl = this.shadowRoot.getElementById("tooltip");
         this.#buttonEl = this.shadowRoot.getElementById("button");
         this.#textEl = this.shadowRoot.getElementById("text");
-        this.#buttonEl.addEventListener("click", (event) => this.clickHandler(event));
+        this.#buttonEventHandler.switchTarget(this.#buttonEl);
+        this.#buttonEventHandler.set("click", (event) => {
+            this.clickHandler(event);
+        });
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+        this.#buttonEventHandler.active = true;
+    }
+
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        this.#buttonEventHandler.active = false;
     }
 
     formDisabledCallback(disabled) {
@@ -91,6 +107,14 @@ export default class Button extends CustomFormElementDelegating {
 
     get variant() {
         return this.getEnumAttribute("variant");
+    }
+
+    set active(value) {
+        this.setBooleanAttribute("active", value);
+    }
+
+    get active() {
+        return this.getBooleanAttribute("active");
     }
 
     set slim(value) {

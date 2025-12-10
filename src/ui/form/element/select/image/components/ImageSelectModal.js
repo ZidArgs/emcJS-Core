@@ -77,31 +77,31 @@ export default class ImageSelectModal extends Modal {
         this.#contentEl.before(this.#viewControlEl);
         this.#viewSizeSmallEl.addEventListener("click", () => {
             this.#contentEl.style.setProperty("--icon-preview-size", "50px");
-            this.#viewSizeSmallEl.variant = "primary";
-            this.#viewSizeNormalEl.variant = "secondary";
-            this.#viewSizeBigEl.variant = "secondary";
-            this.#viewSizeGiganticEl.variant = "secondary";
+            this.#viewSizeSmallEl.active = true;
+            this.#viewSizeNormalEl.active = false;
+            this.#viewSizeBigEl.active = false;
+            this.#viewSizeGiganticEl.active = false;
         });
         this.#viewSizeNormalEl.addEventListener("click", () => {
             this.#contentEl.style.setProperty("--icon-preview-size", "100px");
-            this.#viewSizeSmallEl.variant = "secondary";
-            this.#viewSizeNormalEl.variant = "primary";
-            this.#viewSizeBigEl.variant = "secondary";
-            this.#viewSizeGiganticEl.variant = "secondary";
+            this.#viewSizeSmallEl.active = false;
+            this.#viewSizeNormalEl.active = true;
+            this.#viewSizeBigEl.active = false;
+            this.#viewSizeGiganticEl.active = false;
         });
         this.#viewSizeBigEl.addEventListener("click", () => {
             this.#contentEl.style.setProperty("--icon-preview-size", "200px");
-            this.#viewSizeSmallEl.variant = "secondary";
-            this.#viewSizeNormalEl.variant = "secondary";
-            this.#viewSizeBigEl.variant = "primary";
-            this.#viewSizeGiganticEl.variant = "secondary";
+            this.#viewSizeSmallEl.active = false;
+            this.#viewSizeNormalEl.active = false;
+            this.#viewSizeBigEl.active = true;
+            this.#viewSizeGiganticEl.active = false;
         });
         this.#viewSizeGiganticEl.addEventListener("click", () => {
             this.#contentEl.style.setProperty("--icon-preview-size", "400px");
-            this.#viewSizeSmallEl.variant = "secondary";
-            this.#viewSizeNormalEl.variant = "secondary";
-            this.#viewSizeBigEl.variant = "secondary";
-            this.#viewSizeGiganticEl.variant = "primary";
+            this.#viewSizeSmallEl.active = false;
+            this.#viewSizeNormalEl.active = false;
+            this.#viewSizeBigEl.active = false;
+            this.#viewSizeGiganticEl.active = true;
         });
 
         this.#cancelEl = els.getElementById("cancel");

@@ -26,7 +26,7 @@
     padding: 0px 10px;
     margin: 0px;
     color: var(--button-text-color, #000000);
-    background-color: var(--button-back-color, #eaeaea);
+    background-color: var(--button-back-color, #cdcdcd);
     background-image: var(--button-back-image, none);
     border-style: solid;
     border-width: var(--button-border-width, 2px);
@@ -42,10 +42,10 @@
 }
 
 #button:disabled {
-    color: var(--button-disabled-text-color, #757575) !important;
+    color: var(--button-disabled-text-color, #222222) !important;
     background-color: var(--button-disabled-back-color, #999999) !important;
     background-image: var(--button-disabled-back-image, none) !important;
-    border-color: var(--button-disabled-border-color, #6a6a6a) !important;
+    border-color: var(--button-disabled-border-color, #222222) !important;
     opacity: var(--button-disabled-opacity, 0.65) !important;
     cursor: default !important;
     pointer-events: none !important;
@@ -55,25 +55,20 @@
     padding: 0px 4px;
 }
 
-:host(.active) #button {
-    color: var(--button-active-text-color, #ffffff);
-    background-color: var(--button-active-back-color, #222222);
+#button:active,
+:host(:hover) #button:active,
+:host([active]:not([active="false"])) #button {
+    color: var(--button-active-text-color, #000000);
+    background-color: var(--button-active-back-color, #00dbd0);
     background-image: var(--button-active-back-image, none);
-    border-color: var(--button-active-border-color, #222222);
+    border-color: var(--button-active-border-color, #006863);
 }
 
 :host(:hover) #button {
-    color: var(--button-hover-text-color, #000000);
-    background-color: var(--button-hover-back-color, #c4c4c4);
+    color: var(--button-hover-text-color, #ffffff);
+    background-color: var(--button-hover-back-color, #444444);
     background-image: var(--button-hover-back-image, none);
     border-color: var(--button-hover-border-color, #222222);
-}
-
-:host(.active:hover) #button {
-    color: var(--button-active-hover-text-color, #ffffff);
-    background-color: var(--button-active-hover-back-color, #222222);
-    background-image: var(--button-active-hover-back-image, none);
-    border-color: var(--button-active-hover-border-color, #222222);
 }
 
 :host([text-transform="lowercase"]) #button {
@@ -90,7 +85,7 @@
 
 #button:focus,
 :host(:focus) #button {
-    box-shadow: 0 0 2px 3px var(--button-focus-color, #06b5ff);
+    box-shadow: 0 0 2px 3px var(--button-focus-color, #06b5ffb0);
     outline: none;
 }
 

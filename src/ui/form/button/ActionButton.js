@@ -7,7 +7,7 @@ import CONFIG_FIELDS from "./ActionButton.js.json" assert {type: "json"};
 export default class ActionButton extends Button {
 
     static get formConfigurationFields() {
-        return deepClone(CONFIG_FIELDS);
+        return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
     }
 
     clickHandler(event) {

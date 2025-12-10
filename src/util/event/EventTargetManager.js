@@ -1,8 +1,12 @@
 export default class EventTargetManager {
 
-    #subs = new Map();
+    #normalSubscriberList = new Map();
 
-    #captures = new Map();
+    #captureSubscriberList = new Map();
+
+    #passiveSubscriberList = new Map();
+
+    #capturePassiveSubscriberList = new Map();
 
     #target;
 
@@ -22,19 +26,9 @@ export default class EventTargetManager {
             if (this.#target != null) {
                 this.#active = value;
                 if (value) {
-                    for (const [name, handler] of this.#subs) {
-                        this.#target.addEventListener(name, handler, {capture: false});
-                    }
-                    for (const [name, handler] of this.#captures) {
-                        this.#target.addEventListener(name, handler, {capture: true});
-                    }
+                    this.#addEventListeners(this.#target);
                 } else {
-                    for (const [name, handler] of this.#subs) {
-                        this.#target.removeEventListener(name, handler, {capture: false});
-                    }
-                    for (const [name, handler] of this.#captures) {
-                        this.#target.removeEventListener(name, handler, {capture: true});
-                    }
+                    this.#removeEventListeners(this.#target);
                 }
             }
         }
@@ -49,21 +43,11 @@ export default class EventTargetManager {
             throw new TypeError("target must be an instance of EventTarget or null");
         }
         if (this.#target != null) {
-            for (const [name, handler] of this.#subs) {
-                this.#target.removeEventListener(name, handler, {capture: false});
-            }
-            for (const [name, handler] of this.#captures) {
-                this.#target.removeEventListener(name, handler, {capture: true});
-            }
+            this.#removeEventListeners(this.#target);
         }
         this.#target = target;
-        if (this.#active && target != null) {
-            for (const [name, handler] of this.#subs) {
-                target.addEventListener(name, handler, {capture: false});
-            }
-            for (const [name, handler] of this.#captures) {
-                target.addEventListener(name, handler, {capture: true});
-            }
+        if (this.#active && this.#target != null) {
+            this.#addEventListeners(this.#target);
         }
     }
 
@@ -71,101 +55,122 @@ export default class EventTargetManager {
         return this.#target;
     }
 
-    set(name, handler) {
+    set(name, handler, options) {
         if (typeof handler != "function") {
             throw new TypeError(`handler parameter must be of type "function" but was "${typeof handler}"`);
         }
         if (Array.isArray(name)) {
             for (const n of name) {
-                this.set(n, handler);
+                this.set(n, handler, options);
             }
         } else {
             if (typeof name != "string") {
                 throw new TypeError(`name parameter must be of type "string" but was "${typeof name}"`);
             }
+            const {
+                capture = false, passive = false
+            } = options ?? {};
+            const subscriberList = this.#getSubscriberList(capture, passive);
             if (this.#active && this.#target != null) {
-                if (this.#subs.has(name)) {
-                    const oldhandler = this.#subs.get(name);
-                    this.#target.removeEventListener(name, oldhandler, {capture: false});
+                if (subscriberList.has(name)) {
+                    const oldhandler = subscriberList.get(name);
+                    this.#target.removeEventListener(name, oldhandler, {
+                        capture,
+                        passive
+                    });
                 }
-                this.#target.addEventListener(name, handler, {capture: false});
+                this.#target.addEventListener(name, handler, {
+                    capture,
+                    passive
+                });
             }
-            this.#subs.set(name, handler);
+            subscriberList.set(name, handler);
         }
     }
 
-    setCapture(name, handler) {
-        if (typeof handler != "function") {
-            throw new TypeError(`handler parameter must be of type "function" but was "${typeof handler}"`);
-        }
+    delete(name, options) {
         if (Array.isArray(name)) {
             for (const n of name) {
-                this.set(n, handler);
+                this.delete(n, options);
             }
         } else {
             if (typeof name != "string") {
                 throw new TypeError(`name parameter must be of type "string" but was "${typeof name}"`);
             }
-            if (this.#active && this.#target != null) {
-                if (this.#subs.has(name)) {
-                    const oldhandler = this.#subs.get(name);
-                    this.#target.removeEventListener(name, oldhandler, {capture: true});
-                }
-                this.#target.addEventListener(name, handler, {capture: true});
-            }
-            this.#captures.set(name, handler);
-        }
-    }
-
-    delete(name) {
-        if (Array.isArray(name)) {
-            for (const n of name) {
-                this.delete(n);
-            }
-        } else {
-            if (typeof name != "string") {
-                throw new TypeError(`name parameter must be of type "string" but was "${typeof name}"`);
-            }
+            const {
+                capture = false, passive = false
+            } = options ?? {};
+            const subscriberList = this.#getSubscriberList(capture, passive);
             if (this.#target != null) {
-                if (this.#subs.has(name)) {
-                    const oldhandler = this.#subs.get(name);
-                    this.#target.removeEventListener(name, oldhandler, {capture: false});
+                if (subscriberList.has(name)) {
+                    const oldhandler = subscriberList.get(name);
+                    this.#target.removeEventListener(name, oldhandler, {
+                        capture,
+                        passive
+                    });
                 }
             }
-            this.#subs.delete(name);
-        }
-    }
-
-    deleteCapture(name) {
-        if (Array.isArray(name)) {
-            for (const n of name) {
-                this.delete(n);
-            }
-        } else {
-            if (typeof name != "string") {
-                throw new TypeError(`name parameter must be of type "string" but was "${typeof name}"`);
-            }
-            if (this.#target != null) {
-                if (this.#captures.has(name)) {
-                    const oldhandler = this.#captures.get(name);
-                    this.#target.removeEventListener(name, oldhandler, {capture: true});
-                }
-            }
-            this.#captures.delete(name);
+            subscriberList.delete(name);
         }
     }
 
     clear() {
         if (this.#target != null) {
-            for (const [name, handler] of this.#subs) {
-                this.#target.removeEventListener(name, handler, {capture: false});
-            }
-            for (const [name, handler] of this.#captures) {
-                this.#target.removeEventListener(name, handler, {capture: true});
-            }
+            this.#removeEventListeners(this.#target);
         }
-        this.#subs.clear();
-        this.#captures.clear();
+        this.#normalSubscriberList.clear();
+        this.#captureSubscriberList.clear();
+        this.#passiveSubscriberList.clear();
+        this.#capturePassiveSubscriberList.clear();
+    }
+
+    #getSubscriberList(capture, passive) {
+        if (capture) {
+            if (passive) {
+                return this.#capturePassiveSubscriberList;
+            }
+            return this.#captureSubscriberList;
+        }
+        if (passive) {
+            return this.#passiveSubscriberList;
+        }
+        return this.#normalSubscriberList;
+    }
+
+    #addEventListeners(target) {
+        for (const [name, handler] of this.#normalSubscriberList) {
+            target.addEventListener(name, handler);
+        }
+        for (const [name, handler] of this.#captureSubscriberList) {
+            target.addEventListener(name, handler, {capture: true});
+        }
+        for (const [name, handler] of this.#passiveSubscriberList) {
+            target.addEventListener(name, handler, {passive: true});
+        }
+        for (const [name, handler] of this.#capturePassiveSubscriberList) {
+            target.addEventListener(name, handler, {
+                capture: true,
+                passive: true
+            });
+        }
+    }
+
+    #removeEventListeners(target) {
+        for (const [name, handler] of this.#normalSubscriberList) {
+            target.removeEventListener(name, handler);
+        }
+        for (const [name, handler] of this.#captureSubscriberList) {
+            target.removeEventListener(name, handler, {capture: true});
+        }
+        for (const [name, handler] of this.#passiveSubscriberList) {
+            target.removeEventListener(name, handler, {passive: true});
+        }
+        for (const [name, handler] of this.#capturePassiveSubscriberList) {
+            target.removeEventListener(name, handler, {
+                capture: true,
+                passive: true
+            });
+        }
     }
 
 }

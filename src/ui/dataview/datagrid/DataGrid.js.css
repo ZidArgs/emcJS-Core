@@ -35,6 +35,10 @@
 
     #head #header > .cell {
         font-size: 0px;
+
+        * {
+            display: none;
+        }
     }
 }
 

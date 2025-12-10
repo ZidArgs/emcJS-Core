@@ -116,6 +116,79 @@
     },
     {
         "type": "Fieldset",
+        "label": "buttons in row (active)",
+        "children": [
+            {
+                "type": "Row",
+                "children": [
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.normal",
+                        "text": "normal",
+                        "active": true
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.primary",
+                        "text": "primary",
+                        "variant": "primary",
+                        "active": true
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.secondary",
+                        "text": "secondary",
+                        "variant": "secondary",
+                        "active": true
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.success",
+                        "text": "success",
+                        "variant": "success",
+                        "active": true
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.danger",
+                        "text": "danger",
+                        "variant": "danger",
+                        "active": true
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.warn",
+                        "text": "warn",
+                        "variant": "warn",
+                        "active": true
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.info",
+                        "text": "info",
+                        "variant": "info",
+                        "active": true
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.light",
+                        "text": "light",
+                        "variant": "light",
+                        "active": true
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.dark",
+                        "text": "dark",
+                        "variant": "dark",
+                        "active": true
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "Fieldset",
         "label": "buttons in row (disabled)",
         "children": [
             {

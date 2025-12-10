@@ -29,6 +29,13 @@ function isValueSet(value) {
     return true;
 }
 
+/* TODO fix memory leaks
+instead of attaching all event listeners in constructor, use inactive EventTargetManager
+the EventTargetManager should be activated in connectedCallback()
+the EventTargetManager should be deactivated in disconnectedCallback()
+
+this should also be done for all form elements
+*/
 export default class AbstractFormElement extends CustomFormElement {
 
     static #changeDebounceTime = 300;

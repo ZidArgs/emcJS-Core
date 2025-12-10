@@ -6,11 +6,12 @@ import "../../i18n/I18nLabel.js";
 import TPL from "./ErrorButton.js.html" assert {type: "html"};
 import STYLE from "./ErrorButton.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./ErrorButton.js.json" assert {type: "json"};
+import EventTargetManager from "../../../util/event/EventTargetManager.js";
 
 export default class ErrorButton extends Button {
 
     static get formConfigurationFields() {
-        return deepClone(CONFIG_FIELDS);
+        return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
     }
 
     #buttonEl;
@@ -23,6 +24,12 @@ export default class ErrorButton extends Button {
 
     #errorList = new Map();
 
+    #scrollContainerEventHandler = new EventTargetManager(null, false);
+
+    #windowEventHandler = new EventTargetManager(window, false);
+
+    #thisEventHandler = new EventTargetManager(this, false);
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
@@ -31,32 +38,42 @@ export default class ErrorButton extends Button {
         this.#buttonEl = this.shadowRoot.getElementById("button");
         this.#scrollContainerEl = this.shadowRoot.getElementById("scroll-container");
         this.#errorContainerEl = this.shadowRoot.getElementById("error-container");
-        this.#scrollContainerEl.addEventListener("wheel", (event) => {
+        this.#scrollContainerEventHandler.switchTarget(this.#errorContainerEl);
+        this.#scrollContainerEventHandler.set("wheel", (event) => {
             event.stopPropagation();
         }, {passive: true});
         /* --- */
-        window.addEventListener("wheel", () => {
+        this.#windowEventHandler.set(["wheel", "blur"], () => {
             if (this.#isPopupVisible) {
                 this.#closePopup();
             }
         }, {passive: true});
-        window.addEventListener("blur", () => {
-            if (this.#isPopupVisible) {
-                this.#closePopup();
-            }
-        }, {passive: true});
-        window.addEventListener("mousedown", (event) => {
+        this.#windowEventHandler.set("mousedown", (event) => {
             if (this.#isPopupVisible && !this.contains(event.target)) {
                 this.#closePopup();
             }
         }, {passive: true});
-        this.addEventListener("mousedown", (event) => {
+        this.#thisEventHandler.set("mousedown", (event) => {
             if (this.#isPopupVisible) {
                 event.stopImmediatePropagation();
             }
         }, {passive: true});
         /* --- */
         this.setCount();
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+        this.#scrollContainerEventHandler.active = true;
+        this.#windowEventHandler.active = true;
+        this.#thisEventHandler.active = true;
+    }
+
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        this.#scrollContainerEventHandler.active = false;
+        this.#windowEventHandler.active = false;
+        this.#thisEventHandler.active = false;
     }
 
     clickHandler(event) {
