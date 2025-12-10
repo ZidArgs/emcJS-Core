@@ -1,0 +1,191 @@
+/* BUTTON VARIANT - PRIMARY */
+:host([variant="primary"]) #button {
+    --button-text-color: var(--button-primary-text-color);
+    --button-back-color: var(--button-primary-back-color);
+    --button-back-image: var(--button-primary-back-image);
+    --button-border-color: var(--button-primary-border-color);
+    --button-focus-color: var(--button-primary-focus-color);
+
+    --button-hover-text-color: var(--button-primary-hover-text-color);
+    --button-hover-back-color: var(--button-primary-hover-back-color);
+    --button-hover-back-image: var(--button-primary-hover-back-image);
+    --button-hover-border-color: var(--button-primary-hover-border-color);
+
+    --button-active-text-color: var(--button-primary-active-text-color);
+    --button-active-back-color: var(--button-primary-active-back-color);
+    --button-active-back-image: var(--button-primary-active-back-image);
+    --button-active-border-color: var(--button-primary-active-border-color);
+
+    --button-disabled-text-color: var(--button-primary-disabled-text-color);
+    --button-disabled-back-color: var(--button-primary-disabled-back-color);
+    --button-disabled-back-image: var(--button-primary-disabled-back-image);
+    --button-disabled-border-color: var(--button-primary-disabled-border-color);
+}
+
+/* BUTTON VARIANT - SECONDARY */
+:host([variant="secondary"]) #button {
+    --button-text-color: var(--button-secondary-text-color);
+    --button-back-color: var(--button-secondary-back-color);
+    --button-back-image: var(--button-secondary-back-image);
+    --button-border-color: var(--button-secondary-border-color);
+    --button-focus-color: var(--button-secondary-focus-color);
+
+    --button-hover-text-color: var(--button-secondary-hover-text-color);
+    --button-hover-back-color: var(--button-secondary-hover-back-color);
+    --button-hover-back-image: var(--button-secondary-hover-back-image);
+    --button-hover-border-color: var(--button-secondary-hover-border-color);
+
+    --button-active-text-color: var(--button-secondary-active-text-color);
+    --button-active-back-color: var(--button-secondary-active-back-color);
+    --button-active-back-image: var(--button-secondary-active-back-image);
+    --button-active-border-color: var(--button-secondary-active-border-color);
+
+    --button-disabled-text-color: var(--button-secondary-disabled-text-color);
+    --button-disabled-back-color: var(--button-secondary-disabled-back-color);
+    --button-disabled-back-image: var(--button-secondary-disabled-back-image);
+    --button-disabled-border-color: var(--button-secondary-disabled-border-color);
+}
+
+/* BUTTON VARIANT - SUCCESS */
+:host([variant="success"]) #button {
+    --button-text-color: var(--button-success-text-color);
+    --button-back-color: var(--button-success-back-color);
+    --button-back-image: var(--button-success-back-image);
+    --button-border-color: var(--button-success-border-color);
+    --button-focus-color: var(--button-success-focus-color);
+
+    --button-hover-text-color: var(--button-success-hover-text-color);
+    --button-hover-back-color: var(--button-success-hover-back-color);
+    --button-hover-back-image: var(--button-success-hover-back-image);
+    --button-hover-border-color: var(--button-success-hover-border-color);
+
+    --button-active-text-color: var(--button-success-active-text-color);
+    --button-active-back-color: var(--button-success-active-back-color);
+    --button-active-back-image: var(--button-success-active-back-image);
+    --button-active-border-color: var(--button-success-active-border-color);
+
+    --button-disabled-text-color: var(--button-success-disabled-text-color);
+    --button-disabled-back-color: var(--button-success-disabled-back-color);
+    --button-disabled-back-image: var(--button-success-disabled-back-image);
+    --button-disabled-border-color: var(--button-success-disabled-border-color);
+}
+
+/* BUTTON VARIANT - DANGER */
+:host([variant="danger"]) #button {
+    --button-text-color: var(--button-danger-text-color);
+    --button-back-color: var(--button-danger-back-color);
+    --button-back-image: var(--button-danger-back-image);
+    --button-border-color: var(--button-danger-border-color);
+    --button-focus-color: var(--button-danger-focus-color);
+
+    --button-hover-text-color: var(--button-danger-hover-text-color);
+    --button-hover-back-color: var(--button-danger-hover-back-color);
+    --button-hover-back-image: var(--button-danger-hover-back-image);
+    --button-hover-border-color: var(--button-danger-hover-border-color);
+
+    --button-active-text-color: var(--button-danger-active-text-color);
+    --button-active-back-color: var(--button-danger-active-back-color);
+    --button-active-back-image: var(--button-danger-active-back-image);
+    --button-active-border-color: var(--button-danger-active-border-color);
+
+    --button-disabled-text-color: var(--button-danger-disabled-text-color);
+    --button-disabled-back-color: var(--button-danger-disabled-back-color);
+    --button-disabled-back-image: var(--button-danger-disabled-back-image);
+    --button-disabled-border-color: var(--button-danger-disabled-border-color);
+}
+
+/* BUTTON VARIANT - WARN */
+:host([variant="warn"]) #button {
+    --button-text-color: var(--button-warn-text-color);
+    --button-back-color: var(--button-warn-back-color);
+    --button-back-image: var(--button-warn-back-image);
+    --button-border-color: var(--button-warn-border-color);
+    --button-focus-color: var(--button-warn-focus-color);
+
+    --button-hover-text-color: var(--button-warn-hover-text-color);
+    --button-hover-back-color: var(--button-warn-hover-back-color);
+    --button-hover-back-image: var(--button-warn-hover-back-image);
+    --button-hover-border-color: var(--button-warn-hover-border-color);
+
+    --button-active-text-color: var(--button-warn-active-text-color);
+    --button-active-back-color: var(--button-warn-active-back-color);
+    --button-active-back-image: var(--button-warn-active-back-image);
+    --button-active-border-color: var(--button-warn-active-border-color);
+
+    --button-disabled-text-color: var(--button-warn-disabled-text-color);
+    --button-disabled-back-color: var(--button-warn-disabled-back-color);
+    --button-disabled-back-image: var(--button-warn-disabled-back-image);
+    --button-disabled-border-color: var(--button-warn-disabled-border-color);
+}
+
+/* BUTTON VARIANT - INFO */
+:host([variant="info"]) #button {
+    --button-text-color: var(--button-info-text-color);
+    --button-back-color: var(--button-info-back-color);
+    --button-back-image: var(--button-info-back-image);
+    --button-border-color: var(--button-info-border-color);
+    --button-focus-color: var(--button-info-focus-color);
+
+    --button-hover-text-color: var(--button-info-hover-text-color);
+    --button-hover-back-color: var(--button-info-hover-back-color);
+    --button-hover-back-image: var(--button-info-hover-back-image);
+    --button-hover-border-color: var(--button-info-hover-border-color);
+
+    --button-active-text-color: var(--button-info-active-text-color);
+    --button-active-back-color: var(--button-info-active-back-color);
+    --button-active-back-image: var(--button-info-active-back-image);
+    --button-active-border-color: var(--button-info-active-border-color);
+
+    --button-disabled-text-color: var(--button-info-disabled-text-color);
+    --button-disabled-back-color: var(--button-info-disabled-back-color);
+    --button-disabled-back-image: var(--button-info-disabled-back-image);
+    --button-disabled-border-color: var(--button-info-disabled-border-color);
+}
+
+/* BUTTON VARIANT - LIGHT */
+:host([variant="light"]) #button {
+    --button-text-color: var(--button-light-text-color);
+    --button-back-color: var(--button-light-back-color);
+    --button-back-image: var(--button-light-back-image);
+    --button-border-color: var(--button-light-border-color);
+    --button-focus-color: var(--button-light-focus-color);
+
+    --button-hover-text-color: var(--button-light-hover-text-color);
+    --button-hover-back-color: var(--button-light-hover-back-color);
+    --button-hover-back-image: var(--button-light-hover-back-image);
+    --button-hover-border-color: var(--button-light-hover-border-color);
+
+    --button-active-text-color: var(--button-light-active-text-color);
+    --button-active-back-color: var(--button-light-active-back-color);
+    --button-active-back-image: var(--button-light-active-back-image);
+    --button-active-border-color: var(--button-light-active-border-color);
+
+    --button-disabled-text-color: var(--button-light-disabled-text-color);
+    --button-disabled-back-color: var(--button-light-disabled-back-color);
+    --button-disabled-back-image: var(--button-light-disabled-back-image);
+    --button-disabled-border-color: var(--button-light-disabled-border-color);
+}
+
+/* BUTTON VARIANT - DARK */
+:host([variant="dark"]) #button {
+    --button-text-color: var(--button-dark-text-color);
+    --button-back-color: var(--button-dark-back-color);
+    --button-back-image: var(--button-dark-back-image);
+    --button-border-color: var(--button-dark-border-color);
+    --button-focus-color: var(--button-dark-focus-color);
+
+    --button-hover-text-color: var(--button-dark-hover-text-color);
+    --button-hover-back-color: var(--button-dark-hover-back-color);
+    --button-hover-back-image: var(--button-dark-hover-back-image);
+    --button-hover-border-color: var(--button-dark-hover-border-color);
+
+    --button-active-text-color: var(--button-dark-active-text-color);
+    --button-active-back-color: var(--button-dark-active-back-color);
+    --button-active-back-image: var(--button-dark-active-back-image);
+    --button-active-border-color: var(--button-dark-active-border-color);
+
+    --button-disabled-text-color: var(--button-dark-disabled-text-color);
+    --button-disabled-back-color: var(--button-dark-disabled-back-color);
+    --button-disabled-back-image: var(--button-dark-disabled-back-image);
+    --button-disabled-border-color: var(--button-dark-disabled-border-color);
+}

@@ -9,6 +9,8 @@ import "./ImageSelectPreview.js";
 import TPL from "./ImageSelectModal.js.html" assert {type: "html"};
 import STYLE from "./ImageSelectModal.js.css" assert {type: "css"};
 
+// FIXME choosen images will not be marked
+// TODO maybe add a new set of colors for the preview elements?
 export default class ImageSelectModal extends Modal {
 
     #contentEl;
@@ -75,31 +77,31 @@ export default class ImageSelectModal extends Modal {
         this.#contentEl.before(this.#viewControlEl);
         this.#viewSizeSmallEl.addEventListener("click", () => {
             this.#contentEl.style.setProperty("--icon-preview-size", "50px");
-            this.#viewSizeSmallEl.primary = true;
-            this.#viewSizeNormalEl.primary = false;
-            this.#viewSizeBigEl.primary = false;
-            this.#viewSizeGiganticEl.primary = false;
+            this.#viewSizeSmallEl.variant = "primary";
+            this.#viewSizeNormalEl.variant = "secondary";
+            this.#viewSizeBigEl.variant = "secondary";
+            this.#viewSizeGiganticEl.variant = "secondary";
         });
         this.#viewSizeNormalEl.addEventListener("click", () => {
             this.#contentEl.style.setProperty("--icon-preview-size", "100px");
-            this.#viewSizeSmallEl.primary = false;
-            this.#viewSizeNormalEl.primary = true;
-            this.#viewSizeBigEl.primary = false;
-            this.#viewSizeGiganticEl.primary = false;
+            this.#viewSizeSmallEl.variant = "secondary";
+            this.#viewSizeNormalEl.variant = "primary";
+            this.#viewSizeBigEl.variant = "secondary";
+            this.#viewSizeGiganticEl.variant = "secondary";
         });
         this.#viewSizeBigEl.addEventListener("click", () => {
             this.#contentEl.style.setProperty("--icon-preview-size", "200px");
-            this.#viewSizeSmallEl.primary = false;
-            this.#viewSizeNormalEl.primary = false;
-            this.#viewSizeBigEl.primary = true;
-            this.#viewSizeGiganticEl.primary = false;
+            this.#viewSizeSmallEl.variant = "secondary";
+            this.#viewSizeNormalEl.variant = "secondary";
+            this.#viewSizeBigEl.variant = "primary";
+            this.#viewSizeGiganticEl.variant = "secondary";
         });
         this.#viewSizeGiganticEl.addEventListener("click", () => {
             this.#contentEl.style.setProperty("--icon-preview-size", "400px");
-            this.#viewSizeSmallEl.primary = false;
-            this.#viewSizeNormalEl.primary = false;
-            this.#viewSizeBigEl.primary = false;
-            this.#viewSizeGiganticEl.primary = true;
+            this.#viewSizeSmallEl.variant = "secondary";
+            this.#viewSizeNormalEl.variant = "secondary";
+            this.#viewSizeBigEl.variant = "secondary";
+            this.#viewSizeGiganticEl.variant = "primary";
         });
 
         this.#cancelEl = els.getElementById("cancel");

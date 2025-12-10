@@ -26,11 +26,15 @@ export default class Enum {
     }
 
     static includes(value) {
-        return this.asArray().includes(value.toString());
+        return this.values().includes(value.toString());
     }
 
-    static includesCaseInsensitive(value) {
-        return this.asArray().map((e) => e.toLowerCase()).includes(value.toString().toLowerCase());
+    static includesI(value) {
+        return this.values().map((e) => e.toLowerCase()).includes(value.toString().toLowerCase());
+    }
+
+    static values() {
+        return this.asArray().map((v) => this[v].value);
     }
 
     static asArray() {

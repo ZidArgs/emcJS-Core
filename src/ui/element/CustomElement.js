@@ -168,11 +168,23 @@ export default class CustomElement extends HTMLElement {
         }
     }
 
+    setEnumAttribute(name, value, allowedValues) {
+        if (value != null && allowedValues.includes(value)) {
+            this.setAttribute(name, value);
+        } else {
+            this.removeAttribute(name);
+        }
+    }
+
+    getEnumAttribute(name) {
+        return this.getAttribute(name);
+    }
+
     setListAttribute(name, value, allowedValues) {
         if (Array.isArray(value)) {
             const acceptedValues = value.filter((val, idx) => allowedValues.includes(val) && value.indexOf(val) === idx);
             this.setAttribute(name, acceptedValues.join(" "));
-        } else if (allowedValues.includes(value)) {
+        } else if (value != null && allowedValues.includes(value)) {
             this.setAttribute(name, value);
         } else {
             this.removeAttribute(name);

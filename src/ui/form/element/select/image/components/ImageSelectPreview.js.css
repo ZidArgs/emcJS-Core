@@ -37,16 +37,16 @@
 }
 
 :host(.selected) #container {
-    color: var(--button-primary-text-color, #000000);
-    background-color: var(--button-primary-back-color, #00dbd0);
-    background-image: var(--button-primary-back-image, none);
-    border-color: var(--button-primary-border-color, #007b75);
+    color: var(--button-active-text-color, #000000);
+    background-color: var(--button-active-back-color, #00dbd0);
+    background-image: var(--button-active-back-image, none);
+    border-color: var(--button-active-border-color, #007b75);
 }
 
 :host(.selected) #container:hover {
-    color: var(--button-primary-hover-text-color, #ffffff);
-    background-color: var(--button-primary-hover-back-color, #353935);
-    background-image: var(--button-primary-hover-back-image, none);
+    color: var(--button-active-hover-text-color, #ffffff);
+    background-color: var(--button-active-hover-back-color, #353935);
+    background-image: var(--button-active-hover-back-image, none);
 }
 
 #icon-background {

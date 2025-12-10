@@ -1,18 +1,19 @@
 import CustomFormElementDelegating from "../../element/CustomFormElementDelegating.js";
 import {deepClone} from "../../../util/helper/DeepClone.js";
 import {registerFocusable} from "../../../util/helper/html/ElementFocusHelper.js";
+import ButtonVariants from "../../../enum/form/ButtonVariants.js";
 import "../../i18n/I18nTooltip.js";
 import "../../i18n/builtin/I18nInput.js";
 import TPL from "./Button.js.html" assert {type: "html"};
 import STYLE from "./Button.js.css" assert {type: "css"};
+import VARIANT_STYLE from "./style/ButtonVariant.css" assert {type: "css"};
 import CONFIG_FIELDS from "./Button.js.json" assert {type: "json"};
+
+export const BUTTON_VARIANTS = ButtonVariants;
 
 const BORDER_POSITIONS = ["all", "left", "right", "top", "bottom"];
 
-// TODO primary/secondary has to be one attribute (variant) not two
-// TODO add danger, warn, success, info [light, dark] to "variant"
 // TODO add "outline" variants
-// TODO change focus color to match variants?
 export default class Button extends CustomFormElementDelegating {
 
     static get formConfigurationFields() {
@@ -29,6 +30,7 @@ export default class Button extends CustomFormElementDelegating {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
+        VARIANT_STYLE.apply(this.shadowRoot);
         /* --- */
         this.#tooltipEl = this.shadowRoot.getElementById("tooltip");
         this.#buttonEl = this.shadowRoot.getElementById("button");
@@ -83,20 +85,12 @@ export default class Button extends CustomFormElementDelegating {
         return this.getAttribute("tooltip");
     }
 
-    set primary(value) {
-        this.setBooleanAttribute("primary", value);
+    set variant(value) {
+        this.setEnumAttribute("variant", value, BUTTON_VARIANTS);
     }
 
-    get primary() {
-        return this.getBooleanAttribute("primary");
-    }
-
-    set secondary(value) {
-        this.setBooleanAttribute("secondary", value);
-    }
-
-    get secondary() {
-        return this.getBooleanAttribute("secondary");
+    get variant() {
+        return this.getEnumAttribute("variant");
     }
 
     set slim(value) {

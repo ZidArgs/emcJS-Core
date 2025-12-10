@@ -59,25 +59,128 @@
                 "children": [
                     {
                         "type": "ActionButton",
-                        "name": "button_row.0",
+                        "name": "button_row.normal",
                         "text": "normal"
                     },
                     {
                         "type": "ActionButton",
-                        "name": "button_row.1",
+                        "name": "button_row.primary",
                         "text": "primary",
-                        "primary": true
+                        "variant": "primary"
                     },
                     {
                         "type": "ActionButton",
-                        "name": "button_row.2",
+                        "name": "button_row.secondary",
                         "text": "secondary",
-                        "secondary": true
+                        "variant": "secondary"
                     },
                     {
                         "type": "ActionButton",
-                        "name": "button_row.2",
-                        "text": "disabled",
+                        "name": "button_row.success",
+                        "text": "success",
+                        "variant": "success"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.danger",
+                        "text": "danger",
+                        "variant": "danger"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.warn",
+                        "text": "warn",
+                        "variant": "warn"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.info",
+                        "text": "info",
+                        "variant": "info"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.light",
+                        "text": "light",
+                        "variant": "light"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.dark",
+                        "text": "dark",
+                        "variant": "dark"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "Fieldset",
+        "label": "buttons in row (disabled)",
+        "children": [
+            {
+                "type": "Row",
+                "children": [
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.normal",
+                        "text": "normal",
+                        "disabled": true
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.primary",
+                        "text": "primary",
+                        "variant": "primary",
+                        "disabled": true
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.secondary",
+                        "text": "secondary",
+                        "variant": "secondary",
+                        "disabled": true
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.success",
+                        "text": "success",
+                        "variant": "success",
+                        "disabled": true
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.danger",
+                        "text": "danger",
+                        "variant": "danger",
+                        "disabled": true
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.warn",
+                        "text": "warn",
+                        "variant": "warn",
+                        "disabled": true
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.info",
+                        "text": "info",
+                        "variant": "info",
+                        "disabled": true
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.light",
+                        "text": "light",
+                        "variant": "light",
+                        "disabled": true
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.dark",
+                        "text": "dark",
+                        "variant": "dark",
                         "disabled": true
                     }
                 ]
@@ -94,26 +197,56 @@
                 "children": [
                     {
                         "type": "ActionButton",
-                        "name": "button_row.0",
+                        "name": "button_row.normal",
                         "text": "normal"
                     },
                     {
                         "type": "ActionButton",
-                        "name": "button_row.1",
+                        "name": "button_row.primary",
                         "text": "primary",
-                        "primary": true
+                        "variant": "primary"
                     },
                     {
                         "type": "ActionButton",
-                        "name": "button_row.2",
+                        "name": "button_row.secondary",
                         "text": "secondary",
-                        "secondary": true
+                        "variant": "secondary"
                     },
                     {
                         "type": "ActionButton",
-                        "name": "button_row.2",
-                        "text": "disabled",
-                        "disabled": true
+                        "name": "button_row.success",
+                        "text": "success",
+                        "variant": "success"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.danger",
+                        "text": "danger",
+                        "variant": "danger"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.warn",
+                        "text": "warn",
+                        "variant": "warn"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.info",
+                        "text": "info",
+                        "variant": "info"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.light",
+                        "text": "light",
+                        "variant": "light"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.dark",
+                        "text": "dark",
+                        "variant": "dark"
                     }
                 ]
             }
@@ -129,26 +262,56 @@
                 "children": [
                     {
                         "type": "ActionButton",
-                        "name": "button_row.0",
+                        "name": "button_row.normal",
                         "text": "normal"
                     },
                     {
                         "type": "ActionButton",
-                        "name": "button_row.1",
+                        "name": "button_row.primary",
                         "text": "primary",
-                        "primary": true
+                        "variant": "primary"
                     },
                     {
                         "type": "ActionButton",
-                        "name": "button_row.2",
+                        "name": "button_row.secondary",
                         "text": "secondary",
-                        "secondary": true
+                        "variant": "secondary"
                     },
                     {
                         "type": "ActionButton",
-                        "name": "button_row.2",
-                        "text": "disabled",
-                        "disabled": true
+                        "name": "button_row.success",
+                        "text": "success",
+                        "variant": "success"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.danger",
+                        "text": "danger",
+                        "variant": "danger"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.warn",
+                        "text": "warn",
+                        "variant": "warn"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.info",
+                        "text": "info",
+                        "variant": "info"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.light",
+                        "text": "light",
+                        "variant": "light"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.dark",
+                        "text": "dark",
+                        "variant": "dark"
                     }
                 ]
             }
@@ -164,26 +327,56 @@
                 "children": [
                     {
                         "type": "ActionButton",
-                        "name": "button_row.0",
+                        "name": "button_row.normal",
                         "text": "normal"
                     },
                     {
                         "type": "ActionButton",
-                        "name": "button_row.1",
+                        "name": "button_row.primary",
                         "text": "primary",
-                        "primary": true
+                        "variant": "primary"
                     },
                     {
                         "type": "ActionButton",
-                        "name": "button_row.2",
+                        "name": "button_row.secondary",
                         "text": "secondary",
-                        "secondary": true
+                        "variant": "secondary"
                     },
                     {
                         "type": "ActionButton",
-                        "name": "button_row.2",
-                        "text": "disabled",
-                        "disabled": true
+                        "name": "button_row.success",
+                        "text": "success",
+                        "variant": "success"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.danger",
+                        "text": "danger",
+                        "variant": "danger"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.warn",
+                        "text": "warn",
+                        "variant": "warn"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.info",
+                        "text": "info",
+                        "variant": "info"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.light",
+                        "text": "light",
+                        "variant": "light"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.dark",
+                        "text": "dark",
+                        "variant": "dark"
                     }
                 ]
             }
@@ -199,26 +392,56 @@
                 "children": [
                     {
                         "type": "ActionButton",
-                        "name": "button_row.0",
+                        "name": "button_row.normal",
                         "text": "normal"
                     },
                     {
                         "type": "ActionButton",
-                        "name": "button_row.1",
+                        "name": "button_row.primary",
                         "text": "primary",
-                        "primary": true
+                        "variant": "primary"
                     },
                     {
                         "type": "ActionButton",
-                        "name": "button_row.2",
+                        "name": "button_row.secondary",
                         "text": "secondary",
-                        "secondary": true
+                        "variant": "secondary"
                     },
                     {
                         "type": "ActionButton",
-                        "name": "button_row.2",
-                        "text": "disabled",
-                        "disabled": true
+                        "name": "button_row.success",
+                        "text": "success",
+                        "variant": "success"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.danger",
+                        "text": "danger",
+                        "variant": "danger"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.warn",
+                        "text": "warn",
+                        "variant": "warn"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.info",
+                        "text": "info",
+                        "variant": "info"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.light",
+                        "text": "light",
+                        "variant": "light"
+                    },
+                    {
+                        "type": "ActionButton",
+                        "name": "button_row.dark",
+                        "text": "dark",
+                        "variant": "dark"
                     }
                 ]
             }

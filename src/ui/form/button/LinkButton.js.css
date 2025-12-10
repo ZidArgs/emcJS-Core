@@ -45,6 +45,7 @@
     background-color: var(--button-disabled-back-color, #999999) !important;
     background-image: var(--button-disabled-back-image, none) !important;
     border-color: var(--button-disabled-border-color, #6a6a6a) !important;
+    opacity: var(--button-disabled-opacity, 0.65) !important;
     cursor: default !important;
     pointer-events: none !important;
 }

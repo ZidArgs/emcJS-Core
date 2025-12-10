@@ -1,11 +1,15 @@
 import CustomFormElementDelegating from "../../element/CustomFormElementDelegating.js";
 import {deepClone} from "../../../util/helper/DeepClone.js";
 import {registerFocusable} from "../../../util/helper/html/ElementFocusHelper.js";
+import ButtonVariants from "../../../enum/form/ButtonVariants.js";
 import "../../i18n/I18nTooltip.js";
 import "../../i18n/I18nLabel.js";
 import TPL from "./LinkButton.js.html" assert {type: "html"};
 import STYLE from "./LinkButton.js.css" assert {type: "css"};
+import VARIANT_STYLE from "./style/ButtonVariant.css" assert {type: "css"};
 import CONFIG_FIELDS from "./LinkButton.js.json" assert {type: "json"};
+
+export const BUTTON_VARIANTS = ButtonVariants;
 
 export default class LinkButton extends CustomFormElementDelegating {
 
@@ -23,6 +27,7 @@ export default class LinkButton extends CustomFormElementDelegating {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
+        VARIANT_STYLE.apply(this.shadowRoot);
         /* --- */
         this.#tooltipEl = this.shadowRoot.getElementById("tooltip");
         this.#textEl = this.shadowRoot.getElementById("text");
@@ -92,6 +97,14 @@ export default class LinkButton extends CustomFormElementDelegating {
 
     get tooltip() {
         return this.getAttribute("tooltip");
+    }
+
+    set variant(value) {
+        this.setEnumAttribute("variant", value, BUTTON_VARIANTS);
+    }
+
+    get variant() {
+        return this.getEnumAttribute("variant");
     }
 
     static get observedAttributes() {
