@@ -123,8 +123,10 @@ all; top_bottom right_left; top right bottom left
     --form-invalid-back-image: none;
 
     /* === form section === */
-    --form-section-header-text-color: var(--form-text-color);
-    --form-section-header-back-color: var(--form-back-color);
+    --form-section-header-text-color: var(--page-marked-text-color, #ffffff);
+    --form-section-header-back-color: var(--page-marked-back-color, #222222);
+    --form-section-header-fixed-shadow-width: 6px;
+    --form-section-header-fixed-shadow-start-color: #000000;
 
     /* === fieldset === */
     --fieldset-back-color: var(--page-back-color);

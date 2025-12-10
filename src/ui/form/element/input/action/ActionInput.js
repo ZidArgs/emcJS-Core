@@ -55,6 +55,7 @@ export default class ActionInput extends AbstractFormElement {
     }
 
     focus(options) {
+        super.focus(options);
         this.#buttonEl.focus(options);
     }
 

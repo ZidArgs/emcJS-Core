@@ -67,16 +67,7 @@ export default class FormContainer extends CustomElement {
         this.#onSlotChange();
         /* --- */
         this.#contentEl.addEventListener("scroll", () => {
-            const sectionEls = [...this.#sectionNodeList];
-            let activeSection = sectionEls.shift();
-            while (sectionEls.length && activeSection.isBodySquishedAway()) {
-                activeSection = sectionEls.shift();
-            }
-            if (this.#activeSectionEl != activeSection) {
-                const event = new Event("section_change");
-                event.section = activeSection;
-                this.dispatchEvent(event);
-            }
+            this.#refreshSecctionState();
         });
     }
 
@@ -105,6 +96,10 @@ export default class FormContainer extends CustomElement {
 
     get sectionNodeList() {
         return [...this.#sectionNodeList];
+    }
+
+    get activeSection() {
+        return this.#activeSectionEl;
     }
 
     set hasHeader(value) {
@@ -221,7 +216,29 @@ export default class FormContainer extends CustomElement {
         const event = new Event("sectionlist_change");
         event.sectionList = [...this.#sectionNodeList];
         this.dispatchEvent(event);
+        this.#refreshSecctionState();
     });
+
+    #refreshSecctionState() {
+        const sectionEls = [...this.#sectionNodeList];
+        for (const sectionEl of sectionEls) {
+            sectionEl.refreshState();
+        }
+        let activeSection = sectionEls.shift();
+        while (sectionEls.length && activeSection.bodyVisibleHeight < 20) {
+            activeSection = sectionEls.shift();
+        }
+        if (this.#activeSectionEl != activeSection) {
+            if (this.#activeSectionEl != null) {
+                this.#activeSectionEl.classList.remove("active");
+            }
+            activeSection.classList.add("active");
+            this.#activeSectionEl = activeSection;
+            const event = new Event("section_change");
+            event.section = activeSection;
+            this.dispatchEvent(event);
+        }
+    }
 
 }
 

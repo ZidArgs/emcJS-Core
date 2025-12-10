@@ -98,6 +98,7 @@ export default class SwitchSelect extends AbstractFormElement {
     }
 
     focus(options) {
+        super.focus(options);
         const children = this.#optionsContainerEl.children;
         const child = children[0];
         if (child != null) {

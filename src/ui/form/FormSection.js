@@ -31,6 +31,8 @@ export default class FormSection extends CustomElement {
 
     #parentSectionEls = [];
 
+    #bodyVisibleHeight = 0;
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
@@ -58,6 +60,10 @@ export default class FormSection extends CustomElement {
 
     get parentSectionElementList() {
         return [...this.#parentSectionEls];
+    }
+
+    get bodyVisibleHeight() {
+        return this.#bodyVisibleHeight;
     }
 
     set label(value) {
@@ -100,6 +106,23 @@ export default class FormSection extends CustomElement {
         }
         const bodyRect = getBoundingContentRect(this.#bodyEl);
         return bodyRect.bottom - 20 < headerRect.bottom;
+    }
+
+    refreshState() {
+        const headerRect = getBoundingContentRect(this.#headerEl);
+        const bodyRect = getBoundingContentRect(this.#bodyEl);
+        const childSectionEl = this.querySelector("emc-form-section");
+
+        if (childSectionEl != null) {
+            const childSectionElRect = getBoundingContentRect(childSectionEl);
+            this.#bodyVisibleHeight = childSectionElRect.top - headerRect.bottom;
+            const isHeaderStuck = bodyRect.top < headerRect.bottom;
+            this.#headerEl.classList.toggle("stuck", this.#bodyVisibleHeight > 0 && isHeaderStuck);
+        } else {
+            this.#bodyVisibleHeight = bodyRect.bottom - headerRect.bottom;
+            const isHeaderStuck = bodyRect.top < headerRect.bottom;
+            this.#headerEl.classList.toggle("stuck", this.#bodyVisibleHeight > 0 && isHeaderStuck);
+        }
     }
 
 }

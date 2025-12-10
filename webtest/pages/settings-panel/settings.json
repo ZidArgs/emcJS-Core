@@ -2,6 +2,7 @@
     "settings.language": {
         "type": "SimpleSelect",
         "value": "en_us",
+        "description": "sets the language of the application",
         "optiongroup": "I18n.languages"
     },
     "settings.font": {

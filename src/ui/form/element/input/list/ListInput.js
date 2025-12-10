@@ -74,6 +74,7 @@ export default class ListInput extends AbstractFormElement {
     }
 
     focus(options) {
+        super.focus(options);
         this.#searchEl.focus(options);
     }
 

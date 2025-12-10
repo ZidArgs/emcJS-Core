@@ -73,6 +73,7 @@ export default class NumberInput extends AbstractFormElement {
     }
 
     focus(options) {
+        super.focus(options);
         this.#inputEl.focus(options);
     }
 

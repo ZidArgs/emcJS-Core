@@ -39,11 +39,7 @@ const mutationObserver = new MutationObserver((mutationsList) => {
     }
 });
 
-const BaseClass = mix(
-    AbstractFormElement
-).with(
-    ContextMenuManagerMixin
-);
+const BaseClass = mix(AbstractFormElement).with(ContextMenuManagerMixin);
 
 // TODO use modal handler
 export default class LogicInput extends BaseClass {
@@ -171,6 +167,7 @@ export default class LogicInput extends BaseClass {
     }
 
     focus(options) {
+        super.focus(options);
         const el = this.children[0];
         if (el) {
             el.focus(options);

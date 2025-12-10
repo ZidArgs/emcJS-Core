@@ -76,6 +76,7 @@ export default class BoolOrLogicInput extends AbstractFormElement {
     }
 
     focus(options) {
+        super.focus(options);
         this.#inputEl.focus(options);
     }
 

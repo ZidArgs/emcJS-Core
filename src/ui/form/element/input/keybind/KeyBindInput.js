@@ -133,6 +133,7 @@ export default class KeyBindInput extends AbstractFormElement {
     }
 
     focus(options) {
+        super.focus(options);
         this.#inputEl.focus(options);
     }
 

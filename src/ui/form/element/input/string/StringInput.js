@@ -44,6 +44,7 @@ export default class StringInput extends AbstractFormElement {
     }
 
     focus(options) {
+        super.focus(options);
         this.#inputEl.focus(options);
     }
 

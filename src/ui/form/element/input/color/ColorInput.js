@@ -50,6 +50,7 @@ export default class ColorInput extends AbstractFormElement {
     }
 
     focus(options) {
+        super.focus(options);
         this.#buttonEl.focus(options);
     }
 

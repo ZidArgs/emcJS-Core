@@ -33,6 +33,8 @@ export default class SectionTreeManager {
 
     #formSectionNavigationEl;
 
+    #formContainerEl;
+
     #treeConfig = {};
 
     #formContainerEventObserver = new EventTargetManager();
@@ -40,12 +42,7 @@ export default class SectionTreeManager {
     constructor() {
         this.#formContainerEventObserver.set("section_change", (event) => {
             const {section} = event;
-            if (section != null) {
-                const sectionPath = this.getPath(section);
-                this.#formSectionNavigationEl.selectItemByRefPath(sectionPath, true);
-            } else {
-                this.#formSectionNavigationEl.selectItemByPath(0, true);
-            }
+            this.#markSectionInTree(section);
         });
         this.#formContainerEventObserver.set("sectionlist_change", (event) => {
             const {sectionList = []} = event;
@@ -62,13 +59,16 @@ export default class SectionTreeManager {
         if (!(formContainer instanceof FormContainer)) {
             throw new TypeError("formContainer must be a FormContainer");
         }
-        this.#formContainerEventObserver.switchTarget(formContainer);
-        this.#managedSectionEls.clear();
-        this.#treeConfig = {};
-        for (const section of formContainer.sectionNodeList) {
-            this.#addSection(section);
+        if (this.#formContainerEl != formContainer) {
+            this.#formContainerEl = formContainer;
+            this.#formContainerEventObserver.switchTarget(formContainer);
+            this.#managedSectionEls.clear();
+            this.#treeConfig = {};
+            for (const section of formContainer.sectionNodeList) {
+                this.#addSection(section);
+            }
+            this.#updateSectionTree();
         }
-        this.#updateSectionTree();
     }
 
     unobserve() {
@@ -134,18 +134,36 @@ export default class SectionTreeManager {
         }
     }
 
-    setFormSectionNavigationElement(node) {
-        if (node != null && !(node instanceof Tree)) {
+    setFormSectionNavigationElement(treeNavigation) {
+        if (treeNavigation != null && !(treeNavigation instanceof Tree)) {
             throw new Error("form section navigation element must be an instance of Tree or null");
         }
-        this.#formSectionNavigationEl = node;
-        this.#updateSectionTree();
+        if (this.#formSectionNavigationEl != treeNavigation) {
+            this.#formSectionNavigationEl = treeNavigation;
+            this.#updateSectionTree();
+        }
     }
 
     #updateSectionTree = debounce(() => {
         if (this.#formSectionNavigationEl != null) {
             this.#formSectionNavigationEl.loadConfig(this.treeConfig);
+            if (this.#formContainerEl != null) {
+                setTimeout(() => {
+                    this.#markSectionInTree(this.#formContainerEl.activeSection);
+                }, 0);
+            }
         }
     });
+
+    #markSectionInTree(sectionEl) {
+        if (this.#formSectionNavigationEl != null) {
+            if (sectionEl != null) {
+                const sectionPath = this.getPath(sectionEl);
+                this.#formSectionNavigationEl.selectItemByRefPath(sectionPath, true);
+            } else {
+                this.#formSectionNavigationEl.selectItemByPath(0, true);
+            }
+        }
+    }
 
 }

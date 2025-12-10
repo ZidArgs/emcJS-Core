@@ -196,13 +196,13 @@ export default class SettingsPanel extends CustomElement {
 
     #initFormHandlers() {
         this.#formContext.addEventListener("submit", () => {
-            const event = new Event("submit");
-            event.data = this.getDataFlat();
-            event.formData = this.getFormFieldsData();
-            event.hiddenData = this.getFormHiddenData();
-            event.changes = this.getChanges();
-            event.errors = this.getErrors();
-            this.dispatchEvent(event);
+            const ev = new Event("submit");
+            ev.data = this.getDataFlat();
+            ev.formData = this.getFormFieldsData();
+            ev.hiddenData = this.getFormHiddenData();
+            ev.changes = this.getChanges();
+            ev.errors = this.getErrors();
+            this.dispatchEvent(ev);
         });
         this.#formContext.addEventListener("reset", () => {
             this.dispatchEvent(new Event("cancel"));
@@ -211,10 +211,10 @@ export default class SettingsPanel extends CustomElement {
             const {errors} = event;
             const ev = new Event("error");
             ev.errors = errors;
-            this.dispatchEvent(event);
+            this.dispatchEvent(ev);
         });
         this.#formContext.addEventListener("validity", (event) => {
-            const ev = new Event("error");
+            const ev = new Event("validity");
             ev.value = event.value;
             ev.valid = event.valid;
             ev.message = event.message;

@@ -489,4 +489,12 @@ export default class AbstractFormElement extends CustomFormElement {
         }
     }
 
+    focus(options) {
+        super.focus(options);
+        this.scrollIntoView({
+            block: "center",
+            inline: "center"
+        });
+    }
+
 }

@@ -74,6 +74,16 @@
     }
 }
 
+#header.stuck:after {
+    position: absolute;
+    content: "";
+    height: var(--form-section-header-fixed-shadow-width, 4px);
+    width: 100%;
+    bottom: calc(-1 * var(--form-section-header-fixed-shadow-width, 4px));
+    left: 0px;
+    background-image: linear-gradient(to bottom, var(--form-section-header-fixed-shadow-start-color, #00000030), #00000000);
+}
+
 h1,
 h2,
 h3,

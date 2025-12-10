@@ -116,6 +116,7 @@ export default class ListSelect extends AbstractFormElement {
     }
 
     focus(options) {
+        super.focus(options);
         this.#searchEl.focus(options);
     }
 

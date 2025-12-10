@@ -41,6 +41,7 @@ export default class SearchInput extends AbstractFormElement {
     }
 
     focus(options) {
+        super.focus(options);
         this.#inputEl.focus(options);
     }
 

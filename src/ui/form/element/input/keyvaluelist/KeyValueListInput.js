@@ -87,6 +87,7 @@ export default class KeyValueListInput extends AbstractFormElement {
     }
 
     focus(options) {
+        super.focus(options);
         this.#searchEl.focus(options);
     }
 

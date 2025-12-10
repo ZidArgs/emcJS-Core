@@ -253,6 +253,7 @@ export default class SearchSelect extends AbstractFormElement {
     }
 
     focus(options) {
+        super.focus(options);
         const mediaQuery = window.matchMedia("(hover: none)");
         if (mediaQuery.matches) {
             this.#nativeSelectEl.focus(options);

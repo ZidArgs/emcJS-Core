@@ -103,6 +103,7 @@ export default class GridInput extends AbstractFormElement {
     }
 
     focus(options) {
+        super.focus(options);
         this.#searchEl.focus(options);
     }
 
