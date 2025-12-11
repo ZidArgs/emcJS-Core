@@ -51,7 +51,7 @@ export class ListIncludesEntryObserver extends EventTarget {
         if (!(typeof fn === "function")) {
             throw new TypeError("Failed to execute 'unChange' on 'ListEntryObserver': parameter 1 is not of type 'function'.");
         }
-        this.addEventListener("change", fn);
+        this.removeEventListener("change", fn);
     }
 
 }

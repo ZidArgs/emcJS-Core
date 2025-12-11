@@ -46,30 +46,31 @@ export default class Modal extends CustomElement {
         this.#footerEl = this.shadowRoot.getElementById("footer");
         this.caption = caption;
         /* --- */
-        this.#modalEl.addEventListener("keydown", (event) => {
+        this.registerTargetEventHandler(this.#modalEl, "keydown", (event) => {
             if (event.key == "Escape") {
                 this.close();
                 event.stopPropagation();
             }
         });
-        this.#closeEl.addEventListener("click", () => this.close());
+        this.registerTargetEventHandler(this.#closeEl, "click", () => this.close());
         /* --- */
         this.#focusTopEl = this.shadowRoot.getElementById("focus_catcher_top");
-        this.#focusTopEl.addEventListener("focus", () => {
+        this.registerTargetEventHandler(this.#focusTopEl, "focus", () => {
             this.focusLast();
         });
         this.#focusBottomEl = this.shadowRoot.getElementById("focus_catcher_bottom");
-        this.#focusBottomEl.addEventListener("focus", () => {
+        this.registerTargetEventHandler(this.#focusBottomEl, "focus", () => {
             this.focusFirst();
         });
     }
 
-    get assocName() {
-        return this.#assocName;
+    disconnectedCallback() {
+        super.disconnectedCallback?.();
+        this.classList.remove("inactive");
     }
 
-    disconnectedCallback() {
-        this.classList.remove("inactive");
+    get assocName() {
+        return this.#assocName;
     }
 
     set caption(value) {

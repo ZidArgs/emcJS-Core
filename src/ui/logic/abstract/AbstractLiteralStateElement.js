@@ -7,6 +7,8 @@ export default class AbstractLiteralStateElement extends AbstractElement {
 
     #inputEl;
 
+    #refEl;
+
     #type;
 
     #options;
@@ -18,10 +20,9 @@ export default class AbstractLiteralStateElement extends AbstractElement {
         /* --- */
         this.shadowRoot.getElementById("body").append(els);
         this.#type = type;
-        /* --- */
+        this.#refEl = this.shadowRoot.getElementById("ref");
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.#inputEl.addEventListener("change", () => {
-            this.value = this.#inputEl.value;
+        this.registerTargetEventHandler(this.#inputEl, "change", () => {
             this.dispatchEvent(new Event("valuechange", {
                 bubbles: true,
                 cancelable: true
@@ -47,12 +48,16 @@ export default class AbstractLiteralStateElement extends AbstractElement {
         return this.getAttribute("ref");
     }
 
-    set value(val) {
-        this.setAttribute("value", val);
+    set value(value) {
+        const optionEl = this.#inputEl.querySelector(`[value="${value}"]`);
+        if (optionEl == null) {
+            this.#addOption(value);
+        }
+        this.#inputEl.value = value;
     }
 
     get value() {
-        return this.getAttribute("value");
+        return this.#inputEl.value;
     }
 
     setOptions(options) {
@@ -72,12 +77,12 @@ export default class AbstractLiteralStateElement extends AbstractElement {
 
     #addOption(value, label) {
         if (typeof value === "string" && value !== "") {
-            const optionEl = document.createElement("option", {is: "emc-i18n-option"});
+            const optionEl = document.createElement("option");
             optionEl.value = value;
             if (typeof label === "string" && label !== "") {
-                optionEl.i18nValue = label;
+                optionEl.label = label;
             } else {
-                optionEl.i18nValue = value;
+                optionEl.label = value;
             }
             this.#inputEl.append(optionEl);
         }
@@ -86,10 +91,10 @@ export default class AbstractLiteralStateElement extends AbstractElement {
     calculate(state = {}) {
         if (state[this.ref] != null) {
             const val = +(state[this.ref] === this.value);
-            this.shadowRoot.getElementById("header").setAttribute("value", val);
+            this.logicResult = val;
             return val;
         } else {
-            this.shadowRoot.getElementById("header").setAttribute("value", "0");
+            this.logicResult = 0;
             return 0;
         }
     }
@@ -118,7 +123,7 @@ export default class AbstractLiteralStateElement extends AbstractElement {
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "disabled":
             case "template": {
@@ -133,15 +138,10 @@ export default class AbstractLiteralStateElement extends AbstractElement {
             case "ref": {
                 if (oldValue != newValue) {
                     if (typeof newValue === "string") {
-                        this.shadowRoot.getElementById("ref").innerText = newValue;
+                        this.#refEl.innerText = newValue;
                     } else {
-                        this.shadowRoot.getElementById("ref").innerHTML = "";
+                        this.#refEl.innerText = "";
                     }
-                }
-            } break;
-            case "value": {
-                if (oldValue != newValue) {
-                    this.#inputEl.value = newValue;
                 }
             } break;
         }

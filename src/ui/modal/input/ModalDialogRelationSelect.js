@@ -27,11 +27,11 @@ export default class ModalDialogRelationSelect extends ModalDialog {
         this.#contentEl.append(this.#inputEl);
 
         this.#cancelEl = els.getElementById("cancel");
-        this.#cancelEl.addEventListener("click", () => this.cancel());
+        this.registerTargetEventHandler(this.#cancelEl, "click", () => this.cancel());
         this.#footerEl.append(this.#cancelEl);
 
         this.#submitEl = els.getElementById("submit");
-        this.#submitEl.addEventListener("click", () => this.submit());
+        this.registerTargetEventHandler(this.#submitEl, "click", () => this.submit());
         this.#footerEl.append(this.#submitEl);
     }
 

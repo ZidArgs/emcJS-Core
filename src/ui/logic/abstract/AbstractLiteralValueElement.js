@@ -4,6 +4,8 @@ import STYLE from "./AbstractLiteralValueElement.js.css" assert {type: "css"};
 
 export default class AbstractLiteralValueElement extends AbstractElement {
 
+    #refEl;
+
     #type;
 
     constructor(type, caption) {
@@ -13,6 +15,7 @@ export default class AbstractLiteralValueElement extends AbstractElement {
         /* --- */
         this.shadowRoot.getElementById("body").append(els);
         this.#type = type;
+        this.#refEl = this.shadowRoot.getElementById("ref");
     }
 
     set ref(val) {
@@ -25,11 +28,11 @@ export default class AbstractLiteralValueElement extends AbstractElement {
 
     calculate(state = {}) {
         if (state[this.ref] != null) {
-            const val = state[this.ref];
-            this.shadowRoot.getElementById("header").setAttribute("value", val);
+            const val = +state[this.ref];
+            this.logicResult = val;
             return val;
         }
-        this.shadowRoot.getElementById("header").setAttribute("value", "0");
+        this.logicResult = 0;
         return 0;
     }
 
@@ -51,14 +54,14 @@ export default class AbstractLiteralValueElement extends AbstractElement {
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "ref": {
                 if (oldValue != newValue) {
                     if (typeof newValue === "string") {
-                        this.shadowRoot.getElementById("ref").innerText = newValue;
+                        this.#refEl.innerText = newValue;
                     } else {
-                        this.shadowRoot.getElementById("ref").innerHTML = "";
+                        this.#refEl.innerText = "";
                     }
                 }
             } break;

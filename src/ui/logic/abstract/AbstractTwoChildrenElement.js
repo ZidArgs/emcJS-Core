@@ -24,11 +24,11 @@ export default class AbstractTwoChildrenElement extends AbstractElement {
         this.#child1El = this.shadowRoot.getElementById("child1");
         this.#placeholder0El = this.shadowRoot.getElementById("droptarget0");
         this.#placeholder1El = this.shadowRoot.getElementById("droptarget1");
-        this.#placeholder0El.ondragover = AbstractElement.allowDrop;
-        this.#placeholder1El.ondragover = AbstractElement.allowDrop;
-        this.#placeholder0El.ondrop = AbstractElement.dropOnPlaceholder;
-        this.#placeholder1El.ondrop = AbstractElement.dropOnPlaceholder;
-        this.#placeholder1El.onclick = this.#placeholder0El.onclick = (event) => {
+        this.registerTargetEventHandler(this.#placeholder0El, "dragover", AbstractElement.allowDrop);
+        this.registerTargetEventHandler(this.#placeholder1El, "dragover", AbstractElement.allowDrop);
+        this.registerTargetEventHandler(this.#placeholder0El, "drop", AbstractElement.dropOnPlaceholder);
+        this.registerTargetEventHandler(this.#placeholder1El, "drop", AbstractElement.dropOnPlaceholder);
+        this.registerTargetEventHandler(this.#placeholder0El, "click", (event) => {
             const e = new Event("placeholderclicked", {
                 bubbles: true,
                 cancelable: true
@@ -36,7 +36,16 @@ export default class AbstractTwoChildrenElement extends AbstractElement {
             e.name = event.target.parentElement.name;
             this.dispatchEvent(e);
             event.stopPropagation();
-        };
+        });
+        this.registerTargetEventHandler(this.#placeholder1El, "click", (event) => {
+            const e = new Event("placeholderclicked", {
+                bubbles: true,
+                cancelable: true
+            });
+            e.name = event.target.parentElement.name;
+            this.dispatchEvent(e);
+            event.stopPropagation();
+        });
     }
 
     toJSON() {
@@ -51,16 +60,9 @@ export default class AbstractTwoChildrenElement extends AbstractElement {
             for (let i = 0; i < logic.content.length && i < 2; ++i) {
                 const ch = logic.content[i];
                 if (ch) {
-                    let cl;
-                    if (ch.category) {
-                        cl = AbstractElement.getReference(ch.category, ch.type);
-                    } else {
-                        cl = AbstractElement.getReference(ch.type);
-                    }
-                    const nnode = new cl;
-                    nnode.setAttribute("slot", `slot${i}`);
-                    nnode.loadLogic(ch);
-                    this.append(nnode);
+                    const node = AbstractElement.buildLogic(ch);
+                    node.setAttribute("slot", `slot${i}`);
+                    this.append(node);
                 }
             }
         }
@@ -80,7 +82,7 @@ export default class AbstractTwoChildrenElement extends AbstractElement {
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "disabled":
             case "template": {

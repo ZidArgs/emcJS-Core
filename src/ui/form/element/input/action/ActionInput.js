@@ -31,11 +31,11 @@ export default class ActionInput extends AbstractFormElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.#inputEl.addEventListener("focus", () => {
+        this.registerTargetEventHandler(this.#inputEl, "focus", () => {
             this.#buttonEl.focus();
         });
         this.#buttonEl = this.shadowRoot.getElementById("button");
-        this.#buttonEl.addEventListener("click", (event) => {
+        this.registerTargetEventHandler(this.#buttonEl, "click", (event) => {
             event.preventDefault();
             event.stopPropagation();
             const ev = new Event("action");
@@ -68,11 +68,12 @@ export default class ActionInput extends AbstractFormElement {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "placeholder", "readonly"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "placeholder", "readonly"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "placeholder": {
                 if (oldValue != newValue) {

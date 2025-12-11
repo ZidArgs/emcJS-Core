@@ -99,7 +99,7 @@ export default class ArraySet {
     }
 
     keys() {
-        return new ArraySetIterator(this.#values);
+        return this.values();
     }
 
     values() {
@@ -177,7 +177,7 @@ export default class ArraySet {
     }
 
     [Symbol.iterator]() {
-        return new ArraySetIterator(this.#values);
+        return this.values();
     }
 
 }

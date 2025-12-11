@@ -19,6 +19,8 @@ export default class AbstractElement extends CustomElement {
 
     #headerEl;
 
+    #logicResult;
+
     constructor(caption) {
         if (new.target === AbstractElement) {
             throw new Error("can not construct abstract class");
@@ -32,12 +34,12 @@ export default class AbstractElement extends CustomElement {
         this.#headerEl.innerText = caption;
         this.#id = appUID("logic-element");
         /* --- */
-        this.addEventListener("click", (event) => {
+        this.registerTargetEventHandler(this, "click", (event) => {
             if (this.editable) {
                 event.stopPropagation();
             }
         });
-        this.addEventListener("contextmenu", (event) => {
+        this.registerTargetEventHandler(this, "contextmenu", (event) => {
             event.stopPropagation();
             event.preventDefault();
             if (this.editable) {
@@ -51,9 +53,11 @@ export default class AbstractElement extends CustomElement {
                 this.dispatchEvent(ev);
             }
         });
+        this.registerTargetEventHandler(this, "dragstart", dragStart);
     }
 
     connectedCallback() {
+        super.connectedCallback?.();
         if (this.getAttribute("tabindex") !== "0") {
             this.setAttribute("tabindex", "0");
         }
@@ -63,11 +67,6 @@ export default class AbstractElement extends CustomElement {
             this.removeAttribute("draggable");
         }
         this.setAttribute("id", this.#id);
-        this.addEventListener("dragstart", dragStart);
-    }
-
-    disconnectedCallback() {
-        this.removeEventListener("dragstart", dragStart);
     }
 
     get draggable() {
@@ -86,6 +85,15 @@ export default class AbstractElement extends CustomElement {
         if (this.#headerEl) {
             return this.#headerEl.innerText;
         }
+    }
+
+    set logicResult(value) {
+        this.#logicResult = value;
+        this.#headerEl.setAttribute("value", value);
+    }
+
+    get logicResult() {
+        return this.#logicResult;
     }
 
     getElement(forceCopy = false) {

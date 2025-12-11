@@ -60,7 +60,7 @@ export default class ModalFormDialog extends Modal {
             } else if (typeof options.cancel === "string") {
                 this.#cancelEl.text = options.cancel;
             }
-            this.#cancelEl.addEventListener("click", () => this.cancel());
+            this.registerTargetEventHandler(this.#cancelEl, "click", () => this.cancel());
             this.#footerEl.append(this.#cancelEl);
         }
 
@@ -72,11 +72,11 @@ export default class ModalFormDialog extends Modal {
             } else if (typeof options.submit === "string") {
                 this.#submitEl.text = options.submit;
             }
-            this.#submitEl.addEventListener("click", () => this.submit());
+            this.registerTargetEventHandler(this.#submitEl, "click", () => this.submit());
             this.#footerEl.append(this.#submitEl);
         }
 
-        this.#formContext.addEventListener("submit", (event) => {
+        this.registerTargetEventHandler(this.#formContext, "submit", (event) => {
             const {
                 data, formData, hiddenData, changes, errors
             } = event;

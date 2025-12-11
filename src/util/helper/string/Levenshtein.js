@@ -37,11 +37,9 @@ function calculateDistance(source, target) {
         resultMatrix[i][0] = i;
         for (let j = 1; j < targetLength + 1; j++) {
             const realCost = source.charAt(i - 1) == target.charAt(j - 1) ? 0 : 1;
-            resultMatrix[i][j] = Math.min(
-                resultMatrix[i - 1][j] + 1,
+            resultMatrix[i][j] = Math.min(resultMatrix[i - 1][j] + 1,
                 resultMatrix[i][j - 1] + 1,
-                resultMatrix[i - 1][j - 1] + realCost
-            );
+                resultMatrix[i - 1][j - 1] + realCost);
         }
     }
 

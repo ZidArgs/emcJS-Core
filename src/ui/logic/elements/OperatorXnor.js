@@ -23,7 +23,7 @@ export default class LogicElement extends AbstractTwoChildrenElement {
             const val = ch[1].calculate(state);
             value = +!(value != +val);
         }
-        this.shadowRoot.getElementById("header").setAttribute("value", value);
+        this.logicResult = value;
         return value;
     }
 

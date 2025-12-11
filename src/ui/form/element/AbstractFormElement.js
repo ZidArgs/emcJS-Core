@@ -29,13 +29,6 @@ function isValueSet(value) {
     return true;
 }
 
-/* TODO fix memory leaks
-instead of attaching all event listeners in constructor, use inactive EventTargetManager
-the EventTargetManager should be activated in connectedCallback()
-the EventTargetManager should be deactivated in disconnectedCallback()
-
-this should also be done for all form elements
-*/
 export default class AbstractFormElement extends CustomFormElement {
 
     static #changeDebounceTime = 300;
@@ -86,43 +79,44 @@ export default class AbstractFormElement extends CustomFormElement {
         this.#resetEl = this.shadowRoot.getElementById("reset");
         this.#descriptionEl = this.shadowRoot.getElementById("description");
         this.#errorEl = this.shadowRoot.getElementById("error");
-        this.#resetEl.addEventListener("click", (event) => {
+        this.registerTargetEventHandler(this.#resetEl, "click", (event) => {
             event.stopPropagation();
             event.preventDefault();
             this.formResetCallback();
         });
-        this.#resetEl.addEventListener("keydown", (event) => {
+        this.registerTargetEventHandler(this.#resetEl, "keydown", (event) => {
             if (event.keyCode === 13) {
                 event.stopPropagation();
                 event.preventDefault();
                 this.formResetCallback();
             }
         });
-        this.#errorEl.addEventListener("click", () => {
+        this.registerTargetEventHandler(this.#errorEl, "click", () => {
             this.focus();
         });
         /* --- */
-        this.addEventListener("validity", (event) => {
+        this.registerTargetEventHandler(this, "validity", (event) => {
             this.#errorEl.i18nContent = event.message ?? "";
         });
-        this.addEventListener("invalid", (event) => {
+        this.registerTargetEventHandler(this, "invalid", (event) => {
             event.preventDefault();
         });
         /* --- */
         const fieldContainerEl = this.shadowRoot.getElementById("field-container");
-        fieldContainerEl.addEventListener("input", (event) => {
+        this.registerTargetEventHandler(fieldContainerEl, "input", (event) => {
             event.stopPropagation();
         });
-        fieldContainerEl.addEventListener("change", (event) => {
+        this.registerTargetEventHandler(fieldContainerEl, "change", (event) => {
             event.stopPropagation();
         });
         /* --- */
-        this.#labelEl.addEventListener("click", () => {
+        this.registerTargetEventHandler(this.#labelEl, "click", () => {
             this.focus();
         });
     }
 
     connectedCallback() {
+        super.connectedCallback?.();
         const isDefault = this.isDefault;
         const value = this.value;
         if (!isDefault) {
@@ -301,11 +295,12 @@ export default class AbstractFormElement extends CustomFormElement {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "value", "required", "label", "tooltip", "description", "novalidate"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "value", "required", "label", "tooltip", "description", "novalidate"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "value": {
                 if (oldValue != newValue) {

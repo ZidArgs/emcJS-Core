@@ -25,11 +25,11 @@ export default class SearchInput extends AbstractFormElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.#inputEl.addEventListener("input", () => {
+        this.registerTargetEventHandler(this.#inputEl, "input", () => {
             this.value = this.#inputEl.value;
         });
         this.#buttonEl = this.shadowRoot.getElementById("button");
-        this.#buttonEl.addEventListener("click", () => {
+        this.registerTargetEventHandler(this.#buttonEl, "click", () => {
             this.value = "";
         });
     }
@@ -54,11 +54,12 @@ export default class SearchInput extends AbstractFormElement {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "placeholder", "readonly"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "placeholder", "readonly"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "placeholder": {
                 if (oldValue != newValue) {

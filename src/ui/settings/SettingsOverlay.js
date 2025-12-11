@@ -33,11 +33,11 @@ export default class SettingsOverlay extends CustomElement {
         this.#initSettingsPanelHandlers();
         /* --- */
         this.#focusTopEl = this.shadowRoot.getElementById("focus_catcher_top");
-        this.#focusTopEl.addEventListener("focus", () => {
+        this.registerTargetEventHandler(this.#focusTopEl, "focus", () => {
             this.focusLast();
         });
         this.#focusBottomEl = this.shadowRoot.getElementById("focus_catcher_bottom");
-        this.#focusBottomEl.addEventListener("focus", () => {
+        this.registerTargetEventHandler(this.#focusBottomEl, "focus", () => {
             this.focusFirst();
         });
     }
@@ -115,25 +115,25 @@ export default class SettingsOverlay extends CustomElement {
     }
 
     #initSettingsPanelHandlers() {
-        this.#submitEl.addEventListener("click", () => {
+        this.registerTargetEventHandler(this.#submitEl, "click", () => {
             this.submit();
         });
-        this.#cancelEl.addEventListener("click", () => {
+        this.registerTargetEventHandler(this.#cancelEl, "click", () => {
             this.cancel();
         });
-        this.#settingsPanelEl.addEventListener("submit", (event) => {
+        this.registerTargetEventHandler(this.#settingsPanelEl, "submit", (event) => {
             this.#errorButtonEl.setErrors();
             this.#onsubmit(event);
         });
-        this.#settingsPanelEl.addEventListener("cancel", () => {
+        this.registerTargetEventHandler(this.#settingsPanelEl, "cancel", () => {
             this.#errorButtonEl.setErrors();
             this.#oncancel();
         });
-        this.#settingsPanelEl.addEventListener("error", (event) => {
+        this.registerTargetEventHandler(this.#settingsPanelEl, "error", (event) => {
             const {errors} = event;
             this.#errorButtonEl.setErrors(errors);
         });
-        this.#settingsPanelEl.addEventListener("validity", (event) => {
+        this.registerTargetEventHandler(this.#settingsPanelEl, "validity", (event) => {
             const {valid} = event;
             if (valid) {
                 this.#errorButtonEl.removeError(event.element);

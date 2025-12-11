@@ -1,12 +1,19 @@
+import EventManager from "../../../util/event/EventManager.js";
 import ElementManager from "../../../util/html/ElementManager.js";
 
 export default class TreeNodeElementManager extends ElementManager {
 
     #targetClass;
 
+    #eventManager = new EventManager(false);
+
     constructor(target, targetClass) {
         super(target);
         this.#targetClass = targetClass;
+    }
+
+    setEventManagerActive(value) {
+        this.#eventManager.active = value;
     }
 
     composer(key, params) {
@@ -46,7 +53,7 @@ export default class TreeNodeElementManager extends ElementManager {
             el.forceCollapsible = false;
         }
         if (typeof onClick === "function") {
-            el.addEventListener("contentclick", onClick);
+            this.#eventManager.set(el, "contentclick", onClick);
         }
         for (const name in attr) {
             const value = attr[name];
@@ -68,6 +75,10 @@ export default class TreeNodeElementManager extends ElementManager {
                 el.removeAttribute(name);
             }
         }
+    }
+
+    cleanup(el) {
+        this.#eventManager.clear(el);
     }
 
 }

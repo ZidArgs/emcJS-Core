@@ -55,12 +55,12 @@ export default class CodeInput extends AbstractFormElement {
         this.#outputWrapperEl = this.shadowRoot.getElementById("output-wrapper");
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#inputMirrorEl = this.shadowRoot.getElementById("input-mirror");
-        this.#inputEl.addEventListener("input", () => {
+        this.registerTargetEventHandler(this.#inputEl, "input", () => {
             const value = this.#inputEl.value;
             this.#updateText(value);
             this.value = value;
         });
-        this.#inputEl.addEventListener("keydown", (event) => {
+        this.registerTargetEventHandler(this.#inputEl, "keydown", (event) => {
             if (event.key === "Enter") {
                 if (!event.shiftKey === this.newlineOnShift) {
                     if (this.form != null) {
@@ -73,34 +73,34 @@ export default class CodeInput extends AbstractFormElement {
             }
         });
         /* --- */
-        this.#containerEl.addEventListener("scroll", () => {
+        this.registerTargetEventHandler(this.#containerEl, "scroll", () => {
             const scrollTop = this.#containerEl.scrollTop;
             this.#inputEl.scrollTop = scrollTop;
             this.#outputWrapperEl.scrollTop = scrollTop;
             this.#updateCaretPosition(true);
         }, {passive: false});
-        this.#inputEl.addEventListener("scroll", () => {
+        this.registerTargetEventHandler(this.#inputEl, "scroll", () => {
             const scrollTop = this.#inputEl.scrollTop;
             this.#containerEl.scrollTop = scrollTop;
             this.#outputWrapperEl.scrollTop = scrollTop;
             this.#updateCaretPosition(true);
         }, {passive: false});
         /* --- */
-        this.#inputEl.addEventListener("focus", (event) => {
+        this.registerTargetEventHandler(this.#inputEl, "focus", (event) => {
             event.stopPropagation();
             const selection = this.shadowRoot.getSelection();
             if (selection.focusNode != null) {
                 this.#updateCaretPosition();
             }
         });
-        document.addEventListener("selectionchange", () => {
+        this.registerTargetEventHandler(document, "selectionchange", () => {
             const selection = this.shadowRoot.getSelection();
             if (selection.focusNode != null) {
                 this.#updateCaretPosition();
             }
         }, {passive: true});
         /* --- */
-        this.#expandButtonEl.addEventListener("click", () => {
+        this.registerTargetEventHandler(this.#expandButtonEl, "click", () => {
             if (this.#fieldEl.classList.contains("expanded")) {
                 this.#fieldEl.classList.remove("expanded");
                 this.#expandButtonEl.innerText = "⛶";
@@ -130,11 +130,12 @@ export default class CodeInput extends AbstractFormElement {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "readonly"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "readonly"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "readonly": {
                 if (oldValue != newValue) {

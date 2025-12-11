@@ -8,7 +8,6 @@ import TPL from "./RangeInput.js.html" assert {type: "html"};
 import STYLE from "./RangeInput.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./RangeInput.js.json" assert {type: "json"};
 
-// TODO react to to change instead of input on number to update slider
 // TODO react to keypress for up and down arrow on number to update slider
 export default class RangeInput extends AbstractFormElement {
 
@@ -29,7 +28,7 @@ export default class RangeInput extends AbstractFormElement {
         /* --- */
         this.#inputContainerEl = this.shadowRoot.getElementById("input-container");
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.#inputEl.addEventListener("input", (event) => {
+        this.registerTargetEventHandler(this.#inputEl, "input", (event) => {
             event.stopPropagation();
             const value = this.#inputEl.value;
             this.#numberEl.value = value;
@@ -43,7 +42,7 @@ export default class RangeInput extends AbstractFormElement {
         }).observe(this.#inputEl);
         /* --- */
         this.#numberEl = this.shadowRoot.getElementById("number");
-        this.#numberEl.addEventListener("change", (event) => {
+        this.registerTargetEventHandler(this.#numberEl, "change", (event) => {
             event.stopPropagation();
             const value = this.#numberEl.value;
             this.#inputEl.value = value;
@@ -72,11 +71,12 @@ export default class RangeInput extends AbstractFormElement {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "min", "max", "scratched"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "min", "max", "scratched"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "min":
             case "max": {

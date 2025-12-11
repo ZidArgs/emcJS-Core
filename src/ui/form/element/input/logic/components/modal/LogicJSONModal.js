@@ -34,13 +34,13 @@ export default class LogicJSONModal extends Modal {
         this.#contentEl.append(this.#jsonEl);
         /* --- */
         this.#cancelEl = els.getElementById("cancel");
-        this.#cancelEl.addEventListener("click", () => {
+        this.registerTargetEventHandler(this.#cancelEl, "click", () => {
             this.close();
         });
         this.#footerEl.append(this.#cancelEl);
         /* --- */
         this.#submitEl = els.getElementById("submit");
-        this.#submitEl.addEventListener("click", () => {
+        this.registerTargetEventHandler(this.#submitEl, "click", () => {
             if (this.#jsonEl.validationMessage === "") {
                 const errors = LogicValidator.validate(this.value);
                 if (errors.length > 0) {
@@ -54,7 +54,7 @@ export default class LogicJSONModal extends Modal {
         });
         this.#footerEl.append(this.#submitEl);
         /* --- */
-        this.#jsonEl.addEventListener("input", () => {
+        this.registerTargetEventHandler(this.#jsonEl, "input", () => {
             this.#validateInput();
         });
     }

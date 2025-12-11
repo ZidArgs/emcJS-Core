@@ -1,5 +1,6 @@
 #ref {
-    margin: 0.2em;
+    align-self: flex-start;
+    margin: 5px;
 }
 
 #ref:empty::after {

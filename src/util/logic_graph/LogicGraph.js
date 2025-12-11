@@ -423,6 +423,20 @@ export default class LogicGraph {
         return obj;
     }
 
+    getMemory() {
+        const obj = {};
+        for (const [k, v] of this.#memoryIn) {
+            obj[k] = v;
+        }
+        for (const [k, v] of this.#memoryOut) {
+            obj[k] = v;
+        }
+        for (const k of this.#forcedReachables) {
+            obj[k] = true;
+        }
+        return obj;
+    }
+
     has(ref) {
         return this.#forcedReachables.has(ref) || this.#memoryOut.has(ref);
     }

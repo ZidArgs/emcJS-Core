@@ -1,5 +1,5 @@
-import "../../symbols/CloseSymbol.js";
 import AbstractMessage from "./AbstractMessage.js";
+import "../../symbols/CloseSymbol.js";
 import TPL from "./Message.js.html" assert {type: "html"};
 import STYLE from "./Message.js.css" assert {type: "css"};
 
@@ -11,7 +11,7 @@ export default class Message extends AbstractMessage {
 
     #closeEl;
 
-    #autocloseEL;
+    #autocloseEl;
 
     constructor(opts = {}) {
         const {
@@ -22,16 +22,16 @@ export default class Message extends AbstractMessage {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#closeEl = this.shadowRoot.getElementById("close");
-        this.#closeEl.addEventListener("click", (event) => {
+        this.registerTargetEventHandler(this.#closeEl, "click", (event) => {
             event.stopPropagation();
             this.remove();
         });
         /* --- */
         const waitTime = parseInt(time) || TIME;
         if (time > 0) {
-            this.#autocloseEL = this.shadowRoot.getElementById("autoclose");
-            this.#autocloseEL.style.animation = `autoclose ${waitTime}s linear 1`;
-            this.#autocloseEL.addEventListener("animationend", (event) => {
+            this.#autocloseEl = this.shadowRoot.getElementById("autoclose");
+            this.#autocloseEl.style.animation = `autoclose ${waitTime}s linear 1`;
+            this.registerTargetEventHandler(this.#autocloseEl, "animationend", (event) => {
                 event.stopPropagation();
                 this.remove();
             });

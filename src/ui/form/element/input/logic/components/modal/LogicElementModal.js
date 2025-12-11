@@ -34,12 +34,12 @@ export default class LogicElementModal extends Modal {
         this.#contentEl.append(this.#containerEl);
         /* --- */
         this.#cancelEl = els.getElementById("cancel");
-        this.#cancelEl.addEventListener("click", () => {
+        this.registerTargetEventHandler(this.#cancelEl, "click", () => {
             this.close();
         });
         this.#footerEl.append(this.#cancelEl);
         /* --- */
-        this.#containerEl.addEventListener("click", (event) => {
+        this.registerTargetEventHandler(this.#containerEl, "click", (event) => {
             const targetEl = event.target;
             if (targetEl instanceof AbstractElement) {
                 this.remove();
@@ -51,13 +51,13 @@ export default class LogicElementModal extends Modal {
             }
         });
         /* --- */
-        LogicOperatorRegistry.addEventListener("change", (event) => {
+        this.registerTargetEventHandler(LogicOperatorRegistry, "change", (event) => {
             const {group} = event;
             if (this.#operatorGroups.has(group)) {
                 this.#refreshOperatorGroup(group);
             }
         });
-        LogicOperatorRegistry.addEventListener("caption", (event) => {
+        this.registerTargetEventHandler(LogicOperatorRegistry, "caption", (event) => {
             const {
                 group, caption
             } = event;

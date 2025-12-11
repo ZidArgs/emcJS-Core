@@ -98,7 +98,7 @@ export default class OrderedMap {
     }
 
     keys() {
-        return new OrderedMapIterator(this.#index);
+        return new OrderedMapIterator(this.#getKeys());
     }
 
     values() {
@@ -148,7 +148,11 @@ export default class OrderedMap {
     }
 
     [Symbol.iterator]() {
-        return new OrderedMapIterator(this.#getEntries());
+        return this.entries();
+    }
+
+    #getKeys() {
+        return this.#index;
     }
 
     #getValues() {
@@ -164,7 +168,7 @@ export default class OrderedMap {
         const result = [];
         for (const key of this.#index) {
             const value = this.#values.get(key);
-            result.push([value, key]);
+            result.push([key, value]);
         }
         return result;
     }

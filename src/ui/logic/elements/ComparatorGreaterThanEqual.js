@@ -24,7 +24,7 @@ export default class ComparatorGreaterThanEqual extends AbstractTwoChildrenEleme
             value = value >= val;
         }
         value = +!!value;
-        this.shadowRoot.getElementById("header").setAttribute("value", value);
+        this.logicResult = value;
         return value;
     }
 

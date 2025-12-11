@@ -29,7 +29,7 @@ export default class BoolOrLogicInput extends AbstractFormElement {
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#logicEl = this.shadowRoot.getElementById("logic");
-        this.#inputEl.addEventListener("input", () => {
+        this.registerTargetEventHandler(this.#inputEl, "input", () => {
             const value = this.#inputEl.value;
             if (value === "logic") {
                 this.#logicEl.classList.add("active");
@@ -44,7 +44,7 @@ export default class BoolOrLogicInput extends AbstractFormElement {
                 }
             }
         });
-        this.#logicEl.addEventListener("change", () => {
+        this.registerTargetEventHandler(this.#logicEl, "change", () => {
             const value = this.#inputEl.value;
             if (value === "logic") {
                 this.value = this.#logicEl.value ?? {};
@@ -120,11 +120,12 @@ export default class BoolOrLogicInput extends AbstractFormElement {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "name", "readonly", "nullable"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "name", "readonly", "nullable"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "name":{
                 if (oldValue != newValue) {

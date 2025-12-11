@@ -425,8 +425,8 @@
 
     input[type="checkbox"] {
         position: relative;
-        display: flex;
         box-sizing: border-box;
+        display: flex;
         justify-content: center;
         align-items: center;
         appearance: none;
@@ -465,12 +465,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            font-size: 14px;
+            line-height: 1.2em;
+            font-weight: bold;
         }
 
         &:checked::before {
-            line-height: 1.2em;
-            font-weight: bold;
-            content: "✓";
+            content: "✖";
         }
 
         &:indeterminate::before {

@@ -22,13 +22,13 @@ export default class PasswordInput extends AbstractFormElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.#inputEl.addEventListener("input", () => {
+        this.registerTargetEventHandler(this.#inputEl, "input", () => {
             this.value = this.#inputEl.value;
         });
         /* --- */
         this.#buttonEl = this.shadowRoot.getElementById("button");
         this.#tooltipEl = this.shadowRoot.getElementById("tooltip");
-        this.#buttonEl.addEventListener("change", (event) => {
+        this.registerTargetEventHandler(this.#buttonEl, "change", (event) => {
             const showValue = this.#buttonEl.checked;
             this.#tooltipEl.i18nTooltip = showValue ? "Input shown" : "Input hidden";
             this.#inputEl.type = showValue ? "text" : "password";
@@ -91,11 +91,12 @@ export default class PasswordInput extends AbstractFormElement {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "placeholder", "readonly", "minlength", "maxlength"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "placeholder", "readonly", "minlength", "maxlength"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "placeholder": {
                 if (oldValue != newValue) {

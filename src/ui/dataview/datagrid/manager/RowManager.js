@@ -1,4 +1,5 @@
 import ArraySet from "../../../../data/collection/ArraySet.js";
+import EventManager from "../../../../util/event/EventManager.js";
 import {debounce} from "../../../../util/Debouncer.js";
 import {isArrayOf} from "../../../../util/helper/CheckType.js";
 import {isEqual} from "../../../../util/helper/Comparator.js";
@@ -39,6 +40,8 @@ export default class RowManager extends EventTarget {
 
     #draggingRowEl;
 
+    #eventManager = new EventManager(false);
+
     constructor(target, cellCache, dataGridId) {
         if (!(target instanceof HTMLTableSectionElement)) {
             throw new TypeError("target must be of type HTMLTableSectionElement");
@@ -50,6 +53,13 @@ export default class RowManager extends EventTarget {
         this.#dataGridId = dataGridId;
         this.#cellCache = cellCache;
         this.#target = target;
+    }
+
+    setEventManagerActive(value) {
+        this.#eventManager.active = value;
+        for (const cellManager of this.#cellManagers) {
+            cellManager.setEventManagerActive(value);
+        }
     }
 
     getSelectionStatus() {
@@ -210,8 +220,11 @@ export default class RowManager extends EventTarget {
             rowEl.remove();
             this.#elements.delete(key);
             if (noCache) {
+                this.#eventManager.clear(rowEl);
                 this.#elementCache.delete(key);
                 this.#rowDataCache.delete(key);
+                const cellManager = this.#cellManagers.get(key);
+                this.#eventManager.clear(cellManager);
                 this.#cellManagers.delete(key);
             }
         }
@@ -252,29 +265,32 @@ export default class RowManager extends EventTarget {
 
     composer(key) {
         const rowEl = document.createElement("tr");
-        rowEl.addEventListener("dragstart", (event) => {
+        this.#eventManager.set(rowEl, "dragstart", (event) => {
             this.#draggingRowEl = rowEl;
             rowEl.classList.add("dragging");
             event.dataTransfer.dropEffect = "move";
             event.dataTransfer.setDragImage(DRAG_PREVIEW, 0, 0);
         });
-        rowEl.addEventListener("dragend", () => {
+        this.#eventManager.set(rowEl, "dragend", () => {
             this.#draggingRowEl = null;
             rowEl.classList.remove("dragging");
             this.#updateSortOrder();
         });
-        rowEl.addEventListener("dragover", (e) => {
+        this.#eventManager.set(rowEl, "dragover", (e) => {
             this.#dragOverItem(e.currentTarget, e.clientY);
         });
 
         const cellManager = new CellManager(rowEl, this.#cellCache, this.#dataGridId);
+        if (this.#eventManager.active) {
+            cellManager.connectedCallback();
+        }
         cellManager.sortable = this.#sortable;
         cellManager.selectable = this.#selectable;
         cellManager.selectEnd = this.#selectEnd;
-        cellManager.addEventListener("beforerender", () => {
+        this.#eventManager.set(cellManager, "beforerender", () => {
             this.dispatchEvent(new Event("beforerender"));
         });
-        cellManager.addEventListener("afterrender", () => {
+        this.#eventManager.set(cellManager, "afterrender", () => {
             this.dispatchEvent(new Event("afterrender"));
         });
         this.#cellManagers.set(key, cellManager);

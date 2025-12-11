@@ -19,12 +19,12 @@ export default class RestrictorMax extends AbstractRestrictorElement {
             const val = ch[0].calculate(state);
             const v = parseFloat(val);
             if (isNaN(v)) {
-                this.shadowRoot.getElementById("header").setAttribute("value", "NaN");
+                this.logicResult = "NaN";
                 return 0;
             }
-            value = +(v <= this.shadowRoot.getElementById("input").value);
+            value = +(v <= this.value);
         }
-        this.shadowRoot.getElementById("header").setAttribute("value", value);
+        this.logicResult = value;
         return value;
     }
 

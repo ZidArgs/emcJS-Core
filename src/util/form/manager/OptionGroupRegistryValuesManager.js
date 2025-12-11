@@ -26,7 +26,7 @@ export default class OptionGroupRegistryValuesManager {
             this.#loadOptionsFromRegistry();
         });
         /* --- */
-        this.#targetEl.addEventListener("change", () => {
+        this.#targetEl.registerTargetEventHandler(this.#targetEl, "change", () => {
             const value = this.#targetEl.value;
             for (const token of value) {
                 this.#optionGroupRegistry.setAll(token);

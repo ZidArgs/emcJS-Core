@@ -37,13 +37,13 @@ export default class ListInput extends AbstractFormElement {
         this.#addEl = this.shadowRoot.getElementById("add");
         this.#dataManager = new SimpleDataProvider(this.#gridEl);
         /* --- */
-        this.#addEl.addEventListener("click", (event) => {
+        this.registerTargetEventHandler(this.#addEl, "click", (event) => {
             event.stopPropagation();
             event.preventDefault();
             this.#addElement();
         });
         /* --- */
-        this.#gridEl.addEventListener("action::delete", (event) => {
+        this.registerTargetEventHandler(this.#gridEl, "action::delete", (event) => {
             event.stopPropagation();
             event.preventDefault();
             const {rowKey} = event.data;
@@ -51,7 +51,7 @@ export default class ListInput extends AbstractFormElement {
         });
         /* --- */
         this.#searchEl = this.shadowRoot.getElementById("search");
-        this.#searchEl.addEventListener("change", () => {
+        this.registerTargetEventHandler(this.#searchEl, "change", () => {
             const options = {filter: {}};
             if (this.#searchEl.value != "") {
                 options.filter = {key: this.#searchEl.value};
@@ -60,7 +60,7 @@ export default class ListInput extends AbstractFormElement {
         }, true);
         /* --- */
         this.#labelEl = this.shadowRoot.getElementById("label");
-        this.#labelEl.addEventListener("click", (event) => {
+        this.registerTargetEventHandler(this.#labelEl, "click", (event) => {
             event.preventDefault();
             this.#searchEl.focus();
         });
@@ -121,11 +121,12 @@ export default class ListInput extends AbstractFormElement {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "readonly", "sorted"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "readonly", "sorted"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "readonly": {
                 if (oldValue != newValue) {

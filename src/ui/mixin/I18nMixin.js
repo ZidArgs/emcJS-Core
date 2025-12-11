@@ -71,14 +71,15 @@ export default createMixin((superclass) => class I18nMixin extends superclass {
 
     static get observedAttributes() {
         if (super.observedAttributes) {
-            return [...super.observedAttributes, ...this.i18nObservedAttributes];
+            const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, ...this.i18nObservedAttributes];
         }
         return this.i18nObservedAttributes;
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         if (super.attributeChangedCallback) {
-            super.attributeChangedCallback(name, oldValue, newValue);
+            super.attributeChangedCallback?.(name, oldValue, newValue);
         }
         if (oldValue != newValue && this.constructor.i18nObservedAttributes.includes(name)) {
             if (newValue) {

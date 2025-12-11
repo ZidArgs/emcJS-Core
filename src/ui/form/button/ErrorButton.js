@@ -1,13 +1,16 @@
 import Button from "./Button.js";
+
 import {registerFocusable} from "../../../util/helper/html/ElementFocusHelper.js";
 import {deepClone} from "../../../util/helper/DeepClone.js";
 import {debounce} from "../../../util/Debouncer.js";
+import ErrorButtonItemsElementManager from "./manager/ErrorButtonItemsElementManager.js";
 import "../../i18n/I18nLabel.js";
 import TPL from "./ErrorButton.js.html" assert {type: "html"};
 import STYLE from "./ErrorButton.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./ErrorButton.js.json" assert {type: "json"};
-import EventTargetManager from "../../../util/event/EventTargetManager.js";
 
+// TODO use ElementManager instead of #renderErrorLabel
+// use ElementManager cleanup method for event handler removal
 export default class ErrorButton extends Button {
 
     static get formConfigurationFields() {
@@ -24,11 +27,7 @@ export default class ErrorButton extends Button {
 
     #errorList = new Map();
 
-    #scrollContainerEventHandler = new EventTargetManager(null, false);
-
-    #windowEventHandler = new EventTargetManager(window, false);
-
-    #thisEventHandler = new EventTargetManager(this, false);
+    #errorItemsElementManager;
 
     constructor() {
         super();
@@ -38,22 +37,22 @@ export default class ErrorButton extends Button {
         this.#buttonEl = this.shadowRoot.getElementById("button");
         this.#scrollContainerEl = this.shadowRoot.getElementById("scroll-container");
         this.#errorContainerEl = this.shadowRoot.getElementById("error-container");
-        this.#scrollContainerEventHandler.switchTarget(this.#errorContainerEl);
-        this.#scrollContainerEventHandler.set("wheel", (event) => {
+        this.#errorItemsElementManager = new ErrorButtonItemsElementManager(this.#errorContainerEl);
+        this.registerTargetEventHandler(this.#errorContainerEl, "wheel", (event) => {
             event.stopPropagation();
         }, {passive: true});
         /* --- */
-        this.#windowEventHandler.set(["wheel", "blur"], () => {
+        this.registerTargetEventHandler(window, ["wheel", "blur"], () => {
             if (this.#isPopupVisible) {
                 this.#closePopup();
             }
         }, {passive: true});
-        this.#windowEventHandler.set("mousedown", (event) => {
+        this.registerTargetEventHandler(window, "mousedown", (event) => {
             if (this.#isPopupVisible && !this.contains(event.target)) {
                 this.#closePopup();
             }
         }, {passive: true});
-        this.#thisEventHandler.set("mousedown", (event) => {
+        this.registerTargetEventHandler(this, "mousedown", (event) => {
             if (this.#isPopupVisible) {
                 event.stopImmediatePropagation();
             }
@@ -63,17 +62,13 @@ export default class ErrorButton extends Button {
     }
 
     connectedCallback() {
-        super.connectedCallback();
-        this.#scrollContainerEventHandler.active = true;
-        this.#windowEventHandler.active = true;
-        this.#thisEventHandler.active = true;
+        super.connectedCallback?.();
+        this.#errorItemsElementManager.setEventManagerActive(true);
     }
 
     disconnectedCallback() {
-        super.disconnectedCallback();
-        this.#scrollContainerEventHandler.active = false;
-        this.#windowEventHandler.active = false;
-        this.#thisEventHandler.active = false;
+        super.disconnectedCallback?.();
+        this.#errorItemsElementManager.setEventManagerActive(false);
     }
 
     clickHandler(event) {
@@ -105,25 +100,19 @@ export default class ErrorButton extends Button {
     }
 
     addError(errorEntry) {
-        const inputEl = errorEntry.element;
-        if (this.#errorList.has(inputEl)) {
-            const errorEl = this.#errorList.get(inputEl);
-            this.#renderErrorLabel(errorEntry, errorEl);
-        } else {
-            const errorLabelEl = this.#renderErrorLabel(errorEntry);
-            this.#errorList.set(inputEl, errorLabelEl);
-            this.#errorContainerEl.append(errorLabelEl);
-        }
-        this.#updateErrorCount();
+        const entry = {
+            ...errorEntry,
+            key: errorEntry.name
+        };
+        this.#errorList.set(entry.element, entry);
+        this.#updateErrors();
     }
 
     removeError(inputEl) {
         if (this.#errorList.has(inputEl)) {
-            const errorLabelEl = this.#errorList.get(inputEl);
-            errorLabelEl.remove();
             this.#errorList.delete(inputEl);
+            this.#updateErrors();
         }
-        this.#updateErrorCount();
     }
 
     #openPopup() {
@@ -160,30 +149,8 @@ export default class ErrorButton extends Button {
         this.#scrollContainerEl.style.zIndex = "";
     }
 
-    #renderErrorLabel(errorEntry, errorEl) {
-        const name = errorEntry.label ? `<emc-i18n-label i18n-value="${errorEntry.label}"></emc-i18n-label>` : errorEntry.name ?? "";
-        errorEl = errorEl ?? document.createElement("div");
-        errorEl.className = "error-label";
-        errorEl.innerHTML = `Errors in field "${name}":`;
-        // ---
-        const ulEl = document.createElement("ul");
-        for (const error of errorEntry.errors) {
-            const liEl = document.createElement("li");
-            const textboxEl = document.createElement("emc-i18n-textbox");
-            textboxEl.i18nContent = error;
-            liEl.append(textboxEl);
-            ulEl.append(liEl);
-        }
-        errorEl.append(ulEl);
-        // ---
-        errorEl.addEventListener("click", () => {
-            errorEntry.element.focus();
-            this.#closePopup();
-        });
-        return errorEl;
-    }
-
-    #updateErrorCount = debounce(() => {
+    #updateErrors = debounce(() => {
+        this.#errorItemsElementManager.manage([...this.#errorList.values()]);
         const errorCount = this.#errorList.size;
         this.setCount(errorCount);
     });

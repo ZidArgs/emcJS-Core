@@ -1,5 +1,6 @@
 // main
 import ModalDialog from "/emcJS/ui/modal/ModalDialog.js";
+import SectionTreeManager from "/emcJS/util/form/manager/SectionTreeManager.js";
 import "/emcJS/ui/Page.js";
 import "/emcJS/ui/tree/Tree.js";
 // form
@@ -13,8 +14,10 @@ formContext.hideErrors = true;
 const formContainerEl = document.getElementById("form");
 formContext.registerFormContainer(formContainerEl);
 
+const sectionTreeManager = new SectionTreeManager();
 const formSectionNavigationEl = document.getElementById("form-section-navigation");
-formContainerEl.setFormSectionNavigationElement(formSectionNavigationEl);
+sectionTreeManager.setFormSectionNavigationElement(formSectionNavigationEl);
+sectionTreeManager.observe(formContainerEl);
 
 const errorButtonEl = document.getElementById("error-button");
 

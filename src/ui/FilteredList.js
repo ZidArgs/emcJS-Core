@@ -9,19 +9,22 @@ export default class FilteredList extends CustomElement {
 
     #headerEl;
 
+    #containerEl;
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#headerEl = this.shadowRoot.getElementById("header");
-        this.shadowRoot.getElementById("container").addEventListener("slotchange", () => {
+        this.#containerEl = this.shadowRoot.getElementById("container");
+        this.registerTargetEventHandler(this.#containerEl, "slotchange", () => {
             // TODO only check new elements
             // TODO reset removed elements
             // header.search
         });
         /* header */
-        this.#headerEl.addEventListener("search", (event) => {
+        this.registerTargetEventHandler(this.#headerEl, "search", (event) => {
             const all = this.querySelectorAll(":scope > :not(emc-collapsepanel), emc-collapsepanel > :not(emc-collapsepanel)");
             const panels = this.querySelectorAll("emc-collapsepanel");
             if (event.value) {

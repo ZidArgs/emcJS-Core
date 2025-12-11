@@ -52,12 +52,13 @@ export default class FileResource extends AbstractResource {
             if (this.#loaded) {
                 resolve(this);
             } else {
-                this.addEventListener("load", () => {
+                const handler = ()=> {
+                    this.removeEventListener("load", handler);
+                    this.removeEventListener("error", handler);
                     resolve(this);
-                });
-                this.addEventListener("error", () => {
-                    resolve(this);
-                });
+                };
+                this.addEventListener("load", handler);
+                this.addEventListener("error", handler);
             }
         });
     }

@@ -1,3 +1,6 @@
+import EventManager from "../../event/EventManager.js";
+
+// TODO use eventMAnager
 export default class ListSelectionHelper extends EventTarget {
 
     #target;
@@ -6,18 +9,20 @@ export default class ListSelectionHelper extends EventTarget {
 
     #skipFn;
 
+    #eventManager = new EventManager(false);
+
     constructor(target, container, skipFn) {
         super();
         this.#target = target;
         this.#container = container;
         this.#skipFn = skipFn;
         /* --- */
-        target.addEventListener("blur", (event) => {
+        this.#eventManager.set(target, "blur", (event) => {
             this.#cancelSelection();
             event.stopPropagation();
             return false;
         });
-        target.addEventListener("keydown", (event) => {
+        this.#eventManager.set(target, "keydown", (event) => {
             if (!("readonly" in target) || !target.readonly) {
                 switch (event.key) {
                     case "Escape": {
@@ -29,7 +34,7 @@ export default class ListSelectionHelper extends EventTarget {
                 }
             }
         });
-        target.addEventListener("keydown", (event) => {
+        this.#eventManager.set(target, "keydown", (event) => {
             if (!("readonly" in target) || !target.readonly) {
                 switch (event.key) {
                     case "ArrowUp": {
@@ -41,6 +46,10 @@ export default class ListSelectionHelper extends EventTarget {
                 }
             }
         });
+    }
+
+    setEventManagerActive(value) {
+        this.#eventManager.active = value;
     }
 
     #cancelSelection() {

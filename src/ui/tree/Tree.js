@@ -31,7 +31,7 @@ export default class Tree extends CustomElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#treeEl = this.shadowRoot.getElementById("tree");
-        this.#treeEl.addEventListener("select", (event) => {
+        this.registerTargetEventHandler(this.#treeEl, "select", (event) => {
             if (!event.data.isSelected) {
                 const {
                     element, path, refPath
@@ -52,13 +52,13 @@ export default class Tree extends CustomElement {
                 }
             }
         });
-        this.#treeEl.addEventListener("blur", () => {
+        this.registerTargetEventHandler(this.#treeEl, "blur", () => {
             const keyboardMarked = this.querySelector(".keyboard-marked");
             if (keyboardMarked != null) {
                 keyboardMarked.classList.remove("keyboard-marked");
             }
         });
-        this.#treeEl.addEventListener("focus", () => {
+        this.registerTargetEventHandler(this.#treeEl, "focus", () => {
             const currentEl = this.querySelector(".keyboard-marked") ?? this.querySelector(".marked");
             if (currentEl == null) {
                 const element = this.#getElementByPath([0]);
@@ -68,7 +68,7 @@ export default class Tree extends CustomElement {
             }
         });
         /* --- */
-        this.addEventListener("keydown", (event) => {
+        this.registerTargetEventHandler(this, "keydown", (event) => {
             const {key} = event;
             if (key === "ArrowUp") {
                 const currentEl = this.querySelector(".keyboard-marked") ?? this.querySelector(".marked");
@@ -139,11 +139,20 @@ export default class Tree extends CustomElement {
     }
 
     connectedCallback() {
+        super.connectedCallback();
+
         const sorted = this.sorted;
         this.#i18nEventManager.active = sorted;
         if (sorted) {
             this.#elementManager.registerSortFunction(this.#sortByNameFunction);
         }
+        this.#elementManager.setEventManagerActive(true);
+    }
+
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        this.#i18nEventManager.active = false;
+        this.#elementManager.setEventManagerActive(false);
     }
 
     set sorted(value) {

@@ -16,8 +16,6 @@ export default class DataGridCellRelation extends DataGridCell {
 
     #inputEl;
 
-    #inputEventManager;
-
     #optionGroup = null;
 
     #optionGroupEventTargetManager = new EventTargetManager();
@@ -32,10 +30,25 @@ export default class DataGridCellRelation extends DataGridCell {
         this.#typeEl = this.shadowRoot.getElementById("type");
         this.#inputEl = this.shadowRoot.getElementById("input");
         /* --- */
-        this.#inputEventManager = new EventTargetManager(this.#inputEl);
-        this.#inputEventManager.set("input", (event) => {
-            this.#onInput(event);
+        this.registerTargetEventHandler(this.#inputEl, "input", (event) => {
+            if (this.editable) {
+                this.#onInput(event);
+            }
         });
+        this.#optionGroupEventTargetManager.set("change", () => {
+            this.#loadOptionsFromGroup();
+        });
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+        this.#optionGroupEventTargetManager.active = true;
+        this.#loadOptionsFromGroup();
+    }
+
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        this.#optionGroupEventTargetManager.active = false;
     }
 
     set value(val) {
@@ -55,20 +68,14 @@ export default class DataGridCellRelation extends DataGridCell {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "editable", "disabled", "readonly", "optiongroup"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "editable", "disabled", "readonly", "optiongroup"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         if (oldValue != newValue) {
             switch (name) {
-                case "editable": {
-                    if (this.editable) {
-                        this.#inputEventManager.active = true;
-                    } else {
-                        this.#inputEventManager.active = false;
-                    }
-                } break;
                 case "disabled": {
                     this.#inputEl.disabled = this.disabled;
                 } break;

@@ -1,4 +1,5 @@
 import CustomElement from "../element/CustomElement.js";
+import EventManager from "../../util/event/EventManager.js";
 import {
     isFunction,
     isHttpUrl
@@ -31,6 +32,7 @@ function encodeWindowFeatures(input) {
     }
 }
 
+// TODO use EventManager for navigation elements
 export default class NavBar extends CustomElement {
 
     #containerEl;
@@ -43,6 +45,8 @@ export default class NavBar extends CustomElement {
 
     #navigationHandler = null;
 
+    #navigationEventManager = new EventManager(false);
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
@@ -54,7 +58,7 @@ export default class NavBar extends CustomElement {
         this.#contentEl = this.shadowRoot.getElementById("content");
         this.#hamburgerEl = this.shadowRoot.getElementById("hamburger-button");
         this.#coverEl = this.shadowRoot.getElementById("cover");
-        this.#hamburgerEl.addEventListener("click", () => {
+        this.registerTargetEventHandler(this.#hamburgerEl, "click", () => {
             if (this.#containerEl.classList.contains("open")) {
                 this.#containerEl.classList.remove("open");
                 this.#containerEl.classList.remove("cover");
@@ -65,12 +69,22 @@ export default class NavBar extends CustomElement {
                 this.#hamburgerEl.open = true;
             }
         });
-        this.#coverEl.addEventListener("click", () => {
+        this.registerTargetEventHandler(this.#coverEl, "click", () => {
             this.#containerEl.classList.remove("open");
             this.#containerEl.classList.remove("cover");
             closeAll(this.#contentEl);
             this.#hamburgerEl.open = false;
         });
+    }
+
+    connectedCallback() {
+        super.connectedCallback?.();
+        this.#navigationEventManager.active = true;
+    }
+
+    disconnectedCallback() {
+        super.disconnectedCallback?.();
+        this.#navigationEventManager.active = false;
     }
 
     set maxWidth(value) {
@@ -94,6 +108,7 @@ export default class NavBar extends CustomElement {
     }
 
     loadNavigation(config) {
+        this.#navigationEventManager.clear();
         this.#contentEl.innerHTML = "";
         for (const item of config) {
             this.#generateElement(this.#contentEl, item);
@@ -131,7 +146,7 @@ export default class NavBar extends CustomElement {
                 }
                 // action
                 if (isFunction(config.handler)) {
-                    btnEl.addEventListener("click", (event) => {
+                    this.#navigationEventManager.set(btnEl, "click", (event) => {
                         this.#hamburgerEl.open = false;
                         this.#containerEl.classList.remove("cover");
                         this.#containerEl.classList.remove("open");
@@ -143,7 +158,7 @@ export default class NavBar extends CustomElement {
                 }
                 // href
                 if (isHttpUrl(config.href)) {
-                    btnEl.addEventListener("click", (event) => {
+                    this.#navigationEventManager.set(btnEl, "click", (event) => {
                         this.#hamburgerEl.open = false;
                         this.#containerEl.classList.remove("cover");
                         this.#containerEl.classList.remove("open");
@@ -163,7 +178,7 @@ export default class NavBar extends CustomElement {
                 }
                 // submenu events
                 if (!IS_MAIN_NAV) {
-                    btnEl.addEventListener("blur", (event) => {
+                    this.#navigationEventManager.set(btnEl, "blur", (event) => {
                         if (event.relatedTarget == null || !contentEl.contains(event.relatedTarget)) {
                             const pListEl = contentEl.parentElement;
                             const pBtnEl = pListEl.children[0];
@@ -173,7 +188,7 @@ export default class NavBar extends CustomElement {
                             event.preventDefault();
                         }
                     });
-                    btnEl.addEventListener("focus", (event) => {
+                    this.#navigationEventManager.set(btnEl, "focus", (event) => {
                         if (event.relatedTarget != null && !contentEl.contains(event.relatedTarget)) {
                             const pListEl = contentEl.parentElement;
                             const pBtnEl = pListEl.children[0];
@@ -193,7 +208,7 @@ export default class NavBar extends CustomElement {
                     listEl.append(subcontent);
                     // submenu button events
                     btnEl.expand = "closed";
-                    btnEl.addEventListener("click", (event) => {
+                    this.#navigationEventManager.set(btnEl, "click", (event) => {
                         if (btnEl.expand == "open") {
                             btnEl.expand = "closed";
                             if (IS_MAIN_NAV) {

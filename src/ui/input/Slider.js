@@ -7,22 +7,24 @@ import STYLE from "./Slider.js.css" assert {type: "css"};
  */
 export default class Slider extends CustomElement {
 
+    #sliderEl;
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        const sliderEl = this.shadowRoot.getElementById("slider");
-        sliderEl.addEventListener("change", (event) => {
-            const value = parseInt(sliderEl.value);
+        this.#sliderEl = this.shadowRoot.getElementById("slider");
+        this.registerTargetEventHandler(this.#sliderEl, "change", (event) => {
+            const value = parseInt(this.#sliderEl.value);
             this.setAttribute("value", value);
             const ev = new Event("change");
             ev.value = value;
             this.dispatchEvent(ev);
             event.stopPropagation();
         });
-        sliderEl.addEventListener("input", (event) => {
-            const value = parseInt(sliderEl.value);
+        this.registerTargetEventHandler(this.#sliderEl, "input", (event) => {
+            const value = parseInt(this.#sliderEl.value);
             this.setAttribute("value", value);
             const ev = new Event("input");
             ev.value = value;
@@ -61,16 +63,15 @@ export default class Slider extends CustomElement {
 
     attributeChangedCallback(name, oldValue, newValue) {
         if (oldValue != newValue) {
-            const sliderEl = this.shadowRoot.getElementById("slider");
             switch (name) {
                 case "min": {
-                    sliderEl.min = newValue;
+                    this.#sliderEl.min = newValue;
                 } break;
                 case "max": {
-                    sliderEl.max = newValue;
+                    this.#sliderEl.max = newValue;
                 } break;
                 case "value": {
-                    sliderEl.value = newValue;
+                    this.#sliderEl.value = newValue;
                 } break;
             }
         }

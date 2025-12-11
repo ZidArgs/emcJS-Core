@@ -111,15 +111,17 @@
 
 .multi-select::before {
     position: absolute;
+    box-sizing: border-box;
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 14px;
+    line-height: 1.2em;
+    font-weight: bold;
 }
 
 .multi-select:checked::before {
-    line-height: 1.2em;
-    font-weight: bold;
-    content: "✓";
+    content: "✖";
 }
 
 .multi-select:indeterminate::before {

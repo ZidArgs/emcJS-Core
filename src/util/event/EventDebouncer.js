@@ -9,8 +9,23 @@ export default class EventDebouncer {
     #timers = new Map();
 
     constructor(target, debounceTime = 0) {
-        this.#target = target;
+        if (!(target instanceof EventTarget)) {
+            throw new TypeError("target must be an instance of EventTarget");
+        }
+        this.#setTarget(target);
         this.#debounceTime = Math.max(0, debounceTime);
+    }
+
+    #setTarget(target) {
+        if (target != null) {
+            this.#target = new WeakRef(target);
+        } else {
+            this.#target = null;
+        }
+    }
+
+    get target() {
+        return this.#target?.deref();
     }
 
     add(type, key, data) {
@@ -34,7 +49,10 @@ export default class EventDebouncer {
     #dispatchEvent(type) {
         const event = this.#events.get(type);
         if (event != null) {
-            this.#target.dispatchEvent(event);
+            const target = this.#target?.deref();
+            if (target != null) {
+                this.#target.dispatchEvent(event);
+            }
         }
     }
 

@@ -55,18 +55,18 @@ export default class DataViewControlToolbar extends CustomElementDelegating {
         this.#sizeEl = this.shadowRoot.getElementById("size");
         this.#totalEl = this.shadowRoot.getElementById("total");
         /* --- */
-        this.#firstEl.addEventListener("click", (event) => {
+        this.registerTargetEventHandler(this.#firstEl, "click", (event) => {
             event.stopPropagation();
             this.value = 0;
         });
-        this.#decreaseEl.addEventListener("click", (event) => {
+        this.registerTargetEventHandler(this.#decreaseEl, "click", (event) => {
             event.stopPropagation();
             const currentValue = this.value;
             if (currentValue > 0) {
                 this.value = currentValue - 1;
             }
         });
-        this.#increaseEl.addEventListener("click", (event) => {
+        this.registerTargetEventHandler(this.#increaseEl, "click", (event) => {
             event.stopPropagation();
             const currentValue = this.value;
             const maxValue = this.max;
@@ -74,16 +74,16 @@ export default class DataViewControlToolbar extends CustomElementDelegating {
                 this.value = currentValue + 1;
             }
         });
-        this.#lastEl.addEventListener("click", (event) => {
+        this.registerTargetEventHandler(this.#lastEl, "click", (event) => {
             event.stopPropagation();
             const maxValue = this.max;
             this.value = maxValue;
         });
-        this.#currentEl.addEventListener("change", (event) => {
+        this.registerTargetEventHandler(this.#currentEl, "change", (event) => {
             event.stopPropagation();
             this.value = this.#currentEl.value;
         });
-        this.#sizeEl.addEventListener("change", (event) => {
+        this.registerTargetEventHandler(this.#sizeEl, "change", (event) => {
             event.stopPropagation();
             this.size = this.#sizeEl.value;
         });

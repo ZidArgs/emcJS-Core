@@ -8,7 +8,6 @@ import TPL from "./StringInput.js.html" assert {type: "html"};
 import STYLE from "./StringInput.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./StringInput.js.json" assert {type: "json"};
 
-// TODO add indicator for max length
 // TODO add pattern (expected pattern as regexp) - validation
 export default class StringInput extends AbstractFormElement {
 
@@ -27,7 +26,7 @@ export default class StringInput extends AbstractFormElement {
         /* --- */
         this.#lengthInfoEl = this.shadowRoot.getElementById("length-info");
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.#inputEl.addEventListener("input", () => {
+        this.registerTargetEventHandler(this.#inputEl, "input", () => {
             this.value = this.#inputEl.value;
             this.#printTextLength();
         });
@@ -113,11 +112,12 @@ export default class StringInput extends AbstractFormElement {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "placeholder", "readonly", "minlength", "maxlength", "spellcheck", "autocapitalize", "autocomplete", "autocorrect"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "placeholder", "readonly", "minlength", "maxlength", "spellcheck", "autocapitalize", "autocomplete", "autocorrect"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "readonly": {
                 if (oldValue != newValue) {

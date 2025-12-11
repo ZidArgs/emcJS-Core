@@ -107,7 +107,7 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
         this.#headerSelectEl = document.createElement("input");
         this.#headerSelectEl.type = "checkbox";
         this.#headerSelectEl.name = "multiselect";
-        this.#headerSelectEl.addEventListener("change", (event) => {
+        this.registerTargetEventHandler(this.#headerSelectEl, "change", (event) => {
             event.stopPropagation();
             const value = this.#headerSelectEl.checked;
             const changedKeys = this.#rowManager.setAllVisibleRowsSelected(value);
@@ -132,14 +132,14 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
         this.#emptyContainerEl = this.shadowRoot.getElementById("empty-container");
         /* --- */
         this.#columnContainerEl = this.shadowRoot.getElementById("column-container");
-        this.#columnContainerEl.addEventListener("slotchange", () => {
+        this.registerTargetEventHandler(this.#columnContainerEl, "slotchange", () => {
             this.#onSlotChange();
         });
         this.#onSlotChange();
         /* --- */
         this.#stickyObserver = new StickyObserver({root: this.#scrollContainerEl});
         this.#headerManager = new HeaderManager(this.#headerEl, this.#stickyObserver, this.#headerSelectEl, this.#internalId);
-        this.#headerManager.addEventListener("afterrender", debounce(async () => {
+        this.registerTargetEventHandler(this.#headerManager, "afterrender", debounce(async () => {
             this.#calculateCellFixes(this.#headEl);
         }));
         this.#stickyObserver.onStuckChange((entries) => {
@@ -151,13 +151,13 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
             }
         });
         this.#rowManager = new RowManager(this.#bodyEl, this.#cellCache, this.#internalId);
-        this.#rowManager.addEventListener("afterrender", debounce(() => {
+        this.registerTargetEventHandler(this.#rowManager, "afterrender", debounce(() => {
             this.#refreshEmptyStatus();
             this.#updateSelectionAfterRender();
             this.#refreshStuckAfterRender();
             this.#applyCellFixes(this.#bodyEl);
         }));
-        this.#rowManager.addEventListener("sort-change", (event) => {
+        this.registerTargetEventHandler(this.#rowManager, "sort-change", (event) => {
             event.stopPropagation();
             const {
                 newOrder, oldOrder
@@ -168,7 +168,7 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
             this.dispatchEvent(ev);
         });
         /* --- */
-        this.#tableEl.addEventListener("menu", (event) => {
+        this.registerTargetEventHandler(this.#tableEl, "menu", (event) => {
             event.stopPropagation();
             event.preventDefault();
             const {
@@ -183,7 +183,7 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
             };
             this.dispatchEvent(ev);
         });
-        this.#tableEl.addEventListener("action", (event) => {
+        this.registerTargetEventHandler(this.#tableEl, "action", (event) => {
             event.stopPropagation();
             event.preventDefault();
             const {
@@ -207,7 +207,7 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
                 this.dispatchEvent(ev);
             }
         });
-        this.#tableEl.addEventListener("edit", (event) => {
+        this.registerTargetEventHandler(this.#tableEl, "edit", (event) => {
             event.stopPropagation();
             event.preventDefault();
             const {
@@ -233,7 +233,7 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
                 this.dispatchEvent(ev);
             }
         });
-        this.#tableEl.addEventListener("selection", (event) => {
+        this.registerTargetEventHandler(this.#tableEl, "selection", (event) => {
             event.stopPropagation();
             event.preventDefault();
             const {
@@ -262,14 +262,14 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
             this.dispatchEvent(ev);
         });
         /* --- */
-        this.#tableEl.addEventListener("sort", (event) => {
+        this.registerTargetEventHandler(this.#tableEl, "sort", (event) => {
             event.stopPropagation();
             const {columnName} = event.data;
             const ev = new Event("sort");
             ev.data = {columnName};
             this.dispatchEvent(ev);
         });
-        this.#tableEl.addEventListener("unsort", (event) => {
+        this.registerTargetEventHandler(this.#tableEl, "unsort", (event) => {
             event.stopPropagation();
             const {columnName} = event.data;
             const ev = new Event("unsort");
@@ -277,13 +277,13 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
             this.dispatchEvent(ev);
         });
         /* --- */
-        this.addEventListener("dragover", (e) => {
+        this.registerTargetEventHandler(this, "dragover", (e) => {
             if (this.#rowManager.isDragging) {
                 e.preventDefault();
                 e.stopPropagation();
             }
         });
-        this.addEventListener("dragenter", (e) => {
+        this.registerTargetEventHandler(this, "dragenter", (e) => {
             if (this.#rowManager.isDragging) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -292,8 +292,14 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
     }
 
     connectedCallback() {
-        super.connectedCallback();
+        super.connectedCallback?.();
+        this.#rowManager.setEventManagerActive(true);
         this.#stretched = this.#columnDefinition.find((definition) => definition.name === this.stretched);
+    }
+
+    disconnectedCallback() {
+        super.disconnectedCallback?.();
+        this.#rowManager.setEventManagerActive(false);
     }
 
     get internalId() {
@@ -439,6 +445,9 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
                 } else {
                     selected = [];
                 }
+            }
+            for (const key of this.#selected) {
+                this.#rowManager.setRowSelected(key, false);
             }
             this.#selected.clear();
             if (this.multiple) {

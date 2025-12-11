@@ -24,6 +24,7 @@ export default class AbstractMessage extends CustomElement {
     }
 
     connectedCallback() {
+        super.connectedCallback?.();
         if (!this.hasAttribute("slot")) {
             this.setAttribute("slot", this.constructor.defaultSlot);
         }
@@ -53,6 +54,7 @@ export default class AbstractMessage extends CustomElement {
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         if (name == "slot" && !ALLOWED_SLOTS.includes(newValue)) {
             this.setAttribute("slot", this.constructor.defaultSlot);
         }

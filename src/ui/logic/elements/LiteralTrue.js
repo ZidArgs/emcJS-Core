@@ -12,7 +12,7 @@ export default class LiteralTrue extends AbstractElement {
     }
 
     calculate(/* state = {} */) {
-        this.shadowRoot.getElementById("header").setAttribute("value", "1");
+        this.logicResult = 1;
         return 1;
     }
 

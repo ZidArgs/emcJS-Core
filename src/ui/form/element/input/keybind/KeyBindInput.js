@@ -104,10 +104,10 @@ export default class KeyBindInput extends AbstractFormElement {
             }
         });
         this.#buttonEl = this.shadowRoot.getElementById("button");
-        this.#buttonEl.addEventListener("click", () => {
+        this.registerTargetEventHandler(this.#buttonEl, "click", () => {
             this.value = "";
         });
-        this.#keyBindEditPanel.addEventListener("submit", (event) => {
+        this.registerTargetEventHandler(this.#keyBindEditPanel, "submit", (event) => {
             const {
                 ctrlKey, shiftKey, altKey, metaKey, key
             } = event.value;
@@ -167,11 +167,12 @@ export default class KeyBindInput extends AbstractFormElement {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "readonly", "placeholder"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "readonly", "placeholder"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "placeholder": {
                 if (oldValue != newValue) {

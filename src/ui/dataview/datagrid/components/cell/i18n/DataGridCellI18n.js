@@ -1,5 +1,4 @@
 import {debounce} from "../../../../../../util/Debouncer.js";
-import EventTargetManager from "../../../../../../util/event/EventTargetManager.js";
 import DataGridCell from "../DataGridCell.js";
 import "../../../../../i18n/builtin/I18nInput.js";
 import "../../../../../i18n/I18nLabel.js";
@@ -15,8 +14,6 @@ export default class DataGridCellI18n extends DataGridCell {
 
     #inputEl;
 
-    #inputEventManager;
-
     constructor(dataGridId) {
         super(dataGridId);
         this.shadowRoot.getElementById("content").append(TPL.generate());
@@ -25,28 +22,22 @@ export default class DataGridCellI18n extends DataGridCell {
         this.#tooltipEl = this.shadowRoot.getElementById("tooltip");
         this.#valueEl = this.shadowRoot.getElementById("value");
         this.#inputEl = this.shadowRoot.getElementById("input");
-        /* --- */
-        this.#inputEventManager = new EventTargetManager(this.#inputEl);
-        this.#inputEventManager.set("input", (event) => {
-            this.#onInput(event);
+        this.registerTargetEventHandler(this.#inputEl, "input", (event) => {
+            if (this.editable) {
+                this.#onInput(event);
+            }
         });
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "editable", "disabled", "readonly"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "editable", "disabled", "readonly"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         if (oldValue != newValue) {
             switch (name) {
-                case "editable": {
-                    if (this.editable) {
-                        this.#inputEventManager.active = true;
-                    } else {
-                        this.#inputEventManager.active = false;
-                    }
-                } break;
                 case "disabled": {
                     this.#inputEl.disabled = this.disabled;
                 } break;

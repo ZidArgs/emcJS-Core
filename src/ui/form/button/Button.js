@@ -1,4 +1,5 @@
 import CustomFormElementDelegating from "../../element/CustomFormElementDelegating.js";
+import EventTargetManager from "../../../util/event/EventTargetManager.js";
 import {deepClone} from "../../../util/helper/DeepClone.js";
 import {registerFocusable} from "../../../util/helper/html/ElementFocusHelper.js";
 import ButtonVariants from "../../../enum/form/ButtonVariants.js";
@@ -8,7 +9,6 @@ import TPL from "./Button.js.html" assert {type: "html"};
 import STYLE from "./Button.js.css" assert {type: "css"};
 import VARIANT_STYLE from "./style/ButtonVariant.css" assert {type: "css"};
 import CONFIG_FIELDS from "./Button.js.json" assert {type: "json"};
-import EventTargetManager from "../../../util/event/EventTargetManager.js";
 
 export const BUTTON_VARIANTS = ButtonVariants;
 

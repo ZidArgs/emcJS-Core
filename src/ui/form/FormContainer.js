@@ -61,17 +61,18 @@ export default class FormContainer extends CustomElement {
             this.#applyScrollPaddingBottom(entries[0].target);
         });
         /* --- */
-        this.#contentEl.addEventListener("slotchange", () => {
+        this.registerTargetEventHandler(this.#contentEl, "slotchange", () => {
             this.#onSlotChange();
         });
         this.#onSlotChange();
         /* --- */
-        this.#contentEl.addEventListener("scroll", () => {
+        this.registerTargetEventHandler(this.#contentEl, "scroll", () => {
             this.#refreshSectionState();
         });
     }
 
     connectedCallback() {
+        super.connectedCallback?.();
         this.#mutationObserver.observe(this);
         setTimeout(() => {
             const sectionEls = this.querySelectorAll("emc-form-section");
@@ -82,6 +83,7 @@ export default class FormContainer extends CustomElement {
     }
 
     disconnectedCallback() {
+        super.disconnectedCallback?.();
         this.#mutationObserver.unobserve(this);
         const sectionEls = this.querySelectorAll("emc-form-section");
         for (const node of sectionEls) {

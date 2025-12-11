@@ -19,7 +19,7 @@ export default class LogicElement extends AbstractTwoChildrenElement {
             const val = ch[0].calculate(state);
             const v = parseFloat(val);
             if (isNaN(v)) {
-                this.shadowRoot.getElementById("header").setAttribute("value", "NaN");
+                this.logicResult = "NaN";
                 return 0;
             }
             value = v;
@@ -28,12 +28,12 @@ export default class LogicElement extends AbstractTwoChildrenElement {
             const val = ch[1].calculate(state);
             const v = parseFloat(val);
             if (isNaN(v)) {
-                this.shadowRoot.getElementById("header").setAttribute("value", "NaN");
+                this.logicResult = "NaN";
                 return 0;
             }
             value = value ** v;
         }
-        this.shadowRoot.getElementById("header").setAttribute("value", value);
+        this.logicResult = value;
         return value;
     }
 

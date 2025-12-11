@@ -13,8 +13,7 @@ export default class DataGridCellButton extends DataGridCell {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
-        /* --- */
-        this.#inputEl.addEventListener("click", (event) => {
+        this.registerTargetEventHandler(this.#inputEl, "click", (event) => {
             this.#onClick(event);
         });
     }
@@ -44,11 +43,12 @@ export default class DataGridCellButton extends DataGridCell {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "text", "icon", "tooltip", "disabled", "readonly"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "text", "icon", "tooltip", "disabled", "readonly"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         if (oldValue != newValue) {
             switch (name) {
                 case "text": {

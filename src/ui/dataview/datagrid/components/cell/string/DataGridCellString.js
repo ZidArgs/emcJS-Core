@@ -28,11 +28,12 @@ export default class DataGridCellString extends DataGridCell {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "editable", "disabled", "readonly"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "editable", "disabled", "readonly"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         if (oldValue != newValue) {
             switch (name) {
                 case "editable": {

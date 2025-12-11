@@ -21,6 +21,9 @@ const MUTATION_CONFIG = {
     attributeFilter: ["value"]
 };
 
+// TODO rename to gridselect
+// TODO add option to choose visible columns
+// TODO build real listselect similar to the old one (maybe use select in multiple mode)
 export default class ListSelect extends AbstractFormElement {
 
     static get formConfigurationFields() {
@@ -57,13 +60,13 @@ export default class ListSelect extends AbstractFormElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#optionsContainerEl = this.shadowRoot.getElementById("options-container");
-        this.#optionsContainerEl.addEventListener("slotchange", () => {
+        this.registerTargetEventHandler(this.#optionsContainerEl, "slotchange", () => {
             this.#onSlotChange();
         });
         this.#headerEl = this.shadowRoot.getElementById("header");
         /* --- */
         this.#gridEl = this.shadowRoot.getElementById("grid");
-        this.#gridEl.addEventListener("selection", (event) => {
+        this.registerTargetEventHandler(this.#gridEl, "selection", (event) => {
             event.stopPropagation();
             event.preventDefault();
             this.value = event.data;
@@ -74,7 +77,7 @@ export default class ListSelect extends AbstractFormElement {
         this.#headerSelectEl.name = "multiselect";
         this.#headerSelectEl.className = "multi-select";
         this.#headerEl.prepend(this.#headerSelectEl);
-        this.#headerSelectEl.addEventListener("change", () => {
+        this.registerTargetEventHandler(this.#headerSelectEl, "change", () => {
             const value = this.#headerSelectEl.checked;
             if (value) {
                 this.#gridEl.selectAll();
@@ -82,7 +85,7 @@ export default class ListSelect extends AbstractFormElement {
                 this.#gridEl.clearSelected();
             }
         });
-        this.#gridEl.addEventListener("selection-header", (event) => {
+        this.registerTargetEventHandler(this.#gridEl, "selection-header", (event) => {
             event.stopPropagation();
             event.preventDefault();
             this.#headerSelectEl.checked = event.checked;
@@ -92,7 +95,7 @@ export default class ListSelect extends AbstractFormElement {
         this.#dataManager = new SimpleDataProvider(this.#gridEl);
         /* --- */
         this.#searchEl = this.shadowRoot.getElementById("search");
-        this.#searchEl.addEventListener("change", () => {
+        this.registerTargetEventHandler(this.#searchEl, "change", () => {
             const options = {filter: {}};
             if (this.#searchEl.value != "") {
                 options.filter = {name: this.#searchEl.value};
@@ -106,6 +109,11 @@ export default class ListSelect extends AbstractFormElement {
         this.#i18nEventManager.set("translation", () => {
             this.#dataManager.refresh();
         });
+    }
+
+    connectedCallback() {
+        super.connectedCallback?.();
+        this.#onSlotChange();
     }
 
     formDisabledCallback(disabled) {
@@ -164,11 +172,12 @@ export default class ListSelect extends AbstractFormElement {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "readonly", "sorted", "multiple", "selectend"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "readonly", "sorted", "multiple", "selectend"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "readonly": {
                 if (oldValue != newValue) {

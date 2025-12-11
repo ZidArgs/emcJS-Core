@@ -127,15 +127,15 @@ export default class KeyBindEditPanel extends CustomElement {
             return false;
         });
         /* --- */
-        this.addEventListener("click", () => {
+        this.registerTargetEventHandler(this, "click", () => {
             this.initialFocus();
         });
         this.#focusTopEl = this.shadowRoot.getElementById("focus_catcher_top");
-        this.#focusTopEl.addEventListener("focus", () => {
+        this.registerTargetEventHandler(this.#focusTopEl, "focus", () => {
             this.initialFocus();
         });
         this.#focusBottomEl = this.shadowRoot.getElementById("focus_catcher_bottom");
-        this.#focusBottomEl.addEventListener("focus", () => {
+        this.registerTargetEventHandler(this.#focusBottomEl, "focus", () => {
             this.initialFocus();
         });
     }
@@ -220,11 +220,12 @@ export default class KeyBindEditPanel extends CustomElement {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "caption"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "caption"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "caption": {
                 if (oldValue != newValue) {

@@ -15,7 +15,7 @@ export default class Toast extends AbstractMessage {
         super({text});
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.addEventListener("click", (event) => {
+        this.registerTargetEventHandler(this, "click", (event) => {
             event.stopPropagation();
             this.remove();
         });

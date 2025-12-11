@@ -1,4 +1,3 @@
-import EventTargetManager from "../../../../../../util/event/EventTargetManager.js";
 import DataGridCell from "../DataGridCell.js";
 import BoolOrLogicModal from "./components/BoolOrLogicModal.js";
 import "../../../../../form/element/input/action/ActionInput.js";
@@ -13,8 +12,6 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
 
     #inputEl;
 
-    #inputEventManager;
-
     #boolOrLogicModal;
 
     constructor(dataGridId) {
@@ -24,13 +21,13 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
         /* --- */
         this.#valueEl = this.shadowRoot.getElementById("value");
         this.#inputEl = this.shadowRoot.getElementById("input");
-        /* --- */
-        this.#inputEventManager = new EventTargetManager(this.#inputEl);
-        this.#inputEventManager.set("change", (event) => {
-            this.#onInput(event);
-        });
         this.#inputEl.setValueRenderer((value) => this.#getRenderValue(value));
-        this.#inputEl.addEventListener("action", () => {
+        this.registerTargetEventHandler(this.#inputEl, "change", (event) => {
+            if (this.editable) {
+                this.#onInput(event);
+            }
+        });
+        this.registerTargetEventHandler(this.#inputEl, "action", () => {
             if (this.#boolOrLogicModal != null) {
                 this.#boolOrLogicModal.value = this.value;
                 this.#boolOrLogicModal.onsubmit = (event) => {
@@ -74,20 +71,14 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "editable", "disabled", "readonly", "nullable", "row-key"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "editable", "disabled", "readonly", "nullable", "row-key"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         if (oldValue != newValue) {
             switch (name) {
-                case "editable": {
-                    if (this.editable) {
-                        this.#inputEventManager.active = true;
-                    } else {
-                        this.#inputEventManager.active = false;
-                    }
-                } break;
                 case "disabled": {
                     this.#inputEl.disabled = this.disabled;
                 } break;

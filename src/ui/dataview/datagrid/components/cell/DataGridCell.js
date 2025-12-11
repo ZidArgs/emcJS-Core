@@ -26,7 +26,7 @@ export default class DataGridCell extends CustomElementDelegating {
         this.#dataGridId = dataGridId;
         this.#contentEl = this.shadowRoot.getElementById("content");
         /* --- */
-        this.addEventListener("contextmenu", (event) => {
+        this.registerTargetEventHandler(this, "contextmenu", (event) => {
             event.stopPropagation();
             event.preventDefault();
             const menuEvent = new PointerEvent("menu", event);

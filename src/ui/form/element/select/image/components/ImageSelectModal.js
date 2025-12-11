@@ -9,7 +9,6 @@ import "./ImageSelectPreview.js";
 import TPL from "./ImageSelectModal.js.html" assert {type: "html"};
 import STYLE from "./ImageSelectModal.js.css" assert {type: "css"};
 
-// FIXME choosen images will not be marked
 // TODO maybe add a new set of colors for the preview elements?
 export default class ImageSelectModal extends Modal {
 
@@ -49,7 +48,7 @@ export default class ImageSelectModal extends Modal {
 
         this.#searchEl = els.getElementById("search");
         this.#contentEl.before(this.#searchEl);
-        this.#searchEl.addEventListener("change", () => {
+        this.registerTargetEventHandler(this.#searchEl, "change", () => {
             const all = this.children;
             if (this.#searchEl.value) {
                 const regEx = new CharacterSearch(this.#searchEl.value);
@@ -75,28 +74,28 @@ export default class ImageSelectModal extends Modal {
         this.#viewSizeGiganticEl = els.getElementById("view-size-gigantic");
 
         this.#contentEl.before(this.#viewControlEl);
-        this.#viewSizeSmallEl.addEventListener("click", () => {
+        this.registerTargetEventHandler(this.#viewSizeSmallEl, "click", () => {
             this.#contentEl.style.setProperty("--icon-preview-size", "50px");
             this.#viewSizeSmallEl.active = true;
             this.#viewSizeNormalEl.active = false;
             this.#viewSizeBigEl.active = false;
             this.#viewSizeGiganticEl.active = false;
         });
-        this.#viewSizeNormalEl.addEventListener("click", () => {
+        this.registerTargetEventHandler(this.#viewSizeNormalEl, "click", () => {
             this.#contentEl.style.setProperty("--icon-preview-size", "100px");
             this.#viewSizeSmallEl.active = false;
             this.#viewSizeNormalEl.active = true;
             this.#viewSizeBigEl.active = false;
             this.#viewSizeGiganticEl.active = false;
         });
-        this.#viewSizeBigEl.addEventListener("click", () => {
+        this.registerTargetEventHandler(this.#viewSizeBigEl, "click", () => {
             this.#contentEl.style.setProperty("--icon-preview-size", "200px");
             this.#viewSizeSmallEl.active = false;
             this.#viewSizeNormalEl.active = false;
             this.#viewSizeBigEl.active = true;
             this.#viewSizeGiganticEl.active = false;
         });
-        this.#viewSizeGiganticEl.addEventListener("click", () => {
+        this.registerTargetEventHandler(this.#viewSizeGiganticEl, "click", () => {
             this.#contentEl.style.setProperty("--icon-preview-size", "400px");
             this.#viewSizeSmallEl.active = false;
             this.#viewSizeNormalEl.active = false;
@@ -105,11 +104,11 @@ export default class ImageSelectModal extends Modal {
         });
 
         this.#cancelEl = els.getElementById("cancel");
-        this.#cancelEl.addEventListener("click", () => this.cancel());
+        this.registerTargetEventHandler(this.#cancelEl, "click", () => this.cancel());
         this.#footerEl.append(this.#cancelEl);
 
         this.#submitEl = els.getElementById("submit");
-        this.#submitEl.addEventListener("click", () => this.submit());
+        this.registerTargetEventHandler(this.#submitEl, "click", () => this.submit());
         this.#footerEl.append(this.#submitEl);
         /* --- */
         this.#optionSelectEventManager.set("click", (event) => {
@@ -119,9 +118,14 @@ export default class ImageSelectModal extends Modal {
         });
         /* --- */
         this.#slotEl = this.shadowRoot.getElementById("slot");
-        this.#slotEl.addEventListener("slotchange", () => {
+        this.registerTargetEventHandler(this.#slotEl, "slotchange", () => {
             this.#onSlotChange();
         });
+    }
+
+    connectedCallback() {
+        super.connectedCallback?.();
+        this.#onSlotChange();
     }
 
     submit() {

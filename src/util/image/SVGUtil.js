@@ -13,10 +13,14 @@ class SVGUtil {
             const url = `data:image/svg+xml;base64,${btoa(SERIALIZER.serializeToString(svg))}`;
             const ctx = CANVAS.getContext("2d");
             const img = new Image();
-            img.addEventListener("load", function() {
+
+            const handler  = () => {
+                img.removeEventListener("load", handler);
                 ctx.drawImage(img, 0, 0);
                 resolve(CANVAS.toDataURL("image/png"));
-            });
+            };
+
+            img.addEventListener("load", handler);
             img.src = url;
         });
     }

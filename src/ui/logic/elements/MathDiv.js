@@ -18,16 +18,16 @@ export default class MathDiv extends AbstractInfChildrenElement {
         for (const val of ch) {
             const v = parseFloat(val);
             if (isNaN(v)) {
-                this.shadowRoot.getElementById("header").setAttribute("value", "NaN");
+                this.logicResult = "NaN";
                 return 0;
             }
             if (v === 0) {
-                this.shadowRoot.getElementById("header").setAttribute("value", "DIV 0");
+                this.logicResult = "DIV 0";
                 return 0;
             }
             value /= v;
         }
-        this.shadowRoot.getElementById("header").setAttribute("value", value);
+        this.logicResult = value;
         return value;
     }
 

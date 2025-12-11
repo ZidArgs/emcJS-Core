@@ -1,3 +1,4 @@
+import EventManagerMixin from "../mixin/EventManagerMixin.js";
 import jsonParse from "../../patches/JSONParser.js";
 import {getInnerText} from "../../util/helper/ui/ExtractText.js";
 import {
@@ -5,7 +6,7 @@ import {
 } from "../../util/helper/ui/Scroll.js";
 import STYLE from "./CustomElement.js.css" assert {type: "css"};
 
-export default class CustomElement extends HTMLElement {
+export default class CustomElement extends EventManagerMixin(HTMLElement) {
 
     constructor() {
         if (new.target === CustomElement) {
@@ -22,31 +23,6 @@ export default class CustomElement extends HTMLElement {
 
     static get delegatesFocus() {
         return false;
-    }
-
-    connectedCallback() {
-        if (super.connectedCallback) {
-            super.connectedCallback();
-        }
-    }
-
-    disconnectedCallback() {
-        if (super.disconnectedCallback) {
-            super.disconnectedCallback();
-        }
-    }
-
-    static get observedAttributes() {
-        if (super.observedAttributes) {
-            return super.observedAttributes;
-        }
-        return [];
-    }
-
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (super.attributeChangedCallback) {
-            super.attributeChangedCallback(name, oldValue, newValue);
-        }
     }
 
     getText(excludedNodeClasses = []) {

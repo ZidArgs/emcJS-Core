@@ -19,7 +19,7 @@ export default class DragElement extends CustomElement {
         /* --- */
         this.id = appUID("draggable");
         this.setAttribute("draggable", true);
-        this.addEventListener("dragstart", dragElement);
+        this.registerTargetEventHandler(this, "dragstart", dragElement);
     }
 
     get group() {

@@ -1,4 +1,5 @@
 import ArraySet from "../../../../data/collection/ArraySet.js";
+import EventManager from "../../../../util/event/EventManager.js";
 import {debounce} from "../../../../util/Debouncer.js";
 import {isEqual} from "../../../../util/helper/Comparator.js";
 import {deepClone} from "../../../../util/helper/DeepClone.js";
@@ -21,7 +22,6 @@ const BLACKLISTED_ATTRIBUTES = [
     "backcolor"
 ];
 
-// TODO use intersection observer to only render checkboxes that are actually visible
 export default class CellManager extends EventTarget {
 
     #dataGridId;
@@ -56,6 +56,8 @@ export default class CellManager extends EventTarget {
 
     #lastCellEl;
 
+    #eventManager = new EventManager(false);
+
     constructor(target, cellCache, dataGridId) {
         if (!(target instanceof HTMLTableRowElement)) {
             throw new TypeError("target must be of type HTMLTableRowElement");
@@ -84,7 +86,7 @@ export default class CellManager extends EventTarget {
         this.#selectCheckboxEl = document.createElement("input");
         this.#selectCheckboxEl.type = "checkbox";
         this.#selectCheckboxEl.name = "rowselect";
-        this.#selectCheckboxEl.addEventListener("change", (event) => {
+        this.#eventManager.set(this.#selectCheckboxEl, "change", (event) => {
             event.stopPropagation();
             const ev = new Event("selection", {
                 bubbles: true,
@@ -101,6 +103,10 @@ export default class CellManager extends EventTarget {
         this.#lastCellEl = document.createElement("td");
         this.#lastCellEl.classList.add("cell");
         this.#lastCellEl.classList.add("last-cell");
+    }
+
+    setEventManagerActive(value) {
+        this.#eventManager.active = value;
     }
 
     set selected(value) {

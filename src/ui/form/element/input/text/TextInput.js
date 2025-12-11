@@ -31,11 +31,11 @@ export default class TextInput extends AbstractFormElement {
         this.#expandButtonEl = this.shadowRoot.getElementById("expand-button");
         this.#lengthInfoEl = this.shadowRoot.getElementById("length-info");
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.#inputEl.addEventListener("input", () => {
+        this.registerTargetEventHandler(this.#inputEl, "input", () => {
             this.value = this.#inputEl.value;
             this.#printTextLength();
         });
-        this.#inputEl.addEventListener("keydown", (event) => {
+        this.registerTargetEventHandler(this.#inputEl, "keydown", (event) => {
             if (event.key === "Enter") {
                 if (!event.shiftKey === this.newlineOnShift) {
                     if (this.form != null) {
@@ -48,7 +48,7 @@ export default class TextInput extends AbstractFormElement {
             }
         });
         /* --- */
-        this.#expandButtonEl.addEventListener("click", () => {
+        this.registerTargetEventHandler(this.#expandButtonEl, "click", () => {
             if (this.#fieldEl.classList.contains("expanded")) {
                 this.#fieldEl.classList.remove("expanded");
                 this.#expandButtonEl.innerText = "⛶";
@@ -150,11 +150,12 @@ export default class TextInput extends AbstractFormElement {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "placeholder", "readonly", "minlength", "maxlength", "spellcheck", "autocapitalize", "autocomplete", "autocorrect"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "placeholder", "readonly", "minlength", "maxlength", "spellcheck", "autocapitalize", "autocomplete", "autocorrect"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "readonly": {
                 if (oldValue != newValue) {

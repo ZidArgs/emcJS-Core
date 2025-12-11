@@ -28,7 +28,7 @@ export default class FormField extends CustomElement {
         /* --- */
         this.#descriptionEl = this.shadowRoot.getElementById("description");
         this.#errorEl = this.shadowRoot.getElementById("error");
-        this.#errorEl.addEventListener("click", (event) => {
+        this.registerTargetEventHandler(this.#errorEl, "click", (event) => {
             const focusEls = getFocusableElements(this);
             if (focusEls.length > 0) {
                 focusEls[0].focus();
@@ -36,7 +36,7 @@ export default class FormField extends CustomElement {
             event.preventDefault();
         });
         /* --- */
-        this.addEventListener("validity", (event) => {
+        this.registerTargetEventHandler(this, "validity", (event) => {
             this.#errorEl.i18nContent = event.message ?? "";
         });
     }

@@ -16,11 +16,11 @@ export default class OperatorNor extends AbstractInfChildrenElement {
         const ch = this.childList.map((node) => node.calculate(state));
         for (const val of ch) {
             if (val) {
-                this.shadowRoot.getElementById("header").setAttribute("value", "0");
+                this.logicResult = 0;
                 return 0;
             }
         }
-        this.shadowRoot.getElementById("header").setAttribute("value", "1");
+        this.logicResult = 1;
         return 1;
     }
 

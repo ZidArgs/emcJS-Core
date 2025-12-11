@@ -20,22 +20,23 @@ export default class TabPanel extends Panel {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#slotEl = this.shadowRoot.getElementById("body");
-        this.#slotEl.addEventListener("slotchange", () => {
+        this.registerTargetEventHandler(this.#slotEl, "slotchange", () => {
             this.#prepareTabs();
         });
         /* --- */
         this.#categoryEl = this.shadowRoot.getElementById("categories");
-        this.#categoryEl.onclick = (event) => {
+        this.registerTargetEventHandler(this.#categoryEl, "click", (event) => {
             const target = event.target.getAttribute("target");
             if (target != null) {
                 this.active = target;
                 event.preventDefault();
                 return false;
             }
-        };
+        });
     }
 
     connectedCallback() {
+        super.connectedCallback?.();
         this.#prepareTabs();
         if (!this.active) {
             const el = this.#categoryEl.querySelector("[target]");

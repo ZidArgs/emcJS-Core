@@ -4,18 +4,14 @@ import STYLE from "./CaptionPanel.js.css" assert {type: "css"};
 
 export default class CaptionPanel extends CustomElement {
 
+    #titleEl;
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.shadowRoot.getElementById("title").addEventListener("click", () => {
-            if (!!this.expanded && this.expanded != "false") {
-                this.expanded = "false";
-            } else {
-                this.expanded = "true";
-            }
-        });
+        this.#titleEl = this.shadowRoot.getElementById("title");
     }
 
     get caption() {
@@ -34,7 +30,7 @@ export default class CaptionPanel extends CustomElement {
         switch (name) {
             case "caption":
                 if (oldValue != newValue) {
-                    this.shadowRoot.getElementById("title").innerHTML = newValue;
+                    this.#titleEl.innerHTML = newValue;
                 }
                 break;
         }

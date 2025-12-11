@@ -1,4 +1,5 @@
 import {debounce} from "../../../util/Debouncer.js";
+import EventManager from "../../../util/event/EventManager.js";
 import {deepClone} from "../../../util/helper/DeepClone.js";
 import CustomElement from "../../element/CustomElement.js";
 import CtxMenuLayer from "./CtxMenuLayer.js";
@@ -27,6 +28,7 @@ function getLayerBounds(source) {
     return document.body.getBoundingClientRect();
 }
 
+// TODO use EventManager for menu items
 export default class ContextMenu extends CustomElement {
 
     #menuEl;
@@ -49,6 +51,8 @@ export default class ContextMenu extends CustomElement {
 
     #inactiveGroups = new Set();
 
+    #entriesEventManager = new EventManager(false);
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
@@ -60,25 +64,25 @@ export default class ContextMenu extends CustomElement {
         this.#bottomFocusEl = this.shadowRoot.getElementById("focus_catcher_bottom");
         this.#menuEl.style.left = `${LAYER_MARGIN}px`;
         this.#menuEl.style.top = `${LAYER_MARGIN}px`;
-        this.#menuEl.addEventListener("click", (event) => {
+        this.registerTargetEventHandler(this.#menuEl, "click", (event) => {
             this.close();
             event.preventDefault();
             event.stopPropagation();
             return false;
         });
-        this.addEventListener("click", (event) => {
+        this.registerTargetEventHandler(this, "click", (event) => {
             this.close();
             event.preventDefault();
             event.stopPropagation();
             return false;
         });
-        this.addEventListener("contextmenu", (event) => {
+        this.registerTargetEventHandler(this, "contextmenu", (event) => {
             this.close();
             event.preventDefault();
             event.stopPropagation();
             return false;
         });
-        this.addEventListener("keyup", (event) => {
+        this.registerTargetEventHandler(this, "keyup", (event) => {
             if (event.key == "Enter" || event.key == "Escape") {
                 this.close();
                 /* --- */
@@ -87,22 +91,31 @@ export default class ContextMenu extends CustomElement {
             }
         });
         /* --- */
-        this.#topFocusEl.onfocus = () => {
+        this.registerTargetEventHandler(this.#topFocusEl, "focus", () => {
             this.focusLast();
-        };
-        this.#bottomFocusEl.onfocus = () => {
+        });
+        this.registerTargetEventHandler(this.#bottomFocusEl, "focus", () => {
             this.focusFirst();
-        };
-        this.#initFocusEl.onblur = () => {
+        });
+        this.registerTargetEventHandler(this.#initFocusEl, "blur", () => {
             this.#initFocusEl.setAttribute("tabindex", "");
-        };
+        });
     }
 
     connectedCallback() {
+        super.connectedCallback?.();
+
+        this.#entriesEventManager.active = true;
         if (!this.hasAttribute("slot")) {
             this.setAttribute("slot", "ctxmnu");
         }
         this.initItems();
+    }
+
+    disconnectedCallback() {
+        super.disconnectedCallback();
+
+        this.#entriesEventManager.active = false;
     }
 
     static get observedAttributes() {
@@ -255,6 +268,7 @@ export default class ContextMenu extends CustomElement {
     }
 
     #renderItems = debounce(() => {
+        this.#entriesEventManager.clear();
         this.innerHTML = "";
         if (Array.isArray(this.#items)) {
             for (const entry of this.#items) {
@@ -281,13 +295,13 @@ export default class ContextMenu extends CustomElement {
             this.append(entry);
             const attr = entry.getAttribute("menu-action");
             if (attr) {
-                entry.addEventListener("click", (event) => {
+                this.#entriesEventManager.set(entry, "click", (event) => {
                     this.#onElementChoice(attr);
                     /* --- */
                     event.preventDefault();
                     return false;
                 });
-                entry.addEventListener("keyup", (event) => {
+                this.#entriesEventManager.set(entry, "keyup", (event) => {
                     if (event.key == "Enter") {
                         this.#onElementChoice(attr);
                         /* --- */
@@ -322,13 +336,13 @@ export default class ContextMenu extends CustomElement {
 
                 /* --- */
                 if (typeof entry.action == "function") {
-                    el.addEventListener("click", (event) => {
+                    this.#entriesEventManager.set(el, "click", (event) => {
                         entry.action();
                         /* --- */
                         event.preventDefault();
                         return false;
                     });
-                    el.addEventListener("keyup", (event) => {
+                    this.#entriesEventManager.set(el, "keyup", (event) => {
                         if (event.key == "Enter") {
                             entry.action();
                             /* --- */
@@ -340,13 +354,13 @@ export default class ContextMenu extends CustomElement {
                 /* --- */
                 if (typeof entry.menuAction == "string") {
                     el.setAttribute("menu-action", entry.menuAction);
-                    el.addEventListener("click", (event) => {
+                    this.#entriesEventManager.set(el, "click", (event) => {
                         this.#onElementChoice(entry.menuAction);
                         /* --- */
                         event.preventDefault();
                         return false;
                     });
-                    el.addEventListener("keyup", (event) => {
+                    this.#entriesEventManager.set(el, "keyup", (event) => {
                         if (event.key == "Enter") {
                             this.#onElementChoice(entry.menuAction);
                             /* --- */

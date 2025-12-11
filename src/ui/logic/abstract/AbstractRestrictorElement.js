@@ -21,7 +21,7 @@ export default class AbstractRestrictorElement extends AbstractElement {
         this.#placeholderEl = this.shadowRoot.getElementById("droptarget");
         this.#placeholderEl.ondragover = AbstractElement.allowDrop;
         this.#placeholderEl.ondrop = AbstractElement.dropOnPlaceholder;
-        this.#placeholderEl.onclick = (event) => {
+        this.registerTargetEventHandler(this.#placeholderEl, "click", (event) => {
             const e = new Event("placeholderclicked", {
                 bubbles: true,
                 cancelable: true
@@ -29,15 +29,14 @@ export default class AbstractRestrictorElement extends AbstractElement {
             e.name = event.target.parentElement.name;
             this.dispatchEvent(e);
             event.stopPropagation();
-        };
+        });
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.#inputEl.onchange = () => {
-            this.value = parseInt(this.#inputEl.value) || 0;
+        this.registerTargetEventHandler(this.#inputEl, "change", () => {
             this.dispatchEvent(new Event("valuechange", {
                 bubbles: true,
                 cancelable: true
             }));
-        };
+        });
     }
 
     connectedCallback() {
@@ -50,12 +49,12 @@ export default class AbstractRestrictorElement extends AbstractElement {
         }
     }
 
-    get value() {
-        return this.getAttribute("value");
+    set value(val) {
+        this.#inputEl.value = parseInt(val) || 0;
     }
 
-    set value(val) {
-        this.setAttribute("value", val);
+    get value() {
+        return this.#inputEl.value;
     }
 
     getElement(forceCopy = false) {
@@ -95,14 +94,8 @@ export default class AbstractRestrictorElement extends AbstractElement {
         return [];
     }
 
-    static get observedAttributes() {
-        const attr = AbstractElement.observedAttributes;
-        attr.push("value");
-        return attr;
-    }
-
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "disabled":
             case "template": {
@@ -114,11 +107,6 @@ export default class AbstractRestrictorElement extends AbstractElement {
                         this.#placeholderEl.disabled = true;
                         this.#inputEl.disabled = true;
                     }
-                }
-            } break;
-            case "value": {
-                if (oldValue != newValue) {
-                    this.shadowRoot.getElementById("input").value = parseInt(newValue) || 0;
                 }
             } break;
         }

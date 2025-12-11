@@ -8,6 +8,7 @@ import {DEFAULT_EXTRACT_CONFIG} from "../helper/collection/ExtractDataFromArray.
 import EventMultiTargetManager from "../event/EventMultiTargetManager.js";
 import DataViewControlToolbar from "../../ui/dataview/toolbar/DataViewControlToolbar.js";
 import DataReceiverMixin from "./DataReceiverMixin.js";
+import EventManagerMixin from "../../ui/mixin/EventManagerMixin.js";
 
 export default class AbstractDataProvider extends EventTarget {
 
@@ -34,6 +35,9 @@ export default class AbstractDataProvider extends EventTarget {
         if (!(receiver instanceof DataReceiverMixin)) {
             throw new Error("target must extend DataReceiverMixin");
         }
+        if (!(receiver instanceof EventManagerMixin)) {
+            throw new Error("target must extend EventManagerMixin");
+        }
         super();
         const {
             config = {}, multiSort = false, toolbar
@@ -46,7 +50,7 @@ export default class AbstractDataProvider extends EventTarget {
         }
         this.refresh();
         /* --- */
-        this.#receiver.addEventListener("sort", (event) => {
+        this.#receiver.registerTargetEventHandler(this.#receiver, "sort", (event) => {
             const {columnName} = event.data;
             if (!this.#multiSort) {
                 const currentSort = this.#config.sort[0];
@@ -68,7 +72,7 @@ export default class AbstractDataProvider extends EventTarget {
                 this.updateConfig({sort: newSort});
             }
         });
-        this.#receiver.addEventListener("unsort", (event) => {
+        this.#receiver.registerTargetEventHandler(this.#receiver, "unsort", (event) => {
             const {columnName} = event.data;
             if (!this.#multiSort) {
                 const currentSort = this.#config.sort[0];

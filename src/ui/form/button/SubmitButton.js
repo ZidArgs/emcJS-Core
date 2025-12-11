@@ -33,7 +33,7 @@ export default class SubmitButton extends Button {
         if (name === "text" && !isStringNotEmpty(newValue)) {
             newValue = "Submit";
         }
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
     }
 
 }

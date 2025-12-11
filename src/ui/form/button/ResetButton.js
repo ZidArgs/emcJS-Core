@@ -33,7 +33,7 @@ export default class ResetButton extends Button {
         if (name === "text" && !isStringNotEmpty(newValue)) {
             newValue = "Reset";
         }
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
     }
 
 }

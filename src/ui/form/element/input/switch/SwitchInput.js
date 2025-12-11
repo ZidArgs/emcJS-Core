@@ -18,7 +18,7 @@ export default class SwitchInput extends AbstractFormElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.#inputEl.addEventListener("change", () => {
+        this.registerTargetEventHandler(this.#inputEl, "change", () => {
             this.value = this.#inputEl.checked;
         });
     }

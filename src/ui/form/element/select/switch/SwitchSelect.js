@@ -71,12 +71,12 @@ export default class SwitchSelect extends AbstractFormElement {
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#optionsContainerEl = this.shadowRoot.getElementById("options-container");
         this.#optionsSlotEl = this.shadowRoot.getElementById("options-slot");
-        this.#optionsSlotEl.addEventListener("slotchange", () => {
+        this.registerTargetEventHandler(this.#optionsSlotEl, "slotchange", () => {
             this.#onSlotChange();
         });
         /* --- */
         this.#switchButtonManager = new SwitchButtonManager(this.#optionsContainerEl, this.#optionSelectEventManager);
-        this.#switchButtonManager.addEventListener("afterrender", () => {
+        this.registerTargetEventHandler(this.#switchButtonManager, "afterrender", () => {
             this.renderValue(this.value);
         });
         /* --- */
@@ -86,6 +86,11 @@ export default class SwitchSelect extends AbstractFormElement {
         this.#i18nEventManager.set("translation", () => {
             this.#sort();
         });
+    }
+
+    connectedCallback() {
+        super.connectedCallback?.();
+        this.#onSlotChange();
     }
 
     formDisabledCallback(disabled) {
@@ -115,11 +120,12 @@ export default class SwitchSelect extends AbstractFormElement {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "readonly", "sorted"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "readonly", "sorted"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "readonly": {
                 if (oldValue != newValue) {

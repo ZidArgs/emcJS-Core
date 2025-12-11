@@ -30,6 +30,10 @@ export default class ElementManager extends EventTarget {
         this.#params = params;
     }
 
+    connectedCallback() {}
+
+    disconnectedCallback() {}
+
     manage(data) {
         if (!Array.isArray(data)) {
             throw new TypeError("data must be an array");

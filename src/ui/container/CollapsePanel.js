@@ -4,12 +4,18 @@ import STYLE from "./CollapsePanel.js.css" assert {type: "css"};
 
 export default class CollapsePanel extends CustomElement {
 
+    #textEl;
+
+    #titleEl;
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.shadowRoot.getElementById("title").addEventListener("click", () => {
+        this.#textEl = this.shadowRoot.getElementById("text");
+        this.#titleEl = this.shadowRoot.getElementById("title");
+        this.registerTargetEventHandler(this.#titleEl, "click", () => {
             if (!!this.expanded && this.expanded != "false") {
                 this.expanded = "false";
             } else {
@@ -50,8 +56,8 @@ export default class CollapsePanel extends CustomElement {
         switch (name) {
             case "caption":
                 if (oldValue != newValue) {
-                    this.shadowRoot.getElementById("text").innerHTML = newValue;
-                    this.shadowRoot.getElementById("title").title = newValue;
+                    this.#textEl.innerHTML = newValue;
+                    this.#titleEl.title = newValue;
                 }
                 break;
         }

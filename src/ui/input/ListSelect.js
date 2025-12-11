@@ -38,6 +38,8 @@ export default class ListSelect extends CustomElementDelegating {
 
     #i18nEventManager = new EventTargetManager(i18n);
 
+    #selectionHelper;
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
@@ -150,8 +152,8 @@ export default class ListSelect extends CustomElementDelegating {
         }, 300));
         /* --- */
         this.#scrollContainerEl = this.shadowRoot.getElementById("scroll-container");
-        const selectionHelper = new ListSelectionHelper(this, this.#scrollContainerEl);
-        selectionHelper.addEventListener("choose", (event) => {
+        this.#selectionHelper = new ListSelectionHelper(this, this.#scrollContainerEl);
+        this.#selectionHelper.addEventListener("choose", (event) => {
             this.#choose(event.value);
         });
         /* --- */
@@ -171,6 +173,8 @@ export default class ListSelect extends CustomElementDelegating {
     }
 
     connectedCallback() {
+        super.connectedCallback?.();
+        this.#selectionHelper.setEventManagerActive(true);
         this.#valueElementsList = this.querySelectorAll(`[value]`);
         const all = this.#valueElementsList;
         if (!this.value) {
@@ -188,6 +192,11 @@ export default class ListSelect extends CustomElementDelegating {
             }
         }
         this.#calculateItems();
+    }
+
+    disconnectedCallback() {
+        super.disconnectedCallback?.();
+        this.#selectionHelper.setEventManagerActive(false);
     }
 
     serialize() {

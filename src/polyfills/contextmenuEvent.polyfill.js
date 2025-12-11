@@ -6,8 +6,6 @@
  * @author ZidArgs
  */
 
-/* eslint-disable no-prototype-builtins */
-
 const EVENT_NAME = "contextmenu";
 const ON_EVENT_NAME = `on${EVENT_NAME}`;
 

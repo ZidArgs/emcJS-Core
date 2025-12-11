@@ -19,7 +19,7 @@ export default class OperatorNot extends AbstractOneChildElement {
             const val = ch[0].calculate(state);
             value = +!val;
         }
-        this.shadowRoot.getElementById("header").setAttribute("value", value);
+        this.logicResult = value;
         return value;
     }
 

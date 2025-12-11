@@ -1,4 +1,5 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
+import EventManager from "../../../../../util/event/EventManager.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
 import BusyIndicatorManager from "../../../../../util/BusyIndicatorManager.js";
 import TypeStorage from "../../../../../data/type/TypeStorage.js";
@@ -115,11 +116,11 @@ export default class RelationSelect extends AbstractFormElement {
         this.#optionsContainerEl = this.shadowRoot.getElementById("options-container");
         this.#buttonEl = this.shadowRoot.getElementById("button");
         /* --- */
-        this.#scrollContainerEl.addEventListener("mousedown", (event) => {
+        this.registerTargetEventHandler(this.#scrollContainerEl, "mousedown", (event) => {
             event.stopPropagation();
         });
         /* --- */
-        this.#buttonEl.addEventListener("click", (event) => {
+        this.registerTargetEventHandler(this.#buttonEl, "click", (event) => {
             if (!this.#isEditMode) {
                 this.#startEditMode();
             } else {
@@ -128,14 +129,14 @@ export default class RelationSelect extends AbstractFormElement {
             event.stopPropagation();
             event.preventDefault();
         });
-        this.#viewEl.addEventListener("click", (event) => {
+        this.registerTargetEventHandler(this.#viewEl, "click", (event) => {
             if (!this.#isEditMode) {
                 this.#startEditMode();
             }
             event.stopPropagation();
             event.preventDefault();
         });
-        this.#inputEl.addEventListener("keydown", (event) => {
+        this.registerTargetEventHandler(this.#inputEl, "keydown", (event) => {
             if (!this.getBooleanAttribute("readonly")) {
                 if (!this.#isEditMode) {
                     const {key} = event;
@@ -170,30 +171,30 @@ export default class RelationSelect extends AbstractFormElement {
                 }
             }
         });
-        this.#inputEl.addEventListener("blur", (event) => {
+        this.registerTargetEventHandler(this.#inputEl, "blur", (event) => {
             if (event.relatedTarget != null && !event.relatedTarget.contains(this.#inputEl)) {
                 this.#cancelSelection();
             }
             event.stopPropagation();
         });
-        this.#inputEl.addEventListener("input", () => {
+        this.registerTargetEventHandler(this.#inputEl, "input", () => {
             this.#applySearch();
         });
-        this.#scrollContainerEl.addEventListener("wheel", (event) => {
+        this.registerTargetEventHandler(this.#scrollContainerEl, "wheel", (event) => {
             event.stopPropagation();
         }, {passive: true});
         /* --- */
-        window.addEventListener("wheel", () => {
+        this.registerTargetEventHandler(window, "wheel", () => {
             if (this.#isEditMode) {
                 this.#cancelSelection();
             }
         }, {passive: true});
-        window.addEventListener("blur", () => {
+        this.registerTargetEventHandler(window, "blur", () => {
             if (this.#isEditMode) {
                 this.#cancelSelection();
             }
         }, {passive: true});
-        window.addEventListener("mousedown", (event) => {
+        this.registerTargetEventHandler(window, "mousedown", (event) => {
             if (this.#isEditMode && !this.contains(event.target)) {
                 this.#cancelSelection();
             }
@@ -279,11 +280,12 @@ export default class RelationSelect extends AbstractFormElement {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "placeholder", "sorted", "types"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "placeholder", "sorted", "types"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "placeholder": {
                 if (oldValue != newValue) {

@@ -15,16 +15,17 @@ export default class AbstractOneChildElement extends AbstractElement {
         this.#type = type;
         /* --- */
         this.#placeholderEl = this.shadowRoot.getElementById("droptarget");
-        this.#placeholderEl.ondragover = AbstractElement.allowDrop;
-        this.#placeholderEl.ondrop = AbstractElement.dropOnPlaceholder;
-        this.#placeholderEl.onclick = (event) => {
+        this.registerTargetEventHandler(this.#placeholderEl, "dragover", AbstractElement.allowDrop);
+        this.registerTargetEventHandler(this.#placeholderEl, "drop", AbstractElement.dropOnPlaceholder);
+        this.registerTargetEventHandler(this.#placeholderEl, "click", (event) => {
             const e = new Event("placeholderclicked", {
                 bubbles: true,
                 cancelable: true
             });
+            e.name = event.target.parentElement.name;
             this.dispatchEvent(e);
             event.stopPropagation();
-        };
+        });
     }
 
     toJSON() {
@@ -36,14 +37,7 @@ export default class AbstractOneChildElement extends AbstractElement {
 
     loadLogic(logic) {
         if (!!logic && !!logic.content) {
-            let cl;
-            if (logic.content.category) {
-                cl = AbstractElement.getReference(logic.content.category, logic.content.type);
-            } else {
-                cl = AbstractElement.getReference(logic.content.type);
-            }
-            const node = new cl;
-            node.loadLogic(logic.content);
+            const node = AbstractElement.buildLogic(logic.content);
             this.append(node);
         }
     }
@@ -57,7 +51,7 @@ export default class AbstractOneChildElement extends AbstractElement {
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "disabled":
             case "template": {

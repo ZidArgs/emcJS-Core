@@ -116,35 +116,35 @@ export default class SearchSelect extends AbstractFormElement {
         this.#buttonEl = this.shadowRoot.getElementById("button");
         this.#optionsContainerEl = this.shadowRoot.getElementById("options-container");
         this.#optionsSlotEl = this.shadowRoot.getElementById("options-slot");
-        this.#optionsSlotEl.addEventListener("slotchange", () => {
+        this.registerTargetEventHandler(this.#optionsSlotEl, "slotchange", () => {
             this.#onSlotChange();
         });
         /* --- */
-        this.#scrollContainerEl.addEventListener("mousedown", (event) => {
+        this.registerTargetEventHandler(this.#scrollContainerEl, "mousedown", (event) => {
             event.stopPropagation();
         });
-        this.#scrollContainerEl.addEventListener("click", () => {
+        this.registerTargetEventHandler(this.#scrollContainerEl, "click", () => {
             this.focus();
         });
         /* --- */
-        this.#viewEl.addEventListener("click", (event) => {
+        this.registerTargetEventHandler(this.#viewEl, "click", (event) => {
             if (!this.readonly && !this.#isEditMode) {
                 this.#startEditMode();
                 event.preventDefault();
                 event.stopPropagation();
             }
         });
-        this.#inputEl.addEventListener("click", (event) => {
+        this.registerTargetEventHandler(this.#inputEl, "click", (event) => {
             if (!this.readonly && !this.#isEditMode) {
                 this.#startEditMode();
                 event.preventDefault();
                 event.stopPropagation();
             }
         });
-        this.#inputEl.addEventListener("mousedown", (event) => {
+        this.registerTargetEventHandler(this.#inputEl, "mousedown", (event) => {
             event.stopPropagation();
         });
-        this.#inputEl.addEventListener("keydown", (event) => {
+        this.registerTargetEventHandler(this.#inputEl, "keydown", (event) => {
             if (!this.getBooleanAttribute("readonly")) {
                 if (!this.#isEditMode) {
                     const {key} = event;
@@ -179,43 +179,43 @@ export default class SearchSelect extends AbstractFormElement {
                 }
             }
         });
-        this.#inputEl.addEventListener("blur", (event) => {
+        this.registerTargetEventHandler(this.#inputEl, "blur", (event) => {
             if (event.relatedTarget != null && !event.relatedTarget.contains(this.#inputEl)) {
                 this.#cancelSelection();
             }
             event.stopPropagation();
         });
-        this.#inputEl.addEventListener("input", () => {
+        this.registerTargetEventHandler(this.#inputEl, "input", () => {
             if (!this.#isEditMode) {
                 this.#startEditMode(true);
             }
             this.#applySearch();
         });
-        this.#scrollContainerEl.addEventListener("wheel", (event) => {
+        this.registerTargetEventHandler(this.#scrollContainerEl, "wheel", (event) => {
             event.stopPropagation();
         }, {passive: true});
         /* --- */
-        this.#nativeSelectEl.addEventListener("mousedown", (event) => {
+        this.registerTargetEventHandler(this.#nativeSelectEl, "mousedown", (event) => {
             if (this.readonly) {
                 event.preventDefault();
                 event.stopPropagation();
             }
         });
-        this.#nativeSelectEl.addEventListener("change", () => {
+        this.registerTargetEventHandler(this.#nativeSelectEl, "change", () => {
             this.value = this.#nativeSelectEl.value;
         });
         /* --- */
-        window.addEventListener("wheel", () => {
+        this.registerTargetEventHandler(window, "wheel", () => {
             if (this.#isEditMode) {
                 this.#cancelSelection();
             }
         }, {passive: true});
-        window.addEventListener("blur", () => {
+        this.registerTargetEventHandler(window, "blur", () => {
             if (this.#isEditMode) {
                 this.#cancelSelection();
             }
         }, {passive: true});
-        window.addEventListener("mousedown", (event) => {
+        this.registerTargetEventHandler(window, "mousedown", (event) => {
             if (!this.readonly && this.#isEditMode) {
                 if (!this.#fieldEl.contains(event.target)) {
                     this.#cancelSelection();
@@ -226,12 +226,12 @@ export default class SearchSelect extends AbstractFormElement {
         }, {passive: true});
         /* --- */
         this.#selectEntryManager = new SelectEntryManager(this.#optionsContainerEl, this.#optionSelectEventManager);
-        this.#selectEntryManager.addEventListener("afterrender", () => {
+        this.registerTargetEventHandler(this.#selectEntryManager, "afterrender", () => {
             this.#refreshSelect(this.#optionsContainerEl);
             this.renderValue(this.value);
         });
         this.#i18nOptionManager = new I18nOptionManager(this.#nativeSelectEl);
-        this.#i18nOptionManager.addEventListener("afterrender", () => {
+        this.registerTargetEventHandler(this.#i18nOptionManager, "afterrender", () => {
             this.#refreshSelect(this.#nativeSelectEl);
         });
         /* --- */
@@ -243,6 +243,11 @@ export default class SearchSelect extends AbstractFormElement {
             this.#selectEntryManager.sort();
             this.#i18nOptionManager.sort();
         });
+    }
+
+    connectedCallback() {
+        super.connectedCallback?.();
+        this.#onSlotChange();
     }
 
     formDisabledCallback(disabled) {
@@ -279,11 +284,12 @@ export default class SearchSelect extends AbstractFormElement {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "placeholder", "readonly", "sorted"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "placeholder", "readonly", "sorted"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "placeholder": {
                 if (oldValue != newValue) {

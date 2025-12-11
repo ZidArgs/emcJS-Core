@@ -68,7 +68,7 @@ export default class LogicInput extends BaseClass {
             const {id} = event.props[0];
             this.#removeElement(id);
         });
-        this.addEventListener("menu", (event) => {
+        this.registerTargetEventHandler(this, "menu", (event) => {
             const {id} = event;
             this.showContextMenu("element", event, {id});
             event.stopPropagation();
@@ -98,24 +98,24 @@ export default class LogicInput extends BaseClass {
             event.stopPropagation();
             return false;
         };
-        this.#placeholderEl.addEventListener("click", (event) => {
+        this.registerTargetEventHandler(this.#placeholderEl, "click", (event) => {
             const e = new Event("placeholderclicked");
             this.dispatchEvent(e);
             event.stopPropagation();
         });
-        this.#optimizeButtonEl.addEventListener("click", (event) => {
+        this.registerTargetEventHandler(this.#optimizeButtonEl, "click", (event) => {
             this.value = reduceLogic(this.value);
             event.stopPropagation();
         });
-        this.#jsonButtonEl.addEventListener("click", (event) => {
+        this.registerTargetEventHandler(this.#jsonButtonEl, "click", (event) => {
             this.#logicJSONModal.value = this.value;
             this.#logicJSONModal.show(this.readonly);
             event.stopPropagation();
         });
-        this.#logicJSONModal.addEventListener("submit", () => {
+        this.registerTargetEventHandler(this.#logicJSONModal, "submit", () => {
             this.value = this.#logicJSONModal.value;
         });
-        this.addEventListener("click", (event) => {
+        this.registerTargetEventHandler(this, "click", (event) => {
             event.stopImmediatePropagation();
             event.preventDefault();
             const targetEl = event.target;
@@ -129,7 +129,7 @@ export default class LogicInput extends BaseClass {
             }, 0);
         });
         /* --- */
-        this.addEventListener("placeholderclicked", (event) => {
+        this.registerTargetEventHandler(this, "placeholderclicked", (event) => {
             if (this.#logicElementModal != null) {
                 const targetEl = event.target;
                 const slotName = event.name;
@@ -144,7 +144,7 @@ export default class LogicInput extends BaseClass {
                 this.#logicElementModal.show();
             }
         });
-        this.addEventListener("valuechange", (event) => {
+        this.registerTargetEventHandler(this, "valuechange", (event) => {
             event.stopPropagation();
             const el = this.children[0];
             if (el) {
@@ -203,11 +203,12 @@ export default class LogicInput extends BaseClass {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "name"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "name"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "name": {
                 if (oldValue != newValue) {

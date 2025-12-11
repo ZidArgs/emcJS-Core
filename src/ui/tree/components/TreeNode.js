@@ -44,7 +44,7 @@ export default class TreeNode extends CustomElement {
         /* --- */
         this.#labelEl = this.shadowRoot.getElementById("label");
         this.#contentEl = this.shadowRoot.getElementById("content");
-        this.#contentEl.addEventListener("click", (event) => {
+        this.registerTargetEventHandler(this.#contentEl, "click", (event) => {
             event.stopPropagation();
             event.preventDefault();
 
@@ -59,7 +59,7 @@ export default class TreeNode extends CustomElement {
                 this.toggleCollapsed();
             }
         });
-        this.#contentEl.addEventListener("contextmenu", (event) => {
+        this.registerTargetEventHandler(this.#contentEl, "contextmenu", (event) => {
             event.stopPropagation();
             event.preventDefault();
             const targetIndex = Array.from(this.parentElement.children).indexOf(this);
@@ -85,7 +85,7 @@ export default class TreeNode extends CustomElement {
         });
         /* --- */
         this.#subTreeEl = this.shadowRoot.getElementById("tree");
-        this.#subTreeEl.addEventListener("select", (event) => {
+        this.registerTargetEventHandler(this.#subTreeEl, "select", (event) => {
             event.stopPropagation();
             const {
                 element, index, ref, connectedNode, isSelected, path, refPath, left, top
@@ -111,7 +111,7 @@ export default class TreeNode extends CustomElement {
                 event.preventDefault();
             }
         });
-        this.#subTreeEl.addEventListener("menu", (event) => {
+        this.registerTargetEventHandler(this.#subTreeEl, "menu", (event) => {
             event.stopPropagation();
             const {
                 element, index, ref, connectedNode, isSelected, path, refPath, left, top
@@ -137,7 +137,7 @@ export default class TreeNode extends CustomElement {
         /* --- */
         this.#nodeEl = this.shadowRoot.getElementById("node");
         this.#collapseEl = this.shadowRoot.getElementById("collapse");
-        this.#collapseEl.addEventListener("click", (event) => {
+        this.registerTargetEventHandler(this.#collapseEl, "click", (event) => {
             event.stopPropagation();
             event.preventDefault();
             this.toggleCollapsed();
@@ -158,11 +158,18 @@ export default class TreeNode extends CustomElement {
     }
 
     connectedCallback() {
+        super.connectedCallback?.();
         const sorted = this.sorted;
         this.#i18nEventManager.active = sorted;
         if (sorted) {
             this.#elementManager.registerSortFunction(this.#registeredSortFunction ?? TreeNode.#sortByNameFunction);
         }
+        this.#elementManager.setEventManagerActive(true);
+    }
+
+    disconnectedCallback() {
+        super.disconnectedCallback?.();
+        this.#elementManager.setEventManagerActive(false);
     }
 
     set connectedNode(value) {

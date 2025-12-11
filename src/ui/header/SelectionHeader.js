@@ -16,14 +16,14 @@ export default class SelectionHeader extends CustomElementDelegating {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#selectionEl = this.shadowRoot.getElementById("selection");
-        this.#selectionEl.addEventListener("change", (ev) => {
+        this.registerTargetEventHandler(this.#selectionEl, "change", (ev) => {
             this.checked = ev.currentTarget.checked;
             const event = new Event("check");
             event.value = ev.currentTarget.checked;
             this.dispatchEvent(event);
         });
         this.#searchEl = this.shadowRoot.getElementById("search");
-        this.#searchEl.addEventListener("change", (ev) => {
+        this.registerTargetEventHandler(this.#searchEl, "change", (ev) => {
             this.search = ev.currentTarget.value;
             const event = new Event("search");
             event.value = ev.currentTarget.value;

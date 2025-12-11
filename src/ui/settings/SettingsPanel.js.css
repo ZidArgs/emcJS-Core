@@ -39,6 +39,10 @@
         flex-grow: 0;
         width: 300px;
         min-width: 300px;
+        margin: 0px;
+        border-right-style: solid;
+        border-right-width: var(--page-border-width, 2px);
+        border-right-color: var(--page-border-color, #222222);
     }
 
     #form-container {
@@ -105,6 +109,7 @@
         left: -100%;
         height: 100%;
         max-width: 100%;
+        border: none;
         opacity: 0;
         transition: left 0.2s ease-in-out, opacity 0.2s linear;
         z-index: 99;

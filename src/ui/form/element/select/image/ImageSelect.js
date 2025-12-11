@@ -57,11 +57,11 @@ export default class ImageSelect extends AbstractFormElement {
         /* --- */
         this.#iconEl = this.shadowRoot.getElementById("icon");
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.#inputEl.addEventListener("focus", () => {
+        this.registerTargetEventHandler(this.#inputEl, "focus", () => {
             this.#buttonEl.focus();
         });
         this.#buttonEl = this.shadowRoot.getElementById("button");
-        this.#buttonEl.addEventListener("click", () => {
+        this.registerTargetEventHandler(this.#buttonEl, "click", () => {
             this.#imageIconModal.value = this.value;
             this.#imageIconModal.onsubmit = () => {
                 this.value = this.#imageIconModal.value;
@@ -69,12 +69,12 @@ export default class ImageSelect extends AbstractFormElement {
             this.#imageIconModal.show();
         });
         this.#optionsSlotEl = this.shadowRoot.getElementById("options-slot");
-        this.#optionsSlotEl.addEventListener("slotchange", () => {
+        this.registerTargetEventHandler(this.#optionsSlotEl, "slotchange", () => {
             this.#onSlotChange();
         });
         /* --- */
         this.#imageSelectPreviewManager = new ImageSelectPreviewManager(this.#imageIconModal);
-        this.#imageSelectPreviewManager.addEventListener("afterrender", () => {
+        this.registerTargetEventHandler(this.#imageSelectPreviewManager, "afterrender", () => {
             this.renderValue(this.value);
         });
         /* --- */
@@ -85,6 +85,11 @@ export default class ImageSelect extends AbstractFormElement {
         this.#i18nEventManager.set("translation", () => {
             this.#imageSelectPreviewManager.sort();
         });
+    }
+
+    connectedCallback() {
+        super.connectedCallback?.();
+        this.#onSlotChange();
     }
 
     formDisabledCallback(disabled) {
@@ -127,11 +132,12 @@ export default class ImageSelect extends AbstractFormElement {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "placeholder", "readonly", "sorted"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "placeholder", "readonly", "sorted"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "placeholder": {
                 if (oldValue != newValue) {

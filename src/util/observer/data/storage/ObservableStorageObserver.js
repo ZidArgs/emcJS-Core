@@ -123,7 +123,7 @@ export default class ObservableStorageObserver extends EventTarget {
         if (!(typeof fn === "function")) {
             throw new TypeError("Failed to execute 'unChange' on 'ObservableStorageObserver': parameter 1 is not of type 'function'.");
         }
-        this.addEventListener("change", fn);
+        this.removeEventListener("change", fn);
     }
 
 }

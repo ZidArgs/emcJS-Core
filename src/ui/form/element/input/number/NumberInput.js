@@ -26,42 +26,42 @@ export default class NumberInput extends AbstractFormElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.#inputEl.addEventListener("input", () => {
+        this.registerTargetEventHandler(this.#inputEl, "input", () => {
             this.value = this.#inputEl.value;
         });
         /* --- */
         this.#upButtonEl = this.shadowRoot.getElementById("upButton");
-        this.#upButtonEl.addEventListener("mousedown", (event) => {
+        this.registerTargetEventHandler(this.#upButtonEl, "mousedown", (event) => {
             if (event.button === 0) {
                 this.#increaseValue();
             }
             event.stopPropagation();
         });
-        this.#upButtonEl.addEventListener("keydown", (event) => {
+        this.registerTargetEventHandler(this.#upButtonEl, "keydown", (event) => {
             if (event.key === " ") {
                 this.#increaseValue();
             }
             event.stopPropagation();
         });
-        this.#upButtonEl.addEventListener("touchstart", (event) => {
+        this.registerTargetEventHandler(this.#upButtonEl, "touchstart", (event) => {
             this.#increaseValue();
             event.stopPropagation();
         });
         /* --- */
         this.#downButtonEl = this.shadowRoot.getElementById("downButton");
-        this.#downButtonEl.addEventListener("mousedown", (event) => {
+        this.registerTargetEventHandler(this.#downButtonEl, "mousedown", (event) => {
             if (event.button === 0) {
                 this.#decreaseValue();
             }
             event.stopPropagation();
         });
-        this.#downButtonEl.addEventListener("keydown", (event) => {
+        this.registerTargetEventHandler(this.#downButtonEl, "keydown", (event) => {
             if (event.key === " ") {
                 this.#decreaseValue();
             }
             event.stopPropagation();
         });
-        this.#downButtonEl.addEventListener("touchstart", (event) => {
+        this.registerTargetEventHandler(this.#downButtonEl, "touchstart", (event) => {
             this.#decreaseValue();
             event.stopPropagation();
         });
@@ -135,11 +135,12 @@ export default class NumberInput extends AbstractFormElement {
     }
 
     static get observedAttributes() {
-        return [...super.observedAttributes, "placeholder", "readonly", "min", "max"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "placeholder", "readonly", "min", "max"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "readonly": {
                 if (oldValue != newValue) {

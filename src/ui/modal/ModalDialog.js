@@ -83,7 +83,7 @@ export default class ModalDialog extends Modal {
             } else if (typeof options.cancel === "string") {
                 this.#cancelEl.text = options.cancel;
             }
-            this.#cancelEl.addEventListener("click", () => this.cancel());
+            this.registerTargetEventHandler(this.#cancelEl, "click", () => this.cancel());
             this.#footerEl.append(this.#cancelEl);
         }
 
@@ -95,7 +95,7 @@ export default class ModalDialog extends Modal {
             } else if (typeof options.submit === "string") {
                 this.#submitEl.text = options.submit;
             }
-            this.#submitEl.addEventListener("click", () => this.submit());
+            this.registerTargetEventHandler(this.#submitEl, "click", () => this.submit());
             this.#footerEl.append(this.#submitEl);
         }
     }
@@ -209,7 +209,7 @@ export default class ModalDialog extends Modal {
         } else if (typeof value === "number") {
             inputEl.value = value.toString();
         }
-        inputEl.addEventListener("keydown", (event) => {
+        dialogEl.registerTargetEventHandler(inputEl, "keydown", (event) => {
             if (event.key == "Enter") {
                 dialogEl.submit();
                 event.stopPropagation();
@@ -239,7 +239,7 @@ export default class ModalDialog extends Modal {
         if (typeof value === "number" && !isNaN(value)) {
             inputEl.value = value;
         }
-        inputEl.addEventListener("keydown", (event) => {
+        dialogEl.registerTargetEventHandler(inputEl, "keydown", (event) => {
             if (event.key == "Enter") {
                 dialogEl.submit();
                 event.stopPropagation();

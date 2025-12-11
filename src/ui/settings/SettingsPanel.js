@@ -48,7 +48,7 @@ export default class SettingsPanel extends CustomElement {
         this.#sectionTreeManager.observe(formContainerEl);
         this.#initFormHandlers();
         /* --- */
-        this.#hamburgerEl.addEventListener("click", () => {
+        this.registerTargetEventHandler(this.#hamburgerEl, "click", () => {
             if (this.#formSectionNavigationEl.classList.contains("open")) {
                 this.#formSectionNavigationEl.classList.remove("open");
                 this.#formSectionNavigationEl.classList.remove("cover");
@@ -59,7 +59,7 @@ export default class SettingsPanel extends CustomElement {
                 this.#formSectionNavigationEl.focus();
             }
         });
-        this.#formSectionNavigationEl.addEventListener("select", () => {
+        this.registerTargetEventHandler(this.#formSectionNavigationEl, "select", () => {
             if (this.#formSectionNavigationEl.classList.contains("open")) {
                 this.#formSectionNavigationEl.classList.remove("open");
                 this.#formSectionNavigationEl.classList.remove("cover");
@@ -68,7 +68,7 @@ export default class SettingsPanel extends CustomElement {
         });
         /* --- */
         this.#searchEl = this.shadowRoot.getElementById("search");
-        this.#searchEl.addEventListener("change", () => {
+        this.registerTargetEventHandler(this.#searchEl, "change", () => {
             const all = this.#settingsFormEl.querySelectorAll(":scope [name]:not(emc-form-section)");
             const sections = [...this.#settingsFormEl.querySelectorAll("emc-form-section")].reverse();
             const searchValue = this.#searchEl.value;
@@ -111,6 +111,37 @@ export default class SettingsPanel extends CustomElement {
                 }
             }
         }, true);
+    }
+
+    #initFormHandlers() {
+        this.registerTargetEventHandler(this.#formContext, "submit", () => {
+            const ev = new Event("submit");
+            ev.data = this.getDataFlat();
+            ev.formData = this.getFormFieldsData();
+            ev.hiddenData = this.getFormHiddenData();
+            ev.changes = this.getChanges();
+            ev.errors = this.getErrors();
+            this.dispatchEvent(ev);
+        });
+        this.registerTargetEventHandler(this.#formContext, "reset", () => {
+            this.dispatchEvent(new Event("cancel"));
+        });
+        this.registerTargetEventHandler(this.#formContext, "error", (event) => {
+            const {errors} = event;
+            const ev = new Event("error");
+            ev.errors = errors;
+            this.dispatchEvent(ev);
+        });
+        this.registerTargetEventHandler(this.#formContext, "validity", (event) => {
+            const ev = new Event("validity");
+            ev.value = event.value;
+            ev.valid = event.valid;
+            ev.message = event.message;
+            ev.name = event.name;
+            ev.fieldId = event.fieldId;
+            ev.element = event.element;
+            this.dispatchEvent(ev);
+        });
     }
 
     set caption(value) {
@@ -192,37 +223,6 @@ export default class SettingsPanel extends CustomElement {
 
     cancel() {
         this.#formContext.reset();
-    }
-
-    #initFormHandlers() {
-        this.#formContext.addEventListener("submit", () => {
-            const ev = new Event("submit");
-            ev.data = this.getDataFlat();
-            ev.formData = this.getFormFieldsData();
-            ev.hiddenData = this.getFormHiddenData();
-            ev.changes = this.getChanges();
-            ev.errors = this.getErrors();
-            this.dispatchEvent(ev);
-        });
-        this.#formContext.addEventListener("reset", () => {
-            this.dispatchEvent(new Event("cancel"));
-        });
-        this.#formContext.addEventListener("error", (event) => {
-            const {errors} = event;
-            const ev = new Event("error");
-            ev.errors = errors;
-            this.dispatchEvent(ev);
-        });
-        this.#formContext.addEventListener("validity", (event) => {
-            const ev = new Event("validity");
-            ev.value = event.value;
-            ev.valid = event.valid;
-            ev.message = event.message;
-            ev.name = event.name;
-            ev.fieldId = event.fieldId;
-            ev.element = event.element;
-            this.dispatchEvent(ev);
-        });
     }
 
     initialFocus() {

@@ -41,14 +41,14 @@ export default class DataList extends ResizeObserverMixin(DataReceiverMixin(Cust
         this.#elementManager.mutator = (el, key, values) => {
             el.setData(values);
         };
-        this.#elementManager.addEventListener("afterrender", () => {
+        this.registerTargetEventHandler(this.#elementManager, "afterrender", () => {
             this.#refreshEmptyStatus();
             if (this.autoscroll) {
                 const scrollHeight = this.#scrollContainerEl.scrollHeight;
                 this.#scrollContainerEl.scroll({top: scrollHeight});
             }
         });
-        this.#scrollContainerEl.addEventListener("scrollend", () => {
+        this.registerTargetEventHandler(this.#scrollContainerEl, "scrollend", () => {
             const ev = new Event("scrollend", event);
             this.dispatchEvent(ev);
         });

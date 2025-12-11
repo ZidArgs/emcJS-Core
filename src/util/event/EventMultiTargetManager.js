@@ -1,3 +1,5 @@
+import IterableWeakSet from "../../data/collection/IterableWeakSet.js";
+
 export default class EventMultiTargetManager {
 
     #normalSubscriberList = new Map();
@@ -8,7 +10,7 @@ export default class EventMultiTargetManager {
 
     #capturePassiveSubscriberList = new Map();
 
-    #targets = new Set();
+    #targets = new IterableWeakSet();
 
     #active;
 
@@ -41,7 +43,8 @@ export default class EventMultiTargetManager {
         if (!this.#targets.has(target)) {
             this.#targets.add(target);
             if (this.#active) {
-                this.#addEventListeners(target);
+                const refTarget = this.#targets.get(target);
+                this.#addEventListeners(refTarget);
             }
         }
     }
@@ -50,9 +53,10 @@ export default class EventMultiTargetManager {
         if (target == null || !(target instanceof EventTarget)) {
             throw new TypeError("target must be an instance of EventTarget");
         }
-        if (this.#targets.has(target)) {
-            this.#removeEventListeners(target);
-            this.#targets.delete(target);
+        const refTarget = this.#targets.get(target);
+        if (refTarget != null) {
+            this.#removeEventListeners(refTarget);
+            this.#targets.delete(refTarget);
         }
     }
 

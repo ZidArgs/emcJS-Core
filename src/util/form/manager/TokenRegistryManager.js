@@ -27,7 +27,7 @@ export default class TokenRegistryManager {
             this.#loadTokenListFromRegistry();
         });
         /* --- */
-        this.#targetEl.addEventListener("change", () => {
+        this.#targetEl.registerTargetEventHandler(this.#targetEl, "change", () => {
             if (this.#tokenRegistry != null && !this.#targetEl.chooseonly) {
                 const value = this.#targetEl.value;
                 for (const token of value) {
