@@ -48,9 +48,8 @@ export default class AbstractLiteralValueElement extends AbstractElement {
     }
 
     static get observedAttributes() {
-        const attr = AbstractElement.observedAttributes;
-        attr.push("ref");
-        return attr;
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "ref"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
