@@ -13,7 +13,7 @@ const SUPPORTS_WORKER_TYPE = (() => {
         }
     };
     try {
-        const worker = new SharedWorker("blob://", tester);
+        const worker = new SharedWorker(new Blob(), tester);
         worker.close();
     } catch {
         // ignore

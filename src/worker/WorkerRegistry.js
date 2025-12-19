@@ -1,7 +1,7 @@
 const IS_SUPPORTED = "Worker" in window;
 
 const SUPPORTS_WORKER_TYPE = (() => {
-    if (!("Worker" in window)) {
+    if (!IS_SUPPORTED) {
         console.warn("Worker is not supported");
         return false;
     }
@@ -13,7 +13,7 @@ const SUPPORTS_WORKER_TYPE = (() => {
         }
     };
     try {
-        const worker = new Worker("blob://", tester);
+        const worker = new Worker(new Blob(), tester);
         worker.close();
     } catch {
         // ignore
