@@ -34,7 +34,7 @@
     "password.default": "password",
     "password.readonly": "password",
     "range.default": 4,
-    "range.scratched": 4,
+    "range.gradations": 4,
     "range.resettable": 1,
     "string.default": "lorem ipsum dolor sit amet",
     "string.readonly": "lorem ipsum dolor sit amet",

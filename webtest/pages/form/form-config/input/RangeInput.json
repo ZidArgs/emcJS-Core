@@ -9,11 +9,11 @@
         },
         {
             "type": "RangeInput",
-            "label": "range scratched",
-            "name": "range.scratched",
+            "label": "range gradations",
+            "name": "range.gradations",
             "min": "-10",
             "max": "30",
-            "scratched": true
+            "gradations": true
         },
         {
             "type": "RangeInput",

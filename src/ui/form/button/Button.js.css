@@ -17,6 +17,10 @@
     z-index: 1;
 }
 
+#slot {
+    display: inline;
+}
+
 #button {
     display: flex;
     align-items: center;

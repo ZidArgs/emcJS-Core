@@ -42,6 +42,7 @@ import "./element/input/number/NumberInput.js";
 import "./element/input/password/PasswordInput.js";
 import "./element/input/range/RangeInput.js";
 import "./element/input/search/SearchInput.js";
+import "./element/input/slider/SliderInput.js";
 import "./element/input/string/StringInput.js";
 import "./element/input/switch/SwitchInput.js";
 import "./element/input/text/TextInput.js";

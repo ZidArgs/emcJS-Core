@@ -3,13 +3,11 @@ import {deepClone} from "../../../../../util/helper/DeepClone.js";
 import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
 import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
-import "../../../../i18n/builtin/I18nInput.js";
-import TPL from "./RangeInput.js.html" assert {type: "html"};
-import STYLE from "./RangeInput.js.css" assert {type: "css"};
-import CONFIG_FIELDS from "./RangeInput.js.json" assert {type: "json"};
+import TPL from "./SliderInput.js.html" assert {type: "html"};
+import STYLE from "./SliderInput.js.css" assert {type: "css"};
+import CONFIG_FIELDS from "./SliderInput.js.json" assert {type: "json"};
 
-// TODO react to keypress for up and down arrow on number to update slider
-export default class RangeInput extends AbstractFormElement {
+export default class SliderInput extends AbstractFormElement {
 
     static get formConfigurationFields() {
         return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
@@ -17,41 +15,28 @@ export default class RangeInput extends AbstractFormElement {
 
     #inputEl;
 
-    #inputContainerEl;
-
-    #numberEl;
+    #containerEl;
 
     constructor() {
         super();
         this.shadowRoot.getElementById("field").append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.#inputContainerEl = this.shadowRoot.getElementById("input-container");
+        this.#containerEl = this.shadowRoot.getElementById("container");
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.registerTargetEventHandler(this.#inputEl, "input", () => {
             const value = this.#inputEl.value;
-            this.#numberEl.value = value;
             this.#applyValueToBar(value);
             this.value = value;
         });
         new ResizeObserver(() => {
             this.#applyGradationsValue();
         }).observe(this.#inputEl);
-        /* --- */
-        this.#numberEl = this.shadowRoot.getElementById("number");
-        this.registerTargetEventHandler(this.#numberEl, "change", (event) => {
-            event.stopPropagation();
-            const value = this.#numberEl.value;
-            this.#inputEl.value = value;
-            this.#applyValueToBar(value);
-            this.value = value;
-        });
     }
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
         this.#inputEl.disabled = disabled;
-        this.#numberEl.disabled = disabled;
     }
 
     focus(options) {
@@ -103,7 +88,6 @@ export default class RangeInput extends AbstractFormElement {
             case "max": {
                 if (oldValue != newValue) {
                     safeSetAttribute(this.#inputEl, name, newValue);
-                    safeSetAttribute(this.#numberEl, name, newValue);
                     this.#setRange();
                     this.#applyValueToBar(this.value);
                 }
@@ -118,7 +102,6 @@ export default class RangeInput extends AbstractFormElement {
 
     renderValue(value) {
         this.#inputEl.value = value ?? 0;
-        this.#numberEl.value = value ?? 0;
         this.#applyValueToBar(value);
     }
 
@@ -127,10 +110,10 @@ export default class RangeInput extends AbstractFormElement {
         const max = parseInt(this.getAttribute("max") || "10");
         if (min < max) {
             const parts = max - min;
-            this.#inputContainerEl.style.setProperty("--range-parts", parts);
+            this.#containerEl.style.setProperty("--range-parts", parts);
             this.#applyGradationsValue();
         } else {
-            this.#inputContainerEl.style.setProperty("--range-parts", 1);
+            this.#containerEl.style.setProperty("--range-parts", 1);
             this.#applyGradationsValue();
         }
     }
@@ -140,15 +123,13 @@ export default class RangeInput extends AbstractFormElement {
         const max = parseInt(this.getAttribute("max") || "10");
         if (min < max) {
             if (value !== "") {
-                this.#inputContainerEl.style.setProperty("--range-value", value - min);
-                this.#numberEl.value = value;
+                this.#containerEl.style.setProperty("--range-value", value - min);
             } else {
                 const pos = (max - min) / 2;
-                this.#inputContainerEl.style.setProperty("--range-value", pos - min);
-                this.#numberEl.value = pos;
+                this.#containerEl.style.setProperty("--range-value", pos - min);
             }
         } else {
-            this.#inputContainerEl.style.setProperty("--range-value", 0);
+            this.#containerEl.style.setProperty("--range-value", 0);
             this.#applyGradationsValue();
         }
     }
@@ -161,16 +142,16 @@ export default class RangeInput extends AbstractFormElement {
             if (min < max) {
                 const parts = max - min;
                 if (parts < this.#inputEl.offsetWidth / 10) {
-                    this.#inputContainerEl.classList.add("gradations");
+                    this.#containerEl.classList.add("gradations");
                     return;
                 }
             }
         }
-        this.#inputContainerEl.classList.remove("gradations");
+        this.#containerEl.classList.remove("gradations");
     }
 
 }
 
-FormElementRegistry.register("RangeInput", RangeInput);
-customElements.define("emc-input-range", RangeInput);
-registerFocusable("emc-input-range");
+FormElementRegistry.register("SliderInput", SliderInput);
+customElements.define("emc-input-slider", SliderInput);
+registerFocusable("emc-input-slider");

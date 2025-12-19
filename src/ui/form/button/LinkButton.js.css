@@ -16,6 +16,10 @@
     outline: none;
 }
 
+#slot {
+    display: inline;
+}
+
 #button {
     display: flex;
     align-items: center;
