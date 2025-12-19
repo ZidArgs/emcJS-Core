@@ -13,10 +13,12 @@ const SUPPORTS_WORKER_TYPE = (() => {
         }
     };
     try {
-        const worker = new Worker(new Blob(), tester);
+        const blob = new Blob(["self.onconnect = () => console.log(\"Worker started\")"], {type: "text/javascript"});
+        const workerURL = window.URL.createObjectURL(blob);
+        const worker = new Worker(workerURL, tester);
         worker.close();
     } catch {
-        // ignore
+        console.error("error checking for module worker support");
     }
     if (!supports) {
         console.warn("type \"module\" in Worker is not supported");

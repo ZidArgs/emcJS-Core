@@ -13,10 +13,12 @@ const SUPPORTS_WORKER_TYPE = (() => {
         }
     };
     try {
-        const worker = new SharedWorker(new Blob(), tester);
-        worker.close();
+        const blob = new Blob(["self.onconnect = () => console.log(\"SharedWorker started\")"], {type: "text/javascript"});
+        const workerURL = window.URL.createObjectURL(blob);
+        const worker = new SharedWorker(workerURL, tester);
+        worker.port.close();
     } catch {
-        // ignore
+        console.error("error checking for module worker support");
     }
     if (!supports) {
         console.warn("type \"module\" in SharedWorker is not supported");
