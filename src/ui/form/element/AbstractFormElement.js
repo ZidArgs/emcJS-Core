@@ -262,6 +262,14 @@ export default class AbstractFormElement extends CustomFormElement {
         return this.getBooleanAttribute("disabled");
     }
 
+    set hidden(value) {
+        this.setBooleanAttribute("hidden", value);
+    }
+
+    get hidden() {
+        return this.getBooleanAttribute("hidden");
+    }
+
     set hideErrors(value) {
         this.setBooleanAttribute("hideerrors", value);
     }

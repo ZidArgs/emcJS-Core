@@ -47,6 +47,10 @@ export default class FormInputContext {
 
     #enabledValue = true;
 
+    #editableLogic;
+
+    #editableValue = true;
+
     #validationMessage = "";
 
     static getContext(node) {
@@ -165,6 +169,12 @@ export default class FormInputContext {
         return this.#element;
     }
 
+    refreshFormElementState() {
+        this.#callUpdateVisible();
+        this.#callUpdateEnabled();
+        this.#callUpdateEditable();
+    }
+
     /* visible logic */
     get visible() {
         return this.#visibleValue;
@@ -179,11 +189,17 @@ export default class FormInputContext {
     }
 
     setVisibleLogic(logic) {
-        if (logic != null && typeof logic === "object") {
+        if (logic == null) {
+            this.#visibleLogic = true;
+            this.#setVisibileValue(true);
+        } else if (typeof logic === "object") {
             this.#visibleLogic = LogicCompiler.compile(logic);
             this.#callUpdateVisible();
+        } else if (typeof logic === "function") {
+            this.#visibleLogic = logic;
+            this.#callUpdateVisible();
         } else {
-            const value = logic == null || !!logic;
+            const value = !!logic;
             this.#visibleLogic = logic;
             this.#setVisibileValue(value);
         }
@@ -231,11 +247,17 @@ export default class FormInputContext {
     }
 
     setEnabledLogic(logic) {
-        if (logic != null && typeof logic === "object") {
+        if (logic == null) {
+            this.#enabledLogic = true;
+            this.#setEnabledValue(true);
+        } else if (typeof logic === "object") {
             this.#enabledLogic = LogicCompiler.compile(logic);
             this.#callUpdateEnabled();
+        } else if (typeof logic === "function") {
+            this.#enabledLogic = logic;
+            this.#callUpdateEnabled();
         } else {
-            const value = logic == null || !!logic;
+            const value = !!logic;
             this.#enabledLogic = logic;
             this.#setEnabledValue(value);
         }
@@ -267,6 +289,58 @@ export default class FormInputContext {
                 this.#element.removeAttribute("disabled");
             } else {
                 this.#element.setAttribute("disabled", "");
+            }
+        }
+    }
+
+    /* editable logic */
+    get editable() {
+        return this.#editableValue;
+    }
+
+    setEditableLogic(logic) {
+        if (logic == null) {
+            this.#editableLogic = true;
+            this.#setEditableValue(true);
+        } else if (typeof logic === "object") {
+            this.#editableLogic = LogicCompiler.compile(logic);
+            this.#callUpdateEditable();
+        } else if (typeof logic === "function") {
+            this.#editableLogic = logic;
+            this.#callUpdateEditable();
+        } else {
+            const value = !!logic;
+            this.#editableLogic = logic;
+            this.#setEditableValue(value);
+        }
+    }
+
+    #callUpdateEditable() {
+        if (typeof this.#editableLogic === "function") {
+            this.#updateEditable();
+        }
+    }
+
+    #updateEditable = debounce(() => {
+        if (typeof this.#editableLogic === "function") {
+            const value = this.#executeEditableLogic();
+            this.#setEditableValue(value);
+        }
+    });
+
+    #executeEditableLogic() {
+        return !!this.#editableLogic((key) => {
+            return this.#getValue(key);
+        });
+    }
+
+    #setEditableValue(value) {
+        if (this.#editableValue != value) {
+            this.#editableValue = value;
+            if (value) {
+                this.#element.removeAttribute("readonly");
+            } else {
+                this.#element.setAttribute("readonly", "");
             }
         }
     }

@@ -23,6 +23,10 @@
     padding: 0px;
 }
 
+:host([hidden]:not([hidden="false"])) {
+    display: none;
+}
+
 #field-container {
     position: relative;
     display: flex;

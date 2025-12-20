@@ -104,8 +104,9 @@ export default class Modal extends CustomElement {
     }
 
     setFontIcon(content, opts = {}) {
+        this.#resetIcon();
         const {
-            color, size, circle = false
+            color, size, circle = false, shadow = false
         } = opts;
         if (typeof content === "string" && content !== "") {
             this.#titleIconEl.innerText = content;
@@ -114,8 +115,6 @@ export default class Modal extends CustomElement {
             }
             if (isColorString(color)) {
                 this.#titleIconEl.style.color = color;
-            } else {
-                this.#titleIconEl.style.color = "";
             }
             if (circle) {
                 if (isColorString(circle)) {
@@ -123,48 +122,38 @@ export default class Modal extends CustomElement {
                 } else {
                     this.#titleIconEl.style.backgroundImage = "radial-gradient(transparent 45%, black, transparent 55%)";
                 }
-                this.#titleIconEl.classList.add("small");
-            } else {
-                this.#titleIconEl.style.backgroundImage = "";
-                this.#titleIconEl.classList.remove("small");
+            }
+            if (shadow) {
+                this.#titleIconEl.style.filter = "drop-shadow(black 1px 1px 1px)";
             }
             return true;
-        } else {
-            this.#titleIconEl.innerText = "❖";
-            this.#titleIconEl.style.backgroundImage = "";
-            this.#titleIconEl.style.color = "";
-            this.#titleIconEl.classList.remove("small");
-            return false;
         }
+        return false;
     }
 
-    setImageIcon(content) {
-        this.#titleIconEl.classList.remove("small");
+    setImageIcon(content, opts = {}) {
+        this.#resetIcon();
+        const {shadow = false} = opts;
         if (typeof content === "string" && content !== "") {
             this.#titleIconEl.innerText = "";
-            this.#titleIconEl.style.backgroundImage = content;
-            this.#titleIconEl.style.color = "";
+            this.#titleIconEl.style.backgroundImage = `url(${content})`;
+            this.#titleIconEl.style.backgroundSize = "80%";
+            if (shadow) {
+                this.#titleIconEl.style.filter = "drop-shadow(black 1px 1px 1px)";
+            }
             return true;
-        } else {
-            this.#titleIconEl.innerText = "❖";
-            this.#titleIconEl.style.backgroundImage = "";
-            this.#titleIconEl.style.color = "";
-            return false;
         }
+        return false;
     }
 
     setHTMLIcon(content) {
-        this.#titleIconEl.classList.remove("small");
+        this.#resetIcon();
         if (content instanceof HTMLElement) {
             this.#titleIconEl.innerText = "";
             this.#titleIconEl.append(content);
             return true;
-        } else {
-            this.#titleIconEl.innerText = "❖";
-            this.#titleIconEl.style.backgroundImage = "";
-            this.#titleIconEl.style.color = "";
-            return false;
         }
+        return false;
     }
 
     setIcon(config) {
@@ -173,18 +162,22 @@ export default class Modal extends CustomElement {
                 return this.setFontIcon(config.content, config.style);
             }
             case "image": {
-                return this.setImageIcon(config.content);
+                return this.setImageIcon(config.content, config.style);
             }
             case "html": {
                 return this.setHTMLIcon(config.content);
             }
-            default: {
-                this.#titleIconEl.innerText = "❖";
-                this.#titleIconEl.style.backgroundImage = "";
-                this.#titleIconEl.style.color = "";
-                return false;
-            }
         }
+        this.#resetIcon();
+        return false;
+    }
+
+    #resetIcon() {
+        this.#titleIconEl.innerText = "❖";
+        this.#titleIconEl.style.backgroundImage = "";
+        this.#titleIconEl.style.backgroundSize = "";
+        this.#titleIconEl.style.color = "";
+        this.#titleIconEl.style.filter = "";
     }
 
     show() {

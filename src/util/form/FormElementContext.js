@@ -113,8 +113,7 @@ export default class FormElementContext {
                 const value = event.data[this.#element.name];
                 this.#element.value = value;
             }
-            this.#callUpdateVisible();
-            this.#callUpdateEnabled();
+            this.refreshFormElementState();
             this.#elementEventManager.active = true;
         });
         this.#storageEventManager.set(["load", "clear"], (event) => {
@@ -130,8 +129,7 @@ export default class FormElementContext {
                 this.#element.removeAttribute("value");
             }
             this.#element.value = value;
-            this.#callUpdateVisible();
-            this.#callUpdateEnabled();
+            this.refreshFormElementState();
             this.#elementEventManager.active = true;
         });
         /* --- */
@@ -157,8 +155,7 @@ export default class FormElementContext {
                 this.#element.value = value.get(elName);
             }
             this.#storageEventManager.switchTarget(value);
-            this.#callUpdateVisible();
-            this.#callUpdateEnabled();
+            this.refreshFormElementState();
         }
     }
 
@@ -220,6 +217,12 @@ export default class FormElementContext {
         return this.#element.errors;
     }
 
+    refreshFormElementState() {
+        this.#callUpdateVisible();
+        this.#callUpdateEnabled();
+        this.#callUpdateEditable();
+    }
+
     /* visible logic */
     get visible() {
         return this.#visibleValue;
@@ -234,11 +237,17 @@ export default class FormElementContext {
     }
 
     setVisibleLogic(logic) {
-        if (logic != null && typeof logic === "object") {
+        if (logic == null) {
+            this.#visibleLogic = true;
+            this.#setVisibileValue(true);
+        } else if (typeof logic === "object") {
             this.#visibleLogic = LogicCompiler.compile(logic);
             this.#callUpdateVisible();
+        } else if (typeof logic === "function") {
+            this.#visibleLogic = logic;
+            this.#callUpdateVisible();
         } else {
-            const value = logic == null || !!logic;
+            const value = !!logic;
             this.#visibleLogic = logic;
             this.#setVisibileValue(value);
         }
@@ -273,9 +282,9 @@ export default class FormElementContext {
                     this.#element.style.opacity = "0.2";
                 }
             } else if (value) {
-                this.#element.style.display = "";
+                this.#element.hidden = false;
             } else {
-                this.#element.style.display = "none";
+                this.#element.hidden = true;
             }
         }
     }
@@ -286,11 +295,17 @@ export default class FormElementContext {
     }
 
     setEnabledLogic(logic) {
-        if (logic != null && typeof logic === "object") {
+        if (logic == null) {
+            this.#enabledLogic = true;
+            this.#setEnabledValue(true);
+        } else if (typeof logic === "object") {
             this.#enabledLogic = LogicCompiler.compile(logic);
             this.#callUpdateEnabled();
+        } else if (typeof logic === "function") {
+            this.#enabledLogic = logic;
+            this.#callUpdateEnabled();
         } else {
-            const value = logic == null || !!logic;
+            const value = !!logic;
             this.#enabledLogic = logic;
             this.#setEnabledValue(value);
         }
@@ -319,9 +334,9 @@ export default class FormElementContext {
         if (this.#enabledValue != value) {
             this.#enabledValue = value;
             if (value) {
-                this.#element.removeAttribute("disabled");
+                this.#element.disabled = false;
             } else {
-                this.#element.setAttribute("disabled", "");
+                this.#element.disabled = true;
             }
         }
     }
@@ -332,11 +347,17 @@ export default class FormElementContext {
     }
 
     setEditableLogic(logic) {
-        if (logic != null && typeof logic === "object") {
+        if (logic == null) {
+            this.#editableLogic = true;
+            this.#setEditableValue(true);
+        } else if (typeof logic === "object") {
             this.#editableLogic = LogicCompiler.compile(logic);
             this.#callUpdateEditable();
+        } else if (typeof logic === "function") {
+            this.#editableLogic = logic;
+            this.#callUpdateEditable();
         } else {
-            const value = logic == null || !!logic;
+            const value = !!logic;
             this.#editableLogic = logic;
             this.#setEditableValue(value);
         }
@@ -365,9 +386,9 @@ export default class FormElementContext {
         if (this.#editableValue != value) {
             this.#editableValue = value;
             if (value) {
-                this.#element.removeAttribute("readonly");
+                this.#element.readonly = false;
             } else {
-                this.#element.setAttribute("readonly", "");
+                this.#element.readonly = true;
             }
         }
     }

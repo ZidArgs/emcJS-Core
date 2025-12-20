@@ -8,25 +8,30 @@ const DEFAULT_DIALOG_ICONS = {
         method: "font",
         content: "!",
         style: {
+            size: "1.8em",
             color: "var(--modal-icon-alert-color, #e98e2d)",
-            circle: "var(--modal-icon-alert-color, #e98e2d)"
+            circle: "var(--modal-icon-alert-color, #e98e2d)",
+            shadow: true
         }
     },
     confirm: {
         method: "font",
         content: "?",
         style: {
+            size: "1.8em",
             color: "var(--modal-icon-info-color, #0000ff)",
-            circle: "var(--modal-icon-info-color, #0000ff)"
+            circle: "var(--modal-icon-info-color, #0000ff)",
+            shadow: true
         }
     },
     promt: {
         method: "font",
         content: "🖉",
         style: {
-            size: "1.4em",
+            size: "1.3em",
             color: "var(--modal-icon-success-color, #009952)",
-            circle: "var(--modal-icon-success-color, #009952)"
+            circle: "var(--modal-icon-success-color, #009952)",
+            shadow: true
         }
     },
     error: {
@@ -34,7 +39,8 @@ const DEFAULT_DIALOG_ICONS = {
         content: "⚠",
         style: {
             size: "2em",
-            color: "var(--modal-icon-error-color, #c50000)"
+            color: "var(--modal-icon-error-color, #c50000)",
+            shadow: true
         }
     }
 };
@@ -186,7 +192,7 @@ export default class ModalDialog extends Modal {
             submit: "yes",
             cancel: "no"
         });
-        this.#applyDialogIcon(dialogEl, "alert");
+        this.#applyDialogIcon(dialogEl, "confirm");
         dialogEl.initialFocusElement = dialogEl.#cancelEl;
         // ---
         const result = await dialogEl.show();

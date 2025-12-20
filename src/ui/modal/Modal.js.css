@@ -151,10 +151,6 @@
     user-select: none;
 }
 
-#title-icon.small {
-    font-size: 1.9em;
-}
-
 #content {
     display: flex;
     flex-direction: column;
