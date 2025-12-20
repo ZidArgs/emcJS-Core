@@ -1,5 +1,6 @@
 @import "./theme.css";
 @import "./prestyle.css";
+@import "./scrollbar.css";
 
 body {
     width: 100vw;
@@ -11,73 +12,11 @@ body {
 }
 
 form {
-    color: var(--form-text-color);
-    background-color: var(--form-back-color);
-}
-
-::-webkit-scrollbar {
-    width: var(--scrollbar-size);
-    height: var(--scrollbar-size);
-}
-
-::-webkit-scrollbar-button {
-    width: 0px;
-    height: 0px;
-}
-
-::-webkit-scrollbar-track {
-    background-color: var(--scrollbar-track-color);
-    border-style: solid;
-    border-width: var(--scrollbar-track-border-width);
-    border-color: var(--scrollbar-track-border-color);
-    border-radius: var(--scrollbar-track-border-radius);
-}
-
-::-webkit-scrollbar-corner {
-    background-color: var(--scrollbar-corner-color);
-    border-style: solid;
-    border-width: var(--scrollbar-corner-border-width);
-    border-color: var(--scrollbar-corner-border-color);
-    border-radius: var(--scrollbar-corner-border-radius);
-}
-
-::-webkit-resizer {
-    background: radial-gradient(var(--scrollbar-resizer-color) calc(var(--scrollbar-size) / 2 - 2px), transparent calc(var(--scrollbar-size) / 2 - 1px));
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: var(--scrollbar-thumb-color);
-    border-style: solid;
-    border-width: var(--scrollbar-thumb-border-width);
-    border-color: var(--scrollbar-thumb-border-color);
-    border-radius: var(--scrollbar-thumb-border-radius);
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background-color: var(--scrollbar-thumb-hover-color);
-    border-color: var(--scrollbar-thumb-hover-border-color);
-}
-
-::-webkit-scrollbar-thumb:active {
-    background-color: var(--scrollbar-thumb-active-color);
-    border-color: var(--scrollbar-thumb-active-border-color);
-}
-
-:host([disabled]:not([disabled="false"])) ::-webkit-scrollbar-track {
-    background-color: var(--scrollbar-disabled-track-color);
-    border-color: var(--scrollbar-disabled-track-border-color);
-}
-
-:host([disabled]:not([disabled="false"])) ::-webkit-scrollbar-corner {
-    background-color: var(--scrollbar-disabled-corner-color);
-    border-color: var(--scrollbar-disabled-corner-border-color);
-}
-
-:host([disabled]:not([disabled="false"])) ::-webkit-resizer {
-    background: radial-gradient(var(--scrollbar-disabled-resizer-color) calc(var(--scrollbar-size) / 2 - 2px), transparent calc(var(--scrollbar-size) / 2 - 1px));
-}
-
-:host([disabled]:not([disabled="false"])) ::-webkit-scrollbar-thumb {
-    background-color: var(--scrollbar-disabled-thumb-color);
-    border-color: var(--scrollbar-disabled-thumb-border-color);
+    color: var(--form-text-color, #000000);
+    background-color: var(--form-back-color, #cccccc);
+    background-image: var(--form-back-image, none);
+    border-style: none;
+    border-width: 0;
+    border-color: transparent;
+    border-radius: 0;
 }

@@ -1,10 +1,10 @@
+import CustomElement from "../../element/CustomElement.js";
 import {isStringNotEmpty} from "../../../util/helper/CheckType.js";
-import Panel from "../Panel.js";
 import "../../form/button/Button.js";
 import TPL from "./TabPanel.js.html" assert {type: "html"};
 import STYLE from "./TabPanel.js.css" assert {type: "css"};
 
-export default class TabPanel extends Panel {
+export default class TabPanel extends CustomElement {
 
     #slotEl;
 

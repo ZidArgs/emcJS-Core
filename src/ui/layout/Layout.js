@@ -30,7 +30,6 @@ export default class Layout extends CustomElement {
                 const clazz = Panel.getReference(layout.name);
                 if (clazz != null) {
                     const el = new clazz();
-                    el.classList.add("panel");
                     if (isDict(layout.options)) {
                         for (const i in layout.options) {
                             el.setAttribute(i, layout.options[i]);

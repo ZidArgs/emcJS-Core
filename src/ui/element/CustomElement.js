@@ -5,6 +5,7 @@ import {
     scrollIntoView, scrollIntoViewIfNeeded
 } from "../../util/helper/ui/Scroll.js";
 import STYLE from "./CustomElement.js.css" assert {type: "css"};
+import SCROLLBAR_STYLE from "../../_style/scrollbar.css" assert {type: "css"};
 
 export default class CustomElement extends EventManagerMixin(HTMLElement) {
 
@@ -19,6 +20,7 @@ export default class CustomElement extends EventManagerMixin(HTMLElement) {
             delegatesFocus: this.constructor.delegatesFocus
         });
         STYLE.apply(this.shadowRoot);
+        SCROLLBAR_STYLE.apply(this.shadowRoot);
     }
 
     static get delegatesFocus() {
