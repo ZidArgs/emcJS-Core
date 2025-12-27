@@ -30,6 +30,11 @@ export default class CtxMenuLayer extends CustomElement {
         return document.body;
     }
 
+    static getNextLayerBounds(source) {
+        const layerEl = this.findNextLayer(source);
+        return layerEl.getBoundingClientRect();
+    }
+
 }
 
 customElements.define("emc-ctxmenulayer", CtxMenuLayer);

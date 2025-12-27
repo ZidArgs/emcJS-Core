@@ -15,20 +15,9 @@ const Q_TAB = [
     "textarea:not([tabindex=\"-1\"])",
     "[tabindex]:not([tabindex=\"-1\"])"
 ].join(",");
+
 const LAYER_MARGIN = 5;
 
-function getLayerBounds(source) {
-    const slot = source.assignedSlot;
-    if (slot != null) {
-        const host = slot.getRootNode().host;
-        if (host instanceof CtxMenuLayer) {
-            return slot.getBoundingClientRect();
-        }
-    }
-    return document.body.getBoundingClientRect();
-}
-
-// TODO use EventManager for menu items
 export default class ContextMenu extends CustomElement {
 
     #menuEl;
@@ -163,7 +152,7 @@ export default class ContextMenu extends CustomElement {
     }
 
     #calculatePostition() {
-        const pRect = getLayerBounds(this);
+        const pRect = CtxMenuLayer.getNextLayerBounds(this);
         let posY = this.#top;
         let posX = this.#left;
         if (pRect.x >= 0 && posX < pRect.x + LAYER_MARGIN) {

@@ -6,22 +6,7 @@ import STYLE from "./Tooltip.js.css" assert {type: "css"};
 const LAYER_MARGIN = 5;
 const TOOLTIP_MARGIN = 5;
 
-function getLayerBounds(source) {
-    const slot = source.assignedSlot;
-    if (slot != null) {
-        const host = slot.getRootNode().host;
-        if (host instanceof TooltipLayer) {
-            return slot.getBoundingClientRect();
-        }
-    }
-    return document.body.getBoundingClientRect();
-}
-
 export default class Tooltip extends CustomElement {
-
-    #top = 0;
-
-    #left = 0;
 
     constructor() {
         super();
@@ -46,12 +31,12 @@ export default class Tooltip extends CustomElement {
         }
     }
 
-    get top() {
-        return this.#top;
+    get position() {
+        return this.getAttribute("position");
     }
 
-    get left() {
-        return this.#left;
+    set position(val) {
+        this.setAttribute("position", val);
     }
 
     get active() {
@@ -70,7 +55,7 @@ export default class Tooltip extends CustomElement {
         /* --- */
         let posX = 0;
         let posY = 0;
-        const pRect = getLayerBounds(this);
+        const pRect = TooltipLayer.getNextLayerBounds(this);
         // const tRect = target.getBoundingClientRect();
 
         // TODO calcualte position
