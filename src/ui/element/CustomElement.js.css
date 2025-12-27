@@ -8,5 +8,10 @@
 }
 
 :host([disabled]:not([disabled="false"])) {
-    pointer-events: none;
+    cursor: default !important;
+    pointer-events: none !important;
+}
+
+:host([hidden]:not([hidden="false"])) {
+    display: none !important;
 }

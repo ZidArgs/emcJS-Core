@@ -31,6 +31,22 @@ export default class CustomElement extends EventManagerMixin(HTMLElement) {
         return getInnerText(this, excludedNodeClasses);
     }
 
+    set disabled(value) {
+        this.setBooleanAttribute("disabled", value);
+    }
+
+    get disabled() {
+        return this.getBooleanAttribute("disabled");
+    }
+
+    set hidden(value) {
+        this.setBooleanAttribute("hidden", value);
+    }
+
+    get hidden() {
+        return this.getBooleanAttribute("hidden");
+    }
+
     setBooleanAttribute(name, value) {
         if (value == null) {
             this.removeAttribute(name);

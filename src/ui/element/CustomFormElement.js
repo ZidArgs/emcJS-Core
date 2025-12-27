@@ -84,14 +84,6 @@ export default class CustomFormElement extends CustomElement {
         return this.value;
     }
 
-    set disabled(value) {
-        this.setBooleanAttribute("disabled", value);
-    }
-
-    get disabled() {
-        return this.getBooleanAttribute("disabled");
-    }
-
     get validity() {
         return this.internals.validity;
     }
