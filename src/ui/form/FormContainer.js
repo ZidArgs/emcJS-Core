@@ -129,10 +129,12 @@ export default class FormContainer extends CustomElement {
     }
 
     static get observedAttributes() {
-        return ["hasheader", "hasfooter"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "hasheader", "hasfooter"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "hasheader": {
                 if (oldValue != newValue) {

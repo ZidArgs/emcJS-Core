@@ -58,10 +58,12 @@ export default class FormField extends CustomElement {
     }
 
     static get observedAttributes() {
-        return ["description"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "description"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "description": {
                 if (oldValue != newValue) {

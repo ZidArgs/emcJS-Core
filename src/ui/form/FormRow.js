@@ -39,10 +39,12 @@ export default class FormRow extends CustomElement {
     }
 
     static get observedAttributes() {
-        return ["disabled"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "disabled"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "disabled": {
                 if (oldValue != newValue) {

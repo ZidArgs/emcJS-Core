@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>emcJS sandbox</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Test for emcJS components">
+    <meta name="robots" content="none">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#000000">
+    <style>
+        :root {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 16px;
+        }
+
+        * {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        #page {
+            box-sizing: border-box;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-areas:
+                "topleft top topright"
+                "left . right"
+                "bottomleft bottom bottomright";
+        }
+
+        .marker {
+            position: relative;
+            display: block;
+            width: 20px;
+            height: 20px;
+            margin: 10px;
+            background-color: aqua;
+            border-color: aquamarine;
+            border-radius: 50%;
+        }
+
+        .marker.topleft {
+            grid-area: topleft;
+        }
+
+        .marker.top {
+            grid-area: top;
+        }
+
+        .marker.topright {
+            grid-area: topright;
+        }
+
+        .marker.left {
+            grid-area: left;
+        }
+
+        .marker.right {
+            grid-area: right;
+        }
+
+        .marker.bottomleft {
+            grid-area: bottomleft;
+        }
+
+        .marker.bottom {
+            grid-area: bottom;
+        }
+
+        .marker.bottomright {
+            grid-area: bottomright;
+        }
+
+        emc-bubble {
+            display: flex;
+            --tooltip-scale: 1;
+        }
+    </style>
+    <script type="module" src="./index.js"></script>
+</head>
+
+<body style="display: flex; flex-direction: column;">
+    <emc-page id="page" style="padding: 8px;">
+        <div class="container">
+            <div class="grid">
+                <div class="marker topleft">
+                    <emc-bubble position="topleft">test</emc-bubble>
+                </div>
+                <div class="marker top">
+                    <emc-bubble position="top">test</emc-bubble>
+                </div>
+                <div class="marker topright">
+                    <emc-bubble position="topright">test</emc-bubble>
+                </div>
+                <div class="marker left">
+                    <emc-bubble position="left">test</emc-bubble>
+                </div>
+                <div class="marker right">
+                    <emc-bubble position="right">test</emc-bubble>
+                </div>
+                <div class="marker bottomleft">
+                    <emc-bubble position="bottomleft">test</emc-bubble>
+                </div>
+                <div class="marker bottom">
+                    <emc-bubble position="bottom">test</emc-bubble>
+                </div>
+                <div class="marker bottomright">
+                    <emc-bubble position="bottomright">test</emc-bubble>
+                </div>
+            </div>
+        </div>
+    </emc-page>
+</body>
+
+</html>

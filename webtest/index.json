@@ -17,6 +17,9 @@
     "dragdrop": {
         "label": "Drag'n'Drop"
     },
+    "bubble": {
+        "label": "Bubble"
+    },
     "tooltip": {
         "label": "Tooltip"
     },

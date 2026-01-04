@@ -1,8 +1,8 @@
 import CustomElement from "../element/CustomElement.js";
-import TPL from "./TooltipLayer.js.html" assert {type: "html"};
-import STYLE from "./TooltipLayer.js.css" assert {type: "css"};
+import TPL from "./BubbleLayer.js.html" assert {type: "html"};
+import STYLE from "./BubbleLayer.js.css" assert {type: "css"};
 
-export default class TooltipLayer extends CustomElement {
+export default class BubbleLayer extends CustomElement {
 
     constructor() {
         super();
@@ -15,17 +15,17 @@ export default class TooltipLayer extends CustomElement {
         if (!(source instanceof Node)) {
             throw new Error("can only traverse instances of Node");
         }
-        if (source instanceof TooltipLayer || source == document.body) {
+        if (source instanceof BubbleLayer || source == document.body) {
             return source;
         }
         if (source.assignedSlot != null) {
-            return TooltipLayer.findNextLayer(source.assignedSlot);
+            return BubbleLayer.findNextLayer(source.assignedSlot);
         }
         if (source.parentElement != null) {
-            return TooltipLayer.findNextLayer(source.parentElement);
+            return BubbleLayer.findNextLayer(source.parentElement);
         }
         if (source.getRootNode()?.host != null) {
-            return TooltipLayer.findNextLayer(source.getRootNode().host);
+            return BubbleLayer.findNextLayer(source.getRootNode().host);
         }
         return document.body;
     }
@@ -37,4 +37,4 @@ export default class TooltipLayer extends CustomElement {
 
 }
 
-customElements.define("emc-tooltip-layer", TooltipLayer);
+customElements.define("emc-bubble-layer", BubbleLayer);

@@ -75,10 +75,12 @@ export default class FormSection extends CustomElement {
     }
 
     static get observedAttributes() {
-        return ["label"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "label"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         if (oldValue != newValue) {
             switch (name) {
                 case "label": {

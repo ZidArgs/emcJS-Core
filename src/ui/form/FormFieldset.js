@@ -49,10 +49,12 @@ export default class FormFieldset extends CustomElement {
     }
 
     static get observedAttributes() {
-        return ["label", "desc", "tooltip", "disabled"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "label", "desc", "tooltip", "disabled"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "label": {
                 if (oldValue != newValue) {
