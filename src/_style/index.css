@@ -10,13 +10,3 @@ body {
     color: var(--page-text-color);
     background-color: var(--page-back-color);
 }
-
-form {
-    color: var(--form-text-color, #000000);
-    background-color: var(--form-back-color, #cccccc);
-    background-image: var(--form-back-image, none);
-    border-style: none;
-    border-width: 0;
-    border-color: transparent;
-    border-radius: 0;
-}

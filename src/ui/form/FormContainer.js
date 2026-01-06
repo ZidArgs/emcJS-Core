@@ -15,13 +15,11 @@ export default class FormContainer extends CustomElement {
 
     #containerEl;
 
+    #headerEl;
+
+    #footerEl;
+
     #contentEl;
-
-    #formNodeList = [];
-
-    #topFormResizeObserver;
-
-    #bottomFormResizeObserver;
 
     #sectionNodeSet = new Set();
 
@@ -52,19 +50,19 @@ export default class FormContainer extends CustomElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#containerEl = this.shadowRoot.getElementById("container");
+        this.#headerEl = this.shadowRoot.getElementById("header");
+        this.#footerEl = this.shadowRoot.getElementById("footer");
         this.#contentEl = this.shadowRoot.getElementById("content");
         /* --- */
-        this.#topFormResizeObserver = new ResizeObserver((entries) => {
-            this.#applyScrollPaddingTop(entries[0].target);
+        this.registerTargetEventHandler(this.#headerEl, "slotchange", () => {
+            this.#onHeaderSlotChange();
         });
-        this.#bottomFormResizeObserver = new ResizeObserver((entries) => {
-            this.#applyScrollPaddingBottom(entries[0].target);
-        });
+        this.#onHeaderSlotChange();
         /* --- */
-        this.registerTargetEventHandler(this.#contentEl, "slotchange", () => {
-            this.#onSlotChange();
+        this.registerTargetEventHandler(this.#footerEl, "slotchange", () => {
+            this.#onFooterSlotChange();
         });
-        this.#onSlotChange();
+        this.#onFooterSlotChange();
         /* --- */
         this.registerTargetEventHandler(this.#contentEl, "scroll", () => {
             this.#refreshSectionState();
@@ -104,22 +102,6 @@ export default class FormContainer extends CustomElement {
         return this.#activeSectionEl;
     }
 
-    set hasHeader(value) {
-        this.setBooleanAttribute("hasheader", value);
-    }
-
-    get hasHeader() {
-        return this.getBooleanAttribute("hasheader");
-    }
-
-    set hasFooter(value) {
-        this.setBooleanAttribute("hasfooter", value);
-    }
-
-    get hasFooter() {
-        return this.getBooleanAttribute("hasfooter");
-    }
-
     set noScroll(value) {
         this.setBooleanAttribute("noscroll", value);
     }
@@ -127,55 +109,6 @@ export default class FormContainer extends CustomElement {
     get noScroll() {
         return this.getBooleanAttribute("noscroll");
     }
-
-    static get observedAttributes() {
-        const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "hasheader", "hasfooter"];
-    }
-
-    attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback?.(name, oldValue, newValue);
-        switch (name) {
-            case "hasheader": {
-                if (oldValue != newValue) {
-                    this.#topFormResizeObserver.disconnect();
-                    if (this.hasHeader && this.#formNodeList.length > 1) {
-                        const node = this.#formNodeList.at(0);
-                        this.#topFormResizeObserver.observe(node);
-                        this.#applyScrollPaddingTop(node);
-                    }
-                }
-            } break;
-            case "hasfooter": {
-                if (oldValue != newValue) {
-                    this.#topFormResizeObserver.disconnect();
-                    if (this.hasFooter && this.#formNodeList.length > 1) {
-                        const node = this.#formNodeList.at(-1);
-                        this.#bottomFormResizeObserver.observe(node);
-                        this.#applyScrollPaddingBottom(node);
-                    }
-                }
-            } break;
-        }
-    }
-
-    #onSlotChange = debounce(() => {
-        this.#formNodeList = this.#contentEl.assignedElements({flatten: true}).filter((el) => el instanceof HTMLFormElement);
-        if (this.#formNodeList.length > 1) {
-            if (this.hasHeader) {
-                this.#topFormResizeObserver.disconnect();
-                const node = this.#formNodeList.at(0);
-                this.#topFormResizeObserver.observe(node);
-                this.#applyScrollPaddingTop(node);
-            }
-            if (this.hasFooter) {
-                this.#bottomFormResizeObserver.disconnect();
-                const node = this.#formNodeList.at(-1);
-                this.#bottomFormResizeObserver.observe(node);
-                this.#applyScrollPaddingBottom(node);
-            }
-        }
-    });
 
     #addSection(sectionEl) {
         this.#sectionNodeSet.add(sectionEl);
@@ -201,18 +134,6 @@ export default class FormContainer extends CustomElement {
             this.#removeSection(node);
         }
         this.#removeSection(sectionEl);
-    }
-
-    #applyScrollPaddingTop(node) {
-        const nodeRect = node.getBoundingClientRect();
-        this.#containerEl.style.scrollPaddingTop = `${nodeRect.height}px`;
-        this.#contentEl.style.setProperty("--form-header-height", `${nodeRect.height}px`);
-    }
-
-    #applyScrollPaddingBottom(node) {
-        const nodeRect = node.getBoundingClientRect();
-        this.#containerEl.style.scrollPaddingBottom = `${nodeRect.height}px`;
-        this.#contentEl.style.setProperty("--form-footer-height", `${nodeRect.height}px`);
     }
 
     #onSectionListChanged = debounce(() => {
@@ -245,6 +166,16 @@ export default class FormContainer extends CustomElement {
             this.dispatchEvent(event);
         }
     }
+
+    #onHeaderSlotChange = debounce(() => {
+        const elementList = this.#headerEl.assignedElements({flatten: true}).filter((el) => el instanceof HTMLFormElement);
+        this.#headerEl.classList.toggle("has-slotted", elementList.length > 0);
+    });
+
+    #onFooterSlotChange = debounce(() => {
+        const elementList = this.#footerEl.assignedElements({flatten: true}).filter((el) => el instanceof HTMLFormElement);
+        this.#footerEl.classList.toggle("has-slotted", elementList.length > 0);
+    });
 
 }
 

@@ -114,6 +114,12 @@ all; top_bottom right_left; top right bottom left
     --form-border-width: var(--page-border-width);
     --form-border-radius: var(--page-border-radius);
 
+    --form-header-border-color: var(--page-border-color);
+    --form-header-border-width: var(--page-border-width);
+
+    --form-footer-border-color: var(--page-border-color);
+    --form-footer-border-width: var(--page-border-width);
+
     --form-hover-text-color: var(--page-hover-text-color);
     --form-hover-back-color: var(--page-hover-back-color);
     --form-hover-back-image: none;

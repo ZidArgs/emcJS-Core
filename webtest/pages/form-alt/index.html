@@ -52,8 +52,8 @@
     <emc-page id="page" style="padding: 8px;">
         <div class="form-wrapper">
             <emc-tree id="form-section-navigation"></emc-tree>
-            <emc-form-container id="form" hasheader="" hasfooter="">
-                <form></form>
+            <emc-form-container id="form">
+                <form slot="header"></form>
                 <form>
                     <emc-form-section label="Test 1">
                         <emc-input-action id="action" name="action" label="action" placeholder="A whole lot of nothing" description="Test description" resettable required></emc-input-action>
@@ -89,7 +89,7 @@
                 <form>
                     <emc-select-image name="image-select" label="image-select" placeholder="Select image..." resettable required></emc-select-image>
                 </form>
-                <form>
+                <form slot="footer">
                     <input type="hidden" name="test" value="foobar">
                     <emc-form-row align="end">
                         <emc-button-error id="error-button" visible="true" enabled="true" distance="right"></emc-button-error>

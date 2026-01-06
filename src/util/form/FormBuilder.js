@@ -26,8 +26,8 @@ class FormBuilder {
                 defaultValues = {}
             } = config;
 
-            formContainerEl.hasHeader = hasHeader;
-            formContainerEl.hasFooter = hasFooter;
+            let firstFormEl;
+            let lastFormEl;
 
             if (forms != null) {
                 if (Array.isArray(forms)) {
@@ -35,25 +35,47 @@ class FormBuilder {
                         const {
                             elements, config: formConfig, values
                         } = form;
-                        formContainerEl.append(this.buildForm(elements, {
+                        const formEl = this.buildForm(elements, {
                             ...values,
                             ...defaultValues
-                        }, formConfig, label));
+                        }, formConfig, label);
+                        if (firstFormEl == null) {
+                            firstFormEl = formEl;
+                        }
+                        lastFormEl = formEl;
+                        formContainerEl.append(formEl);
                     }
                 } else {
                     const {
                         elements, config: formConfig, values
                     } = forms;
-                    formContainerEl.append(this.buildForm(elements, {
+                    const formEl = this.buildForm(elements, {
                         ...values,
                         ...defaultValues
-                    }, formConfig, label));
+                    }, formConfig, label);
+                    if (firstFormEl == null) {
+                        firstFormEl = formEl;
+                    }
+                    lastFormEl = formEl;
+                    formContainerEl.append(formEl);
                 }
             } else {
                 const {
                     elements, config: formConfig, values
                 } = config;
-                formContainerEl.append(this.buildForm(elements, values, formConfig, label));
+                const formEl = this.buildForm(elements, values, formConfig, label);
+                if (firstFormEl == null) {
+                    firstFormEl = formEl;
+                }
+                lastFormEl = formEl;
+                formContainerEl.append(formEl);
+            }
+
+            if (hasHeader) {
+                firstFormEl.setAttribute("slot", "header");
+            }
+            if (hasFooter && firstFormEl !== lastFormEl) {
+                lastFormEl.setAttribute("slot", "footer");
             }
         }
 

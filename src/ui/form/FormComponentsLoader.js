@@ -1,4 +1,4 @@
-import "./element/select/token/TokenSelect.js";import MapLocker from "../../data/locker/MapLocker.js";
+import MapLocker from "../../data/locker/MapLocker.js";
 
 // structural
 import FormSection from "./FormSection.js";
@@ -53,4 +53,5 @@ import "./element/select/relation/RelationSelect.js";
 import "./element/select/search/SearchSelect.js";
 import "./element/select/simple/SimpleSelect.js";
 import "./element/select/switch/SwitchSelect.js";
+import "./element/select/token/TokenSelect.js";
 

@@ -281,9 +281,7 @@ export default class RowManager extends EventTarget {
         });
 
         const cellManager = new CellManager(rowEl, this.#cellCache, this.#dataGridId);
-        if (this.#eventManager.active) {
-            cellManager.connectedCallback();
-        }
+        cellManager.setEventManagerActive(this.#eventManager.active);
         cellManager.sortable = this.#sortable;
         cellManager.selectable = this.#selectable;
         cellManager.selectEnd = this.#selectEnd;
