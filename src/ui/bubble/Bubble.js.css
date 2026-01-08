@@ -12,6 +12,9 @@
 #content {
     position: absolute;
     display: flex;
+    flex-direction: inherit;
+    justify-content: inherit;
+    align-items: inherit;
     padding: 5px;
     color: var(--tooltip-text-color, #000000);
     background-color: var(--tooltip-back-color, #ffffff);

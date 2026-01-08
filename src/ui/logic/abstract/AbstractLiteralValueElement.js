@@ -57,7 +57,7 @@ export default class AbstractLiteralValueElement extends AbstractElement {
         switch (name) {
             case "ref": {
                 if (oldValue != newValue) {
-                    if (typeof newValue === "string") {
+                    if (typeof newValue === "string" && newValue !== "") {
                         this.#refEl.innerText = newValue;
                     } else {
                         this.#refEl.innerText = "";

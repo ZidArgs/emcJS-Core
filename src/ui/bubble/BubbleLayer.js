@@ -1,13 +1,13 @@
 import CustomElement from "../element/CustomElement.js";
 import TPL from "./BubbleLayer.js.html" assert {type: "html"};
-import STYLE from "./BubbleLayer.js.css" assert {type: "css"};
+// import STYLE from "./BubbleLayer.js.css" assert {type: "css"};
 
 export default class BubbleLayer extends CustomElement {
 
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
-        STYLE.apply(this.shadowRoot);
+        // STYLE.apply(this.shadowRoot);
         /* --- */
     }
 

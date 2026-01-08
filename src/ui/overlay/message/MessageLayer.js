@@ -75,4 +75,4 @@ export default class MessageLayer extends CustomElement {
 
 }
 
-customElements.define("emc-messagelayer", MessageLayer);
+customElements.define("emc-message-layer", MessageLayer);

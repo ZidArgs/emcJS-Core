@@ -2,7 +2,7 @@ import {debounce} from "../../../util/Debouncer.js";
 import EventManager from "../../../util/event/EventManager.js";
 import {deepClone} from "../../../util/helper/DeepClone.js";
 import CustomElement from "../../element/CustomElement.js";
-import CtxMenuLayer from "./CtxMenuLayer.js";
+import ContextMenuLayer from "./ContextMenuLayer.js";
 import "./ContextMenuItem.js";
 import TPL from "./ContextMenu.js.html" assert {type: "html"};
 import STYLE from "./ContextMenu.js.css" assert {type: "css"};
@@ -95,9 +95,6 @@ export default class ContextMenu extends CustomElement {
         super.connectedCallback?.();
 
         this.#entriesEventManager.active = true;
-        if (!this.hasAttribute("slot")) {
-            this.setAttribute("slot", "ctxmnu");
-        }
         this.initItems();
     }
 
@@ -105,16 +102,6 @@ export default class ContextMenu extends CustomElement {
         super.disconnectedCallback();
 
         this.#entriesEventManager.active = false;
-    }
-
-    static get observedAttributes() {
-        return ["slot"];
-    }
-
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (name == "slot" && newValue != "ctxmnu") {
-            this.setAttribute("slot", "ctxmnu");
-        }
     }
 
     get top() {
@@ -152,7 +139,7 @@ export default class ContextMenu extends CustomElement {
     }
 
     #calculatePostition() {
-        const pRect = CtxMenuLayer.getNextLayerBounds(this);
+        const pRect = ContextMenuLayer.getNextLayerBounds(this);
         let posY = this.#top;
         let posX = this.#left;
         if (pRect.x >= 0 && posX < pRect.x + LAYER_MARGIN) {

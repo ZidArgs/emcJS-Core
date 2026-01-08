@@ -1,13 +1,13 @@
 import CustomElement from "../../element/CustomElement.js";
-import TPL from "./CtxMenuLayer.js.html" assert {type: "html"};
-import STYLE from "./CtxMenuLayer.js.css" assert {type: "css"};
+import TPL from "./ContextMenuLayer.js.html" assert {type: "html"};
+// import STYLE from "./ContextMenuLayer.js.css" assert {type: "css"};
 
-export default class CtxMenuLayer extends CustomElement {
+export default class ContextMenuLayer extends CustomElement {
 
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
-        STYLE.apply(this.shadowRoot);
+        // STYLE.apply(this.shadowRoot);
         /* --- */
     }
 
@@ -15,17 +15,17 @@ export default class CtxMenuLayer extends CustomElement {
         if (!(source instanceof Node)) {
             throw new Error("can only traverse instances of Node");
         }
-        if (source instanceof CtxMenuLayer || source === document.body) {
+        if (source instanceof ContextMenuLayer || source === document.body) {
             return source;
         }
         if (source.assignedSlot != null) {
-            return CtxMenuLayer.findNextLayer(source.assignedSlot);
+            return ContextMenuLayer.findNextLayer(source.assignedSlot);
         }
         if (source.parentElement != null) {
-            return CtxMenuLayer.findNextLayer(source.parentElement);
+            return ContextMenuLayer.findNextLayer(source.parentElement);
         }
         if (source.getRootNode()?.host != null) {
-            return CtxMenuLayer.findNextLayer(source.getRootNode().host);
+            return ContextMenuLayer.findNextLayer(source.getRootNode().host);
         }
         return document.body;
     }
@@ -37,4 +37,4 @@ export default class CtxMenuLayer extends CustomElement {
 
 }
 
-customElements.define("emc-ctxmenulayer", CtxMenuLayer);
+customElements.define("emc-contextmenu-layer", ContextMenuLayer);

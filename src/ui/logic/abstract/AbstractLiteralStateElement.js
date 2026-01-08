@@ -136,7 +136,7 @@ export default class AbstractLiteralStateElement extends AbstractElement {
             } break;
             case "ref": {
                 if (oldValue != newValue) {
-                    if (typeof newValue === "string") {
+                    if (typeof newValue === "string" && newValue !== "") {
                         this.#refEl.innerText = newValue;
                     } else {
                         this.#refEl.innerText = "";

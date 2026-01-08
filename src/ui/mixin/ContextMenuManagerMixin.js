@@ -2,7 +2,7 @@
 import EventTargetManager from "../../util/event/EventTargetManager.js";
 import {createMixin} from "../../util/Mixin.js";
 import ActiveCounter from "../../util/counter/ActiveCounter.js";
-import CtxMenuLayer from "../overlay/ctxmenu/CtxMenuLayer.js";
+import ContextMenuLayer from "../overlay/ctxmenu/ContextMenuLayer.js";
 
 const DEFAULT_MENU_ID = "main";
 
@@ -88,7 +88,7 @@ export default createMixin((superclass) => class ContextMenuManagerMixin extends
         manager.switchTarget(ctxMnu);
         /* --- */
         if (this.isConnected) {
-            const catcherEl = CtxMenuLayer.findNextLayer(this);
+            const catcherEl = ContextMenuLayer.findNextLayer(this);
             catcherEl.append(ctxMnu);
         }
         /* --- */
@@ -190,7 +190,7 @@ export default createMixin((superclass) => class ContextMenuManagerMixin extends
         if (super.connectedCallback) {
             super.connectedCallback();
         }
-        const catcherEl = CtxMenuLayer.findNextLayer(this);
+        const catcherEl = ContextMenuLayer.findNextLayer(this);
         for (const [, menu] of this.#menus) {
             catcherEl.append(menu);
         }

@@ -19,6 +19,8 @@ export default class AbstractElement extends CustomElement {
 
     #headerEl;
 
+    #headerTextEl;
+
     #logicResult;
 
     constructor(caption) {
@@ -31,7 +33,8 @@ export default class AbstractElement extends CustomElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#headerEl = this.shadowRoot.getElementById("header");
-        this.#headerEl.innerText = caption;
+        this.#headerTextEl = this.shadowRoot.getElementById("header-text");
+        this.#headerTextEl.innerText = caption;
         this.#id = appUID("logic-element");
         /* --- */
         this.registerTargetEventHandler(this, "click", (event) => {
@@ -82,8 +85,8 @@ export default class AbstractElement extends CustomElement {
     }
 
     getHeader() {
-        if (this.#headerEl) {
-            return this.#headerEl.innerText;
+        if (this.#headerTextEl) {
+            return this.#headerTextEl.innerText;
         }
     }
 
@@ -215,34 +218,6 @@ export default class AbstractElement extends CustomElement {
         return [];
     }
 
-    set value(value) {
-        const hdr = this.shadowRoot.querySelector(".header");
-        if (typeof value == "undefined") {
-            this.removeAttribute("value");
-            if (hdr) {
-                delete hdr.dataset.value;
-            }
-        } else if (typeof value == "boolean") {
-            this.setAttribute("value", +value);
-            if (hdr) {
-                hdr.dataset.value = +value;
-            }
-        } else {
-            this.setAttribute("value", parseInt(value) || 0);
-            if (hdr) {
-                hdr.dataset.value = parseInt(value) || 0;
-            }
-        }
-    }
-
-    get value() {
-        const val = this.getAttribute("value");
-        if (val == null) {
-            return undefined;
-        }
-        return parseInt(val) || 0;
-    }
-
     set disabled(val) {
         this.setBooleanAttribute("disabled", val);
     }
@@ -268,18 +243,11 @@ export default class AbstractElement extends CustomElement {
     }
 
     static get observedAttributes() {
-        return ["disabled", "readonly", "value", "visualize", "template"];
+        return ["disabled", "readonly", "visualize", "template"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
-            case "value": {
-                if (oldValue != newValue) {
-                    const event = new Event("update");
-                    event.value = this.value;
-                    this.dispatchEvent(event);
-                }
-            } break;
             case "visualize": {
                 if (oldValue != newValue) {
                     const value = newValue != null && newValue != "false";
@@ -402,28 +370,36 @@ export default class AbstractElement extends CustomElement {
 
 class ErrorElement extends AbstractElement {
 
+    #bodyEl;
+
     constructor() {
         super("ERROR: REFERENCE NOT FOUND");
         STYLE_ERROR.apply(this.shadowRoot);
+        /* --- */
+        this.#bodyEl = this.shadowRoot.getElementById("body");
     }
 
     getElement() {
         return this;
     }
 
-    get value() {
-        return undefined;
+    set logicResult(value) {
+        super.logicResult = 0;
+    }
+
+    get logicResult() {
+        return 0;
     }
 
     calculate(/* state = {} */) {
-        this.shadowRoot.getElementById("header").setAttribute("value", "0");
+        super.logicResult = 0;
         return 0;
     }
 
     toJSON() {}
 
     loadLogic(logic) {
-        this.shadowRoot.getElementById("body").innerHTML = logic.type || "UNKNOWN TYPE";
+        this.#bodyEl.innerHTML = logic.type || "UNKNOWN TYPE";
     }
 
     checkValidity() {
