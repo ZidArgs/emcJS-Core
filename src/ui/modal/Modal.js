@@ -119,12 +119,20 @@ export default class Modal extends CustomElement {
             if (circle) {
                 if (isColorString(circle)) {
                     this.#titleIconEl.style.backgroundImage = `radial-gradient(transparent 45%, ${circle}, transparent 55%)`;
+                } else if (isColorString(color)) {
+                    this.#titleIconEl.style.backgroundImage = `radial-gradient(transparent 45%, ${color}, transparent 55%)`;
                 } else {
-                    this.#titleIconEl.style.backgroundImage = "radial-gradient(transparent 45%, black, transparent 55%)";
+                    this.#titleIconEl.style.backgroundImage = "radial-gradient(transparent 45%, var(--modal-icon-default-color, #222222), transparent 55%)";
                 }
             }
             if (shadow) {
-                this.#titleIconEl.style.filter = "drop-shadow(black 1px 1px 1px)";
+                if (isColorString(shadow)) {
+                    this.#titleIconEl.style.filter = `drop-shadow(${shadow} 1px 1px 1px)`;
+                } else if (isColorString(color)) {
+                    this.#titleIconEl.style.filter = `drop-shadow(${color} 1px 1px 1px)`;
+                } else {
+                    this.#titleIconEl.style.filter = "drop-shadow(var(--modal-icon-shadow-color, #ffffff) 1px 1px 1px)";
+                }
             }
             return true;
         }
@@ -139,7 +147,11 @@ export default class Modal extends CustomElement {
             this.#titleIconEl.style.backgroundImage = `url(${content})`;
             this.#titleIconEl.style.backgroundSize = "80%";
             if (shadow) {
-                this.#titleIconEl.style.filter = "drop-shadow(black 1px 1px 1px)";
+                if (isColorString(shadow)) {
+                    this.#titleIconEl.style.filter = `drop-shadow(${shadow} 1px 1px 1px)`;
+                } else {
+                    this.#titleIconEl.style.filter = "drop-shadow(var(--modal-icon-shadow-color, #ffffff) 1px 1px 1px)";
+                }
             }
             return true;
         }
@@ -174,6 +186,7 @@ export default class Modal extends CustomElement {
 
     #resetIcon() {
         this.#titleIconEl.innerText = "❖";
+        this.#titleIconEl.style.fontSize = "";
         this.#titleIconEl.style.backgroundImage = "";
         this.#titleIconEl.style.backgroundSize = "";
         this.#titleIconEl.style.color = "";

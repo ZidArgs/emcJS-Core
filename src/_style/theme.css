@@ -70,6 +70,8 @@ all; top_bottom right_left; top right bottom left
     --modal-icon-success-color: #009952;
     --modal-icon-error-color: #c50000;
 
+    --modal-icon-shadow-color: #ffffff;
+
     --modal-link-text-color: #004472;
     --modal-link-hover-text-color: #003597;
 
