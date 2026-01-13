@@ -31,6 +31,12 @@
     },
     {
         "type": "SwitchInput",
+        "name": "showcopy",
+        "label": "Show copy button",
+        "value": false
+    },
+    {
+        "type": "SwitchInput",
         "name": "resettable",
         "label": "Resettable",
         "value": false

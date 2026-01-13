@@ -14,3 +14,15 @@ export function isLocalhost(hostname) {
 export function isSecureProtocol(protocol) {
     return SECURE_PROTOCOLS.includes(protocol.replace(/:/g, ""));
 }
+
+export function decodeSearchParams(url) {
+    url = new URL(url);
+    return Object.fromEntries(url.search.slice(1).split("&").map((e) => {
+        const [key, value] = e.split("=");
+        if (value == null) {
+            return [key, true];
+        } else {
+            return [key, decodeURI(value)];
+        }
+    }));
+}

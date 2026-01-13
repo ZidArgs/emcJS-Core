@@ -43,11 +43,16 @@
     width: 0px;
 }
 
+#copy,
 #reset {
     display: none;
     width: 2em;
     height: 2em;
     margin: 0px 0px 0px 5px;
+}
+
+:host([showcopy]:not([showcopy="false"])) #copy {
+    display: block;
 }
 
 :host([resettable]:not([resettable="false"])) #reset {
