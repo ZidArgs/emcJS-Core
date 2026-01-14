@@ -25,6 +25,10 @@ export default class Enum {
         return this.#value.toString();
     }
 
+    toJSON() {
+        return this.toString();
+    }
+
     static includes(value) {
         return this.values().includes(value.toString());
     }
@@ -43,6 +47,10 @@ export default class Enum {
 
     static toString() {
         return `Enum(${this.asArray().join(", ")})`;
+    }
+
+    static toJSON() {
+        return this.toString();
     }
 
 }
