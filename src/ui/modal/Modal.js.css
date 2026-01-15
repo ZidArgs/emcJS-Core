@@ -68,6 +68,16 @@
     filter: blur(2px);
 }
 
+:host([busy]:not([busy=false])) #modal:after {
+    position: absolute;
+    display: block;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    content: "";
+}
+
 #header {
     display: flex;
     color: var(--modal-header-text-color, #000000);

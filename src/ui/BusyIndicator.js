@@ -16,10 +16,14 @@ export default class BusyIndicator extends CustomElement {
 
     #promiseCounter = new ActiveCounter();
 
-    constructor() {
+    constructor(target) {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
+        /* --- */
+        if (target != null) {
+            this.setTarget(target);
+        }
     }
 
     isBusy() {
@@ -28,7 +32,7 @@ export default class BusyIndicator extends CustomElement {
 
     busy() {
         return new Promise((resolve) => {
-            if (this.#activeCounter.add() && !this.#isActive) {
+            if (this.#activeCounter.add() && !this.#promiseCounter.isActive()) {
                 this.#isActive = true;
                 this.#targetEl.append(this);
                 setTimeout(()=> {
@@ -42,7 +46,7 @@ export default class BusyIndicator extends CustomElement {
 
     unbusy() {
         return new Promise((resolve) => {
-            if (this.#activeCounter.remove() && this.#isActive) {
+            if (this.#activeCounter.remove() && !this.#promiseCounter.isActive()) {
                 this.#isActive = false;
                 this.remove();
                 setTimeout(()=> {
@@ -56,7 +60,7 @@ export default class BusyIndicator extends CustomElement {
 
     reset() {
         return new Promise((resolve) => {
-            if (this.#activeCounter.reset() && this.#isActive) {
+            if (this.#activeCounter.reset() && !this.#promiseCounter.isActive()) {
                 this.#isActive = false;
                 this.remove();
                 setTimeout(()=> {
@@ -96,7 +100,7 @@ export default class BusyIndicator extends CustomElement {
 
     #busyPromise() {
         return new Promise((resolve) => {
-            if (this.#promiseCounter.add() && !this.#isActive) {
+            if (this.#promiseCounter.add() && !this.#activeCounter.isActive()) {
                 this.#isActive = true;
                 this.#targetEl.append(this);
                 setTimeout(()=> {
@@ -110,7 +114,7 @@ export default class BusyIndicator extends CustomElement {
 
     #unbusyPromise() {
         return new Promise((resolve) => {
-            if (this.#promiseCounter.remove() && this.#isActive) {
+            if (this.#promiseCounter.remove() && !this.#activeCounter.isActive()) {
                 this.#isActive = false;
                 this.remove();
                 setTimeout(()=> {

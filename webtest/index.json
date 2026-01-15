@@ -17,6 +17,9 @@
     "dragdrop": {
         "label": "Drag'n'Drop"
     },
+    "dialog": {
+        "label": "Dialog"
+    },
     "bubble": {
         "label": "Bubble"
     },

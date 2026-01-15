@@ -6,6 +6,7 @@ import "../i18n/I18nLabel.js";
 import "../symbols/CloseSymbol.js";
 import TPL from "./Modal.js.html" assert {type: "html"};
 import STYLE from "./Modal.js.css" assert {type: "css"};
+import BusyIndicator from "../BusyIndicator.js";
 
 const SIZE_REGEXP = /^[0-9]+(?:\.[0-9]+)?(?:em|px|%)$/;
 
@@ -14,6 +15,8 @@ const modalStorage = new Map();
 const visibleModals = new UniqueEntriesStack();
 
 export default class Modal extends CustomElement {
+
+    #busyIndicator = new BusyIndicator(this);
 
     #focusTopEl;
 
@@ -47,12 +50,20 @@ export default class Modal extends CustomElement {
         this.caption = caption;
         /* --- */
         this.registerTargetEventHandler(this.#modalEl, "keydown", (event) => {
+            if (this.busy) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
             if (event.key == "Escape") {
                 this.close();
                 event.stopPropagation();
             }
         });
-        this.registerTargetEventHandler(this.#closeEl, "click", () => this.close());
+        this.registerTargetEventHandler(this.#closeEl, "click", () => {
+            if (!this.busy) {
+                this.close();
+            }
+        });
         /* --- */
         this.#focusTopEl = this.shadowRoot.getElementById("focus_catcher_top");
         this.registerTargetEventHandler(this.#focusTopEl, "focus", () => {
@@ -67,6 +78,20 @@ export default class Modal extends CustomElement {
     disconnectedCallback() {
         super.disconnectedCallback?.();
         this.classList.remove("inactive");
+    }
+
+    set busy(value) {
+        if (value !== this.#busyIndicator.isBusy()) {
+            if (value) {
+                this.#busyIndicator.busy();
+            } else {
+                this.#busyIndicator.reset();
+            }
+        }
+    }
+
+    get busy() {
+        return this.#busyIndicator.isBusy();
     }
 
     get assocName() {
@@ -158,6 +183,32 @@ export default class Modal extends CustomElement {
         return false;
     }
 
+    setPathIcon(size, content, opts = {}) {
+        this.#resetIcon();
+        const {
+            color, shadow = false
+        } = opts;
+        if (typeof content === "string" && content !== "") {
+            this.#titleIconEl.innerText = "";
+            const fillColor = isColorString(color) ? color : "#000000";
+            const width = parseInt(size?.width) || 100;
+            const height = parseInt(size?.height) || 100;
+            const viewBox = `0 0 ${width} ${height}`;
+            const svgData = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}"><path d="${content}" style="fill: ${fillColor}" /></svg>`;
+            this.#titleIconEl.style.backgroundImage = `url('data:image/svg+xml;base64,${btoa(svgData)}')`;
+            this.#titleIconEl.style.backgroundSize = "80%";
+            if (shadow) {
+                if (isColorString(shadow)) {
+                    this.#titleIconEl.style.filter = `drop-shadow(${shadow} 1px 1px 1px)`;
+                } else {
+                    this.#titleIconEl.style.filter = "drop-shadow(var(--modal-icon-shadow-color, #ffffff) 1px 1px 1px)";
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
     setHTMLIcon(content) {
         this.#resetIcon();
         if (content instanceof HTMLElement) {
@@ -175,6 +226,9 @@ export default class Modal extends CustomElement {
             }
             case "image": {
                 return this.setImageIcon(config.content, config.style);
+            }
+            case "path": {
+                return this.setPathIcon(config.size, config.content, config.style);
             }
             case "html": {
                 return this.setHTMLIcon(config.content);
