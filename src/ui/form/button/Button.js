@@ -1,5 +1,7 @@
 import CustomFormElementDelegating from "../../element/CustomFormElementDelegating.js";
 import EventTargetManager from "../../../util/event/EventTargetManager.js";
+import {isCSSUrl} from "../../../util/helper/CheckType.js";
+import {isSVGPath} from "../../../util/helper/SVGPath.js";
 import {deepClone} from "../../../util/helper/DeepClone.js";
 import {registerFocusable} from "../../../util/helper/html/ElementFocusHelper.js";
 import ButtonVariants from "../../../enum/form/ButtonVariants.js";
@@ -25,6 +27,12 @@ export default class Button extends CustomFormElementDelegating {
 
     #buttonEl;
 
+    #svgIconEl;
+
+    #svgPathEl;
+
+    #iconEl;
+
     #textEl;
 
     #buttonEventHandler = new EventTargetManager(null, false);
@@ -37,6 +45,9 @@ export default class Button extends CustomFormElementDelegating {
         /* --- */
         this.#tooltipEl = this.shadowRoot.getElementById("tooltip");
         this.#buttonEl = this.shadowRoot.getElementById("button");
+        this.#svgIconEl = this.shadowRoot.getElementById("svg-icon");
+        this.#svgPathEl = this.shadowRoot.getElementById("svg-path");
+        this.#iconEl = this.shadowRoot.getElementById("icon");
         this.#textEl = this.shadowRoot.getElementById("text");
         this.#buttonEventHandler.switchTarget(this.#buttonEl);
         this.#buttonEventHandler.set("click", (event) => {
@@ -93,6 +104,14 @@ export default class Button extends CustomFormElementDelegating {
         return this.getAttribute("icon");
     }
 
+    set iconViewBox(value) {
+        this.setAttribute("icon-viewBox", value);
+    }
+
+    get iconViewBox() {
+        return this.getAttribute("icon-viewBox");
+    }
+
     set tooltip(value) {
         this.setAttribute("tooltip", value);
     }
@@ -142,7 +161,7 @@ export default class Button extends CustomFormElementDelegating {
     }
 
     static get observedAttributes() {
-        return ["text", "icon", "tooltip"];
+        return ["text", "icon", "icon-viewBox", "tooltip"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -154,7 +173,25 @@ export default class Button extends CustomFormElementDelegating {
             } break;
             case "icon": {
                 if (oldValue != newValue) {
-                    this.#buttonEl.setAttribute("icon", newValue);
+                    this.#svgIconEl.classList.remove("visible");
+                    this.#svgPathEl.removeAttribute("d");
+                    this.#iconEl.classList.remove("visible");
+                    this.#iconEl.style.backgroundImage = "";
+                    this.#buttonEl.removeAttribute("icon");
+                    if (isCSSUrl(newValue)) {
+                        this.#iconEl.style.backgroundImage = newValue;
+                        this.#iconEl.classList.add("visible");
+                    } else if (isSVGPath(newValue)) {
+                        this.#svgPathEl.setAttribute("d", newValue);
+                        this.#svgIconEl.classList.add("visible");
+                    } else {
+                        this.#buttonEl.setAttribute("icon", newValue);
+                    }
+                }
+            } break;
+            case "icon-viewBox": {
+                if (oldValue != newValue) {
+                    this.#svgIconEl.setAttribute("viewBox", newValue);
                 }
             } break;
             case "tooltip": {

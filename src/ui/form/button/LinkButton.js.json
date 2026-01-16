@@ -1,73 +1,8 @@
 [
     {
         "type": "StringInput",
-        "name": "name",
-        "label": "Name",
-        "value": ""
-    },
-    {
-        "type": "StringInput",
-        "name": "text",
-        "label": "Text",
-        "value": ""
-    },
-    {
-        "type": "CharInput",
-        "name": "icon",
-        "label": "Icon",
-        "value": ""
-    },
-    {
-        "type": "StringInput",
         "name": "href",
         "label": "URL",
         "value": ""
-    },
-    {
-        "type": "TextInput",
-        "name": "tooltip",
-        "label": "Tooltip",
-        "value": ""
-    },
-    {
-        "type": "SimpleSelect",
-        "name": "variant",
-        "label": "Variant",
-        "value": "",
-        "options": {
-            "": "Normal",
-            "primary": "Primary",
-            "secondary": "Secondary",
-            "success": "Success",
-            "danger": "Danger",
-            "warn": "Warn",
-            "info": "Info",
-            "light": "Light",
-            "dark": "Dark"
-        }
-    },
-    {
-        "type": "SwitchInput",
-        "name": "active",
-        "label": "Active",
-        "value": false
-    },
-    {
-        "type": "SwitchInput",
-        "name": "slim",
-        "label": "Slim",
-        "value": false
-    },
-    {
-        "type": "BoolOrLogicInput",
-        "name": "enabled",
-        "label": "Enabled",
-        "value": true
-    },
-    {
-        "type": "BoolOrLogicInput",
-        "name": "visible",
-        "label": "Visible",
-        "value": true
     }
 ]

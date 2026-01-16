@@ -1,6 +1,7 @@
 import jsonParse from "../../patches/JSONParser.js";
 
-const COLOR_PATTERN = /#[0-9a-f]{6}/i;
+const COLOR_PATTERN = /^#[0-9a-f]{6}$/i;
+const CSS_URL_PATTERN = /^url\((?:"?(.+)"?|'?(.+)'?|(.+))\)$/i;
 
 export function isNull(value) {
     return value === null || value === undefined;
@@ -43,11 +44,11 @@ export function isNumber(value) {
 }
 
 export function isNumberNotNaN(value) {
-    return typeof value === "number" && !isNaN(value);
+    return isNumber(value) && !isNaN(value);
 }
 
 export function isNumberIsNaN(value) {
-    return typeof value === "number" && isNaN(value);
+    return isNumber(value) && isNaN(value);
 }
 
 export function isString(value) {
@@ -55,11 +56,11 @@ export function isString(value) {
 }
 
 export function isStringNotEmpty(value) {
-    return typeof value === "string" && value !== "";
+    return isString(value) && value !== "";
 }
 
 export function isStringIsEmpty(value) {
-    return typeof value === "string" && value === "";
+    return isString(value) && value === "";
 }
 
 export function isObject(value) {
@@ -67,7 +68,7 @@ export function isObject(value) {
 }
 
 export function isDict(value) {
-    if (typeof value === "object" && !isNull(value) && !Array.isArray(value)) {
+    if (isObject(value)) {
         return value.constructor === Object;
     }
     return false;
@@ -95,7 +96,7 @@ export function isJSON(input) {
 }
 
 export function isUrl(input) {
-    if (typeof input !== "string") {
+    if (!isStringNotEmpty(input)) {
         return false;
     }
     try {
@@ -107,12 +108,28 @@ export function isUrl(input) {
 }
 
 export function isHttpUrl(input) {
-    if (typeof input !== "string") {
+    if (!isStringNotEmpty(input)) {
         return false;
     }
     try {
         const url = new URL(input, self.location.origin);
         return url.protocol === "http:" || url.protocol === "https:";
+    } catch {
+        return false;
+    }
+}
+
+export function isCSSUrl(input) {
+    if (!isStringNotEmpty(input)) {
+        return false;
+    }
+    try {
+        const res = CSS_URL_PATTERN.exec(input);
+        if (res != null) {
+            new URL(res[1], self.location.origin);
+            return true;
+        }
+        return false;
     } catch {
         return false;
     }
