@@ -16,9 +16,9 @@ function createTemplate(src) {
 }
 
 function generateTemplate(content, substitutions = {}) {
-    const doc = document.importNode(content, true);
-    substituteNodes(doc.childNodes, prepareSubstitutions(substitutions));
-    return doc;
+    const newContent = content.cloneNode(true);
+    substituteNodes(newContent.childNodes, prepareSubstitutions(substitutions));
+    return document.importNode(newContent, true);
 }
 
 function substituteNodes(nodeList, substitutionEntries) {

@@ -1,6 +1,6 @@
 {
   "name": "emcjs",
-  "version": "0.27.7",
+  "version": "0.27.8",
   "description": "Modular JS API",
   "type": "module",
   "repository": {
@@ -11,7 +11,7 @@
   "license": "MIT",
   "homepage": "https://bitbucket.org/zidargs/emcjs/src",
   "dependencies": {
-    "jswebservice": "git+https://bitbucket.org/zidargs/jswebservice.git/#3.0.0"
+    "jswebservice": "git+https://bitbucket.org/zidargs/jswebservice.git/#3.0.4"
   },
   "devDependencies": {
     "@babel/core": "^7.28.4",

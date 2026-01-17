@@ -55,6 +55,11 @@ export default class EventTargetManager {
         }
     }
 
+    disconnect() {
+        this.#removeEventListeners();
+        this.#target = null;
+    }
+
     get target() {
         return this.#target?.deref();
     }
@@ -126,6 +131,11 @@ export default class EventTargetManager {
         this.#captureSubscriberList.clear();
         this.#passiveSubscriberList.clear();
         this.#capturePassiveSubscriberList.clear();
+    }
+
+    reset() {
+        this.clear();
+        this.#target = null;
     }
 
     #getSubscriberList(capture, passive) {

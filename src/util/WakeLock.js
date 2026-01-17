@@ -1,5 +1,5 @@
-import NotAllowedError from "../exceptions/NotAllowedError.js";
-import NotSupportedError from "../exceptions/NotSupportedError.js";
+import NotAllowedError from "../error/NotAllowedError.js";
+import NotSupportedError from "../error/NotSupportedError.js";
 
 /**
  * Implements an easy way to use the Screen Wake Lock API.

@@ -162,7 +162,7 @@ export default class Observable extends EventTarget {
     #unobserve(key, data) {
         if (data instanceof Observable) {
             const eventManager = this.#getEventManager(key);
-            eventManager.switchTarget(null);
+            eventManager.disconnect();
         }
     }
 
