@@ -194,8 +194,7 @@ export default class Modal extends CustomElement {
             const fillColor = isColorString(color) ? color : "#000000";
             const width = parseInt(size?.width) || 100;
             const height = parseInt(size?.height) || 100;
-            const viewBox = `0 0 ${width} ${height}`;
-            const svgData = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}"><path d="${content}" fill="${fillColor}"" /></svg>`;
+            const svgData = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><path d="${content}" fill="${fillColor}" /></svg>`;
             this.#titleIconEl.style.backgroundImage = `url('data:image/svg+xml;base64,${btoa(svgData)}')`;
             this.#titleIconEl.style.backgroundSize = "80%";
             if (shadow) {

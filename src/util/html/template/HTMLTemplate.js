@@ -15,6 +15,55 @@ function createTemplate(src) {
     return buf;
 }
 
+function generateTemplate(content, substitutions = {}) {
+    const doc = document.importNode(content, true);
+    substituteNodes(doc.childNodes, prepareSubstitutions(substitutions));
+    return doc;
+}
+
+function substituteNodes(nodeList, substitutionEntries) {
+    if (substitutionEntries.length) {
+        for (const node of nodeList) {
+            let content;
+            if (node.nodeType === Node.ELEMENT_NODE) {
+                content = node.innerHTML;
+            } else if (node.nodeType === Node.TEXT_NODE) {
+                content = node.data;
+            }
+            if (content == null) {
+                continue;
+            }
+            for (const [matcher, replacer] of substitutionEntries) {
+                content = content.replace(matcher, replacer);
+            }
+            if (node.nodeType === Node.ELEMENT_NODE) {
+                node.innerHTML = content;
+                substituteAttributes(node, substitutionEntries);
+            } else if (node.nodeType === Node.TEXT_NODE) {
+                node.data = content;
+            }
+        }
+    }
+}
+
+function substituteAttributes(node, substitutionEntries) {
+    for (const attrName of node.getAttributeNames()) {
+        let content = node.getAttribute(attrName);
+        for (const [matcher, replacer] of substitutionEntries) {
+            content = content.replace(matcher, replacer);
+        }
+        node.setAttribute(attrName, content);
+    }
+}
+
+function prepareSubstitutions(substitutions = {}) {
+    const res = [];
+    for (const name in substitutions) {
+        res.push([new RegExp(`\\{\\{${name}\\}\\}`, "g"), substitutions[name]]);
+    }
+    return res;
+}
+
 export default class HTMLTemplate {
 
     #template;
@@ -23,32 +72,24 @@ export default class HTMLTemplate {
         this.#template = createTemplate(template);
     }
 
-    generate(child) {
-        const doc = document.importNode(this.#template.content, true);
-        if (child != null) {
-            return doc.children[child];
-        }
-        return doc;
+    generate(substitutions = {}) {
+        return generateTemplate(this.#template.content, substitutions);
     }
 
-    apply(target) {
+    apply(target, substitutions = {}) {
         if (target instanceof Document || target instanceof ShadowRoot || target instanceof HTMLElement) {
-            target.append(this.generate());
+            target.append(this.generate(substitutions));
         }
     }
 
-    static generate(template, child) {
+    static generate(template, substitutions = {}) {
         if (template instanceof HTMLTemplate) {
-            return template.generate(child);
+            return template.generate(substitutions);
         }
         if (!(template instanceof HTMLTemplateElement)) {
             template = createTemplate(template);
         }
-        const doc = document.importNode(template.content, true);
-        if (child != null) {
-            return doc.children[child];
-        }
-        return doc;
+        return generateTemplate(template.content, substitutions);
     }
 
 }
