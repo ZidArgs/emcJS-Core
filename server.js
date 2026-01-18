@@ -10,14 +10,4 @@ service.registerServiceModule(StaticService, "", {serveFolder: "./webtest"});
 service.registerServiceModule(DataProviderService, "/api/data/simple", {dataSource: "./server/data/SimpleData.json"});
 service.registerServiceModule(DataProviderService, "/api/data/large", {dataSource: "./server/data/LargeData.json"});
 
-const po = service.port.toString().padEnd(5);
-
-console.log(``);
-console.log(`╔════════════════════════════════════════╗`);
-console.log(`║ ┌╦┐ ╭────────────────────────────╮ ┌╦┐ ║`);
-console.log(`║  │  │                            │  │  ║`);
-console.log(`╠─═╬═─╡   http://localhost:${po}   ╞─═╬═─╣`);
-console.log(`║  │  │                            │  │  ║`);
-console.log(`║ └╩┘ ╰────────────────────────────╯ └╩┘ ║`);
-console.log(`╚════════════════════════════════════════╝`);
-console.log(``);
+service.printServerInfoPanel();
