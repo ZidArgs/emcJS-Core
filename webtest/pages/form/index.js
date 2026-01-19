@@ -219,7 +219,7 @@ CustomActionRegistry.current.set("cheese", () => {
         caption: "Cheese",
         text: "Choose your kind of cheese"
     });
-    formDialogEl.setFontIcon("🧀", {size: "28px"});
+    formDialogEl.setCharIcon("🧀", {size: "28px"});
     formDialogEl.loadFormConfig(buttonConfig);
     formDialogEl.show();
 });

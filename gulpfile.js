@@ -43,6 +43,23 @@ function copyCSS(dest = OUT_PATH) {
     return res;
 }
 
+function copyFonts(dest = OUT_PATH) {
+    const FILES = [
+        `${IN_PATH}/_fonts/**/*.ttf`,
+        `${IN_PATH}/_fonts/**/*.eot`,
+        `${IN_PATH}/_fonts/**/*.otf`,
+        `${IN_PATH}/_fonts/**/*.woff`,
+        `${IN_PATH}/_fonts/**/*.woff2`,
+        `${IN_PATH}/_fonts/**/*.svg`
+    ];
+    let res = gulp.src(FILES);
+    if (!REBUILD) {
+        res = res.pipe(changed(`${dest}/_fonts`));
+    }
+    res = res.pipe(gulp.dest(`${dest}/_fonts`));
+    return res;
+}
+
 function finish(done) {
     const unresolvedImports = ImportAnalyzer.getUnresolvedImports();
     if (unresolvedImports.length > 0) {
@@ -57,7 +74,8 @@ function finish(done) {
 export const build = gulp.series(
     gulp.parallel(
         copyJS,
-        copyCSS
+        copyCSS,
+        copyFonts
     ),
     finish
 );
@@ -65,7 +83,8 @@ export const build = gulp.series(
 export const buildDoc = gulp.series(
     gulp.parallel(
         copyJS.bind(this, DOC_LIB_PATH, DOC_TARGET_PATH),
-        copyCSS.bind(this, DOC_LIB_PATH, DOC_TARGET_PATH)
+        copyCSS.bind(this, DOC_LIB_PATH, DOC_TARGET_PATH),
+        copyFonts.bind(this, DOC_LIB_PATH, DOC_TARGET_PATH)
     ),
     finish
 );

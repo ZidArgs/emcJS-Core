@@ -144,21 +144,60 @@
     line-height: 1em;
 }
 
-#title-icon {
+#title-icon-container {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: 40px;
-    width: 40px;
-    margin-left: 5px;
+    padding: 2px;
+    margin-left: 8px;
     color: var(--modal-icon-default-color, #000000);
-    font-family: monospace;
-    font-size: 2.8em;
+    font-size: 36px;
+}
+
+#title-icon {
+    display: none;
+}
+
+#title-icon-container[icon-type="char"] #title-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 1em;
+    min-width: 1em;
     line-height: 1em;
-    background-size: contain;
+    font-family: "monospace", monospace;
+    font-weight: bold;
+    transform-origin: center;
+    font-variant-emoji: text;
+}
+
+
+#title-icon-container[icon-type="image"] #title-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+    background-image: var(--icon-image);
     background-repeat: no-repeat;
+    background-size: contain;
     background-position: center;
-    user-select: none;
+    background-origin: content-box;
+    pointer-events: none;
+    content: "";
+}
+
+#title-font-icon,
+#title-fa-icon {
+    display: none;
+    position: relative;
+    height: 1em;
+    width: 1em;
+}
+
+#title-icon-container[icon-type="font"] #title-font-icon,
+#title-icon-container[icon-type="fa"] #title-fa-icon {
+    display: inline-flex;
 }
 
 #content {

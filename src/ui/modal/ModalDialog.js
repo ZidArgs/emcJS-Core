@@ -3,13 +3,9 @@ import GlobalStyleVariables from "../../util/html/style/GlobalStyleVariables.js"
 import "../form/button/Button.js";
 import "../form/element/input/number/NumberInput.js";
 import "../form/element/input/password/PasswordInput.js";
-import "../form/element/input/text/TextInput.js";
+import "../form/element/input/string/StringInput.js";
 import TPL from "./ModalDialog.js.html" assert {type: "html"};
 import STYLE from "./ModalDialog.js.css" assert {type: "css"};
-import ICON_PATH_PROMT from "../../_iconpaths/ModalDialog.js.icon_prompt.path" assert {type: "text"};
-import ICON_PATH_CONFIRM from "../../_iconpaths/ModalDialog.js.icon_confirm.path" assert {type: "text"};
-import ICON_PATH_ALERT from "../../_iconpaths/ModalDialog.js.icon_alert.path" assert {type: "text"};
-import ICON_PATH_ERROR from "../../_iconpaths/ModalDialog.js.icon_error.path" assert {type: "text"};
 
 const promptIconColor = GlobalStyleVariables.get("--modal-icon-success-color") ?? "#009952";
 const confirmIconColor = GlobalStyleVariables.get("--modal-icon-info-color") ?? "#0000ff";
@@ -18,48 +14,32 @@ const errorIconColor = GlobalStyleVariables.get("--modal-icon-error-color") ?? "
 
 const DEFAULT_DIALOG_ICONS = {
     promt: {
-        method: "path",
-        size: {
-            width: 1000,
-            height: 1000
-        },
-        content: ICON_PATH_PROMT,
+        type: "font",
+        content: "input",
         style: {
             color: promptIconColor,
             shadow: true
         }
     },
     confirm: {
-        method: "path",
-        size: {
-            width: 1000,
-            height: 1000
-        },
-        content: ICON_PATH_CONFIRM,
+        type: "font",
+        content: "question",
         style: {
             color: confirmIconColor,
             shadow: true
         }
     },
     alert: {
-        method: "path",
-        size: {
-            width: 1000,
-            height: 1000
-        },
-        content: ICON_PATH_ALERT,
+        type: "font",
+        content: "warning",
         style: {
             color: alertIconColor,
             shadow: true
         }
     },
     error: {
-        method: "path",
-        size: {
-            width: 1000,
-            height: 1000
-        },
-        content: ICON_PATH_ERROR,
+        type: "font",
+        content: "alert",
         style: {
             color: errorIconColor,
             shadow: true

@@ -1,12 +1,12 @@
 import CustomFormElementDelegating from "../../element/CustomFormElementDelegating.js";
 import EventTargetManager from "../../../util/event/EventTargetManager.js";
-import {isCSSUrl} from "../../../util/helper/CheckType.js";
-import {isSVGPath} from "../../../util/helper/SVGPath.js";
 import {deepClone} from "../../../util/helper/DeepClone.js";
 import {registerFocusable} from "../../../util/helper/html/ElementFocusHelper.js";
 import ButtonVariants from "../../../enum/form/ButtonVariants.js";
 import "../../i18n/I18nTooltip.js";
 import "../../i18n/I18nLabel.js";
+import "../../icon/FAIcon.js";
+import "../../icon/FontIcon.js";
 import TPL from "./Button.js.html" assert {type: "html"};
 import STYLE from "./Button.js.css" assert {type: "css"};
 import VARIANT_STYLE from "./style/ButtonVariant.css" assert {type: "css"};
@@ -27,11 +27,9 @@ export default class Button extends CustomFormElementDelegating {
 
     #buttonEl;
 
-    #svgIconEl;
+    #faIconEl;
 
-    #svgPathEl;
-
-    #iconEl;
+    #fontIconEl;
 
     #textEl;
 
@@ -45,9 +43,8 @@ export default class Button extends CustomFormElementDelegating {
         /* --- */
         this.#tooltipEl = this.shadowRoot.getElementById("tooltip");
         this.#buttonEl = this.shadowRoot.getElementById("button");
-        this.#svgIconEl = this.shadowRoot.getElementById("svg-icon");
-        this.#svgPathEl = this.shadowRoot.getElementById("svg-path");
-        this.#iconEl = this.shadowRoot.getElementById("icon");
+        this.#faIconEl = this.shadowRoot.getElementById("fa-icon");
+        this.#fontIconEl = this.shadowRoot.getElementById("font-icon");
         this.#textEl = this.shadowRoot.getElementById("text");
         this.#buttonEventHandler.switchTarget(this.#buttonEl);
         this.#buttonEventHandler.set("click", (event) => {
@@ -81,43 +78,43 @@ export default class Button extends CustomFormElementDelegating {
     }
 
     set name(value) {
-        this.setAttribute("name", value);
+        this.setStringAttribute("name", value);
     }
 
     get name() {
-        return this.getAttribute("name");
+        return this.getStringAttribute("name");
     }
 
     set text(value) {
-        this.setAttribute("text", value);
+        this.setStringAttribute("text", value);
     }
 
     get text() {
-        return this.getAttribute("text");
+        return this.getStringAttribute("text");
     }
 
     set icon(value) {
-        this.setAttribute("icon", value);
+        this.setStringAttribute("icon", value);
     }
 
     get icon() {
-        return this.getAttribute("icon");
+        return this.getStringAttribute("icon");
     }
 
-    set iconViewBox(value) {
-        this.setAttribute("icon-viewBox", value);
+    set iconType(value) {
+        this.setStringAttribute("icon-type", value);
     }
 
-    get iconViewBox() {
-        return this.getAttribute("icon-viewBox");
+    get iconType() {
+        return this.getStringAttribute("icon-type");
     }
 
     set tooltip(value) {
-        this.setAttribute("tooltip", value);
+        this.setStringAttribute("tooltip", value);
     }
 
     get tooltip() {
-        return this.getAttribute("tooltip");
+        return this.getStringAttribute("tooltip");
     }
 
     set variant(value) {
@@ -161,7 +158,7 @@ export default class Button extends CustomFormElementDelegating {
     }
 
     static get observedAttributes() {
-        return ["text", "icon", "icon-viewBox", "tooltip"];
+        return ["text", "icon", "icon-type", "tooltip"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -173,25 +170,12 @@ export default class Button extends CustomFormElementDelegating {
             } break;
             case "icon": {
                 if (oldValue != newValue) {
-                    this.#svgIconEl.classList.remove("visible");
-                    this.#svgPathEl.removeAttribute("d");
-                    this.#iconEl.classList.remove("visible");
-                    this.#iconEl.style.backgroundImage = "";
-                    this.#buttonEl.removeAttribute("icon");
-                    if (isCSSUrl(newValue)) {
-                        this.#iconEl.style.backgroundImage = newValue;
-                        this.#iconEl.classList.add("visible");
-                    } else if (isSVGPath(newValue)) {
-                        this.#svgPathEl.setAttribute("d", newValue);
-                        this.#svgIconEl.classList.add("visible");
-                    } else {
-                        this.#buttonEl.setAttribute("icon", newValue);
-                    }
+                    this.#applyIcon(this.iconType, newValue);
                 }
             } break;
-            case "icon-viewBox": {
+            case "icon-type": {
                 if (oldValue != newValue) {
-                    this.#svgIconEl.setAttribute("viewBox", newValue);
+                    this.#applyIcon(newValue, this.icon);
                 }
             } break;
             case "tooltip": {
@@ -213,6 +197,35 @@ export default class Button extends CustomFormElementDelegating {
             this.#buttonEl.setAttribute("count-type", type);
         } else {
             this.#buttonEl.removeAttribute("count-type");
+        }
+    }
+
+    #applyIcon(type, value) {
+        this.#fontIconEl.removeAttribute("icon");
+        this.#faIconEl.removeAttribute("icon");
+        this.#faIconEl.removeAttribute("type");
+        this.#buttonEl.removeAttribute("icon");
+        this.#buttonEl.style.removeProperty("--icon-image");
+
+        switch (type) {
+            case "font": {
+                this.#buttonEl.setAttribute("icon-type", "font");
+                this.#fontIconEl.setAttribute("icon", value);
+            } break;
+            case "fa": {
+                const [name, type = "classic"] = value.split("/");
+                this.#buttonEl.setAttribute("icon-type", "fa");
+                this.#faIconEl.setAttribute("icon", name);
+                this.#faIconEl.setAttribute("type", type);
+            } break;
+            case "image": {
+                this.#buttonEl.setAttribute("icon-type", "image");
+                this.#buttonEl.style.setProperty("--icon-image", value);
+            } break;
+            default: {
+                this.#buttonEl.setAttribute("icon-type", "char");
+                this.#buttonEl.setAttribute("icon", value);
+            } break;
         }
     }
 

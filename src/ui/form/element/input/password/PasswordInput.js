@@ -6,6 +6,7 @@ import "../../../../i18n/I18nTooltip.js";
 import "../../../../i18n/builtin/I18nInput.js";
 import TPL from "./PasswordInput.js.html" assert {type: "html"};
 import STYLE from "./PasswordInput.js.css" assert {type: "css"};
+import FONT_STYLE from "../../../../../_style/icon-codes.css" assert {type: "css"};
 
 // TODO add required [lowercase,uppercase,digit,{symbol_declaration}]
 export default class PasswordInput extends AbstractFormElement {
@@ -20,6 +21,7 @@ export default class PasswordInput extends AbstractFormElement {
         super();
         this.shadowRoot.getElementById("field").append(TPL.generate());
         STYLE.apply(this.shadowRoot);
+        FONT_STYLE.apply(this.shadowRoot);
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.registerTargetEventHandler(this.#inputEl, "input", () => {
@@ -30,6 +32,7 @@ export default class PasswordInput extends AbstractFormElement {
         this.#tooltipEl = this.shadowRoot.getElementById("tooltip");
         this.registerTargetEventHandler(this.#buttonEl, "change", (event) => {
             const showValue = this.#buttonEl.checked;
+            this.#buttonEl.className = showValue ? "icon-eye" : "icon-eye-striked";
             this.#tooltipEl.i18nTooltip = showValue ? "Input shown" : "Input hidden";
             this.#inputEl.type = showValue ? "text" : "password";
             event.stopPropagation();
@@ -43,6 +46,7 @@ export default class PasswordInput extends AbstractFormElement {
         this.#buttonEl.disabled = disabled;
         if (disabled) {
             this.#buttonEl.checked = false;
+            this.#buttonEl.className = "icon-eye-striked";
         }
     }
 

@@ -1,13 +1,16 @@
 import CustomElement from "../element/CustomElement.js";
 import UniqueEntriesStack from "../../data/stack/UniqueEntriesStack.js";
-import {isColorString} from "../../util/helper/CheckType.js";
-import {isSVGPath} from "../../util/helper/SVGPath.js";
+import {
+    isColorString, isPrimitive
+} from "../../util/helper/CheckType.js";
 import {getFocusableElements} from "../../util/helper/html/ElementFocusHelper.js";
+import BusyIndicator from "../BusyIndicator.js";
 import "../i18n/I18nLabel.js";
 import "../symbols/CloseSymbol.js";
+import "../icon/FAIcon.js";
+import "../icon/FontIcon.js";
 import TPL from "./Modal.js.html" assert {type: "html"};
 import STYLE from "./Modal.js.css" assert {type: "css"};
-import BusyIndicator from "../BusyIndicator.js";
 
 const SIZE_REGEXP = /^[0-9]+(?:\.[0-9]+)?(?:em|px|%)$/;
 
@@ -25,7 +28,13 @@ export default class Modal extends CustomElement {
 
     #modalEl;
 
+    #titleIconContainerEl;
+
     #titleIconEl;
+
+    #titleFaIconEl;
+
+    #titleFontIconEl;
 
     #titleTextEl;
 
@@ -43,7 +52,10 @@ export default class Modal extends CustomElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#modalEl = this.shadowRoot.getElementById("modal");
+        this.#titleIconContainerEl = this.shadowRoot.getElementById("title-icon-container");
         this.#titleIconEl = this.shadowRoot.getElementById("title-icon");
+        this.#titleFaIconEl = this.shadowRoot.getElementById("title-fa-icon");
+        this.#titleFontIconEl = this.shadowRoot.getElementById("title-font-icon");
         this.#titleTextEl = this.shadowRoot.getElementById("title-text");
         this.#closeEl = this.shadowRoot.getElementById("close");
         this.#textEl = this.shadowRoot.getElementById("text");
@@ -129,122 +141,95 @@ export default class Modal extends CustomElement {
         }
     }
 
-    setFontIcon(content, opts = {}) {
-        this.#resetIcon();
-        const {
-            color, size, circle = false, shadow = false
-        } = opts;
-        if (typeof content === "string" && content !== "") {
-            this.#titleIconEl.innerText = content;
-            if (SIZE_REGEXP.test(size)) {
-                this.#titleIconEl.style.fontSize = size;
-            }
-            if (isColorString(color)) {
-                this.#titleIconEl.style.color = color;
-            }
-            if (circle) {
-                if (isColorString(circle)) {
-                    this.#titleIconEl.style.backgroundImage = `radial-gradient(transparent 45%, ${circle}, transparent 55%)`;
-                } else if (isColorString(color)) {
-                    this.#titleIconEl.style.backgroundImage = `radial-gradient(transparent 45%, ${color}, transparent 55%)`;
-                } else {
-                    this.#titleIconEl.style.backgroundImage = "radial-gradient(transparent 45%, var(--modal-icon-default-color, #222222), transparent 55%)";
-                }
-            }
-            if (shadow) {
-                if (isColorString(shadow)) {
-                    this.#titleIconEl.style.filter = `drop-shadow(${shadow} 1px 1px 1px)`;
-                } else if (isColorString(color)) {
-                    this.#titleIconEl.style.filter = `drop-shadow(${color} 1px 1px 1px)`;
-                } else {
-                    this.#titleIconEl.style.filter = "drop-shadow(var(--modal-icon-shadow-color, #ffffff) 1px 1px 1px)";
-                }
-            }
-            return true;
-        }
-        return false;
-    }
-
-    setImageIcon(content, opts = {}) {
-        this.#resetIcon();
-        const {shadow = false} = opts;
-        if (typeof content === "string" && content !== "") {
-            this.#titleIconEl.innerText = "";
-            this.#titleIconEl.style.backgroundImage = `url(${content})`;
-            this.#titleIconEl.style.backgroundSize = "80%";
-            if (shadow) {
-                if (isColorString(shadow)) {
-                    this.#titleIconEl.style.filter = `drop-shadow(${shadow} 1px 1px 1px)`;
-                } else {
-                    this.#titleIconEl.style.filter = "drop-shadow(var(--modal-icon-shadow-color, #ffffff) 1px 1px 1px)";
-                }
-            }
-            return true;
-        }
-        return false;
-    }
-
-    setPathIcon(size, content, opts = {}) {
-        this.#resetIcon();
-        const {
-            color, shadow = false
-        } = opts;
-        if (isSVGPath(content)) {
-            this.#titleIconEl.innerText = "";
-            const fillColor = isColorString(color) ? color : "#000000";
-            const width = parseInt(size?.width) || 100;
-            const height = parseInt(size?.height) || 100;
-            const svgData = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><path d="${content}" fill="${fillColor}" /></svg>`;
-            this.#titleIconEl.style.backgroundImage = `url('data:image/svg+xml;base64,${btoa(svgData)}')`;
-            this.#titleIconEl.style.backgroundSize = "80%";
-            if (shadow) {
-                if (isColorString(shadow)) {
-                    this.#titleIconEl.style.filter = `drop-shadow(${shadow} 1px 1px 1px)`;
-                } else {
-                    this.#titleIconEl.style.filter = "drop-shadow(var(--modal-icon-shadow-color, #ffffff) 1px 1px 1px)";
-                }
-            }
-            return true;
-        }
-        return false;
-    }
-
-    setHTMLIcon(content) {
-        this.#resetIcon();
-        if (content instanceof HTMLElement) {
-            this.#titleIconEl.innerText = "";
-            this.#titleIconEl.append(content);
-            return true;
-        }
-        return false;
-    }
-
     setIcon(config) {
-        switch (config.method) {
-            case "font": {
-                return this.setFontIcon(config.content, config.style);
-            }
-            case "image": {
-                return this.setImageIcon(config.content, config.style);
-            }
-            case "path": {
-                return this.setPathIcon(config.size, config.content, config.style);
-            }
-            case "html": {
-                return this.setHTMLIcon(config.content);
-            }
+        if (isPrimitive(config)) {
+            config = {content: config.toString()};
         }
         this.#resetIcon();
+        this.#applyIconStyle(config.style);
+        const content = config.content;
+        switch (config.type) {
+            case "html": {
+                if (content instanceof HTMLElement) {
+                    this.#titleIconEl.append(content);
+                    return true;
+                }
+            } break;
+            case "font": {
+                if (typeof content === "string" && content !== "") {
+                    this.#titleIconContainerEl.setAttribute("icon-type", "font");
+                    this.#titleFontIconEl.icon = content;
+                    return true;
+                }
+            } break;
+            case "fa": {
+                if (typeof content === "string" && content !== "") {
+                    const [name, type = "classic"] = content.split("/");
+                    this.#titleIconContainerEl.setAttribute("icon-type", "fa");
+                    this.#titleFaIconEl.icon = name;
+                    this.#titleFaIconEl.type = type;
+                    return true;
+                }
+            } break;
+            case "image": {
+                if (typeof content === "string" && content !== "") {
+                    this.#titleIconContainerEl.setAttribute("icon-type", "image");
+                    this.#titleIconEl.style.backgroundImage = content;
+                    this.#titleIconEl.style.backgroundSize = "80%";
+                    this.#titleIconEl.innerText = "";
+                    return true;
+                }
+            } break;
+            case "url": {
+                if (typeof content === "string" && content !== "") {
+                    this.#titleIconContainerEl.setAttribute("icon-type", "image");
+                    this.#titleIconEl.style.backgroundImage = `url("${content}")`;
+                    this.#titleIconEl.style.backgroundSize = "80%";
+                    this.#titleIconEl.innerText = "";
+                    return true;
+                }
+            } break;
+            default: {
+                if (typeof content === "string" && content !== "") {
+                    this.#titleIconContainerEl.setAttribute("icon-type", "char");
+                    this.#titleIconEl.innerText = content;
+                    return true;
+                }
+            } break;
+        }
         return false;
+    }
+
+    #applyIconStyle(style) {
+        const {
+            size, color, shadow = false
+        } = style;
+        if (SIZE_REGEXP.test(size)) {
+            this.#titleIconContainerEl.style.fontSize = size;
+        }
+        if (isColorString(color)) {
+            this.#titleIconContainerEl.style.color = color;
+        }
+        if (shadow) {
+            if (isColorString(shadow)) {
+                this.#titleIconContainerEl.style.filter = `drop-shadow(${shadow} 1px 1px 1px)`;
+            } else {
+                this.#titleIconContainerEl.style.filter = "drop-shadow(var(--modal-icon-shadow-color, #000000aa) 1px 1px 1px)";
+            }
+        }
     }
 
     #resetIcon() {
-        this.#titleIconEl.innerText = "❖";
-        this.#titleIconEl.style.fontSize = "";
+        this.#titleIconEl.innerText = "";
         this.#titleIconEl.style.backgroundImage = "";
         this.#titleIconEl.style.backgroundSize = "";
-        this.#titleIconEl.style.color = "";
-        this.#titleIconEl.style.filter = "";
+        this.#titleFontIconEl.icon = "";
+        this.#titleFaIconEl.icon = "";
+        this.#titleFaIconEl.type = "";
+
+        this.#titleIconContainerEl.style.fontSize = "";
+        this.#titleIconContainerEl.style.color = "";
+        this.#titleIconContainerEl.style.filter = "";
     }
 
     show() {

@@ -1,6 +1,7 @@
 :host {
     display: flex;
     width: min-content;
+    min-width: 2em;
     height: 2em;
     margin: 6px;
     user-select: none;
@@ -28,8 +29,8 @@
     justify-content: center;
     height: 100%;
     width: 100%;
-    padding: 0px 10px;
     margin: 0px;
+    padding: 0px;
     color: var(--button-text-color, #000000);
     background-color: var(--button-back-color, #cdcdcd);
     background-image: var(--button-back-image, none);
@@ -45,6 +46,14 @@
     white-space: pre;
     word-break: keep-all;
     cursor: inherit;
+    --icon-image: unset;
+}
+
+
+
+:host([text]:not([text=""])) #button,
+:host(:not(:empty)) #button {
+    padding: 0px 10px;
 }
 
 #button:disabled,
@@ -96,7 +105,9 @@
     outline: none;
 }
 
-#button::before {
+#button[icon-type="char"][icon]:not([icon=""])::before,
+#button:not([icon-type])[icon]:not([icon=""])::before {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     height: 1em;
@@ -107,61 +118,46 @@
     font-weight: bold;
     transform-origin: center;
     font-variant-emoji: text;
-}
-
-#button[icon]::before {
-    display: inline-flex;
     content: attr(icon);
 }
 
-#button[icon=""]::before {
-    display: none;
-}
 
-#icon {
-    display: none;
+#button[icon-type="image"]::before {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: 1.3em;
     height: 1.3em;
+    background-image: var(--icon-image);
     background-repeat: no-repeat;
     background-size: contain;
     background-position: center;
     background-origin: content-box;
     pointer-events: none;
+    content: "";
 }
 
-#icon.visible {
-    display: block;
-}
-
-#svg-icon {
+#font-icon,
+#fa-icon {
     display: none;
     position: relative;
     height: 1.3em;
     width: 1.3em;
 }
 
-#svg-icon.visible {
-    display: block;
-}
-
-#svg-path {
-    fill: var(--button-text-color, #000000);
-}
-
-#button:hover #svg-path {
-    fill: var(--button-hover-text-color, #ffffff);
-}
-
-#button[disabled]:not([disabled="false"]) #svg-path {
-    fill: var(--button-disabled-text-color, #757575);
+#button[icon-type="font"] #font-icon,
+#button[icon-type="fa"] #fa-icon {
+    display: inline-flex;
 }
 
 :host([text]:not([text=""])) #button::before,
 :host([text]:not([text=""])) #icon,
-:host([text]:not([text=""])) #svg-icon,
+:host([text]:not([text=""])) #font-icon,
+:host([text]:not([text=""])) #fa-icon,
 :host(:not(:empty)) #button::before,
 :host(:not(:empty)) #icon,
-:host(:not(:empty)) #svg-icon {
+:host(:not(:empty)) #font-icon,
+:host(:not(:empty)) #fa-icon {
     margin-right: 5px;
 }
 

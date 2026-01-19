@@ -14,12 +14,12 @@ export default class Icon extends CustomElement {
         this.#iconEl = this.shadowRoot.getElementById("icon");
     }
 
-    get src() {
-        return this.getAttribute("src");
-    }
-
     set src(val) {
         this.setAttribute("src", val);
+    }
+
+    get src() {
+        return this.getAttribute("src");
     }
 
     static get observedAttributes() {
