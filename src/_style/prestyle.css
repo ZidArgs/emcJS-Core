@@ -23,16 +23,60 @@ emc-navbar:not(:defined) {
     position: relative;
     box-sizing: border-box;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     top: 0;
     width: 100%;
-    min-height: 2em;
+    min-height: calc(var(--navigation-button-height, 1.5em) + 2 * var(--navigation-button-margin-y, 2px));
     background-color: var(--navigation-back-color, #ffffff);
     background-image: var(--navigation-back-image, none);
     color: var(--navigation-text-color, #000000);
     flex-grow: 0;
     flex-shrink: 0;
     z-index: var(--z-index-navbar, 900500);
+
+    @media (max-width: 500px) {
+        & {
+            display: block;
+            min-height: var(--navigation-button-touch-height, 3em);
+
+            * {
+                display: none !important;
+            }
+        }
+    }
+
+    @media (min-width: 501px) {
+        * {
+            box-sizing: border-box;
+            display: inline-block;
+            height: var(--navigation-button-height, 1.5em);
+            margin: var(--navigation-button-margin-y, 2px);
+            color: var(--navigation-button-text-color, #000000);
+            background-color: var(--navigation-button-back-color, #ffffff);
+            background-image: var(--navigation-button-back-image, none);
+            border-style: solid;
+            border-width: var(--navigation-button-border-width, 1px);
+            border-color: var(--navigation-button-border-color, #000000);
+            border-radius: var(--navigation-button-border-radius, 0px);
+
+            &.nav-button {
+                cursor: pointer;
+
+                &:hover {
+                    box-shadow: var(--navigation-button-marker-color, #000000) inset 0px 0px 2px 1px;
+                }
+
+                &:active {
+                    box-shadow: var(--navigation-button-marker-color, #000000) inset 0px 0px 4px 3px;
+                }
+
+                &:focus-visible {
+                    box-shadow: var(--navigation-button-marker-color, #000000) 0px 0px 4px 3px;
+                }
+            }
+        }
+    }
+
 }
 
 /* === modal === */

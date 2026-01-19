@@ -27,7 +27,19 @@ all; top_bottom right_left; top right bottom left
     --navigation-back-color: #cecece;
     --navigation-back-image: none;
     --navigation-shadow-color: #000000;
-    --navigation-marker-color: #000000;
+
+    --navigation-button-height: 2em;
+    --navigation-button-touch-height: 3em;
+    --navigation-button-margin-x: 4px;
+    --navigation-button-margin-y: 2px;
+    --navigation-button-text-color: var(--navigation-text-color);
+    --navigation-button-back-color: var(--navigation-back-color);
+    --navigation-button-back-image: none;
+    --navigation-button-border-width: 0px;
+    --navigation-button-border-color: #000000;
+    --navigation-button-border-radius: 0px;
+    --navigation-button-marker-color: #000000;
+
 
     /* === hamburger button === */
     --hamburger-button-border-width: 0px;

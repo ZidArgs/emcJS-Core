@@ -226,12 +226,6 @@
         "resettable": true,
         "placeholder": "Enter key binding..."
     },
-    "keybinds.hk_fullscreen": {
-        "type": "KeyBindInput",
-        "value": "alt enter",
-        "resettable": true,
-        "placeholder": "Enter key binding..."
-    },
     "keybinds.hk_detached_window": {
         "type": "KeyBindInput",
         "value": "ctrl shift d",

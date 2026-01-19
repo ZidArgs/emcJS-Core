@@ -4,6 +4,8 @@ import "../../i18n/I18nTooltip.js";
 import TPL from "./NavbarButton.js.html" assert {type: "html"};
 import STYLE from "./NavbarButton.js.css" assert {type: "css"};
 
+const EXPANDABLE_VALUES = ["down", "right"];
+
 export default class NavbarButton extends CustomElement {
 
     #tooltipEl;
@@ -19,32 +21,28 @@ export default class NavbarButton extends CustomElement {
         this.#labelEl = this.shadowRoot.getElementById("label");
     }
 
-    get expand() {
-        return this.getAttribute("expand");
+    set expands(val) {
+        this.setEnumAttribute("expands", val, EXPANDABLE_VALUES);
     }
 
-    set expand(val) {
-        if (val == "open" || val == "closed") {
-            this.setAttribute("expand", val);
-        } else {
-            this.removeAttribute("expand");
-        }
-    }
-
-    get content() {
-        return this.getAttribute("content");
+    get expands() {
+        return this.getEnumAttribute("expands");
     }
 
     set content(val) {
         this.setAttribute("content", val);
     }
 
-    get tooltip() {
-        return this.getAttribute("tooltip");
+    get content() {
+        return this.getAttribute("content");
     }
 
     set tooltip(val) {
         this.setAttribute("tooltip", val);
+    }
+
+    get tooltip() {
+        return this.getAttribute("tooltip");
     }
 
     static get observedAttributes() {

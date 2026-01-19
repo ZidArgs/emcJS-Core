@@ -38,15 +38,7 @@ class HotkeyHandler {
     setAction(name, fn, config) {
         if (typeof name == "string" && typeof fn == "function") {
             this.#action.set(name, fn);
-            if (typeof config == "object" && !Array.isArray(config)) {
-                this.#config.set(name, {
-                    ctrlKey: !!config.ctrlKey,
-                    shiftKey: !!config.shiftKey,
-                    altKey: !!config.altKey,
-                    metaKey: !!config.metaKey,
-                    key: (config.key || "").toString()
-                });
-            }
+            this.#registerConfig(name, config);
         }
     }
 
@@ -56,20 +48,7 @@ class HotkeyHandler {
 
     setConfig(name, config) {
         if (this.#action.has(name)) {
-            this.#deleteQuickAccess(name);
-            if (typeof config == "object" && !Array.isArray(config)) {
-                const newConfig = {
-                    ctrlKey: !!config.ctrlKey,
-                    shiftKey: !!config.shiftKey,
-                    altKey: !!config.altKey,
-                    metaKey: !!config.metaKey,
-                    key: (config.key || "").toString()
-                };
-                this.#config.set(name, newConfig);
-                this.#addQuickAccess(newConfig, name);
-            } else {
-                this.#config.remove(name);
-            }
+            this.#registerConfig(name, config);
         }
     }
 
@@ -95,6 +74,23 @@ class HotkeyHandler {
         this.#config.clear();
     }
 
+    #registerConfig(name, config) {
+        this.#deleteQuickAccess(name);
+        if (typeof config == "object" && !Array.isArray(config)) {
+            const newConfig = {
+                ctrlKey: !!config.ctrlKey,
+                shiftKey: !!config.shiftKey,
+                altKey: !!config.altKey,
+                metaKey: !!config.metaKey,
+                key: (config.key || "").toString()
+            };
+            this.#config.set(name, newConfig);
+            this.#addQuickAccess(newConfig, name);
+        } else {
+            this.#config.delete(name);
+        }
+    }
+
     #deleteQuickAccess(name) {
         const config = this.#config.get(name);
         if (config != null) {
@@ -104,7 +100,7 @@ class HotkeyHandler {
                 if (quickAccess.size === 1) {
                     this.#quickAccessCache.delete(encodedConfig);
                 } else {
-                    quickAccess.remove(name);
+                    quickAccess.delete(name);
                 }
             }
         }

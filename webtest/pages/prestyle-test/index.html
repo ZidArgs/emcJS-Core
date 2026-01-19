@@ -39,6 +39,7 @@
             background-color: rgb(181, 115, 241);
             border-color: rgb(127, 30, 218);
             cursor: pointer;
+            z-index: 1000;
         }
 
         #load-button:hover {
@@ -53,7 +54,10 @@
 <body style="display: flex; flex-direction: column;">
     <button id="load-button">load components</button>
 
-    <emc-navbar id="navbar"></emc-navbar>
+    <emc-navbar id="navbar">
+        <div style="display: inline-flex; align-items: center; padding: 4px;">Hello</div>
+        <div class="nav-button" style="display: inline-flex; align-items: center; padding: 4px;">Button</div>
+    </emc-navbar>
     <emc-page id="page" style="padding: 8px;">
 
         <emc-datagrid id="grid-2" style="width: 1000px; height: 400px;" sortable selectable allowdeselect>

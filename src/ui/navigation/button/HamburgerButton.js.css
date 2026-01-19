@@ -27,11 +27,11 @@ button {
 }
 
 button:hover {
-    box-shadow: inset 0px 0px 2px 1px var(--hamburger-button-focus-color, #000000);
+    box-shadow: var(--hamburger-button-focus-color, #000000) inset 0px 0px 2px 1px;
 }
 
 button:active {
-    box-shadow: inset 0px 0px 4px 3px var(--hamburger-button-focus-color, #000000);
+    box-shadow: var(--hamburger-button-focus-color, #000000) inset 0px 0px 4px 3px;
 }
 
 div {

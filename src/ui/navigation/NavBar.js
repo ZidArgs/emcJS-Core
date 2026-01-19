@@ -11,16 +11,6 @@ import STYLE from "./NavBar.js.css" assert {type: "css"};
 
 const MIXINS = new Map();
 
-function closeAll(targetEl) {
-    for (const el of targetEl.querySelectorAll(".open")) {
-        el.classList.remove("open");
-    }
-    for (const el of targetEl.querySelectorAll("[expand=\"open\"]")) {
-        el.expand = "closed";
-        el.blur();
-    }
-}
-
 function encodeWindowFeatures(input) {
     if (typeof input === "string") {
         return input;
@@ -60,9 +50,7 @@ export default class NavBar extends CustomElement {
         this.#coverEl = this.shadowRoot.getElementById("cover");
         this.registerTargetEventHandler(this.#hamburgerEl, "click", () => {
             if (this.#containerEl.classList.contains("open")) {
-                this.#containerEl.classList.remove("open");
-                this.#containerEl.classList.remove("cover");
-                closeAll(this.#contentEl);
+                this.#closeAll();
                 this.#hamburgerEl.open = false;
             } else {
                 this.#containerEl.classList.add("open");
@@ -70,9 +58,11 @@ export default class NavBar extends CustomElement {
             }
         });
         this.registerTargetEventHandler(this.#coverEl, "click", () => {
-            this.#containerEl.classList.remove("open");
-            this.#containerEl.classList.remove("cover");
-            closeAll(this.#contentEl);
+            this.#closeAll();
+            this.#hamburgerEl.open = false;
+        });
+        this.registerTargetEventHandler(window, "resize", () => {
+            this.#closeAll();
             this.#hamburgerEl.open = false;
         });
     }
@@ -148,9 +138,7 @@ export default class NavBar extends CustomElement {
                 if (isFunction(config.handler)) {
                     this.#navigationEventManager.set(btnEl, "click", (event) => {
                         this.#hamburgerEl.open = false;
-                        this.#containerEl.classList.remove("cover");
-                        this.#containerEl.classList.remove("open");
-                        closeAll(contentEl);
+                        this.#closeAll();
                         config.handler();
                         event.stopPropagation();
                         return false;
@@ -160,9 +148,7 @@ export default class NavBar extends CustomElement {
                 if (isHttpUrl(config.href)) {
                     this.#navigationEventManager.set(btnEl, "click", (event) => {
                         this.#hamburgerEl.open = false;
-                        this.#containerEl.classList.remove("cover");
-                        this.#containerEl.classList.remove("open");
-                        closeAll(contentEl);
+                        this.#closeAll();
                         const target = event.ctrlKey ? "_blank" : config.target;
                         if (target) {
                             const windowFeatures = encodeWindowFeatures(config.windowFeatures);
@@ -178,23 +164,19 @@ export default class NavBar extends CustomElement {
                 }
                 // submenu events
                 if (!IS_MAIN_NAV) {
-                    this.#navigationEventManager.set(btnEl, "blur", (event) => {
-                        if (event.relatedTarget == null || !contentEl.contains(event.relatedTarget)) {
-                            const pListEl = contentEl.parentElement;
-                            const pBtnEl = pListEl.children[0];
-                            pBtnEl.expand = "closed";
-                            pListEl.classList.remove("open");
-                            this.#containerEl.classList.remove("cover");
-                            event.preventDefault();
-                        }
-                    });
                     this.#navigationEventManager.set(btnEl, "focus", (event) => {
                         if (event.relatedTarget != null && !contentEl.contains(event.relatedTarget)) {
                             const pListEl = contentEl.parentElement;
-                            const pBtnEl = pListEl.children[0];
-                            pBtnEl.expand = "open";
-                            pListEl.classList.add("open");
+                            pListEl.classList.add("focus-open");
                             this.#containerEl.classList.add("cover");
+                            event.preventDefault();
+                        }
+                    });
+                    this.#navigationEventManager.set(btnEl, "blur", (event) => {
+                        if (event.relatedTarget == null || !contentEl.contains(event.relatedTarget)) {
+                            const pListEl = contentEl.parentElement;
+                            pListEl.classList.remove("focus-open");
+                            this.#maybeRemoveCover();
                             event.preventDefault();
                         }
                     });
@@ -207,24 +189,47 @@ export default class NavBar extends CustomElement {
                     }
                     listEl.append(subcontent);
                     // submenu button events
-                    btnEl.expand = "closed";
-                    this.#navigationEventManager.set(btnEl, "click", (event) => {
-                        if (btnEl.expand == "open") {
-                            btnEl.expand = "closed";
+                    if (IS_MAIN_NAV) {
+                        btnEl.expands = "down";
+                    } else {
+                        btnEl.expands = "right";
+                    }
+                    this.#navigationEventManager.set(listEl, "mouseenter", (event) => {
+                        listEl.classList.add("open");
+                        if (IS_MAIN_NAV) {
+                            this.#containerEl.classList.add("cover");
+                        }
+                        this.#navigationEventManager.active = false;
+                        setTimeout(() => {
+                            this.#navigationEventManager.active = true;
+                        }, 0);
+                        event.preventDefault();
+                    });
+                    this.#navigationEventManager.set(listEl, "mouseleave", (event) => {
+                        listEl.classList.remove("open");
+                        if (IS_MAIN_NAV) {
+                            this.#maybeRemoveCover();
+                        }
+                        event.preventDefault();
+                    });
+                    this.#navigationEventManager.set(listEl, "touchstart", (event) => {
+                        if (!listEl.classList.contains("touch-open")) {
+                            listEl.classList.add("touch-open");
                             if (IS_MAIN_NAV) {
-                                listEl.classList.remove("open");
-                                this.#containerEl.classList.remove("cover");
-                            }
-                        } else {
-                            if (IS_MAIN_NAV) {
-                                closeAll(contentEl);
-                                listEl.classList.add("open");
                                 this.#containerEl.classList.add("cover");
                             }
-                            btnEl.expand = "open";
+                            this.#navigationEventManager.active = false;
+                            setTimeout(() => {
+                                this.#navigationEventManager.active = true;
+                            }, 0);
+                        } else {
+                            listEl.classList.remove("touch-open");
+                            if (IS_MAIN_NAV) {
+                                this.#maybeRemoveCover();
+                            }
                         }
                         event.stopPropagation();
-                        return false;
+                        event.preventDefault();
                     });
                 }
                 // add element
@@ -235,6 +240,30 @@ export default class NavBar extends CustomElement {
 
     static addMixin(name, config) {
         MIXINS.set(name, config);
+    }
+
+    #closeAll() {
+        this.#containerEl.classList.remove("cover");
+        this.#containerEl.classList.remove("open");
+        for (const el of this.#contentEl.querySelectorAll(".open")) {
+            el.classList.remove("open");
+            el.blur();
+        }
+        for (const el of this.#contentEl.querySelectorAll(".focus-open")) {
+            el.classList.remove("focus-open");
+            el.blur();
+        }
+        for (const el of this.#contentEl.querySelectorAll(".touch-open")) {
+            el.classList.remove("touch-open");
+            el.blur();
+        }
+    }
+
+    #maybeRemoveCover() {
+        const openEl = this.#contentEl.querySelector(".open") ?? this.#contentEl.querySelector(".focus-open") ?? this.#contentEl.querySelector(".touch-open");
+        if  (openEl == null) {
+            this.#containerEl.classList.remove("cover");
+        }
     }
 
 }
