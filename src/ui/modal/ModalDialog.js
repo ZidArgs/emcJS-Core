@@ -68,7 +68,7 @@ export default class ModalDialog extends Modal {
     #initialFocusElement = null;
 
     constructor(options = {}) {
-        super(options.caption);
+        super(options.caption, options.modalClass);
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
@@ -176,6 +176,7 @@ export default class ModalDialog extends Modal {
 
     static async alert(caption, text) {
         const dialogEl = new ModalDialog({
+            modalClass: "alert",
             caption,
             text,
             submit: "ok"
@@ -189,6 +190,7 @@ export default class ModalDialog extends Modal {
 
     static async confirm(caption, text) {
         const dialogEl = new ModalDialog({
+            modalClass: "confirm",
             caption,
             text,
             submit: "yes",
@@ -203,6 +205,7 @@ export default class ModalDialog extends Modal {
 
     static async prompt(caption, text, value) {
         const dialogEl = new ModalDialog({
+            modalClass: "promt",
             caption,
             text,
             submit: true,
@@ -231,8 +234,9 @@ export default class ModalDialog extends Modal {
         return result && inputEl.value;
     }
 
-    static async promptNumber(caption, text, value = 0, min = Number.MIN_VALUE, max = Number.MAX_VALUE) {
+    static async promptNumber(caption, text, value = 0, min = Number.NEGATIVE_INFINITY, max = Number.POSITIVE_INFINITY) {
         const dialogEl = new ModalDialog({
+            modalClass: "promt",
             caption,
             text,
             submit: true,
@@ -263,6 +267,7 @@ export default class ModalDialog extends Modal {
 
     static async promptSensitive(caption, text, value) {
         const dialogEl = new ModalDialog({
+            modalClass: "promt",
             caption,
             text,
             submit: true,
@@ -293,11 +298,13 @@ export default class ModalDialog extends Modal {
 
     static async error(caption = "Error", text = "An error occured", errors = []) {
         const dialogEl = new ModalDialog({
+            modalClass: "error",
             caption,
             text,
             submit: "ok"
         });
         dialogEl.streched = true;
+        dialogEl.resizable = true;
         this.#applyDialogIcon(dialogEl, "error");
         // ---
         if (this.#hasErrors(errors)) {
@@ -305,8 +312,7 @@ export default class ModalDialog extends Modal {
             inputEl.style.flexShrink = "1";
             inputEl.style.flexGrow = "1";
             inputEl.style.minHeight = "100px";
-            inputEl.style.maxHeight = "500px";
-            inputEl.style.padding = "5px";
+            inputEl.style.padding = "5px"; // 260px
             inputEl.style.color = "black";
             inputEl.style.backgroundColor = "white";
             inputEl.style.border = "solid 1px black";

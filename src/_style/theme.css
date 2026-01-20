@@ -712,7 +712,8 @@ all; top_bottom right_left; top right bottom left
     --scrollbar-corner-border-color: #00000000;
     --scrollbar-corner-border-radius: 0px;
 
-    --scrollbar-resizer-color: var(--page-text-color);
+    --scrollbar-resizer-top-color: #525252;
+    --scrollbar-resizer-bottom-color: #ffffff;
 
     --scrollbar-thumb-color: var(--page-border-color);
     --scrollbar-thumb-border-color: #00000000;
@@ -729,7 +730,8 @@ all; top_bottom right_left; top right bottom left
     --scrollbar-disabled-track-border-color: var(--input-disabled-text-color);
     --scrollbar-disabled-corner-color: #00000000;
     --scrollbar-disabled-corner-border-color: #00000000;
-    --scrollbar-disabled-resizer-color: var(--input-disabled-emphasize-color);
+    --scrollbar-disabled-resizer-top-color: #757575;
+    --scrollbar-disabled-resizer-bottom-color: #999999;
     --scrollbar-disabled-thumb-color: var(--input-disabled-emphasize-color);
     --scrollbar-disabled-thumb-border-color: var(--input-disabled-insignify-color);
 

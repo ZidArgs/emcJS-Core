@@ -26,7 +26,20 @@
 }
 
 ::-webkit-resizer {
-    background: radial-gradient(var(--scrollbar-resizer-color, #000000) calc(var(--scrollbar-size, 8px) / 2 - 2px), transparent calc(var(--scrollbar-size, 8px) / 2 - 1px));
+    background-color: transparent;
+    background-image: linear-gradient(to top left,
+            transparent 16%,
+            var(--scrollbar-resizer-bottom-color, #ffffff) 17%,
+            var(--scrollbar-resizer-bottom-color, #ffffff) 23%,
+            var(--scrollbar-resizer-top-color, #525252) 23%,
+            var(--scrollbar-resizer-top-color, #525252) 29%,
+            transparent 30%,
+            transparent 36%,
+            var(--scrollbar-resizer-bottom-color, #ffffff) 37%,
+            var(--scrollbar-resizer-bottom-color, #ffffff) 43%,
+            var(--scrollbar-resizer-top-color, #525252) 43%,
+            var(--scrollbar-resizer-top-color, #525252) 49%,
+            transparent 50%);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -63,7 +76,19 @@
 }
 
 :host([disabled]:not([disabled="false"])) ::-webkit-resizer {
-    background: radial-gradient(var(--scrollbar-disabled-resizer-color, #757575) calc(var(--scrollbar-size, 8px) / 2 - 2px), transparent calc(var(--scrollbar-size, 8px) / 2 - 1px));
+    background-image: linear-gradient(to top left,
+            transparent 16%,
+            var(--scrollbar-disabled-resizer-bottom-color, #999999) 17%,
+            var(--scrollbar-disabled-resizer-bottom-color, #999999) 23%,
+            var(--scrollbar-disabled-resizer-top-color, #757575) 23%,
+            var(--scrollbar-disabled-resizer-top-color, #757575) 29%,
+            transparent 30%,
+            transparent 36%,
+            var(--scrollbar-disabled-resizer-bottom-color, #999999) 37%,
+            var(--scrollbar-disabled-resizer-bottom-color, #999999) 43%,
+            var(--scrollbar-disabled-resizer-top-color, #757575) 43%,
+            var(--scrollbar-disabled-resizer-top-color, #757575) 49%,
+            transparent 50%);
 }
 
 :host([disabled]:not([disabled="false"])) ::-webkit-scrollbar-thumb {

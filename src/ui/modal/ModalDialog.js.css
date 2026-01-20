@@ -1,6 +1,9 @@
 #modal {
-    max-width: min(600px, calc(100vw - 50px));
-    min-height: min(100px, calc(100vh - 50px));
+    min-height: min(150px, calc(100vh - 50px));
+}
+
+#modal.error {
+    min-height: min(260px, calc(100vh - 50px));
 }
 
 #footer {

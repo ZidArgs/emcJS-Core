@@ -1,7 +1,9 @@
 import CustomElement from "../element/CustomElement.js";
 import UniqueEntriesStack from "../../data/stack/UniqueEntriesStack.js";
+import EventTargetManager from "../../util/event/EventTargetManager.js";
 import {
-    isColorString, isPrimitive
+    isColorString, isPrimitive,
+    isStringNotEmpty
 } from "../../util/helper/CheckType.js";
 import {getFocusableElements} from "../../util/helper/html/ElementFocusHelper.js";
 import BusyIndicator from "../BusyIndicator.js";
@@ -17,6 +19,17 @@ const SIZE_REGEXP = /^[0-9]+(?:\.[0-9]+)?(?:em|px|%)$/;
 const modalStorage = new Map();
 
 const visibleModals = new UniqueEntriesStack();
+
+const focusEventManager = new EventTargetManager(window, false);
+focusEventManager.set("focus", (event) => {
+    if (visibleModals.size > 0) {
+        const modal = visibleModals.peek();
+        const target = event.target;
+        if (target instanceof Node && !modal.contains(target)) {
+            modal.initialFocus();
+        }
+    }
+}, {capture: true});
 
 export default class Modal extends CustomElement {
 
@@ -46,7 +59,7 @@ export default class Modal extends CustomElement {
 
     #assocName = "";
 
-    constructor(caption) {
+    constructor(caption, modalClass) {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
@@ -61,6 +74,9 @@ export default class Modal extends CustomElement {
         this.#textEl = this.shadowRoot.getElementById("text");
         this.#footerEl = this.shadowRoot.getElementById("footer");
         this.caption = caption;
+        if (isStringNotEmpty(modalClass)) {
+            this.#modalEl.classList.add(modalClass);
+        }
         /* --- */
         this.registerTargetEventHandler(this.#modalEl, "keydown", (event) => {
             if (this.busy) {
@@ -125,6 +141,14 @@ export default class Modal extends CustomElement {
 
     get streched() {
         return this.getBooleanAttribute("streched");
+    }
+
+    set resizable(value) {
+        this.setBooleanAttribute("resizable", value);
+    }
+
+    get resizable() {
+        return this.getBooleanAttribute("resizable");
     }
 
     static get observedAttributes() {
@@ -241,6 +265,7 @@ export default class Modal extends CustomElement {
         this.classList.remove("inactive");
         visibleModals.push(this);
         this.initialFocus();
+        focusEventManager.active = true;
     }
 
     remove() {
@@ -253,6 +278,9 @@ export default class Modal extends CustomElement {
             }
         } else {
             visibleModals.delete(this);
+        }
+        if (visibleModals.size === 0) {
+            focusEventManager.active = false;
         }
     }
 

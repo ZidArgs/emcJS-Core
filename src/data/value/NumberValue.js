@@ -22,8 +22,8 @@ export default class NumberState extends AnyState {
 
     constructor(value, min, max) {
         value = parseNumber(value) ?? 0;
-        min = parseNumber(min) ?? Number.MIN_VALUE;
-        max = parseNumber(max) ?? Number.MAX_VALUE;
+        min = parseNumber(min) ?? Number.NEGATIVE_INFINITY;
+        max = parseNumber(max) ?? Number.POSITIVE_INFINITY;
         super(delimitFloat(value, min, max));
         this.#min = min;
         this.#max = max;

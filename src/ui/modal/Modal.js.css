@@ -42,15 +42,19 @@
     margin-top: min(100px, calc(25px + max(0px, calc(55dvh - 480px))));
     color: var(--modal-text-color, #000000);
     background-color: var(--modal-back-color, #ffffff);
-    background-image: var(--modal-back-image, none);
     border-style: solid;
     border-width: var(--modal-border-width, 2px);
     border-color: var(--modal-border-color, #cccccc);
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 1rem;
-    resize: both;
+    resize: none;
+    overflow: hidden;
     pointer-events: all;
     box-shadow: #000000c4 11px 11px 20px 0px;
+}
+
+:host([resizable]:not([resizable="false"])) #modal {
+    resize: both;
 }
 
 :host([streched]:not([streched="false"])) #modal {
@@ -90,15 +94,16 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    min-height: 50px;
-    padding: 5px;
+    min-height: 16px;
+    padding: 5px 10px;
     color: var(--modal-footer-text-color, #000000);
     background-color: var(--modal-footer-back-color, #e4e4e4);
     background-image: var(--modal-footer-back-image, none);
     border-top: solid var(--modal-border-width, 2px) var(--modal-border-color, #cccccc);
 }
 
-#footer:empty {
+:host(:not([resizable])) #footer:empty,
+:host([resizable="false"]) #footer:empty {
     display: none;
 }
 
@@ -148,10 +153,10 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 2px;
-    margin-left: 8px;
+    padding: 4px;
+    margin-left: 4px;
     color: var(--modal-icon-default-color, #000000);
-    font-size: 36px;
+    font-size: 32px;
 }
 
 #title-icon {
@@ -207,6 +212,8 @@
     overflow: auto;
     scroll-padding-top: 20px;
     scroll-padding-bottom: 20px;
+    background-color: var(--modal-back-color, #ffffff);
+    background-image: var(--modal-back-image, none);
 }
 
 #text {

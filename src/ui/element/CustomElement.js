@@ -87,8 +87,8 @@ export default class CustomElement extends EventManagerMixin(HTMLElement) {
     setNumberAttribute(name, value, min, max) {
         const parsedValue = parseFloat(value);
         if (!isNaN(parsedValue)) {
-            const parsedMin = parseFloat(min) || Number.MIN_VALUE;
-            const parsedMax = parseFloat(max) || Number.MAX_VALUE;
+            const parsedMin = parseFloat(min) || Number.NEGATIVE_INFINITY;
+            const parsedMax = parseFloat(max) || Number.POSITIVE_INFINITY;
             if (parsedMin > parsedMax) {
                 throw new Error("min can't be greater than max");
             }

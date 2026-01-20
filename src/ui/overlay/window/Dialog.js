@@ -155,7 +155,7 @@ export default class Dialog extends Window {
         });
     }
 
-    static promptNumber(ttl, msg, def, min = Number.MIN_VALUE, max = Number.MAX_VALUE) {
+    static promptNumber(ttl, msg, def, min = Number.NEGATIVE_INFINITY, max = Number.POSITIVE_INFINITY) {
         return new Promise(function(resolve) {
             const dialogEl = new Dialog({
                 title: ttl,
