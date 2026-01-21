@@ -22,7 +22,7 @@
                 "icon": "🧀"
             },
             {
-                "type": "LinkButton",
+                "type": "ActionButton",
                 "name": "button.link_noicon",
                 "text": "custom icon",
                 "href": "/#page=Form",

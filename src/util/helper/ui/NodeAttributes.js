@@ -1,5 +1,25 @@
 import jsonParse from "../../../patches/JSONParser.js";
+import {
+    isArrayOf, isStringNotEmpty
+} from "../CheckType.js";
 import {dashedToCamelCase} from "../string/ConvertCase.js";
+
+export function setAttributes(el, attr) {
+    const attributeList = el.constructor.attributes ?? [];
+
+    if (!isArrayOf(attributeList, isStringNotEmpty)) {
+        throw new Error("can not create form element, class attributes can only be null or an array of strings");
+    }
+
+    for (const name in attr) {
+        const value = attr[name];
+        if (attributeList.includes(name)) {
+            el[name] = value;
+        } else {
+            safeSetAttribute(el, name, value);
+        }
+    }
+}
 
 export function safeSetAttribute(node, name, value) {
     if (value != null) {

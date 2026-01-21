@@ -14,6 +14,31 @@ export default class I18nOption extends I18nMixin(HTMLOptionElement) {
         return this.getAttribute("value");
     }
 
+    set selected(value) {
+        if (value == null) {
+            this.removeAttribute("selected");
+        } else if (typeof value === "boolean") {
+            if (value) {
+                this.setAttribute("selected", "");
+            } else {
+                this.removeAttribute("selected");
+            }
+        } else {
+            this.setAttribute("selected", value);
+        }
+    }
+
+    get selected() {
+        const value = this.getAttribute("selected");
+        if (value == null || value === "false") {
+            return false;
+        }
+        if (value === "" || value === "true") {
+            return true;
+        }
+        return value;
+    }
+
     set i18nValue(value) {
         if (value != null) {
             this.setAttribute("i18n-value", value);

@@ -4,10 +4,32 @@
     width: 100%;
     min-height: calc(1em + 16px);
     padding: 8px;
-    color: var(--button-text-color, #000000);
+    color: var(--select-option-text-color, #000000);
+    background-color: var(--select-option-back-color, #ffffff);
+    background-image: var(--select-option-back-image, none);
     user-select: none;
     white-space: normal;
     cursor: pointer;
+}
+
+:host(:hover),
+:host(.marked) {
+    color: var(--select-option-marked-text-color, #000000);
+    background-color: var(--select-option-marked-back-color, #cccccc);
+    background-image: var(--select-option-marked-back-image, none);
+}
+
+:host([selected]:not([selected="false"])) {
+    color: var(--select-option-selected-text-color, #000000);
+    background-color: var(--select-option-selected-back-color, #b1f4ff);
+    background-image: var(--select-option-selected-back-image, none);
+}
+
+:host([selected]:not([selected="false"]):hover),
+:host([selected]:not([selected="false"]).marked) {
+    color: var(--select-option-selected-marked-text-color, #000000);
+    background-color: var(--select-option-selected-marked-back-color, #26e0ff);
+    background-image: var(--select-option--selectedmarked-back-image, none);
 }
 
 :host::after {
@@ -21,10 +43,9 @@
     height: 22px;
     padding: 2px;
     margin: 0px;
-    color: var(--datagrid-select-cell-text-color, #000000);
     border-style: solid;
     border-width: 2px;
-    border-color: var(--datagrid-select-cell-border-color, #000000);
+    border-color: var(--select-option-text-color, #000000);
     border-radius: 0.3em;
     font-size: 14px;
     line-height: 1em;
@@ -32,8 +53,19 @@
     content: " ";
 }
 
+:host(:hover)::after {
+    border-color: var(--select-option-marked-selected-text-color, #000000);
+}
+
 :host([selected]:not([selected="false"]))::after {
+    color: var(--select-option-selected-text-color, #000000);
+    border-color: var(--select-option-selected-text-color, #000000);
     content: "✖";
+}
+
+:host([selected]:not([selected="false"]):hover)::after {
+    color: var(--select-option-selected-marked-text-color, #000000);
+    border-color: var(--select-option-selected-marked-text-color, #000000);
 }
 
 #label {

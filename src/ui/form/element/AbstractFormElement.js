@@ -1,4 +1,5 @@
 import CustomFormElement from "../../element/CustomFormElement.js";
+import ControlButtonTypes from "../../../enum/form/ControlButtonTypes.js";
 import {deepClone} from "../../../util/helper/DeepClone.js";
 import {debounce} from "../../../util/Debouncer.js";
 import {isEqual} from "../../../util/helper/Comparator.js";
@@ -8,8 +9,6 @@ import "../button/Button.js";
 import TPL from "./AbstractFormElement.js.html" assert {type: "html"};
 import STYLE from "./AbstractFormElement.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./AbstractFormElement.js.json" assert {type: "json"};
-
-const CONTROL_BUTTONS = ["copy", "reset"];
 
 // https://web.dev/more-capable-form-controls/#form-associated-custom-elements
 
@@ -54,6 +53,10 @@ export default class AbstractFormElement extends CustomFormElement {
 
     static set changeDebounceTime(value) {
         this.#changeDebounceTime = delimitInteger(value, 0, 1000);
+    }
+
+    static get CONTROL_BUTTONS() {
+        return ControlButtonTypes;
     }
 
     #value;
@@ -267,7 +270,7 @@ export default class AbstractFormElement extends CustomFormElement {
     }
 
     set controlButtons(value) {
-        this.setListAttribute("control-buttons", value, CONTROL_BUTTONS);
+        this.setListAttribute("control-buttons", value, ControlButtonTypes);
     }
 
     get controlButtons() {

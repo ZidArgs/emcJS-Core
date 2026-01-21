@@ -1,8 +1,9 @@
 import CustomFormElementDelegating from "../../element/CustomFormElementDelegating.js";
+import ButtonVariants from "../../../enum/form/ButtonVariants.js";
+import ButtonBorderPositions from "../../../enum/form/ButtonBorderPositions.js";
 import EventTargetManager from "../../../util/event/EventTargetManager.js";
 import {deepClone} from "../../../util/helper/DeepClone.js";
 import {registerFocusable} from "../../../util/helper/html/ElementFocusHelper.js";
-import ButtonVariants from "../../../enum/form/ButtonVariants.js";
 import "../../i18n/I18nTooltip.js";
 import "../../i18n/I18nLabel.js";
 import "../../icon/FAIcon.js";
@@ -12,15 +13,19 @@ import STYLE from "./Button.js.css" assert {type: "css"};
 import VARIANT_STYLE from "./style/ButtonVariant.css" assert {type: "css"};
 import CONFIG_FIELDS from "./Button.js.json" assert {type: "json"};
 
-export const BUTTON_VARIANTS = ButtonVariants;
-
-const BORDER_POSITIONS = ["all", "left", "right", "top", "bottom"];
-
 // TODO add "outline" variants
 export default class Button extends CustomFormElementDelegating {
 
     static get formConfigurationFields() {
         return deepClone(CONFIG_FIELDS);
+    }
+
+    static get BUTTON_VARIANTS() {
+        return ButtonVariants;
+    }
+
+    static get BORDER_POSITIONS() {
+        return ButtonBorderPositions;
     }
 
     #tooltipEl;
@@ -115,7 +120,7 @@ export default class Button extends CustomFormElementDelegating {
     }
 
     set variant(value) {
-        this.setEnumAttribute("variant", value, BUTTON_VARIANTS);
+        this.setEnumAttribute("variant", value, ButtonVariants);
     }
 
     get variant() {
@@ -139,7 +144,7 @@ export default class Button extends CustomFormElementDelegating {
     }
 
     set borderFlat(value) {
-        this.setListAttribute("border-flat", value, BORDER_POSITIONS);
+        this.setListAttribute("border-flat", value, ButtonBorderPositions);
     }
 
     get borderFlat() {
@@ -147,7 +152,7 @@ export default class Button extends CustomFormElementDelegating {
     }
 
     set borderOpen(value) {
-        this.setListAttribute("border-open", value, BORDER_POSITIONS);
+        this.setListAttribute("border-open", value, ButtonBorderPositions);
     }
 
     get borderOpen() {

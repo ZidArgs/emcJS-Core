@@ -1,0 +1,106 @@
+:host {
+    margin: 0px;
+}
+
+#container {
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-radius: 0px;
+}
+
+#text {
+    flex: 1;
+    justify-content: flex-start;
+    margin: 0px 8px;
+}
+
+:host([disabled]:not([disabled="false"])) #container {
+    color: var(--datagrid-disabled-text-color, #757575) !important;
+    background-color: var(--datagrid-disabled-back-color, #999999) !important;
+    background-image: var(--datagrid-disabled-back-image, none) !important;
+    border-color: var(--datagrid-disabled-row-seperator-color, #757575) !important;
+}
+
+:host([disabled]:not([disabled="false"])) input[type="checkbox"] {
+    color: var(--datagrid-disabled-select-cell-text-color, #757575) !important;
+    background-color: var(--datagrid-disabled-select-cell-back-color, #999999) !important;
+    border-color: var(--datagrid-disabled-select-cell-border-color, #6a6a6a) !important;
+    cursor: default !important;
+}
+
+:host([readonly]:not([readonly="false"])) input[type="checkbox"] {
+    pointer-events: none;
+}
+
+input[type="checkbox"] {
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    padding: 2px;
+    margin: auto;
+    color: var(--datagrid-select-cell-text-color, #505050);
+    background-color: var(--datagrid-select-cell-back-color, #ffffff);
+    border-style: solid;
+    border-width: 2px;
+    border-color: var(--datagrid-select-cell-border-color, #000000);
+    border-radius: 0.3em;
+    font-size: 16px;
+    cursor: pointer;
+
+    &:focus {
+        box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
+        outline: none;
+    }
+
+    &:checked {
+        color: var(--datagrid-select-cell-checked-text-color, #ffffff);
+        background-color: var(--datagrid-select-cell-checked-back-color, #505050);
+        border-color: var(--datagrid-select-cell-checked-border-color, #000000);
+    }
+
+    &:indeterminate {
+        color: var(--datagrid-select-cell-indeterminate-text-color, #505050);
+        background-color: var(--datagrid-select-cell-indeterminate-back-color, #ffffff);
+        border-color: var(--datagrid-select-cell-indeterminate-border-color, #000000);
+    }
+
+    &::before {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+        line-height: 1.2em;
+        font-weight: bold;
+    }
+
+    &:checked::before {
+        content: "✖";
+    }
+
+    &:indeterminate::before {
+        width: 70%;
+        height: 70%;
+        background-color: var(--datagrid-select-cell-indeterminate-text-color, #000000);
+        border-radius: 50%;
+        content: "";
+    }
+
+    &:indeterminate::after {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 40%;
+        height: 40%;
+        background-color: var(--datagrid-select-cell-indeterminate-back-color, #ffffff);
+        border-radius: 50%;
+        content: "";
+    }
+}

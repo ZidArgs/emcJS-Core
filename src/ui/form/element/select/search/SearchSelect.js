@@ -5,11 +5,14 @@ import EventTargetManager from "../../../../../util/event/EventTargetManager.js"
 import EventMultiTargetManager from "../../../../../util/event/EventMultiTargetManager.js";
 import i18n from "../../../../../util/I18n.js";
 import CharacterSearch from "../../../../../util/search/CharacterSearch.js";
+import {isStringNotEmpty} from "../../../../../util/helper/CheckType.js";
 import {deepClone} from "../../../../../util/helper/DeepClone.js";
 import {nodeTextComparator} from "../../../../../util/helper/ui/NodeListSort.js";
 import {debounce} from "../../../../../util/Debouncer.js";
 import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
-import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
+import {
+    safeSetAttribute, setAttributes
+} from "../../../../../util/helper/ui/NodeAttributes.js";
 import MutationObserverManager from "../../../../../util/observer/manager/MutationObserverManager.js";
 import I18nOption from "../../../../i18n/builtin/I18nOption.js";
 import SelectEntryManager from "../../components/SelectEntryManager.js";
@@ -400,7 +403,7 @@ export default class SearchSelect extends AbstractFormElement {
                 this.#scrollContainerEl.style.top = `${thisRect.bottom}px`;
             }
             const all = this.#optionsContainerEl.querySelectorAll(`[value]`);
-            const value = this.value;
+            const value = this.value ?? "";
             for (const el of all) {
                 el.style.display = "";
                 if (el.value === value) {
@@ -564,6 +567,12 @@ export default class SearchSelect extends AbstractFormElement {
     #sortByNameFunction(entry0, entry1) {
         const {element: el0} = entry0;
         const {element: el1} = entry1;
+        if (!isStringNotEmpty(el0.value)) {
+            return -1;
+        }
+        if (!isStringNotEmpty(el1.value)) {
+            return 1;
+        }
         return nodeTextComparator(el0, el1);
     }
 
@@ -584,6 +593,8 @@ export default class SearchSelect extends AbstractFormElement {
             options = {}, ...params
         } = config;
 
+        setAttributes(selectEl, params);
+
         for (const value in options) {
             const optionEl = I18nOption.create();
             optionEl.value = value;
@@ -594,11 +605,6 @@ export default class SearchSelect extends AbstractFormElement {
                 optionEl.i18nValue = value;
             }
             selectEl.append(optionEl);
-        }
-
-        for (const name in params) {
-            const value = params[name];
-            safeSetAttribute(selectEl, name, value);
         }
 
         return selectEl;

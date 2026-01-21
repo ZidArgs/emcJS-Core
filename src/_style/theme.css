@@ -240,23 +240,25 @@ all; top_bottom right_left; top right bottom left
     --input-button-invalid-hover-border-color: var(--input-button-invalid-border-color);
 
     /* === select === */
-    --select-option-text-color: var(--page-text-color);
-    --select-option-back-color: var(--page-back-color);
+    --select-overlay-border-color: #222222;
+
+    --select-option-text-color: var(--input-text-color);
+    --select-option-back-color: var(--input-back-color);
     --select-option-back-image: none;
 
-    --select-option-divider-color: var(--page-border-color);
+    --select-option-divider-color: var(--input-border-color);
 
     --select-option-marked-text-color: var(--select-option-text-color);
-    --select-option-marked-back-color: #b1f4ff;
-    --select-option-marked-back-image: none;
+    --select-option-marked-back-color: var(--input-emphasize-color);
+    --select-option-marked-back-image: var(--select-option-back-image);
 
     --select-option-selected-text-color: var(--select-option-text-color);
-    --select-option-selected-back-color: #dbdbdb;
-    --select-option-selected-back-image: none;
+    --select-option-selected-back-color: var(--select-option-back-color);
+    --select-option-selected-back-image: var(--select-option-back-image);
 
-    --select-option-selected-marked-text-color: var(--select-option-text-color);
-    --select-option-selected-marked-back-color: #26e0ff;
-    --select-option-selected-marked-back-image: none;
+    --select-option-selected-marked-text-color: var(--select-option-marked-text-color);
+    --select-option-selected-marked-back-color: var(--select-option-marked-back-color);
+    --select-option-selected-marked-back-image: var(--select-option-marked-back-image);
 
     --select-option-placeholder-text-color: var(--input-placeholder-text-color);
     --select-option-placeholder-marked-text-color: var(--select-option-placeholder-text-color);

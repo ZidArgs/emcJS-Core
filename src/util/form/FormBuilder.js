@@ -3,7 +3,7 @@ import {isNullOrFalse} from "../helper/CheckType.js";
 import OptionGroupRegistryChoiceManager from "./manager/OptionGroupRegistryChoiceManager.js";
 import OptionGroupRegistryValuesManager from "./manager/OptionGroupRegistryValuesManager.js";
 import TokenRegistryManager from "./manager/TokenRegistryManager.js";
-import {safeSetAttribute} from "../helper/ui/NodeAttributes.js";
+import {setAttributes} from "../helper/ui/NodeAttributes.js";
 import {createErrorElement} from "../helper/ui/ElementError.js";
 import {
     FORM_BUTTON_MAPPING, FORM_STRUCTURE_MAPPING
@@ -223,7 +223,7 @@ class FormBuilder {
             type, id, visible, enabled, editable, data, ...params
         } = config;
         if (FORM_STRUCTURE_MAPPING.has(type)) {
-            return this.#createFromStructure(type, id, visible, enabled, params, data, defaultValues, label);
+            return this.#createFormStructure(type, id, visible, enabled, params, data, defaultValues, label);
         }
         if (FORM_BUTTON_MAPPING.has(type)) {
             return this.#createFormButton(type, id, visible, enabled, params, data);
@@ -231,7 +231,7 @@ class FormBuilder {
         return this.#createFormElement(type, id, visible, enabled, editable, params, data, defaultValues, label);
     }
 
-    #createFromStructure(type, id, visible, enabled, params = {}, data = {}, defaultValues = {}, label = null) {
+    #createFormStructure(type, id, visible, enabled, params = {}, data = {}, defaultValues = {}, label = null) {
         const Clazz = FORM_STRUCTURE_MAPPING.get(type);
         if (Clazz != null) {
             const {
@@ -338,10 +338,7 @@ class FormBuilder {
                 return Clazz.fromConfig(params);
             }
             const el = new Clazz();
-            for (const name in params) {
-                const value = params[name];
-                safeSetAttribute(el, name, value);
-            }
+            setAttributes(el, params);
             return el;
         }
     }

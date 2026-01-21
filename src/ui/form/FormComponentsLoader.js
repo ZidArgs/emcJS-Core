@@ -47,6 +47,7 @@ import "./element/input/string/StringInput.js";
 import "./element/input/switch/SwitchInput.js";
 import "./element/input/text/TextInput.js";
 // element / select
+import "./element/select/grid/GridSelect.js";
 import "./element/select/image/ImageSelect.js";
 import "./element/select/list/ListSelect.js";
 import "./element/select/relation/RelationSelect.js";

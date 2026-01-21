@@ -177,9 +177,14 @@ export default class CustomElement extends EventManagerMixin(HTMLElement) {
 
     setListAttribute(name, value, allowedValues) {
         if (Array.isArray(value)) {
-            const acceptedValues = value.filter((val, idx) => allowedValues.includes(val) && value.indexOf(val) === idx);
-            this.setAttribute(name, acceptedValues.join(" "));
-        } else if (value != null && allowedValues.includes(value)) {
+            if (allowedValues != null) {
+                const acceptedValues = value.filter((val, idx) => allowedValues.includes(val) && value.indexOf(val) === idx);
+                this.setAttribute(name, acceptedValues.join(" "));
+            } else {
+                const acceptedValues = value.filter((val, idx) => value.indexOf(val) === idx);
+                this.setAttribute(name, acceptedValues.join(" "));
+            }
+        } else if (value != null && (allowedValues == null || allowedValues.includes(value))) {
             this.setAttribute(name, value);
         } else {
             this.removeAttribute(name);
@@ -187,7 +192,8 @@ export default class CustomElement extends EventManagerMixin(HTMLElement) {
     }
 
     getListAttribute(name) {
-        return (this.getAttribute(name) ?? "").split(" ").filter((e) => isStringNotEmpty(e));
+        const value = (this.getAttribute(name) ?? "").split(" ");
+        return value.filter((val, idx) => isStringNotEmpty(val) && value.indexOf(val) === idx);
     }
 
     scrollIntoViewIfNeeded(options) {

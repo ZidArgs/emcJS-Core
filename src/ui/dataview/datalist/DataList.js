@@ -1,16 +1,14 @@
 import CustomElement from "../../element/CustomElement.js";
-import ResizeObserverMixin from "../../mixin/ResizeObserverMixin.js";
 import DataReceiverMixin from "../../../util/dataprovider/DataReceiverMixin.js";
 import ElementManager from "../../../util/html/ElementManager.js";
+import {debounce} from "../../../util/Debouncer.js";
 import BusyIndicator from "../../BusyIndicator.js";
+import DataListEntry from "./components/DataListEntry.js";
 import "../../i18n/I18nLabel.js";
-import "./components/DataListEntry.js";
 import TPL from "./DataList.js.html" assert {type: "html"};
 import STYLE from "./DataList.js.css" assert {type: "css"};
-import {debounce} from "../../../util/Debouncer.js";
 
-// TODO add "no match" label
-export default class DataList extends ResizeObserverMixin(DataReceiverMixin(CustomElement)) {
+export default class DataList extends DataReceiverMixin(CustomElement) {
 
     #scrollContainerEl;
 
@@ -19,6 +17,8 @@ export default class DataList extends ResizeObserverMixin(DataReceiverMixin(Cust
     #elementManager = new ElementManager(this);
 
     #busyIndicator = new BusyIndicator();
+
+    #entries = new Map();
 
     constructor() {
         super();
@@ -31,69 +31,48 @@ export default class DataList extends ResizeObserverMixin(DataReceiverMixin(Cust
         this.#emptyContainerEl = this.shadowRoot.getElementById("empty-container");
         this.#elementManager.composer = (key, values) => {
             const el = this.createListEntry();
-            if (typeof el.setData !== "function") {
-                throw new Error("list elements must implement a setData function");
+            if (!(el instanceof DataListEntry)) {
+                throw new Error("list elements must extend DataListEntry");
             }
             el.key = key;
             el.setData(values);
+            this.#entries.set(key, el);
             return el;
         };
         this.#elementManager.mutator = (el, key, values) => {
             el.setData(values);
         };
+        this.#elementManager.cleanup = (el, key) => {
+            this.#entries.delete(key);
+            this.removeListEntry(el);
+        };
         this.registerTargetEventHandler(this.#elementManager, "afterrender", () => {
             this.#refreshEmptyStatus();
-            if (this.autoscroll) {
-                const scrollHeight = this.#scrollContainerEl.scrollHeight;
-                this.#scrollContainerEl.scroll({top: scrollHeight});
-            }
-        });
-        this.registerTargetEventHandler(this.#scrollContainerEl, "scrollend", () => {
-            const ev = new Event("scrollend", event);
-            this.dispatchEvent(ev);
+            const ev = new Event("afterrender", event);
+            this.#scrollContainerEl.dispatchEvent(ev);
         });
         /* --- */
         this.#refreshEmptyStatus();
     }
 
-    resizeCallback() {
-        if (this.autoscroll) {
-            const scrollHeight = this.#scrollContainerEl.scrollHeight;
-            this.#scrollContainerEl.scroll({top: scrollHeight});
-        }
+    createListEntry() {
+        return new DataListEntry();
     }
 
-    set autoscroll(val) {
-        this.setBooleanAttribute("autoscroll", val);
+    removeListEntry() {
+        // to override
     }
 
-    get autoscroll() {
-        return this.getBooleanAttribute("autoscroll");
+    getEntry(key) {
+        return this.#entries.get(key);
     }
 
-    static get observedAttributes() {
-        return ["autoscroll"];
-    }
-
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (oldValue != newValue) {
-            switch (name) {
-                case "autoscroll": {
-                    if (this.autoscroll) {
-                        const scrollHeight = this.#scrollContainerEl.scrollHeight;
-                        this.#scrollContainerEl.scroll({top: scrollHeight});
-                    }
-                } break;
-            }
-        }
+    getAllEntries() {
+        return [...this.#entries.values()];
     }
 
     setData(records) {
         this.#elementManager.manage(records);
-    }
-
-    createListEntry() {
-        return document.createElement("emc-datalist-entry");
     }
 
     busy() {
@@ -102,27 +81,6 @@ export default class DataList extends ResizeObserverMixin(DataReceiverMixin(Cust
 
     unbusy() {
         return this.#busyIndicator.unbusy();
-    }
-
-    reset() {
-        return this.#busyIndicator.reset();
-    }
-
-    getVerticalScrollFactor() {
-        const scrollHeight = this.#scrollContainerEl.scrollHeight;
-        const clientHeight = this.#scrollContainerEl.clientHeight;
-        const scrollTop = this.#scrollContainerEl.scrollTop;
-        const currentScrollPosition = clientHeight + scrollTop;
-
-        if (scrollHeight <= clientHeight) {
-            return 1;
-        }
-
-        if (scrollHeight <= 0) {
-            return 0;
-        }
-
-        return currentScrollPosition / scrollHeight;
     }
 
     #refreshEmptyStatus = debounce(() => {

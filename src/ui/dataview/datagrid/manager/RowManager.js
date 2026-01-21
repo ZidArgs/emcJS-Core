@@ -57,7 +57,7 @@ export default class RowManager extends EventTarget {
 
     setEventManagerActive(value) {
         this.#eventManager.active = value;
-        for (const cellManager of this.#cellManagers) {
+        for (const [, cellManager] of this.#cellManagers) {
             cellManager.setEventManagerActive(value);
         }
     }

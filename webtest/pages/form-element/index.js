@@ -6,6 +6,7 @@ import {debounce} from "/emcJS/util/Debouncer.js";
 import Modal from "/emcJS/ui/modal/Modal.js";
 import ModalDialog from "/emcJS/ui/modal/ModalDialog.js";
 import I18nOption from "/emcJS/ui/i18n/builtin/I18nOption.js";
+import Column from "/emcJS/ui/dataview/datagrid/Column.js";
 import "/emcJS/ui/Page.js";
 import "/emcJS/ui/container/CaptionPanel.js";
 // form
@@ -97,6 +98,34 @@ function buildPreview(config) {
                     {"type": "false"}
                 ]
             };
+        } break;
+        case "GridSelect": {
+            // TODO this should be done in some manager so it can be reused in form editors, etc.
+            const gridDataEl = formContext.findFieldsByName("options")[0];
+            gridDataEl.innerHTML = "";
+            for (const column of config.columns) {
+                const columnEl = new Column();
+                const {key = ""} = column;
+                columnEl.name = key;
+                if (key === "key") {
+                    const {
+                        caption = "", width = 0
+                    } = column;
+                    columnEl.type = "string";
+                    columnEl.caption = caption;
+                    columnEl.width = width;
+                    columnEl.editable = false;
+                } else {
+                    const {
+                        type = "string", caption = "", width = 0
+                    } = column;
+                    columnEl.type = type;
+                    columnEl.caption = caption;
+                    columnEl.width = width;
+                    columnEl.editable = true;
+                }
+                gridDataEl.append(columnEl);
+            }
         } break;
     }
 }

@@ -248,8 +248,8 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
                 } else if (this.allowDeselect) {
                     this.#selected.clear();
                 } else {
-                    const oldrowKey = [...this.#selected][0];
-                    this.#rowManager.setRowSelected(oldrowKey, true);
+                    const oldRowKey = [...this.#selected][0];
+                    this.#rowManager.setRowSelected(oldRowKey, true);
                 }
             } else if (value) {
                 this.#selected.add(rowKey);
@@ -456,8 +456,9 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
                     this.#rowManager.setRowSelected(entry, true);
                 }
             } else if (selected.length > 0) {
-                this.#selected.add(selected[0]);
-                this.#rowManager.setRowSelected(selected[0], true);
+                const entry = selected[0];
+                this.#selected.add(entry);
+                this.#rowManager.setRowSelected(entry, true);
             }
             this.#updateSelectHeader();
             const ev = new Event("selection");
@@ -476,6 +477,7 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
         }
         this.#selected.clear();
         if (this.selectable) {
+            this.#updateSelectHeader();
             const ev = new Event("selection");
             ev.data = [];
             this.dispatchEvent(ev);
@@ -664,10 +666,6 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
 
     unbusy() {
         return this.#busyIndicator.unbusy();
-    }
-
-    reset() {
-        return this.#busyIndicator.reset();
     }
 
     #setStreched(strechedName) {

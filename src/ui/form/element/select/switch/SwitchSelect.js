@@ -11,7 +11,9 @@ import {
 } from "../../../../../util/helper/ui/NodeListSort.js";
 import {debounce} from "../../../../../util/Debouncer.js";
 import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
-import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
+import {
+    safeSetAttribute, setAttributes
+} from "../../../../../util/helper/ui/NodeAttributes.js";
 import MutationObserverManager from "../../../../../util/observer/manager/MutationObserverManager.js";
 import I18nOption from "../../../../i18n/builtin/I18nOption.js";
 import SwitchButtonManager from "./manager/SwitchButtonManager.js";
@@ -224,6 +226,8 @@ export default class SwitchSelect extends AbstractFormElement {
             options = {}, ...params
         } = config;
 
+        setAttributes(selectEl, params);
+
         for (const value in options) {
             const optionEl = I18nOption.create();
             optionEl.value = value;
@@ -234,11 +238,6 @@ export default class SwitchSelect extends AbstractFormElement {
                 optionEl.i18nValue = value;
             }
             selectEl.append(optionEl);
-        }
-
-        for (const name in params) {
-            const value = params[name];
-            safeSetAttribute(selectEl, name, value);
         }
 
         return selectEl;

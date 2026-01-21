@@ -26,7 +26,7 @@ export default class DataListEntry extends CustomElement {
     }
 
     setData(data) {
-        this.#containerEl.innerText = `${this.key}\n${JSON.stringify(data)}`;
+        this.#containerEl.innerText = `${this.key}\n${JSON.stringify(data, null, 4)}`;
     }
 
     set key(value) {

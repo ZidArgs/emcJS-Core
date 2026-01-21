@@ -2,7 +2,7 @@ import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
 import {deepClone} from "../../../../../util/helper/DeepClone.js";
 import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
-import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
+import {setAttributes} from "../../../../../util/helper/ui/NodeAttributes.js";
 import {
     deleteAtIndexImmuted, sortDictListByArrayImmuted
 } from "../../../../../util/helper/collection/ArrayMutations.js";
@@ -245,6 +245,8 @@ export default class GridInput extends AbstractFormElement {
             columns = [], ...params
         } = config;
 
+        setAttributes(inputEl, params);
+
         for (const column of columns) {
             const columnEl = new Column();
             const {key = ""} = column;
@@ -267,11 +269,6 @@ export default class GridInput extends AbstractFormElement {
                 columnEl.editable = editable;
             }
             inputEl.append(columnEl);
-        }
-
-        for (const name in params) {
-            const value = params[name];
-            safeSetAttribute(inputEl, name, value);
         }
 
         return inputEl;

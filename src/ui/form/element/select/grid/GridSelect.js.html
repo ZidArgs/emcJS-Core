@@ -1,8 +1,8 @@
 <div id="header">
     <emc-input-search id="search" nohover></emc-input-search>
 </div>
-<emc-selectionlist id="list">
-</emc-selectionlist>
+<emc-datagrid id="grid" selectable>
+    <slot></slot>
+</emc-datagrid>
 <emc-form-row class="footer" align="end">
 </emc-form-row>
-<slot id="options-container"></slot>

@@ -60,7 +60,7 @@
     border-top-color: var(--input-disabled-border-color, #6a6a6a) !important;
 }
 
-#grid {
+#list {
     flex: 1;
     width: auto;
     margin: 0px;

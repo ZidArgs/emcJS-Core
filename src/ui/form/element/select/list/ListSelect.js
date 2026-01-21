@@ -4,17 +4,18 @@ import SimpleDataProvider from "../../../../../util/dataprovider/SimpleDataProvi
 import {deepClone} from "../../../../../util/helper/DeepClone.js";
 import {debounce} from "../../../../../util/Debouncer.js";
 import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
-import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
+import {setAttributes} from "../../../../../util/helper/ui/NodeAttributes.js";
 import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
 import MutationObserverManager from "../../../../../util/observer/manager/MutationObserverManager.js";
 import ElementListCache from "../../../../../util/html/ElementListCache.js";
 import BusyIndicatorManager from "../../../../../util/BusyIndicatorManager.js";
 import i18n from "../../../../../util/I18n.js";
+import jsonParse from "../../../../../patches/JSONParser.js";
 import I18nOption from "../../../../i18n/builtin/I18nOption.js";
+import "./components/SelectionList.js";
 import TPL from "./ListSelect.js.html" assert {type: "html"};
 import STYLE from "./ListSelect.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./ListSelect.js.json" assert {type: "json"};
-import jsonParse from "../../../../../patches/JSONParser.js";
 
 const MUTATION_CONFIG = {
     attributes: true,
@@ -38,7 +39,7 @@ export default class ListSelect extends AbstractFormElement {
 
     #searchEl;
 
-    #gridEl;
+    #listEl;
 
     #headerSelectEl;
 
@@ -65,8 +66,8 @@ export default class ListSelect extends AbstractFormElement {
         });
         this.#headerEl = this.shadowRoot.getElementById("header");
         /* --- */
-        this.#gridEl = this.shadowRoot.getElementById("grid");
-        this.registerTargetEventHandler(this.#gridEl, "selection", (event) => {
+        this.#listEl = this.shadowRoot.getElementById("list");
+        this.registerTargetEventHandler(this.#listEl, "selection", (event) => {
             event.stopPropagation();
             event.preventDefault();
             this.value = event.data;
@@ -80,19 +81,19 @@ export default class ListSelect extends AbstractFormElement {
         this.registerTargetEventHandler(this.#headerSelectEl, "change", () => {
             const value = this.#headerSelectEl.checked;
             if (value) {
-                this.#gridEl.selectAll();
+                this.#listEl.selectAll();
             } else {
-                this.#gridEl.clearSelected();
+                this.#listEl.clearSelected();
             }
         });
-        this.registerTargetEventHandler(this.#gridEl, "selection-header", (event) => {
+        this.registerTargetEventHandler(this.#listEl, "selection-header", (event) => {
             event.stopPropagation();
             event.preventDefault();
             this.#headerSelectEl.checked = event.checked;
             this.#headerSelectEl.indeterminate = event.indeterminate;
         });
         /* --- */
-        this.#dataManager = new SimpleDataProvider(this.#gridEl);
+        this.#dataManager = new SimpleDataProvider(this.#listEl);
         /* --- */
         this.#searchEl = this.shadowRoot.getElementById("search");
         this.registerTargetEventHandler(this.#searchEl, "change", () => {
@@ -119,7 +120,7 @@ export default class ListSelect extends AbstractFormElement {
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
         this.#searchEl.disabled = disabled;
-        this.#gridEl.disabled = disabled;
+        this.#listEl.disabled = disabled;
         this.#headerSelectEl.disabled = disabled;
     }
 
@@ -182,7 +183,7 @@ export default class ListSelect extends AbstractFormElement {
             case "readonly": {
                 if (oldValue != newValue) {
                     const value = newValue != null && newValue != "false";
-                    this.#gridEl.readonly = value;
+                    this.#listEl.readonly = value;
                     this.#headerSelectEl.readonly = value;
                 }
             } break;
@@ -193,12 +194,12 @@ export default class ListSelect extends AbstractFormElement {
             } break;
             case "multiple": {
                 if (oldValue != newValue) {
-                    this.#gridEl.multiple = this.multiple;
+                    this.#listEl.multiple = this.multiple;
                 }
             } break;
             case "selectend": {
                 if (oldValue != newValue) {
-                    this.#gridEl.selectEnd = this.selectEnd;
+                    this.#listEl.selectEnd = this.selectEnd;
                     if (this.selectEnd) {
                         this.#headerEl.append(this.#headerSelectEl);
                     } else {
@@ -210,7 +211,7 @@ export default class ListSelect extends AbstractFormElement {
     }
 
     renderValue(value) {
-        this.#gridEl.setSelected(value);
+        this.#listEl.setSelected(value);
     }
 
     #updateSort(value) {
@@ -259,17 +260,14 @@ export default class ListSelect extends AbstractFormElement {
             options = {}, ...params
         } = config;
 
+        setAttributes(selectEl, params);
+
         for (const key in options) {
             const value = options[key];
             const optionEl = I18nOption.create();
             optionEl.value = key;
             optionEl.i18nValue = value;
             selectEl.append(optionEl);
-        }
-
-        for (const name in params) {
-            const value = params[name];
-            safeSetAttribute(selectEl, name, value);
         }
 
         return selectEl;

@@ -6,7 +6,9 @@ import {deepClone} from "../../../../../util/helper/DeepClone.js";
 import {debounce} from "../../../../../util/Debouncer.js";
 import {nodeTextComparator} from "../../../../../util/helper/ui/NodeListSort.js";
 import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
-import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
+import {
+    safeSetAttribute, setAttributes
+} from "../../../../../util/helper/ui/NodeAttributes.js";
 import MutationObserverManager from "../../../../../util/observer/manager/MutationObserverManager.js";
 import ImageSelectModal from "./components/ImageSelectModal.js";
 import I18nOption from "../../../../i18n/builtin/I18nOption.js";
@@ -216,17 +218,14 @@ export default class ImageSelect extends AbstractFormElement {
             options = {}, ...params
         } = config;
 
+        setAttributes(selectEl, params);
+
         for (const key in options) {
             const value = options[key];
             const optionEl = I18nOption.create();
             optionEl.value = key;
             optionEl.i18nValue = value;
             selectEl.append(optionEl);
-        }
-
-        for (const name in params) {
-            const value = params[name];
-            safeSetAttribute(selectEl, name, value);
         }
 
         return selectEl;

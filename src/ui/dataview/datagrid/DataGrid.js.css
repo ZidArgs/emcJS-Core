@@ -80,9 +80,9 @@
     }
 
     #body .cell {
-        color: var(--button-disabled-text-color, #757575) !important;
-        background-color: var(--button-disabled-back-color, #999999) !important;
-        background-image: var(--button-disabled-back-image, none) !important;
+        color: var(--datagrid-disabled-text-color, #757575) !important;
+        background-color: var(--datagrid-disabled-back-color, #999999) !important;
+        background-image: var(--datagrid-disabled-back-image, none) !important;
         border-left-color: var(--datagrid-disabled-column-seperator-color, #696969) !important;
         border-right-color: var(--datagrid-disabled-column-seperator-color, #696969) !important;
         border-bottom-color: var(--datagrid-disabled-row-seperator-color, #757575) !important;

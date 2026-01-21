@@ -1,5 +1,4 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
-import EventManager from "../../../../../util/event/EventManager.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
 import BusyIndicatorManager from "../../../../../util/BusyIndicatorManager.js";
 import TypeStorage from "../../../../../data/type/TypeStorage.js";
