@@ -1,18 +1,6 @@
-#button #link-icon {
+#link-icon {
     position: relative;
     height: 1em;
     width: 1em;
-    margin-left: 5px;
-}
-
-#button #link-icon path {
-    fill: var(--button-text-color, #000000);
-}
-
-#button:hover #link-icon path {
-    fill: var(--button-hover-text-color, #ffffff);
-}
-
-#button[disabled]:not([disabled="false"]) #link-icon path {
-    fill: var(--button-disabled-text-color, #757575);
+    margin-left: 0.3em;
 }

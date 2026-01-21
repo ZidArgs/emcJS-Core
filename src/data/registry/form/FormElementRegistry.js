@@ -1,7 +1,10 @@
-import CustomFormElement from "../../../ui/element/CustomFormElement.js";
-import CustomFormElementDelegating from "../../../ui/element/CustomFormElementDelegating.js";
+import {
+    isArrayOf, isStringNotEmpty
+} from "../../../util/helper/CheckType.js";
 import {instanceOfOne} from "../../../util/helper/Class.js";
 import {safeSetAttribute} from "../../../util/helper/ui/NodeAttributes.js";
+import CustomFormElement from "../../../ui/element/CustomFormElement.js";
+import CustomFormElementDelegating from "../../../ui/element/CustomFormElementDelegating.js";
 
 const EXPECTED_CLASSES = [
     HTMLInputElement,
@@ -21,9 +24,20 @@ class FormElementRegistry {
                 return Clazz.fromConfig(params);
             }
             const el = new Clazz();
+
+            const attributes = Clazz.attributes ?? [];
+
+            if (!isArrayOf(attributes, isStringNotEmpty)) {
+                throw new Error("can not create form element, attributes can only be null or an array of strings");
+            }
+
             for (const name in params) {
                 const value = params[name];
-                safeSetAttribute(el, name, value);
+                if (attributes.includes(name)) {
+                    el[name] = value;
+                } else {
+                    safeSetAttribute(el, name, value);
+                }
             }
             return el;
         }

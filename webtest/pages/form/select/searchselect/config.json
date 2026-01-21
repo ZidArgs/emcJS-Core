@@ -37,7 +37,9 @@
                 "nana": "Nana"
             },
             "sorted": true,
-            "resettable": true
+            "controlButtons": [
+                "reset"
+            ]
         },
         {
             "type": "SearchSelect",

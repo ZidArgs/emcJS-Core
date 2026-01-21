@@ -63,5 +63,35 @@
         "name": "visible",
         "label": "Visible",
         "value": true
+    },
+    {
+        "type": "ListSelect",
+        "name": "borderFlat",
+        "label": "Flat Border",
+        "multiple": true,
+        "sorted": true,
+        "options": {
+            "all": "All",
+            "left": "Left",
+            "right": "Right",
+            "top": "Top",
+            "bottom": "Bottom"
+        },
+        "value": []
+    },
+    {
+        "type": "ListSelect",
+        "name": "borderOpen",
+        "label": "Open Border",
+        "multiple": true,
+        "sorted": true,
+        "options": {
+            "all": "All",
+            "left": "Left",
+            "right": "Right",
+            "top": "Top",
+            "bottom": "Bottom"
+        },
+        "value": []
     }
 ]

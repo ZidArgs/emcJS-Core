@@ -17,7 +17,9 @@
             "label": "list resettable",
             "name": "keyvaluelist.resettable",
             "sorted": true,
-            "resettable": true,
+            "controlButtons": [
+                "reset"
+            ],
             "value": {
                 "nana": "Nana",
                 "foobar": "Foobar"

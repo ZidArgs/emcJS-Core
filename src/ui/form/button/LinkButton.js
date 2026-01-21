@@ -1,11 +1,12 @@
 import {deepClone} from "../../../util/helper/DeepClone.js";
 import {registerFocusable} from "../../../util/helper/html/ElementFocusHelper.js";
+import Button from "./Button.js";
 import "../../i18n/I18nTooltip.js";
 import "../../i18n/I18nLabel.js";
+import "../../icon/FontIcon.js";
 import TPL from "./LinkButton.js.html" assert {type: "html"};
 import STYLE from "./LinkButton.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./LinkButton.js.json" assert {type: "json"};
-import Button from "./Button.js";
 
 export default class LinkButton extends Button {
 

@@ -30,16 +30,16 @@
         "value": false
     },
     {
-        "type": "SwitchInput",
-        "name": "showcopy",
-        "label": "Show copy button",
-        "value": false
-    },
-    {
-        "type": "SwitchInput",
-        "name": "resettable",
-        "label": "Resettable",
-        "value": false
+        "type": "ListSelect",
+        "name": "controlButtons",
+        "label": "Activate Control Buttons",
+        "multiple": true,
+        "sorted": true,
+        "options": {
+            "copy": "Copy",
+            "reset": "Reset"
+        },
+        "value": []
     },
     {
         "type": "BoolOrLogicInput",

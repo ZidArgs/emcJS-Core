@@ -12,7 +12,9 @@
             "type": "LogicInput",
             "label": "logic resettable",
             "name": "logic.resettable",
-            "resettable": true
+            "controlButtons": [
+                "reset"
+            ]
         },
         {
             "type": "LogicInput",

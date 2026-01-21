@@ -43,20 +43,40 @@
     width: 0px;
 }
 
-#copy,
-#reset {
+#control-container {
+    display: none;
+    margin: 0px 0px 0px 5px;
+    --control-button-border-radius: var(--button-border-radius, 6px);
+}
+
+#control-container.visible {
+    display: flex;
+}
+
+#control-container > * {
     display: none;
     width: 2em;
     height: 2em;
-    margin: 0px 0px 0px 5px;
+    margin: 0px;
+    --button-border-radius: 0px;
 }
 
-:host([showcopy]:not([showcopy="false"])) #copy {
+#control-container > .visible {
     display: block;
 }
 
-:host([resettable]:not([resettable="false"])) #reset {
-    display: block;
+#control-container > :nth-child(1 of .visible) {
+    --button-border-radius: var(--control-button-border-radius) 0px 0px var(--control-button-border-radius);
+}
+
+#control-container > :nth-last-child(1 of .visible) {
+    margin-left: calc(-1 * var(--button-border-width, 2px));
+    --button-border-radius: 0px var(--control-button-border-radius) var(--control-button-border-radius) 0px;
+}
+
+#control-container > :nth-child(1 of .visible):nth-last-child(1 of .visible) {
+    margin-left: 0px;
+    --button-border-radius: var(--control-button-border-radius) var(--control-button-border-radius);
 }
 
 #reset.inactive {

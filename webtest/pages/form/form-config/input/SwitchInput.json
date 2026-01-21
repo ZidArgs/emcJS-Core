@@ -11,7 +11,9 @@
             "type": "SwitchInput",
             "label": "switch resettable",
             "name": "switch.resettable",
-            "resettable": true
+            "controlButtons": [
+                "reset"
+            ]
         },
         {
             "type": "SwitchInput",

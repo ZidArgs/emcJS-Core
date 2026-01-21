@@ -1,8 +1,8 @@
 :host {
     display: flex;
     width: min-content;
-    min-width: 2em;
-    height: 2em;
+    min-width: 2rem;
+    min-height: 2rem;
     margin: 6px;
     user-select: none;
     font-size: 1rem;
@@ -20,7 +20,7 @@
 }
 
 #slot {
-    display: inline;
+    display: inline-flex;
 }
 
 #button {
@@ -28,7 +28,9 @@
     align-items: center;
     justify-content: center;
     height: 100%;
+    min-height: 2rem;
     width: 100%;
+    min-width: 2rem;
     margin: 0px;
     padding: 0px;
     color: var(--button-text-color, #000000);
@@ -48,8 +50,6 @@
     cursor: inherit;
     --icon-image: unset;
 }
-
-
 
 :host([text]:not([text=""])) #button,
 :host(:not(:empty)) #button {
@@ -117,17 +117,15 @@
     font-family: "monospace", monospace;
     font-weight: bold;
     transform-origin: center;
-    font-variant-emoji: text;
     content: attr(icon);
 }
-
 
 #button[icon-type="image"]::before {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 1.3em;
-    height: 1.3em;
+    width: 1em;
+    height: 1em;
     background-image: var(--icon-image);
     background-repeat: no-repeat;
     background-size: contain;
@@ -137,28 +135,31 @@
     content: "";
 }
 
-#font-icon,
-#fa-icon {
+#font-icon {
     display: none;
     position: relative;
     height: 1.3em;
     width: 1.3em;
 }
 
-#button[icon-type="font"] #font-icon,
-#button[icon-type="fa"] #fa-icon {
+#button[icon-type="font"] #font-icon {
     display: inline-flex;
+}
+
+::slotted(.icon) {
+    display: inline-flex;
+    position: relative;
+    height: 1em;
+    width: 1em;
 }
 
 :host([text]:not([text=""])) #button::before,
 :host([text]:not([text=""])) #icon,
 :host([text]:not([text=""])) #font-icon,
-:host([text]:not([text=""])) #fa-icon,
 :host(:not(:empty)) #button::before,
 :host(:not(:empty)) #icon,
-:host(:not(:empty)) #font-icon,
-:host(:not(:empty)) #fa-icon {
-    margin-right: 5px;
+:host([text]:not([text=""])) ::slotted(:last-child) {
+    margin-right: 0.3em;
 }
 
 :host(.rotate-icon-0) #button::before {

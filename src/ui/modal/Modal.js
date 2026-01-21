@@ -45,8 +45,6 @@ export default class Modal extends CustomElement {
 
     #titleIconEl;
 
-    #titleFaIconEl;
-
     #titleFontIconEl;
 
     #titleTextEl;
@@ -67,7 +65,6 @@ export default class Modal extends CustomElement {
         this.#modalEl = this.shadowRoot.getElementById("modal");
         this.#titleIconContainerEl = this.shadowRoot.getElementById("title-icon-container");
         this.#titleIconEl = this.shadowRoot.getElementById("title-icon");
-        this.#titleFaIconEl = this.shadowRoot.getElementById("title-fa-icon");
         this.#titleFontIconEl = this.shadowRoot.getElementById("title-font-icon");
         this.#titleTextEl = this.shadowRoot.getElementById("title-text");
         this.#closeEl = this.shadowRoot.getElementById("close");
@@ -186,15 +183,6 @@ export default class Modal extends CustomElement {
                     return true;
                 }
             } break;
-            case "fa": {
-                if (typeof content === "string" && content !== "") {
-                    const [name, type = "classic"] = content.split("/");
-                    this.#titleIconContainerEl.setAttribute("icon-type", "fa");
-                    this.#titleFaIconEl.icon = name;
-                    this.#titleFaIconEl.type = type;
-                    return true;
-                }
-            } break;
             case "image": {
                 if (typeof content === "string" && content !== "") {
                     this.#titleIconContainerEl.setAttribute("icon-type", "image");
@@ -248,8 +236,6 @@ export default class Modal extends CustomElement {
         this.#titleIconEl.style.backgroundImage = "";
         this.#titleIconEl.style.backgroundSize = "";
         this.#titleFontIconEl.icon = "";
-        this.#titleFaIconEl.icon = "";
-        this.#titleFaIconEl.type = "";
 
         this.#titleIconContainerEl.style.fontSize = "";
         this.#titleIconContainerEl.style.color = "";

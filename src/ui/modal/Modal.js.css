@@ -173,9 +173,7 @@
     font-family: "monospace", monospace;
     font-weight: bold;
     transform-origin: center;
-    font-variant-emoji: text;
 }
-
 
 #title-icon-container[icon-type="image"] #title-icon {
     display: inline-flex;

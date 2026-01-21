@@ -13,7 +13,9 @@
             "label": "list resettable",
             "name": "keylist.resettable",
             "sorted": true,
-            "resettable": true
+            "controlButtons": [
+                "reset"
+            ]
         },
         {
             "type": "ListInput",

@@ -22,7 +22,9 @@
             "name": "simple-select.resettable",
             "optiongroup": "SimpleSelect",
             "sorted": true,
-            "resettable": true
+            "controlButtons": [
+                "reset"
+            ]
         },
         {
             "type": "SimpleSelect",

@@ -29,7 +29,9 @@
             "optiongroup": "SearchSelect",
             "placeholder": "Select entry...",
             "sorted": true,
-            "resettable": true
+            "controlButtons": [
+                "reset"
+            ]
         },
         {
             "type": "SearchSelect",

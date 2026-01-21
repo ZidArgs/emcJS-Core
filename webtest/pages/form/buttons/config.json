@@ -1,6 +1,37 @@
 [
     {
         "type": "Fieldset",
+        "label": "action button",
+        "children": [
+            {
+                "type": "ActionButton",
+                "name": "button.action_noicon",
+                "text": "no icon"
+            },
+            {
+                "type": "ActionButton",
+                "name": "button.action_disabled",
+                "text": "soup",
+                "icon": "🍲",
+                "disabled": true
+            },
+            {
+                "type": "ActionButton",
+                "name": "button.action",
+                "text": "cheese",
+                "icon": "🧀"
+            },
+            {
+                "type": "LinkButton",
+                "name": "button.link_noicon",
+                "text": "custom icon",
+                "href": "/#page=Form",
+                "id": "custom-icon"
+            }
+        ]
+    },
+    {
+        "type": "Fieldset",
         "label": "link button",
         "children": [
             {
@@ -23,30 +54,13 @@
                 "text": "hotdog",
                 "icon": "🌭",
                 "href": "/#page=Form"
-            }
-        ]
-    },
-    {
-        "type": "Fieldset",
-        "label": "action button",
-        "children": [
-            {
-                "type": "ActionButton",
-                "name": "button.action_noicon",
-                "text": "no icon"
             },
             {
-                "type": "ActionButton",
-                "name": "button.action_disabled",
-                "text": "soup",
-                "icon": "🍲",
-                "disabled": true
-            },
-            {
-                "type": "ActionButton",
-                "name": "button.action",
-                "text": "cheese",
-                "icon": "🧀"
+                "type": "LinkButton",
+                "name": "button.link_noicon",
+                "text": "custom icon",
+                "href": "/#page=Form",
+                "id": "link-custom-icon"
             }
         ]
     },

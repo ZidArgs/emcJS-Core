@@ -13,7 +13,9 @@
             "label": "color resettable",
             "name": "color.resettable",
             "placeholder": "Choose color...",
-            "resettable": true
+            "controlButtons": [
+                "reset"
+            ]
         },
         {
             "type": "ColorInput",

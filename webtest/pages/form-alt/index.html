@@ -56,19 +56,19 @@
                 <form slot="header"></form>
                 <form>
                     <emc-form-section label="Test 1">
-                        <emc-input-action id="action" name="action" label="action" placeholder="A whole lot of nothing" description="Test description" resettable required></emc-input-action>
-                        <emc-input-boolorlogic name="boolorlogic" label="boolorlogic" resettable required></emc-input-boolorlogic>
-                        <emc-input-color name="color" label="color" placeholder="Enter color..." resettable required></emc-input-color>
-                        <emc-input-keybind name="keybind" label="keybind" placeholder="Enter key binding..." resettable required></emc-input-keybind>
+                        <emc-input-action id="action" name="action" label="action" placeholder="A whole lot of nothing" description="Test description" control-buttons="copy reset" required></emc-input-action>
+                        <emc-input-boolorlogic name="boolorlogic" label="boolorlogic" control-buttons="reset" required></emc-input-boolorlogic>
+                        <emc-input-color name="color" label="color" placeholder="Enter color..." control-buttons="reset" required></emc-input-color>
+                        <emc-input-keybind name="keybind" label="keybind" placeholder="Enter key binding..." control-buttons="reset" required></emc-input-keybind>
                         <emc-form-section label="Test 1.1">
-                            <emc-input-list name="list" label="list" resettable required></emc-input-list>
-                            <emc-input-logic name="logic" label="logic" resettable required></emc-input-logic>
+                            <emc-input-list name="list" label="list" control-buttons="reset" required></emc-input-list>
+                            <emc-input-logic name="logic" label="logic" control-buttons="reset" required></emc-input-logic>
                             <emc-form-section label="Test 1.1.1">
                                 <emc-form-section label="Test 1.1.1.1">
                                     <emc-form-section label="Test 1.1.1.1.1">
                                         <emc-form-section label="Test 1.1.1.1.1.1">
-                                            <emc-input-number name="number" label="number" placeholder="Enter number..." resettable required spinner></emc-input-number>
-                                            <emc-input-password name="password" label="password" placeholder="Enter password..." resettable required></emc-input-password>
+                                            <emc-input-number name="number" label="number" placeholder="Enter number..." control-buttons="reset" required spinner></emc-input-number>
+                                            <emc-input-password name="password" label="password" placeholder="Enter password..." control-buttons="reset" required></emc-input-password>
                                         </emc-form-section>
                                     </emc-form-section>
                                 </emc-form-section>
@@ -78,16 +78,16 @@
                 </form>
                 <form>
                     <emc-form-section label="Test 2">
-                        <emc-input-range name="range" label="range" resettable required></emc-input-range>
-                        <emc-input-search name="search" label="search" placeholder="Enter search..." resettable required></emc-input-search>
-                        <emc-input-string name="string-min" label="string min" placeholder="Enter text..." resettable required minlength="10" showtextlength></emc-input-string>
-                        <emc-input-string name="string" label="string" placeholder="Enter text..." resettable required minlength="10" maxlength="20" showtextlength></emc-input-string>
-                        <emc-input-switch name="switch" label="switch" resettable required></emc-input-switch>
-                        <emc-input-text name="text" label="text" placeholder="Enter text..." resettable required maxlength="100" showtextlength></emc-input-text>
+                        <emc-input-range name="range" label="range" control-buttons="reset" required></emc-input-range>
+                        <emc-input-search name="search" label="search" placeholder="Enter search..." control-buttons="reset" required></emc-input-search>
+                        <emc-input-string name="string-min" label="string min" placeholder="Enter text..." control-buttons="reset" required minlength="10" showtextlength></emc-input-string>
+                        <emc-input-string name="string" label="string" placeholder="Enter text..." control-buttons="reset" required minlength="10" maxlength="20" showtextlength></emc-input-string>
+                        <emc-input-switch name="switch" label="switch" control-buttons="reset" required></emc-input-switch>
+                        <emc-input-text name="text" label="text" placeholder="Enter text..." control-buttons="reset" required maxlength="100" showtextlength></emc-input-text>
                     </emc-form-section>
                 </form>
                 <form>
-                    <emc-select-image name="image-select" label="image-select" placeholder="Select image..." resettable required></emc-select-image>
+                    <emc-select-image name="image-select" label="image-select" placeholder="Select image..." control-buttons="reset" required></emc-select-image>
                 </form>
                 <form slot="footer">
                     <input type="hidden" name="test" value="foobar">

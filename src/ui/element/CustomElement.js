@@ -1,5 +1,6 @@
 import EventManagerMixin from "../mixin/EventManagerMixin.js";
 import jsonParse from "../../patches/JSONParser.js";
+import {isStringNotEmpty} from "../../util/helper/CheckType.js";
 import {getInnerText} from "../../util/helper/ui/ExtractText.js";
 import {
     scrollIntoView, scrollIntoViewIfNeeded
@@ -186,7 +187,7 @@ export default class CustomElement extends EventManagerMixin(HTMLElement) {
     }
 
     getListAttribute(name) {
-        return this.getAttribute(name).split(" ");
+        return (this.getAttribute(name) ?? "").split(" ").filter((e) => isStringNotEmpty(e));
     }
 
     scrollIntoViewIfNeeded(options) {

@@ -13,7 +13,9 @@
             "label": "number resettable",
             "name": "number.resettable",
             "placeholder": "Enter number...",
-            "resettable": true
+            "controlButtons": [
+                "reset"
+            ]
         },
         {
             "type": "NumberInput",

@@ -21,7 +21,9 @@
             "name": "slider.resettable",
             "min": "-20",
             "max": "20",
-            "resettable": true
+            "controlButtons": [
+                "reset"
+            ]
         },
         {
             "type": "SliderInput",

@@ -17,7 +17,9 @@
             "label": "text resettable",
             "name": "text.resettable",
             "placeholder": "Enter text...",
-            "resettable": true
+            "controlButtons": [
+                "reset"
+            ]
         },
         {
             "type": "TextInput",
@@ -45,7 +47,9 @@
             "label": "text resettable disabled",
             "name": "text.resettable_disabled",
             "placeholder": "Enter text...",
-            "resettable": true,
+            "controlButtons": [
+                "reset"
+            ],
             "disabled": true
         }
     ]

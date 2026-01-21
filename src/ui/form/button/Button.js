@@ -27,8 +27,6 @@ export default class Button extends CustomFormElementDelegating {
 
     #buttonEl;
 
-    #faIconEl;
-
     #fontIconEl;
 
     #textEl;
@@ -43,7 +41,6 @@ export default class Button extends CustomFormElementDelegating {
         /* --- */
         this.#tooltipEl = this.shadowRoot.getElementById("tooltip");
         this.#buttonEl = this.shadowRoot.getElementById("button");
-        this.#faIconEl = this.shadowRoot.getElementById("fa-icon");
         this.#fontIconEl = this.shadowRoot.getElementById("font-icon");
         this.#textEl = this.shadowRoot.getElementById("text");
         this.#buttonEventHandler.switchTarget(this.#buttonEl);
@@ -202,8 +199,6 @@ export default class Button extends CustomFormElementDelegating {
 
     #applyIcon(type, value) {
         this.#fontIconEl.removeAttribute("icon");
-        this.#faIconEl.removeAttribute("icon");
-        this.#faIconEl.removeAttribute("type");
         this.#buttonEl.removeAttribute("icon");
         this.#buttonEl.style.removeProperty("--icon-image");
 
@@ -211,12 +206,6 @@ export default class Button extends CustomFormElementDelegating {
             case "font": {
                 this.#buttonEl.setAttribute("icon-type", "font");
                 this.#fontIconEl.setAttribute("icon", value);
-            } break;
-            case "fa": {
-                const [name, type = "classic"] = value.split("/");
-                this.#buttonEl.setAttribute("icon-type", "fa");
-                this.#faIconEl.setAttribute("icon", name);
-                this.#faIconEl.setAttribute("type", type);
             } break;
             case "image": {
                 this.#buttonEl.setAttribute("icon-type", "image");

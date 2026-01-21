@@ -25,7 +25,9 @@
             ],
             "placeholder": "Select entry...",
             "sorted": true,
-            "resettable": true
+            "controlButtons": [
+                "reset"
+            ]
         },
         {
             "type": "RelationSelect",

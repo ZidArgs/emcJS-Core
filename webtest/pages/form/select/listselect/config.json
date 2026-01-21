@@ -41,7 +41,9 @@
             },
             "multiple": true,
             "sorted": true,
-            "resettable": true
+            "controlButtons": [
+                "reset"
+            ]
         },
         {
             "type": "ListSelect",

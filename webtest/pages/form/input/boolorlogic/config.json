@@ -12,7 +12,9 @@
             "type": "BoolOrLogicInput",
             "label": "bool or logic resettable",
             "name": "boolorlogic.resettable",
-            "resettable": true
+            "controlButtons": [
+                "reset"
+            ]
         },
         {
             "type": "BoolOrLogicInput",

@@ -13,7 +13,9 @@
             "label": "keybind resettable",
             "name": "keybind.resettable",
             "placeholder": "Enter key binding...",
-            "resettable": true
+            "controlButtons": [
+                "reset"
+            ]
         },
         {
             "type": "KeyBindInput",

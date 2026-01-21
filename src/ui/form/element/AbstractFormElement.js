@@ -9,6 +9,8 @@ import TPL from "./AbstractFormElement.js.html" assert {type: "html"};
 import STYLE from "./AbstractFormElement.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./AbstractFormElement.js.json" assert {type: "json"};
 
+const CONTROL_BUTTONS = ["copy", "reset"];
+
 // https://web.dev/more-capable-form-controls/#form-associated-custom-elements
 
 function isValueSet(value) {
@@ -38,6 +40,14 @@ export default class AbstractFormElement extends CustomFormElement {
         return deepClone(CONFIG_FIELDS);
     }
 
+    static get attributes() {
+        const attributes = new Set();
+        for (const {name} of this.formConfigurationFields) {
+            attributes.add(name);
+        }
+        return [...attributes];
+    }
+
     static get changeDebounceTime() {
         return this.#changeDebounceTime;
     }
@@ -53,6 +63,8 @@ export default class AbstractFormElement extends CustomFormElement {
     #labelEl;
 
     #labelTextEl;
+
+    #controlContainerEl;
 
     #copyEl;
 
@@ -79,6 +91,7 @@ export default class AbstractFormElement extends CustomFormElement {
         this.#tooltipEl = this.shadowRoot.getElementById("tooltip");
         this.#labelEl = this.shadowRoot.getElementById("label");
         this.#labelTextEl = this.shadowRoot.getElementById("label-text");
+        this.#controlContainerEl = this.shadowRoot.getElementById("control-container");
         this.#copyEl = this.shadowRoot.getElementById("copy");
         this.#resetEl = this.shadowRoot.getElementById("reset");
         this.#descriptionEl = this.shadowRoot.getElementById("description");
@@ -87,7 +100,7 @@ export default class AbstractFormElement extends CustomFormElement {
             event.stopPropagation();
             event.preventDefault();
             try {
-                navigator.clipboard.writeText(this.value);
+                navigator.clipboard.writeText(this.value ?? "");
                 Toast.success("copied to clipboard");
             } catch {
                 Toast.error("could not write to clipboard");
@@ -253,20 +266,12 @@ export default class AbstractFormElement extends CustomFormElement {
         return this.getBooleanAttribute("required");
     }
 
-    set showCopy(value) {
-        this.setBooleanAttribute("showcopy", value);
+    set controlButtons(value) {
+        this.setListAttribute("control-buttons", value, CONTROL_BUTTONS);
     }
 
-    get showCopy() {
-        return this.getBooleanAttribute("showcopy");
-    }
-
-    set resettable(value) {
-        this.setBooleanAttribute("resettable", value);
-    }
-
-    get resettable() {
-        return this.getBooleanAttribute("resettable");
+    get controlButtons() {
+        return this.getListAttribute("control-buttons");
     }
 
     set readonly(value) {
@@ -327,7 +332,7 @@ export default class AbstractFormElement extends CustomFormElement {
 
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "value", "required", "label", "tooltip", "description", "showcopy", "novalidate"];
+        return [...superObserved, "value", "required", "label", "tooltip", "description", "control-buttons", "novalidate"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -367,9 +372,9 @@ export default class AbstractFormElement extends CustomFormElement {
                     this.#descriptionEl.i18nContent = newValue;
                 }
             } break;
-            case "showcopy": {
+            case "control-buttons": {
                 if (oldValue != newValue) {
-                    this.#setCopyActive(this.showCopy);
+                    this.#applyActiveControlButtons();
                 }
             } break;
             case "novalidate": {
@@ -490,14 +495,6 @@ export default class AbstractFormElement extends CustomFormElement {
         }
     }
 
-    static scalarToValue(value) {
-        value.toString();
-    }
-
-    static valueToScalar(value) {
-        return value.toString();
-    }
-
     formContextAssociatedCallback(/* formContext */) {
         // ignore
     }
@@ -514,17 +511,6 @@ export default class AbstractFormElement extends CustomFormElement {
 
     onDisplayValueChange(/* value */) {
         // ignore
-    }
-
-    #setCopyActive(value) {
-        if (!value) {
-            this.#copyEl.classList.add("inactive");
-            this.#copyEl.setAttribute("tabindex", "-1");
-            this.#copyEl.blur();
-        } else {
-            this.#copyEl.classList.remove("inactive");
-            this.#copyEl.removeAttribute("tabindex");
-        }
     }
 
     #setResetActive(value) {
@@ -544,6 +530,25 @@ export default class AbstractFormElement extends CustomFormElement {
             block: "center",
             inline: "center"
         });
+    }
+
+    #applyActiveControlButtons() {
+        const active = this.controlButtons;
+        if (active.length > 0) {
+            this.#controlContainerEl.classList.add("visible");
+            for (const el of this.#controlContainerEl.children) {
+                if (active.includes(el.id)) {
+                    el.classList.add("visible");
+                } else {
+                    el.classList.remove("visible");
+                    if (document.activeElement === el) {
+                        el.blur();
+                    }
+                }
+            }
+        } else {
+            this.#controlContainerEl.classList.remove("visible");
+        }
     }
 
 }

@@ -24,6 +24,21 @@
             height: 100%;
             color: white;
         }
+
+        .test {
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            ;
+        }
+
+        .test:nth-child(1 of .active) {
+            background-color: green;
+        }
+
+        .test:nth-last-child(1 of .active) {
+            background-color: blue;
+        }
     </style>
 </head>
 
@@ -31,6 +46,13 @@
     Home
     <div id="icon-container">
         <emc-font-icon id="icon" icon="add"></emc-font-icon>
+    </div>
+    <div>
+        <div class="test"></div>
+        <div class="test active"></div>
+        <div class="test active"></div>
+        <div class="test active"></div>
+        <div class="test"></div>
     </div>
 </body>
 
