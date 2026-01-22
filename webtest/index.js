@@ -3,14 +3,12 @@ import FileLoader from "/emcJS/util/file/FileLoader.js";
 const config = await FileLoader.json("./index.json");
 
 const listEl = document.getElementById("list");
-const viewEl = document.getElementById("view");
+const viewContainerEl = document.getElementById("view-container");
 
 const SRC_PREFIX = "/pages/";
 const SRC_SUFFIX = "/index.html";
 const NAME_PREFIX = "page=";
 const VIEW_MAP = new Map();
-
-let targetLinkEl = null;
 
 listEl.style.width = innerWidth * 0.2;
 
@@ -28,43 +26,12 @@ document.getElementById("back").addEventListener("click", () => {
     document.body.classList.add("view");
 });
 
-viewEl.addEventListener("load", () => {
-    // load default theme
-    const defaultThemeLink = document.createElement("link");
-    defaultThemeLink.href = "/emcJS/_style/index.css";
-    defaultThemeLink.rel = "stylesheet";
-    defaultThemeLink.type = "text/css";
-    viewEl.contentDocument.head.appendChild(defaultThemeLink);
-    // load override theme
-    const overrideThemeLink = document.createElement("link");
-    overrideThemeLink.href = "/theme.css";
-    overrideThemeLink.rel = "stylesheet";
-    overrideThemeLink.type = "text/css";
-    viewEl.contentDocument.head.appendChild(overrideThemeLink);
-});
-
 window.addEventListener("hashchange", (event) => {
     document.body.classList.remove("menu");
     document.body.classList.add("view");
     const url = new URL(event.newURL);
     const hash = url.hash.slice(1);
-    if (hash.startsWith(NAME_PREFIX)) {
-        viewEl.contentWindow.location.replace(VIEW_MAP.get(hash));
-        const entryEl = document.getElementById(hash);
-        scrollIntoViewIfNeeded(entryEl);
-    } else {
-        viewEl.contentWindow.location.replace("/home/index.html");
-        const entryEl = document.getElementById("home");
-        scrollIntoViewIfNeeded(entryEl);
-    }
-    // ---
-    if (targetLinkEl != null) {
-        targetLinkEl.classList.remove("target");
-    }
-    targetLinkEl = document.getElementById(hash);
-    if (targetLinkEl != null) {
-        targetLinkEl.classList.add("target");
-    }
+    switchView(hash);
 }, false);
 
 function scrollIntoViewIfNeeded(target) {
@@ -76,7 +43,31 @@ function scrollIntoViewIfNeeded(target) {
     }
 }
 
-function addEntry(targetEl, src, {
+function switchView(hashName) {
+    if (!hashName.startsWith(NAME_PREFIX)) {
+        hashName = "home";
+    }
+
+    const activeEls = viewContainerEl.querySelectorAll(".active");
+    for (const el of activeEls) {
+        el.classList.remove("active");
+    }
+    const targetEls = document.body.querySelectorAll(".target");
+    for (const el of targetEls) {
+        el.classList.remove("target");
+    }
+    const nextEl = VIEW_MAP.get(hashName);
+    if (nextEl != null) {
+        nextEl.classList.add("active");
+    }
+    const entryEl = document.getElementById(hashName);
+    if (entryEl != null) {
+        scrollIntoViewIfNeeded(entryEl);
+        entryEl.classList.add("target");
+    }
+}
+
+function addEntry(containerEl, src, {
     label, children
 }, hashPrefix = "") {
     if (hashPrefix) {
@@ -84,14 +75,14 @@ function addEntry(targetEl, src, {
     }
     const preSrc = `${SRC_PREFIX}${src}${SRC_SUFFIX}`;
     const preName = `${hashPrefix}${label.replace(/ /g, "_")}`;
-    const hashID = `${NAME_PREFIX}${preName}`;
+    const hashName = `${NAME_PREFIX}${preName}`;
     const entryEl = document.createElement("div");
-    const hashName = `#${hashID}`;
+    const urlHash = `#${hashName}`;
 
     const linkEl = document.createElement("a");
-    linkEl.href = `/${hashName}`;
+    linkEl.href = `/${urlHash}`;
     linkEl.innerHTML = label;
-    linkEl.id = hashID;
+    linkEl.id = hashName;
     entryEl.append(linkEl);
 
     if (children != null) {
@@ -100,19 +91,43 @@ function addEntry(targetEl, src, {
         }
     }
 
-    targetEl.append(entryEl);
+    containerEl.append(entryEl);
 
     // add reference
-    VIEW_MAP.set(hashID, preSrc);
-    if (location.hash == hashName) {
-        viewEl.src = preSrc;
-        entryEl.focus();
-        scrollIntoViewIfNeeded(entryEl);
-        targetLinkEl = linkEl;
-        linkEl.classList.add("target");
-    }
+    const frameEl = addPage(preSrc);
+    VIEW_MAP.set(hashName, frameEl);
 }
 
-for (const [ref, data] of Object.entries(config)) {
-    addEntry(listEl, ref, data);
+function addPage(src) {
+    const frameEl = document.createElement("object");
+    frameEl.addEventListener("load", () => {
+        // load default theme
+        const defaultThemeLink = document.createElement("link");
+        defaultThemeLink.href = "/emcJS/_style/index.css";
+        defaultThemeLink.rel = "stylesheet";
+        defaultThemeLink.type = "text/css";
+        frameEl.contentDocument.head.appendChild(defaultThemeLink);
+        // load override theme
+        const overrideThemeLink = document.createElement("link");
+        overrideThemeLink.href = "/theme.css";
+        overrideThemeLink.rel = "stylesheet";
+        overrideThemeLink.type = "text/css";
+        frameEl.contentDocument.head.appendChild(overrideThemeLink);
+    }, {once: true});
+    frameEl.setAttribute("type", "text/html");
+    frameEl.data = src;
+    viewContainerEl.append(frameEl);
+    return frameEl;
 }
+
+{
+    const frameEl = addPage("/home/index.html");
+    VIEW_MAP.set("home", frameEl);
+
+    for (const [ref, data] of Object.entries(config)) {
+        addEntry(listEl, ref, data);
+    }
+
+    switchView(location.hash.slice(1));
+}
+
