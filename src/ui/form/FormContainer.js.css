@@ -52,6 +52,10 @@
     border-radius: 0;
 }
 
+::slotted(form:nth-last-child(1 of :not([slot="header"]):not([slot="footer"]))) {
+    flex-grow: 1;
+}
+
 /* firefox */
 #header:has-slotted {
     display: flex;
