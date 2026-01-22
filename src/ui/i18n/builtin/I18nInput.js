@@ -2,11 +2,15 @@ import I18nMixin from "../../mixin/I18nMixin.js";
 
 export default class I18nInput extends I18nMixin(HTMLInputElement) {
 
-    set i18nValue(val) {
-        if (val != null) {
-            this.setAttribute("i18n-value", val);
-        } else {
+    static get overwrittenAttributes() {
+        return ["value", "placeholder"];
+    }
+
+    set i18nValue(value) {
+        if (value == null) {
             this.removeAttribute("i18n-value");
+        } else {
+            this.setAttribute("i18n-value", value.toString());
         }
     }
 
@@ -14,11 +18,11 @@ export default class I18nInput extends I18nMixin(HTMLInputElement) {
         return this.getAttribute("i18n-value") || "";
     }
 
-    set i18nPlaceholder(val) {
-        if (val != null) {
-            this.setAttribute("i18n-placeholder", val);
-        } else {
+    set i18nPlaceholder(value) {
+        if (value == null) {
             this.removeAttribute("i18n-placeholder");
+        } else {
+            this.setAttribute("i18n-placeholder", value.toString());
         }
     }
 

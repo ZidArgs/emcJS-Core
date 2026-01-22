@@ -61,25 +61,25 @@
     },
     {
         "type": "SwitchInput",
-        "name": "hideerrors",
+        "name": "hideErrors",
         "label": "Hide Error-Label",
         "value": false
     },
     {
         "type": "SwitchInput",
-        "name": "nohover",
+        "name": "noHover",
         "label": "Remove hover background effect",
         "value": false
     },
     {
         "type": "SwitchInput",
-        "name": "nopad",
+        "name": "noPad",
         "label": "Remove padding",
         "value": false
     },
     {
         "type": "SwitchInput",
-        "name": "novalidate",
+        "name": "noValidate",
         "label": "Don't include this input in the auto validation",
         "value": false
     }

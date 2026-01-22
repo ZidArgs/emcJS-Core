@@ -1,7 +1,7 @@
 [
     {
         "type": "SwitchInput",
-        "name": "newlineonshift",
+        "name": "newlineOnShift",
         "label": "Hold shift to add newline",
         "value": false
     }

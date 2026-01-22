@@ -15,24 +15,16 @@ export default class I18nTextbox extends I18nMixin(CustomElement) {
         this.#targetEl = this.shadowRoot.getElementById("target");
     }
 
-    set i18nContent(val) {
-        if (val != null) {
-            this.setAttribute("i18n-content", val);
-        } else {
-            this.removeAttribute("i18n-content");
-        }
+    set i18nContent(value) {
+        this.setStringAttribute("i18n-content", value);
     }
 
     get i18nContent() {
         return this.getAttribute("i18n-content") || "";
     }
 
-    set i18nTooltip(val) {
-        if (val != null) {
-            this.setAttribute("i18n-tooltip", val);
-        } else {
-            this.removeAttribute("i18n-tooltip");
-        }
+    set i18nTooltip(value) {
+        this.setStringAttribute("i18n-tooltip", value);
     }
 
     get i18nTooltip() {

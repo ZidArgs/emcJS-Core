@@ -546,13 +546,11 @@ export default class SimpleSelect extends AbstractFormElement {
 
         setAttributes(selectEl, params);
 
-        for (const value in options) {
+        for (const key in options) {
+            const value = options[key];
             const optionEl = I18nOption.create();
-            optionEl.value = value;
-            const label = options[value];
-            if (typeof label === "string" && label !== "") {
-                optionEl.i18nValue = label;
-            } else if (value !== "") {
+            optionEl.value = key;
+            if (value) {
                 optionEl.i18nValue = value;
             }
             selectEl.append(optionEl);

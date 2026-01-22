@@ -40,14 +40,24 @@ export default class SelectEntry extends CustomElement {
     }
 
     static get observedAttributes() {
-        return ["label"];
+        return ["value", "label"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
+            case "value": {
+                if (!this.label) {
+                    this.#labelEl.innerText = newValue;
+                }
+            } break;
             case "label": {
                 if (oldValue != newValue) {
-                    this.#labelEl.i18nValue = newValue;
+                    if (newValue) {
+                        this.#labelEl.i18nValue = newValue;
+                    } else {
+                        this.#labelEl.i18nValue = "";
+                        this.#labelEl.innerText = this.value;
+                    }
                 }
             } break;
         }

@@ -47,8 +47,6 @@ export default createMixin((superclass) => class I18nMixin extends superclass {
             const key = this.getAttribute(attr);
             if (key) {
                 this.applyI18n(attr, i18n.get(key));
-            } else {
-                this.applyI18n(attr, "");
             }
         }
     }
@@ -72,7 +70,7 @@ export default createMixin((superclass) => class I18nMixin extends superclass {
     static get observedAttributes() {
         if (super.observedAttributes) {
             const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, ...this.i18nObservedAttributes];
+            return [...superObserved, ...this.i18nObservedAttributes];
         }
         return this.i18nObservedAttributes;
     }

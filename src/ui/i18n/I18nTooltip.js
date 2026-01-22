@@ -15,12 +15,8 @@ export default class I18nTooltip extends I18nMixin(CustomElement) {
         this.#targetEl = this.shadowRoot.getElementById("target");
     }
 
-    set i18nTooltip(val) {
-        if (val != null) {
-            this.setAttribute("i18n-tooltip", val);
-        } else {
-            this.removeAttribute("i18n-tooltip");
-        }
+    set i18nTooltip(value) {
+        this.setStringAttribute("i18n-tooltip", value);
     }
 
     get i18nTooltip() {

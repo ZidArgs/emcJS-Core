@@ -2,11 +2,15 @@ import I18nMixin from "../../mixin/I18nMixin.js";
 
 export default class I18nTextarea extends I18nMixin(HTMLTextAreaElement) {
 
-    set i18nPlaceholder(val) {
-        if (val != null) {
-            this.setAttribute("i18n-placeholder", val);
-        } else {
+    static get overwrittenAttributes() {
+        return ["placeholder"];
+    }
+
+    set i18nPlaceholder(value) {
+        if (value == null) {
             this.removeAttribute("i18n-placeholder");
+        } else {
+            this.setAttribute("i18n-placeholder", value.toString());
         }
     }
 

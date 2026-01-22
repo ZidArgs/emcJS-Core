@@ -279,7 +279,9 @@ export default class ListSelect extends AbstractFormElement {
             const value = options[key];
             const optionEl = I18nOption.create();
             optionEl.value = key;
-            optionEl.i18nValue = value;
+            if (value) {
+                optionEl.i18nValue = value;
+            }
             selectEl.append(optionEl);
         }
 

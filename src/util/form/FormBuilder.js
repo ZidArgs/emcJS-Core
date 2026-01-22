@@ -212,6 +212,10 @@ class FormBuilder {
         }
     }
 
+    createFormComponent(config, defaultValues = {}, label = null) {
+        return this.#createFormComponent(config, defaultValues, label);
+    }
+
     replaceFormComponent(oldFormEl, config, defaultValues = {}, label = null) {
         const newFormEl = this.#createFormComponent(config, defaultValues, label);
         oldFormEl.replaceWith(newFormEl);

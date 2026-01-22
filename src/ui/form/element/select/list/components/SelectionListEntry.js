@@ -45,7 +45,12 @@ export default class SelectionListEntry extends DataListEntry {
     }
 
     setData(data) {
-        this.#textEl.i18nValue = data.name;
+        if (data.name) {
+            this.#textEl.i18nValue = data.name;
+        } else {
+            this.#textEl.i18nValue = "";
+            this.#textEl.innerText = this.key;
+        }
     }
 
     set selected(value) {

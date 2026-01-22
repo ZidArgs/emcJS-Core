@@ -19,7 +19,7 @@
     },
     {
         "type": "SwitchInput",
-        "name": "selectend",
+        "name": "selectEnd",
         "label": "Move select boxes to the end",
         "value": false
     },

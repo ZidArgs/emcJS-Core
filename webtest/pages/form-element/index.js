@@ -13,6 +13,7 @@ import "/emcJS/ui/container/CaptionPanel.js";
 import FormContext from "/emcJS/util/form/FormContext.js";
 import "/emcJS/ui/form/FormContainer.js";
 import "/emcJS/ui/form/FormComponentsLoader.js";
+import I18nMixin from "/emcJS/ui/mixin/I18nMixin.js";
 
 const formContext = new FormContext();
 formContext.allowEnter = false;
@@ -143,49 +144,17 @@ showHTMLButtonEl.addEventListener("click", () => {
         codeEl.noHover = true;
         /* --- */
         const data = formContext.getFormFieldsData();
-        const previewEl = document.getElementById("preview-element");
-        const tagName = previewEl.tagName.toLowerCase();
-        const attributes = [];
-        const content = [];
-        for (const [name, value] of Object.entries(data)) {
-            if (value != null && name !== "type") {
-                if (name === "options") {
-                    for (const [key, val] of Object.entries(value)) {
-                        content.push(`<option is="emc-i18n-option" value="${key}" i18n-value="${val}"></option>`);
-                    }
-                } else if (name === "columns") {
-                    for (const column of value) {
-                        const {
-                            key = "", type = "string", caption = "", width, editable = false
-                        } = column;
-
-                        const columnWidth = parseInt(width);
-                        const widthDef = !isNaN(columnWidth) ? ` width="${columnWidth}"` : "";
-
-                        const editableDef = editable ? ` editable` : "";
-
-                        content.push(`<emc-datagrid-column name="${key}" type="${type}" label="${caption}"${widthDef}${editableDef}></emc-datagrid-column>`);
-                    }
-                } else if (typeof value === "boolean") {
-                    if (value) {
-                        attributes.push(`${name}`);
-                    }
-                } else if (name === "sorted") {
-                    if (value === "manual") {
-                        attributes.push(`sorted="manual"`);
-                    } else if (value && value !== "false") {
-                        attributes.push(`sorted`);
-                    }
-                } else if (typeof value === "object") {
-                    attributes.push(`${name}="${JSON.stringify(value)}"`);
-                } else if (value !== "") {
-                    attributes.push(`${name}="${value}"`);
-                }
+        const config = {};
+        for (const [key, value] of Object.entries(data)) {
+            if (["visible", "editable", "enabled"].includes(key) && value === true) {
+                continue;
+            } else if (value == null || value === false || value === "" || (Array.isArray(value) && !value.length)) {
+                continue;
             }
+            config[key] = value;
         }
-        const attributesString = attributes.length > 0 ? `\n${attributes.map((a) => `    ${a}`).join("\n")}\n` : "";
-        const contentString = content.length > 0 ? `\n${content.map((c) => `    ${c}`).join("\n")}\n` : "";
-        codeEl.value = `<${tagName}${attributesString}>${contentString}</${tagName}>`;
+        const fromComponentEl = FormBuilder.createFormComponent(config);
+        codeEl.value = stringifyHTMLElement(fromComponentEl);
         /* --- */
         modalEl.append(codeEl);
         modalEl.show();
@@ -193,3 +162,43 @@ showHTMLButtonEl.addEventListener("click", () => {
         ModalDialog.alert("Configuration invalid", "Your configuration is not valid.\nPlease fix your configuration and try again!");
     }
 });
+
+function stringifyHTMLElement(el) {
+    const tagName = el.tagName.toLowerCase();
+    const isName = customElements.getName(el.constructor);
+    const attributes = [];
+    const children = [];
+
+    const customBuiltIn = isName != tagName;
+
+    if (customBuiltIn) {
+        attributes.push(`is="${isName}"`);
+    }
+
+    for (let i = 0; i < el.attributes.length; i++) {
+        const attribute = el.attributes[i];
+        const {
+            name, value
+        } = attribute;
+        if (customBuiltIn && el.constructor.overwrittenAttributes?.includes(name)) {
+            continue;
+        }
+        if (value === "") {
+            attributes.push(name);
+        } else {
+            attributes.push(`${name}="${value}"`);
+        }
+    }
+
+    for (const childEl of el.children) {
+        children.push(stringifyHTMLElement(childEl));
+    }
+
+    const attributesString = attributes.length > 0 ? `\n${attributes.map((a) => indent(a)).join("\n")}\n` : "";
+    const contentString = children.length > 0 ? `\n${children.map((c) => indent(c)).join("\n")}\n` : "";
+    return `<${tagName}${attributesString}>${contentString}</${tagName}>`;
+}
+
+function indent(string) {
+    return string.split("\n").map((s) => `    ${s}`).join("\n");
+}

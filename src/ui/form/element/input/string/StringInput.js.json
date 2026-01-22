@@ -7,19 +7,19 @@
     },
     {
         "type": "NumberInput",
-        "name": "minlength",
+        "name": "minLength",
         "label": "Minimum Length",
         "value": null
     },
     {
         "type": "NumberInput",
-        "name": "maxlength",
+        "name": "maxLength",
         "label": "Maximum Length",
         "value": null
     },
     {
         "type": "SwitchInput",
-        "name": "showtextlength",
+        "name": "showTextLength",
         "label": "Show Text Length Indicator",
         "value": false
     },

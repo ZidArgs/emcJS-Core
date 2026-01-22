@@ -11,16 +11,12 @@ export default class I18nLabel extends I18nMixin(CustomElement) {
         STYLE.apply(this.shadowRoot);
     }
 
-    set i18nValue(val) {
-        if (val != null) {
-            this.setAttribute("i18n-value", val);
-        } else {
-            this.removeAttribute("i18n-value");
-        }
+    set i18nValue(value) {
+        this.setStringAttribute("i18n-value", value);
     }
 
     get i18nValue() {
-        return this.getAttribute("i18n-value") || "";
+        return this.getStringAttribute("i18n-value") || "";
     }
 
     static get i18nObservedAttributes() {

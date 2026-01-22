@@ -13,7 +13,7 @@
             },
             "placeholder": "Select entry...",
             "multiple": true,
-            "selectend": true,
+            "selectEnd": true,
             "sorted": true
         },
         {

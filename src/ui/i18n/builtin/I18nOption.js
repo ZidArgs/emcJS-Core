@@ -2,6 +2,10 @@ import I18nMixin from "../../mixin/I18nMixin.js";
 
 export default class I18nOption extends I18nMixin(HTMLOptionElement) {
 
+    static get overwrittenAttributes() {
+        return ["label"];
+    }
+
     set value(value) {
         if (value != null) {
             this.setAttribute("value", value);
@@ -40,10 +44,10 @@ export default class I18nOption extends I18nMixin(HTMLOptionElement) {
     }
 
     set i18nValue(value) {
-        if (value != null) {
-            this.setAttribute("i18n-value", value);
-        } else {
+        if (value == null) {
             this.removeAttribute("i18n-value");
+        } else {
+            this.setAttribute("i18n-value", value.toString());
         }
     }
 
