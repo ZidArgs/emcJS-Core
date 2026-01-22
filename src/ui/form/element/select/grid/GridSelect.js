@@ -120,6 +120,14 @@ export default class GridSelect extends AbstractFormElement {
         return this.getBooleanAttribute("multiple");
     }
 
+    set allowDeselect(value) {
+        this.setBooleanAttribute("allowdeselect", value);
+    }
+
+    get allowDeselect() {
+        return this.getBooleanAttribute("allowdeselect");
+    }
+
     set selectEnd(value) {
         this.setBooleanAttribute("selectend", value);
     }
@@ -138,7 +146,7 @@ export default class GridSelect extends AbstractFormElement {
 
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "readonly", "sorted", "multiple", "selectend", "stretched"];
+        return [...superObserved, "readonly", "sorted", "multiple", "allowdeselect", "selectend", "stretched"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -158,6 +166,11 @@ export default class GridSelect extends AbstractFormElement {
             case "multiple": {
                 if (oldValue != newValue) {
                     this.#gridEl.multiple = this.multiple;
+                }
+            } break;
+            case "allowdeselect": {
+                if (oldValue != newValue) {
+                    this.#gridEl.allowDeselect = this.allowDeselect;
                 }
             } break;
             case "selectend": {

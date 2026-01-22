@@ -101,6 +101,19 @@
         },
         {
             "type": "ListSelect",
+            "label": "list-select single deselect",
+            "name": "list-select.single.deselect",
+            "optiongroup": "ListSelect",
+            "placeholder": "Select entry...",
+            "options": {
+                "nana": "Nana",
+                "foobar": "Foobar"
+            },
+            "allowDeselect": true,
+            "sorted": true
+        },
+        {
+            "type": "ListSelect",
             "label": "list-select multi",
             "name": "list-select.multi",
             "optiongroup": "ListSelect",

@@ -13,6 +13,12 @@
     },
     {
         "type": "SwitchInput",
+        "name": "allowDeselect",
+        "label": "Allow deselecting entries in single select mode",
+        "value": false
+    },
+    {
+        "type": "SwitchInput",
         "name": "selectend",
         "label": "Move select boxes to the end",
         "value": false

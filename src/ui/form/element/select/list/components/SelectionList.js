@@ -23,7 +23,9 @@ export default class SelectionList extends DataList {
                 if (value) {
                     const oldKey = [...this.#selected][0];
                     const oldEl = this.getEntry(oldKey);
-                    oldEl.selected = false;
+                    if (oldEl != null) {
+                        oldEl.selected = false;
+                    }
                     this.#selected.clear();
                     this.#selected.add(key);
                 } else if (this.allowDeselect) {
@@ -31,7 +33,9 @@ export default class SelectionList extends DataList {
                 } else {
                     const oldKey = [...this.#selected][0];
                     const oldEl = this.getEntry(oldKey);
-                    oldEl.selected = true;
+                    if (oldEl != null) {
+                        oldEl.selected = true;
+                    }
                 }
             } else if (value) {
                 this.#selected.add(key);
@@ -161,32 +165,47 @@ export default class SelectionList extends DataList {
                     selected = [];
                 }
             }
-            for (const key of this.#selected) {
-                const el = this.getEntry(key);
-                if (el != null) {
-                    el.selected = false;
-                }
-            }
-            this.#selected.clear();
             if (this.multiple) {
-                for (const entry of selected) {
+                selected = new Set(selected);
+                const added = selected.difference(this.#selected);
+                const removed = this.#selected.difference(selected);
+                for (const key of removed) {
+                    this.#selected.delete(key);
+                    const el = this.getEntry(key);
+                    if (el != null) {
+                        el.selected = false;
+                    }
+                }
+                for (const entry of added) {
                     this.#selected.add(entry);
                     const el = this.getEntry(entry);
                     if (el != null) {
                         el.selected = true;
                     }
                 }
+                if (added.size || removed.size) {
+                    this.#updateSelectHeader();
+                    const ev = new Event("selection");
+                    ev.data = [...this.#selected].sort();
+                    this.dispatchEvent(ev);
+                }
             } else if (selected.length > 0) {
                 const entry = selected[0];
-                const el = this.getEntry(entry);
-                if (el != null) {
-                    el.selected = true;
+                if (!this.#selected.has(entry)) {
+                    for (const key of this.#selected) {
+                        const el = this.getEntry(key);
+                        if (el != null) {
+                            el.selected = false;
+                        }
+                    }
+                    this.#selected.clear();
+                    this.#selected.add(entry);
+                    const el = this.getEntry(entry);
+                    if (el != null) {
+                        el.selected = true;
+                    }
                 }
             }
-            this.#updateSelectHeader();
-            const ev = new Event("selection");
-            ev.data = [...this.#selected].sort();
-            this.dispatchEvent(ev);
         }
     }
 

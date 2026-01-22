@@ -6,7 +6,29 @@
     border-top: none;
     border-left: none;
     border-right: none;
+    border-width: var(--select-option-divider-width, 1px);
+    border-color: var(--select-option-divider-color, #222222);
     border-radius: 0px;
+    padding: 0px;
+    pointer-events: none;
+}
+
+:host(:last-child) #container {
+    border-bottom: none;
+}
+
+#content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 6px;
+    word-break: break-all;
+    white-space: pre-wrap;
+    cursor: pointer;
+    pointer-events: all;
 }
 
 #text {
@@ -29,7 +51,7 @@
     cursor: default !important;
 }
 
-:host([readonly]:not([readonly="false"])) input[type="checkbox"] {
+:host([readonly]:not([readonly="false"])) #content {
     pointer-events: none;
 }
 

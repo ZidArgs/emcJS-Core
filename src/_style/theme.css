@@ -246,6 +246,7 @@ all; top_bottom right_left; top right bottom left
     --select-option-back-color: var(--input-back-color);
     --select-option-back-image: none;
 
+    --select-option-divider-width: 1px;
     --select-option-divider-color: var(--input-border-color);
 
     --select-option-marked-text-color: var(--select-option-text-color);

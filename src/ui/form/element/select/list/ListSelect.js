@@ -164,6 +164,14 @@ export default class ListSelect extends AbstractFormElement {
         return this.getBooleanAttribute("multiple");
     }
 
+    set allowDeselect(value) {
+        this.setBooleanAttribute("allowdeselect", value);
+    }
+
+    get allowDeselect() {
+        return this.getBooleanAttribute("allowdeselect");
+    }
+
     set selectEnd(value) {
         this.setBooleanAttribute("selectend", value);
     }
@@ -174,7 +182,7 @@ export default class ListSelect extends AbstractFormElement {
 
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "readonly", "sorted", "multiple", "selectend"];
+        return [...superObserved, "readonly", "sorted", "multiple", "allowdeselect", "selectend"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -195,6 +203,11 @@ export default class ListSelect extends AbstractFormElement {
             case "multiple": {
                 if (oldValue != newValue) {
                     this.#listEl.multiple = this.multiple;
+                }
+            } break;
+            case "allowdeselect": {
+                if (oldValue != newValue) {
+                    this.#listEl.allowDeselect = this.allowDeselect;
                 }
             } break;
             case "selectend": {

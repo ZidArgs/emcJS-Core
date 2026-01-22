@@ -7,6 +7,8 @@ export default class SelectionListEntry extends DataListEntry {
 
     #containerEl;
 
+    #contentEl;
+
     #textEl;
 
     #selectable = false;
@@ -22,6 +24,7 @@ export default class SelectionListEntry extends DataListEntry {
         /* --- */
         this.#containerEl = this.shadowRoot.getElementById("container");
         this.#containerEl.append(els);
+        this.#contentEl = this.shadowRoot.getElementById("content");
         this.#textEl = this.shadowRoot.getElementById("text");
         /* --- */
         this.#selectCheckboxEl = document.createElement("input");
@@ -98,9 +101,9 @@ export default class SelectionListEntry extends DataListEntry {
         // add select cell
         if (this.#selectable) {
             if (this.#selectEnd) {
-                this.#containerEl.append(this.#selectCheckboxEl);
+                this.#contentEl.append(this.#selectCheckboxEl);
             } else {
-                this.#containerEl.prepend(this.#selectCheckboxEl);
+                this.#contentEl.prepend(this.#selectCheckboxEl);
             }
         } else {
             this.#selectCheckboxEl.remove();

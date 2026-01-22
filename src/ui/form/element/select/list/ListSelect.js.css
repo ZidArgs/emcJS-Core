@@ -82,7 +82,7 @@
     width: 22px;
     height: 22px;
     padding: 2px;
-    margin: 10px 1px 10px 7px;
+    margin: 10px 2px 10px 6px;
     color: var(--datagrid-select-cell-text-color, #505050);
     background-color: var(--datagrid-select-cell-back-color, #ffffff);
     border-style: solid;
