@@ -1,8 +1,6 @@
-function escapeRegExp(string) {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
+import {escapeRegExp} from "../helper/RegExp.js";
 
-export default class SearchOr extends RegExp {
+export default class SearchSome extends RegExp {
 
     constructor(query = "") {
         if (typeof query != "string") {

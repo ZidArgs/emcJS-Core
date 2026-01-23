@@ -309,7 +309,7 @@ export default class RelationSelect extends AbstractFormElement {
     }
 
     renderValue(value) {
-        if (value != null && value !== "") {
+        if (value != null && value.type != null && value.name != null) {
             const selectedEl = this.#optionNodeList.querySelector(`[type="${value.type}"][name="${value.name}"]`);
             if (selectedEl != null) {
                 this.#nameEl.innerText = selectedEl.name;

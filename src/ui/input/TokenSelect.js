@@ -1,7 +1,7 @@
 import CustomElementDelegating from "../element/CustomElementDelegating.js";
 import EventTargetManager from "../../util/event/EventTargetManager.js";
 import i18n from "../../util/I18n.js";
-import SearchAnd from "../../util/search/SearchAnd.js";
+import SearchEvery from "../../util/search/SearchEvery.js";
 import ElementManager from "../../util/html/ElementManager.js";
 import {sortChildren} from "../../util/helper/ui/NodeListSort.js";
 import {debounce} from "../../util/Debouncer.js";
@@ -221,7 +221,7 @@ export default class TokenSelect extends CustomElementDelegating {
         });
         input.addEventListener("input", () => {
             const all = this.querySelectorAll(`[value]`);
-            const regEx = new SearchAnd(input.value);
+            const regEx = new SearchEvery(input.value);
             for (const el of all) {
                 if (regEx.test(el.innerText.trim())) {
                     el.style.display = "";

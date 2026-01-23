@@ -322,7 +322,7 @@ export default class SearchSelect extends AbstractFormElement {
     }
 
     renderValue(value) {
-        if (value != null && value !== "") {
+        if (value != null) {
             this.#nativeSelectEl.value = value;
             const selectedEl = this.#optionsContainerEl.querySelector(`[value="${value}"]`);
             if (selectedEl != null) {

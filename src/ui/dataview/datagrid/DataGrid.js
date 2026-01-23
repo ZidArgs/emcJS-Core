@@ -21,34 +21,21 @@ import STYLE from "./DataGrid.js.css" assert {type: "css"};
 
 const MUTATION_CONFIG = {attributes: true};
 
-const PX_REGEXP = /^[0-9]+(?:\.[0-9]+)?$/;
+const PX_REGEXP = /^[0-9]+(?:\.[0-9]+)?(?:px)?$/;
+const PERCENT_REGEXP = /^[0-9]+(?:\.[0-9]+)?%$/;
 
 function getStyleLengthValue(type, value) {
-    const minValue = DataGridCell.getTypeMinWidth(type);
-    if (value != null && PX_REGEXP.test(value)) {
-        return Math.max(parseFloat(value), minValue, 50);
+    if (value != null) {
+        if (PERCENT_REGEXP.test(value)) {
+            return `${parseFloat(value)}%`;
+        }
+        if (PX_REGEXP.test(value)) {
+            return `${parseFloat(value)}px`;
+        }
     }
-    if (minValue != null) {
-        return Math.max(minValue, 50);
-    }
-    return 200;
+    return "200px";
 }
 
-// TODO add "no match" label
-/*
-TODO add DataGrid context to handle selection
-- store active keys
-- handle select/deselect on active keys
-- row checkboxes get value from context
-- select(key)
-- unselect(key)
-- selectAll()
-- unselectAll()
-- setSelected(keyList)
-- isSelected(key)
-- hasSelected()
-- hasUnselected()
-*/
 export default class DataGrid extends DataReceiverMixin(CustomElement) {
 
     #internalId = appUID("data-grid");
@@ -493,7 +480,7 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
                 }
             } else {
                 const selectEl = this.shadowRoot.querySelector(`td.select-cell input[type="checkbox"]`);
-                const rowKey = selectEl.getAttribute("row-key");
+                const rowKey = selectEl.rowKey;
                 this.#rowManager.setRowSelected(true);
                 this.#selected.add(rowKey);
             }
@@ -507,9 +494,12 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
     setSortIndicators(columns = []) {
         const showSortOrder = columns.length > 1;
         for (const colDef of this.#columnDefinition) {
-            const {name} = colDef;
+            const {
+                name, sortby
+            } = colDef;
+            const sortName = sortby ?? name;
             const headerCellEl = this.#headerManager.getCellByColumnName(name);
-            const sortIndex = columns.findIndex((entry) => entry === name || entry === `!${name}`);
+            const sortIndex = columns.findIndex((entry) => entry === sortName || entry === `!${sortName}`);
             if (sortIndex >= 0) {
                 const sort = columns[sortIndex];
                 headerCellEl.sortDirection = sort.startsWith("!") ? "dec" : "inc";
@@ -556,12 +546,12 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
         this.dispatchEvent(ev);
     });
 
-    getAllCellsForColumn(colName) {
-        return this.#cellCache.getAllCellsForColumn(colName);
+    getAllCellsForColumn(columnName) {
+        return this.#cellCache.getAllCellsForColumn(columnName);
     }
 
-    getCell(rowKey, colName) {
-        return this.#cellCache.getCell(rowKey, colName);
+    getCell(rowKey, columnName) {
+        return this.#cellCache.getCell(rowKey, columnName);
     }
 
     async #applyColumnDefinition() {
@@ -610,11 +600,12 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
                 const {
                     name, type, width
                 } = definition;
-                this.style.setProperty(`--min-width-${name}`, `${width}px`);
+                const minWidth = DataGridCell.getTypeMinWidth(type);
+                this.style.setProperty(`--min-width-${name}`, `${Math.max(50, minWidth)}px`);
                 if (name !== this.stretched) {
                     const widthValue = width;
                     const styleWidth = getStyleLengthValue(type, widthValue);
-                    this.style.setProperty(`--width-${name}`, `${styleWidth}px`);
+                    this.style.setProperty(`--width-${name}`, styleWidth);
                 }
             }
             /* --- */
@@ -674,7 +665,7 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
             const widthValue = this.#stretched.width;
             if (widthValue != null) {
                 const styleWidth = getStyleLengthValue(this.#stretched.type, widthValue);
-                this.style.setProperty(`--width-${name}`, `${styleWidth}px`);
+                this.style.setProperty(`--width-${name}`, styleWidth);
             }
         }
         this.#stretched = this.#columnDefinition.find((definition) => definition.name === strechedName);

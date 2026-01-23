@@ -1,21 +1,24 @@
 import CustomElement from "../../element/CustomElement.js";
 
+// TODO create enum for halign
+// TODO create enum for valign
+// TODO create enum for fixed
 export default class Column extends CustomElement {
 
     set name(value) {
-        this.setAttribute("name", value);
+        this.setStringAttribute("name", value);
     }
 
     get name() {
-        return this.getAttribute("name");
+        return this.getStringAttribute("name");
     }
 
     set label(value) {
-        this.setAttribute("label", value);
+        this.setStringAttribute("label", value);
     }
 
     get label() {
-        return this.getAttribute("label");
+        return this.getStringAttribute("label");
     }
 
     set hideLabel(value) {
@@ -27,19 +30,19 @@ export default class Column extends CustomElement {
     }
 
     set type(value) {
-        this.setAttribute("type", value);
+        this.setStringAttribute("type", value);
     }
 
     get type() {
-        return this.getAttribute("type");
+        return this.getStringAttribute("type");
     }
 
     set width(value) {
-        this.setIntAttribute("width", value);
+        this.setStringAttribute("width", value);
     }
 
     get width() {
-        return this.getIntAttribute("width");
+        return this.getStringAttribute("width");
     }
 
     set editable(value) {
@@ -66,6 +69,14 @@ export default class Column extends CustomElement {
         return this.getBooleanAttribute("sortable");
     }
 
+    set sortBy(value) {
+        this.setStringAttribute("sortby", value);
+    }
+
+    get sortBy() {
+        return this.getStringAttribute("sortby");
+    }
+
     set nullable(value) {
         this.setBooleanAttribute("nullable", value);
     }
@@ -75,43 +86,43 @@ export default class Column extends CustomElement {
     }
 
     set halign(value) {
-        this.setAttribute("halign", value);
+        this.setStringAttribute("halign", value);
     }
 
     get halign() {
-        return this.getAttribute("halign");
+        return this.getStringAttribute("halign");
     }
 
     set valign(value) {
-        this.setAttribute("valign", value);
+        this.setStringAttribute("valign", value);
     }
 
     get valign() {
-        return this.getAttribute("valign");
+        return this.getStringAttribute("valign");
     }
 
     set fixed(value) {
-        this.setAttribute("fixed", value);
+        this.setStringAttribute("fixed", value);
     }
 
     get fixed() {
-        return this.getAttribute("fixed");
+        return this.getStringAttribute("fixed");
     }
 
-    set textcolor(value) {
-        this.setAttribute("textcolor", value);
+    set textColor(value) {
+        this.setStringAttribute("textcolor", value);
     }
 
-    get textcolor() {
-        return this.getAttribute("textcolor");
+    get textColor() {
+        return this.getStringAttribute("textcolor");
     }
 
-    set backcolor(value) {
-        this.setAttribute("backcolor", value);
+    set backColor(value) {
+        this.setStringAttribute("backcolor", value);
     }
 
-    get backcolor() {
-        return this.getAttribute("backcolor");
+    get backColor() {
+        return this.getStringAttribute("backcolor");
     }
 
 }

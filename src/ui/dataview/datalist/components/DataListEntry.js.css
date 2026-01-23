@@ -12,7 +12,7 @@
     align-items: center;
     justify-content: flex-start;
     box-sizing: border-box;
-    padding: 8px;
+    padding: 6px;
     color: var(--datalist-entry-text-color, #000000);
     background-color: var(--datalist-entry-back-color, #ffffff);
     background-image: var(--datalist-entry-back-image, none);

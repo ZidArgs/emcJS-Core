@@ -238,7 +238,6 @@ export default class RowManager extends EventTarget {
             return rowEl;
         }
         const newRowEl = this.composer(key);
-        newRowEl.setAttribute("row-key", key);
         this.#elementCache.set(key, newRowEl);
         return newRowEl;
     }
@@ -265,6 +264,7 @@ export default class RowManager extends EventTarget {
 
     composer(key) {
         const rowEl = document.createElement("tr");
+        rowEl.rowKey = key;
         this.#eventManager.set(rowEl, "dragstart", (event) => {
             this.#draggingRowEl = rowEl;
             rowEl.classList.add("dragging");
@@ -305,7 +305,7 @@ export default class RowManager extends EventTarget {
         this.dispatchEvent(new Event("beforerender"));
         const children = this.#target.children;
         if (children.length > 0) {
-            const currentOrder = [...children].map((el) => el.getAttribute("row-key") ?? "");
+            const currentOrder = [...children].map((el) => el.rowKey ?? "");
             const mutated = new ArraySet(currentOrder);
             const keys = [...this.#sortOrder];
             const {
@@ -364,7 +364,7 @@ export default class RowManager extends EventTarget {
         const items = [...this.#target.querySelectorAll("tr")];
         const sortOrder = [];
         for (const item of items) {
-            sortOrder.push(item.getAttribute("row-key"));
+            sortOrder.push(item.rowKey);
         }
         this.sortOrder = sortOrder;
     }

@@ -23,7 +23,7 @@ export default class DataGridHeaderCell extends CustomElementDelegating {
             event.stopPropagation();
             if (this.sortable) {
                 const ev = new Event("sort", {bubbles:true});
-                ev.data = {columnName: this.columnName};
+                ev.data = {columnName: this.sortBy ?? this.columnName};
                 this.dispatchEvent(ev);
             }
         });
@@ -31,7 +31,7 @@ export default class DataGridHeaderCell extends CustomElementDelegating {
             event.stopPropagation();
             if (this.sortable) {
                 const ev = new Event("unsort", {bubbles:true});
-                ev.data = {columnName: this.columnName};
+                ev.data = {columnName: this.sortBy ?? this.columnName};
                 this.dispatchEvent(ev);
             }
         });
@@ -55,6 +55,14 @@ export default class DataGridHeaderCell extends CustomElementDelegating {
 
     get sortable() {
         return this.getBooleanAttribute("sortable");
+    }
+
+    set sortBy(value) {
+        this.setStringAttribute("sortby", value);
+    }
+
+    get sortBy() {
+        return this.getStringAttribute("sortby");
     }
 
     set sortDirection(val) {
@@ -81,10 +89,10 @@ export default class DataGridHeaderCell extends CustomElementDelegating {
         if (oldValue != newValue) {
             switch (name) {
                 case "col-name": {
-                    const escapedColumnName = this.columnName.replace(/\./g, "\\.");
+                    const escapedColumnName = CSS.escape(this.columnName);
                     if (escapedColumnName) {
-                        const styleWidth = `var(--width-${this.columnName}, 100%)`;
-                        this.style.minWidth = `var(--min-width-${this.columnName}, 100%)`;
+                        const styleWidth = `var(--width-${escapedColumnName}, 100%)`;
+                        this.style.minWidth = `var(--min-width-${escapedColumnName}, 100%)`;
                         this.style.maxWidth = styleWidth;
                         this.style.width = styleWidth;
                     } else {

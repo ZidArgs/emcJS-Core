@@ -29,13 +29,12 @@ export default class DataList extends DataReceiverMixin(CustomElement) {
         /* --- */
         this.#scrollContainerEl = this.shadowRoot.getElementById("scroll-container");
         this.#emptyContainerEl = this.shadowRoot.getElementById("empty-container");
-        this.#elementManager.composer = (key, values) => {
+        this.#elementManager.composer = (key) => {
             const el = this.createListEntry();
             if (!(el instanceof DataListEntry)) {
                 throw new Error("list elements must extend DataListEntry");
             }
             el.key = key;
-            el.setData(values);
             this.#entries.set(key, el);
             return el;
         };

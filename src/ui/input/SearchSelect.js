@@ -1,7 +1,7 @@
 import CustomElementDelegating from "../element/CustomElementDelegating.js";
 import EventTargetManager from "../../util/event/EventTargetManager.js";
 import i18n from "../../util/I18n.js";
-import SearchAnd from "../../util/search/SearchAnd.js";
+import SearchEvery from "../../util/search/SearchEvery.js";
 import {sortChildren} from "../../util/helper/ui/NodeListSort.js";
 import {debounce} from "../../util/Debouncer.js";
 import "./Option.js";
@@ -175,7 +175,7 @@ export default class SearchSelect extends CustomElementDelegating {
         });
         inputEl.addEventListener("input", () => {
             const all = this.querySelectorAll(`[value]`);
-            const regEx = new SearchAnd(inputEl.value);
+            const regEx = new SearchEvery(inputEl.value);
             for (const el of all) {
                 if (regEx.test(el.innerText.trim())) {
                     el.style.display = "";

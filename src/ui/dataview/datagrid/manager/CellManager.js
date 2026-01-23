@@ -200,11 +200,8 @@ export default class CellManager extends EventTarget {
             newOrder.push(name);
 
             if (!this.#elements.has(name)) {
-                const cellEl = this.composer(name, this.#rowKey, type, columnData, value, rowData);
+                const cellEl = this.composer(name, this.#rowKey, type);
                 if (cellEl != null) {
-                    cellEl.classList.add("cell");
-                    cellEl.setAttribute("col-name", name);
-                    cellEl.setAttribute("row-key", this.#rowKey);
                     this.mutator(cellEl, columnData, value, rowData);
                     this.#elements.set(name, cellEl);
                     this.#cellCache.addCell(this.#rowKey, name, cellEl);
@@ -248,7 +245,7 @@ export default class CellManager extends EventTarget {
 
         // add select element
         this.#selectCheckboxEl.checked = isSelected;
-        this.#selectCheckboxEl.setAttribute("row-key", this.#rowKey);
+        this.#selectCheckboxEl.rowKey = this.#rowKey;
 
         if (!isEqual(newOrder, this.#order)) {
             this.#order = newOrder;
@@ -273,35 +270,11 @@ export default class CellManager extends EventTarget {
         return false;
     }
 
-    composer(columnName, rowKey, type, options, value, rowData) {
+    composer(columnName, rowKey, type) {
         const cellEl = DataGridCell.createCell(type, this.#dataGridId);
-
-        for (const [attrName, attrValue] of Object.entries(options)) {
-            if (BLACKLISTED_ATTRIBUTES.includes(attrName)) {
-                continue;
-            }
-            cellEl[attrName] = attrValue;
-        }
-
-        if (options.textcolor) {
-            cellEl.style.color = options.textcolor;
-        } else {
-            cellEl.style.color = "";
-        }
-        if (options.backcolor) {
-            cellEl.style.backgroundColor = options.backcolor;
-        } else {
-            cellEl.style.backgroundColor = "";
-        }
-
-        if (value != null) {
-            cellEl.value = value;
-        }
-
+        cellEl.classList.add("cell");
         cellEl.columnName = columnName;
         cellEl.rowKey = rowKey;
-        cellEl.rowData = rowData;
-
         return cellEl;
     }
 
@@ -358,7 +331,7 @@ export default class CellManager extends EventTarget {
         /* --- */
         const children = this.#target.children;
         if (children.length > 0) {
-            const currentOrder = [...children].map((el) => el.getAttribute("col-name") ?? "");
+            const currentOrder = [...children].map((el) => el.columnName ?? "");
             const mutated = new ArraySet(currentOrder);
             const keys = [...this.#order];
             const {

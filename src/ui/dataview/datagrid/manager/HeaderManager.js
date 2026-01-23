@@ -143,10 +143,8 @@ export default class HeaderManager extends EventTarget {
             newOrder.push(name);
 
             if (!this.#elements.has(name)) {
-                const headerCellEl = this.composer(name, columnData);
+                const headerCellEl = this.composer(name);
                 if (headerCellEl != null) {
-                    headerCellEl.classList.add("cell");
-                    headerCellEl.setAttribute("col-name", name);
                     this.mutator(headerCellEl, name, columnData);
                     this.#elements.set(name, headerCellEl);
                 }
@@ -185,27 +183,23 @@ export default class HeaderManager extends EventTarget {
         return false;
     }
 
-    composer(name, columnData) {
+    composer(name) {
         const headerCellEl = new DataGridHeaderCell(this.#dataGridId);
-        const {
-            label, sortable = false
-        } = columnData;
-
-        headerCellEl.innerText = (label ?? name).trim();
-        headerCellEl.title = label ?? name;
-        headerCellEl.sortable = sortable;
-
+        headerCellEl.classList.add("cell");
+        headerCellEl.columnName = name;
         return headerCellEl;
     }
 
     mutator(headerCellEl, name, columnData) {
         const {
-            label, hidelabel, fixed
+            label, hidelabel, fixed, sortable = false, sortby
         } = columnData;
 
-        headerCellEl.innerText = label ?? name;
+        headerCellEl.innerText = (label ?? name).trim();
         headerCellEl.title = label ?? name;
-        headerCellEl.hidelabel = hidelabel;
+        headerCellEl.hideLabel = hidelabel;
+        headerCellEl.sortable = sortable;
+        headerCellEl.sortBy = sortby;
 
         if (fixed === "start") {
             headerCellEl.classList.add("fixed-cell");
@@ -225,7 +219,7 @@ export default class HeaderManager extends EventTarget {
         /* --- */
         const children = this.#target.children;
         if (children.length > 0) {
-            const currentOrder = [...children].map((el) => el.getAttribute("col-name") ?? "");
+            const currentOrder = [...children].map((el) => el.columnName ?? "");
             const keys = [...this.#order];
             const {
                 changes, added, deleted

@@ -97,7 +97,7 @@ export function extractData(source = [], options = {}) {
     const convertedFilter = Object.entries(filter).map(([key, value]) => {
         return [key, prepareFilter(value)];
     }).filter(([, value]) => {
-        return isArray(value);
+        return isArray(value) && value.length;
     });
 
     const convertedSearch = isStringNotEmpty(search) ? new CharacterSearch(search) : null;
@@ -211,18 +211,18 @@ function prepareFilter(value) {
     }
     const res = [];
     for (const v of value) {
-        if (isStringNotEmpty(v)) {
-            res.push(new CharacterSearch(v));
-        } else if (isNumberNotNaN(v) || isBoolean(v)) {
+        if (v instanceof RegExp || isNumberNotNaN(v) || isBoolean(v)) {
             res.push(v);
+        } else if (isStringNotEmpty(v)) {
+            res.push(new CharacterSearch(v));
         }
     }
     return res;
 }
 
 function testFilterList(value, filterList) {
-    if (isNull(filterList)) {
-        return null;
+    if (!isArray(filterList) || filterList.length === 0) {
+        return true;
     }
     for (const filter of filterList) {
         if (filter instanceof CharacterSearch) {
