@@ -144,9 +144,9 @@ export default class NumberInput extends AbstractFormElement {
         switch (name) {
             case "readonly": {
                 if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, "readonly", newValue);
-                    safeSetAttribute(this.#upButtonEl, "readonly", newValue);
-                    safeSetAttribute(this.#downButtonEl, "readonly", newValue);
+                    safeSetAttribute(this.#inputEl, "readonly", this.readonly);
+                    safeSetAttribute(this.#upButtonEl, "readonly", this.readonly);
+                    safeSetAttribute(this.#downButtonEl, "readonly", this.readonly);
                 }
             } break;
             case "placeholder": {

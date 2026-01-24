@@ -148,7 +148,7 @@ export default class ImageSelect extends AbstractFormElement {
             } break;
             case "readonly": {
                 if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, name, newValue);
+                    safeSetAttribute(this.#inputEl, "readonly", this.readonly);
                 }
             } break;
             case "sorted": {

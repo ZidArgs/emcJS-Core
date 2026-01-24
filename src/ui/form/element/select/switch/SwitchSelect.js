@@ -133,7 +133,7 @@ export default class SwitchSelect extends AbstractFormElement {
                 if (oldValue != newValue) {
                     const optionEls = this.#optionsContainerEl.children;
                     for (const optionEl of optionEls) {
-                        safeSetAttribute(optionEl, "readonly", newValue);
+                        safeSetAttribute(optionEl, "readonly", this.readonly);
                     }
                 }
             } break;

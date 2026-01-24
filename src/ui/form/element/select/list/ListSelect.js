@@ -190,7 +190,7 @@ export default class ListSelect extends AbstractFormElement {
         switch (name) {
             case "readonly": {
                 if (oldValue != newValue) {
-                    const value = newValue != null && newValue != "false";
+                    const value = this.readonly;
                     this.#listEl.readonly = value;
                     this.#headerSelectEl.readonly = value;
                 }

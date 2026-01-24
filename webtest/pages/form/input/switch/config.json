@@ -24,6 +24,12 @@
             },
             {
                 "type": "SwitchInput",
+                "label": "switch readonly",
+                "name": "switch.readonly",
+                "readonly": true
+            },
+            {
+                "type": "SwitchInput",
                 "label": "switch disabled",
                 "name": "switch.disabled",
                 "disabled": true

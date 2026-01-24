@@ -285,7 +285,7 @@ export default class SimpleSelect extends AbstractFormElement {
             } break;
             case "readonly": {
                 if (oldValue != newValue) {
-                    safeSetAttribute(this.#buttonEl, "readonly", newValue);
+                    safeSetAttribute(this.#buttonEl, "readonly", this.readonly);
                 }
             } break;
             case "sorted": {

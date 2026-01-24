@@ -121,7 +121,7 @@ export default class StringInput extends AbstractFormElement {
         switch (name) {
             case "readonly": {
                 if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, name, newValue);
+                    safeSetAttribute(this.#inputEl, "readonly", this.readonly);
                 }
             } break;
             case "placeholder": {

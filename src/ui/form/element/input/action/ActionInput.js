@@ -82,7 +82,7 @@ export default class ActionInput extends AbstractFormElement {
             } break;
             case "readonly": {
                 if (oldValue != newValue) {
-                    safeSetAttribute(this.#buttonEl, "readonly", newValue);
+                    safeSetAttribute(this.#buttonEl, "readonly", this.readonly);
                 }
             } break;
         }

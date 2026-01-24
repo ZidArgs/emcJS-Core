@@ -276,7 +276,7 @@ export default class AbstractElement extends CustomElement {
                     } else {
                         this.removeAttribute("draggable");
                     }
-                    const value = newValue != null && newValue != "false";
+                    const value = this.readonly;
                     for (const ch of this.children) {
                         ch.readonly = value;
                     }

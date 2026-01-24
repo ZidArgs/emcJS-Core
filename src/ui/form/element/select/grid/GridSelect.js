@@ -154,8 +154,7 @@ export default class GridSelect extends AbstractFormElement {
         switch (name) {
             case "readonly": {
                 if (oldValue != newValue) {
-                    const value = newValue != null && newValue != "false";
-                    this.#gridEl.readonly = value;
+                    this.#gridEl.readonly = this.readonly;
                 }
             } break;
             case "sorted": {

@@ -77,8 +77,8 @@ export default class ColorInput extends AbstractFormElement {
             } break;
             case "readonly": {
                 if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, "readonly", newValue);
-                    safeSetAttribute(this.#buttonEl, "readonly", newValue);
+                    safeSetAttribute(this.#inputEl, "readonly", this.readonly);
+                    safeSetAttribute(this.#buttonEl, "readonly", this.readonly);
                 }
             } break;
         }

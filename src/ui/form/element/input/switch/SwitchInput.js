@@ -1,6 +1,7 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
 import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
+import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
 import TPL from "./SwitchInput.js.html" assert {type: "html"};
 import STYLE from "./SwitchInput.js.css" assert {type: "css"};
 
@@ -21,6 +22,13 @@ export default class SwitchInput extends AbstractFormElement {
         this.registerTargetEventHandler(this.#inputEl, "change", () => {
             this.value = this.#inputEl.checked;
         });
+        this.registerTargetEventHandler(this.#inputEl, "click", (event) => {
+            if (this.readonly) {
+                event.preventDefault();
+                event.stopPropagation();
+                return false;
+            }
+        });
     }
 
     formDisabledCallback(disabled) {
@@ -39,6 +47,29 @@ export default class SwitchInput extends AbstractFormElement {
 
     get defaultValue() {
         return this.getBooleanAttribute("value");
+    }
+
+    static get observedAttributes() {
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "readonly"];
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback?.(name, oldValue, newValue);
+        switch (name) {
+            case "readonly": {
+                if (oldValue != newValue) {
+                    safeSetAttribute(this.#inputEl, "readonly", this.readonly);
+                }
+            } break;
+        }
+    }
+
+    checkValid() {
+        if (this.required && !this.value) {
+            return "This field is required";
+        }
+        return super.checkValid();
     }
 
     renderValue(value) {
