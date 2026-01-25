@@ -159,6 +159,11 @@
     font-size: 32px;
 }
 
+#title-icon-container:not([icon-type]),
+#title-icon-container[icon-type=""] {
+    display: none;
+}
+
 #title-icon {
     display: none;
 }

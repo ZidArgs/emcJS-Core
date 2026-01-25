@@ -156,6 +156,9 @@ export default class Modal extends CustomElement {
     }
 
     setIcon(config) {
+        if (config === true) {
+            return this.setIcon("❖");
+        }
         if (isPrimitive(config)) {
             config = {content: config.toString()};
         }
@@ -170,14 +173,14 @@ export default class Modal extends CustomElement {
                 }
             } break;
             case "font": {
-                if (typeof content === "string" && content !== "") {
+                if (isStringNotEmpty(content)) {
                     this.#titleIconContainerEl.setAttribute("icon-type", "font");
                     this.#titleFontIconEl.icon = content;
                     return true;
                 }
             } break;
             case "image": {
-                if (typeof content === "string" && content !== "") {
+                if (isStringNotEmpty(content)) {
                     this.#titleIconContainerEl.setAttribute("icon-type", "image");
                     this.#titleIconEl.style.backgroundImage = content;
                     this.#titleIconEl.style.backgroundSize = "80%";
@@ -186,7 +189,7 @@ export default class Modal extends CustomElement {
                 }
             } break;
             case "url": {
-                if (typeof content === "string" && content !== "") {
+                if (isStringNotEmpty(content)) {
                     this.#titleIconContainerEl.setAttribute("icon-type", "image");
                     this.#titleIconEl.style.backgroundImage = `url("${content}")`;
                     this.#titleIconEl.style.backgroundSize = "80%";
@@ -195,7 +198,7 @@ export default class Modal extends CustomElement {
                 }
             } break;
             default: {
-                if (typeof content === "string" && content !== "") {
+                if (isStringNotEmpty(content)) {
                     this.#titleIconContainerEl.setAttribute("icon-type", "char");
                     this.#titleIconEl.innerText = content;
                     return true;
@@ -203,6 +206,11 @@ export default class Modal extends CustomElement {
             } break;
         }
         return false;
+    }
+
+    unsetIcon() {
+        this.#resetIcon();
+        this.#titleIconContainerEl.removeAttribute("icon-type");
     }
 
     #applyIconStyle(style) {

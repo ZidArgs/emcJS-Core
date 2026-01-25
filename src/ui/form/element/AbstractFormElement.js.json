@@ -30,6 +30,12 @@
         "value": false
     },
     {
+        "type": "SwitchInput",
+        "name": "noValidate",
+        "label": "Don't include this input in the auto validation",
+        "value": false
+    },
+    {
         "type": "ListSelect",
         "name": "controlButtons",
         "label": "Activate Control Buttons",
@@ -75,12 +81,6 @@
         "type": "SwitchInput",
         "name": "noPad",
         "label": "Remove padding",
-        "value": false
-    },
-    {
-        "type": "SwitchInput",
-        "name": "noValidate",
-        "label": "Don't include this input in the auto validation",
         "value": false
     }
 ]

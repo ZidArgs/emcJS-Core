@@ -6,7 +6,7 @@ import {debounce} from "../../../util/Debouncer.js";
 import {getAllAttributes} from "../../../util/helper/ui/NodeAttributes.js";
 import {filterInPlace} from "../../../util/helper/collection/ArrayMutations.js";
 import MutationObserverManager from "../../../util/observer/manager/MutationObserverManager.js";
-import DataReceiverMixin from "../../../util/dataprovider/DataReceiverMixin.js";
+import DataReceiverMixin from "../../../util/datareceiver/DataReceiverMixin.js";
 import HeaderManager from "./manager/HeaderManager.js";
 import RowManager from "./manager/RowManager.js";
 import Column from "./Column.js";

@@ -1,7 +1,11 @@
+:host {
+    height: min-content;
+}
+
 #field {
     display: flex;
     flex-direction: column;
-    height: 300px;
+    min-height: 300px;
     min-width: 200px;
     padding: 0px;
     color: var(--input-text-color, #000000);

@@ -1,12 +1,6 @@
 [
     {
         "type": "SwitchInput",
-        "name": "sorted",
-        "label": "Sorted",
-        "value": false
-    },
-    {
-        "type": "SwitchInput",
         "name": "multiple",
         "label": "Multiple",
         "value": false

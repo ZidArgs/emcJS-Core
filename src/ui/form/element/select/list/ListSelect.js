@@ -12,7 +12,8 @@ import BusyIndicatorManager from "../../../../../util/BusyIndicatorManager.js";
 import i18n from "../../../../../util/I18n.js";
 import jsonParse from "../../../../../patches/JSONParser.js";
 import I18nOption from "../../../../i18n/builtin/I18nOption.js";
-import "./components/SelectionList.js";
+import ListSelectEntry from "./components/ListSelectEntry.js";
+import "../../../../dataview/datalist/DataListSelect.js";
 import TPL from "./ListSelect.js.html" assert {type: "html"};
 import STYLE from "./ListSelect.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./ListSelect.js.json" assert {type: "json"};
@@ -67,6 +68,7 @@ export default class ListSelect extends AbstractFormElement {
         this.#headerEl = this.shadowRoot.getElementById("header");
         /* --- */
         this.#listEl = this.shadowRoot.getElementById("list");
+        this.#listEl.setListEntryClass(ListSelectEntry);
         this.registerTargetEventHandler(this.#listEl, "selection", (event) => {
             event.stopPropagation();
             event.preventDefault();

@@ -1,5 +1,6 @@
 import CustomElement from "../../element/CustomElement.js";
-import DataReceiverMixin from "../../../util/dataprovider/DataReceiverMixin.js";
+import {classExtends} from "../../../util/helper/Class.js";
+import DataReceiverMixin from "../../../util/datareceiver/DataReceiverMixin.js";
 import ElementManager from "../../../util/html/ElementManager.js";
 import BusyIndicator from "../../BusyIndicator.js";
 import DataListEntry from "./components/DataListEntry.js";
@@ -8,6 +9,8 @@ import TPL from "./DataList.js.html" assert {type: "html"};
 import STYLE from "./DataList.js.css" assert {type: "css"};
 
 export default class DataList extends DataReceiverMixin(CustomElement) {
+
+    #listEntryClass = DataListEntry;
 
     #scrollContainerEl;
 
@@ -29,10 +32,8 @@ export default class DataList extends DataReceiverMixin(CustomElement) {
         this.#scrollContainerEl = this.shadowRoot.getElementById("scroll-container");
         this.#emptyContainerEl = this.shadowRoot.getElementById("empty-container");
         this.#elementManager.composer = (key) => {
-            const el = this.createListEntry();
-            if (!(el instanceof DataListEntry)) {
-                throw new Error("list elements must extend DataListEntry");
-            }
+            const el = new this.#listEntryClass();
+            this.prepareListEntry(el);
             el.key = key;
             this.#entries.set(key, el);
             return el;
@@ -51,11 +52,17 @@ export default class DataList extends DataReceiverMixin(CustomElement) {
         /* --- */
     }
 
-    createListEntry() {
-        return new DataListEntry();
+    setListEntryClass(Clazz) {
+        if  (classExtends(Clazz, DataListEntry)) {
+            this.#listEntryClass = Clazz;
+        }
     }
 
-    removeListEntry() {
+    prepareListEntry(/* el */) {
+        // to override
+    }
+
+    removeListEntry(/* el */) {
         // to override
     }
 

@@ -269,6 +269,14 @@ export default class AbstractFormElement extends CustomFormElement {
         return this.getBooleanAttribute("required");
     }
 
+    set noValidate(value) {
+        this.setBooleanAttribute("novalidate", value);
+    }
+
+    get noValidate() {
+        return this.getBooleanAttribute("novalidate");
+    }
+
     set controlButtons(value) {
         this.setListAttribute("control-buttons", value, ControlButtonTypes);
     }
@@ -323,14 +331,6 @@ export default class AbstractFormElement extends CustomFormElement {
 
     get noPad() {
         return this.getBooleanAttribute("nopad");
-    }
-
-    set noValidate(value) {
-        this.setBooleanAttribute("novalidate", value);
-    }
-
-    get noValidate() {
-        return this.getBooleanAttribute("novalidate");
     }
 
     static get observedAttributes() {

@@ -1,9 +1,10 @@
-import EventMultiTargetManager from "../../../../../../util/event/EventMultiTargetManager.js";
-import DataList from "../../../../../dataview/datalist/DataList.js";
-import "./SelectionListEntry.js";
-import STYLE from "./SelectionList.js.css" assert {type: "css"};
+import DataList from "./DataList.js";
+import {classExtends} from "../../../util/helper/Class.js";
+import EventMultiTargetManager from "../../../util/event/EventMultiTargetManager.js";
+import DataListSelectEntry from "./components/DataListSelectEntry.js";
+import STYLE from "./DataListSelect.js.css" assert {type: "css"};
 
-export default class SelectionList extends DataList {
+export default class DataListSelect extends DataList {
 
     #selected = new Set();
 
@@ -12,6 +13,7 @@ export default class SelectionList extends DataList {
     constructor() {
         super();
         STYLE.apply(this.shadowRoot);
+        super.setListEntryClass(DataListSelectEntry);
         /* --- */
         this.#entryEventManager.set("selection", (event) => {
             event.stopPropagation();
@@ -59,8 +61,13 @@ export default class SelectionList extends DataList {
         this.#entryEventManager.active = false;
     }
 
-    createListEntry() {
-        const el = document.createElement("emc-selectionlist-entry");
+    setListEntryClass(Clazz) {
+        if  (classExtends(Clazz, DataListSelectEntry)) {
+            super.setListEntryClass(Clazz);
+        }
+    }
+
+    prepareListEntry(el) {
         this.#entryEventManager.addTarget(el);
         if (this.disabled) {
             el.disabled = true;
@@ -274,4 +281,4 @@ export default class SelectionList extends DataList {
 
 }
 
-customElements.define("emc-selectionlist", SelectionList);
+customElements.define("emc-datalist-select", DataListSelect);

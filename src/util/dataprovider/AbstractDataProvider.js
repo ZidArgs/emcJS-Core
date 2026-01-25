@@ -7,7 +7,8 @@ import {debounce} from "../Debouncer.js";
 import {DEFAULT_EXTRACT_CONFIG} from "../helper/collection/ExtractDataFromArray.js";
 import EventMultiTargetManager from "../event/EventMultiTargetManager.js";
 import DataViewControlToolbar from "../../ui/dataview/toolbar/DataViewControlToolbar.js";
-import DataReceiverMixin from "./DataReceiverMixin.js";
+import DataReceiverMixin from "../datareceiver/DataReceiverMixin.js";
+import SimpleDataReceiver from "../datareceiver/SimpleDataReceiver.js";
 import EventManagerMixin from "../../ui/mixin/EventManagerMixin.js";
 
 export default class AbstractDataProvider extends EventTarget {
@@ -33,10 +34,10 @@ export default class AbstractDataProvider extends EventTarget {
             throw new Error("can not construct abstract class");
         }
         if (!(receiver instanceof DataReceiverMixin)) {
-            throw new Error("target must extend DataReceiverMixin");
+            throw new Error("receiver must extend DataReceiverMixin");
         }
-        if (!(receiver instanceof EventManagerMixin)) {
-            throw new Error("target must extend EventManagerMixin");
+        if (!(receiver instanceof EventManagerMixin) && !(receiver instanceof SimpleDataReceiver)) {
+            throw new Error("receiver must extend EventManagerMixin or SimpleDataReceiver");
         }
         super();
         const {
@@ -50,58 +51,60 @@ export default class AbstractDataProvider extends EventTarget {
         }
         this.refresh();
         /* --- */
-        this.#receiver.registerTargetEventHandler(this.#receiver, "refresh", () => {
-            this.refresh();
-        });
-        this.#receiver.registerTargetEventHandler(this.#receiver, "search", (event) => {
-            const {search} = event.data;
-            this.updateConfig({search});
-        });
-        this.#receiver.registerTargetEventHandler(this.#receiver, "filter", (event) => {
-            const {filter} = event.data;
-            const newFilter = {...this.#config.filter};
-            for (const [key, value] of Object.entries(filter)) {
-                newFilter[key] = value;
-            }
-            this.updateConfig({filter: newFilter});
-        });
-        this.#receiver.registerTargetEventHandler(this.#receiver, "sort", (event) => {
-            const {columnName} = event.data;
-            if (!this.#multiSort) {
-                const currentSort = this.#config.sort[0];
-                if (currentSort != null && currentSort === columnName) {
-                    this.updateConfig({sort: [`!${columnName}`]});
-                } else {
-                    this.updateConfig({sort: [columnName]});
+        if (receiver instanceof EventManagerMixin) {
+            this.#receiver.registerTargetEventHandler(this.#receiver, "refresh", () => {
+                this.refresh();
+            });
+            this.#receiver.registerTargetEventHandler(this.#receiver, "search", (event) => {
+                const {search} = event.data;
+                this.updateConfig({search});
+            });
+            this.#receiver.registerTargetEventHandler(this.#receiver, "filter", (event) => {
+                const {filter} = event.data;
+                const newFilter = {...this.#config.filter};
+                for (const [key, value] of Object.entries(filter)) {
+                    newFilter[key] = value;
                 }
-            } else {
-                const currentSort = this.#config.sort;
-                const index = currentSort.findIndex((entry) => entry === columnName || entry === `!${columnName}`);
-                const newSort = [...currentSort];
-                if (index >= 0) {
-                    const current = currentSort[index];
-                    newSort[index] = current.startsWith("!") ? columnName : `!${columnName}`;
+                this.updateConfig({filter: newFilter});
+            });
+            this.#receiver.registerTargetEventHandler(this.#receiver, "sort", (event) => {
+                const {columnName} = event.data;
+                if (!this.#multiSort) {
+                    const currentSort = this.#config.sort[0];
+                    if (currentSort != null && currentSort === columnName) {
+                        this.updateConfig({sort: [`!${columnName}`]});
+                    } else {
+                        this.updateConfig({sort: [columnName]});
+                    }
                 } else {
-                    newSort.push(columnName);
+                    const currentSort = this.#config.sort;
+                    const index = currentSort.findIndex((entry) => entry === columnName || entry === `!${columnName}`);
+                    const newSort = [...currentSort];
+                    if (index >= 0) {
+                        const current = currentSort[index];
+                        newSort[index] = current.startsWith("!") ? columnName : `!${columnName}`;
+                    } else {
+                        newSort.push(columnName);
+                    }
+                    this.updateConfig({sort: newSort});
                 }
-                this.updateConfig({sort: newSort});
-            }
-        });
-        this.#receiver.registerTargetEventHandler(this.#receiver, "unsort", (event) => {
-            const {columnName} = event.data;
-            if (!this.#multiSort) {
-                const currentSort = this.#config.sort[0];
-                if (currentSort != null && currentSort === columnName) {
-                    this.updateConfig({sort: []});
+            });
+            this.#receiver.registerTargetEventHandler(this.#receiver, "unsort", (event) => {
+                const {columnName} = event.data;
+                if (!this.#multiSort) {
+                    const currentSort = this.#config.sort[0];
+                    if (currentSort != null && currentSort === columnName) {
+                        this.updateConfig({sort: []});
+                    } else {
+                        this.updateConfig({sort: []});
+                    }
                 } else {
-                    this.updateConfig({sort: []});
+                    const currentSort = this.#config.sort;
+                    const newSort = currentSort.filter((entry) => entry !== columnName && entry !== `!${columnName}`);
+                    this.updateConfig({sort: newSort});
                 }
-            } else {
-                const currentSort = this.#config.sort;
-                const newSort = currentSort.filter((entry) => entry !== columnName && entry !== `!${columnName}`);
-                this.updateConfig({sort: newSort});
-            }
-        });
+            });
+        }
         /* --- */
         this.#toolbarEventManager.set("page", (event) => {
             const page = event.data - 1;

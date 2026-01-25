@@ -1,15 +1,12 @@
-import DataListEntry from "../../../../../dataview/datalist/components/DataListEntry.js";
-import {debounce} from "../../../../../../util/Debouncer.js";
-import TPL from "./SelectionListEntry.js.html" assert {type: "html"};
-import STYLE from "./SelectionListEntry.js.css" assert {type: "css"};
+import DataListEntry from "./DataListEntry.js";
+import TPL from "./DataListSelectEntry.js.html" assert {type: "html"};
+import STYLE from "./DataListSelectEntry.js.css" assert {type: "css"};
 
-export default class SelectionListEntry extends DataListEntry {
+export default class DataListSelectEntry extends DataListEntry {
 
     #containerEl;
 
     #contentEl;
-
-    #textEl;
 
     #selectable = false;
 
@@ -25,7 +22,12 @@ export default class SelectionListEntry extends DataListEntry {
         this.#containerEl = this.shadowRoot.getElementById("container");
         this.#containerEl.append(els);
         this.#contentEl = this.shadowRoot.getElementById("content");
-        this.#textEl = this.shadowRoot.getElementById("text");
+        this.registerTargetEventHandler(this.#containerEl, "click", (event) => {
+            if (event.target !== this.#selectCheckboxEl) {
+                this.#selectCheckboxEl.click();
+            }
+            event.stopPropagation();
+        }, {passive: true});
         /* --- */
         this.#selectCheckboxEl = document.createElement("input");
         this.#selectCheckboxEl.type = "checkbox";
@@ -45,12 +47,8 @@ export default class SelectionListEntry extends DataListEntry {
     }
 
     setData(data) {
-        if (data.name) {
-            this.#textEl.i18nValue = data.name;
-        } else {
-            this.#textEl.i18nValue = "";
-            this.#textEl.innerText = this.key;
-        }
+        this.#contentEl.innerHTML = "";
+        this.#contentEl.innerText = `${this.key}\n${JSON.stringify(data, null, 4)}`;
     }
 
     set selected(value) {
@@ -101,21 +99,18 @@ export default class SelectionListEntry extends DataListEntry {
         return this.getBooleanAttribute("readonly");
     }
 
-    #renderCheckBox = debounce(() => {
-        this.dispatchEvent(new Event("beforerender"));
-        // add select cell
+    #renderCheckBox() {
         if (this.#selectable) {
             if (this.#selectEnd) {
-                this.#contentEl.append(this.#selectCheckboxEl);
+                this.#containerEl.append(this.#selectCheckboxEl);
             } else {
-                this.#contentEl.prepend(this.#selectCheckboxEl);
+                this.#containerEl.prepend(this.#selectCheckboxEl);
             }
         } else {
             this.#selectCheckboxEl.remove();
         }
-        this.dispatchEvent(new Event("afterrender"));
-    });
+    }
 
 }
 
-customElements.define("emc-selectionlist-entry", SelectionListEntry);
+customElements.define("emc-datalist-select-entry", DataListSelectEntry);
