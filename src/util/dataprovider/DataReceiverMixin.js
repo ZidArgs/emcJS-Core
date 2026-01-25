@@ -12,6 +12,4 @@ export default createMixin((superclass) => class DataReceiverMixin extends super
 
     unbusy() {}
 
-    reset() {}
-
 });

@@ -30,7 +30,7 @@ function getStyleLengthValue(type, value) {
             return `${parseFloat(value)}%`;
         }
         if (PX_REGEXP.test(value)) {
-            return `${parseFloat(value)}px`;
+            return `${Math.max(50, parseFloat(value))}px`;
         }
     }
     return "200px";
@@ -66,8 +66,6 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
 
     #rowManager;
 
-    #headerSelectEl;
-
     #selected = new Set();
 
     #stretched = null;
@@ -91,24 +89,6 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
         /* --- */
         this.#busyIndicator.setTarget(this.shadowRoot);
         /* --- */
-        this.#headerSelectEl = document.createElement("input");
-        this.#headerSelectEl.type = "checkbox";
-        this.#headerSelectEl.name = "multiselect";
-        this.registerTargetEventHandler(this.#headerSelectEl, "change", (event) => {
-            event.stopPropagation();
-            const value = this.#headerSelectEl.checked;
-            const changedKeys = this.#rowManager.setAllVisibleRowsSelected(value);
-            for (const rowKey of changedKeys) {
-                if (value) {
-                    this.#selected.add(rowKey);
-                } else {
-                    this.#selected.delete(rowKey);
-                }
-            }
-            const ev = new Event("selection");
-            ev.data = [...this.#selected].sort();
-            this.dispatchEvent(ev);
-        }, {passive: true});
         /* --- */
         this.#scrollContainerEl = this.shadowRoot.getElementById("scroll-container");
         this.#tableEl = this.shadowRoot.getElementById("table");
@@ -125,7 +105,7 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
         this.#onSlotChange();
         /* --- */
         this.#stickyObserver = new StickyObserver({root: this.#scrollContainerEl});
-        this.#headerManager = new HeaderManager(this.#headerEl, this.#stickyObserver, this.#headerSelectEl, this.#internalId);
+        this.#headerManager = new HeaderManager(this.#headerEl, this.#stickyObserver, this.#internalId);
         this.registerTargetEventHandler(this.#headerManager, "afterrender", debounce(async () => {
             this.#calculateCellFixes(this.#headEl);
         }));
@@ -139,7 +119,6 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
         });
         this.#rowManager = new RowManager(this.#bodyEl, this.#cellCache, this.#internalId);
         this.registerTargetEventHandler(this.#rowManager, "afterrender", debounce(() => {
-            this.#refreshEmptyStatus();
             this.#updateSelectionAfterRender();
             this.#refreshStuckAfterRender();
             this.#applyCellFixes(this.#bodyEl);
@@ -220,6 +199,22 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
                 this.dispatchEvent(ev);
             }
         });
+        this.registerTargetEventHandler(this.#tableEl, "selectall", (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            const value = event.data;
+            const changedKeys = this.#rowManager.setAllVisibleRowsSelected(value);
+            for (const rowKey of changedKeys) {
+                if (value) {
+                    this.#selected.add(rowKey);
+                } else {
+                    this.#selected.delete(rowKey);
+                }
+            }
+            const ev = new Event("selection");
+            ev.data = [...this.#selected].sort();
+            this.dispatchEvent(ev);
+        });
         this.registerTargetEventHandler(this.#tableEl, "selection", (event) => {
             event.stopPropagation();
             event.preventDefault();
@@ -281,12 +276,14 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
     connectedCallback() {
         super.connectedCallback?.();
         this.#rowManager.setEventManagerActive(true);
+        this.#headerManager.setEventManagerActive(true);
         this.#stretched = this.#columnDefinition.find((definition) => definition.name === this.stretched);
     }
 
     disconnectedCallback() {
         super.disconnectedCallback?.();
         this.#rowManager.setEventManagerActive(false);
+        this.#headerManager.setEventManagerActive(false);
     }
 
     get internalId() {
@@ -525,6 +522,7 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
                 this.#data = [];
                 this.#rowManager.purge();
             } else {
+                this.#emptyContainerEl.classList.toggle("hidden", rows.length > 0);
                 this.#data = deepClone(rows);
                 this.#rowManager.manage(this.#data, this.#columnDefinition, this.#selected, this.noCache);
             }
@@ -606,6 +604,9 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
                     const widthValue = width;
                     const styleWidth = getStyleLengthValue(type, widthValue);
                     this.style.setProperty(`--width-${name}`, styleWidth);
+                    if (styleWidth.endsWith("px")) {
+                        this.style.setProperty(`--min-width-${name}`, styleWidth);
+                    }
                 }
             }
             /* --- */
@@ -616,7 +617,8 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
         const hasColumnDefinition = newColumnDefinition.length > 0;
         this.#nocolumnsContainerEl.classList.toggle("hidden", hasColumnDefinition);
         if (hasColumnDefinition) {
-            this.#refreshEmptyStatus();
+            this.#refreshStuckAfterRender();
+            this.#applyCellFixes(this.#bodyEl);
         }
         /* --- */
         await this.#busyIndicator.unbusy();
@@ -629,18 +631,15 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
 
         const ev = new Event("selection-header");
         if (selectedCount === 0) { // none selected
-            this.#headerSelectEl.checked = false;
-            this.#headerSelectEl.indeterminate = false;
+            this.#headerManager.setSelectionState(false, false);
             ev.checked = false;
             ev.indeterminate = false;
         } else if (selectedCount === visibleCount) { // all selected
-            this.#headerSelectEl.checked = true;
-            this.#headerSelectEl.indeterminate = false;
+            this.#headerManager.setSelectionState(true, false);
             ev.checked = true;
             ev.indeterminate = false;
         } else { // some selected
-            this.#headerSelectEl.checked = true;
-            this.#headerSelectEl.indeterminate = true;
+            this.#headerManager.setSelectionState(true, true);
             ev.checked = true;
             ev.indeterminate = true;
         }
@@ -774,15 +773,6 @@ export default class DataGrid extends DataReceiverMixin(CustomElement) {
             }
         }
     }
-
-    #refreshEmptyStatus = debounce(() => {
-        if (this.#busyIndicator.isBusy()) {
-            this.#refreshEmptyStatus();
-        } else {
-            const isEmpty = this.#bodyEl.children.length === 0;
-            this.#emptyContainerEl.classList.toggle("hidden", !isEmpty);
-        }
-    }, 1000);
 
 }
 

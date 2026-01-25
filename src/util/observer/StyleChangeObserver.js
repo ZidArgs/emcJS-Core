@@ -1,5 +1,6 @@
 import {isEqual} from "../helper/Comparator.js";
 import {getComputedStyleProperties} from "../helper/html/ElementStyleHelper.js";
+import IsConnectedObserver from "./IsConnectedObserver.js";
 
 const OBSERVED_MUTATIONS = {
     attributes: true,
@@ -18,9 +19,18 @@ export default class StyleChangeObserver {
 
     #observedEls = new Map();
 
+    #isConnectedObserver;
+
+    #observerPromises = new Map();
+
     constructor(callback, observedStyleProperties = []) {
         this.#callback = callback;
         this.#observedProperties = observedStyleProperties;
+        this.#isConnectedObserver = new IsConnectedObserver((element) => {
+            this.#doObserve(element);
+            this.#observerPromises.get(element)?.();
+            this.#observerPromises.delete(element);
+        });
         this.#mutationObserver = new MutationObserver((mutationList) => {
             this.#refresh(mutationList);
         });
@@ -49,7 +59,28 @@ export default class StyleChangeObserver {
         }
     }
 
-    async observe(element) {
+    refreshStyle() {
+        const entries = [];
+        for (const [observedEl, elementData] of this.#observedEls) {
+            const newStyle = getComputedStyleProperties(observedEl, this.#observedProperties);
+            if (!isEqual(elementData.oldStyle, newStyle)) {
+                elementData.style = newStyle;
+                entries.push(observedEl);
+            }
+        }
+        if (entries.length > 0) {
+            this.#callback(entries);
+        }
+    }
+
+    observe(element) {
+        return new Promise((resolve) => {
+            this.#isConnectedObserver.observe(element);
+            this.#observerPromises.set(element, resolve);
+        });
+    }
+
+    #doObserve(element) {
         if (!this.#observedEls.has(element)) {
             const observedStyle = getComputedStyleProperties(element, this.#observedProperties);
             this.#observedEls.set(element, {

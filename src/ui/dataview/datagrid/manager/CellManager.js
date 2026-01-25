@@ -1,4 +1,3 @@
-import ArraySet from "../../../../data/collection/ArraySet.js";
 import EventManager from "../../../../util/event/EventManager.js";
 import {debounce} from "../../../../util/Debouncer.js";
 import {isEqual} from "../../../../util/helper/Comparator.js";
@@ -211,8 +210,8 @@ export default class CellManager extends EventTarget {
                 this.#types.set(name, type);
             } else if (this.#types.get(name) !== type) {
                 const oldEl = this.#elements.get(name);
-                oldEl.remove();
                 const cellEl = this.composer(name, this.#rowKey, type, columnData, value, rowData);
+                oldEl.replaceWith(cellEl);
                 if (cellEl != null) {
                     this.mutator(cellEl, columnData, value, rowData);
                     this.#elements.set(name, cellEl);
@@ -220,6 +219,7 @@ export default class CellManager extends EventTarget {
                 this.#columnDefinitionCache.set(name, deepClone(columnData));
                 this.#valueCache.set(name, deepClone(value));
                 this.#types.set(name, type);
+                unused.delete(name);
             } else {
                 const cellEl = this.#elements.get(name);
                 const activeEl = cellEl.shadowRoot.activeElement;
@@ -332,14 +332,10 @@ export default class CellManager extends EventTarget {
         const children = this.#target.children;
         if (children.length > 0) {
             const currentOrder = [...children].map((el) => el.columnName ?? "");
-            const mutated = new ArraySet(currentOrder);
             const keys = [...this.#order];
-            const {
-                changes, deleted
-            } = getArrayMutations(currentOrder, keys);
-            // delete
-            mutated.delete(...deleted);
-            for (const {sequence} of deleted) {
+            const {changes} = getArrayMutations(currentOrder, keys);
+            // ---
+            for (const {sequence} of changes) {
                 for (const key of sequence) {
                     const el = this.#elements.get(key);
                     if (el != null) {
@@ -347,21 +343,23 @@ export default class CellManager extends EventTarget {
                     }
                 }
             }
-            // mutate
-            for (const {
-                position, sequence
-            } of changes) {
-                mutated.insertAt(position, ...sequence);
-            }
-
-            const els = [];
-            for (const key of mutated) {
-                const el = this.#elements.get(key);
-                if (el != null) {
-                    els.push(el);
+            for (const change of changes) {
+                const {
+                    sequence, position
+                } = change;
+                const els = [];
+                for (const key of sequence) {
+                    const el = this.#elements.get(key);
+                    if (el != null) {
+                        els.push(el);
+                    }
+                }
+                if (position === 0) {
+                    this.#target.prepend(...els);
+                } else {
+                    this.#target.children[position - 1].after(...els);
                 }
             }
-            this.#target.append(...els);
         } else {
             const els = [];
             for (const key of this.#order) {

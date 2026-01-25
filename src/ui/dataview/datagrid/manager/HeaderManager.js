@@ -1,4 +1,5 @@
 import {debounce} from "../../../../util/Debouncer.js";
+import EventManager from "../../../../util/event/EventManager.js";
 import {isEqual} from "../../../../util/helper/Comparator.js";
 import {deepClone} from "../../../../util/helper/DeepClone.js";
 import {getArrayMutations} from "../../../../util/helper/collection/ArrayMutations.js";
@@ -29,14 +30,15 @@ export default class HeaderManager extends EventTarget {
 
     #selectEnd = false;
 
+    #selectHeaderCheckboxEl;
+
     #lastHeaderCellEl;
 
-    constructor(target, stickyObserver, headerSelectEl, dataGridId) {
+    #eventManager = new EventManager(false);
+
+    constructor(target, stickyObserver, dataGridId) {
         if (!(target instanceof HTMLTableRowElement)) {
             throw new TypeError("target must be of type HTMLTableRowElement");
-        }
-        if (!(headerSelectEl instanceof HTMLInputElement)) {
-            throw new TypeError("headerSelectEl must be of type HTMLInputElement");
         }
         super();
         this.#dataGridId = dataGridId;
@@ -53,7 +55,20 @@ export default class HeaderManager extends EventTarget {
         this.#selectHeaderCellEl.classList.add("select-cell");
         this.#selectHeaderCellEl.classList.add("fixed-cell");
         this.#selectHeaderCellEl.classList.add("fixed-cell-start");
-        this.#selectHeaderCellEl.append(headerSelectEl);
+        this.#selectHeaderCheckboxEl = document.createElement("input");
+        this.#selectHeaderCheckboxEl.type = "checkbox";
+        this.#selectHeaderCheckboxEl.name = "rowselect";
+        this.#eventManager.set(this.#selectHeaderCheckboxEl, "change", (event) => {
+            event.stopPropagation();
+            const value = this.#selectHeaderCheckboxEl.checked;
+            const ev = new Event("selectall", {
+                bubbles: true,
+                cancelable: true
+            });
+            ev.data = value;
+            this.#selectHeaderCheckboxEl.dispatchEvent(ev);
+        }, {passive: true});
+        this.#selectHeaderCellEl.append(this.#selectHeaderCheckboxEl);
 
         this.#lastHeaderCellEl = document.createElement("th");
         this.#lastHeaderCellEl.classList.add("cell");
@@ -62,6 +77,10 @@ export default class HeaderManager extends EventTarget {
         this.#stickyObserverManager = new StickyObserverGroupManager(stickyObserver);
         this.#stickyObserverManager.observe(this.#sortHeaderCellEl);
         this.#stickyObserverManager.observe(this.#selectHeaderCellEl);
+    }
+
+    setEventManagerActive(value) {
+        this.#eventManager.active = value;
     }
 
     set sortable(value) {
@@ -100,6 +119,11 @@ export default class HeaderManager extends EventTarget {
 
     get selectEnd() {
         return this.#selectEnd;
+    }
+
+    setSelectionState(checked, indeterminate) {
+        this.#selectHeaderCheckboxEl.checked = checked;
+        this.#selectHeaderCheckboxEl.indeterminate = indeterminate;
     }
 
     getCellByColumnName(name) {

@@ -50,6 +50,21 @@ export default class AbstractDataProvider extends EventTarget {
         }
         this.refresh();
         /* --- */
+        this.#receiver.registerTargetEventHandler(this.#receiver, "refresh", () => {
+            this.refresh();
+        });
+        this.#receiver.registerTargetEventHandler(this.#receiver, "search", (event) => {
+            const {search} = event.data;
+            this.updateConfig({search});
+        });
+        this.#receiver.registerTargetEventHandler(this.#receiver, "filter", (event) => {
+            const {filter} = event.data;
+            const newFilter = {...this.#config.filter};
+            for (const [key, value] of Object.entries(filter)) {
+                newFilter[key] = value;
+            }
+            this.updateConfig({filter: newFilter});
+        });
         this.#receiver.registerTargetEventHandler(this.#receiver, "sort", (event) => {
             const {columnName} = event.data;
             if (!this.#multiSort) {
@@ -171,16 +186,16 @@ export default class AbstractDataProvider extends EventTarget {
             if (Array.isArray(data)) {
                 if (!isEqual(this.#data, data)) {
                     this.#data = data;
-                    this.#receiver.setData(data);
+                    await this.#receiver.setData(data);
                 }
             } else {
                 this.#data = [];
-                this.#receiver.setData([]);
+                await this.#receiver.setData([]);
             }
             this.dispatchEvent(new Event("updated"));
         } catch (err) {
             console.error("error providing data:\n", err);
-            this.#receiver.setData([]);
+            await this.#receiver.setData([]);
             this.dispatchEvent(new Event("error"));
         } finally {
             this.#updateToolbarEls();

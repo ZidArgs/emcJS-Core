@@ -1,11 +1,10 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
+import DataReceiverMixin from "../../../../../util/dataprovider/DataReceiverMixin.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
-import SimpleDataProvider from "../../../../../util/dataprovider/SimpleDataProvider.js";
 import {deepClone} from "../../../../../util/helper/DeepClone.js";
 import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
 import {setAttributes} from "../../../../../util/helper/ui/NodeAttributes.js";
 import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
-import BusyIndicatorManager from "../../../../../util/BusyIndicatorManager.js";
 import i18n from "../../../../../util/I18n.js";
 import jsonParse from "../../../../../patches/JSONParser.js";
 import Column from "../../../../dataview/datagrid/Column.js";
@@ -15,7 +14,7 @@ import TPL from "./GridSelect.js.html" assert {type: "html"};
 import STYLE from "./GridSelect.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./GridSelect.js.json" assert {type: "json"};
 
-export default class GridSelect extends AbstractFormElement {
+export default class GridSelect extends DataReceiverMixin(AbstractFormElement) {
 
     static get formConfigurationFields() {
         return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
@@ -28,8 +27,6 @@ export default class GridSelect extends AbstractFormElement {
     #searchEl;
 
     #gridEl;
-
-    #dataManager;
 
     #i18nEventManager = new EventTargetManager(i18n, false);
 
@@ -45,22 +42,31 @@ export default class GridSelect extends AbstractFormElement {
             this.value = event.data;
         });
         /* --- */
-        this.#dataManager = new SimpleDataProvider(this.#gridEl);
+        this.registerTargetEventHandler(this.#gridEl, "sort", (event) => {
+            event.stopPropagation();
+            const {columnName} = event.data;
+            const ev = new Event("sort");
+            ev.data = {columnName};
+            this.dispatchEvent(ev);
+        });
+        this.registerTargetEventHandler(this.#gridEl, "unsort", (event) => {
+            event.stopPropagation();
+            const {columnName} = event.data;
+            const ev = new Event("unsort");
+            ev.data = {columnName};
+            this.dispatchEvent(ev);
+        });
         /* --- */
         this.#searchEl = this.shadowRoot.getElementById("search");
         this.registerTargetEventHandler(this.#searchEl, "change", () => {
-            const options = {filter: {}};
-            if (this.#searchEl.value != "") {
-                options.filter = {name: this.#searchEl.value};
-            }
-            this.#dataManager.updateConfig(options);
+            const search = this.#searchEl.value;
+            const ev = new Event("search");
+            ev.data = {search};
+            this.dispatchEvent(ev);
         }, true);
         /* --- */
-        this.#i18nEventManager.set("language", () => {
-            this.#dataManager.refresh();
-        });
-        this.#i18nEventManager.set("translation", () => {
-            this.#dataManager.refresh();
+        this.#i18nEventManager.set(["language", "translation"], () => {
+            this.dispatchEvent(new Event("refresh"));
         });
     }
 
@@ -80,9 +86,7 @@ export default class GridSelect extends AbstractFormElement {
     }
 
     async setData(data) {
-        await BusyIndicatorManager.busy();
-        this.#dataManager.setSource(data);
-        await BusyIndicatorManager.unbusy();
+        this.#gridEl.setData(data);
     }
 
     set defaultValue(value) {
@@ -102,14 +106,6 @@ export default class GridSelect extends AbstractFormElement {
 
     get value() {
         return super.value;
-    }
-
-    set sorted(value) {
-        this.setBooleanAttribute("sorted", value);
-    }
-
-    get sorted() {
-        return this.getBooleanAttribute("sorted");
     }
 
     set multiple(val) {
@@ -157,11 +153,6 @@ export default class GridSelect extends AbstractFormElement {
                     this.#gridEl.readonly = this.readonly;
                 }
             } break;
-            case "sorted": {
-                if (oldValue != newValue) {
-                    this.#updateSort(this.sorted);
-                }
-            } break;
             case "multiple": {
                 if (oldValue != newValue) {
                     this.#gridEl.multiple = this.multiple;
@@ -187,16 +178,6 @@ export default class GridSelect extends AbstractFormElement {
 
     renderValue(value) {
         this.#gridEl.setSelected(value);
-    }
-
-    #updateSort(value) {
-        if (value) {
-            this.#i18nEventManager.active = true;
-            this.#dataManager.setConfig({sortFunction: (record0, record1) => i18n.compareNumberedValuesTranslated(record0.name, record1.name)});
-        } else {
-            this.#i18nEventManager.active = false;
-            this.#dataManager.setConfig({sortFunction: false});
-        }
     }
 
     static fromConfig(config) {
@@ -234,6 +215,14 @@ export default class GridSelect extends AbstractFormElement {
         selectEl.setData(options);
 
         return selectEl;
+    }
+
+    busy() {
+        this.#gridEl.busy();
+    }
+
+    unbusy() {
+        this.#gridEl.unbusy();
     }
 
 }

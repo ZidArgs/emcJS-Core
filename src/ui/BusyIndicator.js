@@ -4,7 +4,7 @@ import TPL from "./BusyIndicator.js.html" assert {type: "html"};
 import STYLE from "./BusyIndicator.js.css" assert {type: "css"};
 
 // TODO test with 0 delay
-const DOM_CHANGE_DELAY = 10;
+const DOM_CHANGE_DELAY = 100;
 
 export default class BusyIndicator extends CustomElement {
 

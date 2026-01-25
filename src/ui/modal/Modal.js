@@ -6,6 +6,7 @@ import {
     isStringNotEmpty
 } from "../../util/helper/CheckType.js";
 import {getFocusableElements} from "../../util/helper/html/ElementFocusHelper.js";
+import BusyIndicatorController from "../../util/BusyIndicatorController.js";
 import BusyIndicator from "../BusyIndicator.js";
 import "../i18n/I18nLabel.js";
 import "../symbols/CloseSymbol.js";
@@ -34,6 +35,8 @@ focusEventManager.set("focus", (event) => {
 export default class Modal extends CustomElement {
 
     #busyIndicator = new BusyIndicator(this);
+
+    #busyIndicatorControler = new BusyIndicatorController(this.#busyIndicator);
 
     #focusTopEl;
 
@@ -106,18 +109,8 @@ export default class Modal extends CustomElement {
         this.classList.remove("inactive");
     }
 
-    set busy(value) {
-        if (value !== this.#busyIndicator.isBusy()) {
-            if (value) {
-                this.#busyIndicator.busy();
-            } else {
-                this.#busyIndicator.reset();
-            }
-        }
-    }
-
-    get busy() {
-        return this.#busyIndicator.isBusy();
+    get busyIndicator() {
+        return this.#busyIndicatorControler;
     }
 
     get assocName() {

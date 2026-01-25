@@ -1,7 +1,6 @@
 import CustomElement from "../../element/CustomElement.js";
 import DataReceiverMixin from "../../../util/dataprovider/DataReceiverMixin.js";
 import ElementManager from "../../../util/html/ElementManager.js";
-import {debounce} from "../../../util/Debouncer.js";
 import BusyIndicator from "../../BusyIndicator.js";
 import DataListEntry from "./components/DataListEntry.js";
 import "../../i18n/I18nLabel.js";
@@ -46,12 +45,10 @@ export default class DataList extends DataReceiverMixin(CustomElement) {
             this.removeListEntry(el);
         };
         this.registerTargetEventHandler(this.#elementManager, "afterrender", () => {
-            this.#refreshEmptyStatus();
             const ev = new Event("afterrender", event);
             this.#scrollContainerEl.dispatchEvent(ev);
         });
         /* --- */
-        this.#refreshEmptyStatus();
     }
 
     createListEntry() {
@@ -71,6 +68,7 @@ export default class DataList extends DataReceiverMixin(CustomElement) {
     }
 
     setData(records) {
+        this.#emptyContainerEl.classList.toggle("hidden", records.length > 0);
         this.#elementManager.manage(records);
     }
 
@@ -81,15 +79,6 @@ export default class DataList extends DataReceiverMixin(CustomElement) {
     unbusy() {
         return this.#busyIndicator.unbusy();
     }
-
-    #refreshEmptyStatus = debounce(() => {
-        if (this.#busyIndicator.isBusy()) {
-            this.#refreshEmptyStatus();
-        } else {
-            const isEmpty = this.children.length === 0;
-            this.#emptyContainerEl.classList.toggle("hidden", !isEmpty);
-        }
-    }, 1000);
 
 }
 
