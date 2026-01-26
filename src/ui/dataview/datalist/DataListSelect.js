@@ -67,7 +67,7 @@ export default class DataListSelect extends DataList {
         }
     }
 
-    prepareListEntry(el) {
+    prepareListEntry(el, key) {
         this.#entryEventManager.addTarget(el);
         if (this.disabled) {
             el.disabled = true;
@@ -75,7 +75,11 @@ export default class DataListSelect extends DataList {
         if (this.readonly) {
             el.readonly = true;
         }
+        if (this.#selected.has(key)) {
+            el.selected = true;
+        }
         el.selectable = true;
+        el.selectEnd = this.selectEnd;
         return el;
     }
 

@@ -42,7 +42,7 @@ input[type="checkbox"] {
     width: 22px;
     height: 22px;
     padding: 2px;
-    margin: auto;
+    margin: 0px 8px;
     color: var(--datagrid-select-cell-text-color, #505050);
     background-color: var(--datagrid-select-cell-back-color, #ffffff);
     border-style: solid;
@@ -51,6 +51,14 @@ input[type="checkbox"] {
     border-radius: 0.3em;
     font-size: 16px;
     cursor: pointer;
+
+    &:first-child {
+        margin-left: 0px;
+    }
+
+    &:last-child {
+        margin-right: 0px;
+    }
 
     &:focus {
         box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);

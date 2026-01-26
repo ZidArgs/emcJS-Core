@@ -8,6 +8,7 @@ export default class BusyIndicatorController {
         if (!(indicator instanceof BusyIndicator)) {
             throw new Error("indicator must be an instance of BusyIndicator");
         }
+        this.#indicator = indicator;
     }
 
     isBusy() {

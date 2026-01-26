@@ -33,7 +33,7 @@ export default class DataList extends DataReceiverMixin(CustomElement) {
         this.#emptyContainerEl = this.shadowRoot.getElementById("empty-container");
         this.#elementManager.composer = (key) => {
             const el = new this.#listEntryClass();
-            this.prepareListEntry(el);
+            this.prepareListEntry(el, key);
             el.key = key;
             this.#entries.set(key, el);
             return el;
@@ -58,7 +58,7 @@ export default class DataList extends DataReceiverMixin(CustomElement) {
         }
     }
 
-    prepareListEntry(/* el */) {
+    prepareListEntry(/* el, key */) {
         // to override
     }
 

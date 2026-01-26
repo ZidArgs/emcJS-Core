@@ -36,7 +36,7 @@ export default class Modal extends CustomElement {
 
     #busyIndicator = new BusyIndicator(this);
 
-    #busyIndicatorControler = new BusyIndicatorController(this.#busyIndicator);
+    #busyIndicatorController = new BusyIndicatorController(this.#busyIndicator);
 
     #focusTopEl;
 
@@ -110,7 +110,7 @@ export default class Modal extends CustomElement {
     }
 
     get busyIndicator() {
-        return this.#busyIndicatorControler;
+        return this.#busyIndicatorController;
     }
 
     get assocName() {
