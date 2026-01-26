@@ -60,7 +60,7 @@ export default class Modal extends CustomElement {
 
     #assocName = "";
 
-    constructor(caption, modalClass) {
+    constructor(caption, options = {}) {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
@@ -74,8 +74,8 @@ export default class Modal extends CustomElement {
         this.#textEl = this.shadowRoot.getElementById("text");
         this.#footerEl = this.shadowRoot.getElementById("footer");
         this.caption = caption;
-        if (isStringNotEmpty(modalClass)) {
-            this.#modalEl.classList.add(modalClass);
+        if (isStringNotEmpty(options?.modalClass)) {
+            this.#modalEl.classList.add(options.modalClass);
         }
         /* --- */
         this.registerTargetEventHandler(this.#modalEl, "keydown", (event) => {
@@ -142,10 +142,12 @@ export default class Modal extends CustomElement {
     }
 
     static get observedAttributes() {
-        return ["caption"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "caption"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "caption": {
                 if (oldValue != newValue) {

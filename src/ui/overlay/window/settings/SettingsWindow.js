@@ -1,5 +1,5 @@
 import ObservableMultiDefaultValueStorage from "../../../../data/storage/observable/ObservableMultiDefaultValueStorage.js";
-import Window from "../Window.js";
+import Modal from "../../../modal/Modal.js";
 import "../../../layout/panel/TabPanel.js";
 import "../../../input/ListSelect.js";
 import "./SettingsTabContent.js";
@@ -26,11 +26,7 @@ function convertValueList(values = {}) {
     return opt;
 }
 
-export default class SettingsWindow extends Window {
-
-    #windowEl;
-
-    #bodyEl;
+export default class SettingsWindow extends Modal {
 
     #categoriesEl;
 
@@ -45,35 +41,28 @@ export default class SettingsWindow extends Window {
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.#windowEl = this.shadowRoot.getElementById("window");
-        this.#bodyEl = this.shadowRoot.getElementById("body");
-        this.#bodyEl.innerHTML = "";
+        const contentEl = this.shadowRoot.getElementById("content");
+        const footerEl = this.shadowRoot.getElementById("footer");
         this.#categoriesEl = els.getElementById("categories");
-        this.#bodyEl.append(this.#categoriesEl);
-        this.#windowEl.append(els.getElementById("footer"));
-
-        this.#categoriesEl.onclick = (event) => {
+        this.#cancelEl = els.getElementById("cancel");
+        this.#submitEl = els.getElementById("submit");
+        contentEl.append(this.#categoriesEl);
+        footerEl.append(this.#cancelEl);
+        footerEl.append(this.#submitEl);
+        this.#categoriesEl.addEventListener("click", (event) => {
             const targetEl = event.target.getAttribute("target");
             if (targetEl) {
                 this.active = targetEl;
                 event.preventDefault();
                 return false;
             }
-        };
-
-        this.#submitEl = this.shadowRoot.getElementById("submit");
-        if (!!options.submit && typeof options.submit === "string") {
-            this.#submitEl.innerHTML = options.submit;
-            this.#submitEl.setAttribute("title", options.submit);
-        }
-        this.#submitEl.addEventListener("click", () => this.submit());
-
-        this.#cancelEl = this.shadowRoot.getElementById("cancel");
-        if (!!options.cancel && typeof options.cancel === "string") {
-            this.#cancelEl.innerHTML = options.cancel;
-            this.#cancelEl.setAttribute("title", options.cancel);
-        }
-        this.#cancelEl.addEventListener("click", () => this.cancel());
+        });
+        this.#submitEl.addEventListener("click", () => {
+            this.submit();
+        });
+        this.#cancelEl.addEventListener("click", () => {
+            this.cancel();
+        });
     }
 
     show(data = {}, category = "") {

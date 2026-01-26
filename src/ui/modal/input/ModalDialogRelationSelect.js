@@ -16,7 +16,7 @@ export default class ModalDialogRelationSelect extends ModalDialog {
     #cancelEl;
 
     constructor() {
-        super({title: "Select entity"});
+        super("Select entity");
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */

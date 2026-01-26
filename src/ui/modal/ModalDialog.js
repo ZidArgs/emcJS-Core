@@ -6,6 +6,7 @@ import "../form/element/input/password/PasswordInput.js";
 import "../form/element/input/string/StringInput.js";
 import TPL from "./ModalDialog.js.html" assert {type: "html"};
 import STYLE from "./ModalDialog.js.css" assert {type: "css"};
+import {isStringNotEmpty} from "../../util/helper/CheckType.js";
 
 const promptIconColor = GlobalStyleVariables.get("--modal-icon-success-color") ?? "#009952";
 const confirmIconColor = GlobalStyleVariables.get("--modal-icon-info-color") ?? "#0000ff";
@@ -67,28 +68,27 @@ export default class ModalDialog extends Modal {
 
     #initialFocusElement = null;
 
-    constructor(options = {}) {
-        super(options.caption, options.modalClass);
+    constructor(caption, options = {}) {
+        super(caption, options);
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#footerEl = this.shadowRoot.getElementById("footer");
+        this.#textEl = this.shadowRoot.getElementById("text");
+        this.#cancelEl = els.getElementById("cancel");
+        this.#submitEl = els.getElementById("submit");
 
-        if (!!options.text && typeof options.text === "string") {
-            this.#textEl = this.shadowRoot.getElementById("text");
-            if (options.text instanceof HTMLElement) {
-                this.#textEl.append(options.text);
-            } else if (typeof options.text === "string") {
-                this.#textEl.innerHTML = options.text;
-            }
+        if (isStringNotEmpty(options.text)) {
+            this.#textEl.innerHTML = options.text;
+        } else if (options.text instanceof HTMLElement) {
+            this.#textEl.append(options.text);
         }
 
         if (options.cancel) {
-            this.#cancelEl = els.getElementById("cancel");
             if (options.cancel instanceof HTMLElement) {
                 this.#cancelEl.text = undefined;
                 this.#cancelEl.append(options.cancel);
-            } else if (typeof options.cancel === "string") {
+            } else if (isStringNotEmpty(options.cancel)) {
                 this.#cancelEl.text = options.cancel;
             }
             this.registerTargetEventHandler(this.#cancelEl, "click", () => this.cancel());
@@ -96,11 +96,10 @@ export default class ModalDialog extends Modal {
         }
 
         if (options.submit) {
-            this.#submitEl = els.getElementById("submit");
             if (options.submit instanceof HTMLElement) {
                 this.#submitEl.text = undefined;
                 this.#submitEl.append(options.submit);
-            } else if (typeof options.submit === "string") {
+            } else if (isStringNotEmpty(options.submit)) {
                 this.#submitEl.text = options.submit;
             }
             this.registerTargetEventHandler(this.#submitEl, "click", () => this.submit());
@@ -175,9 +174,8 @@ export default class ModalDialog extends Modal {
     }
 
     static async alert(caption, text) {
-        const dialogEl = new ModalDialog({
+        const dialogEl = new ModalDialog(caption, {
             modalClass: "alert",
-            caption,
             text,
             submit: "ok"
         });
@@ -189,9 +187,8 @@ export default class ModalDialog extends Modal {
     }
 
     static async confirm(caption, text) {
-        const dialogEl = new ModalDialog({
+        const dialogEl = new ModalDialog(caption, {
             modalClass: "confirm",
-            caption,
             text,
             submit: "yes",
             cancel: "no"
@@ -204,9 +201,8 @@ export default class ModalDialog extends Modal {
     }
 
     static async prompt(caption, text, value) {
-        const dialogEl = new ModalDialog({
+        const dialogEl = new ModalDialog(caption, {
             modalClass: "promt",
-            caption,
             text,
             submit: true,
             cancel: true
@@ -235,9 +231,8 @@ export default class ModalDialog extends Modal {
     }
 
     static async promptNumber(caption, text, value = 0, min = Number.NEGATIVE_INFINITY, max = Number.POSITIVE_INFINITY) {
-        const dialogEl = new ModalDialog({
+        const dialogEl = new ModalDialog(caption, {
             modalClass: "promt",
-            caption,
             text,
             submit: true,
             cancel: true
@@ -266,9 +261,8 @@ export default class ModalDialog extends Modal {
     }
 
     static async promptSensitive(caption, text, value) {
-        const dialogEl = new ModalDialog({
+        const dialogEl = new ModalDialog(caption, {
             modalClass: "promt",
-            caption,
             text,
             submit: true,
             cancel: true
@@ -297,9 +291,8 @@ export default class ModalDialog extends Modal {
     }
 
     static async error(caption = "Error", text = "An error occured", errors = []) {
-        const dialogEl = new ModalDialog({
+        const dialogEl = new ModalDialog(caption, {
             modalClass: "error",
-            caption,
             text,
             submit: "ok"
         });

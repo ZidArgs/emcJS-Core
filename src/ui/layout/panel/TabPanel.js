@@ -72,7 +72,7 @@ export default class TabPanel extends CustomElement {
                         }
                         const oldButton = this.#buttonList.get(oldValue);
                         if (oldButton != null) {
-                            oldButton.classList.remove("active");
+                            oldButton.active = false;
                         }
                     }
                     const newPanel = this.#panelList.get(newValue);
@@ -84,13 +84,14 @@ export default class TabPanel extends CustomElement {
                     }
                     const newButton = this.#buttonList.get(newValue);
                     if (newButton != null) {
-                        newButton.classList.add("active");
+                        newButton.active = true;
                         const ev = new Event("change");
                         ev.panel = newValue;
                         this.dispatchEvent(ev);
                     } else {
                         const firstButton = this.#categoryEl.querySelector("[target]");
                         if (firstButton != null) {
+                            firstButton.active = true;
                             this.active = firstButton.getAttribute("target");
                         }
                     }
