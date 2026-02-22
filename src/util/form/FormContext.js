@@ -132,7 +132,7 @@ export default class FormContext extends EventTarget {
             ev.errors = errorFields;
             this.dispatchEvent(ev);
             errorFields[0].element.focus();
-            return;
+            return false;
         }
         /* --- */
         const ev = new Event("submit");
@@ -142,6 +142,7 @@ export default class FormContext extends EventTarget {
         ev.changes = this.getChanges();
         ev.errors = this.getErrors();
         this.dispatchEvent(ev);
+        return true;
     }
 
     acceptChanges() {
@@ -426,6 +427,7 @@ export default class FormContext extends EventTarget {
             if (this.#hideErrors != null) {
                 node.hideErrors = this.#hideErrors;
             }
+            // this.#doFormFieldValidation(node);
         } else if (instanceOfOne(node, ...FORM_ELEMENTS) && !INPUT_TYPE_BLACKLIST.includes(node.type)) {
             const context = FormInputContext.getContext(node);
             context.storage = this.#dataStorage;

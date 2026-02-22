@@ -25,13 +25,19 @@ export default class Tree extends CustomElement {
 
     #currentSelectionRefPath = [];
 
+    #currentMarkedEl;
+
+    #keyboardMarkedEl;
+
+    #ctxMarkedEl;
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#treeEl = this.shadowRoot.getElementById("tree");
-        this.registerTargetEventHandler(this.#treeEl, "select", (event) => {
+        this.#treeEl.addEventListener("select", (event) => {
             if (!event.data.isSelected) {
                 const {
                     element, path, refPath
@@ -39,27 +45,25 @@ export default class Tree extends CustomElement {
                 this.#currentSelectionPath = path;
                 this.#currentSelectionRefPath = refPath;
 
-                const keyboardMarked = this.querySelector(".keyboard-marked");
-                if (keyboardMarked != null) {
-                    keyboardMarked.classList.remove("keyboard-marked");
+                if (this.#keyboardMarkedEl != null) {
+                    this.#keyboardMarkedEl.classList.remove("keyboard-marked");
                 }
-                const oldMarked = this.querySelector(".marked");
-                if (oldMarked != null) {
-                    oldMarked.classList.remove("marked");
+                if (this.#currentMarkedEl != null) {
+                    this.#currentMarkedEl.classList.remove("marked");
                 }
                 if (element != null) {
                     element.classList.add("marked");
                 }
+                this.#currentMarkedEl = element;
             }
         });
-        this.registerTargetEventHandler(this.#treeEl, "blur", () => {
-            const keyboardMarked = this.querySelector(".keyboard-marked");
-            if (keyboardMarked != null) {
-                keyboardMarked.classList.remove("keyboard-marked");
+        this.#treeEl.addEventListener("blur", () => {
+            if (this.#keyboardMarkedEl != null) {
+                this.#keyboardMarkedEl.classList.remove("keyboard-marked");
             }
         });
-        this.registerTargetEventHandler(this.#treeEl, "focus", () => {
-            const currentEl = this.querySelector(".keyboard-marked") ?? this.querySelector(".marked");
+        this.#treeEl.addEventListener("focus", () => {
+            const currentEl = this.#keyboardMarkedEl ?? this.#currentMarkedEl;
             if (currentEl == null) {
                 const element = this.#getElementByPath([0]);
                 if (element != null) {
@@ -68,10 +72,10 @@ export default class Tree extends CustomElement {
             }
         });
         /* --- */
-        this.registerTargetEventHandler(this, "keydown", (event) => {
+        this.addEventListener("keydown", (event) => {
             const {key} = event;
             if (key === "ArrowUp") {
-                const currentEl = this.querySelector(".keyboard-marked") ?? this.querySelector(".marked");
+                const currentEl = this.#keyboardMarkedEl ?? this.#currentMarkedEl;
                 if (currentEl != null) {
                     const nextEl = this.#findPrevNode(currentEl);
                     if (nextEl != null) {
@@ -86,7 +90,7 @@ export default class Tree extends CustomElement {
                 event.preventDefault();
                 event.stopPropagation();
             } else if (key === "ArrowDown") {
-                const currentEl = this.querySelector(".keyboard-marked") ?? this.querySelector(".marked");
+                const currentEl = this.#keyboardMarkedEl ?? this.#currentMarkedEl;
                 if (currentEl != null) {
                     const nextEl = this.#findNextNode(currentEl);
                     if (nextEl != null) {
@@ -101,21 +105,21 @@ export default class Tree extends CustomElement {
                 event.preventDefault();
                 event.stopPropagation();
             } else if (key === "ArrowLeft") {
-                const currentEl = this.querySelector(".keyboard-marked") ?? this.querySelector(".marked");
+                const currentEl = this.#keyboardMarkedEl ?? this.#currentMarkedEl;
                 if (currentEl != null && currentEl.collapsible) {
                     currentEl.toggleCollapsed(true);
                 }
                 event.preventDefault();
                 event.stopPropagation();
             } else if (key === "ArrowRight") {
-                const currentEl = this.querySelector(".keyboard-marked") ?? this.querySelector(".marked");
+                const currentEl = this.#keyboardMarkedEl ?? this.#currentMarkedEl;
                 if (currentEl != null && currentEl.collapsible) {
                     currentEl.toggleCollapsed(false);
                 }
                 event.preventDefault();
                 event.stopPropagation();
             } else if (key === "Enter" || key === " ") {
-                const currentEl = this.querySelector(".keyboard-marked");
+                const currentEl = this.#keyboardMarkedEl;
                 if (currentEl != null) {
                     currentEl.select();
                 }
@@ -139,20 +143,18 @@ export default class Tree extends CustomElement {
     }
 
     connectedCallback() {
-        super.connectedCallback();
+        super.connectedCallback?.();
 
         const sorted = this.sorted;
         this.#i18nEventManager.active = sorted;
         if (sorted) {
             this.#elementManager.registerSortFunction(this.#sortByNameFunction);
         }
-        this.#elementManager.setEventManagerActive(true);
     }
 
     disconnectedCallback() {
-        super.disconnectedCallback();
+        super.disconnectedCallback?.();
         this.#i18nEventManager.active = false;
-        this.#elementManager.setEventManagerActive(false);
     }
 
     set sorted(value) {
@@ -244,13 +246,11 @@ export default class Tree extends CustomElement {
         } else {
             this.#currentSelectionPath = [];
             this.#currentSelectionRefPath = [];
-            const keyboardMarked = this.querySelector(".keyboard-marked");
-            if (keyboardMarked != null) {
-                keyboardMarked.classList.remove("keyboard-marked");
+            if (this.#keyboardMarkedEl != null) {
+                this.#keyboardMarkedEl.classList.remove("keyboard-marked");
             }
-            const oldMarked = this.querySelector(".marked");
-            if (oldMarked != null) {
-                oldMarked.classList.remove("marked");
+            if (this.#currentMarkedEl != null) {
+                this.#currentMarkedEl.classList.remove("marked");
             }
             const ev = new Event("select", {
                 bubbles: true,
@@ -280,13 +280,11 @@ export default class Tree extends CustomElement {
         } else {
             this.#currentSelectionPath = [];
             this.#currentSelectionRefPath = [];
-            const keyboardMarked = this.querySelector(".keyboard-marked");
-            if (keyboardMarked != null) {
-                keyboardMarked.classList.remove("keyboard-marked");
+            if (this.#keyboardMarkedEl != null) {
+                this.#keyboardMarkedEl.classList.remove("keyboard-marked");
             }
-            const oldMarked = this.querySelector(".marked");
-            if (oldMarked != null) {
-                oldMarked.classList.remove("marked");
+            if (this.#currentMarkedEl != null) {
+                this.#currentMarkedEl.classList.remove("marked");
             }
             const ev = new Event("select", {
                 bubbles: true,
@@ -306,33 +304,31 @@ export default class Tree extends CustomElement {
     }
 
     markItemForMenuByPath(path) {
-        const keyboardMarked = this.querySelector(".keyboard-marked");
-        if (keyboardMarked != null) {
-            keyboardMarked.classList.remove("keyboard-marked");
+        if (this.#keyboardMarkedEl != null) {
+            this.#keyboardMarkedEl.classList.remove("keyboard-marked");
         }
-        const oldMarked = this.querySelector(".ctx-marked");
-        if (oldMarked != null) {
-            oldMarked.classList.remove("ctx-marked");
+        if (this.#ctxMarkedEl != null) {
+            this.#ctxMarkedEl.classList.remove("ctx-marked");
         }
         const element = this.#getElementByPath(path);
         if (element != null) {
             element.classList.add("ctx-marked");
         }
+        this.#ctxMarkedEl = element;
     }
 
     markItemForMenuByRefPath(path) {
-        const keyboardMarked = this.querySelector(".keyboard-marked");
-        if (keyboardMarked != null) {
-            keyboardMarked.classList.remove("keyboard-marked");
+        if (this.#keyboardMarkedEl != null) {
+            this.#keyboardMarkedEl.classList.remove("keyboard-marked");
         }
-        const oldMarked = this.querySelector(".ctx-marked");
-        if (oldMarked != null) {
-            oldMarked.classList.remove("ctx-marked");
+        if (this.#ctxMarkedEl != null) {
+            this.#ctxMarkedEl.classList.remove("ctx-marked");
         }
         const element = this.#getElementByRefPath(path);
         if (element != null) {
             element.classList.add("ctx-marked");
         }
+        this.#ctxMarkedEl = element;
     }
 
     toggleNodeCollapsedByPath(path, force) {
@@ -495,6 +491,7 @@ export default class Tree extends CustomElement {
                 block: "nearest"
             });
         }
+        this.#keyboardMarkedEl = nextEl;
     }
 
     #sort = debounce(() => {

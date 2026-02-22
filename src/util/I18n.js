@@ -168,8 +168,10 @@ class I18n extends EventTarget {
         if (typeof lang !== "string" || !lang) {
             return;
         }
+        let isNew = false;
         if (!this.#languages.has(lang)) {
             this.#languages.set(lang, new Map());
+            isNew = true;
         }
         if (!this.#missing.has(lang)) {
             this.#missing.set(lang, new Set());
@@ -196,6 +198,9 @@ class I18n extends EventTarget {
             const event = new Event("translation");
             event.changes = changes;
             this.dispatchEvent(event);
+        }
+        if (isNew) {
+            this.dispatchEvent(new Event("languages"));
         }
     }
 

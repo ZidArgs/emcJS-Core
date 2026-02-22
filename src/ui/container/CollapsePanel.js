@@ -15,7 +15,7 @@ export default class CollapsePanel extends CustomElement {
         /* --- */
         this.#textEl = this.shadowRoot.getElementById("text");
         this.#titleEl = this.shadowRoot.getElementById("title");
-        this.registerTargetEventHandler(this.#titleEl, "click", () => {
+        this.#titleEl.addEventListener("click", () => {
             if (!!this.expanded && this.expanded != "false") {
                 this.expanded = "false";
             } else {

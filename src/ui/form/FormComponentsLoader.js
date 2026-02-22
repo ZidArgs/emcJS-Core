@@ -4,11 +4,15 @@ import MapLocker from "../../data/locker/MapLocker.js";
 import FormSection from "./FormSection.js";
 import FormFieldset from "./FormFieldset.js";
 import FormRow from "./FormRow.js";
+import FormField from "./FormField.js";
+import FormGroup from "./FormGroup.js";
 
 export const FORM_STRUCTURE_MAPPING = new MapLocker(new Map([
     ["Section", FormSection],
     ["Fieldset", FormFieldset],
-    ["Row", FormRow]
+    ["Row", FormRow],
+    ["FormField", FormField],
+    ["FormGroup", FormGroup]
 ]));
 
 // button
@@ -31,8 +35,10 @@ export const FORM_BUTTON_MAPPING = new MapLocker(new Map([
 // element / input
 import "./element/input/action/ActionInput.js";
 import "./element/input/boolorlogic/BoolOrLogicInput.js";
+import "./element/input/checkbox/CheckboxInput.js";
 import "./element/input/code/CodeInput.js";
 import "./element/input/color/ColorInput.js";
+import "./element/input/file/FileInput.js";
 import "./element/input/grid/GridInput.js";
 import "./element/input/keybind/KeyBindInput.js";
 import "./element/input/keyvaluelist/KeyValueListInput.js";

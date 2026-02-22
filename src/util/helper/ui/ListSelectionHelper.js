@@ -1,4 +1,4 @@
-import EventManager from "../../event/EventManager.js";
+import EventTargetManager from "../../event/EventTargetManager.js";
 
 // TODO use eventMAnager
 export default class ListSelectionHelper extends EventTarget {
@@ -9,7 +9,7 @@ export default class ListSelectionHelper extends EventTarget {
 
     #skipFn;
 
-    #eventManager = new EventManager(false);
+    #eventManager = new EventTargetManager();
 
     constructor(target, container, skipFn) {
         super();
@@ -17,13 +17,14 @@ export default class ListSelectionHelper extends EventTarget {
         this.#container = container;
         this.#skipFn = skipFn;
         /* --- */
-        this.#eventManager.set(target, "blur", (event) => {
+        this.#eventManager.switchTarget(target);
+        this.#eventManager.set("blur", (event) => {
             this.#cancelSelection();
             event.stopPropagation();
             return false;
         });
-        this.#eventManager.set(target, "keydown", (event) => {
-            if (!("readonly" in target) || !target.readonly) {
+        this.#eventManager.set("keydown", (event) => {
+            if (!("readonly" in target) || !target.readOnly) {
                 switch (event.key) {
                     case "Escape": {
                         this.#onEscape(event);
@@ -34,8 +35,8 @@ export default class ListSelectionHelper extends EventTarget {
                 }
             }
         });
-        this.#eventManager.set(target, "keydown", (event) => {
-            if (!("readonly" in target) || !target.readonly) {
+        this.#eventManager.set("keydown", (event) => {
+            if (!("readonly" in target) || !target.readOnly) {
                 switch (event.key) {
                     case "ArrowUp": {
                         this.#onArrowUp(event);
@@ -46,10 +47,6 @@ export default class ListSelectionHelper extends EventTarget {
                 }
             }
         });
-    }
-
-    setEventManagerActive(value) {
-        this.#eventManager.active = value;
     }
 
     #cancelSelection() {

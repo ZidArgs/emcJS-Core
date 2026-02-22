@@ -3,10 +3,23 @@ import {instanceOfOne} from "./Class.js";
 const NODE_SUPPORTED = "Node" in globalThis;
 
 const STRUCTURED_CLONE_CLASSES = [
-    Boolean, Number, String, RegExp, Date,
-    ArrayBuffer, Int8Array, Uint8Array, Uint8ClampedArray,
-    Int16Array, Uint16Array, Int32Array, Uint32Array,
-    Float32Array, Float64Array, BigInt64Array, BigUint64Array,
+    Boolean,
+    Number,
+    String,
+    RegExp,
+    Date,
+    ArrayBuffer,
+    Int8Array,
+    Uint8Array,
+    Uint8ClampedArray,
+    Int16Array,
+    Uint16Array,
+    Int32Array,
+    Uint32Array,
+    Float32Array,
+    Float64Array,
+    BigInt64Array,
+    BigUint64Array,
     DataView
 ];
 

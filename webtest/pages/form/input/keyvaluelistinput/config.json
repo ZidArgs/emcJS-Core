@@ -41,7 +41,7 @@
             "label": "key value list readonly",
             "name": "keyvaluelist.readonly",
             "sorted": true,
-            "readonly": true,
+            "readOnly": true,
             "value": {
                 "nana": "Nana",
                 "foobar": "Foobar"

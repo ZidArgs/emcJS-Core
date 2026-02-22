@@ -17,7 +17,12 @@ import STYLE from "./DataViewControlToolbar.js.css" assert {type: "css"};
 export default class DataViewControlToolbar extends CustomElementDelegating {
 
     static get controls() {
-        return ["pagination", "page-size", "entries-count", "total-count"];
+        return [
+            "pagination",
+            "page-size",
+            "entries-count",
+            "total-count"
+        ];
     }
 
     #firstEl;
@@ -55,18 +60,18 @@ export default class DataViewControlToolbar extends CustomElementDelegating {
         this.#sizeEl = this.shadowRoot.getElementById("size");
         this.#totalEl = this.shadowRoot.getElementById("total");
         /* --- */
-        this.registerTargetEventHandler(this.#firstEl, "click", (event) => {
+        this.#firstEl.addEventListener("click", (event) => {
             event.stopPropagation();
             this.value = 0;
         });
-        this.registerTargetEventHandler(this.#decreaseEl, "click", (event) => {
+        this.#decreaseEl.addEventListener("click", (event) => {
             event.stopPropagation();
             const currentValue = this.value;
             if (currentValue > 0) {
                 this.value = currentValue - 1;
             }
         });
-        this.registerTargetEventHandler(this.#increaseEl, "click", (event) => {
+        this.#increaseEl.addEventListener("click", (event) => {
             event.stopPropagation();
             const currentValue = this.value;
             const maxValue = this.max;
@@ -74,16 +79,16 @@ export default class DataViewControlToolbar extends CustomElementDelegating {
                 this.value = currentValue + 1;
             }
         });
-        this.registerTargetEventHandler(this.#lastEl, "click", (event) => {
+        this.#lastEl.addEventListener("click", (event) => {
             event.stopPropagation();
             const maxValue = this.max;
             this.value = maxValue;
         });
-        this.registerTargetEventHandler(this.#currentEl, "change", (event) => {
+        this.#currentEl.addEventListener("change", (event) => {
             event.stopPropagation();
             this.value = this.#currentEl.value;
         });
-        this.registerTargetEventHandler(this.#sizeEl, "change", (event) => {
+        this.#sizeEl.addEventListener("change", (event) => {
             event.stopPropagation();
             this.size = this.#sizeEl.value;
         });
@@ -187,7 +192,14 @@ export default class DataViewControlToolbar extends CustomElementDelegating {
     }
 
     static get observedAttributes() {
-        return ["value", "max", "size", "entries", "total", "sizes"];
+        return [
+            "value",
+            "max",
+            "size",
+            "entries",
+            "total",
+            "sizes"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {

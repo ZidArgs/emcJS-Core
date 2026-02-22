@@ -72,8 +72,8 @@ export default class DataListSelect extends DataList {
         if (this.disabled) {
             el.disabled = true;
         }
-        if (this.readonly) {
-            el.readonly = true;
+        if (this.readOnly) {
+            el.readOnly = true;
         }
         if (this.#selected.has(key)) {
             el.selected = true;
@@ -119,16 +119,21 @@ export default class DataListSelect extends DataList {
         return this.getBooleanAttribute("disabled");
     }
 
-    set readonly(val) {
+    set readOnly(val) {
         this.setBooleanAttribute("readonly", val);
     }
 
-    get readonly() {
+    get readOnly() {
         return this.getBooleanAttribute("readonly");
     }
 
     static get observedAttributes() {
-        return ["selectend", "multiple", "disabled", "readonly"];
+        return [
+            "selectend",
+            "multiple",
+            "disabled",
+            "readonly"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -155,7 +160,7 @@ export default class DataListSelect extends DataList {
                 case "readonly": {
                     const els = this.getAllEntries();
                     for (const el of els) {
-                        el.readonly = this.readonly;
+                        el.readOnly = this.readOnly;
                     }
                 } break;
             }
@@ -271,14 +276,11 @@ export default class DataListSelect extends DataList {
 
         const ev = new Event("selection-header");
         if (selectedCount === 0) { // none selected
-            ev.checked = false;
-            ev.indeterminate = false;
+            ev.value = false;
         } else if (selectedCount === visibleCount) { // all selected
-            ev.checked = true;
-            ev.indeterminate = false;
+            ev.value = true;
         } else { // some selected
-            ev.checked = true;
-            ev.indeterminate = true;
+            ev.value = null;
         }
         this.dispatchEvent(ev);
     }

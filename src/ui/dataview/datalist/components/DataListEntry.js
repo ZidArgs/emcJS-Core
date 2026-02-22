@@ -13,7 +13,7 @@ export default class DataListEntry extends CustomElement {
         /* --- */
         this.#containerEl = this.shadowRoot.getElementById("container");
         /* --- */
-        this.registerTargetEventHandler(this, "contextmenu", (event) => {
+        this.addEventListener("contextmenu", (event) => {
             event.stopPropagation();
             event.preventDefault();
             const menuEvent = new Event("menu", {

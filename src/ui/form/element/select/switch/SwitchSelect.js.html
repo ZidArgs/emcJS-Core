@@ -1,6 +1,7 @@
-<input is="emc-i18n-input" id="input" autocomplete="off" readonly tabindex="-1">
-<div id="scroll-container">
-    <div id="options-container"></div>
-    <emc-i18n-label id="empty" i18n-value="no entries"></emc-i18n-label>
+<div id="container">
+    <div id="scroll-container">
+        <div id="options-container"></div>
+        <emc-i18n-label id="empty" i18n-value="no entries"></emc-i18n-label>
+    </div>
+    <slot id="options-slot"></slot>
 </div>
-<slot id="options-slot"></slot>

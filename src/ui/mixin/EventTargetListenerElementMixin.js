@@ -5,14 +5,14 @@ export default createMixin((superclass) => class EventTargetListenerElementMixin
 
     connectedCallback() {
         if (super.connectedCallback) {
-            super.connectedCallback();
+            super.connectedCallback?.();
         }
         this.setEventTargetListenerActive(true);
     }
 
     disconnectedCallback() {
         if (super.disconnectedCallback) {
-            super.disconnectedCallback();
+            super.disconnectedCallback?.();
         }
         this.setEventTargetListenerActive(false);
     }

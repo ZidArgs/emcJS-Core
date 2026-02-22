@@ -176,13 +176,9 @@ class TypeGenerator {
             if (definition.children.optional) {
                 return [];
             }
-            return [
-                this.#generateType([...`0 {${definition.children["@type"]}}`], null, definition.children, generateOptionals)
-            ];
+            return [this.#generateType([...`0 {${definition.children["@type"]}}`], null, definition.children, generateOptionals)];
         } else if (currentValue.length <= 0 && !definition.children.optional) {
-            return [
-                this.#generateType([...`0 {${definition.children["@type"]}}`], null, definition.children, generateOptionals)
-            ];
+            return [this.#generateType([...`0 {${definition.children["@type"]}}`], null, definition.children, generateOptionals)];
         } else {
             const resultList = [];
             for (const key in currentValue) {

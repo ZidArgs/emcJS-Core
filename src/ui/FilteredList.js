@@ -18,13 +18,13 @@ export default class FilteredList extends CustomElement {
         /* --- */
         this.#headerEl = this.shadowRoot.getElementById("header");
         this.#containerEl = this.shadowRoot.getElementById("container");
-        this.registerTargetEventHandler(this.#containerEl, "slotchange", () => {
+        this.#containerEl.addEventListener("slotchange", () => {
             // TODO only check new elements
             // TODO reset removed elements
             // header.search
         });
         /* header */
-        this.registerTargetEventHandler(this.#headerEl, "search", (event) => {
+        this.#headerEl.addEventListener("search", (event) => {
             const all = this.querySelectorAll(":scope > :not(emc-collapsepanel), emc-collapsepanel > :not(emc-collapsepanel)");
             const panels = this.querySelectorAll("emc-collapsepanel");
             if (event.value) {

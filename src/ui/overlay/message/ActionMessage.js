@@ -8,7 +8,7 @@ export default class ActionMessage extends Message {
         super(opts);
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.registerTargetEventHandler(this, "click", (event) => {
+        this.addEventListener("click", (event) => {
             event.stopPropagation();
             this.remove();
             this.dispatchEvent(new Event("action"));

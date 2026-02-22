@@ -1,5 +1,9 @@
 
-const LOCALHOST_ALIASES = ["localhost", "127.0.0.1", "[::1]"];
+const LOCALHOST_ALIASES = [
+    "localhost",
+    "127.0.0.1",
+    "[::1]"
+];
 
 const SECURE_PROTOCOLS = ["https", "wss"];
 

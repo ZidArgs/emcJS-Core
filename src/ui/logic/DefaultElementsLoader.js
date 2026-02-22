@@ -31,13 +31,31 @@ import "./elements/RestrictorMin.js";
 
 export const DEFAULT_LOGIC_OPERATORS = [
     /* literals */
-    "false", "true",
+    "false",
+    "true",
     /* operators */
-    "not", "and", "nand", "or", "nor", "xor", "xnor",
+    "not",
+    "and",
+    "nand",
+    "or",
+    "nor",
+    "xor",
+    "xnor",
     /* restrictors */
-    "min", "max",
+    "min",
+    "max",
     /* comparators */
-    "eq", "gt", "gte", "lt", "lte", "neq",
+    "eq",
+    "gt",
+    "gte",
+    "lt",
+    "lte",
+    "neq",
     /* math */
-    "add", "sub", "mul", "div", "mod", "pow"
+    "add",
+    "sub",
+    "mul",
+    "div",
+    "mod",
+    "pow"
 ];

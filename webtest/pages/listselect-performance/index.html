@@ -32,10 +32,14 @@
 
 <body style="display: flex; flex-direction: column;">
     <emc-page id="page" style="padding: 8px;">
-        <emc-select-list id="list-select" label="list-select" name="list-select" placeholder="Select entry..." multiple sorted>
-        </emc-select-list>
-        <emc-listselect id="list-select-old" class="settings-input" type="list" multiple="true" value="[]">
-        </emc-listselect>
+        <emc-form-field label="list-select">
+            <emc-select-list id="list-select" name="list-select" placeholder="Select entry..." multiple sorted>
+            </emc-select-list>
+        </emc-form-field>
+        <emc-form-field label="list-select-old">
+            <emc-listselect id="list-select-old" class="settings-input" type="list" multiple="true" value="[]" data-form="element">
+            </emc-listselect>
+        </emc-form-field>
     </emc-page>
 </body>
 

@@ -1,7 +1,6 @@
-import CustomFormElementDelegating from "../../element/CustomFormElementDelegating.js";
+import CustomFormElement from "../../element/CustomFormElement.js";
 import ButtonVariants from "../../../enum/form/ButtonVariants.js";
 import ButtonBorderPositions from "../../../enum/form/ButtonBorderPositions.js";
-import EventTargetManager from "../../../util/event/EventTargetManager.js";
 import {deepClone} from "../../../util/helper/DeepClone.js";
 import {registerFocusable} from "../../../util/helper/html/ElementFocusHelper.js";
 import "../../i18n/I18nTooltip.js";
@@ -14,7 +13,7 @@ import VARIANT_STYLE from "./style/ButtonVariant.css" assert {type: "css"};
 import CONFIG_FIELDS from "./Button.js.json" assert {type: "json"};
 
 // TODO add "outline" variants
-export default class Button extends CustomFormElementDelegating {
+export default class Button extends CustomFormElement {
 
     static get formConfigurationFields() {
         return deepClone(CONFIG_FIELDS);
@@ -36,8 +35,6 @@ export default class Button extends CustomFormElementDelegating {
 
     #textEl;
 
-    #buttonEventHandler = new EventTargetManager(null, false);
-
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
@@ -48,20 +45,9 @@ export default class Button extends CustomFormElementDelegating {
         this.#buttonEl = this.shadowRoot.getElementById("button");
         this.#fontIconEl = this.shadowRoot.getElementById("font-icon");
         this.#textEl = this.shadowRoot.getElementById("text");
-        this.#buttonEventHandler.switchTarget(this.#buttonEl);
-        this.#buttonEventHandler.set("click", (event) => {
+        this.#buttonEl.addEventListener("click", (event) => {
             this.clickHandler(event);
         });
-    }
-
-    connectedCallback() {
-        super.connectedCallback();
-        this.#buttonEventHandler.active = true;
-    }
-
-    disconnectedCallback() {
-        super.disconnectedCallback();
-        this.#buttonEventHandler.active = false;
     }
 
     formDisabledCallback(disabled) {
@@ -73,6 +59,14 @@ export default class Button extends CustomFormElementDelegating {
         const ev = new MouseEvent("click", event);
         this.dispatchEvent(ev);
         return !ev.defaultPrevented;
+    }
+
+    focus(options) {
+        super.focus(options);
+        this.scrollIntoView({
+            block: "center",
+            inline: "center"
+        });
     }
 
     get type() {
@@ -160,7 +154,13 @@ export default class Button extends CustomFormElementDelegating {
     }
 
     static get observedAttributes() {
-        return ["text", "icon", "icon-type", "tooltip"];
+        return [
+            "text",
+            "icon",
+            "icon-type",
+            "tooltip",
+            "variant"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -183,6 +183,15 @@ export default class Button extends CustomFormElementDelegating {
             case "tooltip": {
                 if (oldValue != newValue) {
                     this.#tooltipEl.i18nTooltip = newValue;
+                }
+            } break;
+            case "variant": {
+                if (oldValue != newValue) {
+                    if (ButtonVariants.LABEL.equals(this.variant)) {
+                        this.#buttonEl.setAttribute("tabindex", "-1");
+                    } else {
+                        this.#buttonEl.removeAttribute("tabindex");
+                    }
                 }
             } break;
         }

@@ -1,95 +1,71 @@
-import Modal from "../../../../../../modal/Modal.js";
+import ModalDialogCodeInput from "../../../../../../modal/input/ModalDialogCodeInput.js";
 import ModalDialog from "../../../../../../modal/ModalDialog.js";
+import jsonParse from "../../../../../../../patches/JSONParser.js";
 import {debounce} from "../../../../../../../util/Debouncer.js";
+import {jsonParseSafe} from "../../../../../../../util/helper/JSON.js";
 import LogicValidator from "../../../../../../../util/logic/LogicValidator.js";
 import Logger from "../../../../../../../util/log/Logger.js";
 import "../../../code/CodeInput.js";
 import "../../../../../button/Button.js";
-import TPL from "./LogicJSONModal.js.html" assert {type: "html"};
-import STYLE from "./LogicJSONModal.js.css" assert {type: "css"};
-import jsonParse from "../../../../../../../patches/JSONParser.js";
 
-// TODO use ModalDialog instead
-export default class LogicJSONModal extends Modal {
-
-    #contentEl;
-
-    #footerEl;
+export default class LogicJSONModal extends ModalDialogCodeInput {
 
     #submitEl;
 
-    #cancelEl;
+    #inputEl;
 
-    #jsonEl;
-
-    constructor() {
-        super("Logic - JSON-Representation");
-        const els = TPL.generate();
-        STYLE.apply(this.shadowRoot);
-        /* --- */
-        this.#contentEl = this.shadowRoot.getElementById("content");
-        this.#footerEl = this.shadowRoot.getElementById("footer");
-        this.#contentEl.innerHTML = "";
-        this.#jsonEl = els.getElementById("json");
-        this.#contentEl.append(this.#jsonEl);
-        /* --- */
-        this.#cancelEl = els.getElementById("cancel");
-        this.registerTargetEventHandler(this.#cancelEl, "click", () => {
-            this.close();
+    constructor(caption = "Logic - JSON", options = {}) {
+        super(caption, {
+            submit: true,
+            cancel: true,
+            ...options
         });
-        this.#footerEl.append(this.#cancelEl);
         /* --- */
-        this.#submitEl = els.getElementById("submit");
-        this.registerTargetEventHandler(this.#submitEl, "click", () => {
-            if (this.#jsonEl.validationMessage === "") {
-                const errors = LogicValidator.validate(this.value);
-                if (errors.length > 0) {
-                    ModalDialog.error("Invalid Logic", null, errors);
-                    Logger.error(`Invalid Logic\n${errors.map((s) => `\t${s}`).join("\n")}`);
-                } else {
-                    this.dispatchEvent(new Event("submit"));
-                    this.close();
-                }
-            }
-        });
-        this.#footerEl.append(this.#submitEl);
-        /* --- */
-        this.registerTargetEventHandler(this.#jsonEl, "input", () => {
+        this.#submitEl = this.shadowRoot.getElementById("submit");
+        this.#inputEl = this.shadowRoot.getElementById("input");
+        this.#inputEl.addEventListener("input", () => {
             this.#validateInput();
         });
     }
 
-    show(readonly = false) {
-        if (readonly) {
-            this.#jsonEl.readonly = true;
-            this.#cancelEl.style.display = "none";
-            this.#submitEl.style.display = "none";
-        } else {
-            this.#jsonEl.readonly = false;
-            this.#cancelEl.style.display = "";
-            this.#submitEl.style.display = "";
+    async show(value) {
+        this.#inputEl.setCustomValidity("");
+        value = value != null ? JSON.stringify(value, null, 4) : "";
+        return await super.show(value);
+    }
+
+    getSubmitValue() {
+        return jsonParseSafe(this.#inputEl.value);
+    }
+
+    submit() {
+        if (this.#inputEl.validationMessage === "") {
+            const value = jsonParseSafe(this.#inputEl.value);
+            if (value != null) {
+                const errors = LogicValidator.validate(value);
+                if (errors.length > 0) {
+                    this.#inputEl.setCustomValidity("Invalid Logic");
+                    ModalDialog.error("Invalid Logic", null, errors);
+                    Logger.error(`Invalid Logic\n${errors.map((s) => `\t${s}`).join("\n")}`);
+                } else {
+                    super.submit();
+                }
+            } else {
+                this.#inputEl.setCustomValidity("Invalid JSON");
+            }
         }
-        super.show();
     }
 
     #validateInput = debounce(() => {
         try {
-            jsonParse(this.#jsonEl.value);
-            this.#jsonEl.setCustomValidity("");
+            jsonParse(this.#inputEl.value);
+            this.#inputEl.setCustomValidity("");
             this.#submitEl.disabled = false;
         } catch {
-            this.#jsonEl.setCustomValidity("Invalid JSON");
+            this.#inputEl.setCustomValidity("Invalid JSON");
             this.#submitEl.disabled = true;
         }
     });
-
-    set value(value) {
-        this.#jsonEl.value = value != null ? JSON.stringify(value, null, 4) : "";
-    }
-
-    get value() {
-        return jsonParse(this.#jsonEl.value);
-    }
 
 }
 

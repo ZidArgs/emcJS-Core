@@ -17,15 +17,17 @@ const VALUE_PATTERN = /(.*?)(?:=)(.*)/;
 function processLine(line) {
     const escaped = line.trim()
         .replace(ESCAPE_PATTERN_0, "\\u003D")
-        .replace(ESCAPE_PATTERN_1, "\\u005C")
-        .replace(ESCAPE_PATTERN_2, "\n")
-        .replace(ESCAPE_PATTERN_3, "\r");
+        .replace(ESCAPE_PATTERN_1, "\\u005C");
     const result = escaped.match(VALUE_PATTERN) ?? [];
     if (result == null) {
         return null;
     }
-    const [, key = "", value = ""] = result;
-    return [unescapeUnicode(key.trim()), unescapeUnicode(value.trim())];
+    const [
+        , key = "",
+        value = ""
+    ] = result;
+    const resultValue = value.replace(ESCAPE_PATTERN_2, "\n").replace(ESCAPE_PATTERN_3, "\r");
+    return [unescapeUnicode(key.trim()), unescapeUnicode(resultValue.trim())];
 }
 
 function processToken(token) {
@@ -48,7 +50,10 @@ class Lang {
             }
             const metaRes = line.match(META_SEQUENCE);
             if (metaRes != null) {
-                const [, key, value] = metaRes;
+                const [
+                    , key,
+                    value
+                ] = metaRes;
                 output[`@${key}`] = value;
                 continue;
             }
@@ -92,10 +97,7 @@ class Lang {
                 lines.push(`${processToken(key)}=${processToken(value)}`);
             }
         }
-        return [
-            ...metaLines,
-            ...lines
-        ].join("\n");
+        return [...metaLines, ...lines].join("\n");
     }
 
 }

@@ -4,9 +4,14 @@ import SectionTreeManager from "/emcJS/util/form/manager/SectionTreeManager.js";
 import "/emcJS/ui/Page.js";
 import "/emcJS/ui/tree/Tree.js";
 // form
+import OptionGroupRegistryChoiceManager from "/emcJS/util/form/manager/OptionGroupRegistryChoiceManager.js";
 import FormContext from "/emcJS/util/form/FormContext.js";
+import FormErrorButtonManager from "/emcJS/util/form/manager/FormErrorButtonManager.js";
 import "/emcJS/ui/form/FormContainer.js";
 import "/emcJS/ui/form/FormComponentsLoader.js";
+import {init} from "../form/util/formLoader.js";
+
+await init();
 
 const formContext = new FormContext();
 formContext.allowEnter = true;
@@ -20,6 +25,7 @@ sectionTreeManager.setFormSectionNavigationElement(formSectionNavigationEl);
 sectionTreeManager.observe(formContainerEl);
 
 const errorButtonEl = document.getElementById("error-button");
+new FormErrorButtonManager(errorButtonEl, formContext);
 
 formContext.addEventListener("submit", (event) => {
     const {
@@ -33,7 +39,6 @@ formContext.addEventListener("submit", (event) => {
     console.log("[E] changes", changes);
     console.log("formData", formContext.getInternalFormData());
     console.groupEnd(`submit (${valid})`);
-    errorButtonEl.setErrors();
 });
 
 formContext.addEventListener("error", (event) => {
@@ -42,21 +47,6 @@ formContext.addEventListener("error", (event) => {
     console.log("errors", errors);
     console.log("data", formContext.getFormFieldsData());
     console.groupEnd("error");
-    errorButtonEl.setErrors(errors);
-});
-
-formContext.addEventListener("validity", (event) => {
-    const {valid} = event;
-    if (valid) {
-        errorButtonEl.removeError(event.element);
-    } else {
-        errorButtonEl.addError({
-            name: event.name,
-            label: event.element.label,
-            element: event.element,
-            errors: [event.message]
-        });
-    }
 });
 
 const actionEl = document.getElementById("action");
@@ -69,5 +59,9 @@ actionEl.addEventListener("action", async () => {
         actionEl.value = null;
     }
 });
+
+const imageSelectEl = document.getElementById("image-select");
+const manager = new OptionGroupRegistryChoiceManager(imageSelectEl);
+manager.optionGroup = "ImageSelect";
 
 window.formContext = formContext;

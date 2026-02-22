@@ -174,7 +174,6 @@ export default class ListSelect extends CustomElementDelegating {
 
     connectedCallback() {
         super.connectedCallback?.();
-        this.#selectionHelper.setEventManagerActive(true);
         this.#valueElementsList = this.querySelectorAll(`[value]`);
         const all = this.#valueElementsList;
         if (!this.value) {
@@ -192,11 +191,6 @@ export default class ListSelect extends CustomElementDelegating {
             }
         }
         this.#calculateItems();
-    }
-
-    disconnectedCallback() {
-        super.disconnectedCallback?.();
-        this.#selectionHelper.setEventManagerActive(false);
     }
 
     serialize() {
@@ -254,17 +248,21 @@ export default class ListSelect extends CustomElementDelegating {
         return this.getAttribute("multiple") == "true";
     }
 
-    set readonly(val) {
+    set readOnly(val) {
         this.setAttribute("readonly", val);
     }
 
-    get readonly() {
+    get readOnly() {
         const val = this.getAttribute("readonly");
         return !!val && val != "false";
     }
 
     static get observedAttributes() {
-        return ["value", "multiple", "sort"];
+        return [
+            "value",
+            "multiple",
+            "sort"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -355,7 +353,7 @@ export default class ListSelect extends CustomElementDelegating {
     });
 
     #choose(value) {
-        if (!this.readonly) {
+        if (!this.readOnly) {
             if (this.multiple) {
                 const arr = this.value;
                 const set = new Set(arr);

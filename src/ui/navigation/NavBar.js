@@ -1,5 +1,6 @@
 import CustomElement from "../element/CustomElement.js";
 import EventManager from "../../util/event/EventManager.js";
+import EventTargetManager from "../../util/event/EventTargetManager.js";
 import {
     isFunction,
     isHttpUrl
@@ -37,6 +38,8 @@ export default class NavBar extends CustomElement {
 
     #navigationEventManager = new EventManager(false);
 
+    #windowEventManager = new EventTargetManager(window, false);
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
@@ -48,7 +51,7 @@ export default class NavBar extends CustomElement {
         this.#contentEl = this.shadowRoot.getElementById("content");
         this.#hamburgerEl = this.shadowRoot.getElementById("hamburger-button");
         this.#coverEl = this.shadowRoot.getElementById("cover");
-        this.registerTargetEventHandler(this.#hamburgerEl, "click", () => {
+        this.#hamburgerEl.addEventListener("click", () => {
             if (this.#containerEl.classList.contains("open")) {
                 this.#closeAll();
             } else {
@@ -56,24 +59,26 @@ export default class NavBar extends CustomElement {
                 this.#hamburgerEl.open = true;
             }
         });
-        this.registerTargetEventHandler(this.#coverEl, "click", () => {
+        this.#coverEl.addEventListener("click", () => {
             this.#closeAll();
         });
-        this.registerTargetEventHandler(this, "blur", () => {
+        this.addEventListener("blur", () => {
             this.#closeAll();
         });
-        this.registerTargetEventHandler(window, "resize", () => {
+        this.#windowEventManager.set("resize", () => {
             this.#closeAll();
         });
     }
 
     connectedCallback() {
         super.connectedCallback?.();
+        this.#windowEventManager.active = true;
         this.#navigationEventManager.active = true;
     }
 
     disconnectedCallback() {
         super.disconnectedCallback?.();
+        this.#windowEventManager.active = false;
         this.#navigationEventManager.active = false;
     }
 

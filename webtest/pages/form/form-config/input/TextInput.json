@@ -33,7 +33,7 @@
             "label": "text readonly",
             "name": "text.readonly",
             "placeholder": "Enter text...",
-            "readonly": true
+            "readOnly": true
         },
         {
             "type": "TextInput",

@@ -1,8 +1,8 @@
 import Button from "./Button.js";
-
 import {registerFocusable} from "../../../util/helper/html/ElementFocusHelper.js";
 import {deepClone} from "../../../util/helper/DeepClone.js";
 import {debounce} from "../../../util/Debouncer.js";
+import EventTargetManager from "../../../util/event/EventTargetManager.js";
 import ErrorButtonItemsElementManager from "./manager/ErrorButtonItemsElementManager.js";
 import "../../i18n/I18nLabel.js";
 import TPL from "./ErrorButton.js.html" assert {type: "html"};
@@ -29,6 +29,8 @@ export default class ErrorButton extends Button {
 
     #errorItemsElementManager;
 
+    #windowEventManager = new EventTargetManager(window, false);
+
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
@@ -38,21 +40,21 @@ export default class ErrorButton extends Button {
         this.#scrollContainerEl = this.shadowRoot.getElementById("scroll-container");
         this.#errorContainerEl = this.shadowRoot.getElementById("error-container");
         this.#errorItemsElementManager = new ErrorButtonItemsElementManager(this.#errorContainerEl);
-        this.registerTargetEventHandler(this.#errorContainerEl, "wheel", (event) => {
+        this.#errorContainerEl.addEventListener("wheel", (event) => {
             event.stopPropagation();
         }, {passive: true});
         /* --- */
-        this.registerTargetEventHandler(window, ["wheel", "blur"], () => {
+        this.#windowEventManager.set(["wheel", "blur"], () => {
             if (this.#isPopupVisible) {
                 this.#closePopup();
             }
         }, {passive: true});
-        this.registerTargetEventHandler(window, "mousedown", (event) => {
+        this.#windowEventManager.set("mousedown", (event) => {
             if (this.#isPopupVisible && !this.contains(event.target)) {
                 this.#closePopup();
             }
         }, {passive: true});
-        this.registerTargetEventHandler(this, "mousedown", (event) => {
+        this.addEventListener("mousedown", (event) => {
             if (this.#isPopupVisible) {
                 event.stopImmediatePropagation();
             }
@@ -63,12 +65,12 @@ export default class ErrorButton extends Button {
 
     connectedCallback() {
         super.connectedCallback?.();
-        this.#errorItemsElementManager.setEventManagerActive(true);
+        this.#windowEventManager.active = true;
     }
 
     disconnectedCallback() {
         super.disconnectedCallback?.();
-        this.#errorItemsElementManager.setEventManagerActive(false);
+        this.#windowEventManager.active = false;
     }
 
     clickHandler(event) {
@@ -93,6 +95,7 @@ export default class ErrorButton extends Button {
 
     setErrors(errors = []) {
         this.#errorList.clear();
+        this.setCount(0);
         this.#errorContainerEl.innerHTML = "";
         for (const errorEntry of errors) {
             this.addError(errorEntry);

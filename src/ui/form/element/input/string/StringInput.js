@@ -1,8 +1,8 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
-import {deepClone} from "../../../../../util/helper/DeepClone.js";
+import {immute} from "../../../../../data/Immutable.js";
 import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
-import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
+import {setBooleanAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
 import "../../../../i18n/builtin/I18nInput.js";
 import TPL from "./StringInput.js.html" assert {type: "html"};
 import STYLE from "./StringInput.js.css" assert {type: "css"};
@@ -12,7 +12,7 @@ import CONFIG_FIELDS from "./StringInput.js.json" assert {type: "json"};
 export default class StringInput extends AbstractFormElement {
 
     static get formConfigurationFields() {
-        return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
+        return immute([...super.formConfigurationFields, ...CONFIG_FIELDS]);
     }
 
     #inputEl;
@@ -21,25 +21,27 @@ export default class StringInput extends AbstractFormElement {
 
     constructor() {
         super();
-        this.shadowRoot.getElementById("field").append(TPL.generate());
+        TPL.apply(this.shadowRoot);
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#lengthInfoEl = this.shadowRoot.getElementById("length-info");
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.registerTargetEventHandler(this.#inputEl, "input", () => {
+        this.#inputEl.addEventListener("input", () => {
             this.value = this.#inputEl.value;
             this.#printTextLength();
         });
     }
 
+    connectedCallback() {
+        super.connectedCallback?.();
+        if (this.showTextLength) {
+            this.#applyTextLengthPadding();
+        }
+    }
+
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
         this.#inputEl.disabled = disabled;
-    }
-
-    formResetCallback() {
-        super.formResetCallback();
-        this.#inputEl.value = this.value;
     }
 
     focus(options) {
@@ -48,11 +50,11 @@ export default class StringInput extends AbstractFormElement {
     }
 
     set placeholder(value) {
-        this.setAttribute("placeholder", value);
+        this.setStringAttribute("placeholder", value);
     }
 
     get placeholder() {
-        return this.getAttribute("placeholder");
+        return this.getStringAttribute("placeholder");
     }
 
     set minLength(value) {
@@ -113,7 +115,18 @@ export default class StringInput extends AbstractFormElement {
 
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "placeholder", "readonly", "minlength", "maxlength", "spellcheck", "autocapitalize", "autocomplete", "autocorrect"];
+        return [
+            ...superObserved,
+            "placeholder",
+            "readonly",
+            "minlength",
+            "maxlength",
+            "showtextlength",
+            "spellcheck",
+            "autocapitalize",
+            "autocomplete",
+            "autocorrect"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -121,12 +134,12 @@ export default class StringInput extends AbstractFormElement {
         switch (name) {
             case "readonly": {
                 if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, "readonly", this.readonly);
+                    setBooleanAttribute(this.#inputEl, name, this.readOnly);
                 }
             } break;
             case "placeholder": {
                 if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, "i18n-placeholder", newValue);
+                    this.#inputEl.i18nPlaceholder = this.placeholder;
                 }
             } break;
             case "minlength":
@@ -199,9 +212,16 @@ export default class StringInput extends AbstractFormElement {
             } else {
                 this.#lengthInfoEl.innerText = length;
             }
+            this.#applyTextLengthPadding();
         } else {
             this.#lengthInfoEl.innerText = "";
+            this.#inputEl.style.paddingRight = "";
         }
+    }
+
+    #applyTextLengthPadding() {
+        const padding = this.#lengthInfoEl.clientWidth + 7;
+        this.#inputEl.style.paddingRight = `${padding}px`;
     }
 
 }

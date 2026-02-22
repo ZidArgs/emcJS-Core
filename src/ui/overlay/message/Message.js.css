@@ -1,7 +1,13 @@
 @keyframes autoclose {
-    0% { width: calc(100% - 27px) }
-    100% { width: 0 }
+    0% {
+        width: calc(100% - 27px)
+    }
+
+    100% {
+        width: 0
+    }
 }
+
 #close {
     position: absolute;
     top: 2px;
@@ -9,6 +15,7 @@
     display: flex;
     width: 15px;
     height: 15px;
+    padding: 0px;
     border: none;
     align-items: center;
     justify-content: center;
@@ -20,13 +27,16 @@
     line-height: 1em;
     pointer-events: all;
 }
+
 #close:hover {
     color: var(--background-color, #ffffff);
     background-color: var(--color, #ff0000);
 }
+
 #close:focus {
     outline: none;
 }
+
 #autoclose {
     position: absolute;
     right: 22px;
@@ -35,6 +45,7 @@
     height: 4px;
     background-color: var(--color, #ff0000);
 }
+
 :host(:hover) #autoclose {
     animation-play-state: paused !important;
 }

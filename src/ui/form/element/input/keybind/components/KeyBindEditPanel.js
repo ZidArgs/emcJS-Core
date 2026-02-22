@@ -80,7 +80,7 @@ export default class KeyBindEditPanel extends CustomElement {
         this.#modalEl = this.shadowRoot.getElementById("modal");
         this.#titleEl = this.shadowRoot.getElementById("title");
         this.#keyDisplayEl = this.shadowRoot.getElementById("key-display");
-        this.#inputEventTargetManager = new EventTargetManager(this.#modalEl);
+        this.#inputEventTargetManager = new EventTargetManager(window, false);
         this.#inputEventTargetManager.set("keydown", (event) => {
             const {
                 key, code, ctrlKey, shiftKey, altKey, metaKey
@@ -127,17 +127,25 @@ export default class KeyBindEditPanel extends CustomElement {
             return false;
         });
         /* --- */
-        this.registerTargetEventHandler(this, "click", () => {
+        this.addEventListener("click", () => {
             this.initialFocus();
         });
         this.#focusTopEl = this.shadowRoot.getElementById("focus_catcher_top");
-        this.registerTargetEventHandler(this.#focusTopEl, "focus", () => {
+        this.#focusTopEl.addEventListener("focus", () => {
             this.initialFocus();
         });
         this.#focusBottomEl = this.shadowRoot.getElementById("focus_catcher_bottom");
-        this.registerTargetEventHandler(this.#focusBottomEl, "focus", () => {
+        this.#focusBottomEl.addEventListener("focus", () => {
             this.initialFocus();
         });
+    }
+
+    connectedCallback() {
+        this.#inputEventTargetManager.active = true;
+    }
+
+    disconnectedCallback() {
+        this.#inputEventTargetManager.active = false;
     }
 
     initialFocus() {

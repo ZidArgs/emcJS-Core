@@ -1,10 +1,11 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
+import {immute} from "../../../../../data/Immutable.js";
 import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
-import {deepClone} from "../../../../../util/helper/DeepClone.js";
+import Axes2D from "../../../../../enum/Axes2D.js";
 import "../../../../i18n/builtin/I18nInput.js";
 import "../../../../i18n/builtin/I18nOption.js";
-import "../logic/LogicInput.js";
+import "../../input/logic/LogicInput.js";
 import "../../select/switch/SwitchSelect.js";
 import TPL from "./BoolOrLogicInput.js.html" assert {type: "html"};
 import STYLE from "./BoolOrLogicInput.js.css" assert {type: "css"};
@@ -13,8 +14,18 @@ import CONFIG_FIELDS from "./BoolOrLogicInput.js.json" assert {type: "json"};
 export default class BoolOrLogicInput extends AbstractFormElement {
 
     static get formConfigurationFields() {
-        return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
+        return immute([...super.formConfigurationFields, ...CONFIG_FIELDS]);
     }
+
+    static get changeDebounceTime() {
+        return 0;
+    }
+
+    static get AXES() {
+        return Axes2D;
+    }
+
+    #containerEl;
 
     #inputEl;
 
@@ -24,12 +35,13 @@ export default class BoolOrLogicInput extends AbstractFormElement {
 
     constructor() {
         super();
-        this.shadowRoot.getElementById("field").append(TPL.generate());
+        TPL.apply(this.shadowRoot);
         STYLE.apply(this.shadowRoot);
         /* --- */
+        this.#containerEl = this.shadowRoot.getElementById("container");
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#logicEl = this.shadowRoot.getElementById("logic");
-        this.registerTargetEventHandler(this.#inputEl, "input", () => {
+        this.#inputEl.addEventListener("input", () => {
             const value = this.#inputEl.value;
             if (value === "logic") {
                 this.#logicEl.classList.add("active");
@@ -44,14 +56,11 @@ export default class BoolOrLogicInput extends AbstractFormElement {
                 }
             }
         });
-        this.registerTargetEventHandler(this.#logicEl, "change", () => {
+        this.#logicEl.addEventListener("input", () => {
             const value = this.#inputEl.value;
             if (value === "logic") {
                 this.value = this.#logicEl.value ?? {};
             }
-        });
-        this.#logicEl.addValidator(() => {
-            return this.validationMessage;
         });
         /* --- */
         this.#nullOptionEl = document.createElement("option", {is: "emc-i18n-option"});
@@ -63,16 +72,6 @@ export default class BoolOrLogicInput extends AbstractFormElement {
         super.formDisabledCallback(disabled);
         this.#inputEl.disabled = disabled;
         this.#logicEl.disabled = disabled;
-    }
-
-    formResetCallback() {
-        super.formResetCallback();
-        this.#inputEl.formResetCallback();
-        this.#logicEl.formResetCallback();
-    }
-
-    validityCallback(message) {
-        this.#logicEl.setCustomValidity(message);
     }
 
     focus(options) {
@@ -119,9 +118,23 @@ export default class BoolOrLogicInput extends AbstractFormElement {
         return this.getBooleanAttribute("nullable");
     }
 
+    set resize(value) {
+        this.setEnumAttribute("resize", value, Axes2D);
+    }
+
+    get resize() {
+        return this.getEnumAttribute("resize");
+    }
+
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "name", "readonly", "nullable"];
+        return [
+            ...superObserved,
+            "name",
+            "readonly",
+            "nullable",
+            "resize"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -129,13 +142,13 @@ export default class BoolOrLogicInput extends AbstractFormElement {
         switch (name) {
             case "name":{
                 if (oldValue != newValue) {
-                    this.#logicEl.name = newValue;
+                    this.#logicEl.name = this.name;
                 }
             } break;
             case "readonly": {
                 if (oldValue != newValue) {
-                    this.#inputEl.readonly = this.readonly;
-                    this.#logicEl.readonly = this.readonly;
+                    this.#inputEl.readOnly = this.readOnly;
+                    this.#logicEl.readOnly = this.readOnly;
                 }
             } break;
             case "nullable": {
@@ -147,38 +160,36 @@ export default class BoolOrLogicInput extends AbstractFormElement {
                     this.#inputEl.defaultValue = "true";
                 }
             } break;
+            case "resize":{
+                if (oldValue != newValue) {
+                    this.#logicEl.resize = this.resize;
+                }
+            } break;
         }
     }
 
     checkValid() {
-        const el = this.#logicEl.children[0];
-        if (el != null && !el.checkValidity()) {
-            return "Not a valid logic";
-        }
-        return super.checkValid();
+        return this.#logicEl.checkValid() || super.checkValid();
     }
 
     renderValue(value) {
         if (typeof value === "object" && value != null) {
+            this.#containerEl.classList.add("logic");
             this.#inputEl.value = "logic";
             this.#logicEl.value = value;
+            this.scrollIntoView();
         } else if (value === false) {
+            this.#containerEl.classList.remove("logic");
             this.#inputEl.value = "false";
             this.#logicEl.value = null;
         } else if (value === true) {
+            this.#containerEl.classList.remove("logic");
             this.#inputEl.value = "true";
             this.#logicEl.value = null;
         } else {
+            this.#containerEl.classList.remove("logic");
             this.#inputEl.value = "";
             this.#logicEl.value = null;
-        }
-    }
-
-    onDisplayValueChange(value) {
-        if (typeof value === "object" && value != null) {
-            this.#logicEl.classList.add("active");
-        } else {
-            this.#logicEl.classList.remove("active");
         }
     }
 

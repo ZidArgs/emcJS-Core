@@ -1,11 +1,15 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
 import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
-import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
+import {setBooleanAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
 import TPL from "./SwitchInput.js.html" assert {type: "html"};
 import STYLE from "./SwitchInput.js.css" assert {type: "css"};
 
 export default class SwitchInput extends AbstractFormElement {
+
+    static get isCompact() {
+        return true;
+    }
 
     static get changeDebounceTime() {
         return 0;
@@ -15,19 +19,26 @@ export default class SwitchInput extends AbstractFormElement {
 
     constructor() {
         super();
-        this.shadowRoot.getElementById("field").append(TPL.generate());
+        TPL.apply(this.shadowRoot);
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.registerTargetEventHandler(this.#inputEl, "change", () => {
-            this.value = this.#inputEl.checked;
-        });
-        this.registerTargetEventHandler(this.#inputEl, "click", (event) => {
-            if (this.readonly) {
-                event.preventDefault();
+        this.#inputEl.addEventListener("input", () => {
+            if (this.readOnly) {
+                this.#inputEl.checked = !this.#inputEl.checked;
                 event.stopPropagation();
                 return false;
             }
+            this.value = this.#inputEl.checked;
+        });
+        /* --- */
+        this.addEventListener("click", () => {
+            if (!this.readOnly) {
+                this.#inputEl.click();
+            }
+        });
+        this.#inputEl.addEventListener("click", (event) => {
+            event.stopPropagation();
         });
     }
 
@@ -59,7 +70,7 @@ export default class SwitchInput extends AbstractFormElement {
         switch (name) {
             case "readonly": {
                 if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, "readonly", this.readonly);
+                    setBooleanAttribute(this.#inputEl, name, this.readOnly);
                 }
             } break;
         }
@@ -73,18 +84,13 @@ export default class SwitchInput extends AbstractFormElement {
     }
 
     renderValue(value) {
-        if (value == null || value === "") {
-            this.#inputEl.checked = false;
-            this.#inputEl.indeterminate = true;
-            return null;
-        }
         if (!value || value === "false") {
             this.#inputEl.checked = false;
-            this.#inputEl.indeterminate = false;
-            return false;
+            this.internals.states.delete("checked");
+        } else {
+            this.#inputEl.checked = true;
+            this.internals.states.add("checked");
         }
-        this.#inputEl.checked = true;
-        this.#inputEl.indeterminate = false;
     }
 
 }

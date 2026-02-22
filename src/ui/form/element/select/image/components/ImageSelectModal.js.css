@@ -1,16 +1,19 @@
-#footer {
-    display: flex;
-}
-
 #modal {
-    max-width: min(1800px, calc(100vw - 50px));
-    margin-top: 20px;
+    width: 80vw;
+    height: 70dvh;
+    max-width: 80vw;
+    min-width: min-content;
+    min-height: min-content;
 }
 
 #content {
-    flex-direction: row;
+    min-width: min(90dvw, 600px);
+    min-height: 200px;
+}
+
+#slot {
+    display: flex;
     flex-wrap: wrap;
-    max-height: 70vh;
 }
 
 ::slotted(emc-select-image-preview) {
@@ -18,7 +21,7 @@
     cursor: pointer;
 }
 
-#submit,
-#cancel {
-    margin: 2px;
+#search {
+    width: auto;
+    margin: 6px;
 }

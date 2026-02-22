@@ -21,7 +21,12 @@ describe("Logger", () => {
         assert.strictEqual(log.mock.callCount(), 1);
         const call = log.mock.calls[0];
         // TODO assert each arguments by itself so the message can be tested without exposing the time
-        assert.deepStrictEqual(call.arguments, ["%c%s%c", "color:#B8B8B8", `[${timeString} - CUSTOM] test • this is a test message`, ""]);
+        assert.deepStrictEqual(call.arguments, [
+            "%c%s%c",
+            "color:#B8B8B8",
+            `[${timeString} - CUSTOM] test • this is a test message`,
+            ""
+        ]);
         mock.reset();
     });
     it("should print log message", () => {
@@ -32,7 +37,12 @@ describe("Logger", () => {
         assert.strictEqual(log.mock.callCount(), 1);
         const call = log.mock.calls[0];
         // TODO assert each arguments by itself so the message can be tested without exposing the time
-        assert.deepStrictEqual(call.arguments, ["%c%s%c", "color:#83EB9E", `[${timeString} - LOG  ] test • this is a test message`, ""]);
+        assert.deepStrictEqual(call.arguments, [
+            "%c%s%c",
+            "color:#83EB9E",
+            `[${timeString} - LOG  ] test • this is a test message`,
+            ""
+        ]);
         mock.reset();
     });
     it("should print info message", () => {
@@ -43,7 +53,12 @@ describe("Logger", () => {
         assert.strictEqual(log.mock.callCount(), 1);
         const call = log.mock.calls[0];
         // TODO assert each arguments by itself so the message can be tested without exposing the time
-        assert.deepStrictEqual(call.arguments, ["%c%s%c", "color:#84CFE6", `[${timeString} - INFO ] test • this is a test message`, ""]);
+        assert.deepStrictEqual(call.arguments, [
+            "%c%s%c",
+            "color:#84CFE6",
+            `[${timeString} - INFO ] test • this is a test message`,
+            ""
+        ]);
         mock.reset();
     });
     it("should print warning message", () => {
@@ -54,7 +69,12 @@ describe("Logger", () => {
         assert.strictEqual(log.mock.callCount(), 1);
         const call = log.mock.calls[0];
         // TODO assert each arguments by itself so the message can be tested without exposing the time
-        assert.deepStrictEqual(call.arguments, ["%c%s%c", "color:#F5D753", `[${timeString} - WARN ] test • this is a test message`, ""]);
+        assert.deepStrictEqual(call.arguments, [
+            "%c%s%c",
+            "color:#F5D753",
+            `[${timeString} - WARN ] test • this is a test message`,
+            ""
+        ]);
         mock.reset();
     });
     it("should print error message", () => {
@@ -65,7 +85,12 @@ describe("Logger", () => {
         assert.strictEqual(log.mock.callCount(), 1);
         const call = log.mock.calls[0];
         // TODO assert each arguments by itself so the message can be tested without exposing the time
-        assert.deepStrictEqual(call.arguments, ["%c%s%c", "color:#F59476", `[${timeString} - ERROR] test • this is a test message`, ""]);
+        assert.deepStrictEqual(call.arguments, [
+            "%c%s%c",
+            "color:#F59476",
+            `[${timeString} - ERROR] test • this is a test message`,
+            ""
+        ]);
         mock.reset();
     });
     // TODO check for message logging with `new Error("this is a test message")`

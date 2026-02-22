@@ -1,15 +1,17 @@
 import Modal from "./Modal.js";
+import Axes2D from "../../enum/Axes2D.js";
 import GlobalStyleVariables from "../../util/html/style/GlobalStyleVariables.js";
+import NumberInput from "../form/element/input/number/NumberInput.js";
+import PasswordInput from "../form/element/input/password/PasswordInput.js";
+import StringInput from "../form/element/input/string/StringInput.js";
 import "../form/button/Button.js";
-import "../form/element/input/number/NumberInput.js";
-import "../form/element/input/password/PasswordInput.js";
-import "../form/element/input/string/StringInput.js";
 import TPL from "./ModalDialog.js.html" assert {type: "html"};
 import STYLE from "./ModalDialog.js.css" assert {type: "css"};
 import {isStringNotEmpty} from "../../util/helper/CheckType.js";
 
-const promptIconColor = GlobalStyleVariables.get("--modal-icon-success-color") ?? "#009952";
-const confirmIconColor = GlobalStyleVariables.get("--modal-icon-info-color") ?? "#0000ff";
+const promptIconColor = GlobalStyleVariables.get("--modal-icon-prompt-color") ?? "#782bc0";
+const confirmIconColor = GlobalStyleVariables.get("--modal-icon-confirm-color") ?? "#009952";
+const infoIconColor = GlobalStyleVariables.get("--modal-icon-info-color") ?? "#0000ff";
 const alertIconColor = GlobalStyleVariables.get("--modal-icon-alert-color") ?? "#e98e2d";
 const errorIconColor = GlobalStyleVariables.get("--modal-icon-error-color") ?? "#c50000";
 
@@ -24,15 +26,23 @@ const DEFAULT_DIALOG_ICONS = {
     },
     confirm: {
         type: "font",
-        content: "question",
+        content: "question-ring",
         style: {
             color: confirmIconColor,
             shadow: true
         }
     },
+    info: {
+        type: "font",
+        content: "info-ring",
+        style: {
+            color: infoIconColor,
+            shadow: true
+        }
+    },
     alert: {
         type: "font",
-        content: "warning",
+        content: "alert-ring",
         style: {
             color: alertIconColor,
             shadow: true
@@ -40,7 +50,7 @@ const DEFAULT_DIALOG_ICONS = {
     },
     error: {
         type: "font",
-        content: "alert",
+        content: "alert-triangle",
         style: {
             color: errorIconColor,
             shadow: true
@@ -91,7 +101,7 @@ export default class ModalDialog extends Modal {
             } else if (isStringNotEmpty(options.cancel)) {
                 this.#cancelEl.text = options.cancel;
             }
-            this.registerTargetEventHandler(this.#cancelEl, "click", () => this.cancel());
+            this.#cancelEl.addEventListener("click", () => this.cancel());
             this.#footerEl.append(this.#cancelEl);
         }
 
@@ -102,15 +112,15 @@ export default class ModalDialog extends Modal {
             } else if (isStringNotEmpty(options.submit)) {
                 this.#submitEl.text = options.submit;
             }
-            this.registerTargetEventHandler(this.#submitEl, "click", () => this.submit());
+            this.#submitEl.addEventListener("click", () => this.submit());
             this.#footerEl.append(this.#submitEl);
         }
     }
 
     async show() {
         return new Promise((resolve) => {
-            this.#onsubmit = function() {
-                resolve(true);
+            this.#onsubmit = function(value) {
+                resolve(value ?? true);
             };
             this.#oncancel = function() {
                 resolve(false);
@@ -124,13 +134,16 @@ export default class ModalDialog extends Modal {
 
     submit() {
         this.remove();
+        const value = this.getSubmitValue();
         if (this.#onsubmit) {
-            this.#onsubmit();
+            this.#onsubmit(value);
             this.#onsubmit = null;
             this.#oncancel = null;
             this.#onclose = null;
         }
-        this.dispatchEvent(new Event("submit"));
+        const ev = new Event("submit");
+        ev.value = value ?? true;
+        this.dispatchEvent(ev);
     }
 
     cancel() {
@@ -175,11 +188,24 @@ export default class ModalDialog extends Modal {
 
     static async alert(caption, text) {
         const dialogEl = new ModalDialog(caption, {
-            modalClass: "alert",
+            modalClass: "info",
             text,
-            submit: "ok"
+            submit: "Ok"
         });
         this.#applyDialogIcon(dialogEl, "alert");
+        dialogEl.initialFocusElement = dialogEl.#submitEl;
+        // ---
+        const result = await dialogEl.show();
+        return result;
+    }
+
+    static async info(caption, text) {
+        const dialogEl = new ModalDialog(caption, {
+            modalClass: "info",
+            text,
+            submit: "Ok"
+        });
+        this.#applyDialogIcon(dialogEl, "info");
         dialogEl.initialFocusElement = dialogEl.#submitEl;
         // ---
         const result = await dialogEl.show();
@@ -190,8 +216,8 @@ export default class ModalDialog extends Modal {
         const dialogEl = new ModalDialog(caption, {
             modalClass: "confirm",
             text,
-            submit: "yes",
-            cancel: "no"
+            submit: "Yes",
+            cancel: "No"
         });
         this.#applyDialogIcon(dialogEl, "confirm");
         dialogEl.initialFocusElement = dialogEl.#cancelEl;
@@ -209,19 +235,16 @@ export default class ModalDialog extends Modal {
         });
         this.#applyDialogIcon(dialogEl, "promt");
         // ---
-        const inputEl = document.createElement("emc-input-string");
-        inputEl.noPad = true;
-        inputEl.noHover = true;
+        const inputEl = new StringInput();
+        inputEl.style.width = "100%";
         if (typeof value === "string") {
             inputEl.value = value;
         } else if (typeof value === "number") {
             inputEl.value = value.toString();
         }
-        dialogEl.registerTargetEventHandler(inputEl, "keydown", (event) => {
-            if (event.key == "Enter") {
-                dialogEl.submit();
-                event.stopPropagation();
-            }
+        inputEl.addEventListener("submit", (event) => {
+            dialogEl.submit();
+            event.stopPropagation();
         });
         dialogEl.append(inputEl);
         dialogEl.initialFocusElement = inputEl;
@@ -239,19 +262,16 @@ export default class ModalDialog extends Modal {
         });
         this.#applyDialogIcon(dialogEl, "promt");
         // ---
-        const inputEl = document.createElement("emc-input-number");
-        inputEl.noPad = true;
-        inputEl.noHover = true;
+        const inputEl = new NumberInput();
+        inputEl.style.width = "100%";
         inputEl.min = min;
         inputEl.max = max;
         if (typeof value === "number" && !isNaN(value)) {
             inputEl.value = value;
         }
-        dialogEl.registerTargetEventHandler(inputEl, "keydown", (event) => {
-            if (event.key == "Enter") {
-                dialogEl.submit();
-                event.stopPropagation();
-            }
+        inputEl.addEventListener("submit", (event) => {
+            dialogEl.submit();
+            event.stopPropagation();
         });
         dialogEl.append(inputEl);
         dialogEl.initialFocusElement = inputEl;
@@ -269,19 +289,16 @@ export default class ModalDialog extends Modal {
         });
         this.#applyDialogIcon(dialogEl, "promt");
         // ---
-        const inputEl = document.createElement("emc-input-password");
-        inputEl.noPad = true;
-        inputEl.noHover = true;
+        const inputEl = new PasswordInput();
+        inputEl.style.width = "100%";
         if (typeof value === "string") {
             inputEl.value = value;
         } else if (typeof value === "number") {
             inputEl.value = value.toString();
         }
-        dialogEl.registerTargetEventHandler(inputEl, "keydown", (event) => {
-            if (event.key == "Enter") {
-                dialogEl.submit();
-                event.stopPropagation();
-            }
+        inputEl.addEventListener("submit", (event) => {
+            dialogEl.submit();
+            event.stopPropagation();
         });
         dialogEl.append(inputEl);
         dialogEl.initialFocusElement = inputEl;
@@ -296,8 +313,8 @@ export default class ModalDialog extends Modal {
             text,
             submit: "ok"
         });
-        dialogEl.streched = true;
-        dialogEl.resizable = true;
+        dialogEl.streched = Axes2D.BOTH;
+        dialogEl.resize = Axes2D.BOTH;
         this.#applyDialogIcon(dialogEl, "error");
         // ---
         if (this.#hasErrors(errors)) {

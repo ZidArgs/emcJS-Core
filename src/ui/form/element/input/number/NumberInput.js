@@ -1,17 +1,23 @@
+
 import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
-import {deepClone} from "../../../../../util/helper/DeepClone.js";
+import {immute} from "../../../../../data/Immutable.js";
 import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
-import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
+import {
+    setBooleanAttribute, setNumberAttribute
+} from "../../../../../util/helper/ui/NodeAttributes.js";
+import "../../../../i18n/I18nTooltip.js";
 import "../../../../i18n/builtin/I18nInput.js";
 import TPL from "./NumberInput.js.html" assert {type: "html"};
 import STYLE from "./NumberInput.js.css" assert {type: "css"};
+import FONT_STYLE from "../../../../../_style/emcjs-icons-codes.css" assert {type: "css"};
 import CONFIG_FIELDS from "./NumberInput.js.json" assert {type: "json"};
+import LongClickHandler from "../../../../../util/LongClickHandler.js";
 
 export default class NumberInput extends AbstractFormElement {
 
     static get formConfigurationFields() {
-        return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
+        return immute([...super.formConfigurationFields, ...CONFIG_FIELDS]);
     }
 
     #inputEl;
@@ -22,54 +28,59 @@ export default class NumberInput extends AbstractFormElement {
 
     constructor() {
         super();
-        this.shadowRoot.getElementById("field").append(TPL.generate());
+        TPL.apply(this.shadowRoot);
         STYLE.apply(this.shadowRoot);
+        FONT_STYLE.apply(this.shadowRoot);
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.registerTargetEventHandler(this.#inputEl, "input", () => {
+        this.#inputEl.addEventListener("input", () => {
             this.value = this.#inputEl.value;
         });
         /* --- */
         this.#upButtonEl = this.shadowRoot.getElementById("upButton");
-        this.registerTargetEventHandler(this.#upButtonEl, "mousedown", (event) => {
-            if (event.button === 0) {
-                this.#increaseValue();
-            }
-            event.stopPropagation();
-        });
-        this.registerTargetEventHandler(this.#upButtonEl, "keydown", (event) => {
-            if (event.key === " ") {
-                this.#increaseValue();
-            }
-            event.stopPropagation();
-        });
-        this.registerTargetEventHandler(this.#upButtonEl, "touchstart", (event) => {
+        new LongClickHandler(this.#upButtonEl);
+        this.#upButtonEl.addEventListener("mousepressed", (event) => {
             this.#increaseValue();
             event.stopPropagation();
         });
-        /* --- */
-        this.#downButtonEl = this.shadowRoot.getElementById("downButton");
-        this.registerTargetEventHandler(this.#downButtonEl, "mousedown", (event) => {
-            if (event.button === 0) {
-                this.#decreaseValue();
+        this.#upButtonEl.addEventListener("keydown", (event) => {
+            if (event.key === " ") {
+                this.#increaseValue();
             }
             event.stopPropagation();
         });
-        this.registerTargetEventHandler(this.#downButtonEl, "keydown", (event) => {
+        this.#upButtonEl.addEventListener("touchstart", (event) => {
+            this.#increaseValue();
+            event.stopPropagation();
+        }, {passive: true});
+        /* --- */
+        this.#downButtonEl = this.shadowRoot.getElementById("downButton");
+        new LongClickHandler(this.#downButtonEl);
+        this.#downButtonEl.addEventListener("mousepressed", (event) => {
+            this.#decreaseValue();
+            event.stopPropagation();
+        });
+        this.#downButtonEl.addEventListener("keydown", (event) => {
             if (event.key === " ") {
                 this.#decreaseValue();
             }
             event.stopPropagation();
         });
-        this.registerTargetEventHandler(this.#downButtonEl, "touchstart", (event) => {
+        this.#downButtonEl.addEventListener("touchstart", (event) => {
             this.#decreaseValue();
             event.stopPropagation();
-        });
+        }, {passive: true});
     }
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
         this.#inputEl.disabled = disabled;
+        this.#upButtonEl.disabled = disabled;
+        this.#downButtonEl.disabled = disabled;
+    }
+
+    validityCallback(message) {
+        this.#inputEl.setCustomValidity(message);
     }
 
     focus(options) {
@@ -103,11 +114,11 @@ export default class NumberInput extends AbstractFormElement {
     }
 
     set placeholder(value) {
-        this.setAttribute("placeholder", value);
+        this.setStringAttribute("placeholder", value);
     }
 
     get placeholder() {
-        return this.getAttribute("placeholder");
+        return this.getStringAttribute("placeholder");
     }
 
     set min(value) {
@@ -136,7 +147,13 @@ export default class NumberInput extends AbstractFormElement {
 
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "placeholder", "readonly", "min", "max"];
+        return [
+            ...superObserved,
+            "placeholder",
+            "readonly",
+            "min",
+            "max"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -144,19 +161,20 @@ export default class NumberInput extends AbstractFormElement {
         switch (name) {
             case "readonly": {
                 if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, "readonly", this.readonly);
-                    safeSetAttribute(this.#upButtonEl, "readonly", this.readonly);
-                    safeSetAttribute(this.#downButtonEl, "readonly", this.readonly);
+                    setBooleanAttribute(this.#inputEl, name, this.readOnly);
+                    setBooleanAttribute(this.#upButtonEl, name, this.readOnly);
+                    setBooleanAttribute(this.#downButtonEl, name, this.readOnly);
                 }
             } break;
             case "placeholder": {
                 if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, "i18n-placeholder", newValue);
+                    this.#inputEl.i18nPlaceholder = this.placeholder;
                 }
             } break;
             case "min":
             case "max": {
                 if (oldValue != newValue) {
+                    setNumberAttribute(this.#inputEl, name, newValue);
                     this.revalidate();
                 }
             } break;
@@ -186,18 +204,28 @@ export default class NumberInput extends AbstractFormElement {
         const max = this.max;
         const currentValue = parseFloat(this.#inputEl.value) || 0;
         if (max == null || currentValue < max) {
-            this.#inputEl.value = currentValue + 1;
+            const newValue = currentValue + 1;
+            this.#inputEl.value = newValue;
+            this.value = newValue;
+            this.dispatchEvent(new Event("input", {
+                bubbles: true,
+                cancelable: true
+            }));
         }
-        this.value = this.#inputEl.value;
     }
 
     #decreaseValue() {
         const min = this.min;
         const currentValue = parseFloat(this.#inputEl.value) || 0;
         if (min == null || currentValue > min) {
-            this.#inputEl.value = currentValue - 1;
+            const newValue = currentValue - 1;
+            this.#inputEl.value = newValue;
+            this.value = newValue;
+            this.dispatchEvent(new Event("input", {
+                bubbles: true,
+                cancelable: true
+            }));
         }
-        this.value = this.#inputEl.value;
     }
 
 }

@@ -1,17 +1,18 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
+import {immute} from "../../../../../data/Immutable.js";
+import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
 import BusyIndicatorManager from "../../../../../util/BusyIndicatorManager.js";
 import TypeStorage from "../../../../../data/type/TypeStorage.js";
+import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
 import EventMultiTargetManager from "../../../../../util/event/EventMultiTargetManager.js";
 import CharacterSearch from "../../../../../util/search/CharacterSearch.js";
-import {deepClone} from "../../../../../util/helper/DeepClone.js";
-import {sortNodeList} from "../../../../../util/helper/ui/NodeListSort.js";
 import {debounce} from "../../../../../util/Debouncer.js";
+import {sortNodeList} from "../../../../../util/helper/ui/NodeListSort.js";
 import {isEqual} from "../../../../../util/helper/Comparator.js";
-import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
 import ElementListCache from "../../../../../util/html/ElementListCache.js";
+import RelationSelectEntry from "./components/RelationSelectEntry.js";
 import "../../../../i18n/builtin/I18nInput.js";
-import "./components/RelationSelectEntry.js";
 import TPL from "./RelationSelect.js.html" assert {type: "html"};
 import STYLE from "./RelationSelect.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./RelationSelect.js.json" assert {type: "json"};
@@ -25,7 +26,7 @@ const ESCAPE_KEYS = [
 export default class RelationSelect extends AbstractFormElement {
 
     static get formConfigurationFields() {
-        return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
+        return immute([...super.formConfigurationFields, ...CONFIG_FIELDS]);
     }
 
     static get changeDebounceTime() {
@@ -34,7 +35,7 @@ export default class RelationSelect extends AbstractFormElement {
 
     #isEditMode = false;
 
-    #fieldEl;
+    #containerEl;
 
     #typesWildcarded = false;
 
@@ -60,7 +61,7 @@ export default class RelationSelect extends AbstractFormElement {
 
     #nomatchEl;
 
-    #voidEl = document.createElement("emc-select-relation-entry");
+    #voidEl = new RelationSelectEntry();
 
     #typeStorageEventManager = new EventMultiTargetManager();
 
@@ -68,10 +69,11 @@ export default class RelationSelect extends AbstractFormElement {
 
     #optionSelectEventManager = new EventMultiTargetManager();
 
+    #windowEventManager = new EventTargetManager(window, false);
+
     constructor() {
         super();
-        this.#fieldEl = this.shadowRoot.getElementById("field");
-        this.#fieldEl.append(TPL.generate());
+        TPL.apply(this.shadowRoot);
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#optionSelectEventManager.set("mousedown", (event) => {
@@ -103,6 +105,7 @@ export default class RelationSelect extends AbstractFormElement {
         this.#voidEl.name = "";
         this.#voidEl.type = "";
         /* --- */
+        this.#containerEl = this.shadowRoot.getElementById("container");
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#valueEl = this.shadowRoot.getElementById("value");
         this.#nameEl = this.shadowRoot.getElementById("name");
@@ -115,11 +118,11 @@ export default class RelationSelect extends AbstractFormElement {
         this.#optionsContainerEl = this.shadowRoot.getElementById("options-container");
         this.#buttonEl = this.shadowRoot.getElementById("button");
         /* --- */
-        this.registerTargetEventHandler(this.#scrollContainerEl, "mousedown", (event) => {
+        this.#scrollContainerEl.addEventListener("mousedown", (event) => {
             event.stopPropagation();
         });
         /* --- */
-        this.registerTargetEventHandler(this.#buttonEl, "click", (event) => {
+        this.#buttonEl.addEventListener("click", (event) => {
             if (!this.#isEditMode) {
                 this.#startEditMode();
             } else {
@@ -128,14 +131,14 @@ export default class RelationSelect extends AbstractFormElement {
             event.stopPropagation();
             event.preventDefault();
         });
-        this.registerTargetEventHandler(this.#viewEl, "click", (event) => {
+        this.#viewEl.addEventListener("click", (event) => {
             if (!this.#isEditMode) {
                 this.#startEditMode();
             }
             event.stopPropagation();
             event.preventDefault();
         });
-        this.registerTargetEventHandler(this.#inputEl, "keydown", (event) => {
+        this.#inputEl.addEventListener("keydown", (event) => {
             if (!this.getBooleanAttribute("readonly")) {
                 if (!this.#isEditMode) {
                     const {key} = event;
@@ -170,32 +173,34 @@ export default class RelationSelect extends AbstractFormElement {
                 }
             }
         });
-        this.registerTargetEventHandler(this.#inputEl, "blur", (event) => {
+        this.#inputEl.addEventListener("blur", (event) => {
             if (event.relatedTarget != null && !event.relatedTarget.contains(this.#inputEl)) {
                 this.#cancelSelection();
             }
             event.stopPropagation();
         });
-        this.registerTargetEventHandler(this.#inputEl, "input", () => {
+        this.#inputEl.addEventListener("input", () => {
             this.#applySearch();
         });
-        this.registerTargetEventHandler(this.#scrollContainerEl, "wheel", (event) => {
+        this.#scrollContainerEl.addEventListener("wheel", (event) => {
             event.stopPropagation();
         }, {passive: true});
         /* --- */
-        this.registerTargetEventHandler(window, "wheel", () => {
+        this.#windowEventManager.set("wheel", () => {
             if (this.#isEditMode) {
                 this.#cancelSelection();
             }
         }, {passive: true});
-        this.registerTargetEventHandler(window, "blur", () => {
+        this.#windowEventManager.set("blur", () => {
             if (this.#isEditMode) {
                 this.#cancelSelection();
             }
         }, {passive: true});
-        this.registerTargetEventHandler(window, "mousedown", (event) => {
-            if (this.#isEditMode && !this.contains(event.target)) {
-                this.#cancelSelection();
+        this.#windowEventManager.set("mousedown", (event) => {
+            if (!this.readOnly && this.#isEditMode) {
+                if (!this.#containerEl.contains(event.target)) {
+                    this.#cancelSelection();
+                }
             }
         }, {passive: true});
         /* --- */
@@ -203,6 +208,16 @@ export default class RelationSelect extends AbstractFormElement {
             this.#fillAfterStorageRegister(typeNames);
         });
         this.#fillSelectElements();
+    }
+
+    connectedCallback() {
+        super.connectedCallback?.();
+        this.#windowEventManager.active = true;
+    }
+
+    disconnectedCallback() {
+        super.disconnectedCallback?.();
+        this.#windowEventManager.active = false;
     }
 
     formDisabledCallback(disabled) {
@@ -234,7 +249,7 @@ export default class RelationSelect extends AbstractFormElement {
     }
 
     get defaultValue() {
-        let value = this.getJSONAttribute("types");
+        let value = this.getJSONAttribute("value");
         if (value != null) {
             value = {
                 type: value.type,
@@ -248,15 +263,15 @@ export default class RelationSelect extends AbstractFormElement {
     }
 
     set placeholder(value) {
-        this.setAttribute("placeholder", value);
+        this.setStringAttribute("placeholder", value);
     }
 
     get placeholder() {
-        return this.getAttribute("placeholder");
+        return this.getStringAttribute("placeholder");
     }
 
     set types(value) {
-        if (!Array.isArray(value)) {
+        if (value != null && !Array.isArray(value)) {
             value = [];
         }
         this.setJSONAttribute("types", value);
@@ -280,7 +295,12 @@ export default class RelationSelect extends AbstractFormElement {
 
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "placeholder", "sorted", "types"];
+        return [
+            ...superObserved,
+            "placeholder",
+            "sorted",
+            "types"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -288,7 +308,7 @@ export default class RelationSelect extends AbstractFormElement {
         switch (name) {
             case "placeholder": {
                 if (oldValue != newValue) {
-                    this.#placeholderEl.setAttribute("i18n-value", newValue);
+                    this.#placeholderEl.i18nValue = newValue;
                 }
             } break;
             case "sorted": {
@@ -354,7 +374,10 @@ export default class RelationSelect extends AbstractFormElement {
     #choose(value) {
         if (!this.getBooleanAttribute("readonly")) {
             this.value = value;
-            this.focus();
+            this.dispatchEvent(new Event("input", {
+                bubbles: true,
+                cancelable: true
+            }));
         }
         this.#stopEditMode();
     }
@@ -403,7 +426,7 @@ export default class RelationSelect extends AbstractFormElement {
         this.#scrollContainerEl.style.bottom = "";
         this.#scrollContainerEl.style.top = "";
         this.#scrollContainerEl.style.zIndex = "";
-        const all = this.querySelectorAll(`emc-select-relation-entry`);
+        const all = this.querySelectorAll("emc-select-relation-entry");
         for (const el of all) {
             el.style.display = "";
         }
@@ -422,6 +445,10 @@ export default class RelationSelect extends AbstractFormElement {
         const el = this.#switchOption(currentEl, modeUp);
         if (el != null) {
             this.value = el.value;
+            this.dispatchEvent(new Event("input", {
+                bubbles: true,
+                cancelable: true
+            }));
         }
     }
 
@@ -525,7 +552,7 @@ export default class RelationSelect extends AbstractFormElement {
             if (storage != null) {
                 this.#typeStorageEventManager.addTarget(storage);
                 for (const name of storage.keys()) {
-                    const el = document.createElement("emc-select-relation-entry");
+                    const el = new RelationSelectEntry();
                     el.name = name;
                     el.type = acceptedType;
                     this.#optionNodeList.append(el);

@@ -68,14 +68,17 @@
             "input/string": {
                 "label": "StringInput"
             },
+            "input/checkbox": {
+                "label": "CheckboxInput"
+            },
             "input/switch": {
                 "label": "SwitchInput"
             },
             "input/text": {
                 "label": "TextInput"
             },
-            "select/imageicon": {
-                "label": "ImageIconSelect"
+            "select/imageselect": {
+                "label": "ImageSelect"
             },
             "select/listselect": {
                 "label": "ListSelect"

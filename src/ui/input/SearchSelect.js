@@ -48,7 +48,7 @@ export default class SearchSelect extends CustomElementDelegating {
         const inputEl = this.shadowRoot.getElementById("input");
         const scrollContainerEl = this.shadowRoot.getElementById("scroll-container");
         this.addEventListener("click", (event) => {
-            if (!this.readonly) {
+            if (!this.readOnly) {
                 viewEl.setAttribute("mode", "edit");
                 inputEl.focus();
             }
@@ -56,7 +56,7 @@ export default class SearchSelect extends CustomElementDelegating {
             return false;
         });
         this.addEventListener("keyup", (event) => {
-            if (!this.readonly) {
+            if (!this.readOnly) {
                 if (viewEl.getAttribute("mode") == "view") {
                     if (event.key == "Enter") {
                         viewEl.setAttribute("mode", "edit");
@@ -133,7 +133,7 @@ export default class SearchSelect extends CustomElementDelegating {
             }
         });
         inputEl.addEventListener("focus", () => {
-            if (!this.readonly) {
+            if (!this.readOnly) {
                 inputEl.value = "";
                 const thisRect = this.getBoundingClientRect();
                 scrollContainerEl.style.display = "block";
@@ -219,17 +219,21 @@ export default class SearchSelect extends CustomElementDelegating {
         this.setAttribute("value", val);
     }
 
-    get readonly() {
+    get readOnly() {
         const val = this.getAttribute("readonly");
         return !!val && val != "false";
     }
 
-    set readonly(val) {
+    set readOnly(val) {
         this.setAttribute("readonly", val);
     }
 
     static get observedAttributes() {
-        return ["value", "readonly", "sort"];
+        return [
+            "value",
+            "readonly",
+            "sort"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -246,7 +250,7 @@ export default class SearchSelect extends CustomElementDelegating {
             } break;
             case "readonly": {
                 if (oldValue != newValue) {
-                    this.shadowRoot.getElementById("view").readonly = newValue;
+                    this.shadowRoot.getElementById("view").readOnly = newValue;
                     if (newValue != null && newValue != "false") {
                         this.shadowRoot.getElementById("view").disabled = true;
                     } else {
@@ -286,7 +290,7 @@ export default class SearchSelect extends CustomElementDelegating {
 
     #choose(value) {
         const view = this.shadowRoot.getElementById("view");
-        if (!this.readonly) {
+        if (!this.readOnly) {
             this.value = value;
             const container = this.shadowRoot.getElementById("scroll-container");
             container.style.display = "";

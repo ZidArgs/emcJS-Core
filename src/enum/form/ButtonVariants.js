@@ -2,6 +2,8 @@ import Enum from "../../data/Enum.js";
 
 export default class ButtonVariants extends Enum {
 
+    static LABEL = new this("label");
+
     static PRIMARY = new this("primary");
 
     static SECONDARY = new this("secondary");

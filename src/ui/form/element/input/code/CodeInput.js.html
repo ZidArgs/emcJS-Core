@@ -1,18 +1,9 @@
-<div class="header">
-    <button id="expand-button" tabindex="-1">⛶</button>
-</div>
 <div id="container">
-    <div id="line-numbers">
-        <div class="caret">1</div>
+    <div id="header">
+        <button id="expand-button" tabindex="-1">⛶</button>
     </div>
-    <div id="input-wrapper">
-        <textarea id="input" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off"></textarea>
-        <div id="output-wrapper">
-            <code id="input-mirror"></code>
-            <div id="line-marker"></div>
-        </div>
+    <emc-codearea id="input"></emc-codearea>
+    <div id="footer">
+        <span id="line-info">Ln 1, Col 1</span>
     </div>
-</div>
-<div class="footer">
-    <span id="line-info">Ln 1, Col 1</span>
 </div>

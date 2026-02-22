@@ -12,7 +12,11 @@
     z-index: var(--z-index-busy-indicator, 1000000000);
     background: rgba(0, 0, 0, 0.3);
     transform: translateZ(0);
-    animation: popInLater 0ms ease-in 100ms forwards;
+    animation-name: popInLater;
+    animation-timing-function: ease-in;
+    animation-duration: 0s;
+    animation-delay: 100ms;
+    animation-iteration-count: 1;
     animation-fill-mode: forwards;
     opacity: 0;
 }
@@ -22,7 +26,10 @@
     height: 5vmin;
     border-radius: 50%;
     background: conic-gradient(rgba(255, 255, 255, 0) 220deg, rgba(255, 255, 255, 1) 360deg);
-    animation: rotate 1s linear infinite;
+    animation-name: rotate;
+    animation-timing-function: linear;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
 }
 
 @keyframes rotate {

@@ -1,16 +1,16 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
+import {immute} from "../../../../../data/Immutable.js";
+import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
 import BusyIndicatorManager from "../../../../../util/BusyIndicatorManager.js";
 import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
 import EventMultiTargetManager from "../../../../../util/event/EventMultiTargetManager.js";
 import i18n from "../../../../../util/I18n.js";
 import {isStringNotEmpty} from "../../../../../util/helper/CheckType.js";
-import {deepClone} from "../../../../../util/helper/DeepClone.js";
 import {nodeTextComparator} from "../../../../../util/helper/ui/NodeListSort.js";
 import {debounce} from "../../../../../util/Debouncer.js";
-import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
 import {
-    safeSetAttribute, setAttributes
+    setAttributes, setBooleanAttribute
 } from "../../../../../util/helper/ui/NodeAttributes.js";
 import MutationObserverManager from "../../../../../util/observer/manager/MutationObserverManager.js";
 import I18nOption from "../../../../i18n/builtin/I18nOption.js";
@@ -22,11 +22,8 @@ import TPL from "./SimpleSelect.js.html" assert {type: "html"};
 import STYLE from "./SimpleSelect.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./SimpleSelect.js.json" assert {type: "json"};
 
-const ESCAPE_KEYS = [
-    "Tab",
-    "Escape",
-    "Enter"
-];
+const ESCAPE_KEYS = ["Tab", "Escape"];
+const SUBMIT_KEYS = ["Enter", " "];
 
 const MUTATION_CONFIG = {
     attributes: true,
@@ -37,7 +34,7 @@ const MUTATION_CONFIG = {
 export default class SimpleSelect extends AbstractFormElement {
 
     static get formConfigurationFields() {
-        return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
+        return immute([...super.formConfigurationFields, ...CONFIG_FIELDS]);
     }
 
     static get changeDebounceTime() {
@@ -46,13 +43,13 @@ export default class SimpleSelect extends AbstractFormElement {
 
     #isEditMode = false;
 
-    #fieldEl;
+    #containerEl;
 
     #inputEl;
 
-    #valueLabelEl;
+    #valueEl;
 
-    #placeholderLabelEl;
+    #placeholderEl;
 
     #nativeSelectEl;
 
@@ -80,10 +77,11 @@ export default class SimpleSelect extends AbstractFormElement {
 
     #i18nOptionManager;
 
+    #windowEventManager = new EventTargetManager(window, false);
+
     constructor() {
         super();
-        this.#fieldEl = this.shadowRoot.getElementById("field");
-        this.#fieldEl.append(TPL.generate());
+        TPL.apply(this.shadowRoot);
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#optionSelectEventManager.set("mousedown", (event) => {
@@ -102,9 +100,10 @@ export default class SimpleSelect extends AbstractFormElement {
             }
         });
         /* --- */
+        this.#containerEl = this.shadowRoot.getElementById("container");
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.#valueLabelEl = this.shadowRoot.getElementById("value-label");
-        this.#placeholderLabelEl = this.shadowRoot.getElementById("placeholder-label");
+        this.#valueEl = this.shadowRoot.getElementById("value");
+        this.#placeholderEl = this.shadowRoot.getElementById("placeholder");
         this.#nativeSelectEl = this.shadowRoot.getElementById("native-select");
         this.#nativeEmptyEl = this.shadowRoot.getElementById("native-empty");
         this.#emptyEl = this.shadowRoot.getElementById("empty");
@@ -112,19 +111,16 @@ export default class SimpleSelect extends AbstractFormElement {
         this.#buttonEl = this.shadowRoot.getElementById("button");
         this.#optionsContainerEl = this.shadowRoot.getElementById("options-container");
         this.#optionsSlotEl = this.shadowRoot.getElementById("options-slot");
-        this.registerTargetEventHandler(this.#optionsSlotEl, "slotchange", () => {
+        this.#optionsSlotEl.addEventListener("slotchange", () => {
             this.#onSlotChange();
         });
         /* --- */
-        this.registerTargetEventHandler(this.#scrollContainerEl, "mousedown", (event) => {
+        this.#scrollContainerEl.addEventListener("mousedown", (event) => {
             event.stopPropagation();
         });
-        this.registerTargetEventHandler(this.#scrollContainerEl, "click", () => {
-            this.focus();
-        });
         /* --- */
-        this.registerTargetEventHandler(this.#inputEl, "click", (event) => {
-            if (!this.readonly) {
+        this.#inputEl.addEventListener("click", (event) => {
+            if (!this.readOnly) {
                 if (!this.#isEditMode) {
                     this.#startEditMode();
                 } else {
@@ -134,11 +130,11 @@ export default class SimpleSelect extends AbstractFormElement {
                 event.stopPropagation();
             }
         });
-        this.registerTargetEventHandler(this.#inputEl, "mousedown", (event) => {
+        this.#inputEl.addEventListener("mousedown", (event) => {
             event.stopPropagation();
         });
-        this.registerTargetEventHandler(this.#inputEl, "keydown", (event) => {
-            if (!this.getBooleanAttribute("readonly")) {
+        this.#inputEl.addEventListener("keydown", (event) => {
+            if (!this.readOnly) {
                 if (!this.#isEditMode) {
                     const {key} = event;
                     if (key === "ArrowUp") {
@@ -149,7 +145,7 @@ export default class SimpleSelect extends AbstractFormElement {
                         this.#switchSelected(false);
                         event.preventDefault();
                         event.stopPropagation();
-                    } else if (key === "Enter" || key === " ") {
+                    } else if (SUBMIT_KEYS.includes(key)) {
                         this.#startEditMode();
                         event.preventDefault();
                         event.stopPropagation();
@@ -165,60 +161,66 @@ export default class SimpleSelect extends AbstractFormElement {
                         event.preventDefault();
                         event.stopPropagation();
                     } else if (ESCAPE_KEYS.includes(key)) {
-                        this.#stopEditMode();
+                        this.#stopEditMode(false);
+                        event.preventDefault();
+                        event.stopPropagation();
+                    } else if (SUBMIT_KEYS.includes(key)) {
+                        this.#stopEditMode(true);
                         event.preventDefault();
                         event.stopPropagation();
                     }
                 }
             }
         });
-        this.registerTargetEventHandler(this.#inputEl, "blur", (event) => {
+        this.#inputEl.addEventListener("blur", (event) => {
             if (event.relatedTarget != null && !event.relatedTarget.contains(this.#inputEl)) {
                 this.#cancelSelection();
             }
             event.stopPropagation();
         });
-        this.registerTargetEventHandler(this.#scrollContainerEl, "wheel", (event) => {
+        this.#scrollContainerEl.addEventListener("wheel", (event) => {
             event.stopPropagation();
         }, {passive: true});
         /* --- */
-        this.registerTargetEventHandler(this.#nativeSelectEl, "mousedown", (event) => {
-            if (this.readonly) {
+        this.#nativeSelectEl.addEventListener("mousedown", (event) => {
+            if (this.readOnly) {
                 event.preventDefault();
                 event.stopPropagation();
             }
         });
-        this.registerTargetEventHandler(this.#nativeSelectEl, "change", () => {
+        this.#nativeSelectEl.addEventListener("change", () => {
             this.value = this.#nativeSelectEl.value;
+            this.dispatchEvent(new Event("input", {
+                bubbles: true,
+                cancelable: true
+            }));
         });
         /* --- */
-        this.registerTargetEventHandler(window, "wheel", () => {
+        this.#windowEventManager.set("wheel", () => {
             if (this.#isEditMode) {
                 this.#cancelSelection();
             }
         }, {passive: true});
-        this.registerTargetEventHandler(window, "blur", () => {
+        this.#windowEventManager.set("blur", () => {
             if (this.#isEditMode) {
                 this.#cancelSelection();
             }
         }, {passive: true});
-        this.registerTargetEventHandler(window, "mousedown", (event) => {
-            if (!this.readonly && this.#isEditMode) {
-                if (!this.#fieldEl.contains(event.target)) {
+        this.#windowEventManager.set("mousedown", (event) => {
+            if (!this.readOnly && this.#isEditMode) {
+                if (!this.#containerEl.contains(event.target)) {
                     this.#cancelSelection();
-                } else {
-                    this.focus();
                 }
             }
         }, {passive: true});
         /* --- */
         this.#selectEntryManager = new SelectEntryManager(this.#optionsContainerEl, this.#optionSelectEventManager);
-        this.registerTargetEventHandler(this.#selectEntryManager, "afterrender", () => {
+        this.#selectEntryManager.addEventListener("afterrender", () => {
             this.#refreshSelect(this.#optionsContainerEl);
             this.renderValue(this.value);
         });
         this.#i18nOptionManager = new I18nOptionManager(this.#nativeSelectEl);
-        this.registerTargetEventHandler(this.#i18nOptionManager, "afterrender", () => {
+        this.#i18nOptionManager.addEventListener("afterrender", () => {
             this.#refreshSelect(this.#nativeSelectEl);
         });
         /* --- */
@@ -234,7 +236,12 @@ export default class SimpleSelect extends AbstractFormElement {
 
     connectedCallback() {
         super.connectedCallback?.();
-        this.#onSlotChange();
+        this.#windowEventManager.active = true;
+    }
+
+    disconnectedCallback() {
+        super.disconnectedCallback?.();
+        this.#windowEventManager.active = false;
     }
 
     formDisabledCallback(disabled) {
@@ -255,11 +262,11 @@ export default class SimpleSelect extends AbstractFormElement {
     }
 
     set placeholder(value) {
-        this.setAttribute("placeholder", value);
+        this.setStringAttribute("placeholder", value);
     }
 
     get placeholder() {
-        return this.getAttribute("placeholder");
+        return this.getStringAttribute("placeholder");
     }
 
     set sorted(value) {
@@ -272,7 +279,12 @@ export default class SimpleSelect extends AbstractFormElement {
 
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "placeholder", "readonly", "sorted"];
+        return [
+            ...superObserved,
+            "placeholder",
+            "readonly",
+            "sorted"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -280,12 +292,12 @@ export default class SimpleSelect extends AbstractFormElement {
         switch (name) {
             case "placeholder": {
                 if (oldValue != newValue) {
-                    this.#placeholderLabelEl.i18nValue = newValue;
+                    this.#placeholderEl.i18nValue = newValue;
                 }
             } break;
             case "readonly": {
                 if (oldValue != newValue) {
-                    safeSetAttribute(this.#buttonEl, "readonly", this.readonly);
+                    setBooleanAttribute(this.#nativeSelectEl, "readonly", this.readOnly);
                 }
             } break;
             case "sorted": {
@@ -310,25 +322,28 @@ export default class SimpleSelect extends AbstractFormElement {
             const selectedEl = this.#optionsContainerEl.querySelector(`[value="${value}"]`);
             if (selectedEl != null) {
                 if (selectedEl.label != null) {
-                    this.#valueLabelEl.i18nValue = selectedEl.label;
+                    this.#valueEl.i18nValue = selectedEl.label;
                 } else {
-                    this.#valueLabelEl.i18nValue = "";
-                    this.#valueLabelEl.innerText = selectedEl.innerText;
+                    this.#valueEl.i18nValue = "";
+                    this.#valueEl.innerText = selectedEl.innerText;
                 }
             } else {
-                this.#valueLabelEl.i18nValue = value;
+                this.#valueEl.i18nValue = value;
             }
         } else {
             this.#nativeSelectEl.value = "";
-            this.#valueLabelEl.i18nValue = "";
-            this.#valueLabelEl.innerHTML = "";
+            this.#valueEl.i18nValue = "";
+            this.#valueEl.innerHTML = "";
         }
     }
 
     #choose(value) {
         if (!this.getBooleanAttribute("readonly")) {
             this.value = value;
-            this.focus();
+            this.dispatchEvent(new Event("input", {
+                bubbles: true,
+                cancelable: true
+            }));
         }
         this.#stopEditMode();
     }
@@ -339,12 +354,11 @@ export default class SimpleSelect extends AbstractFormElement {
     }
 
     #startEditMode() {
-        if (!this.readonly) {
+        if (!this.readOnly) {
             this.#isEditMode = true;
             this.#inputEl.classList.add("active");
-            this.focus();
             /* --- */
-            const thisRect = this.#fieldEl.getBoundingClientRect();
+            const thisRect = this.#containerEl.getBoundingClientRect();
             this.#scrollContainerEl.style.display = "block";
             this.#scrollContainerEl.style.left = `${thisRect.left}px`;
             this.#scrollContainerEl.style.width = `${thisRect.width}px`;
@@ -368,7 +382,7 @@ export default class SimpleSelect extends AbstractFormElement {
         }
     }
 
-    #stopEditMode() {
+    #stopEditMode(submit = false) {
         this.#isEditMode = false;
         this.#inputEl.classList.remove("active");
         /* --- */
@@ -380,12 +394,17 @@ export default class SimpleSelect extends AbstractFormElement {
         for (const el of all) {
             el.style.display = "";
         }
-        const marked = this.#optionsContainerEl.querySelector(".marked");
-        if (marked != null) {
-            marked.classList.remove("marked");
-            this.value = marked.value;
+        if (submit) {
+            const marked = this.#optionsContainerEl.querySelector(".marked");
+            if (marked != null) {
+                marked.classList.remove("marked");
+                this.value = marked.value;
+            }
         } else {
-            this.renderValue(this.value);
+            const marked = this.#optionsContainerEl.querySelector(".marked");
+            if (marked != null) {
+                marked.classList.remove("marked");
+            }
         }
     }
 
@@ -394,6 +413,10 @@ export default class SimpleSelect extends AbstractFormElement {
         const el = this.#switchOption(marked, modeUp);
         if (el != null) {
             this.value = el.value;
+            this.dispatchEvent(new Event("input", {
+                bubbles: true,
+                cancelable: true
+            }));
         }
     }
 
@@ -477,16 +500,21 @@ export default class SimpleSelect extends AbstractFormElement {
         /* --- */
         const oldNodes = new Set(this.#mutationObserver.getObservedNodes());
         const newNodes = new Set();
+        const usedKeys = new Set();
         for (const el of optionNodeList) {
-            data.push({
-                key: el.value || el.innerText,
-                label: el.i18nValue || el.label || el.innerText || (el.value === "" ? this.placeholder : "")
-            });
-            /* --- */
-            if (oldNodes.has(el)) {
-                oldNodes.delete(el);
-            } else {
-                newNodes.add(el);
+            const key = el.value || el.innerText;
+            if (!usedKeys.has(key)) {
+                usedKeys.add(key);
+                data.push({
+                    key: el.value || el.innerText,
+                    label: el.i18nValue || el.label || el.innerText
+                });
+                /* --- */
+                if (oldNodes.has(el)) {
+                    oldNodes.delete(el);
+                } else {
+                    newNodes.add(el);
+                }
             }
         }
         for (const node of oldNodes) {

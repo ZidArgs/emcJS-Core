@@ -188,7 +188,7 @@ export default createMixin((superclass) => class ContextMenuManagerMixin extends
 
     connectedCallback() {
         if (super.connectedCallback) {
-            super.connectedCallback();
+            super.connectedCallback?.();
         }
         const catcherEl = ContextMenuLayer.findNextLayer(this);
         for (const [, menu] of this.#menus) {
@@ -198,7 +198,7 @@ export default createMixin((superclass) => class ContextMenuManagerMixin extends
 
     disconnectedCallback() {
         if (super.disconnectedCallback) {
-            super.disconnectedCallback();
+            super.disconnectedCallback?.();
         }
         for (const [, menu] of this.#menus) {
             menu.remove();

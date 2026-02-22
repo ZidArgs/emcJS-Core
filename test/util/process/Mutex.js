@@ -5,7 +5,14 @@ import assert from "assert";
 import Mutex from "../../../src/util/process/Mutex.js";
 import {sleep} from "../../../src/util/process/Sleep.js";
 
-const PREFIXES = ["A", "B", "C", "D", "E", "F"];
+const PREFIXES = [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F"
+];
 const ITERATIONS = 10;
 
 const EXPECTATION = [];

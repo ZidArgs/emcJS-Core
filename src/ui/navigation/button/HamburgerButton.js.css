@@ -20,7 +20,6 @@ button {
     border: none;
     border-radius: 0;
     background-color: var(--hamburger-button-back-color, #ffffff);
-    background-image: var(--hamburger-button-back-image, none);
     cursor: pointer;
     outline: none;
     appearance: none;

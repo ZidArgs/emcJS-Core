@@ -4,7 +4,9 @@ import EventTargetManager from "../../../../../util/event/EventTargetManager.js"
 import {deepClone} from "../../../../../util/helper/DeepClone.js";
 import {toStartUppercaseEndLowercase} from "../../../../../util/helper/string/ConvertCase.js";
 import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
-import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
+import {
+    setBooleanAttribute, setStringAttribute
+} from "../../../../../util/helper/ui/NodeAttributes.js";
 import {I18nValueObserver} from "../../../../../util/observer/i18n/I18nValueObserver.js";
 import KeySequence from "../../../../../util/keyboard/KeySequence.js";
 import KeyBindEditPanel from "./components/KeyBindEditPanel.js";
@@ -31,10 +33,6 @@ export default class KeyBindInput extends AbstractFormElement {
 
     #buttonEl;
 
-    #inputElementEventTargetManager;
-
-    #languageEventTargetManager = new EventTargetManager();
-
     #ctrlKeyEl;
 
     #shiftKeyEl;
@@ -45,11 +43,13 @@ export default class KeyBindInput extends AbstractFormElement {
 
     #customKeyEl;
 
+    #languageEventTargetManager = new EventTargetManager();
+
     #keyBindEditPanel = new KeyBindEditPanel();
 
     constructor() {
         super();
-        this.shadowRoot.getElementById("field").append(TPL.generate());
+        TPL.apply(this.shadowRoot);
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#ctrlKeyEl = document.createElement("emc-keycap");
@@ -64,11 +64,10 @@ export default class KeyBindInput extends AbstractFormElement {
         this.#customKeyEl.innerText = "";
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.#inputElementEventTargetManager = new EventTargetManager(this.#inputEl);
-        this.#inputElementEventTargetManager.set("click", () => {
+        this.#inputEl.addEventListener("click", () => {
             this.#keyBindEditPanel.show();
         });
-        this.#inputElementEventTargetManager.set("keydown", (event) => {
+        this.#inputEl.addEventListener("keydown", (event) => {
             const {
                 key, shiftKey
             } = event;
@@ -90,7 +89,7 @@ export default class KeyBindInput extends AbstractFormElement {
                 return false;
             }
         });
-        this.#inputElementEventTargetManager.set("blur", () => {
+        this.#inputEl.addEventListener("blur", () => {
             if (this.#value?.key == null) {
                 this.#value = {
                     ctrlKey: false,
@@ -104,10 +103,14 @@ export default class KeyBindInput extends AbstractFormElement {
             }
         });
         this.#buttonEl = this.shadowRoot.getElementById("button");
-        this.registerTargetEventHandler(this.#buttonEl, "click", () => {
+        this.#buttonEl.addEventListener("click", () => {
             this.value = "";
+            this.dispatchEvent(new Event("input", {
+                bubbles: true,
+                cancelable: true
+            }));
         });
-        this.registerTargetEventHandler(this.#keyBindEditPanel, "submit", (event) => {
+        this.#keyBindEditPanel.addEventListener("submit", (event) => {
             const {
                 ctrlKey, shiftKey, altKey, metaKey, key
             } = event.value;
@@ -118,18 +121,22 @@ export default class KeyBindInput extends AbstractFormElement {
             this.#value.key = key;
             this.renderValue(this.#value);
             this.value = KeySequence.stringify(this.#value);
+            this.dispatchEvent(new Event("input", {
+                bubbles: true,
+                cancelable: true
+            }));
             this.#inputEl.focus();
         });
         /* --- */
         this.#languageEventTargetManager.set("change", (event) => {
-            safeSetAttribute(this.#inputEl, "placeholder", event.value);
+            setStringAttribute(this.#inputEl, "placeholder", event.value);
         });
     }
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
+        this.#inputEl.disabled = disabled;
         this.#buttonEl.disabled = disabled;
-        this.#handleReadOnlyDisabled();
     }
 
     focus(options) {
@@ -159,16 +166,29 @@ export default class KeyBindInput extends AbstractFormElement {
     }
 
     set placeholder(value) {
-        this.setAttribute("placeholder", value);
+        this.setStringAttribute("placeholder", value);
     }
 
     get placeholder() {
-        return this.getAttribute("placeholder");
+        return this.getStringAttribute("placeholder");
+    }
+
+    set caption(value) {
+        this.setStringAttribute("caption", value);
+    }
+
+    get caption() {
+        return this.getStringAttribute("caption");
     }
 
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "readonly", "placeholder"];
+        return [
+            ...superObserved,
+            "readonly",
+            "placeholder",
+            "caption"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -178,27 +198,21 @@ export default class KeyBindInput extends AbstractFormElement {
                 if (oldValue != newValue) {
                     const i18nValueObserver = new I18nValueObserver(newValue);
                     this.#languageEventTargetManager.switchTarget(i18nValueObserver);
-                    safeSetAttribute(this.#inputEl, "placeholder", i18nValueObserver.value);
+                    setStringAttribute(this.#inputEl, "placeholder", i18nValueObserver.value);
                 }
             } break;
             case "readonly": {
                 if (oldValue != newValue) {
-                    this.#handleReadOnlyDisabled();
+                    setBooleanAttribute(this.#inputEl, name, this.readOnly);
+                    setBooleanAttribute(this.#buttonEl, name, this.readOnly);
                 }
             } break;
-            case "label": {
+            case "caption": {
                 if (oldValue != newValue) {
                     this.#keyBindEditPanel.caption = newValue;
                 }
             } break;
         }
-    }
-
-    #handleReadOnlyDisabled() {
-        const readonly = this.getAttribute("readonly");
-        const disabled = this.#inputEl.disabled;
-        const ignoreInput = disabled || (readonly != null && readonly != "false");
-        this.#inputElementEventTargetManager.active = !ignoreInput;
     }
 
     renderValue(value) {

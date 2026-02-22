@@ -1,0 +1,1092 @@
+{
+    "logic_rules": {
+        "category": "options",
+        "type": "choice",
+        "default": "logic_rules_glitchless",
+        "values": [
+            "logic_rules_glitchless",
+            "logic_rules_glitched",
+            "logic_rules_ap_glitchless",
+            "logic_rules_ap_glitched"
+        ]
+    },
+    "starting_age": {
+        "category": "options",
+        "type": "choice",
+        "default": "child",
+        "values": [
+            "child",
+            "adult"
+        ]
+    },
+    "starting_tod": {
+        "category": "options",
+        "type": "-choice",
+        "default": "tod_default",
+        "values": [
+            "tod_default",
+            "tod_sunrise",
+            "tod_morning",
+            "tod_noon",
+            "tod_afternoon",
+            "tod_sunset",
+            "tod_evening",
+            "tod_midnight",
+            "tod_witching_hour"
+        ]
+    },
+    "starting_hearts": {
+        "category": "options",
+        "type": "number",
+        "default": 3,
+        "min": 3,
+        "max": 20
+    },
+    "bombchu_logic": {
+        "category": "options",
+        "type": "check",
+        "default": false
+    },
+    "skip_epona_race": {
+        "category": "options",
+        "type": "check",
+        "default": false
+    },
+    "skip_child_zelda": {
+        "category": "options",
+        "type": "check",
+        "default": false
+    },
+    "complete_mask_quest": {
+        "category": "options",
+        "type": "check",
+        "default": false
+    },
+    "free_scarecrow": {
+        "category": "options",
+        "type": "check",
+        "default": false
+    },
+    "scarecrow_behavior": {
+        "category": "options",
+        "type": "choice",
+        "default": "scarecrow_vanilla",
+        "values": [
+            "scarecrow_vanilla",
+            "scarecrow_fast",
+            "scarecrow_free"
+        ]
+    },
+    "doors_open_forest": {
+        "category": "options",
+        "type": "choice",
+        "default": "doors_open_forest_open",
+        "values": [
+            "doors_open_forest_closed",
+            "doors_open_forest_deku",
+            "doors_open_forest_open"
+        ]
+    },
+    "doors_open_kakariko": {
+        "category": "options",
+        "type": "choice",
+        "default": "doors_open_kakariko_closed",
+        "values": [
+            "doors_open_kakariko_closed",
+            "doors_open_kakariko_zelda",
+            "doors_open_kakariko_open"
+        ]
+    },
+    "open_door_of_time": {
+        "category": "options",
+        "type": "choice",
+        "default": "dot_sot",
+        "values": [
+            "dot_open",
+            "dot_sot",
+            "dot_oot_sot",
+            "dot_stones",
+            "dot_stones_sot",
+            "dot_stones_oot_sot"
+        ]
+    },
+    "doors_open_zora": {
+        "category": "options",
+        "type": "choice",
+        "default": "doors_open_zora_closed",
+        "values": [
+            "doors_open_zora_closed",
+            "doors_open_zora_adult",
+            "doors_open_zora_both"
+        ]
+    },
+    "big_poe_count": {
+        "category": "options",
+        "type": "number",
+        "default": 10,
+        "min": 1,
+        "max": 10
+    },
+    "sun_song_skulltuta": {
+        "category": "options",
+        "type": "check",
+        "default": false
+    },
+    "damage_multiplier": {
+        "category": "options",
+        "type": "choice",
+        "default": "dmg_normal",
+        "values": [
+            "dmg_half",
+            "dmg_normal",
+            "dmg_double",
+            "dmg_quadruple",
+            "dmg_ohko"
+        ]
+    },
+    "deadly_bonks": {
+        "category": "options",
+        "type": "choice",
+        "default": "bonk_off",
+        "values": [
+            "bonk_off",
+            "bonk_quarter",
+            "bonk_half",
+            "bonk_one",
+            "bonk_two",
+            "bonk_ohko"
+        ]
+    },
+    "blue_fire_arrows": {
+        "category": "options",
+        "type": "check",
+        "default": false
+    },
+    "fix_broken_drops": {
+        "category": "options",
+        "type": "check",
+        "default": false
+    },
+    "chicken_count": {
+        "category": "options",
+        "type": "number",
+        "default": 10,
+        "min": 0,
+        "max": 10
+    },
+    "plant_beans": {
+        "category": "options",
+        "type": "check",
+        "default": false
+    },
+    "skullsanity": {
+        "category": "item_sanity",
+        "type": "hidden",
+        "old_type": "check",
+        "default": false
+    },
+    "scrubsanity": {
+        "category": "item_sanity",
+        "type": "check",
+        "default": false
+    },
+    "cowsanity": {
+        "category": "item_sanity",
+        "type": "check",
+        "default": false
+    },
+    "shopsanity": {
+        "category": "item_sanity",
+        "type": "choice",
+        "default": "off",
+        "values": [
+            "off",
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "random"
+        ]
+    },
+    "beansanity": {
+        "category": "item_sanity",
+        "type": "check",
+        "default": false
+    },
+    "frogsanity": {
+        "category": "item_sanity",
+        "type": "check",
+        "default": false
+    },
+    "shuffle_expensive_merchants": {
+        "category": "item_sanity",
+        "type": "check",
+        "default": false
+    },
+    "shuffle_rupees_hearts": {
+        "category": "item_sanity",
+        "type": "choice",
+        "default": "off",
+        "values": [
+            "off",
+            "all",
+            "overworld",
+            "dungeons"
+        ]
+    },
+    "shuffle_pots": {
+        "category": "item_sanity",
+        "type": "choice",
+        "default": "off",
+        "values": [
+            "off",
+            "all",
+            "overworld",
+            "dungeons"
+        ]
+    },
+    "shuffle_empty_pots": {
+        "category": "item_sanity",
+        "type": "check",
+        "default": false
+    },
+    "shuffle_crates": {
+        "category": "item_sanity",
+        "type": "choice",
+        "default": "off",
+        "values": [
+            "off",
+            "all",
+            "overworld",
+            "dungeons"
+        ]
+    },
+    "shuffle_empty_crates": {
+        "category": "item_sanity",
+        "type": "check",
+        "default": false
+    },
+    "shuffle_beehives": {
+        "category": "item_sanity",
+        "type": "check",
+        "default": false
+    },
+    "shuffle_wonderitems": {
+        "category": "item_sanity",
+        "type": "check",
+        "default": false
+    },
+    "shuffle_100_skulltula_rupee": {
+        "category": "item_sanity",
+        "type": "check",
+        "default": false
+    },
+    "shuffle_gerudo_fortress_heart_piece": {
+        "category": "item_sanity",
+        "type": "choice",
+        "default": "gf_hp_remove",
+        "values": [
+            "gf_hp_remove",
+            "gf_hp_vanilla",
+            "gf_hp_shuffle"
+        ]
+    },
+    "shuffle_child_trade": {
+        "category": "item_sanity",
+        "type": "list",
+        "default": [],
+        "values": [
+            "item[weird_egg]",
+            "item[chicken]",
+            "item[zeldas_letter]",
+            "item[mask_keaton]",
+            "item[mask_skull]",
+            "item[mask_spooky]",
+            "item[mask_bunny]",
+            "item[mask_goron]",
+            "item[mask_zora]",
+            "item[mask_gerudo]",
+            "item[mask_truth]"
+        ]
+    },
+    "adult_trade_shuffle": {
+        "category": "item_sanity",
+        "type": "check",
+        "default": false
+    },
+    "trade_sequence_start_item": {
+        "category": "item_sanity",
+        "type": "list",
+        "default": [
+            "item[pocket_egg]",
+            "item[pocket_cucco]",
+            "item[pocket_cojiro]",
+            "item[mushroom]",
+            "item[medicine]",
+            "item[saw]",
+            "item[broken_sword]",
+            "item[prescription]",
+            "item[frog]",
+            "item[eyedrops]",
+            "item[claim]"
+        ],
+        "values": [
+            "item[pocket_egg]",
+            "item[pocket_cucco]",
+            "item[pocket_cojiro]",
+            "item[mushroom]",
+            "item[medicine]",
+            "item[saw]",
+            "item[broken_sword]",
+            "item[prescription]",
+            "item[frog]",
+            "item[eyedrops]",
+            "item[claim]"
+        ]
+    },
+    "shuffle_individual_ocarina_notes": {
+        "category": "item_sanity",
+        "type": "check",
+        "default": false
+    },
+    "shuffle_loach_reward": {
+        "category": "item_sanity",
+        "type": "choice",
+        "default": "off",
+        "values": [
+            "off",
+            "vanilla",
+            "easy"
+        ]
+    },
+    "shuffle_silver_rupees": {
+        "category": "keylogic",
+        "type": "choice",
+        "default": "keylogic_vanilla",
+        "values": [
+            "keylogic_keysy",
+            "keylogic_vanilla",
+            "keylogic_own_dungeon",
+            "keylogic_overworld",
+            "keylogic_any_dungeon",
+            "keylogic_regional",
+            "keylogic_keysanity"
+        ]
+    },
+    "small_key_logic": {
+        "category": "keylogic",
+        "type": "choice",
+        "default": "keylogic_keysanity",
+        "values": [
+            "keylogic_keysy",
+            "keylogic_vanilla",
+            "keylogic_own_dungeon",
+            "keylogic_overworld",
+            "keylogic_any_dungeon",
+            "keylogic_regional",
+            "keylogic_keysanity"
+        ]
+    },
+    "gerudo_key_logic": {
+        "category": "keylogic",
+        "type": "choice",
+        "default": "keylogic_vanilla",
+        "values": [
+            "keylogic_vanilla",
+            "keylogic_fortress",
+            "keylogic_overworld",
+            "keylogic_any_dungeon",
+            "keylogic_regional",
+            "keylogic_keysanity"
+        ]
+    },
+    "gerudo_fortress_open": {
+        "category": "keylogic",
+        "type": "choice",
+        "default": "gerudo_fortress_open_default",
+        "values": [
+            "gerudo_fortress_open_default",
+            "gerudo_fortress_open_one",
+            "gerudo_fortress_open_open"
+        ]
+    },
+    "shuffle_tcgkeys": {
+        "category": "keylogic",
+        "type": "choice",
+        "default": "keylogic_vanilla",
+        "values": [
+            "keylogic_keysy",
+            "keylogic_vanilla",
+            "keylogic_regional",
+            "keylogic_overworld",
+            "keylogic_any_dungeon",
+            "keylogic_keysanity"
+        ]
+    },
+    "boss_key_logic": {
+        "category": "keylogic",
+        "type": "choice",
+        "default": "keylogic_keysanity",
+        "values": [
+            "keylogic_keysy",
+            "keylogic_vanilla",
+            "keylogic_own_dungeon",
+            "keylogic_overworld",
+            "keylogic_any_dungeon",
+            "keylogic_regional",
+            "keylogic_keysanity"
+        ]
+    },
+    "ganon_key_logic": {
+        "category": "keylogic",
+        "type": "choice",
+        "default": "keylogic_keysanity",
+        "values": [
+            "keylogic_keysy",
+            "keylogic_vanilla",
+            "keylogic_own_dungeon",
+            "keylogic_overworld",
+            "keylogic_any_dungeon",
+            "keylogic_regional",
+            "keylogic_keysanity",
+            "keylogic_lacs",
+            "keylogic_stones",
+            "keylogic_medallions",
+            "keylogic_dungeons",
+            "keylogic_tokens",
+            "keylogic_hearts"
+        ]
+    },
+    "medallion_count_ganon_bosskey": {
+        "category": "keylogic",
+        "type": "number",
+        "default": 6,
+        "visible": {
+            "type": "state",
+            "ref": "ganon_key_logic",
+            "value": "keylogic_medallions"
+        },
+        "min": 1,
+        "max": 6
+    },
+    "stone_count_ganon_bosskey": {
+        "category": "keylogic",
+        "type": "number",
+        "default": 3,
+        "visible": {
+            "type": "state",
+            "ref": "ganon_key_logic",
+            "value": "keylogic_stones"
+        },
+        "min": 1,
+        "max": 3
+    },
+    "dungeon_count_ganon_bosskey": {
+        "category": "keylogic",
+        "type": "number",
+        "default": 9,
+        "visible": {
+            "type": "state",
+            "ref": "ganon_key_logic",
+            "value": "keylogic_dungeons"
+        },
+        "min": 1,
+        "max": 9
+    },
+    "token_count_ganon_bosskey": {
+        "category": "keylogic",
+        "type": "number",
+        "default": 4,
+        "visible": {
+            "type": "state",
+            "ref": "ganon_key_logic",
+            "value": "keylogic_tokens"
+        },
+        "min": 1,
+        "max": 100
+    },
+    "heart_count_ganon_bosskey": {
+        "category": "keylogic",
+        "type": "number",
+        "default": 4,
+        "visible": {
+            "type": "state",
+            "ref": "ganon_key_logic",
+            "value": "keylogic_hearts"
+        },
+        "min": 4,
+        "max": 20
+    },
+    "triforce_hunt": {
+        "category": "keylogic",
+        "type": "-check",
+        "default": false
+    },
+    "triforce_hunt_goal": {
+        "category": "keylogic",
+        "type": "number",
+        "default": 20,
+        "visible": {
+            "type": "value",
+            "ref": "triforce_hunt"
+        },
+        "min": 0,
+        "max": 10000
+    },
+    "mixed_entrance_pool": {
+        "category": "entrance_randomizer",
+        "type": "check",
+        "default": false
+    },
+    "detached_entrances": {
+        "category": "entrance_randomizer",
+        "type": "check",
+        "default": false
+    },
+    "shuffle_spawns": {
+        "category": "entrance_randomizer",
+        "type": "list",
+        "default": [],
+        "values": [
+            "shuffle_spawn_child",
+            "shuffle_spawn_adult"
+        ]
+    },
+    "shuffle_dungeons": {
+        "category": "entrance_randomizer",
+        "type": "choice",
+        "default": "shuffle_dungeons_off",
+        "values": [
+            "shuffle_dungeons_off",
+            "shuffle_dungeons_simple",
+            "shuffle_dungeons_all"
+        ]
+    },
+    "shuffle_bosses": {
+        "category": "entrance_randomizer",
+        "type": "choice",
+        "default": "shuffle_bosses_off",
+        "values": [
+            "shuffle_bosses_off",
+            "shuffle_bosses_age",
+            "shuffle_bosses_all"
+        ]
+    },
+    "shuffle_ganon_tower": {
+        "category": "entrance_randomizer",
+        "type": "check",
+        "default": false
+    },
+    "entrance_shuffle_interior": {
+        "category": "entrance_randomizer",
+        "type": "choice",
+        "default": "entrance_shuffle_off",
+        "values": [
+            "entrance_shuffle_off",
+            "entrance_shuffle_simple",
+            "entrance_shuffle_all"
+        ]
+    },
+    "shuffle_hideout_entrances": {
+        "category": "entrance_randomizer",
+        "type": "check",
+        "default": false
+    },
+    "shuffle_grottos": {
+        "category": "entrance_randomizer",
+        "type": "check",
+        "default": false
+    },
+    "shuffle_overworld": {
+        "category": "entrance_randomizer",
+        "type": "check",
+        "default": false
+    },
+    "shuffle_gerudo_valley_river_exit": {
+        "category": "entrance_randomizer",
+        "type": "check",
+        "default": false
+    },
+    "shuffle_owls": {
+        "category": "entrance_randomizer",
+        "type": "check",
+        "default": false
+    },
+    "shuffle_warps": {
+        "category": "entrance_randomizer",
+        "type": "check",
+        "default": false
+    },
+    "dungeon_shortcuts": {
+        "category": "entrance_randomizer",
+        "type": "list",
+        "default": [],
+        "values": [
+            "dungeon_shortcuts.deku",
+            "dungeon_shortcuts.dodongo",
+            "dungeon_shortcuts.jabu",
+            "dungeon_shortcuts.temple_forest",
+            "dungeon_shortcuts.temple_fire",
+            "dungeon_shortcuts.temple_water",
+            "dungeon_shortcuts.temple_shadow",
+            "dungeon_shortcuts.temple_spirit"
+        ]
+    },
+    "light_arrow_cutscene": {
+        "category": "lacsAndGanon",
+        "type": "choice",
+        "default": "light_arrow_cutscene_vanilla",
+        "values": [
+            "light_arrow_cutscene_vanilla",
+            "light_arrow_cutscene_stones",
+            "light_arrow_cutscene_medallions",
+            "light_arrow_cutscene_dungeons",
+            "light_arrow_cutscene_skulltulas",
+            "light_arrow_cutscene_hearts"
+        ]
+    },
+    "lacs_skulltulas": {
+        "category": "lacsAndGanon",
+        "type": "number",
+        "default": 100,
+        "visible": {
+            "type": "state",
+            "ref": "light_arrow_cutscene",
+            "value": "light_arrow_cutscene_skulltulas"
+        },
+        "min": 0,
+        "max": 100
+    },
+    "stone_count_lacs": {
+        "category": "lacsAndGanon",
+        "type": "number",
+        "default": 3,
+        "visible": {
+            "type": "state",
+            "ref": "light_arrow_cutscene",
+            "value": "light_arrow_cutscene_stones"
+        },
+        "min": 1,
+        "max": 3
+    },
+    "medallion_count_lacs": {
+        "category": "lacsAndGanon",
+        "type": "number",
+        "default": 6,
+        "visible": {
+            "type": "state",
+            "ref": "light_arrow_cutscene",
+            "value": "light_arrow_cutscene_medallions"
+        },
+        "min": 1,
+        "max": 6
+    },
+    "dungeon_count_lacs": {
+        "category": "lacsAndGanon",
+        "type": "number",
+        "default": 9,
+        "visible": {
+            "type": "state",
+            "ref": "light_arrow_cutscene",
+            "value": "light_arrow_cutscene_dungeons"
+        },
+        "min": 1,
+        "max": 9
+    },
+    "heart_count_lacs": {
+        "category": "lacsAndGanon",
+        "type": "number",
+        "default": 4,
+        "visible": {
+            "type": "state",
+            "ref": "light_arrow_cutscene",
+            "value": "light_arrow_cutscene_hearts"
+        },
+        "min": 4,
+        "max": 20
+    },
+    "ganon_castle_open": {
+        "category": "lacsAndGanon",
+        "type": "choice",
+        "default": "ganon_castle_open_default",
+        "values": [
+            "ganon_castle_open_dungeon",
+            "ganon_castle_open_medallion",
+            "ganon_castle_open_stones",
+            "ganon_castle_open_skulltulas",
+            "ganon_castle_open_hearts",
+            "ganon_castle_open_default",
+            "ganon_castle_open_open"
+        ]
+    },
+    "ganon_castle_skulltulas": {
+        "category": "lacsAndGanon",
+        "type": "number",
+        "default": 100,
+        "visible": {
+            "type": "state",
+            "ref": "ganon_castle_open",
+            "value": "ganon_castle_open_skulltulas"
+        },
+        "min": 0,
+        "max": 100
+    },
+    "stone_count_bridge": {
+        "category": "lacsAndGanon",
+        "type": "number",
+        "default": 3,
+        "visible": {
+            "type": "state",
+            "ref": "ganon_castle_open",
+            "value": "ganon_castle_open_stones"
+        },
+        "min": 1,
+        "max": 3
+    },
+    "medallion_count_bridge": {
+        "category": "lacsAndGanon",
+        "type": "number",
+        "default": 6,
+        "visible": {
+            "type": "state",
+            "ref": "ganon_castle_open",
+            "value": "ganon_castle_open_medallion"
+        },
+        "min": 1,
+        "max": 6
+    },
+    "dungeon_count_bridge": {
+        "category": "lacsAndGanon",
+        "type": "number",
+        "default": 9,
+        "visible": {
+            "type": "state",
+            "ref": "ganon_castle_open",
+            "value": "ganon_castle_open_dungeon"
+        },
+        "min": 1,
+        "max": 9
+    },
+    "heart_count_bridge": {
+        "category": "lacsAndGanon",
+        "type": "number",
+        "default": 4,
+        "visible": {
+            "type": "state",
+            "ref": "ganon_castle_open",
+            "value": "ganon_castle_open_hearts"
+        },
+        "min": 4,
+        "max": 20
+    },
+    "trials_random": {
+        "category": "lacsAndGanon",
+        "type": "check",
+        "default": false
+    },
+    "number_trials": {
+        "category": "lacsAndGanon",
+        "type": "number",
+        "default": 6,
+        "visible": {
+            "type": "not",
+            "content": {
+                "type": "value",
+                "ref": "trials_random"
+            }
+        },
+        "min": 0,
+        "max": 6
+    },
+    "trials": {
+        "category": "lacsAndGanon",
+        "type": "list",
+        "values": [
+            "forest_trial",
+            "water_trial",
+            "shadow_trial",
+            "fire_trial",
+            "light_trial",
+            "spirit_trial"
+        ],
+        "default": [
+            "forest_trial",
+            "water_trial",
+            "shadow_trial",
+            "fire_trial",
+            "light_trial",
+            "spirit_trial"
+        ]
+    },
+    "exclude_locations": {
+        "category": "locations",
+        "type": "list",
+        "values": "Locations.names",
+        "default": []
+    },
+    "skip.lens_required": {
+        "category": "skips",
+        "type": "choice",
+        "default": "lens_required_default",
+        "values": [
+            "lens_required_never",
+            "lens_required_wasteland",
+            "lens_required_default"
+        ]
+    },
+    "overworld_skips": {
+        "category": "skips",
+        "type": "list",
+        "values": [
+            "skip.visible_collisions",
+            "skip.grottos_without_agony",
+            "skip.fewer_tunic_requirements",
+            "skip.beehives_bombchus",
+            "skip.boomerang_boulders",
+            "skip.rusted_switches",
+            "skip.adult_kokiri_gs_hovers",
+            "skip.adult_kokiri_gs_nothing",
+            "skip.lost_woods_bridge",
+            "skip.mido_backflip",
+            "skip.lost_woods_gs_bean",
+            "skip.castle_storms_gs",
+            "skip.man_on_roof",
+            "skip.kakariko_tower_gs",
+            "skip.windmill_poh",
+            "skip.kakariko_rooftop_gs",
+            "skip.graveyard_poh",
+            "skip.child_dampe_race_poh",
+            "skip.shadow_fire_arrow_entry",
+            "skip.dmt_soil_gs",
+            "skip.dmt_bombable",
+            "skip.trail_gs_lower",
+            "skip.trail_gs_lower_hookshot",
+            "skip.trail_gs_lower_hovers",
+            "skip.trail_gs_lower_bean",
+            "skip.dmt_climb_hovers",
+            "skip.trail_gs_upper",
+            "skip.biggoron_bolero",
+            "skip.goron_city_pot",
+            "skip.goron_city_pot_with_strength",
+            "skip.child_rolling_with_strength",
+            "skip.link_goron_dins",
+            "skip.goron_city_leftmost",
+            "skip.goron_grotto",
+            "skip.crater_bean_poh_with_hovers",
+            "skip.crater_bolero_jump",
+            "skip.crater_boulder_jumpslash",
+            "skip.crater_boulder_skip",
+            "skip.zora_river_lower",
+            "skip.zora_river_upper",
+            "skip.zora_with_cucco",
+            "skip.zora_with_hovers",
+            "skip.zora_river_rupees",
+            "skip.king_zora_skip",
+            "skip.domain_gs",
+            "skip.lab_wall_gs",
+            "skip.lab_diving",
+            "skip.water_hookshot_entry",
+            "skip.valley_crate_hovers",
+            "skip.gerudo_kitchen",
+            "skip.gf_jump",
+            "skip.gf_break_room_jump",
+            "skip.wasteland_crossing",
+            "skip.lens_wasteland",
+            "skip.reverse_wasteland",
+            "skip.colossus_gs"
+        ],
+        "default": []
+    },
+    "child_dungeons": {
+        "category": "skips",
+        "type": "list",
+        "values": [
+            "skip.lens_botw",
+            "skip.child_deadhand",
+            "skip.botw_basement",
+            "skip.botw_mq_pits",
+            "skip.botw_mq_dead_hand_key",
+            "skip.deku_basement_gs",
+            "skip.deku_b1_skip",
+            "skip.deku_b1_webs_with_bow",
+            "skip.deku_mq_compass_gs",
+            "skip.deku_mq_log",
+            "skip.dc_scarecrow_gs",
+            "skip.dc_vines_gs",
+            "skip.dc_staircase",
+            "skip.dc_slingshot_skip",
+            "skip.dc_scrub_room",
+            "skip.dc_jump",
+            "skip.dc_chu_eyes",
+            "skip.dc_hammer_floor",
+            "skip.dc_mq_child_bombs",
+            "skip.dc_mq_eyes_child",
+            "skip.dc_mq_eyes_adult",
+            "skip.jabu_alcove_jump_dive",
+            "skip.jabu_boss_hover",
+            "skip.jabu_near_boss_ranged",
+            "skip.jabu_near_boss_explosives",
+            "skip.lens_jabu_mq",
+            "skip.jabu_mq_rang_jump",
+            "skip.jabu_mq_sot_gs"
+        ],
+        "default": []
+    },
+    "mini_adult_dungeons": {
+        "category": "skips",
+        "type": "list",
+        "values": [
+            "skip.ice_frozen_rupee",
+            "skip.ice_frozen_pot",
+            "skip.ice_block_gs",
+            "skip.ice_mq_red_ice_gs",
+            "skip.ice_mq_scarecrow",
+            "skip.lens_gtg",
+            "skip.gtg_underwater_highest",
+            "skip.gtg_without_hookshot",
+            "skip.gtg_flame_wall",
+            "skip.gtg_fake_wall",
+            "skip.lens_gtg_mq",
+            "skip.gtg_mq_with_hookshot",
+            "skip.gtg_mq_without_hookshot",
+            "skip.gtg_mq_eye_statue_jumpslash",
+            "skip.gtg_mq_maze_right",
+            "skip.lens_castle",
+            "skip.fire_trial_slug_rupee",
+            "skip.spirit_trial_hookshot",
+            "skip.lens_castle_mq",
+            "skip.lens_shadow_trial_mq",
+            "skip.fire_trial_mq",
+            "skip.shadow_trial_mq",
+            "skip.light_trial_mq"
+        ],
+        "default": []
+    },
+    "area.temple_forest": {
+        "category": "skips",
+        "type": "list",
+        "values": [
+            "skip.forest_first_gs",
+            "skip.forest_courtyard_hearts",
+            "skip.forest_outdoor_east_gs",
+            "skip.forest_vines",
+            "skip.forest_outdoors_ledge",
+            "skip.forest_door_frame",
+            "skip.forest_outside_backdoor",
+            "skip.forest_well_swim",
+            "skip.forest_mq_block_puzzle",
+            "skip.forest_mq_hallway_switch_jumpslash",
+            "skip.forest_mq_hallway_switch_boomerang"
+        ],
+        "default": []
+    },
+    "area.temple_fire": {
+        "category": "skips",
+        "type": "list",
+        "values": [
+            "skip.fire_boss_door_jump",
+            "skip.fire_song_of_time",
+            "skip.fire_strength",
+            "skip.fire_scarecrow",
+            "skip.fire_flame_maze",
+            "skip.fire_mq_child_flame",
+            "skip.fire_mq_near_boss",
+            "skip.fire_mq_blocked_chest",
+            "skip.fire_mq_bk_chest",
+            "skip.fire_mq_climb",
+            "skip.fire_mq_maze_side_room",
+            "skip.fire_mq_maze_hovers",
+            "skip.fire_mq_maze_jump",
+            "skip.fire_mq_above_maze_gs",
+            "skip.fire_mq_flame_maze"
+        ],
+        "default": []
+    },
+    "area.temple_water": {
+        "category": "skips",
+        "type": "list",
+        "values": [
+            "skip.water_temple_torch_longshot",
+            "skip.water_cracked_wall_hovers",
+            "skip.water_cracked_wall_nothing",
+            "skip.water_north_basement",
+            "skip.water_north_basement_ledge_jump",
+            "skip.water_bk_jump_dive",
+            "skip.water_boss_key_region",
+            "skip.water_central_gs_fw",
+            "skip.water_central_gs_irons",
+            "skip.water_central_bow",
+            "skip.water_falling_platform_gs_hookshot",
+            "skip.water_falling_platform_gs_boomerang",
+            "skip.water_river_gs",
+            "skip.water_dragon_jump_dive",
+            "skip.water_dragon_adult",
+            "skip.water_dragon_child",
+            "skip.water_morpha",
+            "skip.water_mq_central_pillar",
+            "skip.water_mq_dark_link",
+            "skip.water_mq_locked_gs"
+        ],
+        "default": []
+    },
+    "area.temple_shadow": {
+        "category": "skips",
+        "type": "list",
+        "values": [
+            "skip.lens_shadow",
+            "skip.lens_shadow_platform",
+            "skip.lens_bongo",
+            "skip.shadow_umbrella",
+            "skip.shadow_umbrella_gs",
+            "skip.shadow_freestand_key",
+            "skip.shadow_statue",
+            "skip.shadow_triple_pots",
+            "skip.shadow_bongo",
+            "skip.lens_shadow_mq",
+            "skip.lens_shadow_mq_invisible_blades",
+            "skip.lens_shadow_mq_platform",
+            "skip.lens_shadow_mq_dead_hand",
+            "skip.shadow_mq_gap",
+            "skip.shadow_mq_invisible_blades",
+            "skip.shadow_mq_huge_pit",
+            "skip.shadow_mq_windy_walkway",
+            "skip.shadow_mq_after_boat_gs"
+        ],
+        "default": []
+    },
+    "area.temple_spirit": {
+        "category": "skips",
+        "type": "list",
+        "values": [
+            "skip.lens_spirit",
+            "skip.spirit_child_bombchu",
+            "skip.spirit_fence_gs",
+            "skip.spirit_lobby_gs",
+            "skip.spirit_lower_adult_switch",
+            "skip.spirit_lobby_jump",
+            "skip.spirit_platform_hookshot",
+            "skip.spirit_adult_side_hovers",
+            "skip.spirit_map_chest",
+            "skip.spirit_sun_chest_bow",
+            "skip.spirit_sun_chest_no_rupees",
+            "skip.spirit_wall",
+            "skip.lens_spirit_mq",
+            "skip.spirit_mq_sun_block_sot",
+            "skip.spirit_mq_sun_block_gs",
+            "skip.spirit_mq_lower_adult",
+            "skip.spirit_mq_frozen_eye",
+            "skip.spirit_mq_water_rupee"
+        ],
+        "default": []
+    },
+    "known_sequence_breaks": {
+        "category": "skips",
+        "type": "list",
+        "values": [
+            "skip.invisible_ocarina",
+            "skip.invisible_ocarina_midair"
+        ],
+        "default": []
+    }
+}

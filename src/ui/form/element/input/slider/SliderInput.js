@@ -1,8 +1,10 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
-import {deepClone} from "../../../../../util/helper/DeepClone.js";
-import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
-import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
+import {immute} from "../../../../../data/Immutable.js";
+import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
+import {
+    setBooleanAttribute, setNumberAttribute
+} from "../../../../../util/helper/ui/NodeAttributes.js";
 import TPL from "./SliderInput.js.html" assert {type: "html"};
 import STYLE from "./SliderInput.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./SliderInput.js.json" assert {type: "json"};
@@ -10,21 +12,21 @@ import CONFIG_FIELDS from "./SliderInput.js.json" assert {type: "json"};
 export default class SliderInput extends AbstractFormElement {
 
     static get formConfigurationFields() {
-        return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
+        return immute([...super.formConfigurationFields, ...CONFIG_FIELDS]);
     }
+
+    #inputWrapperEl;
 
     #inputEl;
 
-    #containerEl;
-
     constructor() {
         super();
-        this.shadowRoot.getElementById("field").append(TPL.generate());
+        TPL.apply(this.shadowRoot);
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.#containerEl = this.shadowRoot.getElementById("container");
+        this.#inputWrapperEl = this.shadowRoot.getElementById("input-wrapper");
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.registerTargetEventHandler(this.#inputEl, "input", () => {
+        this.#inputEl.addEventListener("input", () => {
             const value = this.#inputEl.value;
             this.#applyValueToBar(value);
             this.value = value;
@@ -78,16 +80,27 @@ export default class SliderInput extends AbstractFormElement {
 
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "min", "max", "gradations"];
+        return [
+            ...superObserved,
+            "readonly",
+            "min",
+            "max",
+            "gradations"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
+            case "readonly": {
+                if (oldValue != newValue) {
+                    setBooleanAttribute(this.#inputEl, name, this.readOnly);
+                }
+            } break;
             case "min":
             case "max": {
                 if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, name, newValue);
+                    setNumberAttribute(this.#inputEl, name, newValue);
                     this.#setRange();
                     this.#applyValueToBar(this.value);
                 }
@@ -110,10 +123,10 @@ export default class SliderInput extends AbstractFormElement {
         const max = parseInt(this.getAttribute("max") || "10");
         if (min < max) {
             const parts = max - min;
-            this.#containerEl.style.setProperty("--range-parts", parts);
+            this.#inputWrapperEl.style.setProperty("--range-parts", parts);
             this.#applyGradationsValue();
         } else {
-            this.#containerEl.style.setProperty("--range-parts", 1);
+            this.#inputWrapperEl.style.setProperty("--range-parts", 1);
             this.#applyGradationsValue();
         }
     }
@@ -123,13 +136,13 @@ export default class SliderInput extends AbstractFormElement {
         const max = parseInt(this.getAttribute("max") || "10");
         if (min < max) {
             if (value !== "") {
-                this.#containerEl.style.setProperty("--range-value", value - min);
+                this.#inputWrapperEl.style.setProperty("--range-value", value - min);
             } else {
                 const pos = (max - min) / 2;
-                this.#containerEl.style.setProperty("--range-value", pos - min);
+                this.#inputWrapperEl.style.setProperty("--range-value", pos - min);
             }
         } else {
-            this.#containerEl.style.setProperty("--range-value", 0);
+            this.#inputWrapperEl.style.setProperty("--range-value", 0);
             this.#applyGradationsValue();
         }
     }
@@ -142,12 +155,12 @@ export default class SliderInput extends AbstractFormElement {
             if (min < max) {
                 const parts = max - min;
                 if (parts < this.#inputEl.offsetWidth / 10) {
-                    this.#containerEl.classList.add("gradations");
+                    this.#inputWrapperEl.classList.add("gradations");
                     return;
                 }
             }
         }
-        this.#containerEl.classList.remove("gradations");
+        this.#inputWrapperEl.classList.remove("gradations");
     }
 
 }

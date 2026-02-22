@@ -26,6 +26,7 @@ a {
     display: flex;
     flex-direction: column;
     background-color: #ffe6af;
+    border-right: solid 2px black;
 }
 
 .sidebar a {
@@ -62,6 +63,12 @@ a {
     flex: 1;
 }
 
+#header {
+    display: flex;
+    background-color: #ffe6af;
+    border-bottom: solid 2px black;
+}
+
 #menu,
 #back {
     display: none;
@@ -79,6 +86,10 @@ a {
 #menu:hover,
 #back:hover {
     background-color: #ffc649;
+}
+
+#page-link {
+    margin-left: auto;
 }
 
 #view-container {

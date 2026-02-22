@@ -7,7 +7,6 @@
     height: 100%;
     color: var(--page-text-color, #000000);
     background-color: var(--page-back-color, #ffffff);
-    background-image: var(--page-back-image, none);
     border-style: solid;
     border-width: var(--page-border-width, 2px);
     border-color: var(--page-border-color, #222222);
@@ -75,11 +74,13 @@
     --hamburger-button-focus-color: var(--button-focus-color, #06b5ff);
 }
 
+#search {
+    margin: 6px;
+    flex: 1;
+}
+
 #settings-form .hidden:not(:focus-within) {
-    visibility: hidden;
-    position: absolute;
-    top: 0px;
-    z-index: -1;
+    display: none;
 }
 
 @container panel (width < 800px) {

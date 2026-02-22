@@ -1,5 +1,5 @@
 import CustomElement from "../element/CustomElement.js";
-import {deepClone} from "../../util/helper/DeepClone.js";
+import {immute} from "../../data/Immutable.js";
 import {findAllParentsBySelector} from "../../util/helper/ui/FindParentBySelector.js";
 import {delimitInteger} from "../../util/helper/number/Integer.js";
 import "../i18n/I18nLabel.js";
@@ -14,7 +14,7 @@ import {getBoundingContentRect} from "../../util/helper/html/ElementSizeHelper.j
 export default class FormSection extends CustomElement {
 
     static get formConfigurationFields() {
-        return deepClone(CONFIG_FIELDS);
+        return immute(CONFIG_FIELDS);
     }
 
     static get formConfigurationCanHaveChildren() {

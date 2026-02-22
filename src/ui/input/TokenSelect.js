@@ -47,7 +47,7 @@ export default class TokenSelect extends CustomElementDelegating {
 
     #onOptionClick = (event) => {
         const el = event.currentTarget;
-        if (!this.readonly) {
+        if (!this.readOnly) {
             const valueBuffer = new Set(this.value);
             const value = el.getAttribute("value");
             if (valueBuffer.has(value)) {
@@ -93,7 +93,7 @@ export default class TokenSelect extends CustomElementDelegating {
         const input = this.shadowRoot.getElementById("input");
         const container = this.shadowRoot.getElementById("scroll-container");
         this.addEventListener("click", (event) => {
-            if (!this.readonly) {
+            if (!this.readOnly) {
                 view.setAttribute("mode", "edit");
                 input.focus();
             }
@@ -102,7 +102,7 @@ export default class TokenSelect extends CustomElementDelegating {
         });
         const scrollContainer = this.shadowRoot.getElementById("scroll-container");
         this.addEventListener("keyup", (event) => {
-            if (!this.readonly) {
+            if (!this.readOnly) {
                 if (view.getAttribute("mode") == "view") {
                     if (event.key == "Enter") {
                         view.setAttribute("mode", "edit");
@@ -179,7 +179,7 @@ export default class TokenSelect extends CustomElementDelegating {
             }
         });
         input.addEventListener("focus", () => {
-            if (!this.readonly) {
+            if (!this.readOnly) {
                 input.value = "";
                 const thisRect = this.getBoundingClientRect();
                 container.style.display = "block";
@@ -297,17 +297,21 @@ export default class TokenSelect extends CustomElementDelegating {
         return val;
     }
 
-    get readonly() {
+    get readOnly() {
         const val = this.getAttribute("readonly");
         return !!val && val != "false";
     }
 
-    set readonly(val) {
+    set readOnly(val) {
         this.setAttribute("readonly", val);
     }
 
     static get observedAttributes() {
-        return ["value", "readonly", "sort"];
+        return [
+            "value",
+            "readonly",
+            "sort"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -324,7 +328,7 @@ export default class TokenSelect extends CustomElementDelegating {
             } break;
             case "readonly": {
                 if (oldValue != newValue) {
-                    this.shadowRoot.getElementById("view").readonly = newValue;
+                    this.shadowRoot.getElementById("view").readOnly = newValue;
                     if (newValue != null && newValue != "false") {
                         this.shadowRoot.getElementById("view").disabled = true;
                     } else {
@@ -377,7 +381,7 @@ export default class TokenSelect extends CustomElementDelegating {
     }
 
     #choose(value) {
-        if (!this.readonly) {
+        if (!this.readOnly) {
             const valueBuffer = new Set(this.value);
             if (valueBuffer.has(value)) {
                 valueBuffer.delete(value);

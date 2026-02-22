@@ -148,11 +148,13 @@ export default class SectionTreeManager {
         if (this.#formSectionNavigationEl != null) {
             this.#formSectionNavigationEl.loadConfig(this.treeConfig);
             if (this.#formContainerEl != null) {
-                setTimeout(() => {
-                    this.#markSectionInTree(this.#formContainerEl.activeSection);
-                }, 0);
+                this.refreshActiveSection();
             }
         }
+    });
+
+    refreshActiveSection = debounce(() => {
+        this.#markSectionInTree(this.#formContainerEl.activeSection);
     });
 
     #markSectionInTree(sectionEl) {

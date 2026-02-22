@@ -22,7 +22,7 @@ export default class AbstractLiteralStateElement extends AbstractElement {
         this.#type = type;
         this.#refEl = this.shadowRoot.getElementById("ref");
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.registerTargetEventHandler(this.#inputEl, "change", () => {
+        this.#inputEl.addEventListener("change", () => {
             this.dispatchEvent(new Event("valuechange", {
                 bubbles: true,
                 cancelable: true
@@ -118,7 +118,11 @@ export default class AbstractLiteralStateElement extends AbstractElement {
 
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "ref", "value"];
+        return [
+            ...superObserved,
+            "ref",
+            "value"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {

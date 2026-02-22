@@ -29,7 +29,7 @@
             "label": "number readonly",
             "name": "number.readonly",
             "placeholder": "Enter number...",
-            "readonly": true
+            "readOnly": true
         },
         {
             "type": "NumberInput",

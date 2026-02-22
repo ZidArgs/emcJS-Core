@@ -1,6 +1,11 @@
 import {immute} from "../../../data/Immutable.js";
 
-const PARAM_TYPES = ["undefined", "boolean", "number", "string"];
+const PARAM_TYPES = [
+    "undefined",
+    "boolean",
+    "number",
+    "string"
+];
 
 export default class LogicStatement extends Function {
 

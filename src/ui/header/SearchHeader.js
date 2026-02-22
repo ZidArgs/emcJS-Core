@@ -16,11 +16,11 @@ export default class SearchHeader extends CustomElementDelegating {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.registerTargetEventHandler(this.#inputEl, "input", () => {
+        this.#inputEl.addEventListener("input", () => {
             this.#onInput();
         });
         this.#resetEl = this.shadowRoot.getElementById("reset");
-        this.registerTargetEventHandler(this.#resetEl, "click", () => {
+        this.#resetEl.addEventListener("click", () => {
             this.value = "";
         });
     }

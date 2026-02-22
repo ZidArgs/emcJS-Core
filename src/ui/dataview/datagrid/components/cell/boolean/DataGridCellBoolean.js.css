@@ -29,7 +29,6 @@ p {
     margin: 0px;
     color: var(--input-text-color, #000000);
     background-color: var(--switch-unchecked-back-color, #ffd68a);
-    background-image: var(--switch-unchecked-back-image, none);
     border-style: solid;
     border-width: var(--input-border-width, 2px);
     border-color: var(--input-border-color, #222222);
@@ -40,12 +39,10 @@ p {
 
 :host([editable]:not([editable="false"])) #input:checked {
     background-color: var(--switch-checked-back-color, #9ee1ec);
-    background-image: var(--switch-checked-back-image, none);
 }
 
 :host([editable]:not([editable="false"])) #input:indeterminate {
     background-color: var(--switch-indeterminate-back-color, #ffffff);
-    background-image: var(--switch-indeterminate-back-image, none);
 }
 
 :host([editable]:not([editable="false"])) #input:focus {
@@ -58,7 +55,6 @@ p {
     width: calc(2em - (2 * var(--input-border-width, 2px)));
     height: calc(2em - (4 * var(--input-border-width, 2px)));
     background-color: var(--button-back-color, #cccccc);
-    background-image: var(--button-back-image, none);
     border-style: solid;
     border-width: var(--input-border-width, 2px);
     border-color: var(--input-border-color, #222222);
@@ -69,7 +65,6 @@ p {
 
 :host([editable]:not([editable="false"])) #input:hover::after {
     background-color: var(--button-hover-back-color, #000000);
-    background-image: var(--button-hover-back-image, none);
 }
 
 :host([editable]:not([editable="false"])) #input:checked::after {
@@ -88,7 +83,6 @@ p {
     padding: 0px 7px;
     color: var(--input-text-color, #000000);
     background-color: var(--input-back-color, #ffffff);
-    background-image: var(--input-back-image, none);
     border-style: solid;
     border-width: var(--input-border-width, 2px);
     border-color: var(--input-border-color, #222222);
@@ -104,7 +98,6 @@ p {
 
 :host(:invalid) #input {
     background-color: var(--input-invalid-back-color, #ffebeb);
-    background-image: var(--input-invalid-back-image, none);
     border-color: var(--input-invalid-border-color, #ff4444);
 }
 

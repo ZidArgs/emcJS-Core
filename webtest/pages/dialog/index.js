@@ -5,6 +5,7 @@ const promptEl = document.getElementById("prompt");
 const promptNumberEl = document.getElementById("prompt-number");
 const promptSensitiveEl = document.getElementById("prompt-sensitive");
 const confirmEl = document.getElementById("confirm");
+const infoEl = document.getElementById("info");
 const alertEl = document.getElementById("alert");
 const errorEl = document.getElementById("error");
 
@@ -34,6 +35,10 @@ confirmEl.addEventListener("click", async () => {
     if (res) {
         window.alert("confirmed");
     }
+});
+
+infoEl.addEventListener("click", () => {
+    ModalDialog.info("Info", "The Answer to the Ultimate Question of Life, the Universe, and Everything is 42.");
 });
 
 alertEl.addEventListener("click", () => {

@@ -270,15 +270,9 @@ function mergeArrayMutationSequences(data) { // eslint-disable-line no-unused-va
                 currentOldStart = oldStart;
 
                 if (generalMovementUp) {
-                    generalMovementSequence = [
-                        ...generalMovementSequence,
-                        ...sequence
-                    ];
+                    generalMovementSequence = [...generalMovementSequence, ...sequence];
                 } else {
-                    generalMovementSequence = [
-                        ...sequence,
-                        ...generalMovementSequence
-                    ];
+                    generalMovementSequence = [...sequence, ...generalMovementSequence];
                 }
             } else {
                 const seqLength = sequence.length;
@@ -287,10 +281,7 @@ function mergeArrayMutationSequences(data) { // eslint-disable-line no-unused-va
                 if (last != null) {
                     if (generalMovementUp) {
                         if (newStart === last.newStart + last.length) {
-                            last.sequence = [
-                                ...last.sequence,
-                                ...sequence
-                            ];
+                            last.sequence = [...last.sequence, ...sequence];
                             last.length += seqLength;
 
                             if (res.maxLength < last.length) {
@@ -299,10 +290,7 @@ function mergeArrayMutationSequences(data) { // eslint-disable-line no-unused-va
                             continue;
                         }
                     } else if (newStart === last.newStart - seqLength) {
-                        last.sequence = [
-                            ...sequence,
-                            ...last.sequence
-                        ];
+                        last.sequence = [...sequence, ...last.sequence];
                         last.newStart = newStart;
                         last.length += seqLength;
 

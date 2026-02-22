@@ -1,53 +1,32 @@
-import CustomElement from "../element/CustomElement.js";
+import OverlayPanel from "../overlay/OverlayPanel.js";
+import "../form/button/Button.js";
+import "../icon/FontIcon.js";
 import "./SettingsPanel.js";
 import TPL from "./SettingsOverlay.js.html" assert {type: "html"};
 import STYLE from "./SettingsOverlay.js.css" assert {type: "css"};
 
-export default class SettingsOverlay extends CustomElement {
+export default class SettingsOverlay extends OverlayPanel {
 
-    #focusTopEl;
-
-    #focusBottomEl;
-
-    #titleTextEl;
+    #contentEl;
 
     #settingsPanelEl;
-
-    #errorButtonEl;
 
     #submitEl;
 
     #cancelEl;
 
-    constructor() {
-        super();
-        this.shadowRoot.append(TPL.generate());
+    constructor(caption) {
+        super(caption);
+        const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.#titleTextEl = this.shadowRoot.getElementById("title-text");
+        this.#contentEl = this.shadowRoot.getElementById("content");
+        this.#contentEl.append(els);
         this.#settingsPanelEl = this.shadowRoot.getElementById("settings-panel");
-        this.#errorButtonEl = this.shadowRoot.getElementById("error-button");
         /* --- */
         this.#submitEl = this.shadowRoot.getElementById("submit");
         this.#cancelEl = this.shadowRoot.getElementById("cancel");
         this.#initSettingsPanelHandlers();
-        /* --- */
-        this.#focusTopEl = this.shadowRoot.getElementById("focus_catcher_top");
-        this.registerTargetEventHandler(this.#focusTopEl, "focus", () => {
-            this.focusLast();
-        });
-        this.#focusBottomEl = this.shadowRoot.getElementById("focus_catcher_bottom");
-        this.registerTargetEventHandler(this.#focusBottomEl, "focus", () => {
-            this.focusFirst();
-        });
-    }
-
-    set caption(value) {
-        this.setStringAttribute("caption", value);
-    }
-
-    get caption() {
-        return this.getStringAttribute("caption");
     }
 
     set autosave(value) {
@@ -59,16 +38,13 @@ export default class SettingsOverlay extends CustomElement {
     }
 
     static get observedAttributes() {
-        return ["caption", "type"];
+        const superObserved = super.observedAttributes ?? [];
+        return [...superObserved, "autosave"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
-            case "caption": {
-                if (oldValue != newValue) {
-                    this.#titleTextEl.i18nValue = newValue;
-                }
-            } break;
             case "autosave": {
                 if (oldValue != newValue) {
                     if (newValue) {
@@ -81,16 +57,24 @@ export default class SettingsOverlay extends CustomElement {
         }
     }
 
+    hide() {
+        this.#settingsPanelEl.cancel();
+    }
+
     loadConfig(config, defaultValues) {
         this.#settingsPanelEl.loadConfig(config, defaultValues);
     }
 
-    setValues(values) {
-        this.#settingsPanelEl.setValues(values);
+    reset() {
+        this.#settingsPanelEl.reset();
     }
 
-    setValuesFlat(values) {
-        this.#settingsPanelEl.setValuesFlat(values);
+    setValues(values, merge = false) {
+        this.#settingsPanelEl.setValues(values, merge);
+    }
+
+    setValuesFlat(values, merge = false) {
+        this.#settingsPanelEl.setValuesFlat(values, merge);
     }
 
     getValues() {
@@ -101,11 +85,6 @@ export default class SettingsOverlay extends CustomElement {
         this.#settingsPanelEl.getValuesFlat();
     }
 
-    show() {
-        document.body.append(this);
-        this.initialFocus();
-    }
-
     submit() {
         this.#settingsPanelEl.submit();
     }
@@ -114,42 +93,27 @@ export default class SettingsOverlay extends CustomElement {
         this.#settingsPanelEl.cancel();
     }
 
+    setErrorButton(errorButton) {
+        this.#settingsPanelEl.setErrorButton(errorButton);
+    }
+
     #initSettingsPanelHandlers() {
-        this.registerTargetEventHandler(this.#submitEl, "click", () => {
+        this.#submitEl.addEventListener("click", () => {
             this.submit();
         });
-        this.registerTargetEventHandler(this.#cancelEl, "click", () => {
+        this.#cancelEl.addEventListener("click", () => {
             this.cancel();
         });
-        this.registerTargetEventHandler(this.#settingsPanelEl, "submit", (event) => {
-            this.#errorButtonEl.setErrors();
+        this.#settingsPanelEl.addEventListener("submit", (event) => {
             this.#onsubmit(event);
         });
-        this.registerTargetEventHandler(this.#settingsPanelEl, "cancel", () => {
-            this.#errorButtonEl.setErrors();
+        this.#settingsPanelEl.addEventListener("cancel", () => {
             this.#oncancel();
-        });
-        this.registerTargetEventHandler(this.#settingsPanelEl, "error", (event) => {
-            const {errors} = event;
-            this.#errorButtonEl.setErrors(errors);
-        });
-        this.registerTargetEventHandler(this.#settingsPanelEl, "validity", (event) => {
-            const {valid} = event;
-            if (valid) {
-                this.#errorButtonEl.removeError(event.element);
-            } else {
-                this.#errorButtonEl.addError({
-                    name: event.name,
-                    label: event.element.label,
-                    element: event.element,
-                    errors: [event.message]
-                });
-            }
         });
     }
 
     #onsubmit(event) {
-        this.remove();
+        super.hide();
         const {
             data, formData, hiddenData, changes, errors
         } = event;
@@ -163,16 +127,12 @@ export default class SettingsOverlay extends CustomElement {
     }
 
     #oncancel() {
-        this.remove();
+        super.hide();
         this.dispatchEvent(new Event("cancel"));
     }
 
     initialFocus() {
         this.#settingsPanelEl.initialFocus();
-    }
-
-    focusFirst() {
-        this.#settingsPanelEl.focusFirst();
     }
 
     focusLast() {

@@ -1,14 +1,15 @@
 {
-    "settings.language": {
-        "type": "SimpleSelect",
-        "value": "en_us",
-        "description": "sets the language of the application",
-        "optiongroup": "I18n.languages"
+    "language": {
+        "category": "settings",
+        "type": "choice",
+        "default": "en_us",
+        "values": "I18n.languages"
     },
-    "settings.font": {
-        "type": "SimpleSelect",
-        "value": "font_default",
-        "options": [
+    "font": {
+        "category": "settings",
+        "type": "choice",
+        "default": "font_default",
+        "values": [
             "font_default",
             "font_charlemagne",
             "font_ravenna",
@@ -18,10 +19,11 @@
             "font_sheikah"
         ]
     },
-    "settings.layout": {
-        "type": "SimpleSelect",
-        "value": "map-compact",
-        "options": [
+    "layout": {
+        "category": "settings",
+        "type": "choice",
+        "default": "map-compact",
+        "values": [
             "items",
             "items-list",
             "map-right",
@@ -38,288 +40,277 @@
             "standard-essential-map"
         ]
     },
-    "settings.detached_window_background": {
-        "type": "ColorInput",
-        "value": "#000000",
-        "controlButtons": [
-            "reset"
-        ]
+    "detached_window_background": {
+        "category": "settings",
+        "type": "color",
+        "default": "#000000",
+        "resettable": true
     },
-    "settings.use_custom_logic": {
-        "type": "SwitchInput",
-        "value": false
+    "use_custom_logic": {
+        "category": "settings",
+        "type": "check",
+        "default": false
     },
-    "savestate.autosave_time": {
-        "type": "NumberInput",
+    "autosave_time": {
+        "category": "savestate",
+        "type": "number",
         "min": 0,
         "max": 120,
-        "value": 10,
-        "controlButtons": [
-            "reset"
-        ]
+        "default": 10,
+        "resettable": true
     },
-    "savestate.autosave_amount": {
-        "type": "NumberInput",
+    "autosave_amount": {
+        "category": "savestate",
+        "type": "number",
         "min": 1,
         "max": 10,
-        "value": 4,
-        "controlButtons": [
-            "reset"
-        ]
+        "default": 4,
+        "resettable": true
     },
-    "savestate.show_state_init_window": {
-        "type": "SwitchInput",
-        "value": true
+    "show_state_init_window": {
+        "category": "savestate",
+        "type": "check",
+        "default": true
     },
-    "a11y.color_blind_badge_icons": {
-        "type": "SwitchInput",
-        "value": true
+    "color_blind_badge_icons": {
+        "category": "a11y",
+        "type": "check",
+        "default": true
     },
-    "a11y.locations.location_status_opened_color": {
-        "type": "ColorInput",
-        "value": "#777777",
-        "controlButtons": [
-            "reset"
-        ]
+    "locations_a11y_colors_caption": {
+        "category": "a11y",
+        "type": "caption"
     },
-    "a11y.locations.location_status_available_color": {
-        "type": "ColorInput",
-        "value": "#00ff00",
-        "controlButtons": [
-            "reset"
-        ]
+    "location_status_opened_color": {
+        "category": "a11y",
+        "type": "color",
+        "default": "#777777",
+        "resettable": true
     },
-    "a11y.locations.location_status_unavailable_color": {
-        "type": "ColorInput",
-        "value": "#ff0000",
-        "controlButtons": [
-            "reset"
-        ]
+    "location_status_available_color": {
+        "category": "a11y",
+        "type": "color",
+        "default": "#00ff00",
+        "resettable": true
     },
-    "a11y.locations.location_status_possible_color": {
-        "type": "ColorInput",
-        "value": "#ffff00",
-        "controlButtons": [
-            "reset"
-        ]
+    "location_status_unavailable_color": {
+        "category": "a11y",
+        "type": "color",
+        "default": "#ff0000",
+        "resettable": true
     },
-    "a11y.ap.ap_color_player_current": {
-        "type": "ColorInput",
-        "value": "#ee00ee",
-        "controlButtons": [
-            "reset"
-        ]
+    "location_status_possible_color": {
+        "category": "a11y",
+        "type": "color",
+        "default": "#ffff00",
+        "resettable": true
     },
-    "a11y.ap.ap_color_player_other": {
-        "type": "ColorInput",
-        "value": "#fafad2",
-        "controlButtons": [
-            "reset"
-        ]
+    "ap_a11y_colors_caption": {
+        "category": "a11y",
+        "type": "caption"
     },
-    "a11y.ap.ap_color_item_progressive": {
-        "type": "ColorInput",
-        "value": "#af99ef",
-        "controlButtons": [
-            "reset"
-        ]
+    "ap_color_player_current": {
+        "category": "a11y",
+        "type": "color",
+        "default": "#ee00ee",
+        "resettable": true
     },
-    "a11y.ap.ap_color_item_useful": {
-        "type": "ColorInput",
-        "value": "#6d8be8",
-        "controlButtons": [
-            "reset"
-        ]
+    "ap_color_player_other": {
+        "category": "a11y",
+        "type": "color",
+        "default": "#fafad2",
+        "resettable": true
     },
-    "a11y.ap.ap_color_item_normal": {
-        "type": "ColorInput",
-        "value": "#00eeee",
-        "controlButtons": [
-            "reset"
-        ]
+    "ap_color_item_progressive": {
+        "category": "a11y",
+        "type": "color",
+        "default": "#af99ef",
+        "resettable": true
     },
-    "a11y.ap.ap_color_item_trap": {
-        "type": "ColorInput",
-        "value": "#fa8072",
-        "controlButtons": [
-            "reset"
-        ]
+    "ap_color_item_useful": {
+        "category": "a11y",
+        "type": "color",
+        "default": "#6d8be8",
+        "resettable": true
     },
-    "a11y.ap.ap_color_location": {
-        "type": "ColorInput",
-        "value": "#00ff7f",
-        "controlButtons": [
-            "reset"
-        ]
+    "ap_color_item_normal": {
+        "category": "a11y",
+        "type": "color",
+        "default": "#00eeee",
+        "resettable": true
     },
-    "a11y.ap.ap_color_entrance": {
-        "type": "ColorInput",
-        "value": "#6495ed",
-        "controlButtons": [
-            "reset"
-        ]
+    "ap_color_item_trap": {
+        "category": "a11y",
+        "type": "color",
+        "default": "#fa8072",
+        "resettable": true
     },
-    "a11y.ap.ap_color_hint_unspecified": {
-        "type": "ColorInput",
-        "value": "#ffffff",
-        "controlButtons": [
-            "reset"
-        ]
+    "ap_color_location": {
+        "category": "a11y",
+        "type": "color",
+        "default": "#00ff7f",
+        "resettable": true
     },
-    "a11y.ap.ap_color_hint_no_priority": {
-        "type": "ColorInput",
-        "value": "#00eeee",
-        "controlButtons": [
-            "reset"
-        ]
+    "ap_color_entrance": {
+        "category": "a11y",
+        "type": "color",
+        "default": "#6495ed",
+        "resettable": true
     },
-    "a11y.ap.ap_color_hint_priority": {
-        "type": "ColorInput",
-        "value": "#af99ef",
-        "controlButtons": [
-            "reset"
-        ]
+    "ap_color_hint_unspecified": {
+        "category": "a11y",
+        "type": "color",
+        "default": "#ffffff",
+        "resettable": true
     },
-    "a11y.ap.ap_color_hint_avoid": {
-        "type": "ColorInput",
-        "value": "#fa8072",
-        "controlButtons": [
-            "reset"
-        ]
+    "ap_color_hint_no_priority": {
+        "category": "a11y",
+        "type": "color",
+        "default": "#6d8be8",
+        "resettable": true
     },
-    "a11y.ap.ap_color_hint_found": {
-        "type": "ColorInput",
-        "value": "#00ff7f",
-        "controlButtons": [
-            "reset"
-        ]
+    "ap_color_hint_priority": {
+        "category": "a11y",
+        "type": "color",
+        "default": "#af99ef",
+        "resettable": true
     },
-    "world.sort_worldlist_by_access": {
-        "type": "SwitchInput",
-        "value": false
+    "ap_color_hint_avoid": {
+        "category": "a11y",
+        "type": "color",
+        "default": "#fa8072",
+        "resettable": true
     },
-    "world.sort_locationlist_by_access": {
-        "type": "SwitchInput",
-        "value": false
+    "ap_color_hint_found": {
+        "category": "a11y",
+        "type": "color",
+        "default": "#00ff7f",
+        "resettable": true
     },
-    "world.show_detailed_maps": {
-        "type": "SwitchInput",
-        "value": false
+    "sort_worldlist_by_access": {
+        "category": "world",
+        "type": "check",
+        "default": false
     },
-    "world.show_map_connections": {
-        "type": "SwitchInput",
-        "value": true
+    "sort_locationlist_by_access": {
+        "category": "world",
+        "type": "check",
+        "default": false
     },
-    "world.always_show_shop_slots": {
-        "type": "SwitchInput",
-        "value": true
+    "show_detailed_maps": {
+        "category": "world",
+        "type": "check",
+        "default": false
     },
-    "world.show_filter_badges": {
-        "type": "SwitchInput",
-        "value": true
+    "map_pan_snap_magnet_force": {
+        "category": "world",
+        "type": "number",
+        "min": 0,
+        "max": 50,
+        "default": 0
     },
-    "world.show_access_values": {
-        "type": "SwitchInput",
-        "value": false
+    "show_map_connections": {
+        "category": "world",
+        "type": "check",
+        "default": true
     },
-    "world.sublist_collapsible": {
-        "type": "SimpleSelect",
-        "value": "start_expanded",
-        "options": [
+    "always_show_shop_slots": {
+        "category": "world",
+        "type": "check",
+        "default": true
+    },
+    "show_filter_badges": {
+        "category": "world",
+        "type": "check",
+        "default": true
+    },
+    "show_access_values": {
+        "category": "world",
+        "type": "check",
+        "default": false
+    },
+    "sublist_collapsible": {
+        "category": "world",
+        "type": "choice",
+        "default": "start_expanded",
+        "values": [
             "off",
             "start_expanded",
             "start_collapsed"
         ]
     },
-    "world.unknown_arealist_need_all": {
-        "type": "SwitchInput",
-        "value": false,
-        "placeholder": "Enter key binding..."
+    "unknown_arealist_need_all": {
+        "category": "world",
+        "type": "check",
+        "default": false
     },
-    "keybinds.hk_state_new": {
-        "type": "KeyBindInput",
-        "value": "",
-        "controlButtons": [
-            "reset"
-        ],
-        "placeholder": "Enter key binding..."
+    "hk_state_new": {
+        "category": "hotkeys",
+        "type": "hotkey",
+        "default": "",
+        "resettable": true
     },
-    "keybinds.hk_state_load": {
-        "type": "KeyBindInput",
-        "value": "ctrl o",
-        "controlButtons": [
-            "reset"
-        ],
-        "placeholder": "Enter key binding..."
+    "hk_state_load": {
+        "category": "hotkeys",
+        "type": "hotkey",
+        "default": "ctrl+o",
+        "resettable": true
     },
-    "keybinds.hk_state_save": {
-        "type": "KeyBindInput",
-        "value": "ctrl s",
-        "controlButtons": [
-            "reset"
-        ],
-        "placeholder": "Enter key binding..."
+    "hk_state_save": {
+        "category": "hotkeys",
+        "type": "hotkey",
+        "default": "ctrl+s",
+        "resettable": true
     },
-    "keybinds.hk_state_saveas": {
-        "type": "KeyBindInput",
-        "value": "ctrl shift s",
-        "controlButtons": [
-            "reset"
-        ],
-        "placeholder": "Enter key binding..."
+    "hk_state_saveas": {
+        "category": "hotkeys",
+        "type": "hotkey",
+        "default": "ctrl+shift+s",
+        "resettable": true
     },
-    "keybinds.hk_state_manage": {
-        "type": "KeyBindInput",
-        "value": "ctrl m",
-        "controlButtons": [
-            "reset"
-        ],
-        "placeholder": "Enter key binding..."
+    "hk_state_manage": {
+        "category": "hotkeys",
+        "type": "hotkey",
+        "default": "ctrl+m",
+        "resettable": true
     },
-    "keybinds.hk_detached_window": {
-        "type": "KeyBindInput",
-        "value": "ctrl shift d",
-        "controlButtons": [
-            "reset"
-        ],
-        "placeholder": "Enter key binding..."
+    "hk_detached_window": {
+        "category": "hotkeys",
+        "type": "hotkey",
+        "default": "ctrl+shift+d",
+        "resettable": true
     },
-    "keybinds.hk_import_spoiler": {
-        "type": "KeyBindInput",
-        "value": "ctrl i",
-        "controlButtons": [
-            "reset"
-        ],
-        "placeholder": "Enter key binding..."
+    "hk_import_spoiler": {
+        "category": "hotkeys",
+        "type": "hotkey",
+        "default": "ctrl+i",
+        "resettable": true
     },
-    "keybinds.hk_options": {
-        "type": "KeyBindInput",
-        "value": "",
-        "controlButtons": [
-            "reset"
-        ],
-        "placeholder": "Enter key binding..."
+    "hk_options": {
+        "category": "hotkeys",
+        "type": "hotkey",
+        "default": "",
+        "resettable": true
     },
-    "keybinds.hk_settings": {
-        "type": "KeyBindInput",
-        "value": "",
-        "controlButtons": [
-            "reset"
-        ],
-        "placeholder": "Enter key binding...",
-        "id": "keybind-test"
+    "hk_settings": {
+        "category": "hotkeys",
+        "type": "hotkey",
+        "default": "",
+        "resettable": true
     },
-    "debug.debug_logic": {
-        "type": "SimpleSelect",
-        "value": "off",
-        "options": [
+    "debug_logic": {
+        "category": "debug",
+        "type": "choice",
+        "default": "off",
+        "values": [
             "off",
             "on",
             "extended"
         ]
     },
-    "debug.debug_spoiler": {
-        "type": "SwitchInput",
-        "value": false
+    "debug_spoiler": {
+        "category": "debug",
+        "type": "check",
+        "default": false
     }
 }

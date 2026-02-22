@@ -22,12 +22,12 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
         this.#valueEl = this.shadowRoot.getElementById("value");
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#inputEl.setValueRenderer((value) => this.#getRenderValue(value));
-        this.registerTargetEventHandler(this.#inputEl, "change", (event) => {
+        this.#inputEl.addEventListener("change", (event) => {
             if (this.editable) {
                 this.#onInput(event);
             }
         });
-        this.registerTargetEventHandler(this.#inputEl, "action", () => {
+        this.#inputEl.addEventListener("action", () => {
             if (this.#boolOrLogicModal != null) {
                 this.#boolOrLogicModal.value = this.value;
                 this.#boolOrLogicModal.onsubmit = (event) => {
@@ -72,7 +72,14 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
 
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "editable", "disabled", "readonly", "nullable", "row-key"];
+        return [
+            ...superObserved,
+            "editable",
+            "disabled",
+            "readonly",
+            "nullable",
+            "row-key"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -83,7 +90,7 @@ export default class DataGridCellBoolOrLogic extends DataGridCell {
                     this.#inputEl.disabled = this.disabled;
                 } break;
                 case "readonly": {
-                    if (this.readonly) {
+                    if (this.readOnly) {
                         this.#inputEl.setAttribute("readonly", "");
                     } else {
                         this.#inputEl.removeAttribute("readonly");

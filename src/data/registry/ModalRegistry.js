@@ -15,10 +15,10 @@ class ModalRegistry {
         this.#registry.set(name, modal);
     }
 
-    show(name, ...params) {
+    async show(name, ...params) {
         const modal = this.#registry.get(name);
         if (modal) {
-            modal.show(...params);
+            return await modal.show(...params);
         }
     }
 

@@ -1,3 +1,4 @@
+import HTMLTemplate from "../html/template/HTMLTemplate.js";
 import FormElementRegistry from "../../data/registry/form/FormElementRegistry.js";
 import {isNullOrFalse} from "../helper/CheckType.js";
 import OptionGroupRegistryChoiceManager from "./manager/OptionGroupRegistryChoiceManager.js";
@@ -8,10 +9,32 @@ import {createErrorElement} from "../helper/ui/ElementError.js";
 import {
     FORM_BUTTON_MAPPING, FORM_STRUCTURE_MAPPING
 } from "../../ui/form/FormComponentsLoader.js";
+import FormField from "../../ui/form/FormField.js";
+
+export function getFormConfig(ref) {
+    const Clazz = FormElementRegistry.getRegisteredClass(ref);
+    if (Clazz != null) {
+        return [
+            {
+                "type": "Fieldset",
+                "label": "Field Config",
+                "children": FormField.formConfigurationFields
+            },
+            {
+                "type": "Fieldset",
+                "label": "Element Config",
+                "children": Clazz.formConfigurationFields
+            }
+        ];
+    }
+    return [];
+}
+
+;
 
 class FormBuilder {
 
-    build(config, label = null) {
+    build(config, refLabel = null) {
         if (config != null && !(typeof config === "object")) {
             throw new TypeError("config must be an Object or an array or null");
         }
@@ -38,7 +61,7 @@ class FormBuilder {
                         const formEl = this.buildForm(elements, {
                             ...values,
                             ...defaultValues
-                        }, formConfig, label);
+                        }, formConfig, refLabel);
                         if (firstFormEl == null) {
                             firstFormEl = formEl;
                         }
@@ -52,7 +75,7 @@ class FormBuilder {
                     const formEl = this.buildForm(elements, {
                         ...values,
                         ...defaultValues
-                    }, formConfig, label);
+                    }, formConfig, refLabel);
                     if (firstFormEl == null) {
                         firstFormEl = formEl;
                     }
@@ -63,7 +86,7 @@ class FormBuilder {
                 const {
                     elements, config: formConfig, values
                 } = config;
-                const formEl = this.buildForm(elements, values, formConfig, label);
+                const formEl = this.buildForm(elements, values, formConfig, refLabel);
                 if (firstFormEl == null) {
                     firstFormEl = formEl;
                 }
@@ -82,7 +105,7 @@ class FormBuilder {
         return formContainerEl;
     }
 
-    buildForm(content, defaultValues, params, label = null) {
+    buildForm(content, defaultValues, params, refLabel = null) {
         if (content != null && typeof content !== "object") {
             throw new TypeError("content must be an HTMLElement, Object, Array or null");
         }
@@ -109,10 +132,10 @@ class FormBuilder {
             formEl.dataset[key] = data[key];
         }
 
-        return this.replaceForm(formEl, content, defaultValues, formParams, label);
+        return this.replaceForm(formEl, content, defaultValues, formParams, refLabel);
     }
 
-    replaceForm(formEl, content, defaultValues, params, label = null) {
+    replaceForm(formEl, content, defaultValues, params, refLabel = null) {
         if (!(formEl instanceof HTMLFormElement)) {
             throw new TypeError("formEl must be of type HTMLFormElement");
         }
@@ -135,7 +158,7 @@ class FormBuilder {
         } = params ?? {};
 
         this.#applyHiddenValues(formEl, values);
-        this.#fillFormComponents(formEl, content, defaultValues, label);
+        this.#fillFormComponents(formEl, content, defaultValues, refLabel);
 
         if (!isNullOrFalse(submitButton) || !isNullOrFalse(resetButton)) {
             const buttonRowEl = document.createElement("emc-form-row");
@@ -185,12 +208,9 @@ class FormBuilder {
         }
     }
 
-    #fillFormComponents(containerEl, content, defaultValues, label = null) {
+    #fillFormComponents(containerEl, content, defaultValues, refLabel = null) {
         if (!(containerEl instanceof HTMLElement)) {
             throw new TypeError("containerEl must be of type HTMLElement");
-        }
-        if (content != null && typeof content !== "object") {
-            throw new TypeError("content must be an HTMLElement, Object, Array or null");
         }
         if (defaultValues != null && typeof defaultValues !== "object" || Array.isArray(defaultValues)) {
             throw new TypeError("defaultValues must be an Object or null");
@@ -198,44 +218,51 @@ class FormBuilder {
         if (content != null) {
             if (Array.isArray(content)) {
                 for (const config of content) {
-                    if (config instanceof HTMLElement) {
-                        containerEl.append(config);
-                    } else {
-                        containerEl.append(this.#createFormComponent(config, defaultValues ?? {}, label));
-                    }
+                    this.#fillFormComponent(containerEl, config, defaultValues, refLabel);
                 }
-            } else if (content instanceof HTMLElement) {
-                containerEl.append(content);
             } else {
-                containerEl.append(this.#createFormComponent(content, defaultValues ?? {}, label));
+                this.#fillFormComponent(containerEl, content, defaultValues, refLabel);
             }
         }
     }
 
-    createFormComponent(config, defaultValues = {}, label = null) {
-        return this.#createFormComponent(config, defaultValues, label);
+    #fillFormComponent(containerEl, config, defaultValues, refLabel = null) {
+        if ((typeof config !== "object" || Array.isArray(config)) && typeof config !== "string") {
+            throw new TypeError("config must be an HTMLElement, Object or String");
+        }
+        if (config instanceof HTMLElement) {
+            containerEl.append(config);
+        } else if (typeof config === "string") {
+            containerEl.append(HTMLTemplate.generate(config));
+        } else {
+            containerEl.append(this.#createFormComponent(config, defaultValues ?? {}, refLabel));
+        }
     }
 
-    replaceFormComponent(oldFormEl, config, defaultValues = {}, label = null) {
-        const newFormEl = this.#createFormComponent(config, defaultValues, label);
+    createFormComponent(config, defaultValues = {}, refLabel = null) {
+        return this.#createFormComponent(config, defaultValues, refLabel);
+    }
+
+    replaceFormComponent(oldFormEl, config, defaultValues = {}, refLabel = null) {
+        const newFormEl = this.#createFormComponent(config, defaultValues, refLabel);
         oldFormEl.replaceWith(newFormEl);
         return newFormEl;
     }
 
-    #createFormComponent(config = {}, defaultValues = {}, label = null) {
+    #createFormComponent(config = {}, defaultValues = {}, refLabel = null) {
         const {
             type, id, visible, enabled, editable, data, ...params
         } = config;
         if (FORM_STRUCTURE_MAPPING.has(type)) {
-            return this.#createFormStructure(type, id, visible, enabled, params, data, defaultValues, label);
+            return this.#createFormStructure(type, id, visible, enabled, params, data, defaultValues, refLabel);
         }
         if (FORM_BUTTON_MAPPING.has(type)) {
             return this.#createFormButton(type, id, visible, enabled, params, data);
         }
-        return this.#createFormElement(type, id, visible, enabled, editable, params, data, defaultValues, label);
+        return this.#createFormElement(type, id, visible, enabled, editable, params, data, defaultValues, refLabel);
     }
 
-    #createFormStructure(type, id, visible, enabled, params = {}, data = {}, defaultValues = {}, label = null) {
+    #createFormStructure(type, id, visible, enabled, params = {}, data = {}, defaultValues = {}, refLabel = null) {
         const Clazz = FORM_STRUCTURE_MAPPING.get(type);
         if (Clazz != null) {
             const {
@@ -254,7 +281,7 @@ class FormBuilder {
             if (enabled != null) {
                 el.setAttribute("enabled", JSON.stringify(enabled));
             }
-            this.#fillFormComponents(el, children, defaultValues, label);
+            this.#fillFormComponents(el, children, defaultValues, refLabel);
             return el;
         } else {
             return createErrorElement(type);
@@ -283,11 +310,23 @@ class FormBuilder {
         }
     }
 
-    #createFormElement(type, id, visible, enabled, editable, config = {}, data = {}, defaultValues = {}, label = null) {
+    #createFormElement(type, id, visible, enabled, editable, config = {}, data = {}, defaultValues = {}, refLabel = null) {
         const {
-            value, optiongroup, valueoptiongroup, tokengroup, ...params
+            value,
+            optiongroup,
+            valueoptiongroup,
+            tokengroup,
+            label,
+            tooltop,
+            description,
+            subtext,
+            controlButtons,
+            hideErrors,
+            noHover,
+            noPad,
+            ...params
         } = config;
-        const el = FormElementRegistry.create(type, params, label);
+        const el = FormElementRegistry.create(type, params, refLabel);
         if (id != null) {
             el.id = id;
         }
@@ -333,7 +372,34 @@ class FormBuilder {
             const manager = new TokenRegistryManager(el);
             manager.tokenGroup = tokengroup;
         }
-        return el;
+        // field
+        const fieldEl = new FormField();
+        if (label != null) {
+            fieldEl.label = label;
+        }
+        if (tooltop != null) {
+            fieldEl.tooltop = tooltop;
+        }
+        if (description != null) {
+            fieldEl.description = description;
+        }
+        if (subtext != null) {
+            fieldEl.subtext = subtext;
+        }
+        if (controlButtons != null) {
+            fieldEl.controlButtons = controlButtons;
+        }
+        if (hideErrors != null) {
+            fieldEl.hideErrors = hideErrors;
+        }
+        if (noHover != null) {
+            fieldEl.noHover = noHover;
+        }
+        if (noPad != null) {
+            fieldEl.noPad = noPad;
+        }
+        fieldEl.append(el);
+        return fieldEl;
     }
 
     #createElementFromClass(Clazz, params) {

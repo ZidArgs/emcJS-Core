@@ -11,7 +11,6 @@
     width: 100%;
     height: 100%;
     background-color: var(--tree-back-color, #ffffff);
-    background-image: var(--tree-back-image, none);
     overflow: auto;
 }
 

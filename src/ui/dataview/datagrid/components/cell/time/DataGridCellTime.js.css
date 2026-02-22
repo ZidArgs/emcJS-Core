@@ -28,7 +28,6 @@ p {
     margin-right: auto;
     color: var(--input-text-color, #000000);
     background-color: var(--input-back-color, #ffffff);
-    background-image: var(--input-back-image, none);
     border-style: solid;
     border-width: var(--input-border-width, 2px);
     border-color: var(--input-border-color, #222222);
@@ -44,7 +43,6 @@ p {
 
 :host(:invalid) #input {
     background-color: var(--input-invalid-back-color, #ffebeb);
-    background-image: var(--input-invalid-back-image, none);
     border-color: var(--input-invalid-border-color, #ff4444);
 }
 

@@ -29,7 +29,7 @@
             "label": "keybind readonly",
             "name": "keybind.readonly",
             "placeholder": "Enter key binding...",
-            "readonly": true
+            "readOnly": true
         },
         {
             "type": "KeyBindInput",

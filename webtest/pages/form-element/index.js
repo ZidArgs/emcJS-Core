@@ -1,9 +1,9 @@
 // main
 import FormElementRegistry from "/emcJS/data/registry/form/FormElementRegistry.js";
-import FormBuilder from "/emcJS/util/form/FormBuilder.js";
+import FormBuilder, {getFormConfig} from "/emcJS/util/form/FormBuilder.js";
 import {extractDefaultValuesFromConfig} from "/emcJS/util/helper/ui/Form.js";
 import {debounce} from "/emcJS/util/Debouncer.js";
-import Modal from "/emcJS/ui/modal/Modal.js";
+import ModalDialogCodeInput from "/emcJS/ui/modal/input/ModalDialogCodeInput.js";
 import ModalDialog from "/emcJS/ui/modal/ModalDialog.js";
 import I18nOption from "/emcJS/ui/i18n/builtin/I18nOption.js";
 import Column from "/emcJS/ui/dataview/datagrid/Column.js";
@@ -13,7 +13,6 @@ import "/emcJS/ui/container/CaptionPanel.js";
 import FormContext from "/emcJS/util/form/FormContext.js";
 import "/emcJS/ui/form/FormContainer.js";
 import "/emcJS/ui/form/FormComponentsLoader.js";
-import I18nMixin from "/emcJS/ui/mixin/I18nMixin.js";
 
 const formContext = new FormContext();
 formContext.allowEnter = false;
@@ -39,16 +38,6 @@ function loadElementTypes(elementTypeSelectEl) {
     }
 }
 
-function getDetailConfig(ref) {
-    if (ref) {
-        const clazz = FormElementRegistry.getRegisteredClass(ref);
-        if (clazz != null) {
-            return clazz.formConfigurationFields;
-        }
-    }
-    return [];
-}
-
 const elementTypeSelectEl = document.getElementById("type-select");
 loadElementTypes(elementTypeSelectEl);
 
@@ -57,14 +46,17 @@ elementTypeSelectEl.addEventListener("change", () => {
     const oldDetailFormEl = document.getElementById("detail-form");
 
     if (type != null && type !== "") {
-        const config = getDetailConfig(type);
+        const config = getFormConfig(type);
         const defaults = extractDefaultValuesFromConfig(config);
 
         FormBuilder.replaceForm(oldDetailFormEl, config);
-        formContext.setData({
+
+        const data = {
             ...defaults,
             type
-        });
+        };
+        formContext.setData(data);
+        // buildPreview(data);
     } else {
         FormBuilder.replaceForm(oldDetailFormEl);
         formContext.setData({});
@@ -73,10 +65,11 @@ elementTypeSelectEl.addEventListener("change", () => {
 
 function buildPreview(config) {
     const oldPreviewEl = document.getElementById("preview-element");
-    const formElementEl = FormBuilder.replaceFormComponent(oldPreviewEl, {
-        ...config,
-        id: "preview-element"
-    });
+    const formFieldEl = FormBuilder.replaceFormComponent(oldPreviewEl, config);
+    formFieldEl.id = "preview-element";
+
+    // setTimeout(() => {
+    const formElementEl = formFieldEl.assignedElement;
 
     switch (config.type) {
         case "ActionInput": {
@@ -94,10 +87,7 @@ function buildPreview(config) {
         case "BoolOrLogicInput": {
             formElementEl.defaultValue = {
                 "type": "and",
-                "content": [
-                    {"type": "true"},
-                    {"type": "false"}
-                ]
+                "content": [{"type": "true"}, {"type": "false"}]
             };
         } break;
         case "GridSelect": {
@@ -129,6 +119,7 @@ function buildPreview(config) {
             }
         } break;
     }
+    // }, 0);
 }
 
 // TODO add show JSON
@@ -136,28 +127,33 @@ const showHTMLButtonEl = document.getElementById("show-html");
 showHTMLButtonEl.addEventListener("click", () => {
     const valid = formContext.getFormValidity();
     if (valid) {
-        const modalEl = new Modal();
-        modalEl.caption = "Show HTML";
-        modalEl.shadowRoot.getElementById("modal").style.width = "100%";
-        const codeEl = document.createElement("emc-input-code");
-        codeEl.readonly = true;
-        codeEl.noHover = true;
-        /* --- */
         const data = formContext.getFormFieldsData();
-        const config = {};
-        for (const [key, value] of Object.entries(data)) {
-            if (["visible", "editable", "enabled"].includes(key) && value === true) {
-                continue;
-            } else if (value == null || value === false || value === "" || (Array.isArray(value) && !value.length)) {
-                continue;
+        if (data.type != null) {
+            const config = {};
+            for (const [key, value] of Object.entries(data)) {
+                if ([
+                    "visible",
+                    "editable",
+                    "enabled"
+                ].includes(key) && value === true) {
+                    continue;
+                } else if (value == null || value === false || value === "" || (Array.isArray(value) && !value.length)) {
+                    continue;
+                }
+                config[key] = value;
             }
-            config[key] = value;
+            const fromComponentEl = FormBuilder.createFormComponent(config);
+            const value = stringifyHTMLElement(fromComponentEl);
+            /* --- */
+            const modalEl = new ModalDialogCodeInput();
+            modalEl.streched = ModalDialogCodeInput.AXES.BOTH;
+            modalEl.resize = ModalDialogCodeInput.AXES.BOTH;
+            modalEl.caption = "Show HTML";
+            modalEl.readOnly = true;
+            modalEl.show(value);
+        } else {
+            ModalDialog.alert("No element type selected", "Please select the element type!");
         }
-        const fromComponentEl = FormBuilder.createFormComponent(config);
-        codeEl.value = stringifyHTMLElement(fromComponentEl);
-        /* --- */
-        modalEl.append(codeEl);
-        modalEl.show();
     } else {
         ModalDialog.alert("Configuration invalid", "Your configuration is not valid.\nPlease fix your configuration and try again!");
     }

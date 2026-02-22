@@ -5,7 +5,7 @@
         {
             "type": "ListInput",
             "label": "list default",
-            "name": "keyvaluelist.default",
+            "name": "list.default",
             "sorted": true,
             "value": {
                 "nana": "Nana",
@@ -15,7 +15,7 @@
         {
             "type": "ListInput",
             "label": "list resettable",
-            "name": "keyvaluelist.resettable",
+            "name": "list.resettable",
             "sorted": true,
             "controlButtons": [
                 "reset"
@@ -28,7 +28,7 @@
         {
             "type": "ListInput",
             "label": "list disabled",
-            "name": "keyvaluelist.disabled",
+            "name": "list.disabled",
             "sorted": true,
             "disabled": true,
             "value": {
@@ -39,9 +39,9 @@
         {
             "type": "ListInput",
             "label": "list readonly",
-            "name": "keyvaluelist.readonly",
+            "name": "list.readonly",
             "sorted": true,
-            "readonly": true,
+            "readOnly": true,
             "value": {
                 "nana": "Nana",
                 "foobar": "Foobar"

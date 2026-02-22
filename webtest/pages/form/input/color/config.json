@@ -29,7 +29,7 @@
             "label": "color readonly",
             "name": "color.readonly",
             "placeholder": "Choose color...",
-            "readonly": true
+            "readOnly": true
         },
         {
             "type": "ColorInput",

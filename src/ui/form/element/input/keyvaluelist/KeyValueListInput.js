@@ -1,26 +1,35 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
-import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
-import {deepClone} from "../../../../../util/helper/DeepClone.js";
-import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
-import SimpleDataProvider from "../../../../../util/dataprovider/SimpleDataProvider.js";
 import ModalDialog from "../../../../modal/ModalDialog.js";
-import "../search/SearchInput.js";
-import "../../../button/Button.js";
+import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
+import {immute} from "../../../../../data/Immutable.js";
+import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
+import Axes2D from "../../../../../enum/Axes2D.js";
+import {jsonParseSafe} from "../../../../../util/helper/JSON.js";
+import SimpleDataProvider from "../../../../../util/dataprovider/SimpleDataProvider.js";
 import "../../../../dataview/datagrid/DataGrid.js";
+import "../../../../dataview/datagrid/Column.js";
+import "../../components/searchheader/SearchHeader.js";
+import "../../../FormRow.js";
+import "../../../button/Button.js";
 import TPL from "./KeyValueListInput.js.html" assert {type: "html"};
 import STYLE from "./KeyValueListInput.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./KeyValueListInput.js.json" assert {type: "json"};
-import jsonParse from "../../../../../patches/JSONParser.js";
 
 export default class KeyValueListInput extends AbstractFormElement {
 
     static get formConfigurationFields() {
-        return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
+        return immute([...super.formConfigurationFields, ...CONFIG_FIELDS]);
     }
 
-    #labelEl;
+    static get changeDebounceTime() {
+        return 0;
+    }
 
-    #searchEl;
+    static get AXES() {
+        return Axes2D;
+    }
+
+    #searchHeaderEl;
 
     #gridEl;
 
@@ -30,27 +39,28 @@ export default class KeyValueListInput extends AbstractFormElement {
 
     constructor() {
         super();
-        this.shadowRoot.getElementById("field").append(TPL.generate());
+        TPL.apply(this.shadowRoot);
         STYLE.apply(this.shadowRoot);
         /* --- */
+        this.#searchHeaderEl = this.shadowRoot.getElementById("search-header");
         this.#gridEl = this.shadowRoot.getElementById("grid");
         this.#addEl = this.shadowRoot.getElementById("add");
         this.#dataManager = new SimpleDataProvider(this.#gridEl);
         /* --- */
-        this.registerTargetEventHandler(this.#addEl, "click", (event) => {
+        this.#addEl.addEventListener("click", (event) => {
             event.stopPropagation();
             event.preventDefault();
             this.#addElement();
         });
         /* --- */
-        this.registerTargetEventHandler(this.#gridEl, "action::delete", (event) => {
+        this.#gridEl.addEventListener("action::delete", (event) => {
             event.stopPropagation();
             event.preventDefault();
             const {rowKey} = event.data;
             this.#removeElement(rowKey);
         });
         /* --- */
-        this.registerTargetEventHandler(this.#gridEl, "edit::value", (event) => {
+        this.#gridEl.addEventListener("edit::value", (event) => {
             event.stopPropagation();
             event.preventDefault();
             const {
@@ -61,34 +71,32 @@ export default class KeyValueListInput extends AbstractFormElement {
                 currentValue[rowKey] = value;
             }
             this.value = currentValue;
+            this.dispatchEvent(new Event("input", {
+                bubbles: true,
+                cancelable: true
+            }));
         });
         /* --- */
-        this.#searchEl = this.shadowRoot.getElementById("search");
-        this.registerTargetEventHandler(this.#searchEl, "change", () => {
+        this.#searchHeaderEl.addEventListener("search", () => {
             const options = {filter: {}};
-            if (this.#searchEl.value != "") {
-                options.filter = {name: this.#searchEl.value};
+            const seearchValue = this.#searchHeaderEl.search;
+            if (seearchValue != "") {
+                options.filter = {name: seearchValue};
             }
             this.#dataManager.updateConfig(options);
-        }, true);
-        /* --- */
-        this.#labelEl = this.shadowRoot.getElementById("label");
-        this.registerTargetEventHandler(this.#labelEl, "click", (event) => {
-            event.preventDefault();
-            this.#searchEl.focus();
-        });
+        }, {capture: true});
     }
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
-        this.#searchEl.disabled = disabled;
+        this.#searchHeaderEl.disabled = disabled;
         this.#gridEl.disabled = disabled;
-        this.#addEl.disabled = disabled || this.readonly;
+        this.#addEl.disabled = disabled;
     }
 
     focus(options) {
         super.focus(options);
-        this.#searchEl.focus(options);
+        this.#searchHeaderEl.focus(options);
     }
 
     set defaultValue(value) {
@@ -101,7 +109,7 @@ export default class KeyValueListInput extends AbstractFormElement {
 
     set value(value) {
         if (typeof value === "string") {
-            value = jsonParse(value);
+            value = jsonParseSafe(value);
         }
         super.value = value;
     }
@@ -118,9 +126,21 @@ export default class KeyValueListInput extends AbstractFormElement {
         return this.getBooleanAttribute("sorted");
     }
 
+    set resize(value) {
+        this.setEnumAttribute("resize", value, Axes2D);
+    }
+
+    get resize() {
+        return this.getEnumAttribute("resize");
+    }
+
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "readonly", "sorted"];
+        return [
+            ...superObserved,
+            "readonly",
+            "sorted"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -128,8 +148,9 @@ export default class KeyValueListInput extends AbstractFormElement {
         switch (name) {
             case "readonly": {
                 if (oldValue != newValue) {
-                    this.#gridEl.readonly = this.readonly;
-                    this.#addEl.disabled = this.disabled || this.readonly;
+                    const readonly = this.readOnly;
+                    this.#gridEl.readOnly = readonly;
+                    this.#searchHeaderEl.readOnly = readonly;
                 }
             } break;
             case "sorted": {
@@ -176,6 +197,10 @@ export default class KeyValueListInput extends AbstractFormElement {
             ...currentValue,
             [rowKey]: ""
         };
+        this.dispatchEvent(new Event("input", {
+            bubbles: true,
+            cancelable: true
+        }));
     }
 
     async #removeElement(rowKey) {
@@ -187,6 +212,10 @@ export default class KeyValueListInput extends AbstractFormElement {
         if (rowKey in currentValue) {
             delete currentValue[rowKey];
             this.value = currentValue;
+            this.dispatchEvent(new Event("input", {
+                bubbles: true,
+                cancelable: true
+            }));
         }
     }
 

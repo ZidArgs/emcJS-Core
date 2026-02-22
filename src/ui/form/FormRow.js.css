@@ -16,7 +16,7 @@
     flex-wrap: wrap;
     flex: 1;
     box-sizing: border-box;
-    padding: 0px;
+    padding: 0px 2px;
     margin: 0px;
     background-color: transparent;
     border: none;
@@ -47,17 +47,13 @@
 
 ::slotted(*) {
     width: auto;
-    margin: 4px;
+    margin: 4px 2px;
 }
 
-::slotted(:not(:first-child)) {
-    margin-left: 0px
-}
-
-::slotted([distance~="right"]) {
+::slotted(:nth-last-child(1 of [align="left"])) {
     margin-right: auto !important;
 }
 
-::slotted([distance~="left"]) {
+::slotted(:nth-child(1 of [align="right"])) {
     margin-left: auto !important;
 }

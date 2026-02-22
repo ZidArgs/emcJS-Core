@@ -19,7 +19,7 @@ export default class DataGridHeaderCell extends CustomElementDelegating {
         this.#dataGridId = dataGridId;
         this.#sortIndicatorEl = this.shadowRoot.getElementById("sort-indicator");
         /* --- */
-        this.registerTargetEventHandler(this, "click", (event) => {
+        this.addEventListener("click", (event) => {
             event.stopPropagation();
             if (this.sortable) {
                 const ev = new Event("sort", {bubbles:true});
@@ -27,7 +27,7 @@ export default class DataGridHeaderCell extends CustomElementDelegating {
                 this.dispatchEvent(ev);
             }
         });
-        this.registerTargetEventHandler(this.#sortIndicatorEl, "click", (event) => {
+        this.#sortIndicatorEl.addEventListener("click", (event) => {
             event.stopPropagation();
             if (this.sortable) {
                 const ev = new Event("unsort", {bubbles:true});

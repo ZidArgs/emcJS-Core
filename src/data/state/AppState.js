@@ -415,6 +415,20 @@ export default class AppState extends EventTarget {
     }
 
     /**
+     * Returns the data of the specified internal {@link ObservableStorage}.
+     *
+     * @param {string} category the category of the Storage to read the data from
+     * @returns {Object.<string, *>} the data of the specified internal Storage
+     */
+    getAllFromCategory(category) {
+        const dataStorage = this.getStorage(category);
+        if (dataStorage != null) {
+            return dataStorage.getAll();
+        }
+        return null;
+    }
+
+    /**
      * Returns an object representation of the data of the specified internal {@link ObservableStorage}s.
      *
      * @param {string} categories the categories of the Storages to read the data from

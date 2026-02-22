@@ -13,7 +13,7 @@ export default class DataGridCellButton extends DataGridCell {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.registerTargetEventHandler(this.#inputEl, "click", (event) => {
+        this.#inputEl.addEventListener("click", (event) => {
             this.#onClick(event);
         });
     }
@@ -24,6 +24,14 @@ export default class DataGridCellButton extends DataGridCell {
 
     set text(val) {
         this.setAttribute("text", val);
+    }
+
+    get iconType() {
+        return this.getAttribute("icon-type");
+    }
+
+    set iconType(val) {
+        this.setAttribute("icon-type", val);
     }
 
     get icon() {
@@ -44,7 +52,15 @@ export default class DataGridCellButton extends DataGridCell {
 
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "text", "icon", "tooltip", "disabled", "readonly"];
+        return [
+            ...superObserved,
+            "text",
+            "icon-type",
+            "icon",
+            "tooltip",
+            "disabled",
+            "readonly"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -54,6 +70,9 @@ export default class DataGridCellButton extends DataGridCell {
                 case "text": {
                     this.onValueChange(this.value);
                 } break;
+                case "icon-type": {
+                    this.#inputEl.iconType = this.iconType;
+                } break;
                 case "icon": {
                     this.#inputEl.icon = this.icon;
                 } break;
@@ -62,7 +81,7 @@ export default class DataGridCellButton extends DataGridCell {
                 } break;
                 case "disabled":
                 case "readonly": {
-                    this.#inputEl.disabled = this.disabled || this.readonly;
+                    this.#inputEl.disabled = this.disabled || this.readOnly;
                 } break;
             }
         }

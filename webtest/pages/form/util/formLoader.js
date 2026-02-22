@@ -18,7 +18,11 @@ export async function init() {
         return;
     }
     i18n.language = "en";
-    const [optionGroups, tokenGroups, logicOperators] = await Promise.all([
+    const [
+        optionGroups,
+        tokenGroups,
+        logicOperators
+    ] = await Promise.all([
         FileLoader.json("/pages/form/_config/OptionGroups.json"),
         FileLoader.json("/pages/form/_config/TokenGroups.json"),
         FileLoader.json("/pages/form/_config/LogicOperators.json")
@@ -51,10 +55,7 @@ export async function init() {
 }
 
 export async function loadForm(allowsInvalid) {
-    const [defaultValues, formElements] = await Promise.all([
-        FileLoader.json("/pages/form/_config/defaults.json"),
-        FileLoader.json(`./config.json`)
-    ]);
+    const [defaultValues, formElements] = await Promise.all([FileLoader.json("/pages/form/_config/defaults.json"), FileLoader.json(`./config.json`)]);
 
     const pageEl = document.getElementById("page");
     const formContext = new FormContext(defaultValues);

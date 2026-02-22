@@ -1,14 +1,16 @@
 import CustomElement from "../element/CustomElement.js";
 import FormContext from "../../util/form/FormContext.js";
 import FormBuilder from "../../util/form/FormBuilder.js";
-import CharacterSearch from "../../util/search/CharacterSearch.js";
-import SelectEntry from "../form/element/components/SelectEntry.js";
+import SearchEvery from "../../util/search/SearchEvery.js";
+import {getFilterText} from "../../util/form/helper/FilterTextHelper.js";
 import TreeNode from "../tree/components/TreeNode.js";
 import SectionTreeManager from "../../util/form/manager/SectionTreeManager.js";
+import "../form/element/input/search/SearchInput.js";
 import "../tree/Tree.js";
 import "../navigation/button/HamburgerButton.js";
 import TPL from "./SettingsPanel.js.html" assert {type: "html"};
 import STYLE from "./SettingsPanel.js.css" assert {type: "css"};
+import FormErrorButtonManager from "../../util/form/manager/FormErrorButtonManager.js";
 
 export default class SettingsPanel extends CustomElement {
 
@@ -26,29 +28,34 @@ export default class SettingsPanel extends CustomElement {
 
     #formSectionNavigationEl;
 
+    #formContainerEl;
+
     #settingsFormEl;
 
     #formContext = new FormContext();
+
+    #errorButtonManager = new FormErrorButtonManager();
 
     constructor() {
         super();
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
+        this.#errorButtonManager.setFormContext(this.#formContext);
         this.#formContext.allowEnter = true;
         this.#formContext.hideErrors = false;
         /* --- */
         this.#titleTextEl = this.shadowRoot.getElementById("title-text");
         this.#hamburgerEl = this.shadowRoot.getElementById("hamburger-button");
         this.#formSectionNavigationEl = this.shadowRoot.getElementById("form-section-navigation");
-        const formContainerEl = this.shadowRoot.getElementById("form-container");
+        this.#formContainerEl = this.shadowRoot.getElementById("form-container");
         this.#settingsFormEl = this.shadowRoot.getElementById("settings-form");
-        this.#formContext.registerFormContainer(formContainerEl);
+        this.#formContext.registerFormContainer(this.#formContainerEl);
         this.#sectionTreeManager.setFormSectionNavigationElement(this.#formSectionNavigationEl);
-        this.#sectionTreeManager.observe(formContainerEl);
+        this.#sectionTreeManager.observe(this.#formContainerEl);
         this.#initFormHandlers();
         /* --- */
-        this.registerTargetEventHandler(this.#hamburgerEl, "click", () => {
+        this.#hamburgerEl.addEventListener("click", () => {
             if (this.#formSectionNavigationEl.classList.contains("open")) {
                 this.#formSectionNavigationEl.classList.remove("open");
                 this.#formSectionNavigationEl.classList.remove("cover");
@@ -59,7 +66,7 @@ export default class SettingsPanel extends CustomElement {
                 this.#formSectionNavigationEl.focus();
             }
         });
-        this.registerTargetEventHandler(this.#formSectionNavigationEl, "select", () => {
+        this.#formSectionNavigationEl.addEventListener("select", () => {
             if (this.#formSectionNavigationEl.classList.contains("open")) {
                 this.#formSectionNavigationEl.classList.remove("open");
                 this.#formSectionNavigationEl.classList.remove("cover");
@@ -68,18 +75,24 @@ export default class SettingsPanel extends CustomElement {
         });
         /* --- */
         this.#searchEl = this.shadowRoot.getElementById("search");
-        this.registerTargetEventHandler(this.#searchEl, "change", () => {
+        this.#searchEl.addEventListener("change", () => {
             const all = this.#settingsFormEl.querySelectorAll(":scope [name]:not(emc-form-section)");
             const sections = [...this.#settingsFormEl.querySelectorAll("emc-form-section")].reverse();
             const searchValue = this.#searchEl.value;
             if (searchValue) {
-                const regEx = new CharacterSearch(searchValue);
+                const regEx = new SearchEvery(searchValue);
                 for (const el of all) {
-                    const value = el.dataset.filtervalue ?? this.getOuterText(el, [SelectEntry]);
+                    const value = getFilterText(el);
                     if (regEx.test(value)) {
                         el.classList.remove("hidden");
+                        if (el.formField) {
+                            el.formField.hidden = false;
+                        }
                     } else {
                         el.classList.add("hidden");
+                        if (el.formField) {
+                            el.formField.hidden = true;
+                        }
                     }
                 }
                 for (const el of sections) {
@@ -101,6 +114,9 @@ export default class SettingsPanel extends CustomElement {
             } else {
                 for (const el of all) {
                     el.classList.remove("hidden");
+                    if (el.formField) {
+                        el.formField.hidden = false;
+                    }
                 }
                 for (const el of sections) {
                     el.classList.remove("hidden");
@@ -114,25 +130,25 @@ export default class SettingsPanel extends CustomElement {
     }
 
     #initFormHandlers() {
-        this.registerTargetEventHandler(this.#formContext, "submit", () => {
+        this.#formContext.addEventListener("submit", () => {
             const ev = new Event("submit");
-            ev.data = this.getDataFlat();
-            ev.formData = this.getFormFieldsData();
+            ev.data = this.getValuesFlat();
+            ev.formData = this.getValues();
             ev.hiddenData = this.getFormHiddenData();
             ev.changes = this.getChanges();
             ev.errors = this.getErrors();
             this.dispatchEvent(ev);
         });
-        this.registerTargetEventHandler(this.#formContext, "reset", () => {
+        this.#formContext.addEventListener("reset", () => {
             this.dispatchEvent(new Event("cancel"));
         });
-        this.registerTargetEventHandler(this.#formContext, "error", (event) => {
+        this.#formContext.addEventListener("error", (event) => {
             const {errors} = event;
             const ev = new Event("error");
             ev.errors = errors;
             this.dispatchEvent(ev);
         });
-        this.registerTargetEventHandler(this.#formContext, "validity", (event) => {
+        this.#formContext.addEventListener("validity", (event) => {
             const ev = new Event("validity");
             ev.value = event.value;
             ev.valid = event.valid;
@@ -161,10 +177,16 @@ export default class SettingsPanel extends CustomElement {
     }
 
     static get observedAttributes() {
-        return ["caption", "type"];
+        const superObserved = super.observedAttributes ?? [];
+        return [
+            ...superObserved,
+            "caption",
+            "type"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
             case "caption": {
                 if (oldValue != newValue) {
@@ -189,12 +211,12 @@ export default class SettingsPanel extends CustomElement {
         FormBuilder.replaceForm(this.#settingsFormEl, config, defaultValues);
     }
 
-    setValues(values) {
-        this.#formContext.setData(values);
+    setValues(values, merge = false) {
+        this.#formContext.setData(values, merge);
     }
 
-    setValuesFlat(values) {
-        this.#formContext.setDataFlat(values);
+    setValuesFlat(values, merge = false) {
+        this.#formContext.setDataFlat(values, merge);
     }
 
     getValues() {
@@ -226,12 +248,7 @@ export default class SettingsPanel extends CustomElement {
     }
 
     initialFocus() {
-        const inputEl = this.#settingsFormEl.querySelector("[name]");
-        if (inputEl != null) {
-            inputEl.focus();
-        } else {
-            this.#searchEl.focus();
-        }
+        this.#searchEl.focus();
     }
 
     focusFirst() {
@@ -250,6 +267,10 @@ export default class SettingsPanel extends CustomElement {
         } else {
             this.#formSectionNavigationEl.focus();
         }
+    }
+
+    setErrorButton(errorButtonEl) {
+        this.#errorButtonManager.setErrorButton(errorButtonEl);
     }
 
 }

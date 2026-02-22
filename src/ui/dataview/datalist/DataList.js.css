@@ -7,7 +7,6 @@
     min-width: 300px;
     margin: 8px;
     background-color: var(--datalist-back-color, #ffffff);
-    background-image: var(--datalist-back-image, none);
     border-style: solid;
     border-width: var(--datalist-border-width, 2px);
     border-color: var(--datalist-border-color, #000000);
@@ -65,7 +64,6 @@
     height: 30px;
     color: var(--datalist-empty-text-color, #666666);
     background-color: var(--datalist-empty-back-color, #dadada);
-    background-image: var(--datalist-empty-back-image, none);
     border-style: solid;
     border-width: var(--datalist-empty-border-width, 2px);
     border-color: var(--datalist-empty-border-color, #666666);

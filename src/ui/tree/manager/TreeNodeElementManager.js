@@ -5,15 +5,11 @@ export default class TreeNodeElementManager extends ElementManager {
 
     #targetClass;
 
-    #eventManager = new EventManager(false);
+    #eventManager = new EventManager();
 
     constructor(target, targetClass) {
         super(target);
         this.#targetClass = targetClass;
-    }
-
-    setEventManagerActive(value) {
-        this.#eventManager.active = value;
     }
 
     composer(key, params) {

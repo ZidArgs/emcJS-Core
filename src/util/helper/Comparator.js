@@ -22,8 +22,14 @@ export function numberedStringComparator(a, b) {
     if (a.localeCompare(b) === 0) {
         return 0;
     }
-    const [, sA, nA] = NUMBERED_STRING_REGEX.exec(a);
-    const [, sB, nB] = NUMBERED_STRING_REGEX.exec(b);
+    const [
+        , sA,
+        nA
+    ] = NUMBERED_STRING_REGEX.exec(a);
+    const [
+        , sB,
+        nB
+    ] = NUMBERED_STRING_REGEX.exec(b);
     const sCompare = sA.localeCompare(sB);
     if (sCompare === 0) {
         const iA = parseInt(nA);

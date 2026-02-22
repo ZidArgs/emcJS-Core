@@ -1,3 +1,5 @@
+/* TODO use variables to determine colors, etc. (see form inputs)
+*/
 :host {
     margin: 4px;
 }
@@ -15,7 +17,6 @@
     padding: 6px;
     color: var(--datalist-entry-text-color, #000000);
     background-color: var(--datalist-entry-back-color, #ffffff);
-    background-image: var(--datalist-entry-back-image, none);
     border-style: solid;
     border-width: var(--datalist-entry-border-width, 2px);
     border-color: var(--datalist-entry-border-color, #000000);
@@ -28,6 +29,5 @@
 
 #container:hover {
     color: var(--datalist-entry-hover-text-color, #000000);
-    background-color: var(--datalist-entry-hover-back-color, #ffffff);
-    background-image: var(--datalist-entry-hover-back-image, none);
+    background-color: var(--datalist-entry-hover-back-color, #d6f7fd);
 }

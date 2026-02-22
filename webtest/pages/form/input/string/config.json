@@ -33,7 +33,7 @@
             "label": "string readonly",
             "name": "string.readonly",
             "placeholder": "Enter text...",
-            "readonly": true
+            "readOnly": true
         },
         {
             "type": "StringInput",
@@ -51,6 +51,38 @@
                 "reset"
             ],
             "disabled": true
+        },
+        {
+            "type": "StringInput",
+            "label": "string textlength",
+            "name": "string.textlength",
+            "placeholder": "Enter text...",
+            "showTextLength": true
+        },
+        {
+            "type": "StringInput",
+            "label": "string textlength minlength",
+            "name": "string.minlength",
+            "placeholder": "Enter text...",
+            "showTextLength": true,
+            "minLength": 10
+        },
+        {
+            "type": "StringInput",
+            "label": "string textlength maxlength",
+            "name": "string.maxlength",
+            "placeholder": "Enter text...",
+            "showTextLength": true,
+            "maxLength": 100
+        },
+        {
+            "type": "StringInput",
+            "label": "string textlength minlength maxlength",
+            "name": "string.minmaxlength",
+            "placeholder": "Enter text...",
+            "showTextLength": true,
+            "minLength": 10,
+            "maxLength": 100
         }
     ]
 }

@@ -1,172 +1,55 @@
-import AbstractFormElement from "../../AbstractFormElement.js";
-import {deepClone} from "../../../../../util/helper/DeepClone.js";
-import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
+import SliderInput from "../slider/SliderInput.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
-import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
+import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
+import {
+    setBooleanAttribute, setNumberAttribute
+} from "../../../../../util/helper/ui/NodeAttributes.js";
 import "../../../../i18n/builtin/I18nInput.js";
 import TPL from "./RangeInput.js.html" assert {type: "html"};
 import STYLE from "./RangeInput.js.css" assert {type: "css"};
-import CONFIG_FIELDS from "./RangeInput.js.json" assert {type: "json"};
 
-// TODO react to keypress for up and down arrow on number to update slider
-export default class RangeInput extends AbstractFormElement {
-
-    static get formConfigurationFields() {
-        return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
-    }
-
-    #inputEl;
-
-    #inputContainerEl;
+export default class RangeInput extends SliderInput {
 
     #numberEl;
 
     constructor() {
         super();
-        this.shadowRoot.getElementById("field").append(TPL.generate());
+        const container = this.shadowRoot.getElementById("container");
+        container.prepend(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
-        this.#inputContainerEl = this.shadowRoot.getElementById("input-container");
-        this.#inputEl = this.shadowRoot.getElementById("input");
-        this.registerTargetEventHandler(this.#inputEl, "input", () => {
-            const value = this.#inputEl.value;
-            this.#numberEl.value = value;
-            this.#applyValueToBar(value);
-            this.value = value;
-        });
-        new ResizeObserver(() => {
-            this.#applyGradationsValue();
-        }).observe(this.#inputEl);
-        /* --- */
         this.#numberEl = this.shadowRoot.getElementById("number");
-        this.registerTargetEventHandler(this.#numberEl, "change", (event) => {
+        this.#numberEl.addEventListener("change", (event) => {
+            this.value = this.#numberEl.value;
             event.stopPropagation();
-            const value = this.#numberEl.value;
-            this.#inputEl.value = value;
-            this.#applyValueToBar(value);
-            this.value = value;
         });
     }
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
-        this.#inputEl.disabled = disabled;
         this.#numberEl.disabled = disabled;
-    }
-
-    focus(options) {
-        super.focus(options);
-        this.#inputEl.focus(options);
-    }
-
-    set value(value) {
-        super.value = value != null ? parseInt(value) : null;
-    }
-
-    get value() {
-        return super.value ?? 0;
-    }
-
-    set min(value) {
-        this.setNumberAttribute("min", value);
-    }
-
-    get min() {
-        return this.getNumberAttribute("min");
-    }
-
-    set max(value) {
-        this.setNumberAttribute("max", value);
-    }
-
-    get max() {
-        return this.getNumberAttribute("max");
-    }
-
-    set gradations(value) {
-        this.setBooleanAttribute("gradations", value);
-    }
-
-    get gradations() {
-        return this.getBooleanAttribute("gradations");
-    }
-
-    static get observedAttributes() {
-        const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "min", "max", "gradations"];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
+            case "readonly": {
+                if (oldValue != newValue) {
+                    setBooleanAttribute(this.#numberEl, name, this.readOnly);
+                }
+            } break;
             case "min":
             case "max": {
                 if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, name, newValue);
-                    safeSetAttribute(this.#numberEl, name, newValue);
-                    this.#setRange();
-                    this.#applyValueToBar(this.value);
-                }
-            } break;
-            case "gradations": {
-                if (oldValue != newValue) {
-                    this.#applyGradationsValue();
+                    setNumberAttribute(this.#numberEl, name, newValue);
                 }
             } break;
         }
     }
 
     renderValue(value) {
-        this.#inputEl.value = value ?? 0;
         this.#numberEl.value = value ?? 0;
-        this.#applyValueToBar(value);
-    }
-
-    #setRange() {
-        const min = parseInt(this.getAttribute("min") || "0");
-        const max = parseInt(this.getAttribute("max") || "10");
-        if (min < max) {
-            const parts = max - min;
-            this.#inputContainerEl.style.setProperty("--range-parts", parts);
-            this.#applyGradationsValue();
-        } else {
-            this.#inputContainerEl.style.setProperty("--range-parts", 1);
-            this.#applyGradationsValue();
-        }
-    }
-
-    #applyValueToBar(value) {
-        const min = parseInt(this.getAttribute("min") || "0");
-        const max = parseInt(this.getAttribute("max") || "10");
-        if (min < max) {
-            if (value !== "") {
-                this.#inputContainerEl.style.setProperty("--range-value", value - min);
-                this.#numberEl.value = value;
-            } else {
-                const pos = (max - min) / 2;
-                this.#inputContainerEl.style.setProperty("--range-value", pos - min);
-                this.#numberEl.value = pos;
-            }
-        } else {
-            this.#inputContainerEl.style.setProperty("--range-value", 0);
-            this.#applyGradationsValue();
-        }
-    }
-
-    // TODO add gradation increment value
-    #applyGradationsValue() {
-        if (this.gradations) {
-            const min = parseInt(this.getAttribute("min") || "0");
-            const max = parseInt(this.getAttribute("max") || "10");
-            if (min < max) {
-                const parts = max - min;
-                if (parts < this.#inputEl.offsetWidth / 10) {
-                    this.#inputContainerEl.classList.add("gradations");
-                    return;
-                }
-            }
-        }
-        this.#inputContainerEl.classList.remove("gradations");
+        super.renderValue(value);
     }
 
 }

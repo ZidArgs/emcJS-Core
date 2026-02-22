@@ -1,5 +1,6 @@
 import ModalDialog from "../ModalDialog.js";
 import "../../form/button/Button.js";
+import "../../form/element/select/relation/RelationSelect.js";
 import TPL from "./ModalDialogRelationSelect.js.html" assert {type: "html"};
 import STYLE from "./ModalDialogRelationSelect.js.css" assert {type: "css"};
 
@@ -15,8 +16,12 @@ export default class ModalDialogRelationSelect extends ModalDialog {
 
     #cancelEl;
 
-    constructor() {
-        super("Select entity");
+    constructor(caption = "Select entity", options = {}) {
+        super(caption, {
+            submit: true,
+            cancel: true,
+            ...options
+        });
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
@@ -27,18 +32,21 @@ export default class ModalDialogRelationSelect extends ModalDialog {
         this.#contentEl.append(this.#inputEl);
 
         this.#cancelEl = els.getElementById("cancel");
-        this.registerTargetEventHandler(this.#cancelEl, "click", () => this.cancel());
+        this.#cancelEl.addEventListener("click", () => this.cancel());
         this.#footerEl.append(this.#cancelEl);
 
         this.#submitEl = els.getElementById("submit");
-        this.registerTargetEventHandler(this.#submitEl, "click", () => this.submit());
+        this.#submitEl.addEventListener("click", () => this.submit());
         this.#footerEl.append(this.#submitEl);
     }
 
     async show(value) {
         this.#inputEl.value = value;
-        const result = await super.show();
-        return result && this.#inputEl.value;
+        return await super.show();
+    }
+
+    getSubmitValue() {
+        return this.#inputEl.value;
     }
 
     set types(value) {

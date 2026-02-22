@@ -50,12 +50,12 @@ export default class StateButton extends CustomElement {
         this.setAttribute("value", val);
     }
 
-    get readonly() {
+    get readOnly() {
         const val = this.getAttribute("readonly");
         return !!val && val != "false";
     }
 
-    set readonly(val) {
+    set readOnly(val) {
         this.setAttribute("readonly", val);
     }
 
@@ -86,7 +86,7 @@ export default class StateButton extends CustomElement {
     }
 
     next(ev) {
-        if (!this.readonly) {
+        if (!this.readOnly) {
             const all = this.querySelectorAll("[value]");
             if (all.length) {
                 const opt = this.querySelector(`[value="${this.value ?? ""}"]`);
@@ -106,7 +106,7 @@ export default class StateButton extends CustomElement {
     }
 
     prev(ev) {
-        if (!this.readonly) {
+        if (!this.readOnly) {
             const all = this.querySelectorAll("[value]");
             if (all.length) {
                 const opt = this.querySelector(`[value="${this.value ?? ""}"]`);

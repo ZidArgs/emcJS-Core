@@ -15,7 +15,7 @@ export default class OptionGroupRegistryChoiceManager {
 
     constructor(targetEl) {
         if (!(targetEl instanceof AbstractFormElement)) {
-            throw new TypeError("FormFieldContext can only work on AbstractFormElement");
+            throw new TypeError("OptionGroupRegistryChoiceManager can only work on AbstractFormElement");
         }
         if (MANAGERS.has(targetEl)) {
             return MANAGERS.get(targetEl);

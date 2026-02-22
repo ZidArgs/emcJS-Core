@@ -26,7 +26,7 @@ export default class DataGridCell extends CustomElementDelegating {
         this.#dataGridId = dataGridId;
         this.#contentEl = this.shadowRoot.getElementById("content");
         /* --- */
-        this.registerTargetEventHandler(this, "contextmenu", (event) => {
+        this.addEventListener("contextmenu", (event) => {
             event.stopPropagation();
             event.preventDefault();
             const menuEvent = new PointerEvent("menu", event);
@@ -103,11 +103,11 @@ export default class DataGridCell extends CustomElementDelegating {
         return this.getBooleanAttribute("disabled");
     }
 
-    set readonly(val) {
+    set readOnly(val) {
         this.setBooleanAttribute("readonly", val);
     }
 
-    get readonly() {
+    get readOnly() {
         return this.getBooleanAttribute("readonly");
     }
 

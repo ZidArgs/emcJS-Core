@@ -15,7 +15,7 @@ export default class TokenRegistryManager {
 
     constructor(targetEl) {
         if (!(targetEl instanceof AbstractFormElement)) {
-            throw new TypeError("FormFieldContext can only work on AbstractFormElement");
+            throw new TypeError("TokenRegistryManager can only work on AbstractFormElement");
         }
         if (MANAGERS.has(targetEl)) {
             return MANAGERS.get(targetEl);
@@ -27,7 +27,7 @@ export default class TokenRegistryManager {
             this.#loadTokenListFromRegistry();
         });
         /* --- */
-        this.#targetEl.registerTargetEventHandler(this.#targetEl, "change", () => {
+        this.#targetEl.addEventListener("change", () => {
             if (this.#tokenRegistry != null && !this.#targetEl.chooseonly) {
                 const value = this.#targetEl.value;
                 for (const token of value) {

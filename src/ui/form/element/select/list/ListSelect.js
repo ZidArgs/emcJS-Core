@@ -1,19 +1,20 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
-import SimpleDataProvider from "../../../../../util/dataprovider/SimpleDataProvider.js";
-import {deepClone} from "../../../../../util/helper/DeepClone.js";
-import {debounce} from "../../../../../util/Debouncer.js";
+import {immute} from "../../../../../data/Immutable.js";
 import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
+import Axes2D from "../../../../../enum/Axes2D.js";
+import {jsonParseSafe} from "../../../../../util/helper/JSON.js";
+import SimpleDataProvider from "../../../../../util/dataprovider/SimpleDataProvider.js";
+import {debounce} from "../../../../../util/Debouncer.js";
 import {setAttributes} from "../../../../../util/helper/ui/NodeAttributes.js";
 import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
 import MutationObserverManager from "../../../../../util/observer/manager/MutationObserverManager.js";
-import ElementListCache from "../../../../../util/html/ElementListCache.js";
 import BusyIndicatorManager from "../../../../../util/BusyIndicatorManager.js";
 import i18n from "../../../../../util/I18n.js";
-import jsonParse from "../../../../../patches/JSONParser.js";
 import I18nOption from "../../../../i18n/builtin/I18nOption.js";
 import ListSelectEntry from "./components/ListSelectEntry.js";
 import "../../../../dataview/datalist/DataListSelect.js";
+import "../../components/searchheader/SearchHeader.js";
 import TPL from "./ListSelect.js.html" assert {type: "html"};
 import STYLE from "./ListSelect.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./ListSelect.js.json" assert {type: "json"};
@@ -23,32 +24,27 @@ const MUTATION_CONFIG = {
     attributeFilter: ["value"]
 };
 
-// TODO rename to gridselect
-// TODO add option to choose visible columns
-// TODO build real listselect similar to the old one (maybe use select in multiple mode)
 export default class ListSelect extends AbstractFormElement {
 
     static get formConfigurationFields() {
-        return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
+        return immute([...super.formConfigurationFields, ...CONFIG_FIELDS]);
     }
 
     static get changeDebounceTime() {
         return 0;
     }
 
-    #headerEl;
+    static get AXES() {
+        return Axes2D;
+    }
 
-    #searchEl;
+    #searchHeaderEl;
 
     #listEl;
-
-    #headerSelectEl;
 
     #dataManager;
 
     #optionsContainerEl;
-
-    #optionNodeList = new ElementListCache();
 
     #i18nEventManager = new EventTargetManager(i18n, false);
 
@@ -56,52 +52,50 @@ export default class ListSelect extends AbstractFormElement {
         this.#onSlotChange();
     });
 
+    #keyIndex = new Set();
+
     constructor() {
         super();
-        this.shadowRoot.getElementById("field").append(TPL.generate());
+        TPL.apply(this.shadowRoot);
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#optionsContainerEl = this.shadowRoot.getElementById("options-container");
-        this.registerTargetEventHandler(this.#optionsContainerEl, "slotchange", () => {
+        this.#optionsContainerEl.addEventListener("slotchange", () => {
             this.#onSlotChange();
         });
-        this.#headerEl = this.shadowRoot.getElementById("header");
+        this.#searchHeaderEl = this.shadowRoot.getElementById("search-header");
         /* --- */
         this.#listEl = this.shadowRoot.getElementById("list");
         this.#listEl.setListEntryClass(ListSelectEntry);
-        this.registerTargetEventHandler(this.#listEl, "selection", (event) => {
+        this.#dataManager = new SimpleDataProvider(this.#listEl);
+        this.#listEl.addEventListener("selection", (event) => {
             event.stopPropagation();
             event.preventDefault();
             this.value = event.data;
+            this.dispatchEvent(new Event("input", {
+                bubbles: true,
+                cancelable: true
+            }));
+        });
+        this.#listEl.addEventListener("selection-header", (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            this.#searchHeaderEl.selected = event.value;
         });
         /* --- */
-        this.#headerSelectEl = document.createElement("input");
-        this.#headerSelectEl.type = "checkbox";
-        this.#headerSelectEl.name = "multiselect";
-        this.#headerSelectEl.className = "multi-select";
-        this.#headerEl.prepend(this.#headerSelectEl);
-        this.registerTargetEventHandler(this.#headerSelectEl, "change", () => {
-            const value = this.#headerSelectEl.checked;
+        this.#searchHeaderEl.addEventListener("select", () => {
+            const value = this.#searchHeaderEl.selected;
             if (value) {
                 this.#listEl.selectAll();
             } else {
                 this.#listEl.clearSelected();
             }
         });
-        this.registerTargetEventHandler(this.#listEl, "selection-header", (event) => {
-            event.stopPropagation();
-            event.preventDefault();
-            this.#headerSelectEl.checked = event.checked;
-            this.#headerSelectEl.indeterminate = event.indeterminate;
-        });
-        /* --- */
-        this.#dataManager = new SimpleDataProvider(this.#listEl);
-        /* --- */
-        this.#searchEl = this.shadowRoot.getElementById("search");
-        this.registerTargetEventHandler(this.#searchEl, "change", () => {
+        this.#searchHeaderEl.addEventListener("search", () => {
             const options = {filter: {}};
-            if (this.#searchEl.value != "") {
-                options.filter = {name: this.#searchEl.value};
+            const seearchValue = this.#searchHeaderEl.search;
+            if (seearchValue != "") {
+                options.filter = {name: seearchValue};
             }
             this.#dataManager.updateConfig(options);
         }, true);
@@ -114,21 +108,19 @@ export default class ListSelect extends AbstractFormElement {
         });
     }
 
-    connectedCallback() {
-        super.connectedCallback?.();
-        this.#onSlotChange();
-    }
-
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
-        this.#searchEl.disabled = disabled;
         this.#listEl.disabled = disabled;
-        this.#headerSelectEl.disabled = disabled;
+        this.#searchHeaderEl.disabled = disabled;
     }
 
     focus(options) {
         super.focus(options);
-        this.#searchEl.focus(options);
+        this.#searchHeaderEl.focus(options);
+    }
+
+    getValueKeys() {
+        return [...this.#keyIndex.entries()];
     }
 
     set defaultValue(value) {
@@ -141,7 +133,7 @@ export default class ListSelect extends AbstractFormElement {
 
     set value(value) {
         if (typeof value === "string") {
-            value = jsonParse(value);
+            value = jsonParseSafe(value);
         }
         super.value = value;
     }
@@ -182,9 +174,24 @@ export default class ListSelect extends AbstractFormElement {
         return this.getBooleanAttribute("selectend");
     }
 
+    set resize(value) {
+        this.setEnumAttribute("resize", value, Axes2D);
+    }
+
+    get resize() {
+        return this.getEnumAttribute("resize");
+    }
+
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "readonly", "sorted", "multiple", "allowdeselect", "selectend"];
+        return [
+            ...superObserved,
+            "readonly",
+            "sorted",
+            "multiple",
+            "allowdeselect",
+            "selectend"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -192,9 +199,9 @@ export default class ListSelect extends AbstractFormElement {
         switch (name) {
             case "readonly": {
                 if (oldValue != newValue) {
-                    const value = this.readonly;
-                    this.#listEl.readonly = value;
-                    this.#headerSelectEl.readonly = value;
+                    const readonly = this.readOnly;
+                    this.#listEl.readOnly = readonly;
+                    this.#searchHeaderEl.readOnly = readonly;
                 }
             } break;
             case "sorted": {
@@ -204,7 +211,9 @@ export default class ListSelect extends AbstractFormElement {
             } break;
             case "multiple": {
                 if (oldValue != newValue) {
-                    this.#listEl.multiple = this.multiple;
+                    const multiple = this.multiple;
+                    this.#listEl.multiple = multiple;
+                    this.#searchHeaderEl.selectable = multiple;
                 }
             } break;
             case "allowdeselect": {
@@ -214,12 +223,9 @@ export default class ListSelect extends AbstractFormElement {
             } break;
             case "selectend": {
                 if (oldValue != newValue) {
-                    this.#listEl.selectEnd = this.selectEnd;
-                    if (this.selectEnd) {
-                        this.#headerEl.append(this.#headerSelectEl);
-                    } else {
-                        this.#headerEl.prepend(this.#headerSelectEl);
-                    }
+                    const selectEnd = this.selectEnd;
+                    this.#listEl.selectEnd = selectEnd;
+                    this.#searchHeaderEl.selectEnd = selectEnd;
                 }
             } break;
         }
@@ -243,8 +249,6 @@ export default class ListSelect extends AbstractFormElement {
         await BusyIndicatorManager.busy();
         const data = [];
         const optionNodeList = this.#optionsContainerEl.assignedElements({flatten: true}).filter((el) => el.matches("[value]"));
-        this.#optionNodeList.setNodeList(optionNodeList);
-        /* --- */
         const oldNodes = new Set(this.#mutationObserver.getObservedNodes());
         const newNodes = new Set();
         for (const el of optionNodeList) {
@@ -260,9 +264,11 @@ export default class ListSelect extends AbstractFormElement {
             }
         }
         for (const node of oldNodes) {
+            this.#keyIndex.delete(node.key);
             this.#mutationObserver.unobserve(node);
         }
         for (const node of newNodes) {
+            this.#keyIndex.add(node.key);
             this.#mutationObserver.observe(node);
         }
         this.#dataManager.setSource(data);

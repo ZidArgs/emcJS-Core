@@ -1,14 +1,17 @@
 import FileLoader from "/emcJS/util/file/FileLoader.js";
+import "/emcJS/ui/form/button/LinkButton.js";
 
 const config = await FileLoader.json("./index.json");
 
 const listEl = document.getElementById("list");
+const pageLinkEl = document.getElementById("page-link");
 const viewContainerEl = document.getElementById("view-container");
 
 const SRC_PREFIX = "/pages/";
 const SRC_SUFFIX = "/index.html";
 const NAME_PREFIX = "page=";
 const VIEW_MAP = new Map();
+const LINK_MAP = new Map();
 
 listEl.style.width = innerWidth * 0.2;
 
@@ -65,6 +68,8 @@ function switchView(hashName) {
         scrollIntoViewIfNeeded(entryEl);
         entryEl.classList.add("target");
     }
+
+    pageLinkEl.href = LINK_MAP.get(hashName) ?? "/home/index.html";
 }
 
 function addEntry(containerEl, src, {
@@ -95,6 +100,7 @@ function addEntry(containerEl, src, {
 
     // add reference
     const frameEl = addPage(preSrc);
+    LINK_MAP.set(hashName, preSrc);
     VIEW_MAP.set(hashName, frameEl);
 }
 

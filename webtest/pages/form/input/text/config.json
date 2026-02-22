@@ -33,7 +33,7 @@
             "label": "text readonly",
             "name": "text.readonly",
             "placeholder": "Enter text...",
-            "readonly": true
+            "readOnly": true
         },
         {
             "type": "TextInput",
@@ -51,6 +51,38 @@
                 "reset"
             ],
             "disabled": true
+        },
+        {
+            "type": "TextInput",
+            "label": "text textlength",
+            "name": "text.textlength",
+            "placeholder": "Enter text...",
+            "showTextLength": true
+        },
+        {
+            "type": "TextInput",
+            "label": "text textlength minlength",
+            "name": "text.minlength",
+            "placeholder": "Enter text...",
+            "showTextLength": true,
+            "minLength": 10
+        },
+        {
+            "type": "TextInput",
+            "label": "text textlength maxlength",
+            "name": "text.maxlength",
+            "placeholder": "Enter text...",
+            "showTextLength": true,
+            "maxLength": 100
+        },
+        {
+            "type": "TextInput",
+            "label": "text textlength minlength maxlength",
+            "name": "text.minmaxlength",
+            "placeholder": "Enter text...",
+            "showTextLength": true,
+            "minLength": 10,
+            "maxLength": 100
         }
     ]
 }

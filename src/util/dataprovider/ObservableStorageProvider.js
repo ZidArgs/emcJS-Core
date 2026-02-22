@@ -22,7 +22,11 @@ export default class ObservableStorageProvider extends AbstractDataProvider {
             throw new Error("source must be a ObservableStorage or AppStateStorageWrapper");
         }
         /* --- */
-        this.#eventManager.set(["change", "clear", "load"], () => {
+        this.#eventManager.set([
+            "change",
+            "clear",
+            "load"
+        ], () => {
             this.refresh();
         });
         /* --- */

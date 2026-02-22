@@ -25,9 +25,7 @@ TypeConfigMap.register("Coordinates", {
         "target": {
             "@type": "Relation",
             "optional": true,
-            "types": [
-                "Exit"
-            ]
+            "types": ["Exit"]
         }
     }
 });
@@ -55,9 +53,7 @@ TypeConfigMap.register("Connection", {
             "children": {
                 "@type": "Relation",
                 "optional": true,
-                "types": [
-                    "Exit"
-                ]
+                "types": ["Exit"]
             }
         },
         "logic": {
@@ -91,10 +87,7 @@ const ERRORNOUS_OBJECT_A = {
         "type": "not",
         "content": {
             "type": "and",
-            "content": [
-                {"type": "true"},
-                {"type": "sdaggasdg"}
-            ]
+            "content": [{"type": "true"}, {"type": "sdaggasdg"}]
         }
     }
 };

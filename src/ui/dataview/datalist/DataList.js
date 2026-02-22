@@ -45,7 +45,7 @@ export default class DataList extends DataReceiverMixin(CustomElement) {
             this.#entries.delete(key);
             this.removeListEntry(el);
         };
-        this.registerTargetEventHandler(this.#elementManager, "afterrender", () => {
+        this.#elementManager.addEventListener("afterrender", () => {
             const ev = new Event("afterrender", event);
             this.#scrollContainerEl.dispatchEvent(ev);
         });

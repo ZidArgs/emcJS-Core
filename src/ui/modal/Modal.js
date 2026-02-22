@@ -1,4 +1,5 @@
 import CustomElement from "../element/CustomElement.js";
+import Axes2D from "../../enum/Axes2D.js";
 import UniqueEntriesStack from "../../data/stack/UniqueEntriesStack.js";
 import EventTargetManager from "../../util/event/EventTargetManager.js";
 import {
@@ -9,7 +10,6 @@ import {getFocusableElements} from "../../util/helper/html/ElementFocusHelper.js
 import BusyIndicatorController from "../../util/BusyIndicatorController.js";
 import BusyIndicator from "../BusyIndicator.js";
 import "../i18n/I18nLabel.js";
-import "../symbols/CloseSymbol.js";
 import "../icon/FAIcon.js";
 import "../icon/FontIcon.js";
 import TPL from "./Modal.js.html" assert {type: "html"};
@@ -33,6 +33,10 @@ focusEventManager.set("focus", (event) => {
 }, {capture: true});
 
 export default class Modal extends CustomElement {
+
+    static get AXES() {
+        return Axes2D;
+    }
 
     #busyIndicator = new BusyIndicator(this);
 
@@ -73,12 +77,14 @@ export default class Modal extends CustomElement {
         this.#closeEl = this.shadowRoot.getElementById("close");
         this.#textEl = this.shadowRoot.getElementById("text");
         this.#footerEl = this.shadowRoot.getElementById("footer");
-        this.caption = caption;
+        if (caption != null) {
+            this.caption = caption;
+        }
         if (isStringNotEmpty(options?.modalClass)) {
             this.#modalEl.classList.add(options.modalClass);
         }
         /* --- */
-        this.registerTargetEventHandler(this.#modalEl, "keydown", (event) => {
+        this.#modalEl.addEventListener("keydown", (event) => {
             if (this.busy) {
                 event.preventDefault();
                 event.stopPropagation();
@@ -88,18 +94,18 @@ export default class Modal extends CustomElement {
                 event.stopPropagation();
             }
         });
-        this.registerTargetEventHandler(this.#closeEl, "click", () => {
+        this.#closeEl.addEventListener("click", () => {
             if (!this.busy) {
                 this.close();
             }
         });
         /* --- */
         this.#focusTopEl = this.shadowRoot.getElementById("focus_catcher_top");
-        this.registerTargetEventHandler(this.#focusTopEl, "focus", () => {
+        this.#focusTopEl.addEventListener("focus", () => {
             this.focusLast();
         });
         this.#focusBottomEl = this.shadowRoot.getElementById("focus_catcher_bottom");
-        this.registerTargetEventHandler(this.#focusBottomEl, "focus", () => {
+        this.#focusBottomEl.addEventListener("focus", () => {
             this.focusFirst();
         });
     }
@@ -126,19 +132,19 @@ export default class Modal extends CustomElement {
     }
 
     set streched(value) {
-        this.setBooleanAttribute("streched", value);
+        this.setEnumAttribute("streched", value, Axes2D);
     }
 
     get streched() {
-        return this.getBooleanAttribute("streched");
+        return this.getEnumAttribute("streched");
     }
 
-    set resizable(value) {
-        this.setBooleanAttribute("resizable", value);
+    set resize(value) {
+        this.setEnumAttribute("resize", value, Axes2D);
     }
 
-    get resizable() {
-        return this.getBooleanAttribute("resizable");
+    get resize() {
+        return this.getEnumAttribute("resize");
     }
 
     static get observedAttributes() {
@@ -165,7 +171,9 @@ export default class Modal extends CustomElement {
             config = {content: config.toString()};
         }
         this.#resetIcon();
-        this.#applyIconStyle(config.style);
+        if (config.style != null) {
+            this.#applyIconStyle(config.style);
+        }
         const content = config.content;
         switch (config.type) {
             case "html": {
@@ -352,6 +360,10 @@ export default class Modal extends CustomElement {
         modalsForType.set(name, modal);
         modalStorage.set(this, modalsForType);
         return modal;
+    }
+
+    static isAnyModalActive() {
+        return visibleModals.size > 0;
     }
 
     static closeAll() {

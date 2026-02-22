@@ -70,7 +70,6 @@
     padding: 0.2em 1.5em;
     color: var(--button-text-color, #000000);
     background-color: var(--button-back-color, #cccccc);
-    background-image: var(--button-back-image, none);
     border-style: solid;
     border-width: var(--input-border-width, 2px);
     border-color: var(--input-border-color, #222222);
@@ -82,13 +81,11 @@
 .placeholder:hover {
     color: var(--button-hover-text-color, #ffffff);
     background-color: var(--button-hover-back-color, #000000);
-    background-image: var(--button-hover-back-image, none);
 }
 
 .placeholder:disabled {
     color: var(--input-disabled-text-color, #757575);
     background-color: var(--button-disabled-back-color, #999999);
-    background-image: var(--button-disabled-back-image, none);
     cursor: default;
 }
 

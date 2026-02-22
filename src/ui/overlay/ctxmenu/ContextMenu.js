@@ -53,25 +53,25 @@ export default class ContextMenu extends CustomElement {
         this.#bottomFocusEl = this.shadowRoot.getElementById("focus_catcher_bottom");
         this.#menuEl.style.left = `${LAYER_MARGIN}px`;
         this.#menuEl.style.top = `${LAYER_MARGIN}px`;
-        this.registerTargetEventHandler(this.#menuEl, "click", (event) => {
+        this.#menuEl.addEventListener("click", (event) => {
             this.close();
             event.preventDefault();
             event.stopPropagation();
             return false;
         });
-        this.registerTargetEventHandler(this, "click", (event) => {
+        this.addEventListener("click", (event) => {
             this.close();
             event.preventDefault();
             event.stopPropagation();
             return false;
         });
-        this.registerTargetEventHandler(this, "contextmenu", (event) => {
+        this.addEventListener("contextmenu", (event) => {
             this.close();
             event.preventDefault();
             event.stopPropagation();
             return false;
         });
-        this.registerTargetEventHandler(this, "keyup", (event) => {
+        this.addEventListener("keyup", (event) => {
             if (event.key == "Enter" || event.key == "Escape") {
                 this.close();
                 /* --- */
@@ -80,13 +80,13 @@ export default class ContextMenu extends CustomElement {
             }
         });
         /* --- */
-        this.registerTargetEventHandler(this.#topFocusEl, "focus", () => {
+        this.#topFocusEl.addEventListener("focus", () => {
             this.focusLast();
         });
-        this.registerTargetEventHandler(this.#bottomFocusEl, "focus", () => {
+        this.#bottomFocusEl.addEventListener("focus", () => {
             this.focusFirst();
         });
-        this.registerTargetEventHandler(this.#initFocusEl, "blur", () => {
+        this.#initFocusEl.addEventListener("blur", () => {
             this.#initFocusEl.setAttribute("tabindex", "");
         });
     }
@@ -99,7 +99,7 @@ export default class ContextMenu extends CustomElement {
     }
 
     disconnectedCallback() {
-        super.disconnectedCallback();
+        super.disconnectedCallback?.();
 
         this.#entriesEventManager.active = false;
     }

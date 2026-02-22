@@ -11,14 +11,14 @@ export default createMixin((superclass) => class ResizeObserverMixin extends sup
 
     connectedCallback() {
         if (super.connectedCallback) {
-            super.connectedCallback();
+            super.connectedCallback?.();
         }
         RESIZE_OBSERVER.observe(this);
     }
 
     disconnectedCallback() {
         if (super.disconnectedCallback) {
-            super.disconnectedCallback();
+            super.disconnectedCallback?.();
         }
         RESIZE_OBSERVER.unobserve(this);
     }

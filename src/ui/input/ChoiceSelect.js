@@ -24,7 +24,7 @@ export default class ChoiceSelect extends ChildlistMutationObserverMixin(CustomE
     }
 
     #clickOption(event) {
-        if (!this.readonly) {
+        if (!this.readOnly) {
             const value = event.currentTarget.value;
             if (this.multiple) {
                 const arr = this.value;
@@ -126,11 +126,11 @@ export default class ChoiceSelect extends ChildlistMutationObserverMixin(CustomE
         return this.getAttribute("multiple") == "true";
     }
 
-    set readonly(val) {
+    set readOnly(val) {
         this.setAttribute("readonly", val);
     }
 
-    get readonly() {
+    get readOnly() {
         const val = this.getAttribute("readonly");
         return !!val && val != "false";
     }

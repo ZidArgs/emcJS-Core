@@ -11,6 +11,18 @@
         "value": "false"
     },
     {
+        "type": "SimpleSelect",
+        "name": "resize",
+        "label": "Resize",
+        "value": "none",
+        "options": {
+            "none": "None",
+            "vertical": "Vertical",
+            "horizontal": "Horizontal",
+            "both": "Both"
+        }
+    },
+    {
         "type": "GridInput",
         "name": "columns",
         "label": "Columns",
@@ -20,28 +32,28 @@
             {
                 "key": "type",
                 "type": "string",
-                "caption": "Type",
+                "label": "Type",
                 "width": 300,
                 "editable": true
             },
             {
-                "key": "caption",
+                "key": "label",
                 "type": "string",
-                "caption": "Caption",
+                "label": "Label",
                 "width": 300,
                 "editable": true
             },
             {
                 "key": "width",
                 "type": "number",
-                "caption": "Width",
+                "label": "Width",
                 "width": 150,
                 "editable": true
             },
             {
                 "key": "editable",
                 "type": "boolean",
-                "caption": "Editable",
+                "label": "Editable",
                 "width": 100,
                 "editable": true
             }

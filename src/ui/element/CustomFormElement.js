@@ -1,6 +1,11 @@
 import CustomElement from "./CustomElement.js";
 
+// https://web.dev/more-capable-form-controls/#form-associated-custom-elements
 export default class CustomFormElement extends CustomElement {
+
+    static get delegatesFocus() {
+        return true;
+    }
 
     static get formAssociated() {
         return true;

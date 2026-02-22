@@ -3,7 +3,6 @@
     height: calc(var(--icon-preview-size, 100px) + 50px);
     color: var(--button-text-color, #000000);
     background-color: var(--button-back-color, #eaeaea);
-    background-image: var(--button-back-image, none);
     border-style: solid;
     border-width: var(--button-border-width, 2px);
     border-color: var(--button-border-color, #222222);
@@ -33,20 +32,17 @@
 #container:hover {
     color: var(--button-hover-text-color, #ffffff);
     background-color: var(--button-hover-back-color, #353935);
-    background-image: var(--button-hover-back-image, none);
 }
 
 :host(.selected) #container {
     color: var(--button-active-text-color, #000000);
     background-color: var(--button-active-back-color, #00dbd0);
-    background-image: var(--button-active-back-image, none);
     border-color: var(--button-active-border-color, #007b75);
 }
 
 :host(.selected) #container:hover {
     color: var(--button-active-hover-text-color, #ffffff);
     background-color: var(--button-active-hover-back-color, #353935);
-    background-image: var(--button-active-hover-back-image, none);
 }
 
 #icon-background {

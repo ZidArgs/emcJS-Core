@@ -9,7 +9,12 @@ import LogicCompiler from "../logic/processor/LogicCompiler.js";
 const CONTEXTS = new WeakMap();
 const MUTATION_CONFIG = {
     attributes: true,
-    attributeFilter: ["name", "visible", "enabled", "editable"]
+    attributeFilter: [
+        "name",
+        "visible",
+        "enabled",
+        "editable"
+    ]
 };
 
 function applyDefaultValue(storage, target) {
@@ -119,15 +124,6 @@ export default class FormElementContext {
         this.#storageEventManager.set(["load", "clear"], (event) => {
             this.#elementEventManager.active = false;
             const value = event.data[this.#element.name];
-            if (value != null) {
-                if (typeof value === "object") {
-                    this.#element.setAttribute("value", JSON.stringify(value));
-                } else {
-                    this.#element.setAttribute("value", value);
-                }
-            } else {
-                this.#element.removeAttribute("value");
-            }
             this.#element.value = value;
             this.refreshFormElementState();
             this.#elementEventManager.active = true;
@@ -286,6 +282,9 @@ export default class FormElementContext {
             } else {
                 this.#element.hidden = true;
             }
+            if (this.#element.formField != null) {
+                this.#element.formField.checkFormElementsVisible();
+            }
         }
     }
 
@@ -386,9 +385,9 @@ export default class FormElementContext {
         if (this.#editableValue != value) {
             this.#editableValue = value;
             if (value) {
-                this.#element.readonly = false;
+                this.#element.readOnly = false;
             } else {
-                this.#element.readonly = true;
+                this.#element.readOnly = true;
             }
         }
     }

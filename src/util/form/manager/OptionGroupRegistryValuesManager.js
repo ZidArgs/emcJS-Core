@@ -14,7 +14,7 @@ export default class OptionGroupRegistryValuesManager {
 
     constructor(targetEl) {
         if (!(targetEl instanceof AbstractFormElement)) {
-            throw new TypeError("FormFieldContext can only work on AbstractFormElement");
+            throw new TypeError("OptionGroupRegistryValuesManager can only work on AbstractFormElement");
         }
         if (MANAGERS.has(targetEl)) {
             return MANAGERS.get(targetEl);
@@ -26,7 +26,7 @@ export default class OptionGroupRegistryValuesManager {
             this.#loadOptionsFromRegistry();
         });
         /* --- */
-        this.#targetEl.registerTargetEventHandler(this.#targetEl, "change", () => {
+        this.#targetEl.addEventListener("change", () => {
             const value = this.#targetEl.value;
             for (const token of value) {
                 this.#optionGroupRegistry.setAll(token);

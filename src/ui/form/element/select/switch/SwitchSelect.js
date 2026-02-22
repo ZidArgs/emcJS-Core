@@ -1,18 +1,18 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
+import {immute} from "../../../../../data/Immutable.js";
+import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
 import BusyIndicatorManager from "../../../../../util/BusyIndicatorManager.js";
 import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
 import EventMultiTargetManager from "../../../../../util/event/EventMultiTargetManager.js";
 import i18n from "../../../../../util/I18n.js";
-import {deepClone} from "../../../../../util/helper/DeepClone.js";
 import {
     nodeTextComparator,
     sortChildren
 } from "../../../../../util/helper/ui/NodeListSort.js";
 import {debounce} from "../../../../../util/Debouncer.js";
-import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
 import {
-    safeSetAttribute, setAttributes
+    setAttributes
 } from "../../../../../util/helper/ui/NodeAttributes.js";
 import MutationObserverManager from "../../../../../util/observer/manager/MutationObserverManager.js";
 import I18nOption from "../../../../i18n/builtin/I18nOption.js";
@@ -32,16 +32,12 @@ const MUTATION_CONFIG = {
 export default class SwitchSelect extends AbstractFormElement {
 
     static get formConfigurationFields() {
-        return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
+        return immute([...super.formConfigurationFields, ...CONFIG_FIELDS]);
     }
 
     static get changeDebounceTime() {
         return 0;
     }
-
-    #fieldEl;
-
-    #inputEl;
 
     #optionsContainerEl;
 
@@ -59,26 +55,28 @@ export default class SwitchSelect extends AbstractFormElement {
 
     constructor() {
         super();
-        this.#fieldEl = this.shadowRoot.getElementById("field");
-        this.#fieldEl.append(TPL.generate());
+        TPL.apply(this.shadowRoot);
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#optionSelectEventManager.set("click", (event) => {
             const targetEl = event.currentTarget;
             this.value = targetEl.value;
+            this.dispatchEvent(new Event("input", {
+                bubbles: true,
+                cancelable: true
+            }));
             event.preventDefault();
             event.stopPropagation();
         });
         /* --- */
-        this.#inputEl = this.shadowRoot.getElementById("input");
         this.#optionsContainerEl = this.shadowRoot.getElementById("options-container");
         this.#optionsSlotEl = this.shadowRoot.getElementById("options-slot");
-        this.registerTargetEventHandler(this.#optionsSlotEl, "slotchange", () => {
+        this.#optionsSlotEl.addEventListener("slotchange", () => {
             this.#onSlotChange();
         });
         /* --- */
         this.#switchButtonManager = new SwitchButtonManager(this.#optionsContainerEl, this.#optionSelectEventManager);
-        this.registerTargetEventHandler(this.#switchButtonManager, "afterrender", () => {
+        this.#switchButtonManager.addEventListener("afterrender", () => {
             this.renderValue(this.value);
         });
         /* --- */
@@ -97,7 +95,6 @@ export default class SwitchSelect extends AbstractFormElement {
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
-        this.#inputEl.disabled = disabled;
         const children = this.#optionsContainerEl.children;
         for (const child of children) {
             child.disabled = disabled;
@@ -123,7 +120,11 @@ export default class SwitchSelect extends AbstractFormElement {
 
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "readonly", "sorted"];
+        return [
+            ...superObserved,
+            "readonly",
+            "sorted"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -131,9 +132,10 @@ export default class SwitchSelect extends AbstractFormElement {
         switch (name) {
             case "readonly": {
                 if (oldValue != newValue) {
+                    const readonly = this.readOnly;
                     const optionEls = this.#optionsContainerEl.children;
                     for (const optionEl of optionEls) {
-                        safeSetAttribute(optionEl, "readonly", this.readonly);
+                        optionEl.readOnly = readonly;
                     }
                 }
             } break;
@@ -160,17 +162,7 @@ export default class SwitchSelect extends AbstractFormElement {
             const selectedEl = this.#optionsContainerEl.querySelector(`[value="${value}"]`);
             if (selectedEl != null) {
                 selectedEl.classList.add("selected");
-                if (selectedEl.label != null) {
-                    this.#inputEl.i18nValue = selectedEl.label;
-                } else {
-                    this.#inputEl.i18nValue = "";
-                    this.#inputEl.innerText = selectedEl.innerText;
-                }
-            } else {
-                this.#inputEl.i18nValue = value;
             }
-        } else {
-            this.#inputEl.i18nValue = "";
         }
     }
 
@@ -185,17 +177,22 @@ export default class SwitchSelect extends AbstractFormElement {
         /* --- */
         const oldNodes = new Set(this.#mutationObserver.getObservedNodes());
         const newNodes = new Set();
+        const usedKeys = new Set();
         for (const el of optionNodeList) {
-            data.push({
-                key: el.value || el.innerText,
-                label: el.i18nValue || el.label || el.innerText,
-                readonly: this.readonly
-            });
-            /* --- */
-            if (oldNodes.has(el)) {
-                oldNodes.delete(el);
-            } else {
-                newNodes.add(el);
+            const key = el.value || el.innerText;
+            if (!usedKeys.has(key)) {
+                usedKeys.add(key);
+                data.push({
+                    key: el.value || el.innerText,
+                    label: el.i18nValue || el.label || el.innerText,
+                    readonly: this.readOnly
+                });
+                /* --- */
+                if (oldNodes.has(el)) {
+                    oldNodes.delete(el);
+                } else {
+                    newNodes.add(el);
+                }
             }
         }
         for (const node of oldNodes) {

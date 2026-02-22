@@ -6,16 +6,6 @@
     min-height: min(260px, calc(100vh - 50px));
 }
 
-#footer {
-    display: flex;
-}
-
 #content {
     padding: 10px;
-}
-
-#submit,
-#cancel {
-    min-width: 100px;
-    margin: 0px 0px 0px 10px;
 }

@@ -1,7 +1,15 @@
 import {escapeRegExp} from "../helper/RegExp.js";
 
+/**
+ * A Regular Expression that matches if query is included in the searched string.
+ */
 export default class SearchIncludes extends RegExp {
 
+    /**
+     * Create a Regular Expression that matches if query is included in the searched string.
+     *
+     * @param {String} query the search query
+     */
     constructor(query = "") {
         if (typeof query != "string") {
             throw new TypeError(`query parameter must be of type "string" but was "${typeof query}"`);

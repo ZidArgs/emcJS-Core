@@ -15,7 +15,7 @@ export default class Slider extends CustomElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#sliderEl = this.shadowRoot.getElementById("slider");
-        this.registerTargetEventHandler(this.#sliderEl, "change", (event) => {
+        this.#sliderEl.addEventListener("change", (event) => {
             const value = parseInt(this.#sliderEl.value);
             this.setAttribute("value", value);
             const ev = new Event("change");
@@ -23,7 +23,7 @@ export default class Slider extends CustomElement {
             this.dispatchEvent(ev);
             event.stopPropagation();
         });
-        this.registerTargetEventHandler(this.#sliderEl, "input", (event) => {
+        this.#sliderEl.addEventListener("input", (event) => {
             const value = parseInt(this.#sliderEl.value);
             this.setAttribute("value", value);
             const ev = new Event("input");
@@ -58,7 +58,11 @@ export default class Slider extends CustomElement {
     }
 
     static get observedAttributes() {
-        return ["min", "max", "value"];
+        return [
+            "min",
+            "max",
+            "value"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {

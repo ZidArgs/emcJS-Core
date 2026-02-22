@@ -25,7 +25,7 @@ import FormContext from "/emcJS/util/form/FormContext.js";
     "RangeInput"            | "range"
     "ColorInput"            | "color"
     "PasswordInput"         | "password"
-    "KeyBindInput"           | "hotkey"
+    "KeyBindInput"          | "hotkey"
     "TextInput"             | new
     "BoolOrLogicInput"      | new
     "SearchSelect"          | "choice"
@@ -50,7 +50,14 @@ const ALLOW_INVALID = false;
 i18n.setTranslation("en", {"test.desc": "this is a test"});
 i18n.language = "en";
 
-const [defaultValues, optionGroups, tokenGroups, buttonConfig, extraConfig, ...formConfig] = await Promise.all([
+const [
+    defaultValues,
+    optionGroups,
+    tokenGroups,
+    buttonConfig,
+    extraConfig,
+    ...formConfig
+] = await Promise.all([
     FileLoader.json("./_config/defaults.json"),
     FileLoader.json("./_config/OptionGroups.json"),
     FileLoader.json("./_config/TokenGroups.json"),
@@ -59,7 +66,7 @@ const [defaultValues, optionGroups, tokenGroups, buttonConfig, extraConfig, ...f
     FileLoader.json("./form-config/input/ListInput.json"),
     FileLoader.json("./form-config/input/KeyValueListInput.json"),
     FileLoader.json("./form-config/select/TokenSelect.json"),
-    FileLoader.json("./form-config/select/ImageIconSelect.json"),
+    FileLoader.json("./form-config/select/ImageSelect.json"),
     FileLoader.json("./form-config/input/BoolOrLogicInput.json"),
     FileLoader.json("./form-config/select/ListSelect.json"),
     FileLoader.json("./form-config/select/SearchSelect.json"),

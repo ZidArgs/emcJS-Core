@@ -26,10 +26,18 @@
         },
         {
             "type": "NumberInput",
+            "label": "number spinner",
+            "name": "number.spinner",
+            "placeholder": "Enter number...",
+            "required": true,
+            "spinner": true
+        },
+        {
+            "type": "NumberInput",
             "label": "number readonly",
             "name": "number.readonly",
             "placeholder": "Enter number...",
-            "readonly": true
+            "readOnly": true
         },
         {
             "type": "NumberInput",

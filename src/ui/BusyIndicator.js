@@ -3,8 +3,7 @@ import ActiveCounter from "../util/counter/ActiveCounter.js";
 import TPL from "./BusyIndicator.js.html" assert {type: "html"};
 import STYLE from "./BusyIndicator.js.css" assert {type: "css"};
 
-// TODO test with 0 delay
-const DOM_CHANGE_DELAY = 100;
+const DOM_CHANGE_DELAY = 50;
 
 export default class BusyIndicator extends CustomElement {
 
@@ -33,11 +32,7 @@ export default class BusyIndicator extends CustomElement {
     busy() {
         return new Promise((resolve) => {
             if (this.#activeCounter.add() && !this.#promiseCounter.isActive()) {
-                this.#isActive = true;
-                this.#targetEl.append(this);
-                setTimeout(()=> {
-                    resolve();
-                }, DOM_CHANGE_DELAY);
+                this.#addIndicator(resolve);
             } else {
                 resolve();
             }
@@ -47,11 +42,7 @@ export default class BusyIndicator extends CustomElement {
     unbusy() {
         return new Promise((resolve) => {
             if (this.#activeCounter.remove() && !this.#promiseCounter.isActive()) {
-                this.#isActive = false;
-                this.remove();
-                setTimeout(()=> {
-                    resolve();
-                }, 0);
+                this.#removeIndocator(resolve);
             } else {
                 resolve();
             }
@@ -61,11 +52,7 @@ export default class BusyIndicator extends CustomElement {
     reset() {
         return new Promise((resolve) => {
             if (this.#activeCounter.reset() && !this.#promiseCounter.isActive()) {
-                this.#isActive = false;
-                this.remove();
-                setTimeout(()=> {
-                    resolve();
-                }, 0);
+                this.#removeIndocator(resolve);
             } else {
                 resolve();
             }
@@ -101,11 +88,7 @@ export default class BusyIndicator extends CustomElement {
     #busyPromise() {
         return new Promise((resolve) => {
             if (this.#promiseCounter.add() && !this.#activeCounter.isActive()) {
-                this.#isActive = true;
-                this.#targetEl.append(this);
-                setTimeout(()=> {
-                    resolve();
-                }, DOM_CHANGE_DELAY);
+                this.#addIndicator(resolve);
             } else {
                 resolve();
             }
@@ -115,15 +98,27 @@ export default class BusyIndicator extends CustomElement {
     #unbusyPromise() {
         return new Promise((resolve) => {
             if (this.#promiseCounter.remove() && !this.#activeCounter.isActive()) {
-                this.#isActive = false;
-                this.remove();
-                setTimeout(()=> {
-                    resolve();
-                }, 0);
+                this.#removeIndocator(resolve);
             } else {
                 resolve();
             }
         });
+    }
+
+    #addIndicator(resolve) {
+        this.#isActive = true;
+        this.#targetEl.append(this);
+        setTimeout(()=> {
+            resolve();
+        }, DOM_CHANGE_DELAY);
+    }
+
+    #removeIndocator(resolve) {
+        this.#isActive = false;
+        setTimeout(()=> {
+            this.remove();
+            resolve();
+        }, 0);
     }
 
 }

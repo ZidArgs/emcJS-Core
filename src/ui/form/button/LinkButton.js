@@ -28,16 +28,52 @@ export default class LinkButton extends Button {
     clickHandler(event) {
         const resume = super.clickHandler(event);
         if (resume) {
-            window.open(this.href, "_blank");
+            window.open(this.href, this.target, {
+                popup: this.popup,
+                noopener: this.noopener,
+                noreferrer: this.noreferrer
+            });
         }
     }
 
     set href(value) {
-        this.setAttribute("href", value);
+        this.setStringAttribute("href", value);
     }
 
     get href() {
-        return this.getAttribute("href");
+        return this.getStringAttribute("href");
+    }
+
+    set target(value) {
+        this.setStringAttribute("target", value);
+    }
+
+    get target() {
+        return this.getStringAttribute("target");
+    }
+
+    set popup(value) {
+        this.setBooleanAttribute("popup", value);
+    }
+
+    get popup() {
+        return this.getBooleanAttribute("popup");
+    }
+
+    set noopener(value) {
+        this.setBooleanAttribute("noopener", value);
+    }
+
+    get noopener() {
+        return this.getBooleanAttribute("noopener");
+    }
+
+    set noreferrer(value) {
+        this.setBooleanAttribute("noreferrer", value);
+    }
+
+    get noreferrer() {
+        return this.getBooleanAttribute("noreferrer");
     }
 
 }

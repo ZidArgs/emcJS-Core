@@ -1,10 +1,11 @@
 import CustomElement from "../element/CustomElement.js";
 import {debounce} from "../../util/Debouncer.js";
-import TPL from "./FormContainer.js.html" assert {type: "html"};
-import STYLE from "./FormContainer.js.css" assert {type: "css"};
 import MutationObserverManager from "../../util/observer/manager/MutationObserverManager.js";
 import {nodeOccurenceComparator} from "../../util/helper/ui/NodeListSort.js";
 import FormSection from "./FormSection.js";
+import TPL from "./FormContainer.js.html" assert {type: "html"};
+import STYLE from "./FormContainer.js.css" assert {type: "css"};
+import {throttle} from "../../util/Throttle.js";
 
 const MUTATION_CONFIG = {
     childList: true,
@@ -54,39 +55,21 @@ export default class FormContainer extends CustomElement {
         this.#footerEl = this.shadowRoot.getElementById("footer");
         this.#contentEl = this.shadowRoot.getElementById("content");
         /* --- */
-        this.registerTargetEventHandler(this.#headerEl, "slotchange", () => {
+        this.#headerEl.addEventListener("slotchange", () => {
             this.#onHeaderSlotChange();
         });
         this.#onHeaderSlotChange();
         /* --- */
-        this.registerTargetEventHandler(this.#footerEl, "slotchange", () => {
+        this.#footerEl.addEventListener("slotchange", () => {
             this.#onFooterSlotChange();
         });
         this.#onFooterSlotChange();
         /* --- */
-        this.registerTargetEventHandler(this.#contentEl, "scroll", () => {
+        this.#contentEl.addEventListener("scroll", () => {
             this.#refreshSectionState();
         });
-    }
-
-    connectedCallback() {
-        super.connectedCallback?.();
+        /* --- */
         this.#mutationObserver.observe(this);
-        setTimeout(() => {
-            const sectionEls = this.querySelectorAll("emc-form-section");
-            for (const node of sectionEls) {
-                this.#addSection(node);
-            }
-        }, 0);
-    }
-
-    disconnectedCallback() {
-        super.disconnectedCallback?.();
-        this.#mutationObserver.unobserve(this);
-        const sectionEls = this.querySelectorAll("emc-form-section");
-        for (const node of sectionEls) {
-            this.#removeSection(node);
-        }
     }
 
     resetScroll() {
@@ -108,6 +91,14 @@ export default class FormContainer extends CustomElement {
 
     get noScroll() {
         return this.getBooleanAttribute("noscroll");
+    }
+
+    set noBorder(value) {
+        this.setBooleanAttribute("noborder", value);
+    }
+
+    get noBorder() {
+        return this.getBooleanAttribute("noborder");
     }
 
     #addSection(sectionEl) {
@@ -144,7 +135,7 @@ export default class FormContainer extends CustomElement {
         this.#refreshSectionState();
     });
 
-    #refreshSectionState() {
+    #refreshSectionState = throttle(() => {
         const sectionEls = [...this.#sectionNodeList];
         for (const sectionEl of sectionEls) {
             sectionEl.refreshState();
@@ -165,7 +156,7 @@ export default class FormContainer extends CustomElement {
             event.section = activeSection;
             this.dispatchEvent(event);
         }
-    }
+    }, 100);
 
     #onHeaderSlotChange = debounce(() => {
         const elementList = this.#headerEl.assignedElements({flatten: true}).filter((el) => el instanceof HTMLFormElement);

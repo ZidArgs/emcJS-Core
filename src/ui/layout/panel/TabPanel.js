@@ -20,12 +20,12 @@ export default class TabPanel extends CustomElement {
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#slotEl = this.shadowRoot.getElementById("body");
-        this.registerTargetEventHandler(this.#slotEl, "slotchange", () => {
+        this.#slotEl.addEventListener("slotchange", () => {
             this.#prepareTabs();
         });
         /* --- */
         this.#categoryEl = this.shadowRoot.getElementById("categories");
-        this.registerTargetEventHandler(this.#categoryEl, "click", (event) => {
+        this.#categoryEl.addEventListener("click", (event) => {
             const target = event.target.getAttribute("target");
             if (target != null) {
                 this.active = target;

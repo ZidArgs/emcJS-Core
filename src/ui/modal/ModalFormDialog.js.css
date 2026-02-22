@@ -3,18 +3,8 @@
     min-height: min(100px, calc(100vh - 50px));
 }
 
-#footer {
-    display: flex;
-}
-
 #content {
-    padding: 10px;
-}
-
-#submit,
-#cancel {
-    min-width: 100px;
-    margin: 0px 0px 0px 10px;
+    padding: 0px;
 }
 
 ::slotted(input.prompt-input) {
@@ -22,7 +12,6 @@
     padding: 0px 7px;
     color: var(--input-text-color, #000000);
     background-color: var(--input-back-color, #ffffff);
-    background-image: var(--input-back-image, none);
     border-style: solid;
     border-width: var(--input-border-width, 2px);
     border-color: var(--input-border-color, #222222);

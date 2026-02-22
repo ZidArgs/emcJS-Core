@@ -1,14 +1,12 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
-import {debounce} from "../../../../../util/Debouncer.js";
-import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
-import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
-import {deepClone} from "../../../../../util/helper/DeepClone.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
+import {immute} from "../../../../../data/Immutable.js";
+import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
+import Axes2D from "../../../../../enum/Axes2D.js";
+import "./components/CodeArea.js";
 import TPL from "./CodeInput.js.html" assert {type: "html"};
 import STYLE from "./CodeInput.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./CodeInput.js.json" assert {type: "json"};
-
-const LAST_CHARACTER_NEWLINE = /\n$/;
 
 // TODO add enter and escape action to not trap keyboard
 // TODO add css variables for code editor colors
@@ -16,96 +14,48 @@ const LAST_CHARACTER_NEWLINE = /\n$/;
 export default class CodeInput extends AbstractFormElement {
 
     static get formConfigurationFields() {
-        return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
+        return immute([...super.formConfigurationFields, ...CONFIG_FIELDS]);
     }
 
-    #fieldEl;
+    static get AXES() {
+        return Axes2D;
+    }
 
     #containerEl;
 
-    #lineNumbersEl;
-
-    #lineMarkerEl;
-
     #inputEl;
-
-    #inputMirrorEl;
-
-    #outputWrapperEl;
 
     #lineInfoEl;
 
     #expandButtonEl;
 
-    #lineCount = 1;
-
-    #currentLine = 0;
-
     constructor() {
         super();
-        this.#fieldEl = this.shadowRoot.getElementById("field");
-        this.#fieldEl.append(TPL.generate());
+        TPL.apply(this.shadowRoot);
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#containerEl = this.shadowRoot.getElementById("container");
-        this.#lineNumbersEl = this.shadowRoot.getElementById("line-numbers");
-        this.#lineMarkerEl = this.shadowRoot.getElementById("line-marker");
         this.#lineInfoEl = this.shadowRoot.getElementById("line-info");
         this.#expandButtonEl = this.shadowRoot.getElementById("expand-button");
-        this.#outputWrapperEl = this.shadowRoot.getElementById("output-wrapper");
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.#inputMirrorEl = this.shadowRoot.getElementById("input-mirror");
-        this.registerTargetEventHandler(this.#inputEl, "input", () => {
-            const value = this.#inputEl.value;
-            this.#updateText(value);
-            this.value = value;
+        this.#inputEl.addEventListener("input", () => {
+            this.value = this.#inputEl.value;
         });
-        this.registerTargetEventHandler(this.#inputEl, "keydown", (event) => {
-            if (event.key === "Enter") {
-                if (!event.shiftKey === this.newlineOnShift) {
-                    if (this.form != null) {
-                        event.preventDefault();
-                        this.form.requestSubmit();
-                    }
-                }
+        this.#inputEl.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" && event.shiftKey === this.newlineOnShift) {
                 event.stopPropagation();
                 return false;
             }
         });
-        /* --- */
-        this.registerTargetEventHandler(this.#containerEl, "scroll", () => {
-            const scrollTop = this.#containerEl.scrollTop;
-            this.#inputEl.scrollTop = scrollTop;
-            this.#outputWrapperEl.scrollTop = scrollTop;
-            this.#updateCaretPosition(true);
-        }, {passive: false});
-        this.registerTargetEventHandler(this.#inputEl, "scroll", () => {
-            const scrollTop = this.#inputEl.scrollTop;
-            this.#containerEl.scrollTop = scrollTop;
-            this.#outputWrapperEl.scrollTop = scrollTop;
-            this.#updateCaretPosition(true);
-        }, {passive: false});
-        /* --- */
-        this.registerTargetEventHandler(this.#inputEl, "focus", (event) => {
-            event.stopPropagation();
-            const selection = this.shadowRoot.getSelection();
-            if (selection.focusNode != null) {
-                this.#updateCaretPosition();
-            }
+        this.#inputEl.addEventListener("selectionchange", (event) => {
+            this.#updateCaretPosition(event.data);
         });
-        this.registerTargetEventHandler(document, "selectionchange", () => {
-            const selection = this.shadowRoot.getSelection();
-            if (selection.focusNode != null) {
-                this.#updateCaretPosition();
-            }
-        }, {passive: true});
-        /* --- */
-        this.registerTargetEventHandler(this.#expandButtonEl, "click", () => {
-            if (this.#fieldEl.classList.contains("expanded")) {
-                this.#fieldEl.classList.remove("expanded");
+        this.#expandButtonEl.addEventListener("click", () => {
+            if (this.#containerEl.classList.contains("expanded")) {
+                this.#containerEl.classList.remove("expanded");
                 this.#expandButtonEl.innerText = "⛶";
             } else {
-                this.#fieldEl.classList.add("expanded");
+                this.#containerEl.classList.add("expanded");
                 this.#expandButtonEl.innerText = "🗙";
             }
         });
@@ -129,6 +79,14 @@ export default class CodeInput extends AbstractFormElement {
         return this.getBooleanAttribute("newlineonshift");
     }
 
+    set resize(value) {
+        this.setEnumAttribute("resize", value, Axes2D);
+    }
+
+    get resize() {
+        return this.getEnumAttribute("resize");
+    }
+
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
         return [...superObserved, "readonly"];
@@ -139,7 +97,7 @@ export default class CodeInput extends AbstractFormElement {
         switch (name) {
             case "readonly": {
                 if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, "readonly", this.readonly);
+                    this.#inputEl.readOnly = this.readOnly;
                 }
             } break;
         }
@@ -147,63 +105,18 @@ export default class CodeInput extends AbstractFormElement {
 
     renderValue(value) {
         this.#inputEl.value = value ?? "";
-        this.#updateText(value);
     }
 
-    #updateText(value) {
-        const lineCount = value.split("\n").length;
-        this.#printLineNumbers(lineCount);
-        if (LAST_CHARACTER_NEWLINE.test(value)) {
-            this.#inputMirrorEl.innerText = `${value} `;
-        } else {
-            this.#inputMirrorEl.innerText = value;
-        }
-    }
-
-    #updateCaretPosition = debounce((force = false) => {
-        const selectionStart = this.#inputEl.selectionStart;
-        const selectionEnd = this.#inputEl.selectionEnd;
-        const selectionForward = this.#inputEl.selectionDirection === "forward";
-        const value = this.#inputEl.value;
-        const textBeforeCursor = value.slice(0, selectionForward ? selectionEnd : selectionStart);
-        const lines = textBeforeCursor.split("\n");
-        const currentLine = lines.length - 1;
-        const focusOffset = lines.at(-1)?.length ?? 0;
-
-        if (this.#currentLine != currentLine || force) {
-            this.#currentLine = currentLine;
-
-            const oldNumbersNodes = this.#lineNumbersEl.querySelectorAll(".caret");
-            for (const oldNode of oldNumbersNodes) {
-                oldNode.classList.remove("caret");
-            }
-
-            const numberEl = this.#lineNumbersEl.children[currentLine];
-            if (numberEl != null) {
-                numberEl.classList.add("caret");
-            }
-
-            this.#lineMarkerEl.style.setProperty("--current-line", currentLine);
-        }
-
-        const length = Math.abs(selectionEnd - selectionStart);
+    #updateCaretPosition(data) {
+        const {
+            currentLine,
+            focusOffset,
+            length
+        } = data;
         if (length > 0) {
             this.#lineInfoEl.innerText = `Ln ${currentLine + 1}, Col ${focusOffset + 1} (${length} selected)`;
         } else {
             this.#lineInfoEl.innerText = `Ln ${currentLine + 1}, Col ${focusOffset + 1}`;
-        }
-    });
-
-    #printLineNumbers(lineCount) {
-        if (this.#lineCount != lineCount) {
-            this.#lineCount = lineCount;
-            this.#lineNumbersEl.innerHTML = "";
-            for (let i = 0; i < lineCount; ++i) {
-                const numberEl = document.createElement("div");
-                numberEl.innerText = i + 1;
-                this.#lineNumbersEl.append(numberEl);
-            }
-            this.#containerEl.style.setProperty("--num-digits", `${lineCount}`.length);
         }
     }
 

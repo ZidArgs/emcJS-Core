@@ -9,6 +9,7 @@
     <meta name="robots" content="none">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#000000">
+    <link rel="stylesheet" href="/emcJS/_style/fonts.css">
     <script type="module" src="./index.js"></script>
     <style>
         #icon-container {
@@ -43,17 +44,29 @@
 </head>
 
 <body>
-    Home
-    <div id="icon-container">
-        <emc-font-icon id="icon" icon="add"></emc-font-icon>
-    </div>
-    <div>
-        <div class="test"></div>
-        <div class="test active"></div>
-        <div class="test active"></div>
-        <div class="test active"></div>
-        <div class="test"></div>
-    </div>
+    <emc-page id="page" style="padding: 8px;">
+        <div id="icon-container">
+            <emc-font-icon id="icon" icon="add"></emc-font-icon>
+        </div>
+        <div>
+            <div class="test"></div>
+            <div class="test active"></div>
+            <div class="test active"></div>
+            <div class="test active"></div>
+            <div class="test"></div>
+        </div>
+        <emc-input-checkbox></emc-input-checkbox>
+        <emc-input-switch></emc-input-switch>
+        <emc-form-field label="test" description="blablabla" control-buttons="reset copy">
+            <emc-input-string placeholder="foobar" required></emc-input-string>
+        </emc-form-field>
+        <emc-form-group>
+            <emc-button variant="label" icon="€"></emc-button>
+            <emc-input-number style="text-align: right;"></emc-input-number>
+            <emc-button variant="label" icon=".00"></emc-button>
+        </emc-form-group>
+        <emc-progressbar value="50" animated></emc-progressbar>
+    </emc-page>
 </body>
 
 </html>

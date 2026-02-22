@@ -1,151 +1,53 @@
-import Modal from "./Modal.js";
+import ModalDialog from "./ModalDialog.js";
 import "../form/button/Button.js";
 import TPL from "./ModalFormDialog.js.html" assert {type: "html"};
 import STYLE from "./ModalFormDialog.js.css" assert {type: "css"};
 import FormContext from "../../util/form/FormContext.js";
 import FormBuilder from "../../util/form/FormBuilder.js";
 
-export default class ModalFormDialog extends Modal {
-
-    #onsubmit = null;
-
-    #oncancel = null;
-
-    #onclose = null;
+export default class ModalFormDialog extends ModalDialog {
 
     #contentEl;
-
-    #textEl;
-
-    #footerEl;
 
     #formContainerEl;
 
     #formEl;
 
-    #cancelEl;
-
-    #submitEl;
-
     #initialFocusElement = null;
 
     #formContext = new FormContext();
 
-    constructor(options = {}) {
-        super(options.caption);
+    constructor(caption, options = {}) {
+        super(caption, {
+            submit: true,
+            cancel: true,
+            ...options
+        });
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#contentEl = this.shadowRoot.getElementById("content");
-        this.#footerEl = this.shadowRoot.getElementById("footer");
         this.#formContainerEl = els.getElementById("form-container");
         this.#formContext.registerFormContainer(this.#formContainerEl);
         this.#contentEl.append(this.#formContainerEl);
         this.#formEl = this.shadowRoot.getElementById("form");
 
-        if (!!options.text && typeof options.text === "string") {
-            this.#textEl = this.shadowRoot.getElementById("text");
-            if (options.text instanceof HTMLElement) {
-                this.#textEl.append(options.text);
-            } else if (typeof options.text === "string") {
-                this.#textEl.innerHTML = options.text;
-            }
-        }
-
-        if (options.cancel) {
-            this.#cancelEl = els.getElementById("cancel");
-            if (options.cancel instanceof HTMLElement) {
-                this.#cancelEl.text = undefined;
-                this.#cancelEl.append(options.cancel);
-            } else if (typeof options.cancel === "string") {
-                this.#cancelEl.text = options.cancel;
-            }
-            this.registerTargetEventHandler(this.#cancelEl, "click", () => this.cancel());
-            this.#footerEl.append(this.#cancelEl);
-        }
-
-        if (options.submit) {
-            this.#submitEl = els.getElementById("submit");
-            if (options.submit instanceof HTMLElement) {
-                this.#submitEl.text = undefined;
-                this.#submitEl.append(options.submit);
-            } else if (typeof options.submit === "string") {
-                this.#submitEl.text = options.submit;
-            }
-            this.registerTargetEventHandler(this.#submitEl, "click", () => this.submit());
-            this.#footerEl.append(this.#submitEl);
-        }
-
-        this.registerTargetEventHandler(this.#formContext, "submit", (event) => {
-            const {
-                data, formData, hiddenData, changes, errors
-            } = event;
-            this.#internalSubmit(data, formData, hiddenData, changes, errors);
+        this.#formContext.addEventListener("submit", () => {
+            super.submit();
         });
     }
 
-    async show() {
-        return new Promise((resolve) => {
-            this.#onsubmit = function(data) {
-                resolve(data ?? true);
-            };
-            this.#oncancel = function() {
-                resolve(false);
-            };
-            this.#onclose = function() {
-                resolve();
-            };
-            super.show();
-        });
+    async show(data = {}) {
+        this.#formContext.setDataFlat(data);
+        return await super.show();
     }
 
-    #internalSubmit(data, formData, hiddenData, changes, errors) {
-        this.remove();
-        if (this.#onsubmit) {
-            this.#onsubmit({
-                data,
-                formData,
-                hiddenData,
-                changes,
-                errors
-            });
-            this.#onsubmit = null;
-            this.#oncancel = null;
-            this.#onclose = null;
-        }
-        const ev = new Event("submit");
-        ev.data = data;
-        ev.formData = formData;
-        ev.hiddenData = hiddenData;
-        ev.changes = changes;
-        ev.errors = errors;
-        this.dispatchEvent(ev);
+    getSubmitValue() {
+        return this.#formContext.getDataFlat();
     }
 
     submit() {
         this.#formContext.submit();
-    }
-
-    cancel() {
-        this.remove();
-        if (this.#oncancel) {
-            this.#oncancel();
-            this.#onsubmit = null;
-            this.#oncancel = null;
-            this.#onclose = null;
-        }
-        this.dispatchEvent(new Event("cancel"));
-    }
-
-    close() {
-        this.remove();
-        if (this.#onclose) {
-            this.#onclose();
-            this.#onsubmit = null;
-            this.#oncancel = null;
-            this.#onclose = null;
-        }
-        this.dispatchEvent(new Event("close"));
     }
 
     initialFocus() {
@@ -169,8 +71,8 @@ export default class ModalFormDialog extends Modal {
         return this.#initialFocusElement;
     }
 
-    loadFormConfig(config) {
-        FormBuilder.replaceForm(this.#formEl, config);
+    loadFormConfig(config, defaultValues) {
+        FormBuilder.replaceForm(this.#formEl, config, defaultValues);
     }
 
 }

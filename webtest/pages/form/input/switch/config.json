@@ -26,7 +26,7 @@
                 "type": "SwitchInput",
                 "label": "switch readonly",
                 "name": "switch.readonly",
-                "readonly": true
+                "readOnly": true
             },
             {
                 "type": "SwitchInput",

@@ -4,5 +4,17 @@
         "name": "sorted",
         "label": "Sorted",
         "value": false
+    },
+    {
+        "type": "SimpleSelect",
+        "name": "resize",
+        "label": "Resize",
+        "value": "none",
+        "options": {
+            "none": "None",
+            "vertical": "Vertical",
+            "horizontal": "Horizontal",
+            "both": "Both"
+        }
     }
 ]

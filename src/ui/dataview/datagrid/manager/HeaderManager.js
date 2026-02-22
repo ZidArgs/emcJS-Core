@@ -4,6 +4,7 @@ import {isEqual} from "../../../../util/helper/Comparator.js";
 import {deepClone} from "../../../../util/helper/DeepClone.js";
 import {getArrayMutations} from "../../../../util/helper/collection/ArrayMutations.js";
 import StickyObserverGroupManager from "../../../../util/observer/manager/StickyObserverGroupManager.js";
+import SelectCheckBox from "../../../form/element/components/checkbox/SelectCheckBox.js";
 import DataGridHeaderCell from "../components/cell/DataGridHeaderCell.js";
 
 export default class HeaderManager extends EventTarget {
@@ -34,7 +35,7 @@ export default class HeaderManager extends EventTarget {
 
     #lastHeaderCellEl;
 
-    #eventManager = new EventManager(false);
+    #eventManager = new EventManager();
 
     constructor(target, stickyObserver, dataGridId) {
         if (!(target instanceof HTMLTableRowElement)) {
@@ -55,12 +56,11 @@ export default class HeaderManager extends EventTarget {
         this.#selectHeaderCellEl.classList.add("select-cell");
         this.#selectHeaderCellEl.classList.add("fixed-cell");
         this.#selectHeaderCellEl.classList.add("fixed-cell-start");
-        this.#selectHeaderCheckboxEl = document.createElement("input");
-        this.#selectHeaderCheckboxEl.type = "checkbox";
-        this.#selectHeaderCheckboxEl.name = "rowselect";
+        this.#selectHeaderCheckboxEl = new SelectCheckBox();
+        this.#selectHeaderCheckboxEl.classList.add("checkbox");
         this.#eventManager.set(this.#selectHeaderCheckboxEl, "change", (event) => {
             event.stopPropagation();
-            const value = this.#selectHeaderCheckboxEl.checked;
+            const value = this.#selectHeaderCheckboxEl.value;
             const ev = new Event("selectall", {
                 bubbles: true,
                 cancelable: true
@@ -77,10 +77,6 @@ export default class HeaderManager extends EventTarget {
         this.#stickyObserverManager = new StickyObserverGroupManager(stickyObserver);
         this.#stickyObserverManager.observe(this.#sortHeaderCellEl);
         this.#stickyObserverManager.observe(this.#selectHeaderCellEl);
-    }
-
-    setEventManagerActive(value) {
-        this.#eventManager.active = value;
     }
 
     set sortable(value) {
@@ -121,9 +117,8 @@ export default class HeaderManager extends EventTarget {
         return this.#selectEnd;
     }
 
-    setSelectionState(checked, indeterminate) {
-        this.#selectHeaderCheckboxEl.checked = checked;
-        this.#selectHeaderCheckboxEl.indeterminate = indeterminate;
+    setSelectionState(value) {
+        this.#selectHeaderCheckboxEl.value = value;
     }
 
     getCellByColumnName(name) {

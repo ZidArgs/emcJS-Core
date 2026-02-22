@@ -1,3 +1,5 @@
+/* TODO use variables to determine colors, etc. (see form inputs)
+*/
 :host {
     display: flex;
     flex-direction: column;
@@ -6,7 +8,6 @@
     margin: 8px;
     color: var(--datagrid-text-color, #000000);
     background-color: var(--datagrid-back-color, #ffffff);
-    background-image: var(--datagrid-back-image, none);
     border-style: solid;
     border-width: var(--datagrid-border-width, 2px);
     border-color: var(--datagrid-border-color, #000000);
@@ -55,13 +56,6 @@
         background-image: var(--datagrid-disabled-header-back-image, none) !important;
         border-left-color: var(--datagrid-disabled-header-seperator-color, #696969) !important;
         border-right-color: var(--datagrid-disabled-header-seperator-color, #696969) !important;
-
-        &.select-cell input[type="checkbox"] {
-            color: var(--datagrid-disabled-header-select-cell-text-color, #757575) !important;
-            background-color: var(--datagrid-disabled-header-select-cell-back-color, #999999) !important;
-            border-color: var(--datagrid-disabled-header-select-cell-border-color, #6a6a6a) !important;
-            cursor: default !important;
-        }
     }
 
     #foot .cell {
@@ -70,13 +64,6 @@
         background-image: var(--datagrid-disabled-footer-back-image, none) !important;
         border-left-color: var(--datagrid-disabled-footer-seperator-color, #696969) !important;
         border-right-color: var(--datagrid-disabled-footer-seperator-color, #696969) !important;
-
-        &.select-cell input[type="checkbox"] {
-            color: var(--datagrid-disabled-footer-select-cell-text-color, #757575) !important;
-            background-color: var(--datagrid-disabled-footer-select-cell-back-color, #999999) !important;
-            border-color: var(--datagrid-disabled-footer-select-cell-border-color, #6a6a6a) !important;
-            cursor: default !important;
-        }
     }
 
     #body .cell {
@@ -86,18 +73,7 @@
         border-left-color: var(--datagrid-disabled-column-seperator-color, #696969) !important;
         border-right-color: var(--datagrid-disabled-column-seperator-color, #696969) !important;
         border-bottom-color: var(--datagrid-disabled-row-seperator-color, #757575) !important;
-
-        &.select-cell input[type="checkbox"] {
-            color: var(--datagrid-disabled-select-cell-text-color, #757575) !important;
-            background-color: var(--datagrid-disabled-select-cell-back-color, #999999) !important;
-            border-color: var(--datagrid-disabled-select-cell-border-color, #6a6a6a) !important;
-            cursor: default !important;
-        }
     }
-}
-
-:host([readonly]:not([readonly="false"])) .cell.select-cell input[type="checkbox"] {
-    pointer-events: none;
 }
 
 :host([stretch="last"]) .cell:last-child {
@@ -116,7 +92,7 @@
 
     .cell {
         position: relative;
-        box-sizing: content-box;
+        box-sizing: border-box;
         min-width: 50px;
         padding: 0;
 
@@ -176,17 +152,17 @@
         }
 
         .cell.fixed-cell:nth-last-child(1 of .fixed-cell-start.stuck) {
-            border-right-style: solid;
-            border-right-width: var(--datagrid-fixed-column-seperator-width, 2px);
 
-            &:after {
+            &::after {
                 position: absolute;
                 content: "";
                 height: 100%;
                 width: var(--datagrid-fixed-column-shadow-width, 4px);
                 top: 0px;
-                right: calc(-1 * (var(--datagrid-fixed-column-shadow-width, 4px) + var(--datagrid-fixed-column-seperator-width, 2px)));
+                left: 100%;
                 background-image: linear-gradient(to right, var(--datagrid-fixed-column-shadow-start-color, #00000030), #00000000);
+                border-left-style: solid;
+                border-left-width: var(--datagrid-fixed-column-seperator-width, 2px);
             }
 
             & + .cell {
@@ -198,19 +174,16 @@
             }
         }
 
-        .cell.fixed-cell:nth-child(1 of .fixed-cell-end.stuck) {
-            border-left-style: solid;
-            border-left-width: var(--datagrid-fixed-column-seperator-width, 2px);
-
-            &:before {
-                position: absolute;
-                content: "";
-                height: 100%;
-                width: var(--datagrid-fixed-column-shadow-width, 4px);
-                top: 0px;
-                left: calc(-1 * (var(--datagrid-fixed-column-shadow-width, 4px) + var(--datagrid-fixed-column-seperator-width, 2px)));
-                background-image: linear-gradient(to left, var(--datagrid-fixed-column-shadow-start-color, #00000030), #00000000);
-            }
+        .cell.fixed-cell:nth-child(1 of .fixed-cell-end.stuck)::before {
+            position: absolute;
+            content: "";
+            height: 100%;
+            width: var(--datagrid-fixed-column-shadow-width, 4px);
+            top: 0px;
+            right: 100%;
+            background-image: linear-gradient(to left, var(--datagrid-fixed-column-shadow-start-color, #00000030), #00000000);
+            border-right-style: solid;
+            border-right-width: var(--datagrid-fixed-column-seperator-width, 2px);
         }
 
         &.last-cell {
@@ -231,16 +204,15 @@
     .cell {
         color: var(--datagrid-header-text-color, #ffffff);
         background-color: var(--datagrid-header-back-color, #333333);
-        background-image: var(--datagrid-header-back-image, none);
         border-left-color: var(--datagrid-header-seperator-color, #ffffff);
         border-right-color: var(--datagrid-header-seperator-color, #ffffff);
 
-        &.fixed-cell:nth-last-child(1 of .fixed-cell-start.stuck) {
-            border-right-color: var(--datagrid-fixed-header-seperator-color, #afafaf);
+        &.fixed-cell:nth-last-child(1 of .fixed-cell-start.stuck)::after {
+            border-color: var(--datagrid-fixed-header-seperator-color, #afafaf);
         }
 
-        &.fixed-cell:nth-child(1 of .fixed-cell-end.stuck) {
-            border-left-color: var(--datagrid-fixed-header-seperator-color, #afafaf);
+        &.fixed-cell:nth-child(1 of .fixed-cell-end.stuck)::before {
+            border-color: var(--datagrid-fixed-header-seperator-color, #afafaf);
         }
 
         &.last-cell:not(:first-child) {
@@ -255,16 +227,15 @@
     .cell {
         color: var(--datagrid-footer-text-color, #ffffff);
         background-color: var(--datagrid-footer-back-color, #666666);
-        background-image: var(--datagrid-footer-back-image, none);
         border-left-color: var(--datagrid-footer-seperator-color, #ffffff);
         border-right-color: var(--datagrid-footer-seperator-color, #ffffff);
 
-        &.fixed-cell:nth-last-child(1 of .fixed-cell-start.stuck) {
-            border-right-color: var(--datagrid-fixed-footer-seperator-color, #afafaf);
+        &.fixed-cell:nth-last-child(1 of .fixed-cell-start.stuck)::after {
+            border-color: var(--datagrid-fixed-footer-seperator-color, #afafaf);
         }
 
-        &.fixed-cell:nth-child(1 of .fixed-cell-end.stuck) {
-            border-left-color: var(--datagrid-fixed-footer-seperator-color, #afafaf);
+        &.fixed-cell:nth-child(1 of .fixed-cell-end.stuck)::before {
+            border-color: var(--datagrid-fixed-footer-seperator-color, #afafaf);
         }
 
         &.last-cell:not(:first-child) {
@@ -285,7 +256,6 @@
         padding: 0;
         color: var(--datagrid-text-color, #000000);
         background-color: var(--datagrid-back-color, #ffffff);
-        background-image: var(--datagrid-back-image, none);
         border-left-color: var(--datagrid-column-seperator-color, #ffffff);
         border-right-color: var(--datagrid-column-seperator-color, #ffffff);
 
@@ -297,12 +267,12 @@
             }
         }
 
-        &.fixed-cell:nth-last-child(1 of .fixed-cell-start.stuck) {
-            border-right-color: var(--datagrid-fixed-column-seperator-color, #afafaf);
+        &.fixed-cell:nth-last-child(1 of .fixed-cell-start.stuck)::after {
+            border-color: var(--datagrid-fixed-column-seperator-color, #afafaf);
         }
 
-        &.fixed-cell:nth-child(1 of .fixed-cell-end.stuck) {
-            border-left-color: var(--datagrid-fixed-column-seperator-color, #afafaf);
+        &.fixed-cell:nth-child(1 of .fixed-cell-end.stuck)::before {
+            border-color: var(--datagrid-fixed-column-seperator-color, #afafaf);
         }
 
         &.last-cell:not(:first-child) {
@@ -326,7 +296,6 @@
             .cell {
                 color: var(--datagrid-row-hover-text-color, #000000);
                 background-color: var(--datagrid-row-hover-back-color, #d6f7fd);
-                background-image: var(--datagrid-row-hover-back-image, none);
             }
         }
 
@@ -340,7 +309,6 @@
     &:not(:has(tr.dragging)) tr:hover .cell {
         color: var(--datagrid-row-hover-text-color, #000000);
         background-color: var(--datagrid-row-hover-back-color, #d6f7fd);
-        background-image: var(--datagrid-row-hover-back-image, none);
 
         &.sort-cell div {
             background-image: radial-gradient(10px 10px at 50% 50%, var(--datagrid-row-hover-sort-grabber-indicator-color, #bbbbbb) 0%, var(--datagrid-row-hover-sort-grabber-indicator-color, #bbbbbb) 17%, #00000000 30%);
@@ -357,16 +325,18 @@
     flex: 1;
     left: 0px;
     width: 100%;
-    height: 100%;
-    max-height: 200px;
     min-width: calc(200px - var(--scrollbar-size, 0px) - 4px);
-    /* --datagrid-border-width * 2 */
-    min-height: 2rem;
+    margin-top: 3em;
     pointer-events: none;
     user-select: none;
     animation: popInLater 0ms ease-in 100ms forwards;
     animation-fill-mode: forwards;
     opacity: 0;
+}
+
+:host([nohead]:not([nohead="false"])) #empty-container,
+:host([nohead]:not([nohead="false"])) #nocolumns-container {
+    margin-top: 0.5em;
 }
 
 #empty-container #empty,
@@ -379,7 +349,6 @@
     height: 30px;
     color: var(--datagrid-empty-text-color, #666666);
     background-color: var(--datagrid-empty-back-color, #dadada);
-    background-image: var(--datagrid-empty-back-image, none);
     border-style: solid;
     border-width: var(--datagrid-empty-border-width, 2px);
     border-color: var(--datagrid-empty-border-color, #666666);
@@ -423,115 +392,17 @@
     display: none;
     text-align: center;
 
-    input[type="checkbox"] {
-        position: relative;
-        box-sizing: border-box;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        appearance: none;
+    .checkbox {
+        display: block;
         width: 22px;
         height: 22px;
-        padding: 2px;
         margin: auto;
-        color: var(--datagrid-select-cell-text-color, #505050);
-        background-color: var(--datagrid-select-cell-back-color, #ffffff);
-        border-style: solid;
-        border-width: 2px;
-        border-color: var(--datagrid-select-cell-border-color, #000000);
-        border-radius: 0.3em;
-        font-size: 16px;
-        cursor: pointer;
-
-        &:focus {
-            box-shadow: 0 0 2px 3px var(--input-focus-color, #06b5ff);
-            outline: none;
-        }
-
-        &:checked {
-            color: var(--datagrid-select-cell-checked-text-color, #ffffff);
-            background-color: var(--datagrid-select-cell-checked-back-color, #505050);
-            border-color: var(--datagrid-select-cell-checked-border-color, #000000);
-        }
-
-        &:indeterminate {
-            color: var(--datagrid-select-cell-indeterminate-text-color, #505050);
-            background-color: var(--datagrid-select-cell-indeterminate-back-color, #ffffff);
-            border-color: var(--datagrid-select-cell-indeterminate-border-color, #000000);
-        }
-
-        &::before {
-            position: absolute;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 14px;
-            line-height: 1.2em;
-            font-weight: bold;
-        }
-
-        &:checked::before {
-            content: "✖";
-        }
-
-        &:indeterminate::before {
-            width: 70%;
-            height: 70%;
-            background-color: var(--datagrid-select-cell-indeterminate-text-color, #000000);
-            border-radius: 50%;
-            content: "";
-        }
-
-        &:indeterminate::after {
-            position: absolute;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 40%;
-            height: 40%;
-            background-color: var(--datagrid-select-cell-indeterminate-back-color, #ffffff);
-            border-radius: 50%;
-            content: "";
-        }
     }
 }
 
-#head .select-cell input[type="checkbox"] {
+#head .select-cell .checkbox,
+#foot .select-cell .checkbox {
     display: none;
-    color: var(--datagrid-header-select-cell-text-color, #000000);
-    background-color: var(--datagrid-header-select-cell-back-color, #ffffff);
-    border-color: var(--datagrid-header-select-cell-border-color, #000000);
-
-    &:checked {
-        color: var(--datagrid-header-select-cell-checked-text-color, #000000);
-        background-color: var(--datagrid-header-select-cell-checked-back-color, #ffffff);
-        border-color: var(--datagrid-header-select-cell-checked-border-color, #ffffff);
-    }
-
-    &:indeterminate {
-        color: var(--datagrid-header-select-cell-indeterminate-text-color, #000000);
-        background-color: var(--datagrid-header-select-cell-indeterminate-back-color, #ffffff);
-        border-color: var(--datagrid-header-select-cell-indeterminate-border-color, #000000);
-    }
-}
-
-#foot .select-cell input[type="checkbox"] {
-    display: none;
-    color: var(--datagrid-footer-select-cell-text-color, #000000);
-    background-color: var(--datagrid-footer-select-cell-back-color, #ffffff);
-    border-color: var(--datagrid-footer-select-cell-border-color, #ffffff);
-
-    &:checked {
-        color: var(--datagrid-footer-select-cell-checked-text-color, #000000);
-        background-color: var(--datagrid-footer-select-cell-checked-back-color, #ffffff);
-        border-color: var(--datagrid-footer-select-cell-checked-border-color, #ffffff);
-    }
-
-    &:indeterminate {
-        color: var(--datagrid-footer-select-cell-indeterminate-text-color, #000000);
-        background-color: var(--datagrid-footer-select-cell-indeterminate-back-color, #ffffff);
-        border-color: var(--datagrid-footer-select-cell-indeterminate-border-color, #000000);
-    }
 }
 
 :host([sortable]:not([sortable="false"])) #head .sort-cell,
@@ -546,8 +417,8 @@
     display: table-cell;
 }
 
-:host([multiple]:not([multiple="false"])) #head .select-cell input[type="checkbox"],
-:host([multiple]:not([multiple="false"])) #foot .select-cell input[type="checkbox"] {
+:host([multiple]:not([multiple="false"])) #head .select-cell .checkbox,
+:host([multiple]:not([multiple="false"])) #foot .select-cell .checkbox {
     display: flex;
 }
 

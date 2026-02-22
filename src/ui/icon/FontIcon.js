@@ -1,7 +1,7 @@
 import CustomElement from "../element/CustomElement.js";
 import TPL from "./FontIcon.js.html" assert {type: "html"};
 import STYLE from "./FontIcon.js.css" assert {type: "css"};
-import FONT_STYLE from "../../_style/icon-codes.css" assert {type: "css"};
+import FONT_STYLE from "../../_style/emcjs-icons-codes.css" assert {type: "css"};
 
 export default class FontIcon extends CustomElement {
 

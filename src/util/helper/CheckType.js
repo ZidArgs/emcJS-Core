@@ -26,6 +26,8 @@ export function isEmpty(value) {
     const type = typeof value;
     if (type === "string") {
         return value === "";
+    } else if (type === "number") {
+        return isNaN(value);
     } else if (type === "object") {
         if (Array.isArray(value)) {
             return !value.length;
@@ -67,6 +69,14 @@ export function isObject(value) {
     return typeof value === "object" && !isNull(value) && !Array.isArray(value);
 }
 
+export function isObjectNotEmpty(value) {
+    return isObject(value) && !!Object.keys(value).length;
+}
+
+export function isObjectIsEmpty(value) {
+    return isObject(value) && !Object.keys(value).length;
+}
+
 export function isDict(value) {
     if (isObject(value)) {
         return value.constructor === Object;
@@ -76,6 +86,14 @@ export function isDict(value) {
 
 export function isArray(value) {
     return Array.isArray(value);
+}
+
+export function isArrayNotEmpty(value) {
+    return Array.isArray(value) && !!value.length;
+}
+
+export function isArrayIsEmpty(value) {
+    return Array.isArray(value) && !value.length;
 }
 
 export function isFunction(value) {

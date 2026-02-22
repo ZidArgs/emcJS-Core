@@ -4,11 +4,7 @@ import "../../../../../i18n/I18nLabel.js";
 
 export default class TokenSelectedElementManager extends ElementManager {
 
-    #eventManager = new EventManager(false);
-
-    setEventManagerActive(value) {
-        this.#eventManager.active = value;
-    }
+    #eventManager = new EventManager();
 
     composer(key, values) {
         const el = document.createElement("emc-i18n-label");

@@ -31,7 +31,6 @@
     width: 100%;
     padding: 5px;
     background-color: var(--fieldset-back-color, #ffffff);
-    background-image: var(--fieldset-back-image, none);
     border-style: solid;
     border-width: var(--fieldset-border-width, 2px);
     border-color: var(--fieldset-border-color, #222222);
@@ -47,7 +46,6 @@ TODO add legend variables
     margin: 0px 6px;
     color: var(--fieldset-legend-text-color, #000000);
     background-color: var(--fieldset-legend-back-color, #ffffff);
-    background-image: var(--fieldset-legend-back-image, none);
     border-style: solid;
     border-width: var(--fieldset-legend-border-width, 2px);
     border-color: var(--fieldset-legend-border-color, #222222);

@@ -1,12 +1,13 @@
 import FileLoader from "/emcJS/util/file/FileLoader.js";
-import "/emcJS/ui/Page.js";
 import SettingsOverlay from "/emcJS/ui/settings/SettingsOverlay.js";
-import {translateSettings} from "./SettingsTranslator.js";
 import ObservableStorage from "/emcJS/data/storage/observable/ObservableStorage.js";
-import HotkeyHandler from "../../emcJS/util/HotkeyHandler.js";
-import {extractDefaultValuesFromConfig} from "/emcJS/util/helper/ui/Form.js";
+import OptionGroupRegistry from "/emcJS/data/registry/form/OptionGroupRegistry.js";
+import HotkeyHandler from "/emcJS/util/HotkeyHandler.js";
 import KeySequence from "/emcJS/util/keyboard/KeySequence.js";
+import "/emcJS/ui/Page.js";
+import SettingsConfigHandler from "./SettingsConfigHandler.js";
 
+/* SETTINGS */
 const settingsStorage = new ObservableStorage();
 
 const openSettingsButtonEl = document.getElementById("open-settings");
@@ -49,16 +50,74 @@ settingsOverlayEl.addEventListener("cancel", () => {
     console.log("cancel");
 });
 
+/* OPTIONS */
+const optionsStorage = new ObservableStorage();
+
+const openOptionsButtonEl = document.getElementById("open-options");
+const optionsOverlayEl = new SettingsOverlay();
+optionsOverlayEl.caption = "Options";
+optionsOverlayEl.type = "modal";
+
+openOptionsButtonEl.addEventListener("click", () => {
+    const values = optionsStorage.getAll();
+    optionsOverlayEl.setValuesFlat(values);
+    optionsOverlayEl.show();
+});
+
+optionsOverlayEl.addEventListener("submit", (event) => {
+    const {
+        errors, data, formData, hiddenData, changes
+    } = event;
+    console.group(`submit`);
+    console.log("[E] errors", errors);
+    console.log("[E] data", data);
+    console.log("[E] formData", formData);
+    console.log("[E] hiddenData", hiddenData);
+    console.log("[E] changes", changes);
+    console.groupEnd(`submit`);
+    optionsStorage.setAll(changes);
+    optionsStorage.flushChanges();
+});
+
+optionsOverlayEl.addEventListener("cancel", () => {
+    console.log("cancel");
+});
+
+/* INIT */
 export async function init() {
-    const [settings] = await Promise.all([
-        FileLoader.json("/pages/settings-panel/settings.json")
+    const [
+        settings,
+        options,
+        locations
+    ] = await Promise.all([
+        FileLoader.json("/pages/settings-panel/settings.json"),
+        FileLoader.json("/pages/settings-panel/options.json"),
+        FileLoader.json("/pages/settings-panel/locations.json")
     ]);
 
-    const settingsConfig = translateSettings(settings);
-    settingsOverlayEl.loadConfig(settingsConfig);
+    // SETTINGS
+    const settingsConfigHandler = new SettingsConfigHandler(settings, (label) => `setting[${label}]`);
+    window.settingsConfig = settingsConfigHandler;
+    settingsOverlayEl.loadConfig(settingsConfigHandler.config, settingsConfigHandler.defaultValues);
 
-    const defaults = extractDefaultValuesFromConfig(settingsConfig);
-    settingsStorage.deserialize(defaults);
+    const languageOptionGroup = new OptionGroupRegistry("I18n.languages");
+    languageOptionGroup.setAll({
+        "de_de": "Deutsch",
+        "en_us.easy": "English (Descriptive names)",
+        "en_us": "English"
+    });
+
+    // OPTIONS
+    const optionsConfigHandler = new SettingsConfigHandler(options, (label) => `option[${label}]`);
+    window.optionsConfig = optionsConfigHandler;
+    optionsOverlayEl.loadConfig(optionsConfigHandler.config, optionsConfigHandler.defaultValues);
+
+    const LOCATION_NAMES = Object.keys(locations).reduce((res, value) => {
+        res[`excluded_location[${value}]`] = `location[${value}]`;
+        return res;
+    }, {});
+    const locationsOptionGroup = new OptionGroupRegistry("Locations.names");
+    locationsOptionGroup.setAll(LOCATION_NAMES);
 }
 
 init();

@@ -1,31 +1,39 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
+import ModalDialog from "../../../../modal/ModalDialog.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
-import {deepClone} from "../../../../../util/helper/DeepClone.js";
+import {immute} from "../../../../../data/Immutable.js";
 import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
+import Axes2D from "../../../../../enum/Axes2D.js";
 import {setAttributes} from "../../../../../util/helper/ui/NodeAttributes.js";
+import {jsonParseSafe} from "../../../../../util/helper/JSON.js";
+import SimpleDataProvider from "../../../../../util/dataprovider/SimpleDataProvider.js";
 import {
     deleteAtIndexImmuted, sortDictListByArrayImmuted
 } from "../../../../../util/helper/collection/ArrayMutations.js";
-import SimpleDataProvider from "../../../../../util/dataprovider/SimpleDataProvider.js";
-import ModalDialog from "../../../../modal/ModalDialog.js";
 import Column from "../../../../dataview/datagrid/Column.js";
 import "../../../../dataview/datagrid/DataGrid.js";
-import "../search/SearchInput.js";
+import "../../components/searchheader/SearchHeader.js";
+import "../../../FormRow.js";
 import "../../../button/Button.js";
 import TPL from "./GridInput.js.html" assert {type: "html"};
 import STYLE from "./GridInput.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./GridInput.js.json" assert {type: "json"};
-import jsonParse from "../../../../../patches/JSONParser.js";
 
 export default class GridInput extends AbstractFormElement {
 
     static get formConfigurationFields() {
-        return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
+        return immute([...super.formConfigurationFields, ...CONFIG_FIELDS]);
     }
 
-    #labelEl;
+    static get changeDebounceTime() {
+        return 0;
+    }
 
-    #searchEl;
+    static get AXES() {
+        return Axes2D;
+    }
+
+    #searchHeaderEl;
 
     #gridEl;
 
@@ -35,27 +43,28 @@ export default class GridInput extends AbstractFormElement {
 
     constructor() {
         super();
-        this.shadowRoot.getElementById("field").append(TPL.generate());
+        TPL.apply(this.shadowRoot);
         STYLE.apply(this.shadowRoot);
         /* --- */
+        this.#searchHeaderEl = this.shadowRoot.getElementById("search-header");
         this.#gridEl = this.shadowRoot.getElementById("grid");
         this.#addEl = this.shadowRoot.getElementById("add");
         this.#dataManager = new SimpleDataProvider(this.#gridEl);
         /* --- */
-        this.registerTargetEventHandler(this.#addEl, "click", (event) => {
+        this.#addEl.addEventListener("click", (event) => {
             event.stopPropagation();
             event.preventDefault();
             this.#addElement();
         });
         /* --- */
-        this.registerTargetEventHandler(this.#gridEl, "action::delete", (event) => {
+        this.#gridEl.addEventListener("action::delete", (event) => {
             event.stopPropagation();
             event.preventDefault();
             const {rowKey} = event.data;
             this.#removeElement(rowKey);
         });
         /* --- */
-        this.registerTargetEventHandler(this.#gridEl, "edit", (event) => {
+        this.#gridEl.addEventListener("edit", (event) => {
             event.stopPropagation();
             event.preventDefault();
             const {
@@ -68,43 +77,45 @@ export default class GridInput extends AbstractFormElement {
                 currentRow[columnName] = value;
                 currentValue[index] = currentRow;
                 this.value = currentValue;
+                this.dispatchEvent(new Event("input", {
+                    bubbles: true,
+                    cancelable: true
+                }));
             }
         });
         /* --- */
-        this.registerTargetEventHandler(this.#gridEl, "sort-change", (event) => {
+        this.#gridEl.addEventListener("sort-change", (event) => {
             event.stopPropagation();
             event.preventDefault();
             const {newOrder} = event;
             const currentValue = this.value ?? [];
             this.value = sortDictListByArrayImmuted(currentValue, newOrder, "key");
+            this.dispatchEvent(new Event("input", {
+                bubbles: true,
+                cancelable: true
+            }));
         });
         /* --- */
-        this.#searchEl = this.shadowRoot.getElementById("search");
-        this.registerTargetEventHandler(this.#searchEl, "change", () => {
+        this.#searchHeaderEl.addEventListener("search", () => {
             const options = {filter: {}};
-            if (this.#searchEl.value != "") {
-                options.filter = {name: this.#searchEl.value};
+            const seearchValue = this.#searchHeaderEl.search;
+            if (seearchValue != "") {
+                options.filter = {name: seearchValue};
             }
             this.#dataManager.updateConfig(options);
         }, {capture: true});
-        /* --- */
-        this.#labelEl = this.shadowRoot.getElementById("label");
-        this.registerTargetEventHandler(this.#labelEl, "click", (event) => {
-            event.preventDefault();
-            this.#searchEl.focus();
-        });
     }
 
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
-        this.#searchEl.disabled = disabled;
+        this.#searchHeaderEl.disabled = disabled;
         this.#gridEl.disabled = disabled;
-        this.#addEl.disabled = disabled || this.readonly;
+        this.#addEl.disabled = disabled;
     }
 
     focus(options) {
         super.focus(options);
-        this.#searchEl.focus(options);
+        this.#searchHeaderEl.focus(options);
     }
 
     set defaultValue(value) {
@@ -117,7 +128,7 @@ export default class GridInput extends AbstractFormElement {
 
     set value(value) {
         if (typeof value === "string") {
-            value = jsonParse(value);
+            value = jsonParseSafe(value);
         }
         super.value = value;
     }
@@ -142,9 +153,22 @@ export default class GridInput extends AbstractFormElement {
         return this.getBooleanAttribute("sorted");
     }
 
+    set resize(value) {
+        this.setEnumAttribute("resize", value, Axes2D);
+    }
+
+    get resize() {
+        return this.getEnumAttribute("resize");
+    }
+
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "readonly", "stretched", "sorted"];
+        return [
+            ...superObserved,
+            "readonly",
+            "stretched",
+            "sorted"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -152,8 +176,9 @@ export default class GridInput extends AbstractFormElement {
         switch (name) {
             case "readonly": {
                 if (oldValue != newValue) {
-                    this.#gridEl.readonly = this.readonly;
-                    this.#addEl.disabled = this.disabled || this.readonly;
+                    const readonly = this.readOnly;
+                    this.#gridEl.readOnly = readonly;
+                    this.#searchHeaderEl.readOnly = readonly;
                 }
             } break;
             case "stretched": {
@@ -214,10 +239,11 @@ export default class GridInput extends AbstractFormElement {
             }
         }
         const currentValue = this.value ?? [];
-        this.value = [
-            ...currentValue,
-            {key: rowKey}
-        ];
+        this.value = [...currentValue, {key: rowKey}];
+        this.dispatchEvent(new Event("input", {
+            bubbles: true,
+            cancelable: true
+        }));
     }
 
     async #removeElement(rowKey) {
@@ -229,6 +255,10 @@ export default class GridInput extends AbstractFormElement {
         const index = this.#getElementIndex(rowKey);
         if (index >= 0) {
             this.value = deleteAtIndexImmuted(currentValue, index);
+            this.dispatchEvent(new Event("input", {
+                bubbles: true,
+                cancelable: true
+            }));
         }
     }
 
@@ -253,18 +283,18 @@ export default class GridInput extends AbstractFormElement {
             columnEl.name = key;
             if (key === "key") {
                 const {
-                    caption = "", width = 0
+                    label = "", width = 0
                 } = column;
                 columnEl.type = "string";
-                columnEl.caption = caption;
+                columnEl.label = label;
                 columnEl.width = width;
                 columnEl.editable = false;
             } else {
                 const {
-                    type = "string", caption = "", width = 0, editable = false
+                    type = "string", label = "", width = 0, editable = false
                 } = column;
                 columnEl.type = type;
-                columnEl.caption = caption;
+                columnEl.label = label;
                 columnEl.width = width;
                 columnEl.editable = editable;
             }

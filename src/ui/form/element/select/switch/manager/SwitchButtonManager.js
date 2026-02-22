@@ -7,7 +7,7 @@ export default class SwitchButtonManager extends ElementManager {
         const el = document.createElement("button");
         el.value = key;
         el.disabled = this.disabled;
-        safeSetAttribute(el, "readonly", values.readonly);
+        safeSetAttribute(el, "readonly", values.readOnly);
         const labelEl = document.createElement("emc-i18n-label");
         labelEl.i18nValue = values.label ?? key;
         el.append(labelEl);
@@ -16,7 +16,7 @@ export default class SwitchButtonManager extends ElementManager {
     }
 
     mutator(el, key, values) {
-        safeSetAttribute(el, "readonly", values.readonly);
+        safeSetAttribute(el, "readonly", values.readOnly);
         const labelEl = el.querySelector("emc-i18n-label");
         if (labelEl != null) {
             labelEl.i18nValue = values.label ?? key;

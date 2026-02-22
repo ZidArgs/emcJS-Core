@@ -24,7 +24,7 @@ export default createMixin((superclass) => class ChildlistMutationObserverMixin 
 
     connectedCallback() {
         if (super.connectedCallback) {
-            super.connectedCallback();
+            super.connectedCallback?.();
         }
         this.#observer.observe(this, {
             childList: true,
@@ -34,7 +34,7 @@ export default createMixin((superclass) => class ChildlistMutationObserverMixin 
 
     disconnectedCallback() {
         if (super.disconnectedCallback) {
-            super.disconnectedCallback();
+            super.disconnectedCallback?.();
         }
         this.#observer.disconnect();
     }

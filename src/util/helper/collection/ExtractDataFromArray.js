@@ -158,7 +158,10 @@ export function extractData(source = [], options = {}) {
         }
         // apply sort by column
         for (const sortKey of sort) {
-            const [, desc = "", key = ""] = sortKey.match(SORT_PATTERN) ?? [];
+            const [
+                , desc = "",
+                key = ""
+            ] = sortKey.match(SORT_PATTERN) ?? [];
             if (key === "") {
                 continue;
             }

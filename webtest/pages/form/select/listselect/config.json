@@ -85,7 +85,7 @@
             },
             "multiple": true,
             "sorted": true,
-            "readonly": true
+            "readOnly": true
         },
         {
             "type": "ListSelect",

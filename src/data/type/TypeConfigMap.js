@@ -13,10 +13,7 @@ const INTERNAL_TYPES = [
     "Relation"
 ];
 
-const INTERNAL_LIST_TYPES = [
-    "List",
-    "AssociativeList"
-];
+const INTERNAL_LIST_TYPES = ["List", "AssociativeList"];
 
 class TypeConfigMap extends EventTarget {
 

@@ -6,7 +6,6 @@
     margin: 2px;
     color: var(--form-invalid-text-color, #a70000);
     background-color: var(--form-invalid-back-color, #ffeeee);
-    background-image: var(--form-invalid-back-image, none);
     font-size: 0.9em;
     line-height: 1.4em;
     cursor: pointer;

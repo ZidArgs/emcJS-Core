@@ -1,10 +1,8 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
-import {deepClone} from "../../../../../util/helper/DeepClone.js";
+import {immute} from "../../../../../data/Immutable.js";
 import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
-import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
-import "../../../../i18n/I18nLabel.js";
-import "../../../../i18n/I18nTooltip.js";
+import {setBooleanAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
 import TPL from "./ActionInput.js.html" assert {type: "html"};
 import STYLE from "./ActionInput.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./ActionInput.js.json" assert {type: "json"};
@@ -12,7 +10,7 @@ import CONFIG_FIELDS from "./ActionInput.js.json" assert {type: "json"};
 export default class ActionInput extends AbstractFormElement {
 
     static get formConfigurationFields() {
-        return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
+        return immute([...super.formConfigurationFields, ...CONFIG_FIELDS]);
     }
 
     static get changeDebounceTime() {
@@ -27,15 +25,15 @@ export default class ActionInput extends AbstractFormElement {
 
     constructor() {
         super();
-        this.shadowRoot.getElementById("field").append(TPL.generate());
+        TPL.apply(this.shadowRoot);
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.registerTargetEventHandler(this.#inputEl, "focus", () => {
+        this.#inputEl.addEventListener("focus", () => {
             this.#buttonEl.focus();
         });
         this.#buttonEl = this.shadowRoot.getElementById("button");
-        this.registerTargetEventHandler(this.#buttonEl, "click", (event) => {
+        this.#buttonEl.addEventListener("click", (event) => {
             event.preventDefault();
             event.stopPropagation();
             const ev = new Event("action");
@@ -60,16 +58,20 @@ export default class ActionInput extends AbstractFormElement {
     }
 
     set placeholder(value) {
-        this.setAttribute("placeholder", value);
+        this.setStringAttribute("placeholder", value);
     }
 
     get placeholder() {
-        return this.getAttribute("placeholder");
+        return this.getStringAttribute("placeholder");
     }
 
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "placeholder", "readonly"];
+        return [
+            ...superObserved,
+            "placeholder",
+            "readonly"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -77,12 +79,12 @@ export default class ActionInput extends AbstractFormElement {
         switch (name) {
             case "placeholder": {
                 if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, "i18n-placeholder", newValue);
+                    this.#inputEl.i18nPlaceholder = newValue;
                 }
             } break;
             case "readonly": {
                 if (oldValue != newValue) {
-                    safeSetAttribute(this.#buttonEl, "readonly", this.readonly);
+                    setBooleanAttribute(this.#inputEl, name, this.readOnly);
                 }
             } break;
         }

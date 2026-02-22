@@ -1,8 +1,9 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
-import {deepClone} from "../../../../../util/helper/DeepClone.js";
-import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
-import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
+import {immute} from "../../../../../data/Immutable.js";
+import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
+import Axes2D from "../../../../../enum/Axes2D.js";
+import {setBooleanAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
 import "../../../../i18n/builtin/I18nTextarea.js";
 import TPL from "./TextInput.js.html" assert {type: "html"};
 import STYLE from "./TextInput.js.css" assert {type: "css"};
@@ -11,10 +12,14 @@ import CONFIG_FIELDS from "./TextInput.js.json" assert {type: "json"};
 export default class TextInput extends AbstractFormElement {
 
     static get formConfigurationFields() {
-        return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
+        return immute([...super.formConfigurationFields, ...CONFIG_FIELDS]);
     }
 
-    #fieldEl;
+    static get AXES() {
+        return Axes2D;
+    }
+
+    #containerEl;
 
     #inputEl;
 
@@ -24,36 +29,30 @@ export default class TextInput extends AbstractFormElement {
 
     constructor() {
         super();
-        this.#fieldEl = this.shadowRoot.getElementById("field");
-        this.#fieldEl.append(TPL.generate());
+        TPL.apply(this.shadowRoot);
         STYLE.apply(this.shadowRoot);
         /* --- */
+        this.#containerEl = this.shadowRoot.getElementById("container");
         this.#expandButtonEl = this.shadowRoot.getElementById("expand-button");
         this.#lengthInfoEl = this.shadowRoot.getElementById("length-info");
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.registerTargetEventHandler(this.#inputEl, "input", () => {
+        this.#inputEl.addEventListener("input", () => {
             this.value = this.#inputEl.value;
             this.#printTextLength();
         });
-        this.registerTargetEventHandler(this.#inputEl, "keydown", (event) => {
-            if (event.key === "Enter") {
-                if (!event.shiftKey === this.newlineOnShift) {
-                    if (this.form != null) {
-                        event.preventDefault();
-                        this.form.requestSubmit();
-                    }
-                }
+        this.#inputEl.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" && event.shiftKey === this.newlineOnShift) {
                 event.stopPropagation();
                 return false;
             }
         });
         /* --- */
-        this.registerTargetEventHandler(this.#expandButtonEl, "click", () => {
-            if (this.#fieldEl.classList.contains("expanded")) {
-                this.#fieldEl.classList.remove("expanded");
+        this.#expandButtonEl.addEventListener("click", () => {
+            if (this.#containerEl.classList.contains("expanded")) {
+                this.#containerEl.classList.remove("expanded");
                 this.#expandButtonEl.innerText = "⛶";
             } else {
-                this.#fieldEl.classList.add("expanded");
+                this.#containerEl.classList.add("expanded");
                 this.#expandButtonEl.innerText = "🗙";
             }
         });
@@ -70,11 +69,11 @@ export default class TextInput extends AbstractFormElement {
     }
 
     set placeholder(value) {
-        this.setAttribute("placeholder", value);
+        this.setStringAttribute("placeholder", value);
     }
 
     get placeholder() {
-        return this.getAttribute("placeholder");
+        return this.getStringAttribute("placeholder");
     }
 
     set minLength(value) {
@@ -149,9 +148,28 @@ export default class TextInput extends AbstractFormElement {
         return this.getAttribute("autocorrect");
     }
 
+    set resize(value) {
+        this.setEnumAttribute("resize", value, Axes2D);
+    }
+
+    get resize() {
+        return this.getEnumAttribute("resize");
+    }
+
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "placeholder", "readonly", "minlength", "maxlength", "spellcheck", "autocapitalize", "autocomplete", "autocorrect"];
+        return [
+            ...superObserved,
+            "placeholder",
+            "readonly",
+            "minlength",
+            "maxlength",
+            "showtextlength",
+            "spellcheck",
+            "autocapitalize",
+            "autocomplete",
+            "autocorrect"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -159,7 +177,7 @@ export default class TextInput extends AbstractFormElement {
         switch (name) {
             case "readonly": {
                 if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, "readonly", this.readonly);
+                    setBooleanAttribute(this.#inputEl, name, this.readOnly);
                 }
             } break;
             case "placeholder": {

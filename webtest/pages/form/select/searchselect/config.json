@@ -79,7 +79,7 @@
             },
             "value": "nana",
             "sorted": true,
-            "readonly": true
+            "readOnly": true
         }
     ]
 }

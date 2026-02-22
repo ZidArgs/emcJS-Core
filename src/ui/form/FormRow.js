@@ -1,5 +1,5 @@
 import CustomElement from "../element/CustomElement.js";
-import {deepClone} from "../../util/helper/DeepClone.js";
+import {immute} from "../../data/Immutable.js";
 import {safeSetAttribute} from "../../util/helper/ui/NodeAttributes.js";
 import TPL from "./FormRow.js.html" assert {type: "html"};
 import STYLE from "./FormRow.js.css" assert {type: "css"};
@@ -8,7 +8,7 @@ import CONFIG_FIELDS from "./FormRow.js.json" assert {type: "json"};
 export default class FormRow extends CustomElement {
 
     static get formConfigurationFields() {
-        return deepClone(CONFIG_FIELDS);
+        return immute(CONFIG_FIELDS);
     }
 
     static get formConfigurationCanHaveChildren() {

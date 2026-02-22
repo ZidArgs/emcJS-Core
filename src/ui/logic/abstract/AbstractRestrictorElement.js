@@ -21,7 +21,7 @@ export default class AbstractRestrictorElement extends AbstractElement {
         this.#placeholderEl = this.shadowRoot.getElementById("droptarget");
         this.#placeholderEl.ondragover = AbstractElement.allowDrop;
         this.#placeholderEl.ondrop = AbstractElement.dropOnPlaceholder;
-        this.registerTargetEventHandler(this.#placeholderEl, "click", (event) => {
+        this.#placeholderEl.addEventListener("click", (event) => {
             const e = new Event("placeholderclicked", {
                 bubbles: true,
                 cancelable: true
@@ -31,7 +31,7 @@ export default class AbstractRestrictorElement extends AbstractElement {
             event.stopPropagation();
         });
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.registerTargetEventHandler(this.#inputEl, "change", () => {
+        this.#inputEl.addEventListener("change", () => {
             this.dispatchEvent(new Event("valuechange", {
                 bubbles: true,
                 cancelable: true

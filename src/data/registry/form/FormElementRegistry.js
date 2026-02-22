@@ -1,13 +1,11 @@
 import {instanceOfOne} from "../../../util/helper/Class.js";
 import {setAttributes} from "../../../util/helper/ui/NodeAttributes.js";
 import CustomFormElement from "../../../ui/element/CustomFormElement.js";
-import CustomFormElementDelegating from "../../../ui/element/CustomFormElementDelegating.js";
 
 const EXPECTED_CLASSES = [
     HTMLInputElement,
     HTMLButtonElement,
-    CustomFormElement,
-    CustomFormElementDelegating
+    CustomFormElement
 ];
 
 class FormElementRegistry {

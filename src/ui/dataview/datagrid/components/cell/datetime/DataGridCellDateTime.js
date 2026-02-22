@@ -18,7 +18,7 @@ export default class DataGridCellDateTime extends DataGridCell {
         /* --- */
         this.#valueEl = this.shadowRoot.getElementById("value");
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.registerTargetEventHandler(this.#inputEl, "input", (event) => {
+        this.#inputEl.addEventListener("input", (event) => {
             if (this.editable) {
                 this.#onInput(event);
             }
@@ -27,7 +27,12 @@ export default class DataGridCellDateTime extends DataGridCell {
 
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "editable", "disabled", "readonly"];
+        return [
+            ...superObserved,
+            "editable",
+            "disabled",
+            "readonly"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -38,7 +43,7 @@ export default class DataGridCellDateTime extends DataGridCell {
                     this.#inputEl.disabled = this.disabled;
                 } break;
                 case "readonly": {
-                    if (this.readonly) {
+                    if (this.readOnly) {
                         this.#inputEl.setAttribute("readonly", "");
                     } else {
                         this.#inputEl.removeAttribute("readonly");

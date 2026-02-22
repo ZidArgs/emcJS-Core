@@ -7,11 +7,7 @@ export default class ErrorButtonItemsElementManager extends ElementManager {
 
     #index = new WeakMap();
 
-    #eventManager = new EventManager(false);
-
-    setEventManagerActive(value) {
-        this.#eventManager.active = value;
-    }
+    #eventManager = new EventManager();
 
     composer() {
         const el = document.createElement("emc-button-error-item");

@@ -19,7 +19,10 @@ function processLine(line) {
     if (result == null) {
         return null;
     }
-    const [, key = "", value = ""] = result;
+    const [
+        , key = "",
+        value = ""
+    ] = result;
     return [unescapeUnicode(key.trim()), unescapeUnicode(value.trim())];
 }
 

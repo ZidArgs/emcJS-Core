@@ -37,12 +37,12 @@ export default class AbstractElement extends CustomElement {
         this.#headerTextEl.innerText = caption;
         this.#id = appUID("logic-element");
         /* --- */
-        this.registerTargetEventHandler(this, "click", (event) => {
+        this.addEventListener("click", (event) => {
             if (this.editable) {
                 event.stopPropagation();
             }
         });
-        this.registerTargetEventHandler(this, "contextmenu", (event) => {
+        this.addEventListener("contextmenu", (event) => {
             event.stopPropagation();
             event.preventDefault();
             if (this.editable) {
@@ -56,7 +56,7 @@ export default class AbstractElement extends CustomElement {
                 this.dispatchEvent(ev);
             }
         });
-        this.registerTargetEventHandler(this, "dragstart", dragStart);
+        this.addEventListener("dragstart", dragStart);
     }
 
     connectedCallback() {
@@ -73,11 +73,11 @@ export default class AbstractElement extends CustomElement {
     }
 
     get draggable() {
-        return !this.disabled && !this.readonly && (!this.template || this.template !== "clicked");
+        return !this.disabled && !this.readOnly && (!this.template || this.template !== "clicked");
     }
 
     get editable() {
-        return !this.disabled && !this.readonly && !this.template;
+        return !this.disabled && !this.readOnly && !this.template;
     }
 
     get id() {
@@ -226,11 +226,11 @@ export default class AbstractElement extends CustomElement {
         return this.getBooleanAttribute("disabled");
     }
 
-    set readonly(value) {
+    set readOnly(value) {
         this.setBooleanAttribute("readonly", value);
     }
 
-    get readonly() {
+    get readOnly() {
         return this.getBooleanAttribute("readonly");
     }
 
@@ -243,7 +243,12 @@ export default class AbstractElement extends CustomElement {
     }
 
     static get observedAttributes() {
-        return ["disabled", "readonly", "visualize", "template"];
+        return [
+            "disabled",
+            "readonly",
+            "visualize",
+            "template"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -276,9 +281,9 @@ export default class AbstractElement extends CustomElement {
                     } else {
                         this.removeAttribute("draggable");
                     }
-                    const value = this.readonly;
+                    const value = this.readOnly;
                     for (const ch of this.children) {
-                        ch.readonly = value;
+                        ch.readOnly = value;
                     }
                 }
             } break;

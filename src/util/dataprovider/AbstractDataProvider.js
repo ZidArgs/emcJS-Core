@@ -8,8 +8,6 @@ import {DEFAULT_EXTRACT_CONFIG} from "../helper/collection/ExtractDataFromArray.
 import EventMultiTargetManager from "../event/EventMultiTargetManager.js";
 import DataViewControlToolbar from "../../ui/dataview/toolbar/DataViewControlToolbar.js";
 import DataReceiverMixin from "../datareceiver/DataReceiverMixin.js";
-import SimpleDataReceiver from "../datareceiver/SimpleDataReceiver.js";
-import EventManagerMixin from "../../ui/mixin/EventManagerMixin.js";
 
 export default class AbstractDataProvider extends EventTarget {
 
@@ -36,9 +34,6 @@ export default class AbstractDataProvider extends EventTarget {
         if (!(receiver instanceof DataReceiverMixin)) {
             throw new Error("receiver must extend DataReceiverMixin");
         }
-        if (!(receiver instanceof EventManagerMixin) && !(receiver instanceof SimpleDataReceiver)) {
-            throw new Error("receiver must extend EventManagerMixin or SimpleDataReceiver");
-        }
         super();
         const {
             config = {}, multiSort = false, toolbar
@@ -51,15 +46,15 @@ export default class AbstractDataProvider extends EventTarget {
         }
         this.refresh();
         /* --- */
-        if (receiver instanceof EventManagerMixin) {
-            this.#receiver.registerTargetEventHandler(this.#receiver, "refresh", () => {
+        if (receiver instanceof EventTarget) {
+            this.#receiver.addEventListener("refresh", () => {
                 this.refresh();
             });
-            this.#receiver.registerTargetEventHandler(this.#receiver, "search", (event) => {
+            this.#receiver.addEventListener("search", (event) => {
                 const {search} = event.data;
                 this.updateConfig({search});
             });
-            this.#receiver.registerTargetEventHandler(this.#receiver, "filter", (event) => {
+            this.#receiver.addEventListener("filter", (event) => {
                 const {filter} = event.data;
                 const newFilter = {...this.#config.filter};
                 for (const [key, value] of Object.entries(filter)) {
@@ -67,7 +62,7 @@ export default class AbstractDataProvider extends EventTarget {
                 }
                 this.updateConfig({filter: newFilter});
             });
-            this.#receiver.registerTargetEventHandler(this.#receiver, "sort", (event) => {
+            this.#receiver.addEventListener("sort", (event) => {
                 const {columnName} = event.data;
                 if (!this.#multiSort) {
                     const currentSort = this.#config.sort[0];
@@ -89,7 +84,7 @@ export default class AbstractDataProvider extends EventTarget {
                     this.updateConfig({sort: newSort});
                 }
             });
-            this.#receiver.registerTargetEventHandler(this.#receiver, "unsort", (event) => {
+            this.#receiver.addEventListener("unsort", (event) => {
                 const {columnName} = event.data;
                 if (!this.#multiSort) {
                     const currentSort = this.#config.sort[0];

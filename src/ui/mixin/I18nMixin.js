@@ -38,7 +38,7 @@ export default createMixin((superclass) => class I18nMixin extends superclass {
 
     connectedCallback() {
         if (super.connectedCallback) {
-            super.connectedCallback();
+            super.connectedCallback?.();
         }
         /* --- */
         this.#i18nEventManager.active = true;
@@ -53,7 +53,7 @@ export default createMixin((superclass) => class I18nMixin extends superclass {
 
     disconnectedCallback() {
         if (super.disconnectedCallback) {
-            super.disconnectedCallback();
+            super.disconnectedCallback?.();
         }
         /* --- */
         this.#i18nEventManager.active = false;

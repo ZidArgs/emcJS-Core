@@ -15,9 +15,9 @@ export default class AbstractInfChildrenElement extends AbstractElement {
         this.#type = type;
         /* --- */
         this.#placeholderEl = this.shadowRoot.getElementById("droptarget");
-        this.registerTargetEventHandler(this.#placeholderEl, "dragover", AbstractElement.allowDrop);
-        this.registerTargetEventHandler(this.#placeholderEl, "drop", AbstractElement.dropOnPlaceholder);
-        this.registerTargetEventHandler(this.#placeholderEl, "click", (event) => {
+        this.#placeholderEl.addEventListener("dragover", AbstractElement.allowDrop);
+        this.#placeholderEl.addEventListener("drop", AbstractElement.dropOnPlaceholder);
+        this.#placeholderEl.addEventListener("click", (event) => {
             const e = new Event("placeholderclicked", {
                 bubbles: true,
                 cancelable: true

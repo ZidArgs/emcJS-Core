@@ -8,8 +8,16 @@ export function numberSurroundedStringComparator(a, b) {
         const rA = NUMBER_STRING_REGEX.exec(a);
         const rB = NUMBER_STRING_REGEX.exec(b);
         if (rA != null && rB != null) {
-            const [, nA0, sA, nA1] = rA;
-            const [, nB0, sB, nB1] = rB;
+            const [
+                , nA0,
+                sA,
+                nA1
+            ] = rA;
+            const [
+                , nB0,
+                sB,
+                nB1
+            ] = rB;
             const iA0 = parseInt(nA0);
             const iB0 = parseInt(nB0);
 
@@ -35,8 +43,14 @@ export function numberPrefixedStringComparator(a, b) {
         const rA = NUMBER_PREFIX_STRING_REGEX.exec(a);
         const rB = NUMBER_PREFIX_STRING_REGEX.exec(b);
         if (rA != null && rB != null) {
-            const [, sA, nA] = rA;
-            const [, sB, nB] = rB;
+            const [
+                , sA,
+                nA
+            ] = rA;
+            const [
+                , sB,
+                nB
+            ] = rB;
             const iA = parseInt(nA);
             const iB = parseInt(nB);
             const nCompare = iA - iB;
@@ -55,8 +69,14 @@ export function numberPostfixedStringComparator(a, b) {
         const rA = NUMBER_POSTFIX_STRING_REGEX.exec(a);
         const rB = NUMBER_POSTFIX_STRING_REGEX.exec(b);
         if (rA != null && rB != null) {
-            const [, sA, nA] = rA;
-            const [, sB, nB] = rB;
+            const [
+                , sA,
+                nA
+            ] = rA;
+            const [
+                , sB,
+                nB
+            ] = rB;
             const sCompare = sA.localeCompare(sB);
             if (sCompare !== 0) {
                 return sCompare;

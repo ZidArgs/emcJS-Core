@@ -8,14 +8,9 @@ const COMMENT_START = /(\/(?:\*|\/))/g;
 function splitFirst(input, delimiter) {
     const spl = input.split(delimiter);
     if (spl.length > 1) {
-        return [
-            spl.shift(),
-            spl.join("")
-        ];
+        return [spl.shift(), spl.join("")];
     } else {
-        return [
-            spl.shift()
-        ];
+        return [spl.shift()];
     }
 }
 

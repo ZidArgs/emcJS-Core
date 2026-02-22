@@ -60,13 +60,17 @@
     <div id="page">
         <emc-captionpanel id="preview-panel" caption="Preview">
             <div id="preview-element"></div>
-            <emc-button id="show-html" text="Show HTML" icon="</>"></emc-button>
+            <emc-button id="show-html" text="Show HTML" icon-type="font" icon="code"></emc-button>
         </emc-captionpanel>
         <emc-captionpanel id="config-panel" caption="Configuration">
             <emc-form-container id="form">
                 <form slot="header">
-                    <emc-select-search label="Type" name="type" id="type-select" sorted></emc-select-search>
-                    <emc-input-string label="ID" name="id"></emc-input-string>
+                    <emc-form-field label="Type">
+                        <emc-select-search name="type" id="type-select" sorted></emc-select-search>
+                    </emc-form-field>
+                    <emc-form-field label="ID">
+                        <emc-input-string name="id"></emc-input-string>
+                    </emc-form-field>
                 </form>
                 <form id="detail-form"></form>
             </emc-form-container>

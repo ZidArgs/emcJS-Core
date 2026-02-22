@@ -6,10 +6,9 @@
     min-height: calc(var(--navigation-button-height, 1.5em) + 2 * var(--navigation-button-margin-y, 2px));
     color: var(--navigation-text-color, #000000);
     background-color: var(--navigation-back-color, #ffffff);
-    background-image: var(--navigation-back-image, none);
     flex-grow: 0;
     flex-shrink: 0;
-    z-index: var(--z-index-navbar, 900500);
+    z-index: var(--z-index-navbar, 900400);
 }
 
 #container {
@@ -66,7 +65,6 @@ ul li {
     min-width: 50px;
     margin: var(--navigation-button-margin-y, 2px) var(--navigation-button-margin-x, 4px);
     background-color: var(--navigation-back-color, #ffffff);
-    background-image: var(--navigation-back-image, none);
 }
 
 ul > li {
@@ -111,7 +109,6 @@ ul li > emc-navbar-button {
     box-sizing: border-box;
     color: var(--navigation-button-text-color, #000000);
     background-color: var(--navigation-button-back-color, #ffffff);
-    background-image: var(--navigation-button-back-image, none);
     border-style: solid;
     border-width: var(--navigation-button-border-width, 1px);
     border-color: var(--navigation-button-border-color, #000000);

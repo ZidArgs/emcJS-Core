@@ -1,4 +1,4 @@
-import Modal from "../../../../../modal/Modal.js";
+import ModalDialog from "../../../../../modal/ModalDialog.js";
 import CharacterSearch from "../../../../../../util/search/CharacterSearch.js";
 import ElementListCache from "../../../../../../util/html/ElementListCache.js";
 import EventMultiTargetManager from "../../../../../../util/event/EventMultiTargetManager.js";
@@ -10,15 +10,11 @@ import TPL from "./ImageSelectModal.js.html" assert {type: "html"};
 import STYLE from "./ImageSelectModal.js.css" assert {type: "css"};
 
 // TODO maybe add a new set of colors for the preview elements?
-export default class ImageSelectModal extends Modal {
+export default class ImageSelectModal extends ModalDialog {
+
+    #value;
 
     #contentEl;
-
-    #footerEl;
-
-    #submitEl;
-
-    #cancelEl;
 
     #slotEl;
 
@@ -38,17 +34,20 @@ export default class ImageSelectModal extends Modal {
 
     #optionSelectEventManager = new EventMultiTargetManager();
 
-    constructor() {
-        super("Select icon...");
+    constructor(caption = "Select icon...", options = {}) {
+        super(caption, {
+            submit: true,
+            cancel: true,
+            ...options
+        });
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#contentEl = this.shadowRoot.getElementById("content");
-        this.#footerEl = this.shadowRoot.getElementById("footer");
 
         this.#searchEl = els.getElementById("search");
         this.#contentEl.before(this.#searchEl);
-        this.registerTargetEventHandler(this.#searchEl, "change", () => {
+        this.#searchEl.addEventListener("change", () => {
             const all = this.children;
             if (this.#searchEl.value) {
                 const regEx = new CharacterSearch(this.#searchEl.value);
@@ -74,94 +73,57 @@ export default class ImageSelectModal extends Modal {
         this.#viewSizeGiganticEl = els.getElementById("view-size-gigantic");
 
         this.#contentEl.before(this.#viewControlEl);
-        this.registerTargetEventHandler(this.#viewSizeSmallEl, "click", () => {
+        this.#viewSizeSmallEl.addEventListener("click", () => {
             this.#contentEl.style.setProperty("--icon-preview-size", "50px");
             this.#viewSizeSmallEl.active = true;
             this.#viewSizeNormalEl.active = false;
             this.#viewSizeBigEl.active = false;
             this.#viewSizeGiganticEl.active = false;
         });
-        this.registerTargetEventHandler(this.#viewSizeNormalEl, "click", () => {
+        this.#viewSizeNormalEl.addEventListener("click", () => {
             this.#contentEl.style.setProperty("--icon-preview-size", "100px");
             this.#viewSizeSmallEl.active = false;
             this.#viewSizeNormalEl.active = true;
             this.#viewSizeBigEl.active = false;
             this.#viewSizeGiganticEl.active = false;
         });
-        this.registerTargetEventHandler(this.#viewSizeBigEl, "click", () => {
+        this.#viewSizeBigEl.addEventListener("click", () => {
             this.#contentEl.style.setProperty("--icon-preview-size", "200px");
             this.#viewSizeSmallEl.active = false;
             this.#viewSizeNormalEl.active = false;
             this.#viewSizeBigEl.active = true;
             this.#viewSizeGiganticEl.active = false;
         });
-        this.registerTargetEventHandler(this.#viewSizeGiganticEl, "click", () => {
+        this.#viewSizeGiganticEl.addEventListener("click", () => {
             this.#contentEl.style.setProperty("--icon-preview-size", "400px");
             this.#viewSizeSmallEl.active = false;
             this.#viewSizeNormalEl.active = false;
             this.#viewSizeBigEl.active = false;
             this.#viewSizeGiganticEl.active = true;
         });
-
-        this.#cancelEl = els.getElementById("cancel");
-        this.registerTargetEventHandler(this.#cancelEl, "click", () => this.cancel());
-        this.#footerEl.append(this.#cancelEl);
-
-        this.#submitEl = els.getElementById("submit");
-        this.registerTargetEventHandler(this.#submitEl, "click", () => this.submit());
-        this.#footerEl.append(this.#submitEl);
         /* --- */
         this.#optionSelectEventManager.set("click", (event) => {
-            this.value = event.currentTarget.getAttribute("value");
+            this.#value = event.currentTarget.getAttribute("value");
+            this.#applyValue();
             event.preventDefault();
             event.stopPropagation();
         });
         /* --- */
         this.#slotEl = this.shadowRoot.getElementById("slot");
-        this.registerTargetEventHandler(this.#slotEl, "slotchange", () => {
+        this.#slotEl.addEventListener("slotchange", () => {
             this.#onSlotChange();
         });
     }
 
-    connectedCallback() {
-        super.connectedCallback?.();
-        this.#onSlotChange();
-    }
-
-    submit() {
-        this.dispatchEvent(new Event("submit"));
-        this.remove();
-    }
-
-    cancel() {
-        this.dispatchEvent(new Event("cancel"));
-        this.remove();
-    }
-
-    set value(value) {
-        if (value == null) {
-            this.removeAttribute("value");
-        } else {
-            this.setAttribute("value", value);
-        }
+    async show(value) {
+        this.#value = value;
+        this.#applyValue();
+        const result = await super.show();
+        return result && this.#value;
     }
 
     get value() {
-        return this.getAttribute("value") ?? this.#optionNodeList.first?.value;
-    }
-
-    static get observedAttributes() {
-        return ["value"];
-    }
-
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (oldValue != newValue) {
-            switch (name) {
-                case "value": {
-                    this.#applyValue(newValue);
-                } break;
-            }
-        }
+        return this.#value;
     }
 
     #resolveSlottedElements() {
@@ -173,15 +135,15 @@ export default class ImageSelectModal extends Modal {
             this.#optionSelectEventManager.addTarget(el);
         }
         /* --- */
-        this.#applyValue(this.value);
+        this.#applyValue();
     }
 
-    #applyValue(value) {
+    #applyValue() {
         const oldSelectedEl = this.querySelector(`.selected`);
         if (oldSelectedEl != null) {
             oldSelectedEl.classList.remove("selected");
         }
-        const newSelectedEl = this.querySelector(`[value="${value}"]`);
+        const newSelectedEl = this.querySelector(`[value="${this.#value}"]`);
         if (newSelectedEl != null) {
             newSelectedEl.classList.add("selected");
         }

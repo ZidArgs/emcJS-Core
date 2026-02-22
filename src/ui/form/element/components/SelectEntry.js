@@ -1,9 +1,12 @@
 import CustomElement from "../../../element/CustomElement.js";
 import "../../../i18n/I18nLabel.js";
+import "./checkbox/SelectCheckBox.js";
 import TPL from "./SelectEntry.js.html" assert {type: "html"};
 import STYLE from "./SelectEntry.js.css" assert {type: "css"};
 
 export default class SelectEntry extends CustomElement {
+
+    #checkboxEl;
 
     #labelEl;
 
@@ -12,6 +15,7 @@ export default class SelectEntry extends CustomElement {
         this.shadowRoot.append(TPL.generate());
         STYLE.apply(this.shadowRoot);
         /* --- */
+        this.#checkboxEl = this.shadowRoot.getElementById("checkbox");
         this.#labelEl = this.shadowRoot.getElementById("label");
     }
 
@@ -40,13 +44,17 @@ export default class SelectEntry extends CustomElement {
     }
 
     static get observedAttributes() {
-        return ["value", "label"];
+        return [
+            "value",
+            "label",
+            "selected"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
             case "value": {
-                if (!this.label) {
+                if (oldValue != newValue && !this.label) {
                     this.#labelEl.innerText = newValue;
                 }
             } break;
@@ -58,6 +66,11 @@ export default class SelectEntry extends CustomElement {
                         this.#labelEl.i18nValue = "";
                         this.#labelEl.innerText = this.value;
                     }
+                }
+            } break;
+            case "selected": {
+                if (oldValue != newValue) {
+                    this.#checkboxEl.value = this.selected;
                 }
             } break;
         }

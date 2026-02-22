@@ -6,6 +6,7 @@ import {getArrayMutations} from "../../../../util/helper/collection/ArrayMutatio
 import {getFromObjectByPath} from "../../../../util/helper/collection/ObjectContent.js";
 import DataGridCell from "../components/cell/DataGridCell.js";
 import CellCache from "../data/CellCache.js";
+import SelectCheckBox from "../../../form/element/components/checkbox/SelectCheckBox.js";
 
 const BLACKLISTED_ATTRIBUTES = [
     "id",
@@ -55,7 +56,7 @@ export default class CellManager extends EventTarget {
 
     #lastCellEl;
 
-    #eventManager = new EventManager(false);
+    #eventManager = new EventManager();
 
     constructor(target, cellCache, dataGridId) {
         if (!(target instanceof HTMLTableRowElement)) {
@@ -82,9 +83,8 @@ export default class CellManager extends EventTarget {
         this.#selectCellEl.classList.add("select-cell");
         this.#selectCellEl.classList.add("fixed-cell");
         this.#selectCellEl.classList.add("fixed-cell-start");
-        this.#selectCheckboxEl = document.createElement("input");
-        this.#selectCheckboxEl.type = "checkbox";
-        this.#selectCheckboxEl.name = "rowselect";
+        this.#selectCheckboxEl = new SelectCheckBox();
+        this.#selectCheckboxEl.classList.add("checkbox");
         this.#eventManager.set(this.#selectCheckboxEl, "change", (event) => {
             event.stopPropagation();
             const ev = new Event("selection", {
@@ -92,7 +92,7 @@ export default class CellManager extends EventTarget {
                 cancelable: true
             });
             ev.data = {
-                value: this.#selectCheckboxEl.checked,
+                value: this.#selectCheckboxEl.value,
                 rowKey: this.#rowKey
             };
             this.#selectCheckboxEl.dispatchEvent(ev);
@@ -104,16 +104,12 @@ export default class CellManager extends EventTarget {
         this.#lastCellEl.classList.add("last-cell");
     }
 
-    setEventManagerActive(value) {
-        this.#eventManager.active = value;
-    }
-
     set selected(value) {
-        this.#selectCheckboxEl.checked = !!value;
+        this.#selectCheckboxEl.value = !!value;
     }
 
     get selected() {
-        return this.#selectCheckboxEl.checked;
+        return this.#selectCheckboxEl.value;
     }
 
     set sortable(value) {
@@ -244,7 +240,7 @@ export default class CellManager extends EventTarget {
         }
 
         // add select element
-        this.#selectCheckboxEl.checked = isSelected;
+        this.#selectCheckboxEl.value = isSelected;
         this.#selectCheckboxEl.rowKey = this.#rowKey;
 
         if (!isEqual(newOrder, this.#order)) {

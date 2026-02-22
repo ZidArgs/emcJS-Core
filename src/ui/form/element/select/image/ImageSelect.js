@@ -1,13 +1,13 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
+import {immute} from "../../../../../data/Immutable.js";
+import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
 import BusyIndicatorManager from "../../../../../util/BusyIndicatorManager.js";
 import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
-import {deepClone} from "../../../../../util/helper/DeepClone.js";
 import {debounce} from "../../../../../util/Debouncer.js";
 import {nodeTextComparator} from "../../../../../util/helper/ui/NodeListSort.js";
-import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
 import {
-    safeSetAttribute, setAttributes
+    setAttributes
 } from "../../../../../util/helper/ui/NodeAttributes.js";
 import MutationObserverManager from "../../../../../util/observer/manager/MutationObserverManager.js";
 import ImageSelectModal from "./components/ImageSelectModal.js";
@@ -23,11 +23,10 @@ const MUTATION_CONFIG = {
     attributeFilter: ["value", "label"]
 };
 
-// TODO use option slot like the other select elements
 export default class ImageSelect extends AbstractFormElement {
 
     static get formConfigurationFields() {
-        return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
+        return immute([...super.formConfigurationFields, ...CONFIG_FIELDS]);
     }
 
     static get changeDebounceTime() {
@@ -42,7 +41,7 @@ export default class ImageSelect extends AbstractFormElement {
 
     #optionsSlotEl;
 
-    #imageIconModal = new ImageSelectModal();
+    #imageSelectModal = new ImageSelectModal();
 
     #i18nEventManager = new EventTargetManager(i18n);
 
@@ -54,29 +53,33 @@ export default class ImageSelect extends AbstractFormElement {
 
     constructor() {
         super();
-        this.shadowRoot.getElementById("field").append(TPL.generate());
+        TPL.apply(this.shadowRoot);
         STYLE.apply(this.shadowRoot);
         /* --- */
+        this.#imageSelectModal.resize = ImageSelectModal.AXES.BOTH;
         this.#iconEl = this.shadowRoot.getElementById("icon");
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.registerTargetEventHandler(this.#inputEl, "focus", () => {
+        this.#inputEl.addEventListener("focus", () => {
             this.#buttonEl.focus();
         });
         this.#buttonEl = this.shadowRoot.getElementById("button");
-        this.registerTargetEventHandler(this.#buttonEl, "click", () => {
-            this.#imageIconModal.value = this.value;
-            this.#imageIconModal.onsubmit = () => {
-                this.value = this.#imageIconModal.value;
-            };
-            this.#imageIconModal.show();
+        this.#buttonEl.addEventListener("click", async () => {
+            const result = await this.#imageSelectModal.show(this.value);
+            if (result) {
+                this.value =  result;
+                this.dispatchEvent(new Event("input", {
+                    bubbles: true,
+                    cancelable: true
+                }));
+            }
         });
         this.#optionsSlotEl = this.shadowRoot.getElementById("options-slot");
-        this.registerTargetEventHandler(this.#optionsSlotEl, "slotchange", () => {
+        this.#optionsSlotEl.addEventListener("slotchange", () => {
             this.#onSlotChange();
         });
         /* --- */
-        this.#imageSelectPreviewManager = new ImageSelectPreviewManager(this.#imageIconModal);
-        this.registerTargetEventHandler(this.#imageSelectPreviewManager, "afterrender", () => {
+        this.#imageSelectPreviewManager = new ImageSelectPreviewManager(this.#imageSelectModal);
+        this.#imageSelectPreviewManager.addEventListener("afterrender", () => {
             this.renderValue(this.value);
         });
         /* --- */
@@ -87,11 +90,6 @@ export default class ImageSelect extends AbstractFormElement {
         this.#i18nEventManager.set("translation", () => {
             this.#imageSelectPreviewManager.sort();
         });
-    }
-
-    connectedCallback() {
-        super.connectedCallback?.();
-        this.#onSlotChange();
     }
 
     formDisabledCallback(disabled) {
@@ -105,24 +103,15 @@ export default class ImageSelect extends AbstractFormElement {
 
     focus(options) {
         super.focus(options);
-        this.#inputEl.focus(options);
-    }
-
-    set value(value) {
-        this.#inputEl.value = value ?? this.defaultValue;
-        super.value = value;
-    }
-
-    get value() {
-        return super.value;
+        this.#buttonEl.focus(options);
     }
 
     set placeholder(value) {
-        this.setAttribute("placeholder", value);
+        this.setStringAttribute("placeholder", value);
     }
 
     get placeholder() {
-        return this.getAttribute("placeholder");
+        return this.getStringAttribute("placeholder");
     }
 
     set sorted(value) {
@@ -135,7 +124,11 @@ export default class ImageSelect extends AbstractFormElement {
 
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "placeholder", "readonly", "sorted"];
+        return [
+            ...superObserved,
+            "placeholder",
+            "sorted"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -143,12 +136,7 @@ export default class ImageSelect extends AbstractFormElement {
         switch (name) {
             case "placeholder": {
                 if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, "i18n-placeholder", newValue);
-                }
-            } break;
-            case "readonly": {
-                if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, "readonly", this.readonly);
+                    this.#inputEl.i18nPlaceholder = this.placeholder;
                 }
             } break;
             case "sorted": {

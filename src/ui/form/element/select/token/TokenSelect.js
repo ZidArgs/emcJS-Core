@@ -1,34 +1,34 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
-import ResizeObserverMixin from "../../../../mixin/ResizeObserverMixin.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
+import {immute} from "../../../../../data/Immutable.js";
+import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
 import BusyIndicatorManager from "../../../../../util/BusyIndicatorManager.js";
 import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
 import EventMultiTargetManager from "../../../../../util/event/EventMultiTargetManager.js";
 import i18n from "../../../../../util/I18n.js";
 import CharacterSearch from "../../../../../util/search/CharacterSearch.js";
-import {deepClone} from "../../../../../util/helper/DeepClone.js";
+import {
+    isStringNotEmpty, isArrayNotEmpty
+} from "../../../../../util/helper/CheckType.js";
 import {nodeTextComparator} from "../../../../../util/helper/ui/NodeListSort.js";
 import {debounce} from "../../../../../util/Debouncer.js";
-import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
+import {jsonParseSafe} from "../../../../../util/helper/JSON.js";
 import {
-    safeSetAttribute, setAttributes
+    setAttributes, setBooleanAttribute
 } from "../../../../../util/helper/ui/NodeAttributes.js";
 import MutationObserverManager from "../../../../../util/observer/manager/MutationObserverManager.js";
 import TokenSelectedElementManager from "./manager/TokenSelectedElementManager.js";
 import I18nOption from "../../../../i18n/builtin/I18nOption.js";
 import SelectEntryManager from "../../components/SelectEntryManager.js";
 import I18nOptionManager from "../../components/I18nOptionManager.js";
+import ResizeObserverMixin from "../../../../mixin/ResizeObserverMixin.js";
 import "../../../../i18n/builtin/I18nInput.js";
 import "../../../../i18n/I18nLabel.js";
 import TPL from "./TokenSelect.js.html" assert {type: "html"};
 import STYLE from "./TokenSelect.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./TokenSelect.js.json" assert {type: "json"};
-import jsonParse from "../../../../../patches/JSONParser.js";
 
-const ESCAPE_KEYS = [
-    "Tab",
-    "Escape"
-];
+const ESCAPE_KEYS = ["Tab", "Escape"];
 
 const MUTATION_CONFIG = {
     attributes: true,
@@ -41,7 +41,7 @@ const MUTATION_CONFIG = {
 export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement) {
 
     static get formConfigurationFields() {
-        return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
+        return immute([...super.formConfigurationFields, ...CONFIG_FIELDS]);
     }
 
     static get changeDebounceTime() {
@@ -50,7 +50,7 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
 
     #isEditMode = false;
 
-    #fieldEl;
+    #containerEl;
 
     #inputEl;
 
@@ -62,13 +62,13 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
 
     #valueEl;
 
+    #placeholderEl;
+
     #tokenContainerEl;
 
     #overflowCounterEl;
 
     #buttonEl;
-
-    #placeholderEl;
 
     #scrollContainerEl;
 
@@ -82,7 +82,7 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
 
     #optionSelectEventManager = new EventMultiTargetManager();
 
-    #i18nEventManager = new EventTargetManager(i18n);
+    #i18nEventManager = new EventTargetManager(i18n, false);
 
     #mutationObserver = new MutationObserverManager(MUTATION_CONFIG, () => {
         this.#onSlotChange();
@@ -94,10 +94,11 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
 
     #i18nOptionManager;
 
+    #windowEventManager = new EventTargetManager(window, false);
+
     constructor() {
         super();
-        this.#fieldEl = this.shadowRoot.getElementById("field");
-        this.#fieldEl.append(TPL.generate());
+        TPL.apply(this.shadowRoot);
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#optionSelectEventManager.set("mousedown", (event) => {
@@ -118,6 +119,7 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
             }
         });
         /* --- */
+        this.#containerEl = this.shadowRoot.getElementById("container");
         this.#inputEl = this.shadowRoot.getElementById("input");
         this.#nativeSelectEl = this.shadowRoot.getElementById("native-select");
         this.#nativeEmptyEl = this.shadowRoot.getElementById("native-empty");
@@ -132,35 +134,32 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
         this.#buttonEl = this.shadowRoot.getElementById("button");
         this.#optionsContainerEl = this.shadowRoot.getElementById("options-container");
         this.#optionsSlotEl = this.shadowRoot.getElementById("options-slot");
-        this.registerTargetEventHandler(this.#optionsSlotEl, "slotchange", () => {
+        this.#optionsSlotEl.addEventListener("slotchange", () => {
             this.#onSlotChange();
         });
         /* --- */
-        this.registerTargetEventHandler(this.#scrollContainerEl, "mousedown", (event) => {
+        this.#scrollContainerEl.addEventListener("mousedown", (event) => {
             event.stopPropagation();
-        });
-        this.registerTargetEventHandler(this.#scrollContainerEl, "click", () => {
-            this.focus();
         });
         /* --- */
-        this.registerTargetEventHandler(this.#viewEl, "click", (event) => {
-            if (!this.readonly && !this.#isEditMode) {
+        this.#viewEl.addEventListener("click", (event) => {
+            if (!this.readOnly && !this.#isEditMode) {
                 this.#startEditMode();
                 event.preventDefault();
                 event.stopPropagation();
             }
         });
-        this.registerTargetEventHandler(this.#inputEl, "click", (event) => {
-            if (!this.readonly && !this.#isEditMode) {
+        this.#inputEl.addEventListener("click", (event) => {
+            if (!this.readOnly && !this.#isEditMode) {
                 this.#startEditMode();
                 event.preventDefault();
                 event.stopPropagation();
             }
         });
-        this.registerTargetEventHandler(this.#inputEl, "mousedown", (event) => {
+        this.#inputEl.addEventListener("mousedown", (event) => {
             event.stopPropagation();
         });
-        this.registerTargetEventHandler(this.#inputEl, "keydown", (event) => {
+        this.#inputEl.addEventListener("keydown", (event) => {
             if (!this.getBooleanAttribute("readonly")) {
                 if (!this.#isEditMode) {
                     const {key} = event;
@@ -195,66 +194,68 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
                 }
             }
         });
-        this.registerTargetEventHandler(this.#inputEl, "blur", (event) => {
+        this.#inputEl.addEventListener("blur", (event) => {
             if (event.relatedTarget != null && !event.relatedTarget.contains(this.#inputEl)) {
                 this.#cancelSelection();
             }
             event.stopPropagation();
         });
-        this.registerTargetEventHandler(this.#inputEl, "input", () => {
+        this.#inputEl.addEventListener("input", () => {
             if (!this.#isEditMode) {
                 this.#startEditMode(true);
             }
             this.#applySearch();
-        }, true);
-        this.registerTargetEventHandler(this.#scrollContainerEl, "wheel", (event) => {
+        });
+        this.#scrollContainerEl.addEventListener("wheel", (event) => {
             event.stopPropagation();
         }, {passive: true});
         /* --- */
-        this.registerTargetEventHandler(this.#nativeSelectEl, "mousedown", (event) => {
-            if (this.readonly) {
+        this.#nativeSelectEl.addEventListener("mousedown", (event) => {
+            if (this.readOnly) {
                 event.preventDefault();
                 event.stopPropagation();
             }
         });
-        this.registerTargetEventHandler(this.#nativeSelectEl, "change", () => {
+        this.#nativeSelectEl.addEventListener("change", () => {
             this.value = this.#nativeSelectEl.value;
+            this.dispatchEvent(new Event("input", {
+                bubbles: true,
+                cancelable: true
+            }));
         });
         /* --- */
-        this.registerTargetEventHandler(window, "wheel", () => {
+        this.#windowEventManager.set("wheel", () => {
             if (this.#isEditMode) {
                 this.#cancelSelection();
             }
         }, {passive: true});
-        this.registerTargetEventHandler(window, "blur", () => {
+        this.#windowEventManager.set("blur", () => {
             if (this.#isEditMode) {
                 this.#cancelSelection();
             }
         }, {passive: true});
-        this.registerTargetEventHandler(window, "mousedown", (event) => {
-            if (!this.readonly && this.#isEditMode) {
-                if (!this.#fieldEl.contains(event.target)) {
+        this.#windowEventManager.set("mousedown", (event) => {
+            if (!this.readOnly && this.#isEditMode) {
+                if (!this.#containerEl.contains(event.target)) {
                     this.#cancelSelection();
-                } else {
-                    this.focus();
                 }
             }
         }, {passive: true});
         /* --- */
         this.#tokenSelectedManager = new TokenSelectedElementManager(this.#tokenContainerEl);
         this.#tokenSelectedManager.registerSortFunction(this.#sortByNameFunction);
-        this.registerTargetEventHandler(this.#tokenSelectedManager, "afterrender", () => {
+        this.#tokenSelectedManager.addEventListener("afterrender", () => {
             this.#handleOverflowItems();
         });
         this.#selectEntryManager = new SelectEntryManager(this.#optionsContainerEl, this.#optionSelectEventManager);
         this.#selectEntryManager.registerSortFunction(this.#sortByNameFunction);
-        this.registerTargetEventHandler(this.#selectEntryManager, "afterrender", () => {
+        this.#selectEntryManager.addEventListener("afterrender", () => {
             this.#refreshSelect(this.#optionsContainerEl);
             this.renderValue(this.value);
         });
         this.#i18nOptionManager = new I18nOptionManager(this.#nativeSelectEl);
         this.#i18nOptionManager.registerSortFunction(this.#sortByNameFunction);
-        this.registerTargetEventHandler(this.#i18nOptionManager, "afterrender", () => {
+        this.#i18nOptionManager.addEventListener("afterrender", () => {
             this.#refreshSelect(this.#nativeSelectEl);
         });
         /* --- */
@@ -272,13 +273,12 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
 
     connectedCallback() {
         super.connectedCallback?.();
-        this.#tokenSelectedManager.setEventManagerActive(true);
-        this.#onSlotChange();
+        this.#windowEventManager.active = true;
     }
 
     disconnectedCallback() {
         super.disconnectedCallback?.();
-        this.#tokenSelectedManager.setEventManagerActive(false);
+        this.#windowEventManager.active = false;
     }
 
     resizeCallback() {
@@ -316,7 +316,7 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
             value = [];
         }
         if (typeof value === "string") {
-            value = jsonParse(value);
+            value = jsonParseSafe(value);
         }
         if (!Array.isArray(value)) {
             throw new TypeError("value must be an array or null");
@@ -345,11 +345,11 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
     }
 
     set placeholder(value) {
-        this.setAttribute("placeholder", value);
+        this.setStringAttribute("placeholder", value);
     }
 
     get placeholder() {
-        return this.getAttribute("placeholder");
+        return this.getStringAttribute("placeholder");
     }
 
     set multiple(val) {
@@ -370,7 +370,11 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
 
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "placeholder", "readonly"];
+        return [
+            ...superObserved,
+            "placeholder",
+            "readonly"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -378,13 +382,12 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
         switch (name) {
             case "placeholder": {
                 if (oldValue != newValue) {
-                    safeSetAttribute(this.#placeholderEl, "i18n-value", newValue);
+                    this.#placeholderEl.i18nValue = newValue;
                 }
             } break;
             case "readonly": {
                 if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, "readonly", this.readonly);
-                    safeSetAttribute(this.#buttonEl, "readonly", this.readonly);
+                    setBooleanAttribute(this.#nativeSelectEl, "readonly", this.readOnly);
                 }
             } break;
             case "multiple": {
@@ -401,9 +404,9 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
     }
 
     renderValue(value) {
-        if (value != null && value.length > 0) {
-            const data = [];
-            for (const val of value ?? []) {
+        const data = [];
+        if (isArrayNotEmpty(value)) {
+            for (const val of value) {
                 const selectedEl = this.#optionsContainerEl.querySelector(`[value="${val}"]`);
                 if (selectedEl != null) {
                     data.push({
@@ -413,9 +416,11 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
                     });
                 }
             }
+        }
+        if (data.length) {
+            this.#tokenSelectedManager.manage(data);
             this.#valueEl.classList.remove("hidden");
             this.#placeholderEl.classList.add("hidden");
-            this.#tokenSelectedManager.manage(data);
         } else {
             this.#nativeSelectEl.value = "";
             this.#tokenContainerEl.innerHTML = "";
@@ -430,15 +435,14 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
     }
 
     #startEditMode(keepSearchInput = false) {
-        if (!this.readonly) {
+        if (!this.readOnly) {
             this.#isEditMode = true;
             if (!keepSearchInput) {
                 this.#inputEl.value = "";
             }
             this.#inputEl.classList.add("active");
-            this.focus();
             /* --- */
-            const thisRect = this.#fieldEl.getBoundingClientRect();
+            const thisRect = this.#containerEl.getBoundingClientRect();
             this.#scrollContainerEl.style.display = "block";
             this.#scrollContainerEl.style.left = `${thisRect.left}px`;
             this.#scrollContainerEl.style.width = `${thisRect.width}px`;
@@ -487,7 +491,6 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
             this.value = Array.from(valueBuffer);
         }
         this.#applySearch();
-        this.focus();
     }
 
     #stopEditMode() {
@@ -612,16 +615,21 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
         /* --- */
         const oldNodes = new Set(this.#mutationObserver.getObservedNodes());
         const newNodes = new Set();
+        const usedKeys = new Set();
         for (const el of optionNodeList) {
-            data.push({
-                key: el.value || el.innerText,
-                label: el.i18nValue || el.label || el.innerText
-            });
-            /* --- */
-            if (oldNodes.has(el)) {
-                oldNodes.delete(el);
-            } else {
-                newNodes.add(el);
+            const key = el.value || el.innerText;
+            if (!usedKeys.has(key)) {
+                usedKeys.add(key);
+                data.push({
+                    key,
+                    label: el.i18nValue || el.label || el.innerText
+                });
+                /* --- */
+                if (oldNodes.has(el)) {
+                    oldNodes.delete(el);
+                } else {
+                    newNodes.add(el);
+                }
             }
         }
         for (const node of oldNodes) {
@@ -641,8 +649,6 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
             this.#emptyEl.style.display = "flex";
             this.#nativeSelectEl.append(this.#nativeEmptyEl);
         }
-        /* --- */
-        this.renderValue(this.value);
         await BusyIndicatorManager.unbusy();
     }
 
@@ -668,7 +674,7 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
     }
 
     #toggleToken(value, toggledEl) {
-        if (!this.readonly) {
+        if (!this.readOnly) {
             const valueBuffer = new Set(this.value);
             if (this.multiple) {
                 if (valueBuffer.has(value)) {
@@ -691,12 +697,22 @@ export default class TokenSelect extends ResizeObserverMixin(AbstractFormElement
                 toggledEl.selected = true;
             }
             this.value = Array.from(valueBuffer);
+            this.dispatchEvent(new Event("input", {
+                bubbles: true,
+                cancelable: true
+            }));
         }
     }
 
     #sortByNameFunction(entry0, entry1) {
         const {element: el0} = entry0;
         const {element: el1} = entry1;
+        if (!isStringNotEmpty(el0.value)) {
+            return -1;
+        }
+        if (!isStringNotEmpty(el1.value)) {
+            return 1;
+        }
         return nodeTextComparator(el0, el1);
     }
 

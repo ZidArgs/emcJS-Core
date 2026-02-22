@@ -46,7 +46,10 @@ class FileSystem {
                         ul.value = null;
                         const reader = new FileReader();
                         reader.onload = () => {
-                            resolve(convertData(reader.result));
+                            resolve({
+                                name: fileData.name,
+                                ...convertData(reader.result)
+                            });
                         };
                         reader.onabort = () => {
                             resolve(null);

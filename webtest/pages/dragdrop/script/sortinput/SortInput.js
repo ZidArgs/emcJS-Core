@@ -124,10 +124,12 @@ export default class SortInput extends HTMLElement {
         this.#observer = new MutationObserver((mutationsList) => {
             for (const mutation of mutationsList) {
                 if (mutation.type == "childList") {
-                    const target = mutation.target;
+                    // const target = mutation.target;
+                    // eslint-disable-next-line no-unused-vars
                     for (const element of mutation.addedNodes) {
                         this.#updateItems();
                     }
+                    // eslint-disable-next-line no-unused-vars
                     for (const element of mutation.removedNodes) {
                         this.#updateItems();
                     }
@@ -138,7 +140,7 @@ export default class SortInput extends HTMLElement {
 
     connectedCallback() {
         if (super.connectedCallback) {
-            super.connectedCallback();
+            super.connectedCallback?.();
         }
         this.#observer.observe(this, {
             childList: true,
@@ -149,7 +151,7 @@ export default class SortInput extends HTMLElement {
 
     disconnectedCallback() {
         if (super.disconnectedCallback) {
-            super.disconnectedCallback();
+            super.disconnectedCallback?.();
         }
         this.#observer.disconnect();
     }

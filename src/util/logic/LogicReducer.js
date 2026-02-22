@@ -24,115 +24,131 @@ export function reduceLogic(input) {
             if (input.content.every(filterTrue)) {
                 return {type: "true"};
             }
-            const output = {
-                type: input.type,
-                content: input.content.map(reduceLogic).filter(filterNull).filter(filterNoTrue)
-            };
-            if (output.content.length === 0) {
+            const reducedLogic = input.content.map(reduceLogic).filter(filterNull);
+            if (reducedLogic.length === 0) {
                 return;
             }
-            if (output.content.length === 1) {
-                return output.content[0];
-            }
-            if (output.content.some(filterFalse)) {
+            const resultLogic = reducedLogic.filter(filterNoTrue);
+            if (resultLogic.length === 0) {
                 return {type: "false"};
             }
-            return output;
+            if (resultLogic.length === 1) {
+                return resultLogic[0];
+            }
+            if (resultLogic.some(filterFalse)) {
+                return {type: "false"};
+            }
+            return {
+                type: input.type,
+                content: resultLogic
+            };
         }
         case "nand": {
             if (input.content.every(filterTrue)) {
                 return {type: "false"};
             }
-            const output = {
-                type: input.type,
-                content: input.content.map(reduceLogic).filter(filterNull).filter(filterNoTrue)
-            };
-            if (output.content.length === 0) {
+            const reducedLogic = input.content.map(reduceLogic).filter(filterNull);
+            if (reducedLogic.length === 0) {
                 return;
             }
-            if (output.content.length === 1) {
-                return output.content[0];
-            }
-            if (output.content.some((e) => e.type === "false")) {
+            const resultLogic = reducedLogic.filter(filterNoTrue);
+            if (resultLogic.length === 0) {
                 return {type: "true"};
             }
-            return output;
+            if (resultLogic.length === 1) {
+                return resultLogic[0];
+            }
+            if (resultLogic.some((e) => e.type === "false")) {
+                return {type: "true"};
+            }
+            return {
+                type: input.type,
+                content: resultLogic
+            };
         }
         case "or": {
             if (input.content.every(filterFalse)) {
                 return {type: "false"};
             }
-            const output = {
-                type: input.type,
-                content: input.content.map(reduceLogic).filter(filterNull).filter(filterNoFalse)
-            };
-            if (output.content.length === 0) {
+            const reducedLogic = input.content.map(reduceLogic).filter(filterNull);
+            if (reducedLogic.length === 0) {
                 return;
             }
-            if (output.content.length === 1) {
-                return output.content[0];
-            }
-            if (output.content.some((e) => e.type === "true")) {
+            const resultLogic = reducedLogic.filter(filterNoFalse);
+            if (resultLogic.length === 0) {
                 return {type: "true"};
             }
-            return output;
+            if (resultLogic.length === 1) {
+                return resultLogic[0];
+            }
+            if (resultLogic.some((e) => e.type === "true")) {
+                return {type: "true"};
+            }
+            return {
+                type: input.type,
+                content: resultLogic
+            };
         }
         case "nor": {
             if (input.content.every(filterFalse)) {
                 return {type: "true"};
             }
-            const output = {
-                type: input.type,
-                content: input.content.map(reduceLogic).filter(filterNull).filter(filterNoFalse)
-            };
-            if (output.content.length === 0) {
+            const reducedLogic = input.content.map(reduceLogic).filter(filterNull);
+            if (reducedLogic.length === 0) {
                 return;
             }
-            if (output.content.length === 1) {
-                return output.content[0];
-            }
-            if (output.content.some((e) => e.type === "true")) {
+            const resultLogic = reducedLogic.filter(filterNoFalse);
+            if (resultLogic.length === 0) {
                 return {type: "false"};
             }
-            return output;
+            if (resultLogic.length === 1) {
+                return resultLogic[0];
+            }
+            if (resultLogic.some((e) => e.type === "true")) {
+                return {type: "false"};
+            }
+            return {
+                type: input.type,
+                content: resultLogic
+            };
         }
         case "xor": {
-            const output = {
-                type: input.type,
-                content: input.content.map(reduceLogic).filter(filterNull)
-            };
-            if (output.content.length === 0) {
+            const resultLogic = input.content.map(reduceLogic).filter(filterNull);
+            if (resultLogic.length === 0) {
                 return;
             }
-            if (output.content.length === 1) {
-                return output.content[0];
+            if (resultLogic.length === 1) {
+                return resultLogic[0];
             }
-            if (output.content[0].type === "true" && output.content[1].type === "true" || output.content[0].type === "false" && output.content[1].type === "false") {
+            if (resultLogic[0].type === "true" && resultLogic[1].type === "true" || resultLogic[0].type === "false" && resultLogic[1].type === "false") {
                 return {type: "false"};
             }
-            if (output.content[0].type === "false" && output.content[1].type === "true" || output.content[0].type === "true" && output.content[1].type === "false") {
+            if (resultLogic[0].type === "false" && resultLogic[1].type === "true" || resultLogic[0].type === "true" && resultLogic[1].type === "false") {
                 return {type: "true"};
             }
-            return output;
+            return {
+                type: input.type,
+                content: resultLogic
+            };
         }
         case "xnor": {
-            const output = {
-                type: input.type,
-                content: input.content.map(reduceLogic).filter(filterNull)
-            };
-            if (output.content.length === 0) {
+            const resultLogic = input.content.map(reduceLogic).filter(filterNull);
+            if (resultLogic.length === 0) {
                 return;
             }
-            if (output.content.length === 1) {
-                return output.content[0];
+            if (resultLogic.length === 1) {
+                return resultLogic[0];
             }
-            if (output.content[0].type === "true" && output.content[1].type === "true" || output.content[0].type === "false" && output.content[1].type === "false") {
+            if (resultLogic[0].type === "true" && resultLogic[1].type === "true" || resultLogic[0].type === "false" && resultLogic[1].type === "false") {
                 return {type: "true"};
             }
-            if (output.content[0].type === "false" && output.content[1].type === "true" || output.content[0].type === "true" && output.content[1].type === "false") {
+            if (resultLogic[0].type === "false" && resultLogic[1].type === "true" || resultLogic[0].type === "true" && resultLogic[1].type === "false") {
                 return {type: "false"};
             }
-            return output;
+            return {
+                type: input.type,
+                content: resultLogic
+            };
         }
         case "add":
         case "sub":
@@ -146,48 +162,48 @@ export function reduceLogic(input) {
         case "gte":
         case "lt":
         case "lte": {
-            const output = {
-                type: input.type,
-                content: input.content.map(reduceLogic).filter(filterNull)
-            };
-            if (output.content.length === 0) {
+            const resultLogic = input.content.map(reduceLogic).filter(filterNull);
+            if (resultLogic.length === 0) {
                 return;
             }
-            if (output.content.length === 1) {
-                return output.content[0];
+            if (resultLogic.length === 1) {
+                return resultLogic[0];
             }
-            return output;
+            return {
+                type: input.type,
+                content: resultLogic
+            };
         }
         case "min":
         case "max": {
-            const output = {
+            const resultLogic = reduceLogic(input.content);
+            if (resultLogic == null) {
+                return;
+            }
+            return {
                 type: input.type,
-                content: reduceLogic(input.content),
+                content: resultLogic,
                 value: input.value
             };
-            if (output.content == null) {
-                return;
-            }
-            return output;
         }
         case "not": {
-            const output = {
-                "type": "not",
-                "content": reduceLogic(input.content)
-            };
-            if (output.content == null) {
+            const resultLogic = reduceLogic(input.content);
+            if (resultLogic == null) {
                 return;
             }
-            if (output.content.type === "false") {
+            if (resultLogic.type === "false") {
                 return {type: "true"};
             }
-            if (output.content.type === "true") {
+            if (resultLogic.type === "true") {
                 return {type: "false"};
             }
-            if (output.content.type === "not") {
-                return output.content.content;
+            if (resultLogic.type === "not") {
+                return resultLogic.content;
             }
-            return output;
+            return {
+                type: "not",
+                content: resultLogic
+            };
         }
         default: {
             return input;

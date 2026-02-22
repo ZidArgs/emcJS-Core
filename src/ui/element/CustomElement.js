@@ -1,14 +1,29 @@
-import EventManagerMixin from "../mixin/EventManagerMixin.js";
-import jsonParse from "../../patches/JSONParser.js";
-import {isStringNotEmpty} from "../../util/helper/CheckType.js";
-import {getInnerText} from "../../util/helper/ui/ExtractText.js";
+import {
+    getInnerText
+} from "../../util/helper/ui/ExtractText.js";
 import {
     scrollIntoView, scrollIntoViewIfNeeded
 } from "../../util/helper/ui/Scroll.js";
 import STYLE from "./CustomElement.js.css" assert {type: "css"};
 import SCROLLBAR_STYLE from "../../_style/scrollbar.css" assert {type: "css"};
+import {
+    getBooleanAttribute,
+    getEnumAttribute,
+    getIntAttribute,
+    getJSONAttribute,
+    getListAttribute,
+    getNumberAttribute,
+    getStringAttribute,
+    setBooleanAttribute,
+    setEnumAttribute,
+    setIntAttribute,
+    setJSONAttribute,
+    setListAttribute,
+    setNumberAttribute,
+    setStringAttribute
+} from "../../util/helper/ui/NodeAttributes.js";
 
-export default class CustomElement extends EventManagerMixin(HTMLElement) {
+export default class CustomElement extends HTMLElement {
 
     constructor() {
         if (new.target === CustomElement) {
@@ -49,151 +64,59 @@ export default class CustomElement extends EventManagerMixin(HTMLElement) {
     }
 
     setBooleanAttribute(name, value) {
-        if (value == null) {
-            this.removeAttribute(name);
-        } else if (typeof value === "boolean") {
-            if (value) {
-                this.setAttribute(name, "");
-            } else {
-                this.removeAttribute(name);
-            }
-        } else {
-            this.setAttribute(name, value);
-        }
+        setBooleanAttribute(this, name, value);
     }
 
     getBooleanAttribute(name) {
-        const value = this.getAttribute(name);
-        if (value == null || value === "false") {
-            return false;
-        }
-        if (value === "" || value === "true") {
-            return true;
-        }
-        return value;
+        return getBooleanAttribute(this, name);
     }
 
     setStringAttribute(name, value) {
-        if (value == null) {
-            this.removeAttribute(name);
-        } else {
-            this.setAttribute(name, value.toString());
-        }
+        setStringAttribute(this, name, value);
     }
 
     getStringAttribute(name) {
-        return this.getAttribute(name);
+        return getStringAttribute(this, name);
     }
 
     setNumberAttribute(name, value, min, max) {
-        const parsedValue = parseFloat(value);
-        if (!isNaN(parsedValue)) {
-            const parsedMin = parseFloat(min) || Number.NEGATIVE_INFINITY;
-            const parsedMax = parseFloat(max) || Number.POSITIVE_INFINITY;
-            if (parsedMin > parsedMax) {
-                throw new Error("min can't be greater than max");
-            }
-            if (parsedValue < parsedMin) {
-                this.setAttribute(name, parsedMin);
-            } else if (parsedValue > parsedMax) {
-                this.setAttribute(name, parsedMax);
-            } else {
-                this.setAttribute(name, parsedValue);
-            }
-        } else {
-            this.removeAttribute(name);
-        }
+        setNumberAttribute(this, name, value, min, max);
     }
 
     getNumberAttribute(name) {
-        const value = this.getAttribute(name);
-        if (value != null) {
-            const parsedValue = parseFloat(value);
-            if (!isNaN(parsedValue)) {
-                return parsedValue;
-            }
-        }
-        return null;
+        return getNumberAttribute(this, name);
     }
 
     setIntAttribute(name, value, min, max) {
-        const parsedValue = parseInt(value);
-        if (!isNaN(parsedValue)) {
-            const parsedMin = parseInt(min) || Number.MIN_SAFE_INTEGER;
-            const parsedMax = parseInt(max) || Number.MAX_SAFE_INTEGER;
-            if (parsedMin > parsedMax) {
-                throw new Error("min can't be greater than max");
-            }
-            if (parsedValue < parsedMin) {
-                this.setAttribute(name, parsedMin);
-            } else if (parsedValue > parsedMax) {
-                this.setAttribute(name, parsedMax);
-            } else {
-                this.setAttribute(name, parsedValue);
-            }
-        } else {
-            this.removeAttribute(name);
-        }
+        setIntAttribute(this, name, value, min, max);
     }
 
     getIntAttribute(name) {
-        const value = this.getAttribute(name);
-        if (value != null) {
-            const parsedValue = parseInt(value);
-            if (!isNaN(parsedValue)) {
-                return parsedValue;
-            }
-        }
-        return null;
+        return getIntAttribute(this, name);
     }
 
     setJSONAttribute(name, value) {
-        if (value != null) {
-            this.setAttribute(name, JSON.stringify(value));
-        } else {
-            this.removeAttribute(name);
-        }
+        setJSONAttribute(this, name, value);
     }
 
     getJSONAttribute(name) {
-        try {
-            return jsonParse(this.getAttribute(name));
-        } catch {
-            return null;
-        }
+        return getJSONAttribute(this, name);
     }
 
     setEnumAttribute(name, value, allowedValues) {
-        if (value != null && allowedValues.includes(value)) {
-            this.setAttribute(name, value);
-        } else {
-            this.removeAttribute(name);
-        }
+        setEnumAttribute(this, name, value, allowedValues);
     }
 
     getEnumAttribute(name) {
-        return this.getAttribute(name);
+        return getEnumAttribute(this, name);
     }
 
     setListAttribute(name, value, allowedValues) {
-        if (Array.isArray(value)) {
-            if (allowedValues != null) {
-                const acceptedValues = value.filter((val, idx) => allowedValues.includes(val) && value.indexOf(val) === idx);
-                this.setAttribute(name, acceptedValues.join(" "));
-            } else {
-                const acceptedValues = value.filter((val, idx) => value.indexOf(val) === idx);
-                this.setAttribute(name, acceptedValues.join(" "));
-            }
-        } else if (value != null && (allowedValues == null || allowedValues.includes(value))) {
-            this.setAttribute(name, value);
-        } else {
-            this.removeAttribute(name);
-        }
+        setListAttribute(this, name, value, allowedValues);
     }
 
     getListAttribute(name) {
-        const value = (this.getAttribute(name) ?? "").split(" ");
-        return value.filter((val, idx) => isStringNotEmpty(val) && value.indexOf(val) === idx);
+        return getListAttribute(this, name);
     }
 
     scrollIntoViewIfNeeded(options) {

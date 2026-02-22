@@ -22,7 +22,12 @@ const TIME_REP = "$1-$2-$3 $4";
 
 let reportWindowErrorEvents = false;
 const writeTargets = new Set();
-const writeLevel = new Set(["ERROR", "WARN", "INFO", "LOG"]);
+const writeLevel = new Set([
+    "ERROR",
+    "WARN",
+    "INFO",
+    "LOG"
+]);
 let reportTarget = null;
 const reportLevel = new Set(["ERROR", "WARN"]);
 let globalOmitStack = true;

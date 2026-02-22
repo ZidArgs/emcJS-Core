@@ -1,4 +1,4 @@
-import Modal from "../../../../../../modal/Modal.js";
+import ModalDialog from "../../../../../../modal/ModalDialog.js";
 import AbstractElement from "../../../../../../logic/abstract/AbstractElement.js";
 import LogicOperatorRegistry from "../../../../../../../data/registry/LogicOperatorRegistry.js";
 import {debounce} from "../../../../../../../util/Debouncer.js";
@@ -10,54 +10,47 @@ import "../../../../../button/Button.js";
 import TPL from "./LogicElementModal.js.html" assert {type: "html"};
 import STYLE from "./LogicElementModal.js.css" assert {type: "css"};
 
-export default class LogicElementModal extends Modal {
+// TODO rework this, it looks crap
+export default class LogicElementModal extends ModalDialog {
 
     #contentEl;
 
-    #footerEl;
-
     #containerEl;
-
-    #cancelEl;
 
     #operatorGroups = new Set();
 
-    constructor() {
-        super("Choose Logic Element...");
+    #selectedLogicEl;
+
+    constructor(caption = "Choose Logic Element...", options = {}) {
+        super(caption, {
+            cancel: true,
+            ...options
+        });
         const els = TPL.generate();
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#contentEl = this.shadowRoot.getElementById("content");
-        this.#footerEl = this.shadowRoot.getElementById("footer");
         this.#contentEl.innerHTML = "";
         this.#containerEl = els.getElementById("elements");
         this.#contentEl.append(this.#containerEl);
         /* --- */
-        this.#cancelEl = els.getElementById("cancel");
-        this.registerTargetEventHandler(this.#cancelEl, "click", () => {
-            this.close();
-        });
-        this.#footerEl.append(this.#cancelEl);
-        /* --- */
-        this.registerTargetEventHandler(this.#containerEl, "click", (event) => {
+        this.#containerEl.addEventListener("click", (event) => {
             const targetEl = event.target;
             if (targetEl instanceof AbstractElement) {
-                this.remove();
-                const ev = new Event("submit");
-                ev.element = targetEl.getElement(true);
-                this.dispatchEvent(ev);
+                this.#selectedLogicEl = targetEl.getElement(true);
+                this.submit();
                 event.preventDefault();
                 return false;
             }
         });
         /* --- */
-        this.registerTargetEventHandler(LogicOperatorRegistry, "change", (event) => {
+        LogicOperatorRegistry.addEventListener("change", (event) => {
             const {group} = event;
             if (this.#operatorGroups.has(group)) {
                 this.#refreshOperatorGroup(group);
             }
         });
-        this.registerTargetEventHandler(LogicOperatorRegistry, "caption", (event) => {
+        LogicOperatorRegistry.addEventListener("caption", (event) => {
             const {
                 group, caption
             } = event;
@@ -70,6 +63,19 @@ export default class LogicElementModal extends Modal {
         });
         /* --- */
         this.#refreshOperators();
+    }
+
+    get logicElement() {
+        return this.#selectedLogicEl;
+    }
+
+    async show() {
+        this.#selectedLogicEl = null;
+        return await super.show();
+    }
+
+    getSubmitValue() {
+        return this.#selectedLogicEl;
     }
 
     addOperatorGroup(...groupList) {

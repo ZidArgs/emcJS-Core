@@ -5,17 +5,18 @@
     margin: 0.2em;
     color: var(--input-text-color, #000000);
     background-color: var(--input-back-color, #ffffff);
-    background-image: var(--input-back-image, none);
     border-style: solid;
     border-width: var(--input-border-width, 2px);
     border-color: var(--input-border-color, #222222);
     border-radius: var(--input-border-radius, 6px);
     font-size: 1em;
 }
+
 #input:focus {
     box-shadow: 0 0 2px 2px var(--input-focus-color, #06b5ff);
     outline: none;
 }
+
 #input:disabled {
     color: var(--input-disabled-text-color, #757575) !important;
     background-color: var(--input-disabled-back-color, #999999) !important;
@@ -23,6 +24,7 @@
     border-color: var(--input-disabled-border-color, #6a6a6a) !important;
     cursor: default !important;
 }
+
 #input::placeholder {
     color: var(--input-placeholder-text-color, #757575);
 }

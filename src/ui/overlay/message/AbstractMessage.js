@@ -4,8 +4,12 @@ import TPL from "./AbstractMessage.js.html" assert {type: "html"};
 import STYLE from "./AbstractMessage.js.css" assert {type: "css"};
 
 const ALLOWED_SLOTS = [
-    "top-left", "top-center", "top-right",
-    "bottom-left", "bottom-center", "bottom-right"
+    "top-left",
+    "top-center",
+    "top-right",
+    "bottom-left",
+    "bottom-center",
+    "bottom-right"
 ];
 
 export default class AbstractMessage extends CustomElement {

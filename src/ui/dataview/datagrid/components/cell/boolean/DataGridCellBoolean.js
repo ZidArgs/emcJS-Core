@@ -28,7 +28,12 @@ export default class DataGridCellBoolean extends DataGridCell {
 
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "editable", "disabled", "readonly"];
+        return [
+            ...superObserved,
+            "editable",
+            "disabled",
+            "readonly"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -46,7 +51,7 @@ export default class DataGridCellBoolean extends DataGridCell {
                     this.#inputEl.disabled = this.disabled;
                 } break;
                 case "readonly": {
-                    if (this.readonly) {
+                    if (this.readOnly) {
                         this.#inputEl.setAttribute("readonly", "");
                     } else {
                         this.#inputEl.removeAttribute("readonly");

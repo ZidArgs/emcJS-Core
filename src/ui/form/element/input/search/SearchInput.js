@@ -1,8 +1,8 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
-import {deepClone} from "../../../../../util/helper/DeepClone.js";
+import {immute} from "../../../../../data/Immutable.js";
 import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
-import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
+import {setBooleanAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
 import "../../../../i18n/I18nTooltip.js";
 import "../../../../i18n/builtin/I18nInput.js";
 import TPL from "./SearchInput.js.html" assert {type: "html"};
@@ -12,7 +12,7 @@ import CONFIG_FIELDS from "./SearchInput.js.json" assert {type: "json"};
 export default class SearchInput extends AbstractFormElement {
 
     static get formConfigurationFields() {
-        return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
+        return immute([...super.formConfigurationFields, ...CONFIG_FIELDS]);
     }
 
     #inputEl;
@@ -21,15 +21,15 @@ export default class SearchInput extends AbstractFormElement {
 
     constructor() {
         super();
-        this.shadowRoot.getElementById("field").append(TPL.generate());
+        TPL.apply(this.shadowRoot);
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.registerTargetEventHandler(this.#inputEl, "input", () => {
+        this.#inputEl.addEventListener("input", () => {
             this.value = this.#inputEl.value;
         });
         this.#buttonEl = this.shadowRoot.getElementById("button");
-        this.registerTargetEventHandler(this.#buttonEl, "click", () => {
+        this.#buttonEl.addEventListener("click", () => {
             this.value = "";
         });
     }
@@ -40,22 +40,30 @@ export default class SearchInput extends AbstractFormElement {
         this.#buttonEl.disabled = disabled;
     }
 
+    validityCallback(message) {
+        this.#inputEl.setCustomValidity(message);
+    }
+
     focus(options) {
         super.focus(options);
         this.#inputEl.focus(options);
     }
 
     set placeholder(value) {
-        this.setAttribute("placeholder", value);
+        this.setStringAttribute("placeholder", value);
     }
 
     get placeholder() {
-        return this.getAttribute("placeholder");
+        return this.getStringAttribute("placeholder");
     }
 
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "placeholder", "readonly"];
+        return [
+            ...superObserved,
+            "placeholder",
+            "readonly"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -63,13 +71,12 @@ export default class SearchInput extends AbstractFormElement {
         switch (name) {
             case "placeholder": {
                 if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, "i18n-placeholder", newValue);
+                    this.#inputEl.i18nPlaceholder = this.placeholder || "Search...";
                 }
             } break;
             case "readonly": {
                 if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, "readonly", this.readonly);
-                    safeSetAttribute(this.#buttonEl, "readonly", this.readonly);
+                    setBooleanAttribute(this.#inputEl, name, this.readOnly);
                 }
             } break;
         }

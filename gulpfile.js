@@ -61,13 +61,8 @@ function copyFonts(dest = OUT_PATH) {
 }
 
 function finish(done) {
-    const unresolvedImports = ImportAnalyzer.getUnresolvedImports();
-    if (unresolvedImports.length > 0) {
-        console.error("Unresolved imported files detected");
-        for (const unresolvedImportEntry of unresolvedImports) {
-            console.log("Unknown import:", unresolvedImportEntry);
-        }
-    }
+    ImportAnalyzer.printUnresolvedImports();
+    // ImportAnalyzer.writeImportFile();
     done();
 }
 

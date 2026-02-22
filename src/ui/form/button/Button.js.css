@@ -7,10 +7,14 @@
     user-select: none;
     font-size: 1rem;
     cursor: pointer;
+    --border-top-left-radius: var(--button-border-radius, 6px);
+    --border-top-right-radius: var(--button-border-radius, 6px);
+    --border-bottom-left-radius: var(--button-border-radius, 6px);
+    --border-bottom-right-radius: var(--button-border-radius, 6px);
+    --border-radius: var(--border-top-left-radius) var(--border-top-right-radius) var(--border-bottom-right-radius) var(--border-bottom-left-radius);
 }
 
-:host([disabled]:not([disabled="false"])) {
-    cursor: default !important;
+:host(:disabled) {
     pointer-events: none !important;
 }
 
@@ -32,14 +36,13 @@
     width: 100%;
     min-width: 2rem;
     margin: 0px;
-    padding: 0px;
-    color: var(--button-text-color, #000000);
-    background-color: var(--button-back-color, #cdcdcd);
-    background-image: var(--button-back-image, none);
-    border-style: solid;
-    border-width: var(--button-border-width, 2px);
-    border-color: var(--button-border-color, #222222);
-    border-radius: var(--button-border-radius, 6px);
+    padding: 0px 4px;
+    color: var(--color);
+    background-color: var(--background-color);
+    border-style: var(--border-style);
+    border-width: var(--border-width);
+    border-color: var(--border-color);
+    border-radius: var(--border-radius);
     appearance: none;
     font-size: 1em;
     font-weight: bold;
@@ -56,35 +59,8 @@
     padding: 0px 10px;
 }
 
-#button:disabled,
-#button[disabled]:not([disabled="false"]) {
-    color: var(--button-disabled-text-color, #222222) !important;
-    background-color: var(--button-disabled-back-color, #999999) !important;
-    background-image: var(--button-disabled-back-image, none) !important;
-    border-color: var(--button-disabled-border-color, #222222) !important;
-    opacity: var(--button-disabled-opacity, 0.65) !important;
-    cursor: default !important;
-    pointer-events: none !important;
-}
-
 :host([slim]:not([slim="false"])) #button {
     padding: 0px 4px;
-}
-
-#button:active,
-:host(:hover) #button:active,
-:host([active]:not([active="false"])) #button {
-    color: var(--button-active-text-color, #000000);
-    background-color: var(--button-active-back-color, #00dbd0);
-    background-image: var(--button-active-back-image, none);
-    border-color: var(--button-active-border-color, #006863);
-}
-
-:host(:hover) #button {
-    color: var(--button-hover-text-color, #ffffff);
-    background-color: var(--button-hover-back-color, #444444);
-    background-image: var(--button-hover-back-image, none);
-    border-color: var(--button-hover-border-color, #222222);
 }
 
 :host([text-transform="lowercase"]) #button {
@@ -101,8 +77,15 @@
 
 #button:focus,
 :host(:focus) #button {
-    box-shadow: 0 0 2px 3px var(--button-focus-color, #06b5ffb0);
+    box-shadow: 0 0 2px 3px var(--focus-color);
     outline: none;
+}
+
+#text {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 #button[icon-type="char"][icon]:not([icon=""])::before,
@@ -110,6 +93,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
     height: 1em;
     min-width: 1em;
     font-size: 1.3em;
@@ -124,6 +108,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
     width: 1em;
     height: 1em;
     background-image: var(--icon-image);
@@ -138,6 +123,7 @@
 #font-icon {
     display: none;
     position: relative;
+    flex-shrink: 0;
     height: 1.3em;
     width: 1.3em;
 }
@@ -154,27 +140,30 @@
 }
 
 :host([text]:not([text=""])) #button::before,
-:host([text]:not([text=""])) #icon,
 :host([text]:not([text=""])) #font-icon,
 :host(:not(:empty)) #button::before,
-:host(:not(:empty)) #icon,
+:host(:not(:empty)) #font-icon,
 :host([text]:not([text=""])) ::slotted(:last-child) {
     margin-right: 0.3em;
 }
 
-:host(.rotate-icon-0) #button::before {
+:host(.rotate-icon-0) #button::before,
+:host(.rotate-icon-0) #font-icon {
     rotate: 0deg;
 }
 
-:host(.rotate-icon-90) #button::before {
+:host(.rotate-icon-90) #button::before,
+:host(.rotate-icon-90) #font-icon {
     rotate: 90deg;
 }
 
-:host(.rotate-icon-180) #button::before {
+:host(.rotate-icon-180) #button::before,
+:host(.rotate-icon-180) #font-icon {
     rotate: 180deg;
 }
 
-:host(.rotate-icon-270) #button::before {
+:host(.rotate-icon-270) #button::before,
+:host(.rotate-icon-270) #font-icon {
     rotate: 270deg;
 }
 
@@ -183,6 +172,7 @@
     display: inline-flex;
     justify-content: center;
     align-items: center;
+    flex-shrink: 0;
     height: 1em;
     width: 1.5em;
     border-radius: 1em;

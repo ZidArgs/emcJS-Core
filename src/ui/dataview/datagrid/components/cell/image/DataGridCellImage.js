@@ -23,7 +23,7 @@ export default class DataGridCellImage extends DataGridCell {
         /* --- */
         this.#valueEl = this.shadowRoot.getElementById("value");
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.registerTargetEventHandler(this.#inputEl, "input", (event) => {
+        this.#inputEl.addEventListener("input", (event) => {
             if (this.editable) {
                 this.#onInput(event);
             }
@@ -34,13 +34,13 @@ export default class DataGridCellImage extends DataGridCell {
     }
 
     connectedCallback() {
-        super.connectedCallback();
+        super.connectedCallback?.();
         this.#optionGroupEventTargetManager.active = true;
         this.#loadOptionsFromGroup();
     }
 
     disconnectedCallback() {
-        super.disconnectedCallback();
+        super.disconnectedCallback?.();
         this.#optionGroupEventTargetManager.active = false;
     }
 
@@ -54,7 +54,13 @@ export default class DataGridCellImage extends DataGridCell {
 
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "editable", "disabled", "readonly", "optiongroup"];
+        return [
+            ...superObserved,
+            "editable",
+            "disabled",
+            "readonly",
+            "optiongroup"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -65,7 +71,7 @@ export default class DataGridCellImage extends DataGridCell {
                     this.#inputEl.disabled = this.disabled;
                 } break;
                 case "readonly": {
-                    if (this.readonly) {
+                    if (this.readOnly) {
                         this.#inputEl.setAttribute("readonly", "");
                     } else {
                         this.#inputEl.removeAttribute("readonly");

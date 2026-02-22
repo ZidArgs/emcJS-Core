@@ -7,7 +7,6 @@
     overflow-y: auto;
     color: var(--input-text-color, #000000);
     background-color: var(--input-back-color, #ffffff);
-    background-image: var(--input-back-image, none);
     border-style: solid;
     border-width: var(--input-border-width, 2px);
     border-color: var(--input-border-color, #222222);

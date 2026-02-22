@@ -1,15 +1,16 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import DataReceiverMixin from "../../../../../util/datareceiver/DataReceiverMixin.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
-import {deepClone} from "../../../../../util/helper/DeepClone.js";
+import {immute} from "../../../../../data/Immutable.js";
 import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
+import Axes2D from "../../../../../enum/Axes2D.js";
+import {jsonParseSafe} from "../../../../../util/helper/JSON.js";
 import {setAttributes} from "../../../../../util/helper/ui/NodeAttributes.js";
 import EventTargetManager from "../../../../../util/event/EventTargetManager.js";
 import i18n from "../../../../../util/I18n.js";
-import jsonParse from "../../../../../patches/JSONParser.js";
 import Column from "../../../../dataview/datagrid/Column.js";
 import "../../../../dataview/datagrid/DataGrid.js";
-import "../../input/search/SearchInput.js";
+import "../../components/searchheader/SearchHeader.js";
 import TPL from "./GridSelect.js.html" assert {type: "html"};
 import STYLE from "./GridSelect.js.css" assert {type: "css"};
 import CONFIG_FIELDS from "./GridSelect.js.json" assert {type: "json"};
@@ -17,14 +18,18 @@ import CONFIG_FIELDS from "./GridSelect.js.json" assert {type: "json"};
 export default class GridSelect extends DataReceiverMixin(AbstractFormElement) {
 
     static get formConfigurationFields() {
-        return [...super.formConfigurationFields, ...deepClone(CONFIG_FIELDS)];
+        return immute([...super.formConfigurationFields, ...CONFIG_FIELDS]);
     }
 
     static get changeDebounceTime() {
         return 0;
     }
 
-    #searchEl;
+    static get AXES() {
+        return Axes2D;
+    }
+
+    #searchHeaderEl;
 
     #gridEl;
 
@@ -32,24 +37,29 @@ export default class GridSelect extends DataReceiverMixin(AbstractFormElement) {
 
     constructor() {
         super();
-        this.shadowRoot.getElementById("field").append(TPL.generate());
+        TPL.apply(this.shadowRoot);
         STYLE.apply(this.shadowRoot);
         /* --- */
+        this.#searchHeaderEl = this.shadowRoot.getElementById("search-header");
         this.#gridEl = this.shadowRoot.getElementById("grid");
-        this.registerTargetEventHandler(this.#gridEl, "selection", (event) => {
+        this.#gridEl.addEventListener("selection", (event) => {
             event.stopPropagation();
             event.preventDefault();
             this.value = event.data;
+            this.dispatchEvent(new Event("input", {
+                bubbles: true,
+                cancelable: true
+            }));
         });
         /* --- */
-        this.registerTargetEventHandler(this.#gridEl, "sort", (event) => {
+        this.#gridEl.addEventListener("sort", (event) => {
             event.stopPropagation();
             const {columnName} = event.data;
             const ev = new Event("sort");
             ev.data = {columnName};
             this.dispatchEvent(ev);
         });
-        this.registerTargetEventHandler(this.#gridEl, "unsort", (event) => {
+        this.#gridEl.addEventListener("unsort", (event) => {
             event.stopPropagation();
             const {columnName} = event.data;
             const ev = new Event("unsort");
@@ -57,9 +67,9 @@ export default class GridSelect extends DataReceiverMixin(AbstractFormElement) {
             this.dispatchEvent(ev);
         });
         /* --- */
-        this.#searchEl = this.shadowRoot.getElementById("search");
-        this.registerTargetEventHandler(this.#searchEl, "change", () => {
-            const search = this.#searchEl.value;
+        this.#searchHeaderEl.addEventListener("search", (event) => {
+            event.stopPropagation();
+            const search = this.#searchHeaderEl.search;
             const ev = new Event("search");
             ev.data = {search};
             this.dispatchEvent(ev);
@@ -70,19 +80,15 @@ export default class GridSelect extends DataReceiverMixin(AbstractFormElement) {
         });
     }
 
-    connectedCallback() {
-        super.connectedCallback?.();
-    }
-
     formDisabledCallback(disabled) {
         super.formDisabledCallback(disabled);
-        this.#searchEl.disabled = disabled;
+        this.#searchHeaderEl.disabled = disabled;
         this.#gridEl.disabled = disabled;
     }
 
     focus(options) {
         super.focus(options);
-        this.#searchEl.focus(options);
+        this.#searchHeaderEl.focus(options);
     }
 
     async setData(data) {
@@ -99,7 +105,7 @@ export default class GridSelect extends DataReceiverMixin(AbstractFormElement) {
 
     set value(value) {
         if (typeof value === "string") {
-            value = jsonParse(value);
+            value = jsonParseSafe(value);
         }
         super.value = value;
     }
@@ -140,9 +146,25 @@ export default class GridSelect extends DataReceiverMixin(AbstractFormElement) {
         return this.getAttribute("stretched");
     }
 
+    set resize(value) {
+        this.setEnumAttribute("resize", value, Axes2D);
+    }
+
+    get resize() {
+        return this.getEnumAttribute("resize");
+    }
+
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "readonly", "sorted", "multiple", "allowdeselect", "selectend", "stretched"];
+        return [
+            ...superObserved,
+            "readonly",
+            "sorted",
+            "multiple",
+            "allowdeselect",
+            "selectend",
+            "stretched"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -150,12 +172,16 @@ export default class GridSelect extends DataReceiverMixin(AbstractFormElement) {
         switch (name) {
             case "readonly": {
                 if (oldValue != newValue) {
-                    this.#gridEl.readonly = this.readonly;
+                    const readonly = this.readOnly;
+                    this.#gridEl.readOnly = readonly;
+                    this.#searchHeaderEl.readOnly = readonly;
                 }
             } break;
             case "multiple": {
                 if (oldValue != newValue) {
-                    this.#gridEl.multiple = this.multiple;
+                    const multiple = this.multiple;
+                    this.#gridEl.multiple = multiple;
+                    this.#searchHeaderEl.selectable = multiple;
                 }
             } break;
             case "allowdeselect": {
@@ -165,7 +191,9 @@ export default class GridSelect extends DataReceiverMixin(AbstractFormElement) {
             } break;
             case "selectend": {
                 if (oldValue != newValue) {
-                    this.#gridEl.selectEnd = this.selectEnd;
+                    const selectEnd = this.selectEnd;
+                    this.#gridEl.selectEnd = selectEnd;
+                    this.#searchHeaderEl.selectEnd = selectEnd;
                 }
             } break;
             case "stretched": {
@@ -194,18 +222,18 @@ export default class GridSelect extends DataReceiverMixin(AbstractFormElement) {
             columnEl.name = key;
             if (key === "key") {
                 const {
-                    caption = "", width = 0
+                    label = "", width = 0
                 } = column;
                 columnEl.type = "string";
-                columnEl.caption = caption;
+                columnEl.label = label;
                 columnEl.width = width;
                 columnEl.editable = false;
             } else {
                 const {
-                    type = "string", caption = "", width = 0, editable = false
+                    type = "string", label = "", width = 0, editable = false
                 } = column;
                 columnEl.type = type;
-                columnEl.caption = caption;
+                columnEl.label = label;
                 columnEl.width = width;
                 columnEl.editable = editable;
             }

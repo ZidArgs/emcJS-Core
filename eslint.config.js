@@ -4,9 +4,13 @@ import {
 import globals from "globals";
 import babelParser from "@babel/eslint-parser";
 import path from "node:path";
-import {fileURLToPath} from "node:url";
+import {
+    fileURLToPath
+} from "node:url";
 import js from "@eslint/js";
-import {FlatCompat} from "@eslint/eslintrc";
+import {
+    FlatCompat
+} from "@eslint/eslintrc";
 import stylistic from "@stylistic/eslint-plugin";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -25,7 +29,14 @@ const browserGlobals = {
 delete browserGlobals["AudioWorkletGlobalScope "];
 
 export default defineConfig([
-    globalIgnores(["**/node_modules", "**/.idea", "**/.vscode", "webtest/emcJS", "**/lib", "gulpfile.js"]),
+    globalIgnores([
+        "**/node_modules",
+        "**/.idea",
+        "**/.vscode",
+        "webtest/emcJS",
+        "**/lib",
+        "gulpfile.js"
+    ]),
     {
         extends: compat.extends("eslint:recommended"),
 
@@ -56,7 +67,11 @@ export default defineConfig([
             "no-var": "error",
             "dot-location": ["error", "property"],
 
-            indent: ["error", 4, {SwitchCase: 1}],
+            indent: [
+                "error",
+                4,
+                {SwitchCase: 1}
+            ],
 
             curly: "error",
             "no-case-declarations": "error",
@@ -64,32 +79,48 @@ export default defineConfig([
             "no-trailing-spaces": ["error"],
             "eol-last": ["error", "always"],
 
-            "no-multiple-empty-lines": ["error", {
-                max: 1,
-                maxEOF: 1,
-                maxBOF: 1
-            }],
+            "no-multiple-empty-lines": [
+                "error",
+                {
+                    max: 1,
+                    maxEOF: 1,
+                    maxBOF: 1
+                }
+            ],
 
             "no-unneeded-ternary": "error",
 
-            "brace-style": ["error", "1tbs", {allowSingleLine: false}],
+            "brace-style": [
+                "error",
+                "1tbs",
+                {allowSingleLine: false}
+            ],
 
-            "no-unused-vars": ["error", {
-                vars: "local",
-                args: "after-used",
-                caughtErrors: "all"
-            }],
+            "no-unused-vars": [
+                "error",
+                {
+                    vars: "local",
+                    args: "after-used",
+                    caughtErrors: "all"
+                }
+            ],
 
-            "keyword-spacing": ["error", {
-                before: true,
-                after: true
-            }],
+            "keyword-spacing": [
+                "error",
+                {
+                    before: true,
+                    after: true
+                }
+            ],
 
-            "space-before-function-paren": ["error", {
-                anonymous: "never",
-                named: "never",
-                asyncArrow: "always"
-            }],
+            "space-before-function-paren": [
+                "error",
+                {
+                    anonymous: "never",
+                    named: "never",
+                    asyncArrow: "always"
+                }
+            ],
 
             "@stylistic/function-paren-newline": ["error", {minItems: 10}],
 
@@ -102,115 +133,159 @@ export default defineConfig([
             "array-bracket-spacing": ["error", "never"],
             "computed-property-spacing": ["error", "never"],
 
-            "comma-spacing": ["error", {
-                before: false,
-                after: true
-            }],
+            "comma-spacing": [
+                "error",
+                {
+                    before: false,
+                    after: true
+                }
+            ],
 
-            "comma-dangle": ["error", {
-                arrays: "never",
-                objects: "never",
-                imports: "never",
-                exports: "never",
-                functions: "never"
-            }],
+            "comma-dangle": [
+                "error",
+                {
+                    arrays: "never",
+                    objects: "never",
+                    imports: "never",
+                    exports: "never",
+                    functions: "never"
+                }
+            ],
 
             "prefer-const": "error",
             "default-param-last": ["error"],
             "nonblock-statement-body-position": ["error", "beside"],
 
+            "array-bracket-newline": ["error", {"multiline": true}],
+            "array-element-newline": [
+                "error",
+                {
+                    "multiline": true,
+                    "minItems": 3
+                }
+            ],
             "object-property-newline": ["error", {allowAllPropertiesOnSameLine: false}],
 
-            "object-curly-newline": ["error", {
-                ObjectExpression: {
-                    multiline: true,
-                    minProperties: 2
-                },
+            "object-curly-newline": [
+                "error",
+                {
+                    ObjectExpression: {
+                        multiline: true,
+                        consistent: true,
+                        minProperties: 2
+                    },
 
-                ObjectPattern: {
-                    multiline: true,
-                    minProperties: 2
-                },
+                    ObjectPattern: {
+                        multiline: true,
+                        consistent: true,
+                        minProperties: 2
+                    },
 
-                ImportDeclaration: {
-                    multiline: true,
-                    minProperties: 2
-                },
+                    ImportDeclaration: {
+                        multiline: true,
+                        consistent: true,
+                        minProperties: 2
+                    },
 
-                ExportDeclaration: {
-                    multiline: true,
-                    minProperties: 2
+                    ExportDeclaration: {
+                        multiline: true,
+                        consistent: true,
+                        minProperties: 2
+                    }
                 }
-            }],
+            ],
 
             "lines-between-class-members": ["error", "always"],
             semi: ["error", "always"],
 
-            "padded-blocks": ["error", {
-                blocks: "never",
-                switches: "never",
-                classes: "always"
-            }],
+            "padded-blocks": [
+                "error",
+                {
+                    blocks: "never",
+                    switches: "never",
+                    classes: "always"
+                }
+            ],
 
             "space-infix-ops": "error",
 
-            quotes: ["error", "double", {allowTemplateLiterals: true}],
+            quotes: [
+                "error",
+                "double",
+                {allowTemplateLiterals: true}
+            ],
 
             "no-dupe-else-if": "error",
             "no-duplicate-case": "error",
             "no-lonely-if": "error",
 
-            "no-extra-parens": ["error", "all", {
-                returnAssign: false,
-                nestedBinaryExpressions: false,
-                enforceForArrowConditionals: false,
-                enforceForSequenceExpressions: false,
-                enforceForNewInMemberExpressions: false
-            }],
+            "no-extra-parens": [
+                "error",
+                "all",
+                {
+                    returnAssign: false,
+                    nestedBinaryExpressions: false,
+                    enforceForArrowConditionals: false,
+                    enforceForSequenceExpressions: false,
+                    enforceForNewInMemberExpressions: false
+                }
+            ],
 
             "no-fallthrough": "off",
 
-            "padding-line-between-statements": ["error", {
-                blankLine: "always",
-                prev: "import",
-                next: "*"
-            }, {
-                blankLine: "any",
-                prev: "import",
-                next: "import"
-            }, {
-                blankLine: "always",
-                prev: "export",
-                next: "*"
-            }, {
-                blankLine: "always",
-                prev: "*",
-                next: "export"
-            }, {
-                blankLine: "always",
-                prev: "class",
-                next: "*"
-            }, {
-                blankLine: "always",
-                prev: "*",
-                next: "class"
-            }, {
-                blankLine: "always",
-                prev: "function",
-                next: "*"
-            }, {
-                blankLine: "always",
-                prev: "*",
-                next: "function"
-            }, {
-                blankLine: "always",
-                prev: "iife",
-                next: "*"
-            }, {
-                blankLine: "always",
-                prev: "*",
-                next: "iife"
-            }]
+            "padding-line-between-statements": [
+                "error",
+                {
+                    blankLine: "always",
+                    prev: "import",
+                    next: "*"
+                },
+                {
+                    blankLine: "any",
+                    prev: "import",
+                    next: "import"
+                },
+                {
+                    blankLine: "always",
+                    prev: "export",
+                    next: "*"
+                },
+                {
+                    blankLine: "always",
+                    prev: "*",
+                    next: "export"
+                },
+                {
+                    blankLine: "always",
+                    prev: "class",
+                    next: "*"
+                },
+                {
+                    blankLine: "always",
+                    prev: "*",
+                    next: "class"
+                },
+                {
+                    blankLine: "always",
+                    prev: "function",
+                    next: "*"
+                },
+                {
+                    blankLine: "always",
+                    prev: "*",
+                    next: "function"
+                },
+                {
+                    blankLine: "always",
+                    prev: "iife",
+                    next: "*"
+                },
+                {
+                    blankLine: "always",
+                    prev: "*",
+                    next: "iife"
+                }
+            ]
         }
     }
 ]);

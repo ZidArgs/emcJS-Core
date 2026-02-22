@@ -17,7 +17,6 @@ button {
     border: none;
     color: var(--navigation-button-text-color, #000000);
     background-color: var(--navigation-button-back-color, #ffffff);
-    background-image: var(--navigation-button-back-image, none);
     border-style: solid;
     border-width: var(--navigation-button-border-width, 1px);
     border-color: var(--navigation-button-border-color, #000000);

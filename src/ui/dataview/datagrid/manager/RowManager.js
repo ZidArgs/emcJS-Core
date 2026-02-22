@@ -40,7 +40,7 @@ export default class RowManager extends EventTarget {
 
     #draggingRowEl;
 
-    #eventManager = new EventManager(false);
+    #eventManager = new EventManager();
 
     constructor(target, cellCache, dataGridId) {
         if (!(target instanceof HTMLTableSectionElement)) {
@@ -53,13 +53,6 @@ export default class RowManager extends EventTarget {
         this.#dataGridId = dataGridId;
         this.#cellCache = cellCache;
         this.#target = target;
-    }
-
-    setEventManagerActive(value) {
-        this.#eventManager.active = value;
-        for (const [, cellManager] of this.#cellManagers) {
-            cellManager.setEventManagerActive(value);
-        }
     }
 
     getSelectionStatus() {
@@ -281,7 +274,6 @@ export default class RowManager extends EventTarget {
         });
 
         const cellManager = new CellManager(rowEl, this.#cellCache, this.#dataGridId);
-        cellManager.setEventManagerActive(this.#eventManager.active);
         cellManager.sortable = this.#sortable;
         cellManager.selectable = this.#selectable;
         cellManager.selectEnd = this.#selectEnd;

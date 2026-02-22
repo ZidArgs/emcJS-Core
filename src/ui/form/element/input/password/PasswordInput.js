@@ -1,15 +1,22 @@
 import AbstractFormElement from "../../AbstractFormElement.js";
 import FormElementRegistry from "../../../../../data/registry/form/FormElementRegistry.js";
+import {immute} from "../../../../../data/Immutable.js";
 import {registerFocusable} from "../../../../../util/helper/html/ElementFocusHelper.js";
-import {safeSetAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
+import {setBooleanAttribute} from "../../../../../util/helper/ui/NodeAttributes.js";
 import "../../../../i18n/I18nTooltip.js";
 import "../../../../i18n/builtin/I18nInput.js";
 import TPL from "./PasswordInput.js.html" assert {type: "html"};
 import STYLE from "./PasswordInput.js.css" assert {type: "css"};
-import FONT_STYLE from "../../../../../_style/icon-codes.css" assert {type: "css"};
+import FONT_STYLE from "../../../../../_style/emcjs-icons-codes.css" assert {type: "css"};
+import CONFIG_FIELDS from "./PasswordInput.js.json" assert {type: "json"};
 
 // TODO add required [lowercase,uppercase,digit,{symbol_declaration}]
+// TODO add autohide timer (optional)
 export default class PasswordInput extends AbstractFormElement {
+
+    static get formConfigurationFields() {
+        return immute([...super.formConfigurationFields, ...CONFIG_FIELDS]);
+    }
 
     #inputEl;
 
@@ -19,21 +26,21 @@ export default class PasswordInput extends AbstractFormElement {
 
     constructor() {
         super();
-        this.shadowRoot.getElementById("field").append(TPL.generate());
+        TPL.apply(this.shadowRoot);
         STYLE.apply(this.shadowRoot);
         FONT_STYLE.apply(this.shadowRoot);
         /* --- */
         this.#inputEl = this.shadowRoot.getElementById("input");
-        this.registerTargetEventHandler(this.#inputEl, "input", () => {
+        this.#inputEl.addEventListener("input", () => {
             this.value = this.#inputEl.value;
         });
         /* --- */
         this.#buttonEl = this.shadowRoot.getElementById("button");
         this.#tooltipEl = this.shadowRoot.getElementById("tooltip");
-        this.registerTargetEventHandler(this.#buttonEl, "change", (event) => {
+        this.#buttonEl.addEventListener("change", (event) => {
             const showValue = this.#buttonEl.checked;
             this.#buttonEl.className = showValue ? "icon-eye" : "icon-eye-striked";
-            this.#tooltipEl.i18nTooltip = showValue ? "Input shown" : "Input hidden";
+            this.#tooltipEl.i18nTooltip = showValue ? "Value visible" : "Value hidden";
             this.#inputEl.type = showValue ? "text" : "password";
             event.stopPropagation();
         });
@@ -50,10 +57,8 @@ export default class PasswordInput extends AbstractFormElement {
         }
     }
 
-    formResetCallback() {
-        super.formResetCallback();
-        const value = this.value;
-        this.#inputEl.value = value;
+    validityCallback(message) {
+        this.#inputEl.setCustomValidity(message);
     }
 
     focus(options) {
@@ -61,21 +66,12 @@ export default class PasswordInput extends AbstractFormElement {
         this.#inputEl.focus(options);
     }
 
-    set value(value) {
-        this.#inputEl.value = value ?? this.defaultValue;
-        super.value = value;
-    }
-
-    get value() {
-        return super.value;
-    }
-
     set placeholder(value) {
-        this.setAttribute("placeholder", value);
+        this.setStringAttribute("placeholder", value);
     }
 
     get placeholder() {
-        return this.getAttribute("placeholder");
+        return this.getStringAttribute("placeholder");
     }
 
     set minLength(value) {
@@ -96,21 +92,26 @@ export default class PasswordInput extends AbstractFormElement {
 
     static get observedAttributes() {
         const superObserved = super.observedAttributes ?? [];
-        return [...superObserved, "placeholder", "readonly", "minlength", "maxlength"];
+        return [
+            ...superObserved,
+            "placeholder",
+            "readonly",
+            "minlength",
+            "maxlength"
+        ];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         super.attributeChangedCallback?.(name, oldValue, newValue);
         switch (name) {
-            case "placeholder": {
-                if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, "i18n-placeholder", newValue);
-                }
-            } break;
             case "readonly": {
                 if (oldValue != newValue) {
-                    safeSetAttribute(this.#inputEl, "readonly", this.readonly);
-                    safeSetAttribute(this.#buttonEl, "readonly", this.readonly);
+                    setBooleanAttribute(this.#inputEl, name, this.readOnly);
+                }
+            } break;
+            case "placeholder": {
+                if (oldValue != newValue) {
+                    this.#inputEl.i18nPlaceholder = this.placeholder;
                 }
             } break;
             case "minlength":
