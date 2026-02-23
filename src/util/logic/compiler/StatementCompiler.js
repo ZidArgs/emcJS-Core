@@ -2,50 +2,49 @@ import LogicStatement from "./LogicStatement.js";
 
 const TRANSPILERS = {
     /* literals */
-    "true":     () => "1",
-    "false":    () => "0",
-    "string":   (logic) => `${escapeString(logic.value)}`,
-    "number":   (logic) => `${escapeNumber(logic.value)}`,
-    "value":    (logic) => `(val(${escapeString(logic.ref)})??0)`,
-    "state":    (logic) => `((val(${escapeString(logic.ref)})??0)==${escapeValue(logic.value)})`,
-    "param":    (logic) => `(params[${escapeString(logic.ref)}]??0)`,
-    "data":     (logic) => `(data(${escapeString(logic.ref)})??0)`,
+    "true":       () => "1",
+    "false":      () => "0",
+    "string":     (logic) => `${escapeString(logic.value)}`,
+    "number":     (logic) => `${escapeNumber(logic.value)}`,
+    "value":      (logic) => `(val(${escapeValue(logic.ref)})??0)`,
+    "state":      (logic) => `((val(${escapeValue(logic.ref)})??0)==${escapeValue(logic.value)})`,
+    "param":      (logic) => `(params[${escapeString(logic.ref)}]??0)`,
+    "paramvalue": (logic) => `(val(params[${escapeString(logic.ref)}]??"")??0)`,
 
     /* operators */
-    "and":      (logic) => `${multiElementOperation(logic.content, "&&")}`,
-    "nand":     (logic) => `!${multiElementOperation(logic.content, "&&")}`,
-    "or":       (logic) => `${multiElementOperation(logic.content, "||")}`,
-    "nor":      (logic) => `!${multiElementOperation(logic.content, "||")}`,
-    "not":      (logic) => `!(${buildLogic(logic.content)})`,
-    "xor":      (logic) => `${twoElementOperation(logic.content, "^") || 1}`,
-    "xnor":     (logic) => `!${twoElementOperation(logic.content, "^") || 1}`,
+    "and":        (logic) => `${multiElementOperation(logic.content, "&&")}`,
+    "nand":       (logic) => `!${multiElementOperation(logic.content, "&&")}`,
+    "or":         (logic) => `${multiElementOperation(logic.content, "||")}`,
+    "nor":        (logic) => `!${multiElementOperation(logic.content, "||")}`,
+    "not":        (logic) => `!(${buildLogic(logic.content)})`,
+    "xor":        (logic) => `${twoElementOperation(logic.content, "^") || 1}`,
+    "xnor":       (logic) => `!${twoElementOperation(logic.content, "^") || 1}`,
 
     /* restrictors */
-    "min":      (logic) => `(${buildLogic(logic.content)}>=${escapeNumber(logic.value)})`,
-    "max":      (logic) => `(${buildLogic(logic.content)}<=${escapeNumber(logic.value)})`,
-    "regexp":   (logic) => `(/${logic.value}/.test(${buildLogic(logic.content)}))`,
+    "min":        (logic) => `(${buildLogic(logic.content)}>=${escapeNumber(logic.value)})`,
+    "max":        (logic) => `(${buildLogic(logic.content)}<=${escapeNumber(logic.value)})`,
 
     /* comparators */
-    "eq":       (logic) => twoElementOperation(logic.content, "=="),
-    "neq":      (logic) => twoElementOperation(logic.content, "!="),
-    "lt":       (logic) => twoElementOperation(logic.content, "<"),
-    "lte":      (logic) => twoElementOperation(logic.content, "<="),
-    "gt":       (logic) => twoElementOperation(logic.content, ">"),
-    "gte":      (logic) => twoElementOperation(logic.content, ">="),
+    "eq":         (logic) => twoElementOperation(logic.content, "=="),
+    "neq":        (logic) => twoElementOperation(logic.content, "!="),
+    "lt":         (logic) => twoElementOperation(logic.content, "<"),
+    "lte":        (logic) => twoElementOperation(logic.content, "<="),
+    "gt":         (logic) => twoElementOperation(logic.content, ">"),
+    "gte":        (logic) => twoElementOperation(logic.content, ">="),
 
     /* math */
-    "add":      (logic) => mathMultiElementOperation(logic.content, "+"),
-    "sub":      (logic) => mathMultiElementOperation(logic.content, "-"),
-    "mul":      (logic) => mathMultiElementOperation(logic.content, "*"),
-    "div":      (logic) => mathMultiElementOperation(logic.content, "/"),
-    "mod":      (logic) => mathMultiElementOperation(logic.content, "%"),
-    "pow":      (logic) => mathTwoElementOperation(logic.content, "**"),
+    "add":        (logic) => mathMultiElementOperation(logic.content, "+"),
+    "sub":        (logic) => mathMultiElementOperation(logic.content, "-"),
+    "mul":        (logic) => mathMultiElementOperation(logic.content, "*"),
+    "div":        (logic) => mathMultiElementOperation(logic.content, "/"),
+    "mod":        (logic) => mathMultiElementOperation(logic.content, "%"),
+    "pow":        (logic) => mathTwoElementOperation(logic.content, "**"),
 
     /* logic */
-    "function":    (logic) => `exec(${escapeString(logic.ref)}${functionParams(logic.params)})`,
+    "function":   (logic) => `exec(${escapeString(logic.ref)}${functionParams(logic.params)})`,
 
     /* referrer */
-    "at":       (logic) => logic.content ? `at(${escapeString(logic.node)},(${LogicStatement.parameterString})=>${buildLogic(logic.content)})` : `at(${escapeString(logic.node)})`
+    "at":         (logic) => logic.content ? `at(${escapeString(logic.node)},(${LogicStatement.parameterString})=>${buildLogic(logic.content)})` : `at(${escapeString(logic.node)})`
 };
 
 const dependencies = new Set();
@@ -116,15 +115,15 @@ function mathMultiElementOperation(els, join) {
 
 /* FUNCTION PARAMS */
 function functionParams(params) {
-    if (params == null || typeof params !== "object" || Array.isArray(params)) {
-        return ",{}";
+    if (!Array.isArray(params)) {
+        return ",[]";
     }
     const escapedParams = [];
-    for (const [key, value] of Object.entries(params)) {
+    for (const value of params) {
         const buildValue = buildLogic(value);
-        escapedParams.push(`${key}:${buildValue}`);
+        escapedParams.push(buildValue);
     }
-    return `,{${escapedParams.join(",")}}`;
+    return `,[${escapedParams.join(",")}]`;
 }
 
 /* INITIATOR */
@@ -140,7 +139,7 @@ function buildLogic(logic) {
 
 class StatementCompiler {
 
-    compile(source, params = {}) {
+    compile(source, params = []) {
         const statement = buildLogic(source);
         const fn = new LogicStatement(statement, {
             dependencies,

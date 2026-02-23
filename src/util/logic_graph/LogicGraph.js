@@ -57,8 +57,16 @@ export default class LogicGraph {
         }
         for (const name in config.logic) {
             const logic = config.logic[name];
-            const fn = EdgeLogicCompiler.compile(logic);
-            this.#mixins.set(name, fn);
+            if (logic.params != null) {
+                const {
+                    logic: fnLogic, params
+                } = logic;
+                const fn = EdgeLogicCompiler.compile(fnLogic, params);
+                this.#mixins.set(name, fn);
+            } else {
+                const fn = EdgeLogicCompiler.compile(logic);
+                this.#mixins.set(name, fn);
+            }
         }
         if (this.#debug) {
             console.timeEnd("build time");
