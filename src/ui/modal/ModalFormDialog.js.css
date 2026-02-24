@@ -31,3 +31,8 @@
 ::slotted(input.prompt-input::placeholder) {
     color: var(--input-placeholder-text-color, #757575);
 }
+
+#form-container {
+    --border-style: none;
+    --border-radius: none;
+}

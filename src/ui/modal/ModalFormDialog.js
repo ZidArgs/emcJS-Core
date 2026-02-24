@@ -51,9 +51,9 @@ export default class ModalFormDialog extends ModalDialog {
     }
 
     initialFocus() {
-        const presetEl = this.initialFocusElement;
-        if (presetEl != null) {
-            presetEl.focus();
+        const formEls = this.#formContainerEl.getFocusableElements();
+        if (formEls.length) {
+            formEls[0].focus();
         } else {
             super.initialFocus();
         }

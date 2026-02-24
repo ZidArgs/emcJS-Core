@@ -2,16 +2,24 @@
     display: flex;
     max-height: 100%;
     max-width: 100%;
+    --border-style: solid;
+    --border-width: var(--form-border-width, 2px);
+    --border-color: var(--form-border-color, #222222);
+    --border-top-left-radius: var(--form-border-radius, 6px);
+    --border-top-right-radius: var(--form-border-radius, 6px);
+    --border-bottom-left-radius: var(--form-border-radius, 6px);
+    --border-bottom-right-radius: var(--form-border-radius, 6px);
+    --border-radius: var(--border-top-left-radius) var(--border-top-right-radius) var(--border-bottom-right-radius) var(--border-bottom-left-radius);
 }
 
 #container {
     display: flex;
     flex-direction: column;
     flex: 1;
-    border-style: solid;
-    border-width: var(--form-border-width, 2px);
-    border-color: var(--form-border-color, #222222);
-    border-radius: var(--form-border-radius, 6px);
+    border-style: var(--border-style);
+    border-width: var(--border-width);
+    border-color: var(--border-color);
+    border-radius: var(--border-radius);
     overflow: hidden;
 }
 

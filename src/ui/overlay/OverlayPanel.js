@@ -5,6 +5,7 @@ import "../form/button/Button.js";
 import "../icon/FontIcon.js";
 import TPL from "./OverlayPanel.js.html" assert {type: "html"};
 import STYLE from "./OverlayPanel.js.css" assert {type: "css"};
+import {getFocusableElements} from "../../util/helper/html/ElementFocusHelper.js";
 
 let activeOverlay = null;
 
@@ -104,7 +105,12 @@ export default class OverlayPanel extends CustomElement {
     }
 
     initialFocus() {
-        this.#closeEl.focus();
+        const contentEls = getFocusableElements(this);
+        if (contentEls.length) {
+            contentEls[0].focus();
+        } else  {
+            this.#closeEl.focus();
+        }
     }
 
     focusFirst() {

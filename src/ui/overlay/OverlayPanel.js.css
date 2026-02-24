@@ -59,6 +59,7 @@
     height: 40px;
     color: var(--modal-header-text-color, #000000);
     background-color: var(--modal-header-back-color, #e4e4e4);
+    font-weight: bold;
 }
 
 #title-text {

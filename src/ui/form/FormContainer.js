@@ -2,6 +2,7 @@ import CustomElement from "../element/CustomElement.js";
 import {debounce} from "../../util/Debouncer.js";
 import MutationObserverManager from "../../util/observer/manager/MutationObserverManager.js";
 import {nodeOccurenceComparator} from "../../util/helper/ui/NodeListSort.js";
+import {getFocusableElements} from "../../util/helper/html/ElementFocusHelper.js";
 import FormSection from "./FormSection.js";
 import TPL from "./FormContainer.js.html" assert {type: "html"};
 import STYLE from "./FormContainer.js.css" assert {type: "css"};
@@ -47,7 +48,7 @@ export default class FormContainer extends CustomElement {
 
     constructor() {
         super();
-        this.shadowRoot.append(TPL.generate());
+        TPL.apply(this.shadowRoot);
         STYLE.apply(this.shadowRoot);
         /* --- */
         this.#containerEl = this.shadowRoot.getElementById("container");
@@ -75,6 +76,10 @@ export default class FormContainer extends CustomElement {
     resetScroll() {
         this.#containerEl.scrollTop = 0;
         this.#containerEl.scrollLeft = 0;
+    }
+
+    getFocusableElements() {
+        return getFocusableElements(this.shadowRoot);
     }
 
     get sectionNodeList() {
