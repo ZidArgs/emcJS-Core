@@ -39,9 +39,9 @@ const TRANSPILERS = {
     "pow":        (logic) => mathTwoElementOperation(logic.content, "**"),
 
     /* special */
-    "at":         (logic) => logic.content ? `((val("${escape(logic.node)}")||0)&&${buildLogic(logic.content)})` : `(val("${escape(logic.node)}")||0)`,
-    "mixin":      (logic) => `execute("${escape(logic.ref)}")`,
-    "function":   (logic) => `execute(${escape(logic.ref)}${functionParams(logic.params)})`
+    "at":         (logic) => logic.content ? `((val(${escapeString(logic.node)})||0)&&${buildLogic(logic.content)})` : `(val(${escapeString(logic.node)})||0)`,
+    "mixin":      (logic) => `execute(${escapeString(logic.ref)})`,
+    "function":   (logic) => `execute(${escapeString(logic.ref)}${functionParams(logic.params)})`
 };
 
 const dependencies = new Set();
@@ -150,7 +150,7 @@ class EdgeLogicCompiler {
     compile(logic, params = []) {
         dependencies.clear();
         const buf = buildLogic(logic);
-        const fn = new Function("val", "execute", "params", `${createParamString(params)};return ${buf}`);
+        const fn = new Function("val = () => false", "execute = () => false", "params = []", `${createParamString(params)};return ${buf}`);
         Object.defineProperty(fn, "requires", {value: dependencies});
         return fn;
     }
