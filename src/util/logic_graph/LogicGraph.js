@@ -261,13 +261,14 @@ export default class LogicGraph {
                 return result;
             };
 
-            const execute = (name) => {
+            const execute = (name, ...params) => {
                 if (this.#mixins.has(name)) {
                     const fn = this.#mixins.get(name);
-                    const res = fn(valueGetter, execute);
+                    const res = fn(valueGetter, execute, ...params);
                     if (this.#debug == "extended") {
                         console.groupCollapsed(`execute mixin { ${name} }`);
                         console.log(fn.toString());
+                        console.log(`params: [${params.join(", ")}]`);
                         console.log(`result: ${res}`);
                         console.groupEnd(`execute mixin { ${name} }`);
                     }

@@ -115,8 +115,14 @@ function buildLogic(logic) {
     return 0;
 }
 
+/**
+ * @deprecated
+ */
 class LogicCompiler {
 
+    /**
+     * @deprecated
+     */
     compile(logic) {
         const buf = buildLogic(logic);
         const fn = new Function("val", `return ${buf}`);

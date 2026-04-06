@@ -13,9 +13,9 @@ export default class LogicStatement extends Function {
             dependencies = [], params = [], source = {}
         } = opts;
 
-        const paramString = LogicStatement.#createParamString();
+        const paramResolverString = LogicStatement.#createParamResolverString();
 
-        super(LogicStatement.parameterString, `${paramString};return ${statement}`);
+        super(LogicStatement.parameterString, `${paramResolverString};return ${statement}`);
 
         this.#source = immute(source);
         if (Symbol.iterator in Object(dependencies)) {
@@ -53,7 +53,7 @@ export default class LogicStatement extends Function {
         };
     }
 
-    static #createParamString(params) {
+    static #createParamResolverString(params) {
         if (!Array.isArray(params) || !params.length) {
             return "params={}";
         }
