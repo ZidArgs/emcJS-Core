@@ -27,6 +27,7 @@
     "through": "^2.3.8"
   },
   "exports": {
+    "./build_tools/*": "./build_tools/*",
     "./*": "./src/*"
   },
   "scripts": {

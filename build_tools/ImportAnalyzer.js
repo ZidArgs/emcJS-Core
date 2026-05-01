@@ -34,12 +34,12 @@ function resolvePath(src, dest, sourceDir, filePath) {
 }
 
 function normalizePath(path) {
-    return path.replace(/\\/g, "/");
+    return path.replace(/\\/g, "/").replace(/^file:\/\/\//, "");
 }
 
 const allImports = new Map();
 
-function analyzeFile(sourcePath, src = "/", dest = "/", target = "/", fileContent = "") {
+function analyzeFile(sourcePath, src = "/", dest = "/", root = "/", fileContent = "") {
     const sourceDir = path.dirname(sourcePath);
     const lines = fileContent.split(LNBR_SEQ);
     const usedImports = new Map();
@@ -49,8 +49,11 @@ function analyzeFile(sourcePath, src = "/", dest = "/", target = "/", fileConten
             if (result != null) {
                 const filePath = result[1];
                 if (filePath.startsWith("/")) {
-                    const resolvedPath = normalizePath(path.resolve(target, filePath.slice(1)));
+                    const resolvedPath = normalizePath(path.resolve(root, filePath.slice(1)));
                     usedImports.set(resolvedPath,  resolvedPath);
+                } else if (!filePath.startsWith(".")) {
+                    const resolvedPath = normalizePath(import.meta.resolve(filePath));
+                    usedImports.set(resolvedPath,  filePath);
                 } else {
                     usedImports.set(resolvePath(src, dest, sourceDir, filePath), filePath);
                 }
@@ -65,10 +68,10 @@ function analyzeFile(sourcePath, src = "/", dest = "/", target = "/", fileConten
 
 class ImportAnalyzer {
 
-    register(src, dest, target) {
+    register(src, dest, root) {
         const transformStream = new Transform({objectMode: true});
         transformStream._transform = function(file, encoding, callback) {
-            analyzeFile(file.path, src, dest, target, String(file.contents));
+            analyzeFile(file.path, src, dest, root, String(file.contents));
             callback(null, file);
         };
         return transformStream;
@@ -109,8 +112,10 @@ class ImportAnalyzer {
             for (const [current, filePath] of imports) {
                 if (!allImports.has(current)) {
                     const currentPath = resolvedPathsReverse.get(current) ?? current;
-                    unresolved[originalPath] = unresolved[srcFile] ?? {};
-                    unresolved[originalPath][filePath] = currentPath;
+                    if (!fs.existsSync(currentPath)) {
+                        unresolved[originalPath] = unresolved[originalPath] ?? {};
+                        unresolved[originalPath][filePath] = currentPath;
+                    }
                 }
             }
         }

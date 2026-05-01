@@ -8,6 +8,9 @@ export function bufferToStream(arrayBuffer) {
 }
 
 export async function streamToBlob(stream, type) {
+    if (!(stream instanceof ReadableStream)) {
+        throw new TypeError("stream must be an instance of ReadableStream");
+    }
     const reader = stream.getReader();
     let done = false;
     const data = [];

@@ -1,8 +1,8 @@
 import path from "path";
 import gulp from "gulp";
 import changed, {compareContents} from "gulp-changed";
-import sourceImport from "./src/_build_tools/sourceImport.js";
-import ImportAnalyzer from "./src/_build_tools/ImportAnalyzer.js";
+import sourceImport from "./build_tools/SourceImport.js";
+import ImportAnalyzer from "./build_tools/ImportAnalyzer.js";
 
 const __dirname = path.resolve();
 
