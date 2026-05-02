@@ -5,8 +5,6 @@ import {
 } from "../helper/CheckType.js";
 import {debounce} from "../Debouncer.js";
 import {DEFAULT_EXTRACT_CONFIG} from "../helper/collection/ExtractDataFromArray.js";
-import EventMultiTargetManager from "../event/EventMultiTargetManager.js";
-import DataViewControlToolbar from "../../ui/dataview/toolbar/DataViewControlToolbar.js";
 import DataReceiverMixin from "../datareceiver/DataReceiverMixin.js";
 
 export default class AbstractDataProvider extends EventTarget {
@@ -21,10 +19,6 @@ export default class AbstractDataProvider extends EventTarget {
 
     #receiver;
 
-    #toolbarEls = new Set();
-
-    #toolbarEventManager = new EventMultiTargetManager();
-
     #multiSort = false;
 
     constructor(receiver, options = {}) {
@@ -36,14 +30,11 @@ export default class AbstractDataProvider extends EventTarget {
         }
         super();
         const {
-            config = {}, multiSort = false, toolbar
+            config = {}, multiSort = false
         } = options;
         this.#receiver = receiver;
         this.#multiSort = !!multiSort;
         this.#config = this.#extractConfig(config);
-        if (toolbar != null) {
-            this.setToolbar(toolbar);
-        }
         this.refresh();
         /* --- */
         if (receiver instanceof EventTarget) {
@@ -100,18 +91,6 @@ export default class AbstractDataProvider extends EventTarget {
                 }
             });
         }
-        /* --- */
-        this.#toolbarEventManager.set("page", (event) => {
-            const page = event.data - 1;
-            this.updateConfig({page});
-        });
-        this.#toolbarEventManager.set("size", (event) => {
-            const pageSize = event.data;
-            this.updateConfig({
-                page: 0,
-                pageSize
-            });
-        });
     }
 
     get resultSize() {
@@ -134,24 +113,6 @@ export default class AbstractDataProvider extends EventTarget {
 
     get multiSort() {
         return this.#multiSort;
-    }
-
-    setToolbar(toolbarEl) {
-        if (toolbarEl != null && !(toolbarEl instanceof DataViewControlToolbar)) {
-            throw new Error("paginationEl must be an instance of PaginationToolbar");
-        }
-        this.#toolbarEls.clear();
-        this.#toolbarEventManager.clearTargets();
-        this.addToolbar(toolbarEl);
-    }
-
-    addToolbar(toolbarEl) {
-        if (toolbarEl != null && !(toolbarEl instanceof DataViewControlToolbar)) {
-            throw new Error("paginationEl must be an instance of PaginationToolbar");
-        }
-        this.#toolbarEls.add(toolbarEl);
-        this.#toolbarEventManager.addTarget(toolbarEl);
-        this.#updateToolbarEls();
     }
 
     setConfig(value) {
@@ -196,32 +157,20 @@ export default class AbstractDataProvider extends EventTarget {
             await this.#receiver.setData([]);
             this.dispatchEvent(new Event("error"));
         } finally {
-            this.#updateToolbarEls();
+            this.#dispatchResult();
             await this.#receiver.unbusy();
         }
     });
 
-    #updateToolbarEls = debounce(() => {
-        for (const toolbarEl of this.#toolbarEls) {
-            if (toolbarEl != null) {
-                const pageSize = this.#config.pageSize;
-                const currentPage = this.#config.page;
-                const currentEntries = this.resultSize;
-                const totalEntries = this.totalSize;
-                toolbarEl.entries = currentEntries;
-                toolbarEl.total = totalEntries;
-                if (pageSize != null && pageSize > 0) {
-                    const maxPages = Math.ceil(totalEntries / pageSize);
-                    toolbarEl.size = pageSize;
-                    toolbarEl.max = maxPages;
-                    toolbarEl.value = (currentPage ?? 0) + 1;
-                } else {
-                    toolbarEl.size = null;
-                    toolbarEl.max = 1;
-                    toolbarEl.value = 1;
-                }
-            }
-        }
+    #dispatchResult = debounce(() => {
+        const event = new Event("result");
+        event.data = {
+            pageSize: this.#config.pageSize,
+            page: this.#config.page,
+            resultSize: this.resultSize,
+            totalSize: this.totalSize
+        };
+        this.dispatchEvent(event);
     });
 
     async getData() {

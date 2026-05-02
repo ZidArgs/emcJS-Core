@@ -1,8 +1,0 @@
-[
-    {
-        "type": "StringInput",
-        "name": "placeholder",
-        "label": "Placeholder",
-        "value": ""
-    }
-]

@@ -1,8 +1,0 @@
-[
-    {
-        "type": "StringInput",
-        "name": "href",
-        "label": "URL",
-        "value": ""
-    }
-]
