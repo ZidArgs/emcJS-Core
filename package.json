@@ -1,5 +1,5 @@
 {
-  "name": "emcjs",
+  "name": "@emcjs/core",
   "version": "0.29.4",
   "description": "Modular JS API",
   "type": "module",
