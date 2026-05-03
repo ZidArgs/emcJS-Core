@@ -1,6 +1,9 @@
 import fs from "fs";
 import path from "path";
 import {Transform} from "stream";
+import ExportsResolver from "./util/ExportsResolver.js";
+import {normalizePath} from "./util/NormalizePath.js";
+import jsonParse from "../src/patches/JSONParser.js";
 
 const LNBR_SEQ = /(?:\r\n|\n|\r)/g;
 const CHECKS = [
@@ -33,11 +36,29 @@ function resolvePath(src, dest, sourceDir, filePath) {
     return resolvedPath;
 }
 
-function normalizePath(path) {
-    return path.replace(/\\/g, "/").replace(/^file:\/\/\//, "");
-}
-
 const allImports = new Map();
+
+function resolvePackageFile(root, importPath) {
+    const parts = importPath.split("/");
+    const module_path = [];
+    while (parts.length > 0) {
+        module_path.push(parts.shift());
+        const packageName = module_path.join("/");
+        const packageFile = path.resolve(`${root}/node_modules`, packageName, "package.json");
+        if (fs.existsSync(packageFile)) {
+            const packagePath = path.dirname(packageFile);
+            const fileContent = fs.readFileSync(packageFile).toString();
+            const packageConfig = jsonParse(fileContent);
+            const exportsResolver = new ExportsResolver(packagePath);
+            for (const [matcher, substitute] of Object.entries(packageConfig.exports)) {
+                exportsResolver.addResolver(matcher, substitute);
+            }
+            const filePath = exportsResolver.resolvePath(parts.join("/"));
+            return path.resolve(packagePath, filePath);
+        }
+    }
+    return "";
+}
 
 function analyzeFile(sourcePath, src = "/", dest = "/", root = "/", fileContent = "") {
     const sourceDir = path.dirname(sourcePath);
@@ -52,7 +73,7 @@ function analyzeFile(sourcePath, src = "/", dest = "/", root = "/", fileContent 
                     const resolvedPath = normalizePath(path.resolve(root, filePath.slice(1)));
                     usedImports.set(resolvedPath,  resolvedPath);
                 } else if (!filePath.startsWith(".")) {
-                    const resolvedPath = normalizePath(import.meta.resolve(filePath));
+                    const resolvedPath = normalizePath(resolvePackageFile(root, filePath));
                     usedImports.set(resolvedPath,  filePath);
                 } else {
                     usedImports.set(resolvePath(src, dest, sourceDir, filePath), filePath);

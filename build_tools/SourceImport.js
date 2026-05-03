@@ -1,7 +1,10 @@
 import fs from "fs";
 import path from "path";
 import {Transform} from "stream";
+import {resolvePackageName} from "./util/ResolvePackage.js";
 import jsonParse from "../src/patches/JSONParser.js";
+
+export const PACKAGE_NAME = resolvePackageName(import.meta.dirname);
 
 const LNBR_SEQ = /(?:\r\n|\n|\r)/g;
 const IMPORT_SCRIPT = /^\s*import(?:\s+([a-zA-Z0-9_$]+)\s+from)?\s+"([^"]+)"\s*;?$/;
@@ -23,11 +26,11 @@ export function registerImportHandler(typeName, handler, prereq) {
     }
 }
 
-export default function sourceImport(pathPrefix = "/emcjs") {
+export default function sourceImport() {
     // augment
     const transformStream = new Transform({objectMode: true});
     transformStream._transform = function(file, encoding, callback) {
-        const contents = augmentFile(pathPrefix, file.path, String(file.contents));
+        const contents = augmentFile(file.path, String(file.contents));
         if (file.isBuffer() === true) {
             file.contents = Buffer.from(contents);
         } else {
@@ -38,7 +41,7 @@ export default function sourceImport(pathPrefix = "/emcjs") {
     return transformStream;
 }
 
-function augmentFile(pathPrefix, sourcePath, fileContent) {
+function augmentFile(sourcePath, fileContent) {
     const sourceDir = path.dirname(sourcePath);
     // lists
     const importedEntries = [];
@@ -89,7 +92,7 @@ function augmentFile(pathPrefix, sourcePath, fileContent) {
 
         if (prereqEntries.size) {
             for (const prereq of prereqEntries) {
-                result += prereq(pathPrefix);
+                result += prereq();
                 result += "\n";
             }
             result += "\n";
