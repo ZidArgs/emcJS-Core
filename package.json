@@ -1,5 +1,5 @@
 {
-  "name": "emcjs",
+  "name": "@emcjs/core",
   "version": "0.29.4",
   "description": "Modular JS API",
   "type": "module",
@@ -10,9 +10,7 @@
   "author": "Denis Weiß (ZidArgs)",
   "license": "MIT",
   "homepage": "https://bitbucket.org/zidargs/emcjs/src",
-  "dependencies": {
-    "jswebservice": "git+https://bitbucket.org/zidargs/jswebservice.git/#3.1.2"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.28.4",
     "@babel/eslint-parser": "^7.28.4",
@@ -27,6 +25,7 @@
     "through": "^2.3.8"
   },
   "exports": {
+    "./build_tools/*": "./build_tools/*",
     "./*": "./src/*"
   },
   "scripts": {
@@ -34,8 +33,6 @@
     "lintfix": "yarn eslint --fix .",
     "build": "gulp build",
     "test": "node --test",
-    "find-cycles": "node tools/find-cycles.js",
-    "webtest": "gulp buildDoc && node server.js",
-    "buildDoc": "gulp buildDoc"
+    "find-cycles": "node tools/find-cycles.js"
   }
 }

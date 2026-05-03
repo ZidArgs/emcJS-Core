@@ -1,9 +1,0 @@
-#modal {
-    height: 600px;
-    width: 1000px;
-}
-
-#categories {
-    overflow-x: auto;
-    overflow-y: hidden;
-}
