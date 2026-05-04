@@ -33,7 +33,6 @@ export default defineConfig([
         "**/node_modules",
         "**/.idea",
         "**/.vscode",
-        "webtest/emcJS",
         "**/lib",
         "gulpfile.js"
     ]),

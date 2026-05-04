@@ -12,5 +12,4 @@ yarn.lock
 package-lock.json
 backup.json
 editor/info.log
-webtest/emcJS
 tools/output
