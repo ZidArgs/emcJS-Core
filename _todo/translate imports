@@ -1,0 +1,62 @@
+export default function a() {
+
+}
+
+export function b() {
+
+}
+
+function c() {
+
+}
+
+export const d = "";
+
+const e = 2;
+
+export {e};
+
+export class Test2 {
+
+}
+
+//=============
+
+// import a, {b, d as gigi, e} from "";
+
+//=============
+{
+    const [
+        a,
+        {
+            b, d: gigi, e
+        }
+    ] = (() => {
+        /* export default */ const $__DEFAULT = function a() {
+            c();
+        }
+
+        /* export */ function b() {}
+
+        function c() {}
+
+        /* export */ const d = "";
+
+        const e = 2;
+        /* export { e }; */
+
+        /* export */ class Test2 {
+            // test
+        }
+
+        return [
+            $__DEFAULT,
+            {
+                b,
+                d,
+                e,
+                Test2
+            }
+        ];
+    })();
+}

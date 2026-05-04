@@ -7,7 +7,7 @@ import jsonParse from "../src/patches/JSONParser.js";
 export const PACKAGE_NAME = resolvePackageName(import.meta.dirname);
 
 const LNBR_SEQ = /(?:\r\n|\n|\r)/g;
-const IMPORT_SCRIPT = /^\s*import(?:\s+([a-zA-Z0-9_$]+)\s+from)?\s+"([^"]+)"\s*;?$/;
+const IMPORT_SCRIPT = /^\s*import(?:\s+(.+)\s+from)?\s+"([^"]+)"\s*;?$/;
 const IMPORT_ASSERT = /^\s*import\s+([a-zA-Z0-9_$]+)\s+from\s+"([^"]+)"\s+assert\s+\{\s*type:\s*"([^"]+)"\s*\}\s*;?$/;
 
 const IMPORT_HANDLERS = new Map();
@@ -71,16 +71,16 @@ function augmentFile(sourcePath, fileContent) {
         // check missing .js file extension
         const isScriptImport = IMPORT_SCRIPT.exec(string);
         if (isScriptImport != null) {
-            const name = isScriptImport[1];
+            const variables = isScriptImport[1];
             const filePath = isScriptImport[2];
             if (!filePath.endsWith(".js")) {
                 // TODO check if folder or file
                 // - file relative check if starting with "."
                 // - project relative check if starting with "/"
-                if (name == null) {
+                if (variables == null) {
                     return `import "${filePath}.js";`;
                 }
-                return `import ${name} from "${filePath}.js";`;
+                return `import ${variables} from "${filePath}.js";`;
             }
         }
         return string;
