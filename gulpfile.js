@@ -3,6 +3,7 @@ import gulp from "gulp";
 import changed, {compareContents} from "gulp-changed";
 import ImportAnalyzer from "./build_tools/ImportAnalyzer.js";
 import sourceImport from "./build_tools/SourceImport.js";
+import {packScript} from "./build_tools/PackScript.js";
 
 const __dirname = path.resolve();
 
@@ -27,13 +28,27 @@ function copyJS() {
     return res;
 }
 
+function buildWorker() {
+    const FILES = [
+        `${IN_PATH}/**/*.w.js`
+    ];
+    let res = gulp.src(FILES);
+    res = res.pipe(ImportAnalyzer.register(IN_PATH, OUT_PATH, __dirname));
+    res = res.pipe(packScript());
+    if (!REBUILD) {
+        res = res.pipe(changed(OUT_PATH, {hasChanged: compareContents}));
+    }
+    res = res.pipe(gulp.dest(OUT_PATH));
+    return res;
+}
+
 function finish(done) {
     ImportAnalyzer.printUnresolvedImports();
     // ImportAnalyzer.writeImportFile();
     done();
 }
 
-export const build = gulp.series(copyJS, finish);
+export const build = gulp.series(gulp.parallel(copyJS, buildWorker), finish);
 
 export const watch = function() {
     // JS

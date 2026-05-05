@@ -1,4 +1,4 @@
-import MessagePortHandler from "../../../worker/util/MessagePortHandler.js";
+import MessagePortHandler from "./util/MessagePortHandler.js";
 
 MessagePortHandler.addEventListener("message", (event) => {
     const port = event.port;

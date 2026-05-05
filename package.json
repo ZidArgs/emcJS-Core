@@ -1,6 +1,6 @@
 {
   "name": "@emcjs/core",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Modular JS API",
   "type": "module",
   "repository": {
@@ -22,7 +22,9 @@
     "glob-all": "^3.1.0",
     "gulp": "^4.0.2",
     "gulp-changed": "^5.0.4",
-    "through": "^2.3.8"
+    "through": "^2.3.8",
+    "webpack": "^5.106.2",
+    "webpack-stream": "^7.0.0"
   },
   "exports": {
     "./build_tools/*": "./build_tools/*",

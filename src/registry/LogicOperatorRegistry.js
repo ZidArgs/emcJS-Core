@@ -1,6 +1,6 @@
-import {debounceByType} from "../../util/Debouncer.js";
-import {isEqual} from "../../util/helper/Comparator.js";
-import {deepClone} from "../../util/helper/DeepClone.js";
+import {debounceByType} from "../util/Debouncer.js";
+import {isEqual} from "../util/helper/Comparator.js";
+import {deepClone} from "../util/helper/DeepClone.js";
 
 class LogicOperatorRegistry extends EventTarget {
 
