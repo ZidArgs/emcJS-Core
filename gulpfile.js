@@ -44,7 +44,7 @@ function buildWorker() {
 
 function finish(done) {
     ImportAnalyzer.printUnresolvedImports();
-    // ImportAnalyzer.writeImportFile();
+    ImportAnalyzer.writeImportFile();
     done();
 }
 

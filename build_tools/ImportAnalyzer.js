@@ -25,8 +25,26 @@ const CHECKS = [
 const originalPaths = new Map();
 const resolvedPaths = new Map();
 const resolvedPathsReverse = new Map();
+const rewriteRules = new Map();
+const allImports = new Map();
 
-function resolvePath(src, dest, sourceDir, filePath) {
+function resolveAbsolutePath(root, filePath) {
+    const packageFile = path.resolve(root, "package.json");
+    if (fs.existsSync(packageFile)) {
+        const packageConfig = readJSONFile(packageFile);
+        const exportsResolver = new ExportsResolver(root);
+        for (const [matcher, substitute] of Object.entries(packageConfig.exports)) {
+            exportsResolver.addResolver(matcher, substitute);
+        }
+        return exportsResolver.resolvePath(filePath.slice(1));
+    }
+}
+
+function resolvePackagePath(root, filePath) {
+    return normalizePath(resolvePackageFilePath(root, filePath));
+}
+
+function resolveRelativePath(src, dest, sourceDir, filePath) {
     const fullPath = normalizePath(path.resolve(sourceDir, filePath));
     if (resolvedPaths.has(fullPath)) {
         return resolvedPaths.get(fullPath);
@@ -37,7 +55,15 @@ function resolvePath(src, dest, sourceDir, filePath) {
     return resolvedPath;
 }
 
-const allImports = new Map();
+function getRewritePath(filePath) {
+    for (const [rewriteSrc, rewriteDest] of rewriteRules) {
+        if (filePath.startsWith(rewriteSrc)) {
+            const newFilelPath = `${rewriteDest}${filePath.slice(rewriteSrc.length)}`;
+            return newFilelPath;
+        }
+    }
+    return filePath;
+}
 
 function analyzeFile(sourcePath, src = "/", dest = "/", root = "/", fileContent = "") {
     const sourceDir = path.dirname(sourcePath);
@@ -49,21 +75,11 @@ function analyzeFile(sourcePath, src = "/", dest = "/", root = "/", fileContent 
             if (result != null) {
                 const filePath = result[1];
                 if (filePath.startsWith("/")) {
-                    const packageFile = path.resolve(root, "package.json");
-                    if (fs.existsSync(packageFile)) {
-                        const packageConfig = readJSONFile(packageFile);
-                        const exportsResolver = new ExportsResolver(root);
-                        for (const [matcher, substitute] of Object.entries(packageConfig.exports)) {
-                            exportsResolver.addResolver(matcher, substitute);
-                        }
-                        const resolvedPath = exportsResolver.resolvePath(filePath.slice(1));
-                        usedImports.set(resolvedPath,  filePath);
-                    }
+                    usedImports.set(getRewritePath(resolveAbsolutePath(root, filePath)),  filePath);
                 } else if (!filePath.startsWith(".")) {
-                    const resolvedPath = normalizePath(resolvePackageFilePath(root, filePath));
-                    usedImports.set(resolvedPath,  filePath);
+                    usedImports.set(getRewritePath(resolvePackagePath(root, filePath)),  filePath);
                 } else {
-                    usedImports.set(resolvePath(src, dest, sourceDir, filePath), filePath);
+                    usedImports.set(getRewritePath(resolveRelativePath(src, dest, sourceDir, filePath)),  filePath);
                 }
                 break;
             }
@@ -75,6 +91,10 @@ function analyzeFile(sourcePath, src = "/", dest = "/", root = "/", fileContent 
 }
 
 class ImportAnalyzer {
+
+    setPathRewriteRule(src, dest) {
+        rewriteRules.set(normalizePath(src), normalizePath(dest));
+    }
 
     register(src, dest, root) {
         const transformStream = new Transform({objectMode: true});

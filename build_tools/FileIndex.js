@@ -5,6 +5,7 @@ import through from "through";
 import del from "del";
 
 const FILES = new Set();
+const IGNORE_UNUSED = new Set();
 
 function normalizePath(path) {
     return path.replace(/\\/g, "/");
@@ -19,9 +20,10 @@ class FileIndex {
     register(src = "/", dest = "/", sourcemaps = false) {
         const files = [];
         return through(function(file) {
-            FILES.add(normalizePath(path.resolve(dest, path.relative(src, file.path))));
+            const normalPath = normalizePath(path.resolve(dest, path.relative(src, file.path)));
+            FILES.add(normalPath);
             if (sourcemaps) {
-                FILES.add(normalizePath(path.resolve(dest, path.relative(src, `${file.path}.map`))));
+                FILES.add(`${normalPath}.map`);
             }
             this.push(file);
             return files.push(file);
@@ -30,14 +32,39 @@ class FileIndex {
         });
     }
 
-    add(filePath) {
-        FILES.add(normalizePath(filePath));
+    addThrough(src = "/", dest = "/", ignoreUnused = false) {
+        const files = [];
+        return through(function(file) {
+            const normalPath = normalizePath(path.resolve(dest, path.relative(src, file.path)));
+            FILES.add(normalPath);
+            if (ignoreUnused) {
+                IGNORE_UNUSED.add(normalPath);
+            }
+            this.push(file);
+            return files.push(file);
+        }, function() {
+            return this.emit("end");
+        });
+    }
+
+    add(files = [], ignoreUnused = false) {
+        const resolvedFiles = glob.sync(files, {
+            nodir: true,
+            absolute: true,
+            ignore: "node_modules/**"
+        });
+        for (const fName of resolvedFiles) {
+            const normalPath = normalizePath(fName);
+            FILES.add(normalPath);
+            if (ignoreUnused) {
+                IGNORE_UNUSED.add(normalPath);
+            }
+        }
     }
 
     finish(dest = "/", index = "index.json", config = {}) {
         const {
             usedImports = null,
-            ignoreImportPaths = null,
             deleteUnused = true,
             reportRemoved = false,
             silent = false
@@ -50,7 +77,8 @@ class FileIndex {
         const destFiles = glob.sync("./**/*", {
             nodir: true,
             cwd: dest,
-            absolute: true
+            absolute: true,
+            ignore: "node_modules/**"
         });
 
         const removedImports = [];
@@ -60,22 +88,19 @@ class FileIndex {
                     console.log("removing unused imports");
                 }
                 for (const fName of FILES) {
-                    if (fName.endsWith(".js") && !usedImports.has(fName)) {
-                        if (ignoreImportPaths == null || !ignoreImportPaths.test(fName)) {
-                            if (!silent) {
-                                console.log(`remove import: ${fName}`);
-                            }
-                            FILES.delete(fName);
-                            removedImports.push(fName);
+                    if (fName.endsWith(".js") && !IGNORE_UNUSED.has(fName) && !usedImports.has(fName)) {
+                        if (!silent) {
+                            console.log(`remove import: ${fName}`);
                         }
+                        FILES.delete(fName);
+                        removedImports.push(fName);
                     }
                 }
             }
             if (!silent) {
                 console.log("deleting unused files");
             }
-            for (const i in destFiles) {
-                const fName = destFiles[i];
+            for (const fName of destFiles) {
                 if (fName != indexPathNormal && !FILES.has(fName)) {
                     if (!silent) {
                         console.log(`delete file: ${fName}`);
