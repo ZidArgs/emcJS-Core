@@ -66,7 +66,7 @@ class LanguageManager {
     finish(dest = "/", metaFile = "_meta.json") {
         const metaPath = path.resolve(dest, metaFile);
         const metaPathNormal = normalizePath(metaPath);
-        console.log(`i18n meta file: ${metaPathNormal}`);
+        console.log(`write i18n meta file: ${metaPathNormal}`);
         const files = Object.fromEntries(FILES.entries());
         fs.writeFileSync(metaPath, JSON.stringify(files, null, 4));
         FILES.clear();

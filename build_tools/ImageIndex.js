@@ -31,7 +31,6 @@ class ImageIndex {
     finish(dest = "/", index = "index.images.json", filterPattern = null, namePattern = null) {
         const indexPath = path.resolve(dest, index);
         const indexPathNormal = normalizePath(indexPath);
-        console.log(`image index file: ${indexPathNormal}`);
 
         const files = {};
 
@@ -49,7 +48,7 @@ class ImageIndex {
             }
         }
 
-        console.log("write new image index");
+        console.log(`write image index: ${indexPathNormal}`);
         fs.writeFileSync(indexPath, JSON.stringify(files, null, 4));
         return indexPath;
     }

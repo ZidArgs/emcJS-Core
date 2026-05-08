@@ -71,9 +71,6 @@ class FileIndex {
         } = config;
         const indexPath = path.resolve(dest, index);
         const indexPathNormal = normalizePath(indexPath);
-        if (!silent) {
-            console.log(`index file: ${indexPathNormal}`);
-        }
         const destFiles = glob.sync("./**/*", {
             nodir: true,
             cwd: dest,
@@ -115,7 +112,7 @@ class FileIndex {
         const files = Array.from(FILES).sort().map((el)=>`/${path.relative(dest, el)}`.replace(/\\/g, "/"));
         files.push("/");
         if (!silent) {
-            console.log("write new index");
+            console.log(`write file index: ${indexPathNormal}`);
         }
         fs.writeFileSync(indexPath, JSON.stringify(files, null, 4));
         if (reportRemoved) {

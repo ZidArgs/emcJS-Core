@@ -50,5 +50,5 @@ export function resolvePackageFilePath(root, importPath) {
             return path.resolve(packagePath, filePath);
         }
     }
-    return null;
+    return "";
 }

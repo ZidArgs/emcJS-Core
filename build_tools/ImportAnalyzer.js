@@ -3,8 +3,6 @@ import path from "path";
 import {Transform} from "stream";
 import {normalizePath} from "./util/NormalizePath.js";
 import {resolvePackageFilePath} from "./util/ResolvePackage.js";
-import {readJSONFile} from "./util/ReadJSONFile.js";
-import ExportsResolver from "./util/ExportsResolver.js";
 
 const LNBR_SEQ = /(?:\r\n|\n|\r)/g;
 const CHECKS = [
@@ -28,16 +26,8 @@ const resolvedPathsReverse = new Map();
 const rewriteRules = new Map();
 const allImports = new Map();
 
-function resolveAbsolutePath(root, filePath) {
-    const packageFile = path.resolve(root, "package.json");
-    if (fs.existsSync(packageFile)) {
-        const packageConfig = readJSONFile(packageFile);
-        const exportsResolver = new ExportsResolver(root);
-        for (const [matcher, substitute] of Object.entries(packageConfig.exports)) {
-            exportsResolver.addResolver(matcher, substitute);
-        }
-        return exportsResolver.resolvePath(filePath.slice(1));
-    }
+function resolveAbsolutePath(dest, filePath) {
+    return normalizePath(path.resolve(`${dest}${filePath}`));
 }
 
 function resolvePackagePath(root, filePath) {
@@ -75,7 +65,7 @@ function analyzeFile(sourcePath, src = "/", dest = "/", root = "/", fileContent 
             if (result != null) {
                 const filePath = result[1];
                 if (filePath.startsWith("/")) {
-                    usedImports.set(getRewritePath(resolveAbsolutePath(root, filePath)),  filePath);
+                    usedImports.set(getRewritePath(resolveAbsolutePath(dest, filePath)),  filePath);
                 } else if (!filePath.startsWith(".")) {
                     usedImports.set(getRewritePath(resolvePackagePath(root, filePath)),  filePath);
                 } else {
@@ -93,7 +83,10 @@ function analyzeFile(sourcePath, src = "/", dest = "/", root = "/", fileContent 
 class ImportAnalyzer {
 
     setPathRewriteRule(src, dest) {
-        rewriteRules.set(normalizePath(src), normalizePath(dest));
+        src = normalizePath(src);
+        dest = normalizePath(dest);
+        console.log(`set rewrite: ${src} -> ${dest}`);
+        rewriteRules.set(src, dest);
     }
 
     register(src, dest, root) {
