@@ -26,8 +26,8 @@ const resolvedPathsReverse = new Map();
 const rewriteRules = new Map();
 const allImports = new Map();
 
-function resolveAbsolutePath(dest, filePath) {
-    return normalizePath(path.resolve(`${dest}${filePath}`));
+function resolveAbsolutePath(distRoot, filePath) {
+    return normalizePath(path.resolve(`${distRoot}${filePath}`));
 }
 
 function resolvePackagePath(root, filePath) {
@@ -55,7 +55,7 @@ function getRewritePath(filePath) {
     return filePath;
 }
 
-function analyzeFile(sourcePath, src = "/", dest = "/", root = "/", fileContent = "") {
+function analyzeFile(sourcePath, src = "/", dest = "/", root = "/", distRoot = "/", fileContent = "") {
     const sourceDir = path.dirname(sourcePath);
     const lines = fileContent.split(LNBR_SEQ);
     const usedImports = new Map();
@@ -64,12 +64,14 @@ function analyzeFile(sourcePath, src = "/", dest = "/", root = "/", fileContent 
             const result = regExp.exec(line);
             if (result != null) {
                 const filePath = result[1];
-                if (filePath.startsWith("/")) {
-                    usedImports.set(getRewritePath(resolveAbsolutePath(dest, filePath)),  filePath);
-                } else if (!filePath.startsWith(".")) {
-                    usedImports.set(getRewritePath(resolvePackagePath(root, filePath)),  filePath);
-                } else {
-                    usedImports.set(getRewritePath(resolveRelativePath(src, dest, sourceDir, filePath)),  filePath);
+                if (filePath.endsWith(".js")) {
+                    if (filePath.startsWith("/")) {
+                        usedImports.set(getRewritePath(resolveAbsolutePath(distRoot, filePath)),  filePath);
+                    } else if (!filePath.startsWith(".")) {
+                        usedImports.set(getRewritePath(resolvePackagePath(root, filePath)),  filePath);
+                    } else {
+                        usedImports.set(getRewritePath(resolveRelativePath(src, dest, sourceDir, filePath)),  filePath);
+                    }
                 }
                 break;
             }
@@ -89,10 +91,10 @@ class ImportAnalyzer {
         rewriteRules.set(src, dest);
     }
 
-    register(src, dest, root) {
+    register(src, dest, root, distRoot = root) {
         const transformStream = new Transform({objectMode: true});
         transformStream._transform = function(file, encoding, callback) {
-            analyzeFile(file.path, src, dest, root, String(file.contents));
+            analyzeFile(file.path, src, dest, root, distRoot, String(file.contents));
             callback(null, file);
         };
         return transformStream;
@@ -119,7 +121,6 @@ class ImportAnalyzer {
     }
 
     getUsedImports(...filePaths) {
-        // calculate
         const result = this.#calculateUsedImports(...filePaths);
         if (result.size) {
             return result;
@@ -129,7 +130,7 @@ class ImportAnalyzer {
     getUnresolvedImports() {
         const unresolved = {};
         for (const [srcFile, imports] of allImports) {
-            const originalPath = originalPaths.get(srcFile) ?? srcFile;
+            const originalPath = normalizePath(originalPaths.get(srcFile) ?? srcFile);
             for (const [current, filePath] of imports) {
                 if (!allImports.has(current)) {
                     const currentPath = resolvedPathsReverse.get(current) ?? current;
@@ -155,12 +156,23 @@ class ImportAnalyzer {
     }
 
     writeImportFile() {
-        // print
         const importTree = {};
         for (const [file, imports] of allImports) {
             importTree[file] = Array.from(imports);
         }
         fs.writeFileSync(path.resolve("import_tree.json"), JSON.stringify(importTree, null, 4));
+    }
+
+    writeUnresolvedImports() {
+        const importTree = {};
+        const unresolvedImports = Object.entries(this.getUnresolvedImports());
+        if (unresolvedImports.length > 0) {
+            for (const unresolvedImportEntry of unresolvedImports) {
+                const [srcPath, imports] = unresolvedImportEntry;
+                importTree[srcPath] = imports;
+            }
+        }
+        fs.writeFileSync(path.resolve("import_unresolved.json"), JSON.stringify(importTree, null, 4));
     }
 
 }

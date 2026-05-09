@@ -42,8 +42,10 @@ export function resolvePackageFilePath(root, importPath) {
         if (fs.existsSync(packageFile)) {
             const packageConfig = readJSONFile(packageFile);
             const exportsResolver = new ExportsResolver(packagePath);
-            for (const [matcher, substitute] of Object.entries(packageConfig.exports)) {
-                exportsResolver.addResolver(matcher, substitute);
+            if ("exports" in packageConfig) {
+                for (const [matcher, substitute] of Object.entries(packageConfig.exports)) {
+                    exportsResolver.addResolver(matcher, substitute);
+                }
             }
             const restPath = importPath.slice(packageConfig.name.length);
             const filePath = exportsResolver.resolvePath(restPath);

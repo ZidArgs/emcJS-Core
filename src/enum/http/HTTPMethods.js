@@ -1,4 +1,4 @@
-import Enum from "../../data/Enum.js";
+import Enum from "../Enum.js";
 
 export default class HTTPMethods extends Enum {
 

@@ -2,6 +2,7 @@ import jsonParse from "../../patches/JSONParser.js";
 
 const COLOR_PATTERN = /^#[0-9a-f]{6}$/i;
 const CSS_URL_PATTERN = /^url\((?:"?(.+)"?|'?(.+)'?|(.+))\)$/i;
+const EMAIL_PATTERN = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z0-9.-]{2,}/;
 
 export function isNull(value) {
     return value === null || value === undefined;
@@ -151,6 +152,13 @@ export function isCSSUrl(input) {
     } catch {
         return false;
     }
+}
+
+export function isEmail(input) {
+    if (!isStringNotEmpty(input)) {
+        return false;
+    }
+    return EMAIL_PATTERN.test(input);
 }
 
 export function isArrayOf(input, callback) {

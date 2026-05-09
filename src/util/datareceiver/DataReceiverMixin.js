@@ -1,4 +1,4 @@
-import {createMixin} from "../Mixin.js";
+import {createMixin} from "../../mixin/Mixin.js";
 
 export default createMixin((superclass) => class DataReceiverMixin extends superclass {
 
