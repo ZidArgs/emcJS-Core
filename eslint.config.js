@@ -121,7 +121,7 @@ export default defineConfig([
                 }
             ],
 
-            "@stylistic/function-paren-newline": ["error", {minItems: 10}],
+            "@stylistic/function-paren-newline": ["error", "multiline"],
 
             "@stylistic/function-call-spacing": ["error", "never"],
 

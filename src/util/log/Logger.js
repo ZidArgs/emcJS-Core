@@ -291,14 +291,18 @@ if ("addEventListener" in globalThis) {
     globalThis.addEventListener("error", function(msg, url, line, col, error) {
         if (msg instanceof ErrorEvent) {
             if (reportWindowErrorEvents) {
-                Logger.error(msg.error ? msg.error : msg.message,
-                    `${msg.filename ? msg.filename : "anonymous"} ${msg.lineno}:${msg.colno}`);
+                Logger.error(
+                    msg.error ? msg.error : msg.message,
+                    `${msg.filename ? msg.filename : "anonymous"} ${msg.lineno}:${msg.colno}`
+                );
             }
         } else {
             col = col ? `:${col}` : "";
             error = error ? `\n${error}` : "";
-            Logger.error(`${msg}${error}`,
-                `${url} ${line}${col}`);
+            Logger.error(
+                `${msg}${error}`,
+                `${url} ${line}${col}`
+            );
         }
         return true;
     });

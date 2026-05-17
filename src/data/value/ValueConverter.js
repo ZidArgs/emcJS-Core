@@ -36,11 +36,14 @@ export function valueToScalar(ref, value) {
     return value;
 }
 
-registerValueConverter("string",
+registerValueConverter(
+    "string",
     (value) => value.toString(),
-    (value) => value.toString());
+    (value) => value.toString()
+);
 
-registerValueConverter("number",
+registerValueConverter(
+    "number",
     (value) => {
         const number = parseFloat(value);
         if (isNaN(number)) {
@@ -54,9 +57,11 @@ registerValueConverter("number",
             return Number.NaN;
         }
         return number;
-    });
+    }
+);
 
-registerValueConverter("integer",
+registerValueConverter(
+    "integer",
     (value) => {
         const number = parseInt(value);
         if (isNaN(number)) {
@@ -70,12 +75,17 @@ registerValueConverter("integer",
             return Number.NaN;
         }
         return number;
-    });
+    }
+);
 
-registerValueConverter("boolean",
+registerValueConverter(
+    "boolean",
     (value) => !!value,
-    (value) => !!value);
+    (value) => !!value
+);
 
-registerValueConverter("date",
+registerValueConverter(
+    "date",
     (value) => value.toISOString(),
-    (value) => new Date(value));
+    (value) => new Date(value)
+);
