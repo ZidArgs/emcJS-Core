@@ -12,10 +12,12 @@ export default class WeakRefValueMap {
 
     set(key, value) {
         this.#data.set(key, new WeakRef(value));
+        return this;
     }
 
     delete(key) {
         this.#data.delete(key);
+        return this;
     }
 
     has(key) {

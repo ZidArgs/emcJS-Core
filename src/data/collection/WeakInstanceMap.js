@@ -21,6 +21,7 @@ export default class WeakInstanceMap {
             this.#types.set(type, new WeakRefValueMap());
         }
         this.#types.get(type).set(key, value);
+        return this;
     }
 
 }

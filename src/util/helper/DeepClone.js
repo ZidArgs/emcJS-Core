@@ -1,3 +1,4 @@
+import CloneCache from "../../data/CloneCache.js";
 import {instanceOfOne} from "./Class.js";
 
 const NODE_SUPPORTED = "Node" in globalThis;
@@ -43,7 +44,7 @@ export function deepClone(item) {
     return deepCloneItem(item);
 }
 
-function deepCloneItem(item, refs = new WeakMap()) {
+function deepCloneItem(item, refs = new CloneCache()) {
     if (item != null) {
         if (typeof item === "object") {
             if (refs.has(item)) {
@@ -63,55 +64,47 @@ function deepCloneItem(item, refs = new WeakMap()) {
 
 function deepCloneObject(item, refs) {
     if (typeof item.clone === "function") {
-        const result = item.clone();
-        refs.set(item, result);
-        return result;
+        return refs.set(item, item.clone());
     } else if (typeof item.serialize === "function") {
-        const result = item.serialize();
-        refs.set(item, result);
-        return result;
+        return refs.set(item, item.serialize());
     } else if (NODE_SUPPORTED && item instanceof Node) {
-        const result = item.cloneNode(true);
-        refs.set(item, result);
-        return result;
+        return refs.set(item, item.cloneNode(true));
     } else if (item instanceof Map) {
-        const result = new Map();
-        refs.set(item, result);
+        const result = refs.set(item, new Map());
         for (const [key, value] of item) {
             result.set(key, deepCloneItem(value, refs));
         }
         return result;
     } else if (item instanceof Set) {
-        const result = new Set();
-        refs.set(item, result);
+        const result = refs.set(item, new Set());
         for (const value of item) {
             result.add(deepCloneItem(value, refs));
         }
         return result;
     } else if (instanceOfOne(item, WeakMap, WeakSet)) {
         console.warn("WeakMap and WeakSet cloning is not possible due to their non iterable nature. ", item);
-        return null;
+        return refs.set(item, null);
+    } else if (item instanceof WeakRef) {
+        return refs.set(item, deepCloneItem(item.deref()));
     } else if (instanceOfOne(item, STRUCTURED_CLONE_CLASSES)) {
-        const result = structuredClone(item);
-        refs.set(item, result);
-        return result;
+        return refs.set(item, structuredClone(item));
     } else if (Array.isArray(item)) {
-        const result = [];
-        refs.set(item, result);
+        const result = refs.set(item, new Array(item.length));
         for (const i in item) {
-            const el = item[i];
-            result.push(deepCloneItem(el, refs));
+            result[i] = deepCloneItem(item[i], refs);
         }
         return result;
     }
-    const result = {};
-    refs.set(item, result);
+    // must be an object
+    const result = refs.set(item, {});
     for (const key in item) {
         if (key === "__proto__" || key === "constructor" || key === "prototype") {
             continue;
         }
-        const el = item[key];
-        result[key] = deepCloneItem(el, refs);
+        result[key] = deepCloneItem(item[key], refs);
+    }
+    for (const symbol of Object.getOwnPropertySymbols(item)) {
+        result[symbol] = deepCloneItem(item[symbol], refs);
     }
     return result;
 }

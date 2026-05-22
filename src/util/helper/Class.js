@@ -1,25 +1,10 @@
 export function instanceOfOne(obj, ...classList) {
-    if (Array.isArray(classList[0])) {
-        classList = classList[0];
-    }
-    for (const clazz of classList) {
-        if (obj instanceof clazz) {
-            return true;
-        }
-    }
-    return false;
+    classList = classList.flat(Infinity);
+    return classList.some((clazz) => obj instanceof clazz);
 }
 
 export function allInstanceOf(clazz = Object, ...objList) {
-    if (objList.length == 1 && Array.isArray(objList[0])) {
-        objList = objList[0];
-    }
-    for (const obj of objList) {
-        if (!(obj instanceof clazz)) {
-            return false;
-        }
-    }
-    return true;
+    return objList.every((obj) => obj instanceof clazz);
 }
 
 export function isClass(clazz = Object) {
