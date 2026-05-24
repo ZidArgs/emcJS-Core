@@ -219,6 +219,7 @@ export default class LogicGraph {
         const reachableNodes = new Set();
         const changes = {};
         const start = this.#nodeFactory.get(startNode);
+        reachableNodes.add(startNode);
         const collected = new Map();
         let logicCalculationCounter = 0;
         console.group("GRAPH LOGIC EXECUTION");
