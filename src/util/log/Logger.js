@@ -1,5 +1,6 @@
 import {isClass} from "../helper/Class.js";
 import Rest from "../net/Rest.js";
+import AbstractLogger from "./AbstractLogger.js";
 
 /* LOG LEVEL */
 export const LOG_LEVEL = Object.freeze({
@@ -94,7 +95,7 @@ function formatError(err, omitStack) {
     return result.join("\n");
 }
 
-export default class Logger {
+export default class Logger extends AbstractLogger {
 
     static #instances = new Map();
 
@@ -111,6 +112,7 @@ export default class Logger {
         if (Logger.#instances.has(clazz)) {
             return Logger.#instances.get(clazz);
         }
+        super();
         this.#clazzName = clazz.name;
     }
 
