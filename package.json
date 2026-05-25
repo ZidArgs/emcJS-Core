@@ -5,11 +5,14 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@bitbucket.org/zidargs/emcjs.git"
+    "url": "git+ssh://git@github.com:ZidArgs/emcJS-Core.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ZidArgs/emcJS-Core/issues"
   },
   "author": "Denis Weiß (ZidArgs)",
   "license": "MIT",
-  "homepage": "https://bitbucket.org/zidargs/emcjs/src",
+  "homepage": "https://github.com/ZidArgs/emcJS-Core",
   "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.28.4",
