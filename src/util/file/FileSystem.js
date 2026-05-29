@@ -30,35 +30,35 @@ function convertData(dataUrl) {
 
 class FileSystem {
 
-    load(extensions) {
+    load(accept, multiple = false) {
         return new Promise((resolve, reject) => {
             try {
-                if (typeof extensions == "string") {
-                    ul.setAttribute("accept", extensions);
+                // accept
+                if (typeof accept == "string") {
+                    ul.setAttribute("accept", accept);
+                } else if (Array.isArray(accept)) {
+                    ul.setAttribute("accept", accept.join(","));
                 }
-                if (Array.isArray(extensions)) {
-                    ul.setAttribute("accept", extensions.join(","));
+                // multiple
+                if (multiple) {
+                    ul.setAttribute("multiple", "");
                 }
 
-                ul.onchange = () => {
+                ul.onchange = async () => {
                     if (ul.files.length > 0) {
-                        const fileData = ul.files[0];
+                        const readers = [];
+                        for (const fileData of ul.files) {
+                            try {
+                                readers.push(this.#readFile(fileData));
+                            } catch (error) {
+                                reject(error);
+                            }
+                        }
+                        const content = await Promise.all(readers);
                         ul.value = null;
-                        const reader = new FileReader();
-                        reader.onload = () => {
-                            resolve({
-                                name: fileData.name,
-                                ...convertData(reader.result)
-                            });
-                        };
-                        reader.onabort = () => {
-                            resolve(null);
-                        };
-                        reader.onerror = () => {
-                            reject("error reading file");
-                        };
-                        reader.readAsDataURL(fileData);
                         ul.removeAttribute("accept");
+                        ul.removeAttribute("multiple");
+                        resolve(multiple ? content : content[0]);
                     } else {
                         resolve(null);
                     }
@@ -84,6 +84,26 @@ class FileSystem {
         dl.click();
         window.URL.revokeObjectURL(url);
         dl.remove();
+    }
+
+    #readFile(fileData) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                resolve({
+                    file: fileData,
+                    name: fileData.name,
+                    ...convertData(reader.result)
+                });
+            };
+            reader.onabort = () => {
+                resolve(null);
+            };
+            reader.onerror = () => {
+                reject("error reading file");
+            };
+            reader.readAsDataURL(fileData);
+        });
     }
 
 }
