@@ -1,12 +1,20 @@
 import {isEqual} from "../helper/Comparator.js";
 import TypeConfigMap from "../../data/type/TypeConfigMap.js";
-import LogicValidator from "../logic/LogicValidator.js";
 import {getFromObjectByPath} from "../helper/collection/ObjectContent.js";
 
 const IMAGE_PATTERN = /\.(?:apng|avif|gif|jpg|jpeg|jfif|pjpeg|pjp|png|svg|webp|bmp|ico|tiff)$/i;
 const COLOR_PATTERN = /#[0-9a-f]{6}/i;
 
 class TypeValidator {
+
+    #customValidators = new Map();
+
+    registerCustomValidator(typeName, validator) {
+        if (typeof validator !== "function") {
+            throw new TypeError("validator must be a function");
+        }
+        this.#customValidators.set(typeName, validator);
+    }
 
     validate(typeName, value, options = {}) {
         const {
@@ -99,12 +107,21 @@ class TypeValidator {
             case "Color": {
                 this.#validateColor(currentPath, value, attrDefinition, errors);
             } break;
-            case "Logic": {
-                this.#validateLogic(currentPath, value, attrDefinition, errors);
-            } break;
             default: {
-                this.#validate(currentType, value, currentPath, options, errors);
+                if (this.#customValidators.has(currentType)) {
+                    const validator = this.#customValidators.get(currentType);
+                    this.#validateCustom(validator, currentType, currentPath, value, errors);
+                } else {
+                    this.#validate(currentType, value, currentPath, options, errors);
+                }
             } break;
+        }
+    }
+
+    #validateCustom(validator, currentType, currentPath, value, errors) {
+        const validationErrors = validator(value) ?? [];
+        if (validationErrors.length > 0) {
+            errors.push(`not a valid ${currentType} [ ${currentPath.join(" > ")} ]\n${validationErrors.map((s) => `\t${s}`).join("\n")}`);
         }
     }
 
@@ -158,19 +175,6 @@ class TypeValidator {
             errors.push(`string expected [ ${currentPath.join(" > ")} ]`);
         } else if (!COLOR_PATTERN.test(value)) {
             errors.push(`does not match color (#000000 - #ffffff) [ ${currentPath.join(" > ")} ]`);
-        }
-    }
-
-    #validateLogic(currentPath, value, definition, errors) {
-        if (typeof value !== "boolean") {
-            if (typeof value !== "object" || Array.isArray(value)) {
-                errors.push(`boolean or logic definition expected [ ${currentPath.join(" > ")} ]`);
-            } else {
-                const logicErrors = LogicValidator.validate(value, {allowEmpty: false});
-                if (logicErrors.length > 0) {
-                    errors.push(`not a valid logic [ ${currentPath.join(" > ")} ]\n${logicErrors.map((s) => `\t${s}`).join("\n")}`);
-                }
-            }
         }
     }
 

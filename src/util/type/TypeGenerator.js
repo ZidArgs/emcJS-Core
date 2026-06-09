@@ -1,11 +1,19 @@
 import {isEqual} from "../helper/Comparator.js";
 import TypeConfigMap from "../../data/type/TypeConfigMap.js";
-import LogicValidator from "../logic/LogicValidator.js";
 
 const IMAGE_PATTERN = /\.(?:apng|avif|gif|jpg|jpeg|jfif|pjpeg|pjp|png|svg|webp|bmp|ico|tiff)$/i;
 const COLOR_PATTERN = /#[0-9a-f]{6}/i;
 
 class TypeGenerator {
+
+    #customGenerators = new Map();
+
+    registerCustomGenerator(typeName, generator) {
+        if (typeof generator !== "function") {
+            throw new TypeError("generator must be a function");
+        }
+        this.#customGenerators.set(typeName, generator);
+    }
 
     generate(typeName, currentValue, generateOptionals = false) {
         if (typeof typeName !== "string" || typeName === "" || typeName === "*") {
@@ -78,11 +86,13 @@ class TypeGenerator {
             case "Color": {
                 return this.#generateColor(currentValue, attrDefinition);
             }
-            case "Logic": {
-                return this.#generateLogic(currentValue, attrDefinition);
-            }
             default: {
-                return this.#generate(currentType, currentValue, generateOptionals);
+                if (this.#customGenerators.has(currentType)) {
+                    const generator = this.#customGenerators.get(currentType);
+                    generator(currentValue, attrDefinition);
+                } else {
+                    return this.#generate(currentType, currentValue, generateOptionals);
+                }
             }
         }
     }
@@ -152,23 +162,6 @@ class TypeGenerator {
             return defaultValue;
         }
         return "";
-    }
-
-    #generateLogic(currentValue, definition) {
-        if (typeof currentValue === "boolean") {
-            return currentValue;
-        }
-        if (LogicValidator.validate(currentValue, {allowEmpty: false}).length <= 0) {
-            return currentValue;
-        }
-        const defaultValue = definition.default;
-        if (typeof defaultValue === "boolean") {
-            return defaultValue;
-        }
-        if (LogicValidator.validate(defaultValue, {allowEmpty: false}).length <= 0) {
-            return defaultValue;
-        }
-        return false;
     }
 
     #generateList(currentValue, definition, generateOptionals) {
