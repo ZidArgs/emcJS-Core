@@ -45,7 +45,8 @@ export default defineConfig([
                 ...globals.node,
                 WeakRef: false,
                 Iterator: false,
-                importScripts: false
+                importScripts: false,
+                Float16Array: false
             },
 
             parser: babelParser,

@@ -1,5 +1,6 @@
 import {crc32} from "../CRC32.js";
 import {dateTimeFromDOS} from "../date/DOSDateConverter.js";
+import {toFile} from "../file/ToFile.js";
 import {setToObjectAtPath} from "../helper/collection/ObjectContent.js";
 import {readStringFromDataView} from "../helper/DataView.js";
 import {
@@ -24,10 +25,10 @@ export async function extractArchive(archive) {
             const content = await fileEntry.extract();
             const path = fileName.split("/").filter((c) => typeof c === "string" && c !== "");
             const fileOpts = {lastModified: fileEntry.lastModified};
-            const file = new File([content], fileName, fileOpts);
+            const file = toFile(content, fileName, fileOpts);
             const crc = crc32(await file.text());
             if (crc !== fileEntry.crc) {
-            // TODO strict error?
+                // TODO strict error?
                 console.error(`CRC mismatch for file: ${fileName} [calculated: ${crc} | expected: ${fileEntry.crc}]`);
             }
             setToObjectAtPath(result, path, file);

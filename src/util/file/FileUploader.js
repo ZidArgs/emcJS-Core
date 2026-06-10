@@ -50,4 +50,22 @@ export default class FileUploader {
         return r;
     }
 
+    async uploadRaw(file) {
+        if (!(file instanceof File)) {
+            throw new TypeError("file has to be a File");
+        }
+        const r = await fetch(this.#path, {
+            method: this.#method.toString(),
+            body: file,
+            headers: {
+                "Content-Type": file.type,
+                "Content-Disposition": `attachment; filename="${file.name}"`
+            }
+        });
+        if (r.status < 200 || r.status >= 300) {
+            throw new Error(`error uploading files - status: ${r.status}`);
+        }
+        return r;
+    }
+
 }
