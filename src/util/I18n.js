@@ -1,3 +1,4 @@
+import {debounceByType} from "./Debouncer.js";
 import FileLoader from "./file/FileLoader.js";
 import {numberedStringComparator} from "./helper/Comparator.js";
 import {flattenObject} from "./helper/collection/ObjectContent.js";
@@ -271,10 +272,8 @@ class I18n extends EventTarget {
         if (typeof key === "string" && key !== "" && !key.startsWith("@")) {
             if (typeof lang === "string" && lang) {
                 if (!this.#languages.has(lang)) {
-                    I18n.logger.warn(`language "${lang}" is not loaded`);
-                    return key;
-                }
-                if (this.#languages.get(lang).has(key)) {
+                    this.#warnLangNotLoaded(lang, lang);
+                } else if (this.#languages.get(lang).has(key)) {
                     return this.#languages.get(lang).get(key);
                 }
                 let base = lang;
@@ -282,14 +281,12 @@ class I18n extends EventTarget {
                     const oldBase = base;
                     base = this.#base.get(base);
                     if (!this.#languages.has(base)) {
-                        I18n.logger.warn(`language "${base}" requested as base from "${oldBase}" is not loaded`);
-                        return key;
-                    }
-                    if (this.#languages.get(base)?.has(key)) {
+                        this.#warnLangBaseNotLoaded(`${base}::${oldBase}`, base, oldBase);
+                    } else if (this.#languages.get(base)?.has(key)) {
                         return this.#languages.get(base).get(key);
                     }
                 }
-                if (!this.#missing.get(lang).has(key)) {
+                if (this.#languages.has(lang) && !this.#missing.get(lang).has(key)) {
                     this.#missing.get(lang).add(key);
                     I18n.logger.warn(`translation for "${key}" in "${lang}" missing`);
                 }
@@ -402,6 +399,14 @@ class I18n extends EventTarget {
         const translated1 = this.get(value1);
         return numberedStringComparator(translated0, translated1);
     }
+
+    #warnLangNotLoaded = debounceByType((type, lang) => {
+        I18n.logger.warn(`language "${lang}" is not loaded`);
+    });
+
+    #warnLangBaseNotLoaded = debounceByType((type, base, oldBase) => {
+        I18n.logger.warn(`language "${base}" requested as base from "${oldBase}" is not loaded`);
+    });
 
 }
 
