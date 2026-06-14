@@ -9,8 +9,8 @@ export default class ObservableIDBProxyStorage extends ObservableStorage {
 
     #storage;
 
-    static async create(name) {
-        const inst = new ObservableIDBProxyStorage(name);
+    static async create(name, ...args) {
+        const inst = new this(name, ...args);
         return await inst.awaitLoaded();
     }
 
