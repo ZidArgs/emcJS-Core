@@ -1,10 +1,18 @@
+import EventTargetManager from "./event/EventTargetManager.js";
 import {resolveKey} from "./keyboard/KeyConverter.js";
+
+const CONTROL_KEYS = [
+    "Control",
+    "Shift",
+    "Alt",
+    "Meta"
+];
 
 function encodeConfig(config = {}) {
     const {
         key, ctrlKey, shiftKey, altKey, metaKey
     } = config;
-    return `[${key || ""},${+ctrlKey},${+shiftKey},${+altKey},${+metaKey}]`;
+    return `[${key || ""}|${+ctrlKey}|${+shiftKey}|${+altKey}|${+metaKey}]`;
 }
 
 class HotkeyHandler {
@@ -15,24 +23,36 @@ class HotkeyHandler {
 
     #action = new Map();
 
+    #eventManager = new EventTargetManager(window);
+
     constructor() {
-        window.addEventListener("keydown", (event) => {
+        this.#eventManager.set("keydown", (event) => {
             const {
-                code, ctrlKey, shiftKey, altKey, metaKey
+                key, code, ctrlKey, shiftKey, altKey, metaKey
             } = event;
-            const sequence = {
-                ctrlKey: !!ctrlKey,
-                shiftKey: !!shiftKey,
-                altKey: !!altKey,
-                metaKey: !!metaKey,
-                key: resolveKey(code || "")
-            };
-            if (this.callHotkey(sequence)) {
-                event.preventDefault();
-                event.stopPropagation();
-                return false;
+            if (!CONTROL_KEYS.includes(key)) {
+                const sequence = {
+                    ctrlKey: !!ctrlKey,
+                    shiftKey: !!shiftKey,
+                    altKey: !!altKey,
+                    metaKey: !!metaKey,
+                    key: resolveKey(code || "")
+                };
+                if (this.callHotkey(sequence)) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return false;
+                }
             }
         });
+    }
+
+    set active(value) {
+        this.#eventManager.active = value;
+    }
+
+    get active() {
+        return this.#eventManager.active;
     }
 
     setAction(name, fn, config) {

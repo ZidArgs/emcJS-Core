@@ -1,6 +1,6 @@
 const VALUE_PARSE = /(ctrl\s+)?(shift\s+)?(alt\s+)?(meta\s+)?(.+)?/i;
 
-const KeySequence = {
+class KeySequence {
 
     parse(string) {
         const res = VALUE_PARSE.exec(string ?? "");
@@ -9,9 +9,9 @@ const KeySequence = {
             shiftKey: res[2] != null,
             altKey: res[3] != null,
             metaKey: res[4] != null,
-            key: res[5]?.toLowerCase() === "space" ? " " : res[5] ?? null
+            key: res[5] ?? null
         };
-    },
+    }
 
     stringify(opts = {}) {
         const {
@@ -36,6 +36,6 @@ const KeySequence = {
         return res;
     }
 
-};
+}
 
-export default Object.freeze(KeySequence);
+export default new KeySequence();

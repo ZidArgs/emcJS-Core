@@ -12,6 +12,10 @@ export default class UniqueQueue {
         return this.#queue.shift();
     }
 
+    peek() {
+        return this.#queue.at(0);
+    }
+
     clear() {
         this.#queue = [];
     }
