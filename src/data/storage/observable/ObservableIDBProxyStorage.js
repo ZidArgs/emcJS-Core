@@ -75,4 +75,10 @@ export default class ObservableIDBProxyStorage extends ObservableStorage {
         });
     }
 
+    async resync() {
+        await this.awaitLoaded();
+        const data = await this.#storage.getAll();
+        this.deserialize(data);
+    }
+
 }
