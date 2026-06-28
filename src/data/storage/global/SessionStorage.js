@@ -34,7 +34,7 @@ class SessionStorage extends EventTarget {
             }
         }
         // event
-        window.addEventListener("storage", (event) => {
+        globalThis.addEventListener("storage", (event) => {
             const {
                 key, newValue, storageArea
             } = event;

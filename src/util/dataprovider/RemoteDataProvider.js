@@ -23,7 +23,7 @@ export default class RemoteDataProvider extends AbstractDataProvider {
         } else if (typeof method === "string" && HTTPMethods.includes(method)) {
             this.#method = method;
         }
-        this.#source = new URL(source, self.location.origin);
+        this.#source = new URL(source, globalThis.location?.origin);
     }
 
     get resultSize() {
@@ -38,7 +38,7 @@ export default class RemoteDataProvider extends AbstractDataProvider {
         if (!isHttpUrl(source)) {
             throw new Error("source must be a valid HTTP URL");
         }
-        this.#source = new URL(source, self.location.origin);
+        this.#source = new URL(source, globalThis.location?.origin);
         this.refresh();
     }
 

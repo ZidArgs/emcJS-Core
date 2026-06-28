@@ -14,7 +14,7 @@ const SUPPORTS_WORKER_TYPE = (() => {
     };
     try {
         const blob = new Blob(["self.onconnect = () => console.log(\"SharedWorker started\")"], {type: "text/javascript"});
-        const workerURL = window.URL.createObjectURL(blob);
+        const workerURL = URL.createObjectURL(blob);
         const worker = new SharedWorker(workerURL, tester);
         worker.port.close();
     } catch {

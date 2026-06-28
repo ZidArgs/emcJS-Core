@@ -1,6 +1,7 @@
 import jsonParse from "../../patches/JSONParser.js";
 
 const COLOR_PATTERN = /^#[0-9a-f]{6}$/i;
+const URL_PATH_PATTERN = /^\.{0,2}(?:\/(?:[0-9a-z-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*\/?$/;
 const CSS_URL_PATTERN = /^url\((?:"?(.+)"?|'?(.+)'?|(.+))\)$/i;
 const EMAIL_PATTERN = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z0-9.-]{2,}/;
 
@@ -119,7 +120,7 @@ export function isUrl(input) {
         return false;
     }
     try {
-        new URL(input, self.location.origin);
+        new URL(input, globalThis.location?.origin);
         return true;
     } catch {
         return false;
@@ -131,7 +132,7 @@ export function isHttpUrl(input) {
         return false;
     }
     try {
-        const url = new URL(input, self.location.origin);
+        const url = new URL(input, globalThis.location?.origin);
         return url.protocol === "http:" || url.protocol === "https:";
     } catch {
         return false;
@@ -145,13 +146,19 @@ export function isCSSUrl(input) {
     try {
         const res = CSS_URL_PATTERN.exec(input);
         if (res != null) {
-            new URL(res[1], self.location.origin);
-            return true;
+            return isHttpUrl(res[1]);
         }
         return false;
     } catch {
         return false;
     }
+}
+
+export function isURLPath(input) {
+    if (!isStringNotEmpty(input)) {
+        return false;
+    }
+    return URL_PATH_PATTERN.test(input);
 }
 
 export function isEmail(input) {

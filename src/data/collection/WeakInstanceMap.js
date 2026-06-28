@@ -4,6 +4,14 @@ export default class WeakInstanceMap {
 
     #types = new Map();
 
+    set(type, key, value) {
+        if (!this.#types.has(type)) {
+            this.#types.set(type, new WeakRefValueMap());
+        }
+        this.#types.get(type).set(key, value);
+        return this;
+    }
+
     get(type, key) {
         const typeGroup = this.#types.get(type);
         if (typeGroup == null) {
@@ -16,12 +24,17 @@ export default class WeakInstanceMap {
         return value;
     }
 
-    set(type, key, value) {
-        if (!this.#types.has(type)) {
-            this.#types.set(type, new WeakRefValueMap());
+    has(type, key) {
+        const typeGroup = this.#types.get(type);
+        if (typeGroup == null) {
+            return false;
         }
-        this.#types.get(type).set(key, value);
-        return this;
+        const value = typeGroup.get(key);
+        if (value == null && !typeGroup.size) {
+            this.#types.delete(type);
+            return false;
+        }
+        return true;
     }
 
 }

@@ -77,12 +77,12 @@ class FileSystem {
     }
 
     save(data, fileName) {
-        const url = window.URL.createObjectURL(new Blob([data], {type: "octet/stream"}));
+        const url = URL.createObjectURL(new Blob([data], {type: "octet/stream"}));
         dl.href = url;
         dl.download = fileName;
         document.body.append(dl);
         dl.click();
-        window.URL.revokeObjectURL(url);
+        URL.revokeObjectURL(url);
         dl.remove();
     }
 

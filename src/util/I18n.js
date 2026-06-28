@@ -411,6 +411,6 @@ class I18n extends EventTarget {
 }
 
 const i18n = new I18n();
-window.i18n = i18n;
+globalThis.i18n = i18n;
 
 export default i18n;

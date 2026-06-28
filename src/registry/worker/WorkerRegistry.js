@@ -14,7 +14,7 @@ const SUPPORTS_WORKER_TYPE = (() => {
     };
     try {
         const blob = new Blob(["self.onconnect = () => console.log(\"Worker started\")"], {type: "text/javascript"});
-        const workerURL = window.URL.createObjectURL(blob);
+        const workerURL = URL.createObjectURL(blob);
         const worker = new Worker(workerURL, tester);
         worker.close();
     } catch {

@@ -7,9 +7,9 @@ const LOCALHOST_ALIASES = [
 
 const SECURE_PROTOCOLS = ["https", "wss"];
 
-export const IS_LOCALHOST = isLocalhost(location.hostname);
+export const IS_LOCALHOST = isLocalhost(globalThis.location?.hostname ?? "");
 
-export const IS_SECURE_PAGE = isSecureProtocol(location.protocol);
+export const IS_SECURE_PAGE = isSecureProtocol(globalThis.location?.protocol ?? "");
 
 export function isLocalhost(hostname) {
     return LOCALHOST_ALIASES.includes(hostname);

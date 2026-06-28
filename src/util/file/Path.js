@@ -2,7 +2,7 @@ export default class Path {
 
     #base;
 
-    constructor(base = window.location.origin) {
+    constructor(base = globalThis.location?.origin) {
         this.#base = new URL(base);
     }
 
