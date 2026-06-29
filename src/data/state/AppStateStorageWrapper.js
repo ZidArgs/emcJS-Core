@@ -117,12 +117,12 @@ export default class AppStateStorageWrapper extends EventTarget {
         this.#storageEventManager.target.overwrite(data);
     }
 
-    setRootValue(key, value) {
-        this.#storageEventManager.target.setRootValue(key, value);
+    setBaseValue(key, value) {
+        this.#storageEventManager.target.setBaseValue(key, value);
     }
 
-    getRootValue(key) {
-        return this.#storageEventManager.target.getRootValue(key);
+    getBaseValue(key) {
+        return this.#storageEventManager.target.getBaseValue(key);
     }
 
     hasChanges() {

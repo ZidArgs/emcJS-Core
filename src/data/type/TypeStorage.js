@@ -12,7 +12,7 @@ export default class TypeStorage extends EventTarget {
 
     #typeName;
 
-    #rootData = new Map();
+    #baseData = new Map();
 
     #changeData = new Map();
 
@@ -168,7 +168,7 @@ export default class TypeStorage extends EventTarget {
     }
 
     clear() {
-        this.#rootData.clear();
+        this.#baseData.clear();
         this.#changeData.clear();
         this.#buffer.clear();
         const ev = new Event("clear");
@@ -182,7 +182,7 @@ export default class TypeStorage extends EventTarget {
 
     deserialize(data = {}) {
         const allErrors = [];
-        this.#rootData.clear();
+        this.#baseData.clear();
         this.#changeData.clear();
         this.#buffer.clear();
         for (const key in data) {
@@ -206,7 +206,7 @@ export default class TypeStorage extends EventTarget {
             }
             // write
             const clonedValue = deepClone(newValue);
-            this.#rootData.set(key, clonedValue);
+            this.#baseData.set(key, clonedValue);
             this.#buffer.set(key, clonedValue);
         }
         // event
@@ -311,8 +311,8 @@ export default class TypeStorage extends EventTarget {
         }
     });
 
-    getRootValue(key) {
-        return this.#rootData.get(key);
+    getBaseValue(key) {
+        return this.#baseData.get(key);
     }
 
     hasChanges() {
@@ -330,9 +330,9 @@ export default class TypeStorage extends EventTarget {
     flushChanges() {
         for (const [key, value] of this.#changeData) {
             if (value == null) {
-                this.#rootData.delete(key);
+                this.#baseData.delete(key);
             } else {
-                this.#rootData.set(key, value);
+                this.#baseData.set(key, value);
             }
         }
         this.#changeData.clear();
@@ -340,8 +340,8 @@ export default class TypeStorage extends EventTarget {
 
     resetValueChange(key) {
         const oldValue = this.#buffer.get(key);
-        if (this.#rootData.has(key)) {
-            const newValue = this.#rootData.get(key);
+        if (this.#baseData.has(key)) {
+            const newValue = this.#baseData.get(key);
             this.#buffer.set(key, newValue);
         } else {
             this.#buffer.delete(key);
@@ -361,8 +361,8 @@ export default class TypeStorage extends EventTarget {
 
     purgeChanges() {
         for (const [key] of this.#changeData) {
-            if (this.#rootData.has(key)) {
-                const newValue = this.#rootData.get(key);
+            if (this.#baseData.has(key)) {
+                const newValue = this.#baseData.get(key);
                 this.#buffer.set(key, newValue);
             } else {
                 this.#buffer.delete(key);
@@ -379,7 +379,7 @@ export default class TypeStorage extends EventTarget {
     }
 
     #writeChangeData(key, value = null) {
-        if (this.#rootData.get(key) === value) {
+        if (this.#baseData.get(key) === value) {
             this.#changeData.delete(key);
         } else {
             this.#changeData.set(key, value);
