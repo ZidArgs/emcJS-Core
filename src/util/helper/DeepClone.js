@@ -66,6 +66,7 @@ function deepCloneObject(item, refs) {
     if (typeof item.clone === "function") {
         return refs.set(item, item.clone());
     } else if (typeof item.serialize === "function") {
+        console.warn("[Deprecation] deepClone depending on serialize is deprecated");
         return refs.set(item, item.serialize());
     } else if (NODE_SUPPORTED && item instanceof Node) {
         return refs.set(item, item.cloneNode(true));

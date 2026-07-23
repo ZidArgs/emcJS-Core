@@ -91,17 +91,11 @@ export default class Comparator {
                 const comparator = this.#comparators.get(a.constructor);
                 return comparator(a, b);
             }
-            if (typeof a.equals === "function") {
-                return a.equals(b);
-            }
         }
         if (a instanceof b.constructor) {
             if (this.#comparators.has(b.constructor)) {
                 const comparator = this.#comparators.get(b.constructor);
                 return comparator(b, a);
-            }
-            if (typeof b.equals === "function") {
-                return b.equals(a);
             }
         }
 
@@ -145,7 +139,7 @@ export default class Comparator {
     }
 
     #compareDicts(a, b) {
-        const dictsA = this.#getOrcreateDictCache(a);
+        const dictsA = this.#getOrCreateDictCache(a);
         if (dictsA.has(b)) {
             return true;
         }
@@ -158,7 +152,7 @@ export default class Comparator {
         return aKeys.every((i) => this.#compare(a[i], b[i]));
     }
 
-    #getOrcreateDictCache(a) {
+    #getOrCreateDictCache(a) {
         if (this.#comparedDicts.has(a)) {
             return this.#comparedDicts.get(a);
         }

@@ -15,6 +15,8 @@ export default class Vector2D {
 
     #angle;
 
+    #aspectRatio;
+
     constructor(x, y) {
         if (!isNumberNotNaN(x)) {
             throw new TypeError("x has to be a valid number");
@@ -24,9 +26,6 @@ export default class Vector2D {
         }
         this.#x = x;
         this.#y = y;
-        // pre-calculate
-        this.#length = (this.#x ** 2 + this.#y ** 2) ** 0.5;
-        this.#angle = (Math.atan2(this.#y, this.#x) * (180 / Math.PI) + 360) % 360;
     }
 
     /**
@@ -72,10 +71,16 @@ export default class Vector2D {
     }
 
     get length() {
+        if (isNull(this.#length)) {
+            this.#length = (this.#x ** 2 + this.#y ** 2) ** 0.5;
+        }
         return this.#length;
     }
 
     get angle() {
+        if (isNull(this.#angle)) {
+            this.#angle = (Math.atan2(this.#y, this.#x) * (180 / Math.PI) + 360) % 360;
+        }
         return this.#angle;
     }
 
@@ -84,10 +89,10 @@ export default class Vector2D {
     }
 
     get aspectRatio() {
-        if (this.#x === 0 || this.#y === 0) {
-            return 0;
+        if (isNull(this.#aspectRatio)) {
+            this.#aspectRatio = this.#y === 0 ? 0 : this.#x / this.#y;
         }
-        return this.#x / this.#y;
+        return this.#aspectRatio;
     }
 
     /**
@@ -100,7 +105,9 @@ export default class Vector2D {
         if (!(vector instanceof Vector2D)) {
             throw new TypeError("vector has to be an instance of Vector2D");
         }
-        return new Vector2D(this.#x + vector.x, this.#y + vector.y);
+        const newX = this.#x + vector.x;
+        const newY = this.#y + vector.y;
+        return new Vector2D(newX, newY);
     }
 
     /**
@@ -113,7 +120,9 @@ export default class Vector2D {
         if (!(vector instanceof Vector2D)) {
             throw new TypeError("vector has to be an instance of Vector2D");
         }
-        return new Vector2D(this.#x - vector.x, this.#y - vector.y);
+        const newX = this.#x - vector.x;
+        const newY = this.#y - vector.y;
+        return new Vector2D(newX, newY);
     }
 
     /**
@@ -185,6 +194,23 @@ export default class Vector2D {
         }
         const angleDiff = this.#angle - vector.angle;
         return (angleDiff + 180) % 360 - 180;
+    }
+
+    /**
+     * Calculates the distance between the current {@link Vector2D} and a given one.
+     *
+     * The distance is the length of a vector between the endpoints of two vectors.
+     *
+     * @param {Vector2D} vector the {@link Vector2D} to calculate the distance to
+     * @returns the distance between the vector endpoints
+     */
+    distanceTo(vector) {
+        if (!(vector instanceof Vector2D)) {
+            throw new TypeError("vector has to be an instance of Vector2D");
+        }
+        const newX = this.#x - vector.x;
+        const newY = this.#y - vector.y;
+        return (newX ** 2 + newY ** 2) ** 0.5;
     }
 
     /**
