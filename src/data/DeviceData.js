@@ -1,4 +1,4 @@
-import {immute} from "./Immutable.js";
+import {deepFreeze} from "../util/DeepFreeze.js";
 
 const REQUEST_OS_DATA = ["platform", "platformVersion"];
 
@@ -25,4 +25,4 @@ if (navigator.userAgentData != null) {
     };
 }
 
-export default immute(data);
+export default deepFreeze(data);

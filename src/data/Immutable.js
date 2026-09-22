@@ -1,9 +1,25 @@
+import {isNull} from "../util/helper/CheckType.js";
+
+const TYPE_TAG = Symbol("Immutable");
+
 const HANDLER = {
+    get(target, prop) {
+        if (prop === TYPE_TAG) {
+            return true;
+        }
+        return target[prop];
+    },
     set() {
-        return false;
+        throw new Error("can not modify immutable object");
+    },
+    has(target, prop) {
+        if (prop === TYPE_TAG) {
+            return true;
+        }
+        return prop in target;
     },
     deleteProperty() {
-        return false;
+        throw new Error("can not modify immutable object");
     },
     defineProperty() {
         return false;
@@ -19,31 +35,50 @@ const HANDLER = {
     }
 };
 
-const TYPE_TAG = Symbol("Immutable");
-
 /**
- * Create an immutable Object utilizing Proxy
- * @param {Object} target an object to immute, primitives can not be immuted
- * @returns {Proxy} the Proxy immuting the data
+ * Create an immutable Objec.
+ * Primitives and functions can not be immuted and will be returned as is.
+ *
+ * @param {*} target an object to immute
+ * @returns {Proxy|Boolean|Number|String|Function|null|undefined} the immuted data
  */
 export function immute(target) {
-    if (target != null && typeof target == "object" && !target[TYPE_TAG]) {
+    return immuteInternal(target);
+}
+
+function immuteInternal(target, cache = new WeakMap()) {
+    if (cache.has(target)) {
+        return cache.get(target);
+    }
+    if (!isNull(target) && !target[TYPE_TAG]) {
         if (Array.isArray(target)) {
-            const res = target.map(immute);
-            const proxy = new Proxy(res, HANDLER);
-            Object.defineProperty(res, TYPE_TAG, {value: true});
-            return proxy;
-        }
-        if (target.constructor == Object) {
-            const res = {};
+            const res = [];
+            cache.set(target, res);
             for (const key in target) {
                 const value = target[key];
-                res[key] = immute(value);
+                res[key] = immuteInternal(value, cache);
             }
             const proxy = new Proxy(res, HANDLER);
-            Object.defineProperty(res, TYPE_TAG, {value: true});
+            return proxy;
+        }
+        if (target.constructor === Object) {
+            const res = {};
+            cache.set(target, res);
+            for (const key in target) {
+                const value = target[key];
+                res[key] = immuteInternal(value, cache);
+            }
+            const proxy = new Proxy(res, HANDLER);
             return proxy;
         }
     }
     return target;
+}
+
+export function isImmutable(target) {
+    return target?.[TYPE_TAG] ?? false;
+}
+
+export function canBeImmutable(target) {
+    return !isNull(target) && (target.constructor === Object || Array.isArray(target));
 }

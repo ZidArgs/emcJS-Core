@@ -4,6 +4,7 @@ import {
 import assert from "assert";
 import TypeConfigMap from "../../../src/data/type/TypeConfigMap.js";
 import TypeValidator from "../../../src/util/type/TypeValidator.js";
+import "./_util/LogicValidator.js";
 
 globalThis.HTMLElement = class HTMLElement {};
 
@@ -119,12 +120,12 @@ const NOT_TYPE_ERROR = new Error(`Error validating value
 
 const ERRORNOUS_OBJECT_A_ERROR = new Error(`Error validating value as "Connection"
     attributes restricted to "type" and "name" [ | A | > target {AssociativeList} > "A" {Relation} ]
-    not a valid logic [ | A | > logic {Logic} ]
+    not a valid Logic [ | A | > logic {Logic} ]
     	unknown type "sdaggasdg" [ | > not > and > {1} > sdaggasdg ]`);
 
 const ERRORNOUS_OBJECT_B_ERROR = new Error(`Error validating value as "Connection"
     dictionary expected [ | B | > target {AssociativeList} ]
-    not a valid logic [ | B | > logic {Logic} ]
+    not a valid Logic [ | B | > logic {Logic} ]
     	node can not be null [ | > not ]`);
 
 describe("TypeValidator", () => {

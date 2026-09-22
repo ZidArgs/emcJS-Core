@@ -4,11 +4,11 @@ import {
     isArray, isArrayOf, isBoolean, isDict, isFunction, isNull, isNumber, isNumberNotNaN, isObject, isString, isStringNotEmpty
 } from "../CheckType.js";
 import {getFromObjectByPath} from "./ObjectContent.js";
-import {immute} from "../../../data/Immutable.js";
+import {deepFreeze} from "../../DeepFreeze.js";
 
 const SORT_PATTERN = /^(!?)(.+)$/;
 
-export const EXTRACT_CONFIG_PARAMS = immute({
+export const EXTRACT_CONFIG_PARAMS = deepFreeze({
     PAGE: "page",
     PAGE_SIZE: "pageSize",
     SORT: "sort",
@@ -20,7 +20,7 @@ export const EXTRACT_CONFIG_PARAMS = immute({
     SEARCH_FIELDS: "searchFields"
 });
 
-export const DEFAULT_EXTRACT_CONFIG = immute({
+export const DEFAULT_EXTRACT_CONFIG = deepFreeze({
     page: 0,
     pageSize: 0,
     sort: [],

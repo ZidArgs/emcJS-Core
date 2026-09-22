@@ -2,13 +2,14 @@
  * A Set wrapper only implementing access methods.
  * Can be used to prevent overriding of Set contents.
  */
-export default class SetLocker {
+export default class SetView {
 
     #inst;
 
     /**
-     * Create a new wrapper to prevent altering of the content
-     * @param {Set} inst a Set that should be prevented from being altered
+     * Create a new wrapper to prevent altering of the content.
+     *
+     * @param {Set} inst a Set that should be protected
      */
     constructor(inst) {
         if (!(inst instanceof Set)) {

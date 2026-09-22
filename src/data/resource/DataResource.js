@@ -1,7 +1,7 @@
-import {immute} from "../Immutable.js";
 import {deepClone} from "../../util/helper/DeepClone.js";
 import AbstractResource from "./AbstractResource.js";
 import {getFromObjectByPath} from "../../util/helper/collection/ObjectContent.js";
+import {deepFreeze} from "../../util/DeepFreeze.js";
 
 export default class DataResource extends AbstractResource {
 
@@ -9,7 +9,7 @@ export default class DataResource extends AbstractResource {
 
     constructor(data) {
         super();
-        const proxyData = immute(deepClone(data));
+        const proxyData = deepFreeze(deepClone(data));
         this.#data = proxyData;
         const ev = new Event("load");
         ev.data = proxyData;
