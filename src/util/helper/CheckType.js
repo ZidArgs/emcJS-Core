@@ -14,16 +14,16 @@ export function isNullOrFalse(value) {
 }
 
 export function isPrimitive(value) {
-    if (value == null) {
-        return isNull(value);
+    if (isNull(value)) {
+        return true;
     }
     const type = typeof value;
     return type !== "object" && type !== "function";
 }
 
 export function isEmpty(value) {
-    if (value == null) {
-        return isNull(value);
+    if (isNull(value)) {
+        return true;
     }
     const type = typeof value;
     if (type === "string") {

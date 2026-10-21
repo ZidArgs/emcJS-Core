@@ -36,6 +36,8 @@ class EnumIterator extends Iterator {
 
 }
 
+const DEFAULT_VALUES = new WeakMap();
+
 export default class Enum {
 
     #value;
@@ -45,6 +47,10 @@ export default class Enum {
             throw new TypeError("only primitive values allowed");
         }
         this.#value = value;
+        // ---
+        if (!DEFAULT_VALUES.has(new.target)) {
+            DEFAULT_VALUES.set(new.target, this);
+        }
     }
 
     get value() {
@@ -65,6 +71,10 @@ export default class Enum {
 
     toJSON() {
         return this.toString();
+    }
+
+    static get defaultValue() {
+        return DEFAULT_VALUES.get(this);
     }
 
     static get(value) {
