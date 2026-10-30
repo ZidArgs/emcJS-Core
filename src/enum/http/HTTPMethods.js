@@ -20,8 +20,6 @@ export default class HTTPMethods extends Enum {
 
     static PATCH = new this("PATCH");
 
-    static SEARCH = new this("SEARCH");
-
     static QUERY = new this("QUERY");
 
 }
