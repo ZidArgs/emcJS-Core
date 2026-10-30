@@ -7,7 +7,7 @@ import Properties from "../converter/Properties.js";
 import jsonParse from "../../patches/JSONParser.js";
 
 async function getFile(file, contentType) {
-    const r = await fetch(new Request(file, {
+    const response = await fetch(new Request(file, {
         method: "GET",
         headers: new Headers({
             "Content-Type": contentType,
@@ -17,10 +17,10 @@ async function getFile(file, contentType) {
         mode: "cors",
         cache: "default"
     }));
-    if (r.status < 200 || r.status >= 300) {
-        throw new Error(`error loading file "${file}" - status: ${r.status}`);
+    if (!response.ok) {
+        throw new Error(`error loading file "${file}" - status: ${response.status}`);
     }
-    return r;
+    return response;
 }
 
 class FileLoader {
