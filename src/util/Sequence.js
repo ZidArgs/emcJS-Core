@@ -8,7 +8,7 @@ export default class Sequence {
 
     next(callback) {
         if (typeof callback == "function") {
-            this.#queue.then(callback);
+            this.#queue = this.#queue.then(callback);
         }
         return this;
     }
