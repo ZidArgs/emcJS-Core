@@ -1,4 +1,7 @@
-import {isPrimitive} from "../util/helper/CheckType.js";
+import {
+    isNull,
+    isPrimitive
+} from "../util/helper/CheckType.js";
 
 class EnumIterator extends Iterator {
 
@@ -86,6 +89,9 @@ export default class Enum {
     }
 
     static includes(value, insensitive = false) {
+        if (isNull(value)) {
+            return false;
+        }
         if (insensitive) {
             return this.values().map((e) => e.toLowerCase()).includes(value.toString().toLowerCase());
         }
