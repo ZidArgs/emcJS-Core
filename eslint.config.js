@@ -46,7 +46,8 @@ export default defineConfig([
                 WeakRef: false,
                 Iterator: false,
                 importScripts: false,
-                Float16Array: false
+                Float16Array: false,
+                cookieStore: false
             },
 
             parser: babelParser,

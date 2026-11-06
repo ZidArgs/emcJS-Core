@@ -81,9 +81,13 @@ export default class Enum {
     }
 
     static get(value) {
-        for (const inst of Object.values(this)) {
-            if (inst.value === value) {
-                return inst;
+        if (value instanceof this) {
+            return value;
+        } else {
+            for (const inst of Object.values(this)) {
+                if (inst.value === value) {
+                    return inst;
+                }
             }
         }
     }
