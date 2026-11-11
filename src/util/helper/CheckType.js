@@ -1,4 +1,4 @@
-import jsonParse from "../../patches/JSONParser.js";
+import {parseJSON} from "../json/JSON.js";
 
 const COLOR_PATTERN = /^#[0-9a-f]{6}$/i;
 const URL_PATH_PATTERN = /^\.{0,2}(?:\/(?:[0-9a-z-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*\/?$/;
@@ -108,7 +108,7 @@ export function isColorString(value) {
 
 export function isJSON(input) {
     try {
-        jsonParse(input);
+        parseJSON(input);
     } catch {
         return false;
     }

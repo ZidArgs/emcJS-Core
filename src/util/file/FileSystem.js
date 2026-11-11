@@ -1,4 +1,4 @@
-import jsonParse from "../../patches/JSONParser.js";
+import {parseJSON} from "../json/JSON.js";
 
 const dl = document.createElement("a");
 dl.style.position = "absolute !important";
@@ -19,7 +19,7 @@ function convertData(dataUrl) {
     let res = dataUrl.slice(pos);
     switch (mime) {
         case "application/json":
-            res = jsonParse(atob(res));
+            res = parseJSON(atob(res));
             break;
     }
     return {

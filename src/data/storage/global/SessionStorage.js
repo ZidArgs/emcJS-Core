@@ -1,7 +1,7 @@
 import {debounceCacheData} from "../../../util/Debouncer.js";
 import {isEqual} from "../../../util/helper/Comparator.js";
 import {deepClone} from "../../../util/helper/DeepClone.js";
-import {jsonParseSafe} from "../../../util/helper/JSON.js";
+import {safeParseJSON} from "../../../util/json/JSON.js";
 
 class SessionStorage extends EventTarget {
 
@@ -9,7 +9,7 @@ class SessionStorage extends EventTarget {
 
     #read(key) {
         const res = sessionStorage.getItem(key);
-        return jsonParseSafe(res);
+        return safeParseJSON(res);
     }
 
     #write(key, value) {
@@ -46,7 +46,7 @@ class SessionStorage extends EventTarget {
                     ev.data = this.getAll();
                     this.dispatchEvent(ev);
                 } else {
-                    this.#applySync(key, jsonParseSafe(newValue));
+                    this.#applySync(key, safeParseJSON(newValue));
                 }
             }
         });

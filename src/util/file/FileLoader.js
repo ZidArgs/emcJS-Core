@@ -4,7 +4,7 @@ import INI from "../converter/INI.js";
 import CSV from "../converter/CSV.js";
 import Lang from "../converter/Lang.js";
 import Properties from "../converter/Properties.js";
-import jsonParse from "../../patches/JSONParser.js";
+import {parseJSON} from "../json/JSON.js";
 
 async function getFile(file, contentType) {
     const response = await fetch(new Request(file, {
@@ -37,7 +37,7 @@ class FileLoader {
 
     async json(file) {
         const content = await this.text(file, "application/json");
-        return jsonParse(content);
+        return parseJSON(content);
     }
 
     async jsonc(file) {
