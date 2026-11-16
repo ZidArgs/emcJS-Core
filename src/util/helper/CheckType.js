@@ -1,5 +1,3 @@
-import {parseJSON} from "../json/JSON.js";
-
 const COLOR_PATTERN = /^#[0-9a-f]{6}$/i;
 const URL_PATH_PATTERN = /^\.{0,2}(?:\/(?:[0-9a-z-._~!$&'()*+,;=:@]|%[0-9a-f]{2})*)*\/?$/;
 const CSS_URL_PATTERN = /^url\((?:"?(.+)"?|'?(.+)'?|(.+))\)$/i;
@@ -104,15 +102,6 @@ export function isFunction(value) {
 
 export function isColorString(value) {
     return isStringNotEmpty(value) && COLOR_PATTERN.test(value);
-}
-
-export function isJSON(input) {
-    try {
-        parseJSON(input);
-    } catch {
-        return false;
-    }
-    return true;
 }
 
 export function isUrl(input) {

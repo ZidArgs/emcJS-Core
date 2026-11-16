@@ -1,4 +1,4 @@
-import {getFromObjectByPath} from "@emcjs/core/util/helper/collection/ObjectContent.js";
+import {getFromObjectByPath} from "../../../util/helper/collection/ObjectContent.js";
 import EntityState from "./EntityState.js";
 import  {immute} from "../../Immutable.js";
 
